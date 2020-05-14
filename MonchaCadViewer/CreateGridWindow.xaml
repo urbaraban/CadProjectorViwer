@@ -1,0 +1,55 @@
+﻿<Window
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:MonchaCadViewer"
+        xmlns:Controls="http://metro.mahapps.com/winfx/xaml/controls"
+        xmlns:Properties="clr-namespace:MonchaCadViewer.Properties" x:Class="MonchaCadViewer.CreateGridWindow"
+        mc:Ignorable="d"
+        Title="CreateGridWindow" Height="446.26" Width="606.787">
+    <Window.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Controls.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Fonts.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Themes/Light.Blue.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+            <Style x:Key="Border" TargetType="{x:Type Border}">
+                <Setter Property="BorderBrush" Value="DarkGray"/>
+                <Setter Property="BorderThickness" Value="1"/>
+                <Style.Triggers>
+                    <Trigger Property="IsMouseOver" Value="true">
+                        <Setter Property="BorderBrush" Value="CadetBlue"/>
+                    </Trigger>
+                </Style.Triggers>
+            </Style>
+        </ResourceDictionary>
+
+    </Window.Resources>
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="411*"/>
+            <ColumnDefinition Width="188*"/>
+        </Grid.ColumnDefinitions>
+        <Border Style="{StaticResource Border}" Background="#FFF0F0F0" Margin="10">
+            <Border.DataContext>
+                <Properties:Settings/>
+            </Border.DataContext>
+            <Viewbox Margin="-1"/>
+        </Border>
+        <Controls:ToggleSwitch x:Name="MonchaToggle"  Content="Moncha" HorizontalAlignment="Left" Margin="15,17,0,0" VerticalAlignment="Top" Width="153" Height="32" Grid.Column="1" IsOn="{Binding main_formoncha, Mode=TwoWay}"/>
+        <Controls:NumericUpDown x:Name="WidthUpDn" Margin="15,80,67,0" Value="2" Maximum="999" Minimum="2" Background="White" Height="26" VerticalAlignment="Top"  Grid.Column="1" ValueChanged="WidthUpDn_ValueChanged"/>
+        <Controls:NumericUpDown x:Name="HeightUpDn" Margin="15,140,67,0" Value="2" Maximum="999" Minimum="2" Background="White" Height="26" VerticalAlignment="Top"  Grid.Column="1" ValueChanged="WidthUpDn_ValueChanged"/>
+        <Label x:Name="label" Content="Ширина" Grid.Column="1" HorizontalAlignment="Left" Margin="15,54,0,0" VerticalAlignment="Top" Height="26" Width="55"/>
+        <Label x:Name="label_Copy" Content="Высота" Grid.Column="1" HorizontalAlignment="Left" Margin="15,114,0,0" VerticalAlignment="Top" Height="26" Width="49"/>
+        <Controls:NumericUpDown x:Name="StepUpDn" Margin="15,193,67,0" Value="30" Maximum="9999" Minimum="2" Background="White" Height="26" VerticalAlignment="Top"  Grid.Column="1" ValueChanged="StepUpDn_ValueChanged"/>
+        <Label x:Name="label_Copy1" Content="Каждые" Grid.Column="1" HorizontalAlignment="Left" Margin="15,167,0,0" VerticalAlignment="Top" Height="26" Width="53"/>
+        <Label x:Name="WidthStepLabel" Content="(0.0)" Grid.Column="1" HorizontalAlignment="Left" Margin="135,80,0,0" VerticalAlignment="Top" Height="26" Width="33"/>
+        <Label x:Name="HeightStepLabel" Content="(0.0)" Grid.Column="1" HorizontalAlignment="Left" Margin="135,140,0,0" VerticalAlignment="Top" Width="52" Height="26"/>
+        <Label x:Name="WidthLabel" Content="0000" Grid.Column="1" HorizontalAlignment="Left" Margin="80,54,0,0" VerticalAlignment="Top" Height="26" Width="36"/>
+        <Label x:Name="HeightLabel" Content="0000" Grid.Column="1" HorizontalAlignment="Left" Margin="81,114,0,0" VerticalAlignment="Top" Height="26" Width="36"/>
+
+
+    </Grid>
+</Window>

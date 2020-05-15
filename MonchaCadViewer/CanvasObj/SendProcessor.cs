@@ -10,7 +10,7 @@ namespace MonchaCadViewer.CanvasObj
 {
     public static class SendProcessor
     {
-        public static void Worker (Viewbox CanvasBox, bool calibrationstat)
+        public static void Worker (Viewbox CanvasBox)
         {
             if (CanvasBox.Child is CadCanvas canvas)
             {

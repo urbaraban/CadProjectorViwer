@@ -54,7 +54,7 @@ namespace MonchaCadViewer.CanvasObj
 
         protected override Geometry DefiningGeometry => this._path;
 
-        public ViewContour(List<List<MonchaPoint3D>> point3Ds, MonchaPoint3D Center, bool maincanvas)
+        public ViewContour(List<List<MonchaPoint3D>> point3Ds, MonchaPoint3D Center, bool maincanvas, bool Capturemouse) : base (Capturemouse, Center, false)
         {
             this._points = point3Ds;
             this.BaseContextPoint = Center;

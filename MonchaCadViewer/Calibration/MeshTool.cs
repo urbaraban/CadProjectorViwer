@@ -15,22 +15,22 @@ namespace MonchaCadViewer.Calibration
         {
             if (canvas.DataContext is MonchaDevice device)
             {
-                Tuple<int, int> pos = device.BaseMesh.CoordinatesOf(dotShape.BPoint);
+                Tuple<int, int> pos = device.BaseMesh.CoordinatesOf(dotShape.BaseContextPoint);
 
                 DotShape[,] ShapeMesh = canvas.GetMeshDot(device.BaseMesh.GetLength(0), device.BaseMesh.GetLength(1));
 
                 Tuple<int, int> pos0 = GetNearFixIndex(ShapeMesh, 0, pos.Item2, pos.Item1, pos.Item2);
                 Tuple<int, int> pos1 = GetNearFixIndex(ShapeMesh, device.BaseMesh.GetLength(1) - 1, pos.Item2, pos.Item1, pos.Item2);
 
-                double prop = (ShapeMesh[pos.Item2, pos.Item1].BPoint.X - ShapeMesh[pos0.Item2, pos0.Item1].BPoint.X) /
-                    (ShapeMesh[pos1.Item2, pos1.Item1].BPoint.X - ShapeMesh[pos0.Item2, pos0.Item1].BPoint.X);
+                double prop = (ShapeMesh[pos.Item2, pos.Item1].BaseContextPoint.X - ShapeMesh[pos0.Item2, pos0.Item1].BaseContextPoint.X) /
+                    (ShapeMesh[pos1.Item2, pos1.Item1].BaseContextPoint.X - ShapeMesh[pos0.Item2, pos0.Item1].BaseContextPoint.X);
 
-                return ShapeMesh[pos0.Item2, pos0.Item1].BPoint.Y +
-                    (ShapeMesh[pos1.Item2, pos1.Item1].BPoint.Y - ShapeMesh[pos0.Item2, pos0.Item1].BPoint.Y) 
+                return ShapeMesh[pos0.Item2, pos0.Item1].BaseContextPoint.Y +
+                    (ShapeMesh[pos1.Item2, pos1.Item1].BaseContextPoint.Y - ShapeMesh[pos0.Item2, pos0.Item1].BaseContextPoint.Y) 
                     * prop;
             }
 
-            return dotShape.BPoint.Y;
+            return dotShape.BaseContextPoint.Y;
 
         }
 
@@ -54,15 +54,5 @@ namespace MonchaCadViewer.Calibration
             }
             return new Tuple<int, int>(_xend, _yend);
         }
-
-        private static double PointInGradient(double beginPoint, double endPoint, int gradient, int step)
-        {
-            if (gradient == 0) gradient = 1;
-            return Math.Round(beginPoint + (step * ((endPoint - beginPoint) / gradient)), 7);
-        }
-
-
-
-
     }
 }

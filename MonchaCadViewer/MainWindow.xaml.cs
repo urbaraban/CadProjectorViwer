@@ -21,6 +21,7 @@ using System.Globalization;
 using MonchaSDK;
 using MonchaSDK.Device;
 using MonchaSDK.Object;
+using System.Runtime.InteropServices;
 
 namespace MonchaCadViewer
 {
@@ -29,8 +30,6 @@ namespace MonchaCadViewer
     /// </summary>
     public partial class MainWindow : Window
     {
-        private bool CalibrationStat = false;
-
         static Dispatcher dispatcher = System.Windows.Application.Current.Dispatcher;
 
         private string qrpath = string.Empty;
@@ -165,9 +164,9 @@ namespace MonchaCadViewer
         {
             if (sender is TreeViewItem BaseMeshItem && BaseMeshItem.Parent is TreeViewItem DeviceTree)
             {
-                if (DeviceTree.DataContext is MonchaDevice device && BaseMeshItem.DataContext is MonchaDeviceMesh mesh)
+                if (DeviceTree.DataContext is MonchaDevice device && BaseMeshItem.DataContext is MonchaDeviceMesh mesh && CanvasBox.Child is CadCanvas canvas)
                 {
-                    DrawMesh(mesh, device, CanvasBox.Child as Canvas, false, false, false);
+                    canvas.DrawMesh(mesh, device, false, false, false);
                 }
             }
         }
@@ -176,9 +175,9 @@ namespace MonchaCadViewer
         {
             if (sender is TreeViewItem BaseMeshItem && BaseMeshItem.Parent is TreeViewItem DeviceTree)
             {
-                if (DeviceTree.DataContext is MonchaDevice device && BaseMeshItem.DataContext is MonchaDeviceMesh mesh)
+                if (DeviceTree.DataContext is MonchaDevice device && BaseMeshItem.DataContext is MonchaDeviceMesh mesh && CanvasBox.Child is CadCanvas canvas)
                 {
-                    DrawMesh(device.VirtualMesh, device, CanvasBox.Child as Canvas, false, true, false);
+                    canvas.DrawMesh(device.VirtualMesh, device, false, true, false);
                 }
             }
         }
@@ -239,9 +238,9 @@ namespace MonchaCadViewer
         {
             if (sender is TreeViewItem BaseMeshItem && BaseMeshItem.Parent is TreeViewItem DeviceTree)
             {
-                if (DeviceTree.DataContext is MonchaDevice device && BaseMeshItem.DataContext is MonchaDeviceMesh mesh)
+                if (DeviceTree.DataContext is MonchaDevice device && BaseMeshItem.DataContext is MonchaDeviceMesh mesh && CanvasBox.Child is CadCanvas canvas)
                 {
-                    DrawMesh(device.BaseMesh, device, CanvasBox.Child as Canvas, true, false, true);
+                    canvas.DrawMesh(device.BaseMesh, device, true, false, true);
                 }
             }
         }
@@ -264,52 +263,13 @@ namespace MonchaCadViewer
             }
         }
 
-        //Рисуем квадраты в поле согласно схеме
-        private void DrawMesh(MonchaDeviceMesh mesh, MonchaDevice _device, Canvas canvas, bool calibration, bool OnBaseMesh, bool Render)
-        {
-            if (_device != null && canvas != null)
-            {
-                _device.Calibration = calibration;
-                canvas.DataContext = _device;
-                canvas.Children.Clear();
 
-                if (mesh == null) 
-                    mesh = _device.BaseMesh;
-
-                CalibrationStat = calibration;
-                //
-                // Поинты
-                //
-
-                for (int i = 0; i < mesh.GetLength(0); i++)
-                    for (int j = 0; j < mesh.GetLength(1); j++)
-                    {
-                        //invert point on Y
-                        DotShape dot = new DotShape(
-                             mesh[i, j],
-                            canvas.ActualWidth * 0.02,
-                            //multiplier
-                            new MonchaPoint3D(canvas.ActualWidth, canvas.ActualHeight, 0),
-                            //calibration flag
-                            true);
-                        dot.Fill = Brushes.Black;
-                        dot.StrokeThickness = 0;
-                        dot.Uid = i.ToString() + ":" + j.ToString();
-                        dot.ToolTip = "Позиция: " + i + ":" + j  + "\nX: " + mesh[i, j].X + "\n" + "Y: " + mesh[i, j].Y;
-                        dot.DataContext = mesh;
-                        dot.OnBaseMesh = OnBaseMesh;
-                        dot.Render = Render;
-                        canvas.Children.Add(dot);
-                    }
-
-            }
-        }
 
 
 
         private void ResizeCanvasBox(double _width, double _height, ref Viewbox canvasbox)
         {
-            if (canvasbox.Child is Canvas canvas)
+            if (canvasbox.Child is CadCanvas canvas)
             {
                 canvas.Width = _width;
                 canvas.Height = _height;
@@ -499,7 +459,7 @@ namespace MonchaCadViewer
                 _viewborder.Child = _viewbox;
                 FrameStack.Children.Add(_viewborder);
 
-                DrawOnCanvas(contoursList, ref _canvasviewbox, false, false);
+                _canvas.DrawOnCanvas(contoursList, false, false, true);
 
                 TreeViewItem contourTree = new TreeViewItem();
                 contourTree.Header = contoursList.DisplayName == string.Empty ? "Frame " + FrameTree.Items.Count : "Frame:" + contoursList.DisplayName;
@@ -508,7 +468,7 @@ namespace MonchaCadViewer
 
                 FrameTree.Items.Add(contourTree);
 
-                if (show) DrawOnCanvas(contoursList, ref CanvasBox, true, false);
+                if (show && CanvasBox.Child is CadCanvas canvas) canvas.DrawOnCanvas(contoursList, true, false, true);
             }
         }
 
@@ -517,42 +477,20 @@ namespace MonchaCadViewer
             if (sender is TreeViewItem viewItem)
             {
                 //_selectedindex = FrameTree.Items.IndexOf(viewItem);
-                if (viewItem.DataContext is LObjectList tempList)
-                    DrawOnCanvas(tempList, ref CanvasBox, true, Keyboard.Modifiers == ModifierKeys.Shift);
+                if (viewItem.DataContext is LObjectList tempList && CanvasBox.Child is CadCanvas canvas)
+                    canvas.DrawOnCanvas(tempList, true, Keyboard.Modifiers == ModifierKeys.Shift, true);
             }
 
             if (sender is Viewbox viewbox)
             {
                 //_selectedindex = FrameStack.Children.IndexOf(viewbox.Parent as Border);
-                if (viewbox.DataContext is LObjectList tempList)
-                    DrawOnCanvas(tempList, ref CanvasBox, true, Keyboard.Modifiers == ModifierKeys.Shift);
+                if (viewbox.DataContext is LObjectList tempList && CanvasBox.Child is CadCanvas canvas)
+                    canvas.DrawOnCanvas(tempList, true, Keyboard.Modifiers == ModifierKeys.Shift, true);
             }
         }
 
 
-        private void DrawOnCanvas(LObjectList _innerList, ref Viewbox canvasbox, bool maincanvas, bool add)
-        {
-            if (_innerList.Count > 0)
-            {
-                if (canvasbox.Child is Canvas canvas)
-                {
-                    foreach (MonchaDevice device in MonchaHub.Devices)
-                    {
-                        device.Calibration = false;
-                    }
 
-                    if (!add)
-                    {
-                        canvas.Children.Clear();
-                    }
-
-                    ViewContour polygon = new ViewContour(_innerList.GetOnlyPoints, new MonchaPoint3D(canvas.ActualWidth / 2, canvas.ActualHeight / 2, 0), maincanvas);
-                    polygon.OnBaseMesh = false;
-                    canvas.Children.Add(polygon);
-                }
-            }
-            treeView.UpdateLayout();
-        }
 
 
         private void OpenBtn_DragDrop(object sender, DragEventArgs e)
@@ -632,7 +570,7 @@ namespace MonchaCadViewer
         private void dot_canvas_LayoutUpdated(object sender, EventArgs e)
         {
             if (RealTimeToggle.IsOn)
-                SendProcessor.Worker(CanvasBox, CalibrationStat);
+                SendProcessor.Worker(CanvasBox);
         }
 
         private void LineBtn_Click(object sender, RoutedEventArgs e)
@@ -697,7 +635,7 @@ namespace MonchaCadViewer
 
         private void RefreshFrameBtn_Click(object sender, RoutedEventArgs e)
         {
-            SendProcessor.Worker(CanvasBox, CalibrationStat);
+            SendProcessor.Worker(CanvasBox);
         }
 
         private void RealTimeToggle_Toggled(object sender, RoutedEventArgs e)
@@ -774,7 +712,6 @@ namespace MonchaCadViewer
         {
             if (DeviceCombo.SelectedItem is MonchaDevice tempdevice)
             {
-                CalibrationStat = true;
         ScanRateRealSlider.Value = tempdevice.ScanRateReal;
                 ScanRateCalc.Value = tempdevice.ScanRateCalc;
                 RedUpDn.Value = tempdevice.Red;
@@ -793,7 +730,6 @@ namespace MonchaCadViewer
                 StartBlankSlider.UpdateLayout();
                 InvertXtoggle.IsOn = tempdevice.InvertedX;
                 InvertYtoggle.IsOn = tempdevice.InvertedY;
-                CalibrationStat = false;
             }
         }
 
@@ -986,7 +922,7 @@ namespace MonchaCadViewer
 
         private void ClearBtn_Click(object sender, RoutedEventArgs e)
         {
-            if (CanvasBox.Child is Canvas canvas)
+            if (CanvasBox.Child is CadCanvas canvas)
             {
                 canvas.Children.Clear();
             }
@@ -1038,6 +974,7 @@ namespace MonchaCadViewer
             if (e.Data.GetDataPresent(DataFormats.FileDrop)) e.Effects = DragDropEffects.Copy;
             OpenBtn.Background = Brushes.Yellow;
             string[] filePaths = (string[])(e.Data.GetData(DataFormats.FileDrop));
+            if (filePaths != null)
             foreach (string fileLoc in filePaths) //переберает всю инфу пока не найдет строку адреса
                 if (File.Exists(fileLoc))
                     OpenBtn.Content = "Открыть " + fileLoc.Split('\\').Last();
@@ -1064,6 +1001,8 @@ namespace MonchaCadViewer
                 device.CalculateMesh.Points = null;
             }
         }
+
+
     }
     
 }

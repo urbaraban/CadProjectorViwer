@@ -3,10 +3,9 @@ using MonchaSDK.Object;
 using System;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Media.Media3D;
+
 
 namespace MonchaCadViewer.CanvasObj
 {
@@ -15,64 +14,83 @@ namespace MonchaCadViewer.CanvasObj
         private LineGeometry _lineGeometry;
         private double _lenth;
 
-        private AdornerLayer adornerLayer;
-
         protected override Geometry DefiningGeometry => _lineGeometry;
 
-        public event EventHandler<bool> Edit;
-        public event EventHandler<MonchaPoint3D> ChangePoint0;
-        public event EventHandler<MonchaPoint3D> ChangePoint1;
+        
 
 
-        public object SecondContextPoint { get; set; }
+        public MonchaPoint3D SecondContextPoint { get; set; }
 
-        public MonchaPoint3D SPoint {
-            get => SecondContextPoint as MonchaPoint3D;
-            }
 
-        public LineSbcr(object StartPoint, object EndPoint)
+        public LineSbcr(MonchaPoint3D StartPoint, MonchaPoint3D EndPoint, bool Capturemouse) : base(Capturemouse, new MonchaPoint3D(StartPoint.X, StartPoint.Y, 0), false)
         {
+            //associate and subcribe
             this.BaseContextPoint = StartPoint;
-            if (this.BaseContextPoint is MonchaPoint3D basepoint)
-            {
-                basepoint.ChangePoint += Basepoint_ChangePoint;
-            }
+            this.BaseContextPoint.ChangePoint += ContextPoint_ChangePoint;
+            this.BaseContextPoint.ChangePointDelta += ContextPoint_ChangeDeltaPoint;
+            this.BaseContextPoint.Relink += ContextPoint_Relink;
+
             this.SecondContextPoint = EndPoint;
+            this.SecondContextPoint.ChangePoint += ContextPoint_ChangePoint;
+            this.SecondContextPoint.Relink += ContextPoint_Relink;
 
-            if (this.SecondContextPoint is MonchaPoint3D secondpoint)
-            {
-                secondpoint.ChangePoint += Basepoint_ChangePoint;
-            }
-
-            this.Stroke = Brushes.Red;
+            this.Stroke = Brushes.Black;
             this.StrokeThickness = 40;
+
             this._lineGeometry = new LineGeometry();
 
             ContextMenuLib.LineContextMenu(this.ContextMenu);
 
-            this.Loaded += LineSbcr_Loaded;
             this.MouseDown += LineSbcr_MouseDown;
             this.ContextMenu.Closed += ContextMenu_Closed;
 
-            this.Move += LineSbcr_Move;
-
-            this.Editing = true;
-
         }
 
-        private void LineSbcr_Move(object sender, MonchaPoint3D e)
+
+        private void ContextPoint_Relink(object sender, MonchaPoint3D e)
         {
-           if (this.BaseContextPoint is MonchaPoint3D point1 && this.SecondContextPoint is MonchaPoint3D point2)
+            if (this.BaseContextPoint == sender)
             {
-                point2.Update(point2.X + e.X, point2.Y + e.Y);
-                point1.Update(point1.X + e.X, point1.Y + e.Y);
+                this.BaseContextPoint = e;
+                this.BaseContextPoint.ChangePoint += ContextPoint_ChangePoint;
             }
-        }
-
-        private void Basepoint_ChangePoint(object sender, MonchaPoint3D e)
-        {
+            else
+            {
+                this.SecondContextPoint = e;
+                this.SecondContextPoint.ChangePoint += ContextPoint_ChangePoint;
+            }
             GetLine();
         }
+
+        private void ContextPoint_ChangePoint(object sender, MonchaPoint3D e)
+        {
+            if (!this.Editing)
+            {
+                this.Editing = true;
+                if (this.BaseContextPoint == sender)
+                {
+                    if (this.IsFix) 
+                        this.SecondContextPoint.Update(GetPointOnLine(this.BaseContextPoint, this.SecondContextPoint), false);
+                }
+                else
+                {
+                    if (this.IsFix)
+                        this.BaseContextPoint.Update(GetPointOnLine(this.SecondContextPoint, this.BaseContextPoint), false);
+                }
+                this.Editing = false;
+            }
+
+            GetLine();
+        }
+
+        private void ContextPoint_ChangeDeltaPoint(object sender, MonchaPoint3D e)
+        {
+            if (this.Editing)
+                this.SecondContextPoint.Add(e, false);
+        }
+
+
+
 
         private void ContextMenu_Closed(object sender, RoutedEventArgs e)
         {
@@ -80,11 +98,9 @@ namespace MonchaCadViewer.CanvasObj
             switch (cmindex.Header)
             {
                 case "Fix":
-                    if (this.BaseContextPoint is MonchaPoint3D point)
-                    {
-                        point.IsFix = !point.IsFix;
-                        this._lenth = PtPLenth(new MonchaPoint3D(0, 0, 0), this.SecondContextPoint as MonchaPoint3D);
-                    }
+                        this.IsFix = !this.IsFix;
+                        this._lenth = PtPLenth(this.BaseContextPoint, this.SecondContextPoint);
+
                     break;
                 case "Remove":
                     if (this.Parent is CadCanvas canvas)
@@ -96,7 +112,6 @@ namespace MonchaCadViewer.CanvasObj
         }
 
 
-
         private void LineSbcr_MouseDown(object sender, MouseButtonEventArgs e)
         {
             if (e.RightButton == MouseButtonState.Pressed)
@@ -104,50 +119,6 @@ namespace MonchaCadViewer.CanvasObj
                 this.ContextMenu.IsOpen = true;
             }
         }
-
-
-        private void LineSbcr_Loaded(object sender, RoutedEventArgs e)
-        {
-            if (this.Parent is CadCanvas canvas)
-            {
-                canvas.MouseLeftButtonUp += Canvas_MouseLeftUp;
-                canvas.MouseMove += Canvas_MouseMove;
-                this.CaptureMouse();
-                this.adornerLayer = AdornerLayer.GetAdornerLayer(canvas);
-                AdornerLineDim myAdorner = new AdornerLineDim(this, canvas);
-                myAdorner.DataContext = this;
-                adornerLayer.Add(myAdorner);
-
-            }
-        }
-
-        private void Canvas_MouseMove(object sender, MouseEventArgs e)
-        {
-            if (e.LeftButton == MouseButtonState.Pressed)
-            {
-                if (this.SecondContextPoint is MonchaPoint3D point && this.Parent is CadCanvas canvas)
-                {
-                    point.Update(e.GetPosition(canvas));
-                }
-                GetLine();
-            }
-            else
-                this.ReleaseMouseCapture();
-        }
-
-        //Заканчиваем с линией
-        private void Canvas_MouseLeftUp(object sender, MouseButtonEventArgs e)
-        {
-            Canvas canvas = this.Parent as Canvas;
-            canvas.MouseMove -= Canvas_MouseMove;
-            canvas.MouseLeftButtonUp -= Canvas_MouseLeftUp;
-            this.ReleaseMouseCapture();
-
-            if (this.Edit != null)
-                this.Edit(this, false);
-            this.Editing = false;
-        }
-
 
         private void GetLine()
         {
@@ -158,56 +129,6 @@ namespace MonchaCadViewer.CanvasObj
 
         }
 
-        public void SubsPoint(DotShape dotShape, int indexPoint)
-        {
-            if (indexPoint == 0)
-            {
-                this.BaseContextPoint = dotShape.BaseContextPoint;
-            }
-            if (indexPoint == 1)
-            {
-                this.SecondContextPoint = dotShape.BaseContextPoint;
-            }
-        }
-
-        private void DotShape_ChangePoint1(object sender, MonchaPoint3D e)
-        {
-
-            this.SecondContextPoint = new MonchaPoint3D(e.X,  e.Y, e.Z - this.BPoint.Z);
-            if (!this.WasMove)
-            {
-                this.WasMove = true;
-                if (this.BaseContextPoint is MonchaPoint3D point && point.IsFix)
-                {
-                    if (ChangePoint0 != null)
-                    {
-                        MonchaPoint3D temppoint = GetPointOnLine(this.SecondContextPoint as MonchaPoint3D, this.BaseContextPoint as MonchaPoint3D);
-                        ChangePoint0(this, temppoint);
-                    }
-                }
-                GetLine();
-                this.WasMove = false;
-            }
-        }
-
-        private void DotShape_ChangePoint0(object sender, MonchaPoint3D e)
-        {
-            this.BaseContextPoint = e;
-
-            if (!this.WasMove)
-            {
-                this.WasMove = true;
-                if (this.BaseContextPoint is MonchaPoint3D point && point.IsFix)
-                    if (ChangePoint1 != null)
-                    {
-                        MonchaPoint3D temppoint = GetPointOnLine(this.BaseContextPoint as MonchaPoint3D, this.SecondContextPoint as MonchaPoint3D);
-                        ChangePoint1(this, temppoint);
-                    }
-                        
-                GetLine();
-                this.WasMove = false;
-            }
-        }
 
         private MonchaPoint3D GetPointOnLine(MonchaPoint3D point0, MonchaPoint3D point1)
         {
@@ -222,7 +143,7 @@ namespace MonchaCadViewer.CanvasObj
             dirX *= this._lenth;
             dirY *= this._lenth;
             //находим точку
-            return new MonchaPoint3D(dirX + point0.X, dirY + point0.Y, 0);
+            return new MonchaPoint3D(dirX + point0.X, dirY + point0.Y, point1.Z);
         }
 
         public static double PtPLenth(MonchaPoint3D point1, MonchaPoint3D point2)

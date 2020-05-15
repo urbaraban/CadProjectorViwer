@@ -1,4 +1,6 @@
-﻿using MonchaSDK.Object;
+﻿using MonchaSDK;
+using MonchaSDK.Device;
+using MonchaSDK.Object;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -11,8 +13,9 @@ namespace MonchaCadViewer.CanvasObj
 {
     public class CadCanvas : Canvas
     {
+        private bool CalibrationStat = false;
         private double _size;
-        private object actualanchor;
+        private List<DotShape> anchors = new List<DotShape>();
         private int _status = 0;
 
         public bool MorphMesh { get; set; } = true;
@@ -48,62 +51,77 @@ namespace MonchaCadViewer.CanvasObj
             this.Focusable = true;
             
             this.KeyUp += Canvas_KeyUp;
-            this.MouseMove += CadCanvas_MouseMove;
-            this.PreviewKeyUp += CadCanvas_PreviewKeyUp;
-
             this.MouseLeftButtonDown += Canvas_MouseLeftDown;
-            this.MouseLeftButtonUp += Canvas_MouseLeftUp;
+
         }
 
-        private void CadCanvas_PreviewKeyUp(object sender, KeyEventArgs e)
+        public void DrawOnCanvas(LObjectList _innerList, bool maincanvas, bool add, bool mousemove)
         {
+            if (_innerList.Count > 0)
+            {
+                foreach (MonchaDevice device in MonchaHub.Devices)
+                {
+                    device.Calibration = false;
+                }
 
+                if (!add)
+                {
+                    this.Children.Clear();
+                }
+
+                ViewContour polygon = new ViewContour(_innerList.GetOnlyPoints, new MonchaPoint3D(this.ActualWidth / 2, this.ActualHeight / 2, 0), maincanvas, mousemove);
+                polygon.OnBaseMesh = false;
+                this.Children.Add(polygon);
+
+            }
         }
 
-        private void CadCanvas_MouseMove(object sender, MouseEventArgs e)
-        {
-
-        }
-
-        private void Canvas_MouseLeftUp(object sender, MouseButtonEventArgs e)
-        {
-            
-        }
 
         private void Canvas_MouseLeftDown(object sender, MouseButtonEventArgs e)
         {
             switch (_status)
             {
                 case 1:
-                    DotShape newdot1 = (DotShape)actualanchor;
+                    DotShape newdot1 = this.UndrMouseAnchor(Mouse.GetPosition(this), null);
                     if (newdot1 == null)
                     {
-                        newdot1 = NewAnchor(e.GetPosition(this), (int)(this.ActualWidth * 0.02), new MonchaPoint3D(1, 1, 1), false);
+                        newdot1 = NewAnchor(false, true, false);
                         newdot1.WasMove = true;
                         this.Children.Add(newdot1);
                     }
 
-                    DotShape newdot2 = NewAnchor(e.GetPosition(this), (int)(this.ActualWidth * 0.02), new MonchaPoint3D(1, 1, 1), false);
+                    DotShape newdot2 = NewAnchor(false, true, true);
                     this.Children.Add(newdot2);
 
-                    LineSbcr lineSbcr = new LineSbcr(newdot1.BaseContextPoint, newdot2.BaseContextPoint);
-                    lineSbcr.Edit += LineSbcr_Edit;
+                    LineSbcr lineSbcr = new LineSbcr(newdot1.BaseContextPoint, newdot2.BaseContextPoint, true);
+
                     this.Children.Add(lineSbcr);
 
                     break;
             }
         }
 
-        private void LineSbcr_Edit(object sender, bool e)
+        public DotShape UndrMouseAnchor(Point point, DotShape selectDot)
         {
-            if (sender is LineSbcr line && this.actualanchor is DotShape dot)
-                line.SecondContextPoint = dot.BaseContextPoint;
+            foreach (DotShape dot in anchors)
+                if (dot.CheckInArea(point))
+                    if (dot != selectDot)
+                        return dot;
+
+            return null;
         }
 
-        private DotShape NewAnchor(Point point, int size, MonchaPoint3D Mult, bool Calibration)
+        public void RemoveAnchor(DotShape anchor)
         {
-            DotShape newdot = new DotShape(point, this.ActualWidth * 0.02, new MonchaPoint3D(1, 1, 1), false);
-            return newdot;
+            this.Children.Remove(anchor);
+            anchors.Remove(anchor);
+        }
+
+        private DotShape NewAnchor(bool Calibration, bool mousemove, bool move )
+        {
+            DotShape anchor = new DotShape(Mouse.GetPosition(this), this.ActualWidth * 0.02, new MonchaPoint3D(1, 1, 1), false, mousemove, move);
+            anchors.Add(anchor);
+            return anchor;
         }
 
 
@@ -138,6 +156,50 @@ namespace MonchaCadViewer.CanvasObj
                     mesh[i, j] = this.Children[i * Width + j] as DotShape;
                 }
             return mesh;
+        }
+
+        //Рисуем квадраты в поле согласно схеме
+        public void DrawMesh(MonchaDeviceMesh mesh, MonchaDevice _device, bool calibration, bool OnBaseMesh, bool Render)
+        {
+            if (_device != null)
+            {
+                _device.Calibration = calibration;
+                this.DataContext = _device;
+                this.Children.Clear();
+
+                if (mesh == null)
+                    mesh = _device.BaseMesh;
+
+                this.CalibrationStat = calibration;
+                //
+                // Поинты
+                //
+
+                for (int i = 0; i < mesh.GetLength(0); i++)
+                    for (int j = 0; j < mesh.GetLength(1); j++)
+                    {
+                        //invert point on Y
+                        DotShape dot = new DotShape(
+                             mesh[i, j].GetPoint,
+                            this.ActualWidth * 0.02,
+                            //multiplier
+                            new MonchaPoint3D(this.ActualWidth, this.ActualHeight, 0),
+                            //calibration flag
+                            true,
+                            true,
+                            false);
+
+                        dot.Fill = Brushes.Black;
+                        dot.StrokeThickness = 0;
+                        dot.Uid = i.ToString() + ":" + j.ToString();
+                        dot.ToolTip = "Позиция: " + i + ":" + j + "\nX: " + mesh[i, j].X + "\n" + "Y: " + mesh[i, j].Y;
+                        dot.DataContext = mesh;
+                        dot.OnBaseMesh = OnBaseMesh;
+                        dot.Render = Render;
+                        this.Children.Add(dot);
+                    }
+
+            }
         }
     }
 }

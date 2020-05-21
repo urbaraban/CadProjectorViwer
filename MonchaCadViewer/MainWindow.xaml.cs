@@ -22,6 +22,7 @@ using MonchaSDK;
 using MonchaSDK.Device;
 using MonchaSDK.Object;
 using System.Runtime.InteropServices;
+using System.Windows.Data;
 
 namespace MonchaCadViewer
 {
@@ -45,21 +46,16 @@ namespace MonchaCadViewer
             RedToggle.Resources["ToggleSwitchFillOn"] = Brushes.Red;
             RedToggle.UpdateLayout();
 
-            CanvasBoxBorder.BorderThickness = new Thickness(Math.Min(AppSt.Default.cl_width, AppSt.Default.cl_height) * 0.01);
-            CadCanvas cadCanvas = new CadCanvas(AppSt.Default.cl_width, AppSt.Default.cl_height);
+            CanvasBoxBorder.BorderThickness = new Thickness(Math.Min(AppSt.Default.base_width, AppSt.Default.base_height) * 0.01);
+            CadCanvas cadCanvas = new CadCanvas(MonchaHub.Size);
             cadCanvas.Focusable = true;
             cadCanvas.LayoutUpdated += dot_canvas_LayoutUpdated;
 
             CanvasBox.Child = cadCanvas;
 
-            ResizeCanvasBox(
-            AppSt.Default.cl_width / AppSt.Default.cl_mash_multiplier,
-            AppSt.Default.cl_height / AppSt.Default.cl_mash_multiplier,
-            ref CanvasBox);
+            ResizeCanvasBox(CanvasBox);
 
-            MonchaHub.Width = AppSt.Default.cl_width/ AppSt.Default.cl_mash_multiplier;
-            MonchaHub.Height = AppSt.Default.cl_height / AppSt.Default.cl_mash_multiplier;
-            MonchaHub.Deep = AppSt.Default.cl_deep / AppSt.Default.cl_mash_multiplier;
+
 
             AppSt.Default.PropertyChanged += Default_PropertyChanged;
 
@@ -73,19 +69,27 @@ namespace MonchaCadViewer
             switch (e.PropertyName)
             {
                 case "cl_width":
-                    MonchaHub.Width = AppSt.Default.cl_width / AppSt.Default.cl_mash_multiplier;
+                    MonchaHub.Size.X = AppSt.Default.base_width / AppSt.Default.cl_mash_multiplier;
                     break;
                 case "cl_height":
-                    MonchaHub.Height = AppSt.Default.cl_height / AppSt.Default.cl_mash_multiplier;
+                    MonchaHub.Size.Y = AppSt.Default.base_height / AppSt.Default.cl_mash_multiplier;
                     break;
                 case "cl_deep":
-                    MonchaHub.Deep = AppSt.Default.cl_deep / AppSt.Default.cl_mash_multiplier;
+                    MonchaHub.Size.Z = AppSt.Default.base_deep / AppSt.Default.cl_mash_multiplier;
                     break;
             }
         }
 
         private void LoadMoncha()
         {
+            MonchaHub.Size.X = AppSt.Default.base_width;
+            MonchaHub.Size.Y = AppSt.Default.base_height;
+            MonchaHub.Size.Z = AppSt.Default.base_deep;
+            MonchaHub.Size.M = new MonchaPoint3D(
+                1 / AppSt.Default.cl_mash_multiplier,
+                1 / AppSt.Default.cl_mash_multiplier,
+                1 / AppSt.Default.cl_mash_multiplier);
+
             //check path to setting file
             if (AppSt.Default.cl_moncha_path == string.Empty)
                 BrowseMoncha(); //select if not
@@ -94,7 +98,19 @@ namespace MonchaCadViewer
             if (File.Exists(AppSt.Default.cl_moncha_path))
             {
                 //send path to hub class
-                _ = new MonchaHub(AppSt.Default.cl_moncha_path);
+                MonchaHub.Load(AppSt.Default.cl_moncha_path);
+
+                WidthUpDn.DataContext = MonchaHub.Size;
+                WidthUpDn.SetBinding(NumericUpDown.ValueProperty, "X");
+
+                HeightUpD.DataContext = MonchaHub.Size;
+                HeightUpD.SetBinding(NumericUpDown.ValueProperty, "Y");
+
+                DeepUpDn.DataContext = MonchaHub.Size;
+                DeepUpDn.SetBinding(NumericUpDown.ValueProperty, "Z");
+
+                MashMultiplierUpDn.DataContext = MonchaHub.Size.M;
+                MashMultiplierUpDn.SetBinding(NumericUpDown.ValueProperty, "X");
 
                 if (MonchaHub.Devices != null)
                 {
@@ -104,6 +120,11 @@ namespace MonchaCadViewer
                     DeviceCombo.SelectedValuePath = "HWIdentifier";
                     DeviceCombo.ItemsSource = MonchaHub.Devices;
                     DeviceCombo.DataContext = MonchaHub.Devices;
+
+                    LaserMetersCombo.DisplayMemberPath = "Adress";
+                    LaserMetersCombo.SelectedValuePath = "Adress";
+                    LaserMetersCombo.ItemsSource = MonchaHub.LMeters;
+                    LaserMetersCombo.DataContext = MonchaHub.LMeters;
 
                     foreach (MonchaDevice device in MonchaHub.Devices)
                     {
@@ -146,8 +167,6 @@ namespace MonchaCadViewer
                         ContextMenuLib.MeshMenu(treeViewVirtualMesh.ContextMenu);
                         treeViewVirtualMesh.ContextMenuClosing += TreeViewBaseMesh_ContextMenuClosing;
 
-                        
-
                         treeViewDevice.Items.Add(treeViewBaseMesh);
                         treeViewDevice.Items.Add(treeViewVirtualMesh);
                        
@@ -159,6 +178,63 @@ namespace MonchaCadViewer
                 }
             }
         }
+
+        private void DeviceCombo_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (DeviceCombo.SelectedItem is MonchaDevice tempdevice)
+            {
+                //LaserMeter
+                LaserMetersCombo.SelectedValue = tempdevice.LMeter;
+
+                LaserMeterToggle.DataContext = tempdevice.LMeter;
+                LaserMeterToggle.SetBinding(ToggleSwitch.IsOnProperty, "IsTurn");
+
+                DistanceUpDn.DataContext = tempdevice.LMeter;
+                DistanceUpDn.SetBinding(NumericUpDown.ValueProperty, "Distance");
+
+                //Device
+                ScanRateRealSlider.DataContext = tempdevice;
+                ScanRateRealSlider.SetBinding(Slider.ValueProperty, "ScanRateReal");
+
+                ScanRateCalc.DataContext = tempdevice;
+                ScanRateCalc.SetBinding(Slider.ValueProperty, "ScanRateCalc");
+
+                RedUpDn.DataContext = tempdevice;
+                RedUpDn.SetBinding(NumericUpDown.ValueProperty, "Red");
+
+                GreenUpDn.DataContext = tempdevice;
+                GreenUpDn.SetBinding(NumericUpDown.ValueProperty, "Green");
+
+                BlueUpDn.DataContext = tempdevice;
+                BlueUpDn.SetBinding(NumericUpDown.ValueProperty, "Blue");
+
+                AlphaSlider.DataContext = tempdevice;
+                AlphaSlider.SetBinding(Slider.ValueProperty, "Alpha");
+
+                FPSUpDn.DataContext = tempdevice;
+                FPSUpDn.SetBinding(NumericUpDown.ValueProperty, "FPS");
+
+                AppSt.Default.cl_crs = (double)tempdevice.CRS;
+
+                AngleWaitSlider.DataContext = tempdevice;
+                AngleWaitSlider.SetBinding(Slider.ValueProperty, "StartLineWait");
+
+                EndBlankSlider.DataContext = tempdevice;
+                EndBlankSlider.SetBinding(Slider.ValueProperty, "EndBlanckWait");
+
+                StartBlankSlider.DataContext = tempdevice;
+                StartBlankSlider.SetBinding(Slider.ValueProperty, "StartBlankWait");
+
+                InvertXtoggle.DataContext = tempdevice;
+                InvertXtoggle.SetBinding(ToggleSwitch.IsOnProperty, "InvertedX");
+
+                InvertYtoggle.DataContext = tempdevice;
+                InvertYtoggle.SetBinding(ToggleSwitch.IsOnProperty, "InvertedY");
+
+
+            }
+        }
+
 
         private void TreeViewCalculationMesh_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
@@ -267,13 +343,11 @@ namespace MonchaCadViewer
 
 
 
-        private void ResizeCanvasBox(double _width, double _height, ref Viewbox canvasbox)
+        private void ResizeCanvasBox(Viewbox canvasbox)
         {
             if (canvasbox.Child is CadCanvas canvas)
             {
-                canvas.Width = _width;
-                canvas.Height = _height;
-                CanvasBoxBorder.BorderThickness = new Thickness(Math.Min(_width, _height) * 0.001);
+                CanvasBoxBorder.BorderThickness = new Thickness(Math.Min(canvas.Width, canvas.Height) * 0.001);
                 canvasbox.StretchDirection = StretchDirection.UpOnly;
                 canvasbox.UpdateLayout();
             }
@@ -301,19 +375,7 @@ namespace MonchaCadViewer
         {
             if (this.IsLoaded)
             {
-                if (WidthUpDn.Value != null) AppSt.Default.cl_width = WidthUpDn.Value.Value;
-                if (HeightUpD.Value != null) AppSt.Default.cl_height = HeightUpD.Value.Value;
-                if (DeepUpDn.Value != null) AppSt.Default.cl_deep = DeepUpDn.Value.Value;
-                AppSt.Default.Save();
-
-                if ((e.Source as NumericUpDown).Name == "MashMultiplierUpDn")
-                    AppSt.Default.cl_mash_multiplier = e.NewValue.Value;
-
-                ResizeCanvasBox(
-                    AppSt.Default.cl_width / AppSt.Default.cl_mash_multiplier, 
-                    AppSt.Default.cl_height / AppSt.Default.cl_mash_multiplier, 
-                    ref CanvasBox);
-                UpdateDeviceSetting();
+                MonchaHub.Size.M.Update(1 / e.NewValue.Value, false);
             }
         }
 
@@ -353,10 +415,7 @@ namespace MonchaCadViewer
         }
 
 
-        private void StartWaitSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
-        {
-            UpdateDeviceSetting();
-        }
+
 
 
         private void OpenBtn_Click(object sender, EventArgs e)
@@ -447,11 +506,11 @@ namespace MonchaCadViewer
                 Viewbox _canvasviewbox = new Viewbox();
                 _canvasviewbox.Stretch = Stretch.Uniform;
                 _canvasviewbox.StretchDirection = StretchDirection.UpOnly;
-                _canvasviewbox.MaxHeight = AppSt.Default.cl_height / AppSt.Default.cl_mash_multiplier;
-                _canvasviewbox.MaxWidth = AppSt.Default.cl_width / AppSt.Default.cl_mash_multiplier;
+                _canvasviewbox.MaxHeight = AppSt.Default.base_height / AppSt.Default.cl_mash_multiplier;
+                _canvasviewbox.MaxWidth = AppSt.Default.base_width / AppSt.Default.cl_mash_multiplier;
                 _canvasviewbox.Margin = new Thickness(0);
 
-                CadCanvas _canvas = new CadCanvas(AppSt.Default.cl_width / AppSt.Default.cl_mash_multiplier, AppSt.Default.cl_height / AppSt.Default.cl_mash_multiplier);
+                CadCanvas _canvas = new CadCanvas(MonchaHub.Size);
                 _canvas.Background = Brushes.White;
 
                 _canvasviewbox.Child = _canvas;
@@ -553,10 +612,7 @@ namespace MonchaCadViewer
         {
             if (this.IsLoaded)
             {
-                ScanRateRealLabel.Content = (int)ScanRateRealSlider.Value;
                 if (ScanRateAnchor.IsChecked.Value) ScanRateCalc.Value = ScanRateRealSlider.Value;
-
-                UpdateDeviceSetting();
             }
         }
 
@@ -589,34 +645,9 @@ namespace MonchaCadViewer
         }
 
 
-        private void MultiToggle_Toggled(object sender, RoutedEventArgs e)
-        {
-            DeviceCombo.IsEnabled = !MultiToggle.IsOn;
-        }
-
-
-        private void ScanRateCalc_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
-        {
-            if (this.IsLoaded)
-            {
-                ScanRateCalcLabel.Content = (int)ScanRateCalc.Value;
-                UpdateDeviceSetting();
-            }
-        }
-
         private void DeviceCombo_DataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
         {
             if (DeviceCombo.SelectedIndex == -1) DeviceCombo.SelectedIndex = 0;
-        }
-
-        private void ColorToggle_Toggled(object sender, RoutedEventArgs e)
-        {
-            UpdateDeviceSetting();
-        }
-
-        private void AlphaSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
-        {
-            UpdateDeviceSetting();
         }
 
         private void MorphToggle_Toggled(object sender, RoutedEventArgs e)
@@ -708,65 +739,7 @@ namespace MonchaCadViewer
             }
         }
 
-        private void DeviceCombo_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            if (DeviceCombo.SelectedItem is MonchaDevice tempdevice)
-            {
-        ScanRateRealSlider.Value = tempdevice.ScanRateReal;
-                ScanRateCalc.Value = tempdevice.ScanRateCalc;
-                RedUpDn.Value = tempdevice.Red;
-                GreenUpDn.Value = tempdevice.Green;
-                BlueUpDn.Value = tempdevice.Blue;
-                AlphaSlider.Value = tempdevice.Alpha * 255;
-
-                FPSUpDn.Value = (double)tempdevice.FPS;
-                AppSt.Default.cl_crs = (double)tempdevice.CRS;
-
-                AngleWaitSlider.Value = (double)tempdevice.StartLineWait;
-                AngleWaitSlider.UpdateLayout();
-                EndBlankSlider.Value = (double)tempdevice.EndBlanckWait;
-                EndBlankSlider.UpdateLayout();
-                StartBlankSlider.Value = (double)tempdevice.StartBlankWait;
-                StartBlankSlider.UpdateLayout();
-                InvertXtoggle.IsOn = tempdevice.InvertedX;
-                InvertYtoggle.IsOn = tempdevice.InvertedY;
-            }
-        }
-
-        private void UpdateDeviceSetting()
-        {
-            if (this.IsLoaded)
-            {
-                if (MultiToggle.IsOn)
-                    foreach (MonchaDevice device in MonchaHub.Devices)
-                        update(device);
-                else
-                    update(DeviceCombo.SelectedItem as MonchaDevice);
-
-                void update(MonchaDevice tempdevice)
-                {
-                    tempdevice.ScanRateReal = (uint)ScanRateRealSlider.Value;
-                    tempdevice.ScanRateCalc = (uint)ScanRateCalc.Value;
-
-                    tempdevice.Red = (byte)(RedToggle.IsOn ? RedUpDn.Value.Value : 0);
-                    tempdevice.Blue = (byte)(BlueToggle.IsOn ? BlueUpDn.Value.Value : 0);
-                    tempdevice.Green = (byte)(GreenToggle.IsOn ? GreenUpDn.Value.Value : 0);
-                    tempdevice.Alpha = AlphaSlider.Value / 255;
-
-                    tempdevice.FPS = FPSUpDn.Value != null ? (int)FPSUpDn.Value.Value : 1;
-                    tempdevice.CRS = AppSt.Default.cl_crs;
-
-                    tempdevice.StartLineWait = (byte)AngleWaitSlider.Value;
-                    tempdevice.EndBlanckWait = (byte)EndBlankSlider.Value;
-                    tempdevice.StartBlankWait = (byte)StartBlankSlider.Value;
-                    tempdevice.ColorShift = (byte)ColorShiftSlider.Value;
-
-                    tempdevice.InvertedX = InvertXtoggle.IsOn;
-                    tempdevice.InvertedY = InvertYtoggle.IsOn;
-                }
-            }
-        }
-
+      
         private void ScanRateAnchor_Click(object sender, RoutedEventArgs e)
         {
             AppSt.Default.int_scananchor = ScanRateAnchor.IsChecked.Value;
@@ -815,7 +788,6 @@ namespace MonchaCadViewer
                                     if (canvas.Children[i + 1] is CadObject cadObject2)
                                     {
                                         cadObject2.IsSelected = true;
-                                        Console.WriteLine("tab");
                                             cadObject2.UpdateLayout();
                                     }
                                 break;
@@ -899,14 +871,12 @@ namespace MonchaCadViewer
             // KeyInterop.KeyFromVirtualKey(e.Key);
             if (qrpath.Contains("#"))
             {
-                Console.WriteLine("qrpath:Empty #");
                 qrpath = string.Empty;
                 AppSt.Default.save_qr_path = true;
                 
             }
             else if (qrpath.Contains("&"))
             {
-                Console.WriteLine("qrpath:Empty &");
                 qrpath = string.Empty;
                 AppSt.Default.save_qr_path = false;
 
@@ -1003,6 +973,11 @@ namespace MonchaCadViewer
         }
 
 
+        private void DistanceUpDn_ValueChanged_1(object sender, RoutedPropertyChangedEventArgs<double?> e)
+        {
+           /* if (e.OldValue.Value > 0)
+                double prop = e.NewValue.Value / e.OldValue.Value;*/
+        }
     }
     
 }

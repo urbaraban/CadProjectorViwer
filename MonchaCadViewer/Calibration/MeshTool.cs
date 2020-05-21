@@ -11,13 +11,13 @@ namespace MonchaCadViewer.Calibration
     public static class MeshTool
     {
         //gives a position on the Y axis between the extreme points in the X plane
-        public static double VerticalPosition(CadCanvas canvas, DotShape dotShape)
+        public static double VerticalPosition(CadCanvas canvas, CadDot dotShape)
         {
             if (canvas.DataContext is MonchaDevice device)
             {
                 Tuple<int, int> pos = device.BaseMesh.CoordinatesOf(dotShape.BaseContextPoint);
 
-                DotShape[,] ShapeMesh = canvas.GetMeshDot(device.BaseMesh.GetLength(0), device.BaseMesh.GetLength(1));
+                CadDot[,] ShapeMesh = canvas.GetMeshDot(device.BaseMesh.GetLength(0), device.BaseMesh.GetLength(1));
 
                 Tuple<int, int> pos0 = GetNearFixIndex(ShapeMesh, 0, pos.Item2, pos.Item1, pos.Item2);
                 Tuple<int, int> pos1 = GetNearFixIndex(ShapeMesh, device.BaseMesh.GetLength(1) - 1, pos.Item2, pos.Item1, pos.Item2);
@@ -34,7 +34,7 @@ namespace MonchaCadViewer.Calibration
 
         }
 
-        private static Tuple<int, int> GetNearFixIndex(DotShape[,] ShapeMesh, int _xend, int _yend, int _xstart, int _ystart)
+        private static Tuple<int, int> GetNearFixIndex(CadDot[,] ShapeMesh, int _xend, int _yend, int _xstart, int _ystart)
         {
             int _xstep = _xend < _xstart ? -1 : 1;
             int _ystep = _yend < _ystart ? -1 : 1;

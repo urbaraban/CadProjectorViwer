@@ -1,31 +1,26 @@
 ﻿using System;
 using System.Windows;
-using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Shapes;
 
-namespace MonchaCadViewer.CanvasObj
+namespace MonchaCadViewer.CanvasObj.DimObj
 {
-    internal class AdornerFrame : Adorner
+    internal class AdornerContourFrame : Adorner
     {
         // Be sure to call the base class constructor.
 
         // The Thumb to drag to rotate the strokes.
-        Thumb rotateHandle;
+        private Thumb rotateHandle;
 
         // The surrounding boarder.
-        Path outline;
+        private Path outline;
 
-        // Size label
-        ContentPresenter labelwidth;
-        ContentPresenter labelheight;
+        private CadContour _adornedElement;
 
-
-
-        VisualCollection visualChildren;
+        private VisualCollection visualChildren;
 
         // The center of the strokes.
         Point center;
@@ -39,9 +34,10 @@ namespace MonchaCadViewer.CanvasObj
         // The bounds of the Strokes;
         Rect strokeBounds = Rect.Empty;
 
-        public AdornerFrame(UIElement adornedElement, CadCanvas canvas)
+        public AdornerContourFrame(UIElement adornedElement, CadCanvas canvas)
             : base(adornedElement)
         {
+            this._adornedElement = adornedElement as CadContour;
             this.ClipToBounds = false;
             this.HANDLEMARGIN = (int)(Math.Min(canvas.ActualWidth, canvas.ActualHeight) * 0.05);
 
@@ -56,53 +52,15 @@ namespace MonchaCadViewer.CanvasObj
             rotateHandle.DragCompleted += new DragCompletedEventHandler(rotateHandle_DragCompleted);
 
             outline = new Path();
-            outline.Stroke = Brushes.Blue;
-            outline.StrokeThickness = adornedElement.DesiredSize.Width * 0.03;
+            outline.Stroke = Brushes.Gray;
+            outline.StrokeThickness = _adornedElement.DesiredSize.Width * 0.01;
 
  
             visualChildren.Add(outline);
             visualChildren.Add(rotateHandle);
-            visualChildren.Add(labelwidth);
-            visualChildren.Add(labelheight);
 
-            strokeBounds = new Rect(-AdornedStrokes.DesiredSize.Width * 0.89, - AdornedStrokes.DesiredSize.Height * 0.89, AdornedStrokes.DesiredSize.Width * 1.89, AdornedStrokes.DesiredSize.Height * 1.89);
+            strokeBounds = new Rect(-AdornedStrokes.DesiredSize.Width, - AdornedStrokes.DesiredSize.Height, AdornedStrokes.DesiredSize.Width * 2, AdornedStrokes.DesiredSize.Height * 2);
 
-        }
-
-        /// <summary>
-        /// Draw the rotation handle and the outline of
-        /// the element.
-        /// </summary>
-        /// <param name="finalSize">The final area within the 
-        /// parent that this element should use to arrange 
-        /// itself and its children.</param>
-        /// <returns>The actual size used. </returns>
-        protected override Size ArrangeOverride(Size finalSize)
-        {
-            if (strokeBounds.IsEmpty)
-            {
-                return finalSize;
-            }
-
-            center = new Point(strokeBounds.X + strokeBounds.Width / 2,
-                               strokeBounds.Y + strokeBounds.Height / 2);
-
-            // The rectangle that determines the position of the Thumb.
-            Rect handleRect = new Rect(strokeBounds.X,
-                                  strokeBounds.Y - (strokeBounds.Height / 2 +
-                                                    HANDLEMARGIN),
-                                  strokeBounds.Width, strokeBounds.Height);
-
-            if (rotation != null)
-            {
-                handleRect.Transform(rotation.Value);
-            }
-
-            // Draws the thumb and the rectangle around the strokes.
-            rotateHandle.Arrange(handleRect);
-            outline.Data = new RectangleGeometry(strokeBounds);
-            outline.Arrange(new Rect(finalSize));
-            return finalSize;
         }
 
         /// <summary>
@@ -167,6 +125,7 @@ namespace MonchaCadViewer.CanvasObj
             if (AngleChange != null)
                 AngleChange(this, angle);
 
+            //this._adornedElement.UpdateGeometry(true);
         }
 
         /// <summary>
@@ -208,6 +167,30 @@ namespace MonchaCadViewer.CanvasObj
         // Override the VisualChildrenCount and 
         // GetVisualChild properties to interface with 
         // the adorner's visual collection.
+        protected override void OnRender(DrawingContext drawingContext)
+        {
+
+            center = new Point(strokeBounds.X + strokeBounds.Width / 2,
+                               strokeBounds.Y + strokeBounds.Height / 2);
+
+            // The rectangle that determines the position of the Thumb.
+            Rect handleRect = new Rect(strokeBounds.X,
+                                  strokeBounds.Y - (strokeBounds.Height / 2 +
+                                                    HANDLEMARGIN),
+                                  strokeBounds.Width, strokeBounds.Height);
+
+            if (rotation != null)
+            {
+                handleRect.Transform(rotation.Value);
+            }
+
+            // Draws the thumb and the rectangle around the strokes.
+            rotateHandle.Arrange(handleRect);
+            outline.Data = new RectangleGeometry(strokeBounds);
+            outline.Arrange(new Rect(_adornedElement.Size));
+        }
+
+
         protected override int VisualChildrenCount
         {
             get { return visualChildren.Count; }

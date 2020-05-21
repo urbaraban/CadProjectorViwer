@@ -21,8 +21,8 @@ namespace MonchaCadViewer
             InitializeComponent();
             this._device = Device;
             this._mesh = Mesh;
-            WidthLabel.Content = this._device.Size.X;
-            HeightLabel.Content = this._device.Size.Y;
+            WidthLabel.Content = this._device.BSize.X;
+            HeightLabel.Content = this._device.BSize.Y;
             WidthUpDn.Value = this._device.BaseMesh.GetLength(1);
             HeightUpDn.Value = this._device.BaseMesh.GetLength(0);
         }
@@ -40,10 +40,10 @@ namespace MonchaCadViewer
         {
             if (this.IsLoaded)
             {
-                int Width = (int)(this._device.Size.X / StepUpDn.Value.Value);
-                int Height = (int)(this._device.Size.Y / StepUpDn.Value.Value);
-                WidthStepLabel.Content = "(" + Math.Round(this._device.Size.X / Width, 1) + ")";
-                HeightStepLabel.Content = "(" + Math.Round(this._device.Size.Y / Height, 1) + ")";
+                int Width = (int)(this._device.BSize.X / StepUpDn.Value.Value);
+                int Height = (int)(this._device.BSize.Y / StepUpDn.Value.Value);
+                WidthStepLabel.Content = "(" + Math.Round(this._device.BSize.X / Width, 1) + ")";
+                HeightStepLabel.Content = "(" + Math.Round(this._device.BSize.Y / Height, 1) + ")";
 
                 WidthUpDn.Value = Width;
                 HeightUpDn.Value = Height;

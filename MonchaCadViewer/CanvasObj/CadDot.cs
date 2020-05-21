@@ -8,23 +8,20 @@ using System.Windows.Media;
 
 namespace MonchaCadViewer.CanvasObj
 {
-    public class DotShape : CadObject
+    public class CadDot : CadObject
     {
         private RectangleGeometry _rectg;
         private Rect _rect;
         private bool _calibration;
-
-        
 
         public double Size { get; set; }
 
         protected override Geometry DefiningGeometry => UpdatePoint();
 
 
-        public DotShape(Point point, double Size, MonchaPoint3D Multiplier, bool Calibration, bool capturemouse, bool move) : base (capturemouse, new MonchaPoint3D(point.X, point.Y, 0), move)
+        public CadDot(MonchaPoint3D point, double Size, bool Calibration, bool capturemouse, bool move) : base (capturemouse, point, move)
         {
             this.Size = Size;
-            this.Multiplier = Multiplier;
             this._calibration = Calibration;
 
             ContextMenuLib.DotContextMenu(this.ContextMenu);
@@ -46,7 +43,7 @@ namespace MonchaCadViewer.CanvasObj
         {
             if (this.Parent is CadCanvas canvas)
             {
-                DotShape FindDot = canvas.UndrMouseAnchor(Mouse.GetPosition(canvas), this);
+                CadDot FindDot = canvas.UndrMouseAnchor(Mouse.GetPosition(canvas), this);
                 if (FindDot != null && FindDot != this)
                 {
                     this.BaseContextPoint.ReLink(FindDot.BaseContextPoint);
@@ -80,8 +77,8 @@ namespace MonchaCadViewer.CanvasObj
             this._rectg = new RectangleGeometry(_rect);
             if (this.BaseContextPoint is MonchaPoint3D point && !point.IsFix)
             {
-                Canvas.SetLeft(this, this.MultPoint.X - Size / 2);
-                Canvas.SetTop(this, this.MultPoint.Y - Size / 2); //Y inverted in calibration stat
+                Canvas.SetLeft(this, this.BaseContextPoint.GetMPoint.X - Size / 2);
+                Canvas.SetTop(this, this.BaseContextPoint.GetMPoint.Y - Size / 2); //Y inverted in calibration stat
                 Canvas.SetZIndex(this, 999);
             }
 
@@ -90,7 +87,8 @@ namespace MonchaCadViewer.CanvasObj
 
         public bool CheckInArea(Point point)
         {
-            return (MultPoint.X - Size / 2 < point.X && MultPoint.X + Size / 2 > point.X) && (MultPoint.Y - Size / 2 < point.Y && MultPoint.Y + Size / 2 > point.Y);
+            return (this.BaseContextPoint.GetMPoint.X - Size / 2 < point.X && this.BaseContextPoint.GetMPoint.X + Size / 2 > point.X) 
+                && (this.BaseContextPoint.GetMPoint.Y - Size / 2 < point.Y && this.BaseContextPoint.GetMPoint.Y + Size / 2 > point.Y);
         }
     }
 }

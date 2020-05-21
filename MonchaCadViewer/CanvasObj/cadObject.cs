@@ -8,6 +8,7 @@ using System.Windows.Shapes;
 using System.Reflection;
 using MonchaSDK.Device;
 using MonchaSDK.Object;
+using System.Windows.Documents;
 
 namespace MonchaCadViewer.CanvasObj
 {
@@ -16,7 +17,6 @@ namespace MonchaCadViewer.CanvasObj
         protected Point MousePos = new Point();
         protected Point BasePos = new Point();
 
-        private MonchaPoint3D _multiplier = new MonchaPoint3D(1, 1, 1);
         public bool IsSelected { get; set; } = false;
 
         public bool Render { get; set; } = true;
@@ -31,25 +31,9 @@ namespace MonchaCadViewer.CanvasObj
 
         public bool MouseForce { get; set; } = false;
 
-        public MonchaPoint3D Multiplier
-        {
-            get => _multiplier;
-            set => _multiplier = value;
-        }
+        public AdornerLayer adornerLayer { get; set; }
 
         public MonchaPoint3D BaseContextPoint { get; set; }
-
-
-        public MonchaPoint3D MultPoint
-        {
-            get => getmultpoint();
-            set => ((MonchaPoint3D)this.MultPoint).Update(value, true);
-        }
-
-        private MonchaPoint3D getmultpoint()
-        {
-            return new MonchaPoint3D(((MonchaPoint3D)this.BaseContextPoint).X * this._multiplier.X, ((MonchaPoint3D)this.BaseContextPoint).Y * this._multiplier.Y, ((MonchaPoint3D)this.BaseContextPoint).Z * this._multiplier.Z);
-        }
 
         protected override Geometry DefiningGeometry => throw new NotImplementedException();
 
@@ -67,10 +51,16 @@ namespace MonchaCadViewer.CanvasObj
             this.BaseContextPoint = monchaPoint;
 
             if (this.ContextMenu == null) this.ContextMenu = new System.Windows.Controls.ContextMenu();
+            this.ContextMenu.ContextMenuClosing += ContextMenu_Closing;
 
             ContextMenuLib.CadObjMenu(this.ContextMenu);
 
             this.MouseForce = move;
+        }
+
+        private void ContextMenu_Closing(object sender, RoutedEventArgs e)
+        {
+
         }
 
         private void CadObject_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
@@ -81,9 +71,8 @@ namespace MonchaCadViewer.CanvasObj
         private void memberpoint()
         {
             Canvas canvas = this.Parent as Canvas;
-            Point temp = Mouse.GetPosition(canvas);
-            this.MousePos = new Point(temp.X / _multiplier.X, temp.Y / _multiplier.Y);
-            this.BasePos = this.BaseContextPoint.GetPoint;
+            this.MousePos = Mouse.GetPosition(canvas);
+            this.BasePos = this.BaseContextPoint.GetMPoint;
         }
 
         private void CadObject_MouseLeave(object sender, System.Windows.Input.MouseEventArgs e)
@@ -125,6 +114,14 @@ namespace MonchaCadViewer.CanvasObj
                     if (this.IsSelected && !Keyboard.IsKeyDown(Key.LeftShift))
 
                         canvas.UnselectAll(this);
+                    if (this.adornerLayer != null)
+                    {
+                        if (this.adornerLayer.Visibility == Visibility.Visible)
+                            this.adornerLayer.Visibility = Visibility.Hidden;
+                        else
+                            this.adornerLayer.Visibility = Visibility.Visible;
+                    }
+
                 }
                 else
                 {
@@ -144,9 +141,8 @@ namespace MonchaCadViewer.CanvasObj
                 this.WasMove = true;
                 this.Editing = true;
 
-                Point newpoint = new Point(e.GetPosition(canvas).X / _multiplier.X, e.GetPosition(canvas).Y / _multiplier.Y);
-
-                this.BaseContextPoint.Update(this.BasePos.X + (newpoint.X - this.MousePos.X), this.BasePos.Y + (newpoint.Y - this.MousePos.Y));
+                this.BaseContextPoint.Update(this.BasePos.X + (e.GetPosition(canvas).X - this.MousePos.X), 
+                    this.BasePos.Y + (e.GetPosition(canvas).Y - this.MousePos.Y));
 
                 this.CaptureMouse();
                 this.Cursor = Cursors.SizeAll;

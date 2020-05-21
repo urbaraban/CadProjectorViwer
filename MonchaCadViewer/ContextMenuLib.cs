@@ -30,47 +30,34 @@ namespace MonchaCadViewer.CanvasObj
             if (contextMenu.Items.Count > 0)
                 contextMenu.Items.Add(new Separator());
 
-            List<MenuItem> items = new List<MenuItem>();
-            MenuItem menuItem = new MenuItem();
-            menuItem.Header = "Mirror";
-            menuItem.Click += MenuItem_Click;
-            contextMenu.Items.Add(menuItem);
+            AddItem("Mirror", contextMenu);
         }
 
         public static void CadObjMenu(ContextMenu contextMenu)
         {
-            MenuItem menuItem = new MenuItem();
-            menuItem.Header = "Fix";
-            menuItem.Click += MenuItem_Click;
-
-            MenuItem menuItem2 = new MenuItem();
-            menuItem2.Header = "Remove";
-            menuItem2.Click += MenuItem_Click;
-
-            contextMenu.Items.Add(menuItem);
-            contextMenu.Items.Add(menuItem2);
+            AddItem("Fix", contextMenu);
+            AddItem("Remove", contextMenu);
+            AddItem("Render", contextMenu);
         }
 
         public static void MeshMenu(ContextMenu contextMenu)
         {
-            MenuItem menuItem = new MenuItem();
-            menuItem.Header = "Create";
-            menuItem.Click += MenuItem_Click;
-
-            MenuItem menuItem2 = new MenuItem();
-            menuItem2.Header = "Refresh";
-            menuItem2.Click += MenuItem_Click;
-
-            contextMenu.Items.Add(menuItem);
-            contextMenu.Items.Add(menuItem2);
+            AddItem("Create", contextMenu);
+            AddItem("Refresh", contextMenu);
         }
 
         public static void DeviceTreeMenu(ContextMenu contextMenu)
         {
+            AddItem("Rectangle", contextMenu);
+        }
+
+        private static void AddItem(string Name, ContextMenu menu)
+        {
             MenuItem menuItem = new MenuItem();
-            menuItem.Header = "Rectangle";
+            menuItem.Header = Name;
             menuItem.Click += MenuItem_Click;
-            contextMenu.Items.Add(menuItem);
+
+            menu.Items.Add(menuItem);
         }
 
         private static void MenuItem_Click(object sender, System.Windows.RoutedEventArgs e)

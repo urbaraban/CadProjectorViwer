@@ -3,26 +3,25 @@ using MonchaSDK.Object;
 using System;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 
 
 namespace MonchaCadViewer.CanvasObj
 {
-    class LineSbcr : CadObject
+    class CadLine : CadObject
     {
         private LineGeometry _lineGeometry;
         private double _lenth;
 
         protected override Geometry DefiningGeometry => _lineGeometry;
 
-        
-
-
+        public double Lenth { get => GetLenth(); set => this._lenth = value; }
         public MonchaPoint3D SecondContextPoint { get; set; }
 
 
-        public LineSbcr(MonchaPoint3D StartPoint, MonchaPoint3D EndPoint, bool Capturemouse) : base(Capturemouse, new MonchaPoint3D(StartPoint.X, StartPoint.Y, 0), false)
+        public CadLine(MonchaPoint3D StartPoint, MonchaPoint3D EndPoint, bool Capturemouse) : base(Capturemouse, new MonchaPoint3D(StartPoint.X, StartPoint.Y, 0), false)
         {
             //associate and subcribe
             this.BaseContextPoint = StartPoint;
@@ -42,10 +41,36 @@ namespace MonchaCadViewer.CanvasObj
             ContextMenuLib.LineContextMenu(this.ContextMenu);
 
             this.MouseDown += LineSbcr_MouseDown;
+            this.MouseEnter += LineSbcr_MouseEnter;
+            this.MouseLeave += LineSbcr_MouseLeave;
             this.ContextMenu.Closed += ContextMenu_Closed;
+            this.Loaded += LineSbcr_Loaded;
 
         }
 
+        private void LineSbcr_Loaded(object sender, RoutedEventArgs e)
+        {
+            if (this.Parent is CadCanvas canvas)
+            {
+                this.adornerLayer = AdornerLayer.GetAdornerLayer(canvas);
+                AdornerLineDim myAdorner = new AdornerLineDim(this);
+                myAdorner.DataContext = this;
+                adornerLayer.Add(myAdorner);
+                adornerLayer.Update();
+                //myAdorner.AngleChange += MyAdorner_AngleChange;
+            }
+
+        }
+
+        private void LineSbcr_MouseLeave(object sender, MouseEventArgs e)
+        {
+            this.StrokeThickness = 40;
+        }
+
+        private void LineSbcr_MouseEnter(object sender, MouseEventArgs e)
+        {
+            this.StrokeThickness = 80;
+        }
 
         private void ContextPoint_Relink(object sender, MonchaPoint3D e)
         {
@@ -94,20 +119,26 @@ namespace MonchaCadViewer.CanvasObj
 
         private void ContextMenu_Closed(object sender, RoutedEventArgs e)
         {
-            MenuItem cmindex = (MenuItem)this.ContextMenu.DataContext;
-            switch (cmindex.Header)
+            if (this.ContextMenu.DataContext is MenuItem menuItem)
             {
-                case "Fix":
+                switch (menuItem.Header)
+                {
+                    case "Fix":
                         this.IsFix = !this.IsFix;
-                        this._lenth = PtPLenth(this.BaseContextPoint, this.SecondContextPoint);
+                        this._lenth = GetLenth();
+                        break;
 
-                    break;
-                case "Remove":
-                    if (this.Parent is CadCanvas canvas)
-                    {
-                        canvas.Children.Remove(this);
-                    }
-                    break;
+                    case "Remove":
+                        if (this.Parent is CadCanvas canvas)
+                        {
+                            canvas.Children.Remove(this);
+                        }
+                        break;
+
+                    case "Render":
+                        this.Render = !this.Render;
+                        break;
+                }
             }
         }
 
@@ -122,10 +153,11 @@ namespace MonchaCadViewer.CanvasObj
 
         private void GetLine()
         {
-            this._lineGeometry.StartPoint = ((MonchaPoint3D)this.BaseContextPoint).GetPoint;
-            this._lineGeometry.EndPoint = ((MonchaPoint3D)this.SecondContextPoint).GetPoint;
+            this._lineGeometry.StartPoint = this.BaseContextPoint.GetMPoint;
+            this._lineGeometry.EndPoint = this.SecondContextPoint.GetMPoint;
 
             this.UpdateLayout();
+            adornerLayer.Update();
 
         }
 
@@ -151,12 +183,17 @@ namespace MonchaCadViewer.CanvasObj
             return Math.Sqrt(Math.Pow(point2.X - point1.X, 2) + Math.Pow(point2.Y - point1.Y, 2) + Math.Pow(point2.Z - point1.Z, 2));
         }
 
-        public double Lenth()
+        public double GetLenth()
         {
-            if (this.BaseContextPoint is MonchaPoint3D point1 && this.SecondContextPoint is MonchaPoint3D point2)
-                return Math.Sqrt(Math.Pow(point2.X - point1.X, 2) + Math.Pow(point2.Y - point1.Y, 2) + Math.Pow(point2.Z - point1.Z, 2));
-            else
-                return 0;
+            if (this._lenth == 0)
+            {
+
+                if (this.BaseContextPoint is MonchaPoint3D point1 && this.SecondContextPoint is MonchaPoint3D point2)
+                    return Math.Sqrt(Math.Pow(point2.X - point1.X, 2) + Math.Pow(point2.Y - point1.Y, 2) + Math.Pow(point2.Z - point1.Z, 2));
+                else
+                    return 0;
+            }
+            else return this._lenth;
         }
     }
 }

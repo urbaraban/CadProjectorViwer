@@ -31,7 +31,7 @@
     <SuiteName>Viwer</SuiteName>
     <WebPage>publish.htm</WebPage>
     <OpenBrowserOnPublish>false</OpenBrowserOnPublish>
-    <ApplicationRevision>9</ApplicationRevision>
+    <ApplicationRevision>10</ApplicationRevision>
     <ApplicationVersion>0.8.0.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <CreateDesktopShortcut>true</CreateDesktopShortcut>
@@ -229,15 +229,16 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Calibration\MeshTool.cs" />
-    <Compile Include="CanvasObj\AdornerFrame.cs" />
+    <Compile Include="CanvasObj\CadRectangle.cs" />
+    <Compile Include="CanvasObj\DimObj\AdornerContourFrame.cs" />
     <Compile Include="CanvasObj\CadObject.cs" />
     <Compile Include="CanvasObj\DimObj\AdornerLineDim.cs" />
     <Compile Include="ContextMenuLib.cs" />
-    <Compile Include="CanvasObj\DotShape.cs" />
-    <Compile Include="CanvasObj\LineSbcr.cs" />
+    <Compile Include="CanvasObj\CadDot.cs" />
+    <Compile Include="CanvasObj\CadLine.cs" />
     <Compile Include="CanvasObj\CadCanvas.cs" />
     <Compile Include="CanvasObj\SendProcessor.cs" />
-    <Compile Include="CanvasObj\ViewContour.cs" />
+    <Compile Include="CanvasObj\CadContour.cs" />
     <Compile Include="CreateGridWindow.xaml.cs">
       <DependentUpon>CreateGridWindow.xaml</DependentUpon>
     </Compile>

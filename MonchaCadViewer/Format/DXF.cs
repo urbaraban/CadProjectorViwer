@@ -28,8 +28,7 @@ namespace MonchaCadViewer.Format
                     {
                         case DxfEntityType.Line:
                             DxfLine line = (DxfLine)entity;
-                            Console.WriteLine("X" + line.P1.X + " Y" + line.P1.Y);
-                            Console.WriteLine("X" + line.P2.X + " Y" + line.P2.Y);
+
                             //Если у нас уже есть точки, а новая точка не входит в массив, то это ж-ж-ж не с проста и у нас новая фигура
                             if (contour.Count > 1 && contour.IndexOf(new MonchaPoint3D(line.P1.X, line.P1.Y, line.P1.Z, 1)) == -1)
                             {

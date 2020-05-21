@@ -14,8 +14,8 @@ namespace MonchaCadViewer.CanvasObj
     public class CadCanvas : Canvas
     {
         private bool CalibrationStat = false;
-        private double _size;
-        private List<DotShape> anchors = new List<DotShape>();
+        private MonchaPoint3D _size;
+        private List<CadDot> anchors = new List<CadDot>();
         private int _status = 0;
 
         public bool MorphMesh { get; set; } = true;
@@ -27,32 +27,35 @@ namespace MonchaCadViewer.CanvasObj
             set => _status = value;
         }
 
-        public CadCanvas(double Width, double Height)
+        public CadCanvas(MonchaPoint3D Size)
         {
-            this._size = Math.Max(Width, Height);
-            Rect rect = new Rect(0, 0, 500, 500);
-            RectangleGeometry grect = new RectangleGeometry(rect, 0, 0);
-
-            GeometryDrawing geometryDrawing = new GeometryDrawing();
-            geometryDrawing.Geometry = grect;
-
-            geometryDrawing.Pen = new Pen(Brushes.LightGray, 1);
-
-            DrawingBrush backBrush = new DrawingBrush(geometryDrawing);
-            backBrush.TileMode = TileMode.None;
-            backBrush.Viewport = new Rect(0, 0, 500, 500); 
-            //backBrush.ViewboxUnits = BrushMappingMode.Absolute;
-
+            this._size = Size;
+            
             this.Name = "CCanvas";
             this.Background = Brushes.Transparent; //backBrush;
-            this.Width = Width;
-            this.Height = Height;
+            this.Width = this._size.GetMPoint.X;
+            this.Height = this._size.GetMPoint.Y;
+
+            this._size.ChangePoint += _size_ChangePoint;
+            this._size.M.ChangePoint += _size_ChangePoint;
 
             this.Focusable = true;
             
             this.KeyUp += Canvas_KeyUp;
             this.MouseLeftButtonDown += Canvas_MouseLeftDown;
 
+        }
+
+        private void _size_ChangePoint(object sender, MonchaPoint3D e)
+        {
+            this.Width = this._size.GetMPoint.X;
+            this.Height = this._size.GetMPoint.Y;
+
+            if (this.Parent is Viewbox viewbox)
+            {
+                viewbox.Width = this._size.GetMPoint.X;
+                viewbox.Height = this._size.GetMPoint.Y;
+            }
         }
 
         public void DrawOnCanvas(LObjectList _innerList, bool maincanvas, bool add, bool mousemove)
@@ -69,7 +72,10 @@ namespace MonchaCadViewer.CanvasObj
                     this.Children.Clear();
                 }
 
-                ViewContour polygon = new ViewContour(_innerList.GetOnlyPoints, new MonchaPoint3D(this.ActualWidth / 2, this.ActualHeight / 2, 0), maincanvas, mousemove);
+                MonchaPoint3D Center = new MonchaPoint3D(0.5, 0.5, 0);
+                Center.M = this._size;
+
+                CadContour polygon = new CadContour(_innerList, Center, maincanvas, mousemove);
                 polygon.OnBaseMesh = false;
                 this.Children.Add(polygon);
 
@@ -82,7 +88,7 @@ namespace MonchaCadViewer.CanvasObj
             switch (_status)
             {
                 case 1:
-                    DotShape newdot1 = this.UndrMouseAnchor(Mouse.GetPosition(this), null);
+                    CadDot newdot1 = this.UndrMouseAnchor(Mouse.GetPosition(this), null);
                     if (newdot1 == null)
                     {
                         newdot1 = NewAnchor(false, true, false);
@@ -90,10 +96,12 @@ namespace MonchaCadViewer.CanvasObj
                         this.Children.Add(newdot1);
                     }
 
-                    DotShape newdot2 = NewAnchor(false, true, true);
+                    CadDot newdot2 = NewAnchor(false, true, true);
                     this.Children.Add(newdot2);
 
-                    LineSbcr lineSbcr = new LineSbcr(newdot1.BaseContextPoint, newdot2.BaseContextPoint, true);
+                    CadLine lineSbcr = new CadLine(newdot1.BaseContextPoint, newdot2.BaseContextPoint, true);
+
+
 
                     this.Children.Add(lineSbcr);
 
@@ -101,9 +109,9 @@ namespace MonchaCadViewer.CanvasObj
             }
         }
 
-        public DotShape UndrMouseAnchor(Point point, DotShape selectDot)
+        public CadDot UndrMouseAnchor(Point point, CadDot selectDot)
         {
-            foreach (DotShape dot in anchors)
+            foreach (CadDot dot in anchors)
                 if (dot.CheckInArea(point))
                     if (dot != selectDot)
                         return dot;
@@ -111,15 +119,16 @@ namespace MonchaCadViewer.CanvasObj
             return null;
         }
 
-        public void RemoveAnchor(DotShape anchor)
+        public void RemoveAnchor(CadDot anchor)
         {
             this.Children.Remove(anchor);
             anchors.Remove(anchor);
         }
 
-        private DotShape NewAnchor(bool Calibration, bool mousemove, bool move )
+        private CadDot NewAnchor(bool Calibration, bool mousemove, bool move )
         {
-            DotShape anchor = new DotShape(Mouse.GetPosition(this), this.ActualWidth * 0.02, new MonchaPoint3D(1, 1, 1), false, mousemove, move);
+            Point point = Mouse.GetPosition(this);
+            CadDot anchor = new CadDot(new MonchaPoint3D(point.X, point.Y, 0), this.ActualWidth * 0.02, false, mousemove, move);
             anchors.Add(anchor);
             return anchor;
         }
@@ -143,17 +152,20 @@ namespace MonchaCadViewer.CanvasObj
                         }
                     });
             }
-            catch { };
+            catch (Exception e) 
+            {
+                Console.WriteLine(e.Message);
+            };
 
         }
 
-        public DotShape[,] GetMeshDot(int Height, int Width)
+        public CadDot[,] GetMeshDot(int Height, int Width)
         {
-            DotShape[,] mesh = new DotShape[Height, Width];
+            CadDot[,] mesh = new CadDot[Height, Width];
             for (int i = 0; i < Height; i++)
                 for (int j = 0; j < Width; j++)
                 {
-                    mesh[i, j] = this.Children[i * Width + j] as DotShape;
+                    mesh[i, j] = this.Children[i * Width + j] as CadDot;
                 }
             return mesh;
         }
@@ -178,12 +190,13 @@ namespace MonchaCadViewer.CanvasObj
                 for (int i = 0; i < mesh.GetLength(0); i++)
                     for (int j = 0; j < mesh.GetLength(1); j++)
                     {
-                        //invert point on Y
-                        DotShape dot = new DotShape(
-                             mesh[i, j].GetPoint,
+                        mesh[i, j].M = this._size;
+
+                        CadDot dot = new CadDot(
+                             mesh[i, j],
                             this.ActualWidth * 0.02,
                             //multiplier
-                            new MonchaPoint3D(this.ActualWidth, this.ActualHeight, 0),
+
                             //calibration flag
                             true,
                             true,

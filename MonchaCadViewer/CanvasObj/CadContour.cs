@@ -1,8 +1,7 @@
-﻿using MonchaSDK.Device;
+﻿using MonchaCadViewer.CanvasObj.DimObj;
 using MonchaSDK.Object;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Documents;
@@ -12,17 +11,17 @@ using System.Windows.Media.Media3D;
 
 namespace MonchaCadViewer.CanvasObj
 {
-    class ViewContour : CadObject
+    class CadContour : CadObject
     {
         private PathGeometry _path;
-        private List<List<MonchaPoint3D>> _points = new List<List<MonchaPoint3D>>();
+        private LObjectList _points = new LObjectList();
         private bool wasmove = false;
-        private AdornerLayer adornerLayer;
+
 
         public bool Mirror { get; set; } = false;
         public double Angle { get; set; } = 0;
 
-        public List<List<MonchaPoint3D>> Points
+        public LObjectList Points
         {
             get => _points;
             set => _points = value;
@@ -31,6 +30,8 @@ namespace MonchaCadViewer.CanvasObj
         public MonchaPoint3D BOP => getbop();
         public MonchaPoint3D TOP => gettop();
         public MonchaPoint3D CNTR => getcenter();
+
+        public Size Size => _path.Bounds.Size;
 
         public Rect BoundRect => _path.Bounds;
 
@@ -54,10 +55,9 @@ namespace MonchaCadViewer.CanvasObj
 
         protected override Geometry DefiningGeometry => this._path;
 
-        public ViewContour(List<List<MonchaPoint3D>> point3Ds, MonchaPoint3D Center, bool maincanvas, bool Capturemouse) : base (Capturemouse, Center, false)
+        public CadContour(LObjectList point3Ds, MonchaPoint3D Center, bool maincanvas, bool Capturemouse) : base (Capturemouse, Center, false)
         {
             this._points = point3Ds;
-            this.BaseContextPoint = Center;
             this.UpdateGeometry();
             this.ClipToBounds = false;
 
@@ -70,8 +70,7 @@ namespace MonchaCadViewer.CanvasObj
                 this.Loaded += ViewContour_Loaded;
                 this.ContextMenuClosing += ViewContour_ContextMenuClosing;
 
-                if (this.BaseContextPoint is MonchaPoint3D point)
-                    point.ChangePoint += ViewContour_MoveBasePoint;
+                this.BaseContextPoint.ChangePoint += ViewContour_MoveBasePoint;
             }
 
             this.Fill = Brushes.Transparent;
@@ -86,12 +85,29 @@ namespace MonchaCadViewer.CanvasObj
 
         private void ViewContour_ContextMenuClosing(object sender, ContextMenuEventArgs e)
         {
-            MenuItem cmindex = (MenuItem)this.ContextMenu.DataContext;
-            switch (cmindex.Header)
+            if (this.ContextMenu.DataContext is MenuItem menuItem)
             {
-                case "Mirror":
-                    this.Mirror = !this.Mirror;
-                    break;
+                switch (menuItem.Header)
+                {
+                    case "Mirror":
+                        this.Mirror = !this.Mirror;
+                        break;
+
+                    case "Fix":
+                        this.IsFix = !this.IsFix;
+                        break;
+
+                    case "Remove":
+                        if (this.Parent is CadCanvas canvas)
+                        {
+                            canvas.Children.Remove(this);
+                        }
+                        break;
+
+                    case "Render":
+                        this.Render = !this.Render;
+                        break;
+                }
             }
         }
 
@@ -100,7 +116,7 @@ namespace MonchaCadViewer.CanvasObj
             if (this.Parent is CadCanvas canvas)
             {
                 this.adornerLayer = AdornerLayer.GetAdornerLayer(canvas);
-                AdornerFrame myAdorner = new AdornerFrame(this, canvas);
+                AdornerContourFrame myAdorner = new AdornerContourFrame(this, canvas);
                 myAdorner.DataContext = this;
                 adornerLayer.Add(myAdorner);
                 myAdorner.AngleChange += MyAdorner_AngleChange;
@@ -110,7 +126,7 @@ namespace MonchaCadViewer.CanvasObj
         private void MyAdorner_AngleChange(object sender, double e)
         {
             this.Angle = e;
-            this.UpdateGeometry();
+            this.UpdateGeometry(true);
         }
 
         private void Contour_MouseLeftUp(object sender, MouseButtonEventArgs e)
@@ -122,13 +138,7 @@ namespace MonchaCadViewer.CanvasObj
             }
             else
             {
-                if (this.Parent is Canvas canvas)
-                {
-                    if (this.adornerLayer.Visibility == Visibility.Visible)
-                        this.adornerLayer.Visibility = Visibility.Hidden;
-                    else
-                        this.adornerLayer.Visibility = Visibility.Visible;
-                }
+
             }
             
         }
@@ -149,10 +159,10 @@ namespace MonchaCadViewer.CanvasObj
                 {
                     MonchaPoint3D modPoint = _points[i][j];
                     if (this.Mirror)
-                        modPoint = new MonchaPoint3D(0 + (0 - modPoint.X), modPoint.Y, modPoint.Z, modPoint.M);
+                        modPoint = new MonchaPoint3D(- modPoint.X, modPoint.Y, modPoint.Z, modPoint.M);
 
                     if (this.Angle != 0)
-                        modPoint = RotatePoint(modPoint, new Point3D(0, 0, 0));
+                        modPoint = RotatePoint(modPoint, new MonchaPoint3D(0, 0, 0));
 
                     Points.Add(modPoint);
                 }
@@ -161,7 +171,7 @@ namespace MonchaCadViewer.CanvasObj
 
             return ListPoints;
 
-            MonchaPoint3D RotatePoint(MonchaPoint3D pointToRotate, Point3D centerPoint)
+            MonchaPoint3D RotatePoint(MonchaPoint3D pointToRotate, MonchaPoint3D centerPoint)
             {
                 this.Angle = (360 + this.Angle) % 360;
                 double angleInRadians = this.Angle * (Math.PI / 180);
@@ -183,7 +193,7 @@ namespace MonchaCadViewer.CanvasObj
             }
         }
 
-        public void UpdateGeometry()
+        public void UpdateGeometry(bool FromAdorner = false)
         {
             PathFigureCollection _pathFigures = new PathFigureCollection();
 
@@ -202,10 +212,11 @@ namespace MonchaCadViewer.CanvasObj
             }
             this._path = new PathGeometry(_pathFigures);
 
-            this.UpdateLayout();
+            if (adornerLayer != null && !FromAdorner)
+                adornerLayer.Update();
 
-            Canvas.SetLeft(this, this.MultPoint.X);
-            Canvas.SetTop(this, this.MultPoint.Y);
+            Canvas.SetLeft(this, this.BaseContextPoint.GetMPoint.X);
+            Canvas.SetTop(this, this.BaseContextPoint.GetMPoint.Y);
 
         }
     }

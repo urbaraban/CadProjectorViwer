@@ -5,13 +5,13 @@
     <Setting Name="cl_moncha_path" Type="System.String" Scope="User">
       <Value Profile="(Default)" />
     </Setting>
-    <Setting Name="cl_width" Type="System.Double" Scope="User">
+    <Setting Name="base_width" Type="System.Double" Scope="User">
       <Value Profile="(Default)">3000</Value>
     </Setting>
-    <Setting Name="cl_height" Type="System.Double" Scope="User">
+    <Setting Name="base_height" Type="System.Double" Scope="User">
       <Value Profile="(Default)">3000</Value>
     </Setting>
-    <Setting Name="cl_deep" Type="System.Double" Scope="User">
+    <Setting Name="base_deep" Type="System.Double" Scope="User">
       <Value Profile="(Default)">3000</Value>
     </Setting>
     <Setting Name="cl_start_blank" Type="System.Int32" Scope="User">
@@ -57,6 +57,18 @@
       <Value Profile="(Default)">base folder</Value>
     </Setting>
     <Setting Name="lastDate" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">0</Value>
+    </Setting>
+    <Setting Name="base_distance" Type="System.Double" Scope="User">
+      <Value Profile="(Default)">0</Value>
+    </Setting>
+    <Setting Name="tmp_width" Type="System.Double" Scope="User">
+      <Value Profile="(Default)">0</Value>
+    </Setting>
+    <Setting Name="tmp_height" Type="System.Double" Scope="User">
+      <Value Profile="(Default)">0</Value>
+    </Setting>
+    <Setting Name="tmp_deep" Type="System.Double" Scope="User">
       <Value Profile="(Default)">0</Value>
     </Setting>
   </Settings>

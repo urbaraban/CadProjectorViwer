@@ -38,36 +38,36 @@ namespace MonchaCadViewer.Properties {
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("3000")]
-        public double cl_width {
+        public double base_width {
             get {
-                return ((double)(this["cl_width"]));
+                return ((double)(this["base_width"]));
             }
             set {
-                this["cl_width"] = value;
+                this["base_width"] = value;
             }
         }
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("3000")]
-        public double cl_height {
+        public double base_height {
             get {
-                return ((double)(this["cl_height"]));
+                return ((double)(this["base_height"]));
             }
             set {
-                this["cl_height"] = value;
+                this["base_height"] = value;
             }
         }
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("3000")]
-        public double cl_deep {
+        public double base_deep {
             get {
-                return ((double)(this["cl_deep"]));
+                return ((double)(this["base_deep"]));
             }
             set {
-                this["cl_deep"] = value;
+                this["base_deep"] = value;
             }
         }
         
@@ -248,6 +248,54 @@ namespace MonchaCadViewer.Properties {
             }
             set {
                 this["lastDate"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("0")]
+        public double base_distance {
+            get {
+                return ((double)(this["base_distance"]));
+            }
+            set {
+                this["base_distance"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("0")]
+        public double tmp_width {
+            get {
+                return ((double)(this["tmp_width"]));
+            }
+            set {
+                this["tmp_width"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("0")]
+        public double tmp_height {
+            get {
+                return ((double)(this["tmp_height"]));
+            }
+            set {
+                this["tmp_height"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("0")]
+        public double tmp_deep {
+            get {
+                return ((double)(this["tmp_deep"]));
+            }
+            set {
+                this["tmp_deep"] = value;
             }
         }
     }

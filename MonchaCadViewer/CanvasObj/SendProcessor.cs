@@ -19,7 +19,7 @@ namespace MonchaCadViewer.CanvasObj
                 {
                     if (cadObject.Render)
                     {
-                        if (cadObject is ViewContour polygon)
+                        if (cadObject is CadContour polygon)
                         {
                             double left = Canvas.GetLeft(polygon);
                             double top = Canvas.GetTop(polygon);
@@ -28,35 +28,35 @@ namespace MonchaCadViewer.CanvasObj
                             {
                                 LObject lContour = new LObject();
                                 foreach (MonchaPoint3D point3D in points)
-                                    lContour.Add(new MonchaPoint3D(left + point3D.X, top + point3D.Y, point3D.Z, point3D.M));
+                                    lContour.Add(new MonchaPoint3D(left + point3D.X, top + point3D.Y, point3D.Z, point3D.T));
                                 lContour.Closed = true;
                                 tempList.Add(lContour);
 
                             }
                         }
 
-                        if (cadObject is LineSbcr line)
+                        if (cadObject is CadLine line)
                         {
 
                             LObject lContour = new LObject();
 
-                            lContour.Add((MonchaPoint3D)line.BaseContextPoint);
-                            lContour.Add((MonchaPoint3D)line.SecondContextPoint);
+                            lContour.Add(line.BaseContextPoint.GetMPoint3D);
+                            lContour.Add(line.SecondContextPoint.GetMPoint3D);
                         
                             if (lContour.Count > 1)
                                 tempList.Add(lContour);
                         }
 
-                        if (cadObject is DotShape dpoint)
+                        if (cadObject is CadDot dpoint)
                         {
                             if (dpoint.IsSelected)
                             {
                                 LObject lObject = new LObject(
                                     new List<MonchaPoint3D>() {
                                         new MonchaPoint3D(
-                                            dpoint.MultPoint.X,
-                                            dpoint.MultPoint.Y, //inverted
-                                            dpoint.MultPoint.Z) });
+                                            dpoint.BaseContextPoint.GetMPoint.X,
+                                            dpoint.BaseContextPoint.GetMPoint.Y)
+                                    });
 
                                 tempList.Add(lObject);
                             }
@@ -90,10 +90,10 @@ namespace MonchaCadViewer.CanvasObj
             tempList.Top = new Point3D(1, 1, 1);
 
             LObject lObject = new LObject();
-            lObject.Add(new MonchaPoint3D(0, 0, 0, 1));
-            lObject.Add(new MonchaPoint3D(0, device.Size.Y, 0, 1));
-            lObject.Add(new MonchaPoint3D(device.Size.X, device.Size.Y, 0, 1));
-            lObject.Add(new MonchaPoint3D(device.Size.X, 0, 0, 1));
+            lObject.Add(new MonchaPoint3D(device.TBOP.X * MonchaHub.Size.X, device.TBOP.Y * MonchaHub.Size.Y, 0, 1));
+            lObject.Add(new MonchaPoint3D(device.TTOP.X * MonchaHub.Size.X, device.TBOP.Y * MonchaHub.Size.Y, 0, 1));
+            lObject.Add(new MonchaPoint3D(device.TTOP.X * MonchaHub.Size.X, device.TTOP.Y * MonchaHub.Size.Y, 0, 1));
+            lObject.Add(new MonchaPoint3D(device.TBOP.X * MonchaHub.Size.X, device.TTOP.Y * MonchaHub.Size.Y, 0, 1));
             lObject.Closed = true;
 
             tempList.Add(lObject);

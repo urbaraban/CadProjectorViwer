@@ -3,9 +3,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Media.Media3D;
 using System.Windows.Shapes;
-using System.Reflection;
 using MonchaSDK.Device;
 using MonchaSDK.Object;
 using System.Windows.Documents;
@@ -14,6 +12,8 @@ namespace MonchaCadViewer.CanvasObj
 {
     public class CadObject : Shape
     {
+        public event EventHandler<CadObject> Selected;
+
         protected Point MousePos = new Point();
         protected Point BasePos = new Point();
 
@@ -129,6 +129,9 @@ namespace MonchaCadViewer.CanvasObj
                     this.WasMove = false;
                     this.Editing = false;
                     this.ReleaseMouseCapture();
+
+                    if (this.Selected != null)
+                        this.Selected(this, this);
                 }
         }
 

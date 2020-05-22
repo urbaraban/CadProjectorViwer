@@ -5,7 +5,8 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:MonchaCadViewer"
         xmlns:Controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
-        xmlns:Properties="clr-namespace:MonchaCadViewer.Properties" xmlns:controlzex="urn:controlzex" x:Name="MainWindow1" x:Class="MonchaCadViewer.MainWindow"
+        xmlns:Properties="clr-namespace:MonchaCadViewer.Properties" xmlns:controlzex="urn:controlzex"
+    xmlns:pt="http://propertytools.org/wpf" x:Name="MainWindow1" x:Class="MonchaCadViewer.MainWindow"
         mc:Ignorable="d"
         Title="LaserCat – Viwer" Focusable="False" ResizeMode="CanResizeWithGrip" SizeToContent="Manual" KeyboardNavigation.TabNavigation="None"  AllowDrop="True" Height="688.898" Width="947" Closing="Window_Closing" Closed="Window_Closed" controlzex:KeyboardNavigationEx.AlwaysShowFocusVisual="True" WindowStartupLocation="CenterScreen" Icon="logo-01.png" KeyUp="MainWindow1_KeyUp" TextInput="MainWindow1_TextInput" PreviewKeyDown="MainWindow1_PreviewKeyDown">
     <Window.Resources>
@@ -39,12 +40,13 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="30"/>
             <RowDefinition Height="50"/>
-            <RowDefinition/>
+            <RowDefinition Height="343*"/>
+            <RowDefinition Height="117*"/>
             <RowDefinition Height="88"/>
             <RowDefinition Height="30"/>
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="200"/>
+            <ColumnDefinition Width="224"/>
             <ColumnDefinition/>
             <ColumnDefinition Width="278"/>
         </Grid.ColumnDefinitions>
@@ -65,7 +67,7 @@
             </MenuItem>
 
         </Menu>
-        <Border x:Name="CanvasBorder" Style="{StaticResource Border}" Background="LightGray" Grid.Column="1" Grid.Row="2" Margin="0,0,0,20">
+        <Border x:Name="CanvasBorder" Style="{StaticResource Border}" Background="LightGray" Grid.Column="1" Grid.Row="2" Margin="0,0,0,20" Grid.RowSpan="2">
             <Viewbox x:Name="MainViewBox" ClipToBounds="True" StretchDirection="DownOnly"  Stretch="Uniform"  Margin="0,0,0,0" ForceCursor="True" KeyboardNavigation.TabNavigation="Once" DragEnter="MainViewBox_DragEnter" Drop="MainViewBox_Drop">
                 <Viewbox.DataContext>
                     <Properties:Settings/>
@@ -77,12 +79,12 @@
             </Viewbox>
         </Border>
 
-        <StackPanel Width="463" HorizontalAlignment="Right" Orientation="Horizontal" Grid.Row="4" Grid.ColumnSpan="2">
+        <StackPanel Width="463" HorizontalAlignment="Right" Orientation="Horizontal" Grid.Row="5" Grid.ColumnSpan="2">
             <Label x:Name="Progressinfo" Content="Info" Width="306" HorizontalAlignment="Right"/>
             <ProgressBar x:Name="PgBar" Margin="3" Width="148"/>
         </StackPanel>
 
-        <TabControl x:Name="tabControl" Margin="5,0,5,1" Grid.Column="2" Grid.Row="2" Grid.RowSpan="2">
+        <TabControl x:Name="tabControl" Margin="5,0,5,1" Grid.Column="2" Grid.Row="2" Grid.RowSpan="3">
             <TabItem x:Name="ContourSettingTab" Header="Device" Controls:HeaderedControlHelper.HeaderFontSize="18">
                 <Grid Background="#FFE5E5E5">
                     <Grid.ColumnDefinitions>
@@ -162,19 +164,17 @@
                             <Grid Background="#FFE5E5E5">
                                 <Button x:Name="kmpsSelectBtn" Content="Select" HorizontalAlignment="Left" Margin="10,86,0,0" VerticalAlignment="Top" Width="125" Height="50" Click="kmpsSelectBtn_Click"/>
                                 <Button x:Name="kmpsAddBtn" Content="Add in..." HorizontalAlignment="Left" Margin="140,86,0,0" VerticalAlignment="Top" Width="78" Height="50" Click="kmpsAddBtn_Click"/>
-                                <Controls:ToggleSwitch x:Name="kmpsConnectToggle"  Content="Connect" HorizontalAlignment="Left" Margin="17,17,0,0" VerticalAlignment="Top" RenderTransformOrigin="0.5,0.5" Toggled="kmpsConnectToggle_Toggled" HorizontalContentAlignment="Center" Height="38" Width="201">
+                                <Controls:ToggleSwitch x:Name="kmpsConnectToggle"  Content="Connect" HorizontalAlignment="Left" Margin="10,12,0,0" VerticalAlignment="Top" RenderTransformOrigin="0.5,0.5" Toggled="kmpsConnectToggle_Toggled" HorizontalContentAlignment="Center" Height="24" Width="201">
                                     <Controls:ToggleSwitch.DataContext>
                                         <Properties:Settings/>
                                     </Controls:ToggleSwitch.DataContext>
                                 </Controls:ToggleSwitch>
-                                <Controls:NumericUpDown x:Name="CRSUpDnKMPS" Margin="10,146,93,0" Value="{Binding cl_crs, Mode=TwoWay}" Maximum="99" Minimum="3" Background="White" Height="26" VerticalAlignment="Top" ValueChanged="SplitLineUpDn_ValueChanged">
+                                <Controls:NumericUpDown x:Name="CRSUpDnKMPS" Margin="10,146,93,0" Value="{Binding cl_crs, Mode=TwoWay}" Maximum="99" Minimum="3" Background="White" Height="26" VerticalAlignment="Top" ValueChanged="CRSUpDnKMPS_ValueChanged">
                                     <Controls:NumericUpDown.DataContext>
                                         <Properties:Settings/>
                                     </Controls:NumericUpDown.DataContext>
                                 </Controls:NumericUpDown>
-                                <Label x:Name="CRSLabel_Copy" Content="CRS(mm)" HorizontalAlignment="Left" Height="26" Margin="141,147,0,0" VerticalAlignment="Top" Width="77" RenderTransformOrigin="0.5,0.5" AutomationProperties.HelpText="Шаг точки для кривой" HorizontalContentAlignment="Center">
-
-                                </Label>
+                                <Label x:Name="CRSLabel_Copy" Content="CRS(mm)" Height="26" Margin="0,147,11,0" VerticalAlignment="Top" RenderTransformOrigin="0.5,0.5" AutomationProperties.HelpText="Шаг точки для кривой" HorizontalContentAlignment="Center" HorizontalAlignment="Right" Width="77"/>
                                 <Label x:Name="KmpsNameLbl" Content="Пусто" HorizontalAlignment="Left" Margin="10,55,0,0" VerticalAlignment="Top" Width="208"/>
                             </Grid>
                         </TabItem>
@@ -246,19 +246,19 @@
                     </TextBox>
                     <Button x:Name="BrowseMonchaBtn" Content="Browse..." Margin="17,28,10,0" VerticalAlignment="Top" Click="BrowseMonchaBtn_Click" Height="23" Grid.Column="3" Grid.ColumnSpan="2"/>
                     <Label x:Name="label" Content="Путь до файла Moncha (*.mws)" HorizontalAlignment="Left" Margin="10,2,0,0" VerticalAlignment="Top" Grid.ColumnSpan="4" Height="26" Width="178"/>
-                    <Controls:NumericUpDown x:Name="WidthUpDn" Margin="0,70,10,0" Value="{Binding cl_width, Mode=TwoWay}" Background="White" Height="26" VerticalAlignment="Top" Grid.Column="2" Grid.ColumnSpan="3">
+                    <Controls:NumericUpDown x:Name="WidthUpDn" Margin="0,70,10,0" Value="{Binding cl_width, Mode=TwoWay}" Background="White" Height="26" VerticalAlignment="Top" Grid.Column="2" Grid.ColumnSpan="3" ValueChanged="SplitLineUpDn_ValueChanged">
                         <Controls:NumericUpDown.DataContext>
                             <Properties:Settings/>
                         </Controls:NumericUpDown.DataContext>
                     </Controls:NumericUpDown>
                     <Label x:Name="label_Copy" Content="Ширина" HorizontalAlignment="Left" Margin="6,70,0,0" VerticalAlignment="Top" Width="74" Height="26" Grid.ColumnSpan="2"/>
-                    <Controls:NumericUpDown x:Name="HeightUpD" Margin="0,106,10,0" Value="{Binding cl_height, Mode=TwoWay}" Background="White" Height="26" VerticalAlignment="Top" Grid.Column="2" Grid.ColumnSpan="3">
+                    <Controls:NumericUpDown x:Name="HeightUpD" Margin="0,106,10,0" Value="{Binding cl_height, Mode=TwoWay}" Background="White" Height="26" VerticalAlignment="Top" Grid.Column="2" Grid.ColumnSpan="3" ValueChanged="SplitLineUpDn_ValueChanged">
                         <Controls:NumericUpDown.DataContext>
                             <Properties:Settings/>
                         </Controls:NumericUpDown.DataContext>
                     </Controls:NumericUpDown>
                     <Label x:Name="label_Copy1" Content="Высота" HorizontalAlignment="Left" Margin="6,106,0,0" VerticalAlignment="Top" Width="74" Height="26" Grid.ColumnSpan="2"/>
-                    <Controls:NumericUpDown x:Name="DeepUpDn" Margin="0,142,10,0" Value="{Binding cl_deep, Mode=TwoWay}" Background="White" Height="26" VerticalAlignment="Top" Grid.Column="2" Grid.ColumnSpan="3">
+                    <Controls:NumericUpDown x:Name="DeepUpDn" Margin="0,142,10,0" Value="{Binding cl_deep, Mode=TwoWay}" Background="White" Height="26" VerticalAlignment="Top" Grid.Column="2" Grid.ColumnSpan="3" ValueChanged="SplitLineUpDn_ValueChanged">
                         <Controls:NumericUpDown.DataContext>
                             <Properties:Settings/>
                         </Controls:NumericUpDown.DataContext>
@@ -295,30 +295,30 @@
             </TabItem>
         </TabControl>
         <Button x:Name="PlayBtn" Content="Play" Grid.Column="2" Margin="5,5,55,5" Click="PlayBtn_Click" Background="#FFFFD100" Grid.Row="1"/>
-        <Border Grid.Row="2" Style="{StaticResource Border}" Margin="5,0,5,4" Grid.RowSpan="2">
+        <Border Grid.Row="2" Style="{StaticResource Border}" Margin="5,0,5,10">
             <TreeView x:Name="treeView" Grid.Row="1" Margin="2" KeyboardNavigation.DirectionalNavigation="None" KeyboardNavigation.TabNavigation="None">
-                <StackPanel x:Name="TreeHead" Orientation="Horizontal" Width="Auto" Margin="-21,0,6,0">
+                <StackPanel x:Name="TreeHead" Orientation="Horizontal" HorizontalAlignment="Left" Margin="-21,0,0,0">
                     <TextBlock Margin="5,0,5,0" VerticalAlignment="Center" Height="20"><Run Text="Component"/></TextBlock>
                     <Button x:Name="RefreshLaser" FontFamily="Segoe MDL2 Assets" Content="&#xEDAB;" Height="26" Margin="0,0,5,0" VerticalAlignment="Top" HorizontalAlignment="Right" Width="25" Background="{x:Null}" BorderBrush="{x:Null}" Click="RefreshLaser_Click_1"/>
-
+                    <Button x:Name="AddLaser" FontFamily="Segoe MDL2 Assets" Content="&#xE948;" Height="26" Margin="0,0,5,0" VerticalAlignment="Top" HorizontalAlignment="Right" Width="25" Background="{x:Null}" BorderBrush="{x:Null}" Click="AddLaser_Click" />
+                    <Button x:Name="RemoveLaser" FontFamily="Segoe MDL2 Assets" Content="&#xE947;" Height="26" Margin="0,0,5,0" VerticalAlignment="Top" HorizontalAlignment="Right" Width="25" Background="{x:Null}" BorderBrush="{x:Null}"/>
                 </StackPanel>
 
                 <TreeViewItem x:Name="DeviceTree" Header="Devices" VerticalContentAlignment="Center">
                     <TreeViewItem x:Name="MeshTree" Header="Mesh"/>
                 </TreeViewItem>
-                <TreeViewItem x:Name="FrameTree" Header="Frames" DisplayMemberPath="Uid" AllowDrop="False" Width="188"/>
-
-
-
-
-
-
+                <TreeViewItem x:Name="FrameTree" Header="Frames" DisplayMemberPath="Uid" AllowDrop="False" />
             </TreeView>
+        </Border>
+        <Border Margin="5,0,6,0" Grid.Row="3" Style="{StaticResource Border}" Grid.RowSpan="2">
+            <pt:PropertyGrid x:Name="PropertyGrid">
+                
+            </pt:PropertyGrid>
         </Border>
 
         <Button x:Name="OpenBtn" AllowDrop="True" Content="Open" Margin="51,5" Grid.Row="1" DragEnter="OpenBtn_DragEnter" DragOver="OpenBtn_DragOver" DragLeave="OpenBtn_DragLeave" Drop="OpenBtn_DragDrop" Click="OpenBtn_Click"/>
         <Button x:Name="ReloadBtn" Content="Refresh" Margin="0,5,6,5" Grid.Row="1" HorizontalAlignment="Right" Width="41" Click="ReloadBtn_Click"/>
-        <Border Style="{StaticResource Border}" Grid.Column="1" Margin="0,5,0,4" Grid.Row="3">
+        <Border Style="{StaticResource Border}" Grid.Column="1" Margin="0,5,0,0" Grid.Row="4">
             <StackPanel x:Name="FrameStack" Orientation="Horizontal" HorizontalAlignment="Left" CanHorizontallyScroll="True">
                 <Viewbox>
                     <Canvas/>

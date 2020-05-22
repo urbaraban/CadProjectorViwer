@@ -85,7 +85,7 @@ namespace MonchaCadViewer.CanvasObj
             return this._rectg;
         }
 
-        public bool CheckInArea(Point point)
+        public bool Contains(Point point)
         {
             return (this.BaseContextPoint.GetMPoint.X - Size / 2 < point.X && this.BaseContextPoint.GetMPoint.X + Size / 2 > point.X) 
                 && (this.BaseContextPoint.GetMPoint.Y - Size / 2 < point.Y && this.BaseContextPoint.GetMPoint.Y + Size / 2 > point.Y);

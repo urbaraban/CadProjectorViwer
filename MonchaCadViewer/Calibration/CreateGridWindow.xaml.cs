@@ -32,7 +32,7 @@ namespace MonchaCadViewer
         {
             if (this.IsLoaded)
             {
-                this._mesh = MonchaDeviceMesh.MakeMesh((int)HeightUpDn.Value.Value, (int)WidthUpDn.Value.Value);
+                this._mesh = MonchaDeviceMesh.MakeMesh((int)HeightUpDn.Value.Value, (int)WidthUpDn.Value.Value, this._mesh.Name);
             }
         }
 
@@ -48,7 +48,7 @@ namespace MonchaCadViewer
                 WidthUpDn.Value = Width;
                 HeightUpDn.Value = Height;
 
-                _mesh = MonchaDeviceMesh.MakeMesh(Height, Width);
+                _mesh = MonchaDeviceMesh.MakeMesh(Height, Width, this._mesh.Name);
             }
         }
 

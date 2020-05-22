@@ -1,4 +1,7 @@
 ﻿using MonchaSDK.Object;
+using System;
+using System.Threading;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Media;
 
@@ -6,9 +9,10 @@ namespace MonchaCadViewer.CanvasObj
 {
     public class CadRectangle : CadObject
     {
+        public event EventHandler<CadObject> Updated;
+
         private RectangleGeometry _rectg;
         private Rect _rect;
-        private bool _calibration;
 
         public double Size { get; set; }
 
@@ -21,14 +25,40 @@ namespace MonchaCadViewer.CanvasObj
         {
             this.SecondContextPoint = secondPoint;
             this.Stroke = Brushes.Gray;
+            this.StrokeThickness = 20;
+            this.Fill = Brushes.Transparent;
+            this.SecondContextPoint = secondPoint;
+            this.BaseContextPoint.ChangePoint += BaseContextPoint_ChangePoint;
+            this.SecondContextPoint.ChangePoint += BaseContextPoint_ChangePoint;
+            this._rect = new Rect();
+            this._rectg = new RectangleGeometry(this._rect);
+            this.Update();
         }
 
-        public Geometry Update()
+        private void BaseContextPoint_ChangePoint(object sender, MonchaPoint3D e)
         {
-            this._rect = new Rect(this.BaseContextPoint.GetMPoint, this.SecondContextPoint.GetMPoint);
-            this._rectg = new RectangleGeometry(_rect);
-
-            return this._rectg;
+            this.Update();
         }
+
+        public async void Update()
+        {
+            this._rect.X = this.BaseContextPoint.GetMPoint.X;
+            this._rect.Y = this.BaseContextPoint.GetMPoint.Y;
+            this._rect.Width = this.SecondContextPoint.GetMPoint.X - this.BaseContextPoint.GetMPoint.X;
+            this._rect.Height = this.SecondContextPoint.GetMPoint.Y - this.BaseContextPoint.GetMPoint.Y;
+            //this._rect = new Rect(this.BaseContextPoint.GetMPoint, this.SecondContextPoint.GetMPoint);
+            this._rectg.Rect = this._rect;
+            if (Updated != null)
+                Updated(this, this);
+            if (this.Parent != null)
+            {
+                this.Parent.Dispatcher.BeginInvoke((Action)delegate
+                {
+                    this.UpdateLayout();
+                });
+            }
+        }
+
+
     }
 }

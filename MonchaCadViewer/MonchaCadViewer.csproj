@@ -123,7 +123,7 @@
       <EmbedInteropTypes>True</EmbedInteropTypes>
     </Reference>
     <Reference Include="MahApps.Metro, Version=2.0.0.0, Culture=neutral, PublicKeyToken=51482d6f650b2b3f, processorArchitecture=MSIL">
-      <HintPath>..\packages\MahApps.Metro.2.0.0-alpha0821\lib\net46\MahApps.Metro.dll</HintPath>
+      <HintPath>..\packages\MahApps.Metro.2.0.0-alpha0872\lib\net46\MahApps.Metro.dll</HintPath>
     </Reference>
     <Reference Include="MahApps.Metro.IconPacks, Version=4.0.0.0, Culture=neutral, PublicKeyToken=0c0d510f9915137a, processorArchitecture=MSIL">
       <HintPath>..\packages\MahApps.Metro.IconPacks.4.1.0\lib\net46\MahApps.Metro.IconPacks.dll</HintPath>
@@ -194,6 +194,16 @@
     <Reference Include="Microsoft.Xaml.Behaviors, Version=1.1.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.Xaml.Behaviors.Wpf.1.1.19\lib\net45\Microsoft.Xaml.Behaviors.dll</HintPath>
     </Reference>
+    <Reference Include="MonchaNETDll, Version=5.2.6.0, Culture=neutral, PublicKeyToken=fc6e19370f023753, processorArchitecture=x86">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\MonchaSDK\MonchaSDK\MonchaNETDll.DLL</HintPath>
+    </Reference>
+    <Reference Include="PropertyTools, Version=3.1.0.0, Culture=neutral, PublicKeyToken=ea0c9f2b460934d0, processorArchitecture=MSIL">
+      <HintPath>..\packages\PropertyTools.3.1.0-alpha0041\lib\net45\PropertyTools.dll</HintPath>
+    </Reference>
+    <Reference Include="PropertyTools.Wpf, Version=3.1.0.0, Culture=neutral, PublicKeyToken=ea0c9f2b460934d0, processorArchitecture=MSIL">
+      <HintPath>..\packages\PropertyTools.Wpf.3.1.0-alpha0041\lib\net45\PropertyTools.Wpf.dll</HintPath>
+    </Reference>
     <Reference Include="StclLibrary, Version=1.1.100.0, Culture=neutral, PublicKeyToken=fc6e19370f023753, processorArchitecture=x86">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\MonchaSDK\MonchaSDK\StclLibrary.dll</HintPath>
@@ -239,14 +249,21 @@
     <Compile Include="CanvasObj\CadCanvas.cs" />
     <Compile Include="CanvasObj\SendProcessor.cs" />
     <Compile Include="CanvasObj\CadContour.cs" />
-    <Compile Include="CreateGridWindow.xaml.cs">
+    <Compile Include="Calibration\CreateGridWindow.xaml.cs">
       <DependentUpon>CreateGridWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="DeviceManager\DeviceManager.xaml.cs">
+      <DependentUpon>DeviceManager.xaml</DependentUpon>
     </Compile>
     <Compile Include="Format\DXF.cs" />
     <Compile Include="Format\KMPS.cs" />
     <Compile Include="Format\STL.cs" />
     <Compile Include="Format\SVG.cs" />
-    <Page Include="CreateGridWindow.xaml">
+    <Page Include="Calibration\CreateGridWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="DeviceManager\DeviceManager.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

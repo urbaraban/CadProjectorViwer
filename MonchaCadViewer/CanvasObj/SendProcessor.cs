@@ -21,14 +21,13 @@ namespace MonchaCadViewer.CanvasObj
                     {
                         if (cadObject is CadContour polygon)
                         {
-                            double left = Canvas.GetLeft(polygon);
-                            double top = Canvas.GetTop(polygon);
-
                             foreach (List<MonchaPoint3D> points in polygon.GiveModPoint())
                             {
                                 LObject lContour = new LObject();
                                 foreach (MonchaPoint3D point3D in points)
-                                    lContour.Add(new MonchaPoint3D(left + point3D.X, top + point3D.Y, point3D.Z, point3D.T));
+                                    lContour.Add(new MonchaPoint3D(polygon.BaseContextPoint.GetMPoint.X + point3D.X,
+                                        polygon.BaseContextPoint.GetMPoint.Y + point3D.Y, 
+                                        point3D.Z, point3D.T));
                                 lContour.Closed = true;
                                 tempList.Add(lContour);
 
@@ -68,8 +67,8 @@ namespace MonchaCadViewer.CanvasObj
 
                 }
 
-                tempList.Bop = new Point3D(0, 0, 0);
-                tempList.Top = new Point3D(canvas.ActualWidth, canvas.ActualHeight, canvas.ActualWidth);
+                tempList.Bop = new MonchaPoint3D(0, 0, 0);
+                tempList.Top = MonchaHub.Size.GetMPoint3D;
 
 
                 if (tempList.Count > 0)
@@ -86,8 +85,8 @@ namespace MonchaCadViewer.CanvasObj
         {
             LObjectList tempList = new LObjectList();
 
-            tempList.Bop = new Point3D(0, 0, 0);
-            tempList.Top = new Point3D(1, 1, 1);
+            tempList.Bop = new MonchaPoint3D(0, 0, 0);
+            tempList.Top = new MonchaPoint3D(1, 1, 1);
 
             LObject lObject = new LObject();
             lObject.Add(new MonchaPoint3D(device.TBOP.X * MonchaHub.Size.X, device.TBOP.Y * MonchaHub.Size.Y, 0, 1));

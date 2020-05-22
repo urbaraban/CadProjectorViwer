@@ -13,53 +13,27 @@ namespace MonchaCadViewer.CanvasObj
 {
     class CadContour : CadObject
     {
-        private PathGeometry _path;
-        private LObjectList _points = new LObjectList();
+        private StreamGeometry _path;
+        private LObjectList _points;
         private bool wasmove = false;
 
+        protected override Geometry DefiningGeometry => this._path;
+
+        AdornerContourFrame myAdorner;
 
         public bool Mirror { get; set; } = false;
         public double Angle { get; set; } = 0;
 
-        public LObjectList Points
-        {
-            get => _points;
-            set => _points = value;
-        }
-
-        public MonchaPoint3D BOP => getbop();
-        public MonchaPoint3D TOP => gettop();
-        public MonchaPoint3D CNTR => getcenter();
 
         public Size Size => _path.Bounds.Size;
-
-        public Rect BoundRect => _path.Bounds;
-
-        private MonchaPoint3D getbop()
-        {
-            Rect _rect = _path.Bounds;
-            return new MonchaPoint3D(_rect.BottomLeft.X, _rect.BottomLeft.Y, 0);
-        }
-
-        private MonchaPoint3D gettop()
-        {
-            Rect _rect = _path.Bounds;
-            return new MonchaPoint3D(_rect.TopRight.X, _rect.TopRight.Y, 0);
-        }
-
-        private MonchaPoint3D getcenter()
-        {
-            Rect _rect = _path.Bounds;
-            return new MonchaPoint3D((_rect.TopRight.X - _rect.BottomLeft.X)/2, (_rect.TopRight.Y - _rect.BottomLeft.X) / 2, 0);
-        }
-
-        protected override Geometry DefiningGeometry => this._path;
 
         public CadContour(LObjectList point3Ds, MonchaPoint3D Center, bool maincanvas, bool Capturemouse) : base (Capturemouse, Center, false)
         {
             this._points = point3Ds;
-            this.UpdateGeometry();
+
             this.ClipToBounds = false;
+            this._path = new StreamGeometry();
+            this.UpdateGeometry();
 
             if (maincanvas)
             {
@@ -69,13 +43,28 @@ namespace MonchaCadViewer.CanvasObj
                 this.MouseLeftButtonUp += Contour_MouseLeftUp;
                 this.Loaded += ViewContour_Loaded;
                 this.ContextMenuClosing += ViewContour_ContextMenuClosing;
+                this.MouseWheel += CadContour_MouseWheel;
 
                 this.BaseContextPoint.ChangePoint += ViewContour_MoveBasePoint;
             }
 
-            this.Fill = Brushes.Transparent;
+           
             this.StrokeThickness = _path.Bounds.Width * 0.002;
             this.Stroke = Brushes.Red;
+
+
+        }
+
+        private void CadContour_MouseWheel(object sender, MouseWheelEventArgs e)
+        {
+            Angle += Math.Abs(e.Delta)/e.Delta * (Keyboard.Modifiers == ModifierKeys.Shift ? 5 : 1);
+            UpdateGeometry();
+            myAdorner.Rotate(this.Angle);
+        }
+
+        private void CadContour_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+           
         }
 
         private void ViewContour_MoveBasePoint(object sender, MonchaPoint3D e)
@@ -108,7 +97,11 @@ namespace MonchaCadViewer.CanvasObj
                         this.Render = !this.Render;
                         break;
                 }
+
+                
             }
+            this.UpdateGeometry();
+
         }
 
         private void ViewContour_Loaded(object sender, RoutedEventArgs e)
@@ -116,7 +109,7 @@ namespace MonchaCadViewer.CanvasObj
             if (this.Parent is CadCanvas canvas)
             {
                 this.adornerLayer = AdornerLayer.GetAdornerLayer(canvas);
-                AdornerContourFrame myAdorner = new AdornerContourFrame(this, canvas);
+                this.myAdorner = new AdornerContourFrame(this, canvas);
                 myAdorner.DataContext = this;
                 adornerLayer.Add(myAdorner);
                 myAdorner.AngleChange += MyAdorner_AngleChange;
@@ -199,25 +192,36 @@ namespace MonchaCadViewer.CanvasObj
 
             List<List<MonchaPoint3D>> workPoint = GiveModPoint();
 
-            for (int i = 0; i < workPoint.Count; i++)
-            {
-                Point StartPoint = workPoint[i][0].GetPoint;
-                PathSegmentCollection pathSegments = new PathSegmentCollection();
-                for (int j = 0; j < _points[i].Count; j++)
-                {
-                    pathSegments.Add(new LineSegment(workPoint[i][j].GetPoint, true));
-                }
+            this._path.Clear();
 
-                _pathFigures.Add(new PathFigure(StartPoint, pathSegments, true));
+            using (StreamGeometryContext ctx = this._path.Open())
+            {
+                for (int i = 0; i < workPoint.Count; i++)
+                {
+                    ctx.BeginFigure(
+                    workPoint[i][0].GetPoint,
+                    true,    // is NOT filled
+                    true);   // is NOT closed
+
+                    for (int j = 0; j < _points[i].Count; j++)
+                    {
+                        ctx.LineTo(
+                        workPoint[i][j].GetPoint,
+                        true,     // is stroked (line visible)
+                        false);   // is not smoothly joined w/other segments
+                    }
+                }
             }
-            this._path = new PathGeometry(_pathFigures);
+
 
             if (adornerLayer != null && !FromAdorner)
                 adornerLayer.Update();
+            this.Fill = Brushes.Transparent;
 
             Canvas.SetLeft(this, this.BaseContextPoint.GetMPoint.X);
             Canvas.SetTop(this, this.BaseContextPoint.GetMPoint.Y);
 
+            this.UpdateLayout();
         }
     }
 }

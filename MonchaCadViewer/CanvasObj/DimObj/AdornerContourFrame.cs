@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MonchaSDK;
+using System;
 using System.Windows;
 using System.Windows.Controls.Primitives;
 using System.Windows.Documents;
@@ -8,7 +9,7 @@ using System.Windows.Shapes;
 
 namespace MonchaCadViewer.CanvasObj.DimObj
 {
-    internal class AdornerContourFrame : Adorner
+    class AdornerContourFrame : Adorner
     {
         // Be sure to call the base class constructor.
 
@@ -39,7 +40,7 @@ namespace MonchaCadViewer.CanvasObj.DimObj
         {
             this._adornedElement = adornedElement as CadContour;
             this.ClipToBounds = false;
-            this.HANDLEMARGIN = (int)(Math.Min(canvas.ActualWidth, canvas.ActualHeight) * 0.05);
+            this.HANDLEMARGIN = MonchaHub.GetThinkess() * 3;
 
             visualChildren = new VisualCollection(this);
             rotateHandle = new Thumb();
@@ -53,7 +54,7 @@ namespace MonchaCadViewer.CanvasObj.DimObj
 
             outline = new Path();
             outline.Stroke = Brushes.Gray;
-            outline.StrokeThickness = _adornedElement.DesiredSize.Width * 0.01;
+            outline.StrokeThickness = MonchaHub.GetThinkess() / 5;
 
  
             visualChildren.Add(outline);
@@ -126,6 +127,12 @@ namespace MonchaCadViewer.CanvasObj.DimObj
                 AngleChange(this, angle);
 
             //this._adornedElement.UpdateGeometry(true);
+        }
+
+        public void Rotate(double angle)
+        {
+            rotation = new RotateTransform(angle, center.X, center.Y);
+            outline.RenderTransform = rotation;
         }
 
         /// <summary>

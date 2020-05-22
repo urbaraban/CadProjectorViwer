@@ -3,16 +3,22 @@ using MonchaSDK.Device;
 using MonchaSDK.Object;
 using System;
 using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
+using System.Windows.Threading;
 
 namespace MonchaCadViewer.CanvasObj
 {
     public class CadCanvas : Canvas
     {
+        static Dispatcher dispatcher = System.Windows.Application.Current.Dispatcher;
+
+        public event EventHandler<CadObject> SelectedObject;
+
         private bool CalibrationStat = false;
         private MonchaPoint3D _size;
         private List<CadDot> anchors = new List<CadDot>();
@@ -20,6 +26,7 @@ namespace MonchaCadViewer.CanvasObj
 
         public bool MorphMesh { get; set; } = true;
         public bool HorizontalMesh { get; set; } = false;
+
 
         public int Status
         {
@@ -48,17 +55,19 @@ namespace MonchaCadViewer.CanvasObj
 
         private void _size_ChangePoint(object sender, MonchaPoint3D e)
         {
-            this.Width = this._size.GetMPoint.X;
-            this.Height = this._size.GetMPoint.Y;
-
-            if (this.Parent is Viewbox viewbox)
+            if (this._size.X != 0 && this._size.Y != 0 && this._size.Z != 0 && this._size.M.X != 0)
             {
-                viewbox.Width = this._size.GetMPoint.X;
-                viewbox.Height = this._size.GetMPoint.Y;
+                if (this.Parent is Viewbox viewbox)
+                {
+                    viewbox.Width = this._size.GetMPoint.X;
+                    viewbox.Height = this._size.GetMPoint.Y;
+                }
+                this.Width = this._size.GetMPoint.X;
+                this.Height = this._size.GetMPoint.Y;
             }
         }
 
-        public void DrawOnCanvas(LObjectList _innerList, bool maincanvas, bool add, bool mousemove)
+        public void DrawContour(LObjectList _innerList, bool maincanvas, bool add, bool mousemove)
         {
             if (_innerList.Count > 0)
             {
@@ -82,29 +91,48 @@ namespace MonchaCadViewer.CanvasObj
             }
         }
 
+        public void DrawRectangle(MonchaPoint3D point1, MonchaPoint3D point2)
+        {
+            CadRectangle cadRectangle = new CadRectangle(true, point1, point2, false);
+            CadDot cadDot1 = new CadDot(point1, 50, false, true, false);
+            CadDot cadDot2 = new CadDot(point2, 50, false, true, false);
+
+            cadRectangle.Updated += CadObject_Updated;
+
+            this.Children.Add(cadRectangle);
+            this.Children.Add(cadDot1);
+            this.Children.Add(cadDot2);
+        }
+
+        public void DrawLine()
+        {
+            CadDot newdot1 = this.UndrMouseAnchor(Mouse.GetPosition(this), null);
+            if (newdot1 == null)
+            {
+                newdot1 = NewAnchor(false, true, false);
+                newdot1.WasMove = true;
+                this.Children.Add(newdot1);
+            }
+
+            CadDot newdot2 = NewAnchor(false, true, true);
+            this.Children.Add(newdot2);
+
+            CadLine lineSbcr = new CadLine(newdot1.BaseContextPoint, newdot2.BaseContextPoint, true);
+
+            this.Children.Add(lineSbcr);
+        }
+
+        private void CadObject_Updated(object sender, CadObject e)
+        {
+
+        }
 
         private void Canvas_MouseLeftDown(object sender, MouseButtonEventArgs e)
         {
             switch (_status)
             {
                 case 1:
-                    CadDot newdot1 = this.UndrMouseAnchor(Mouse.GetPosition(this), null);
-                    if (newdot1 == null)
-                    {
-                        newdot1 = NewAnchor(false, true, false);
-                        newdot1.WasMove = true;
-                        this.Children.Add(newdot1);
-                    }
-
-                    CadDot newdot2 = NewAnchor(false, true, true);
-                    this.Children.Add(newdot2);
-
-                    CadLine lineSbcr = new CadLine(newdot1.BaseContextPoint, newdot2.BaseContextPoint, true);
-
-
-
-                    this.Children.Add(lineSbcr);
-
+                    DrawLine();
                     break;
             }
         }
@@ -112,7 +140,7 @@ namespace MonchaCadViewer.CanvasObj
         public CadDot UndrMouseAnchor(Point point, CadDot selectDot)
         {
             foreach (CadDot dot in anchors)
-                if (dot.CheckInArea(point))
+                if (dot.Contains(point))
                     if (dot != selectDot)
                         return dot;
 

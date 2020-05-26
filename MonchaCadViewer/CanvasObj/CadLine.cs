@@ -131,10 +131,7 @@ namespace MonchaCadViewer.CanvasObj
                         break;
 
                     case "Remove":
-                        if (this.Parent is CadCanvas canvas)
-                        {
-                            canvas.Children.Remove(this);
-                        }
+                        this.Remove();
                         break;
 
                     case "Render":

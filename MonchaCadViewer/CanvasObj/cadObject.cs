@@ -14,6 +14,7 @@ namespace MonchaCadViewer.CanvasObj
     {
         public event EventHandler<CadObject> Selected;
         public event EventHandler<CadObject> Updated;
+        public event EventHandler<CadObject> Removed;
 
         protected Point MousePos = new Point();
         protected Point BasePos = new Point();
@@ -149,6 +150,19 @@ namespace MonchaCadViewer.CanvasObj
                         this.Selected(this, this);
                 }
             StatColorSelect();
+        }
+
+        public bool Remove()
+        {
+            if (this.Parent is CadCanvas canvas)
+            {
+                canvas.Children.Remove(this);
+                if (Removed != null)
+                    Removed(this, this);
+                return true;
+            }
+
+            return false;
         }
 
         private void CadObject_MouseMove(object sender, MouseEventArgs e)

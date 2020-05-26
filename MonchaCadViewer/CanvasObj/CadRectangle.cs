@@ -3,13 +3,13 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Media;
 
 namespace MonchaCadViewer.CanvasObj
 {
     public class CadRectangle : CadObject
     {
-        
 
         private RectangleGeometry _rectg;
         private Rect _rect;
@@ -31,6 +31,9 @@ namespace MonchaCadViewer.CanvasObj
             this.BaseContextPoint.ChangePoint += BaseContextPoint_ChangePoint;
             this.BaseContextPoint.ChangePointDelta += BaseContextPoint_ChangePointDelta;
             this.SecondContextPoint.ChangePoint += BaseContextPoint_ChangePoint;
+
+            this.ContextMenuClosing += ContextMenu_Closed;
+
             this.Loaded += CadRectangle_Loaded;
             this._rect = new Rect();
             this._rectg = new RectangleGeometry(this._rect);
@@ -52,10 +55,10 @@ namespace MonchaCadViewer.CanvasObj
 
         private void BaseContextPoint_ChangePoint(object sender, MonchaPoint3D e)
         {
-            this.Update();
+           this.Update();
         }
 
-        public async void Update()
+        public void Update()
         {
             this.SecondContextPoint.X = this.BaseContextPoint.X > this.SecondContextPoint.X ? this.BaseContextPoint.X : this.SecondContextPoint.X;
             this.SecondContextPoint.Y = this.BaseContextPoint.Y > this.SecondContextPoint.Y ? this.BaseContextPoint.Y : this.SecondContextPoint.Y;
@@ -68,6 +71,27 @@ namespace MonchaCadViewer.CanvasObj
             this._rectg.Rect = this._rect;
 
             this.intEvent();
+        }
+
+        private void ContextMenu_Closed(object sender, RoutedEventArgs e)
+        {
+            if (this.ContextMenu.DataContext is MenuItem menuItem)
+            {
+                switch (menuItem.Header)
+                {
+                    case "Fix":
+                        this.IsFix = !this.IsFix;
+                        break;
+
+                    case "Remove":
+                        this.Remove();
+                        break;
+
+                    case "Render":
+                        this.Render = !this.Render;
+                        break;
+                }
+            }
         }
 
 

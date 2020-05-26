@@ -58,7 +58,30 @@ namespace MonchaCadViewer.CanvasObj
                                 tempList.Add(lObject);
                             }
                         }
+
+                    if (cadObject is CadRectangle cadRectangle)
+                    {
+                            LObject lObject = new LObject(
+                                new List<MonchaPoint3D>() {
+                                        new MonchaPoint3D(
+                                            cadRectangle.BaseContextPoint.GetMPoint.X,
+                                            cadRectangle.BaseContextPoint.GetMPoint.Y),
+                                        new MonchaPoint3D(
+                                            cadRectangle.BaseContextPoint.GetMPoint.X,
+                                            cadRectangle.SecondContextPoint.GetMPoint.Y),
+                                         new MonchaPoint3D(
+                                            cadRectangle.SecondContextPoint.GetMPoint.X,
+                                            cadRectangle.SecondContextPoint.GetMPoint.Y),
+                                         new MonchaPoint3D(
+                                            cadRectangle.SecondContextPoint.GetMPoint.X,
+                                            cadRectangle.BaseContextPoint.GetMPoint.Y),
+
+                                });
+
+                            tempList.Add(lObject);
+
                     }
+                }
 
 
                     tempList.OnBaseMesh = cadObject.OnBaseMesh;

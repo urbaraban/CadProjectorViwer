@@ -106,9 +106,9 @@ namespace MonchaCadViewer.CanvasObj
         public void DrawRectangle(MonchaPoint3D point1, MonchaPoint3D point2)
         {
             CadRectangle cadRectangle = new CadRectangle(true, point1, point2, false);
-            CadDot cadDot1 = new CadDot(point1, 50, false, true, false);
-            CadDot cadDot2 = new CadDot(point2, 50, false, true, false);
-
+            CadDot cadDot1 = new CadDot(point1, MonchaHub.GetThinkess() * 4, false, true, false);
+            CadDot cadDot2 = new CadDot(point2, MonchaHub.GetThinkess() * 4, false, true, false);
+            cadRectangle.Render = false;
             this.Children.Add(cadRectangle);
             this.Children.Add(cadDot1);
             this.Children.Add(cadDot2);

@@ -78,10 +78,7 @@ namespace MonchaCadViewer.CanvasObj
                             point.IsFix = !point.IsFix;
                         break;
                     case "Remove":
-                        if (this.Parent is CadCanvas canvas)
-                        {
-                            canvas.Children.Remove(this);
-                        }
+                        this.Remove();
                         break;
                 }
             }

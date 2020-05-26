@@ -1,4 +1,5 @@
 ﻿using MonchaCadViewer.CanvasObj.DimObj;
+using MonchaSDK;
 using MonchaSDK.Object;
 using System;
 using System.Collections.Generic;
@@ -29,8 +30,6 @@ namespace MonchaCadViewer.CanvasObj
         public CadContour(LObjectList point3Ds, MonchaPoint3D Center, bool maincanvas, bool Capturemouse) : base (Capturemouse, Center, false)
         {
             this._points = point3Ds;
-
-            this.ClipToBounds = false;
             this._path = new StreamGeometry();
             this.UpdateGeometry();
 
@@ -48,7 +47,7 @@ namespace MonchaCadViewer.CanvasObj
             }
 
            
-            this.StrokeThickness = _path.Bounds.Width * 0.002;
+            this.StrokeThickness = MonchaHub.GetThinkess() * 0.5;
             this.Stroke = Brushes.Red;
 
 
@@ -86,10 +85,7 @@ namespace MonchaCadViewer.CanvasObj
                         break;
 
                     case "Remove":
-                        if (this.Parent is CadCanvas canvas)
-                        {
-                            canvas.Children.Remove(this);
-                        }
+                        this.Remove();
                         break;
 
                     case "Render":
@@ -109,7 +105,6 @@ namespace MonchaCadViewer.CanvasObj
             {
                 canvas.SubsObj(this);
                 this.adornerLayer = AdornerLayer.GetAdornerLayer(canvas);
-                this.adornerLayer.ClipToBounds = true;
 
                 this.Width = canvas.Width;
                 this.Height = canvas.Height;

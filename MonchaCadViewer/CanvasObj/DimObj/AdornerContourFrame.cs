@@ -30,23 +30,23 @@ namespace MonchaCadViewer.CanvasObj.DimObj
 
         RotateTransform rotation;
 
-        private int HANDLEMARGIN = 10;
-
         // The bounds of the Strokes;
-        Rect strokeBounds = Rect.Empty;
+        private Rect strokeBounds = Rect.Empty;
+
+        private FormattedText widthtext;
+        private FormattedText heighttext;
+        private FormattedText angletext;
 
         public AdornerContourFrame(UIElement adornedElement, CadCanvas canvas)
             : base(adornedElement)
         {
             this._adornedElement = adornedElement as CadContour;
-            this.ClipToBounds = false;
-            this.HANDLEMARGIN = MonchaHub.GetThinkess() * 3;
-
+            this.IsClipEnabled = true;
             visualChildren = new VisualCollection(this);
             rotateHandle = new Thumb();
             rotateHandle.Cursor = Cursors.SizeNWSE;
-            rotateHandle.Width = HANDLEMARGIN;
-            rotateHandle.Height = HANDLEMARGIN;
+            rotateHandle.Width = MonchaHub.GetThinkess() * 5;
+            rotateHandle.Height = MonchaHub.GetThinkess() * 5;
             rotateHandle.Background = Brushes.Blue;
 
             rotateHandle.DragDelta += new DragDeltaEventHandler(rotateHandle_DragDelta);
@@ -54,14 +54,13 @@ namespace MonchaCadViewer.CanvasObj.DimObj
 
             outline = new Path();
             outline.Stroke = Brushes.Gray;
-            outline.StrokeThickness = MonchaHub.GetThinkess() / 5;
+            outline.StrokeThickness = MonchaHub.GetThinkess() / 2;
 
  
             visualChildren.Add(outline);
             visualChildren.Add(rotateHandle);
 
             strokeBounds = new Rect(-AdornedStrokes.DesiredSize.Width, - AdornedStrokes.DesiredSize.Height, AdornedStrokes.DesiredSize.Width * 2, AdornedStrokes.DesiredSize.Height * 2);
-
         }
 
         /// <summary>
@@ -145,17 +144,6 @@ namespace MonchaCadViewer.CanvasObj.DimObj
             {
                 return;
             }
-
-
-            // Rotate the strokes to match the new angle.
-           /* Matrix mat = new Matrix();
-            mat.RotateAt(rotation.Angle - lastAngle, center.X, center.Y);
-            AdornedStrokes.RenderTransform = new MatrixTransform(mat);
-
-            // Save the angle of the last rotation.
-            lastAngle = rotation.Angle;*/
-
-            // Redraw rotateHandle.
             this.InvalidateArrange();
         }
 
@@ -183,7 +171,7 @@ namespace MonchaCadViewer.CanvasObj.DimObj
             // The rectangle that determines the position of the Thumb.
             Rect handleRect = new Rect(strokeBounds.X,
                                   strokeBounds.Y - (strokeBounds.Height / 2 +
-                                                    HANDLEMARGIN),
+                                                    MonchaHub.GetThinkess() * 7),
                                   strokeBounds.Width, strokeBounds.Height);
 
             if (rotation != null)
@@ -195,6 +183,24 @@ namespace MonchaCadViewer.CanvasObj.DimObj
             rotateHandle.Arrange(handleRect);
             outline.Data = new RectangleGeometry(strokeBounds);
             outline.Arrange(new Rect(_adornedElement.Size));
+
+            //width
+            widthtext = new FormattedText("X:" + Math.Round(Math.Round(outline.ActualWidth), 2).ToString(), new System.Globalization.CultureInfo("ru-RU"), FlowDirection.LeftToRight,
+            new Typeface("Segoe UI"), (int)MonchaHub.GetThinkess() * 5, Brushes.Gray);
+            drawingContext.DrawText(widthtext, new Point(outline.Data.Bounds.Location.X + outline.Data.Bounds.Width / 2, outline.Data.Bounds.Location.Y + outline.Data.Bounds.Height / 2 - widthtext.Height * 1.5));
+
+            //height
+            heighttext = new FormattedText("Y:" + Math.Round(Math.Round(outline.ActualHeight), 2).ToString(), new System.Globalization.CultureInfo("ru-RU"), FlowDirection.LeftToRight,
+           new Typeface("Segoe UI"), (int)MonchaHub.GetThinkess() * 5, Brushes.Gray);
+            drawingContext.DrawText(heighttext, new Point(outline.Data.Bounds.Location.X + outline.Data.Bounds.Width / 2, outline.Data.Bounds.Location.Y + outline.Data.Bounds.Height / 2));
+
+            //angle
+            if (rotation != null)
+            {
+                angletext = new FormattedText("a:" + Math.Round(Math.Round(rotation.Angle), 2).ToString(), new System.Globalization.CultureInfo("ru-RU"), FlowDirection.LeftToRight,
+            new Typeface("Segoe UI"), (int)MonchaHub.GetThinkess() * 5, Brushes.Gray);
+                drawingContext.DrawText(angletext, new Point(outline.Data.Bounds.Location.X + outline.Data.Bounds.Width / 2, outline.Data.Bounds.Location.Y + outline.Data.Bounds.Height / 2 + widthtext.Height));
+            }
         }
 
 

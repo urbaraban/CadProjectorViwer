@@ -277,7 +277,7 @@
                     <Label x:Name="label_Copy3" Content="Множитель" HorizontalAlignment="Left" Margin="6,176,0,0" VerticalAlignment="Top" Height="26" Width="74" Grid.ColumnSpan="2"/>
                     <Controls:ToggleSwitch x:Name="MorphToggle" Content="Morph" HorizontalAlignment="Stretch" Margin="3,348,0,0" VerticalAlignment="Top" IsOn="True" IsEnabled="{Binding IsOn, ElementName=EditMeshToggle}" Toggled="MorphToggle_Toggled" Grid.ColumnSpan="3" Height="20"/>
                     <Controls:ToggleSwitch x:Name="HorizontalToggle" Content="Horizontal" HorizontalAlignment="Stretch" Margin="3,384,0,0" VerticalAlignment="Top" IsEnabled="{Binding IsOn, ElementName=EditMeshToggle}" Toggled="HorizontalToggle_Toggled" Grid.ColumnSpan="3" Height="20"/>
-                    <Controls:NumericUpDown x:Name="PointStepUpDn" Margin="5,421,14,0"  Background="White" Height="26" VerticalAlignment="Top" ValueChanged="SplitLineUpDn_ValueChanged" NumericInputMode="Decimal" Value="0.0001" Grid.Column="2" Grid.ColumnSpan="3">
+                    <Controls:NumericUpDown x:Name="PointStepUpDn" Margin="5,421,14,0"  Background="White" Height="26" VerticalAlignment="Top" ValueChanged="SplitLineUpDn_ValueChanged" NumericInputMode="Decimal" Maximum="10" Minimum="0" Interval="0.1"  Value="0.1" Grid.Column="2" Grid.ColumnSpan="3" Focusable="False" IsTabStop="False" AllowDrop="False">
                         <Controls:NumericUpDown.DataContext>
                             <Properties:Settings/>
                         </Controls:NumericUpDown.DataContext>
@@ -294,7 +294,7 @@
                 </Grid>
             </TabItem>
         </TabControl>
-        <Button x:Name="PlayBtn" Content="Play" Grid.Column="2" Margin="5,5,55,5" Click="PlayBtn_Click" Background="#FFFFD100" Grid.Row="1"/>
+        <Button x:Name="PlayBtn" Content="Play" Grid.Column="2" Margin="5" Click="PlayBtn_Click" Background="#FFFFD100" Grid.Row="1"/>
         <Border Grid.Row="2" Style="{StaticResource Border}" Margin="5,0,5,10">
             <TreeView x:Name="treeView" Grid.Row="1" Margin="2" KeyboardNavigation.DirectionalNavigation="None" KeyboardNavigation.TabNavigation="None">
                 <StackPanel x:Name="TreeHead" Orientation="Horizontal" HorizontalAlignment="Left" Margin="-21,0,0,0">
@@ -329,7 +329,6 @@
             <Button x:Name="LineBtn" Content="Line" Height="40" VerticalAlignment="Top" Width="40" Click="LineBtn_Click"/>
             <Button x:Name="ClearBtn" Content="CLear" Height="40" VerticalAlignment="Top" Width="74" Click="ClearBtn_Click"/>
         </DockPanel>
-        <Button x:Name="RefreshFrameBtn" Content="Button" Grid.Column="2" Margin="0,5,10,5" Grid.Row="1" HorizontalAlignment="Right" Width="40" Click="RefreshFrameBtn_Click"/>
         <Controls:ToggleSwitch x:Name="RealTimeToggle"  Content="Realtime " HorizontalAlignment="Right" Margin="0,14,10,16" VerticalAlignment="Stretch" IsOn="{Binding int_realtime, Mode=TwoWay}" Grid.Row="1" RenderTransformOrigin="0.5,0.5" Grid.Column="1" Toggled="RealTimeToggle_Toggled" HorizontalContentAlignment="Right" Width="106" FlowDirection="RightToLeft" Padding="1,0,0,0">
             <Controls:ToggleSwitch.DataContext>
                 <Properties:Settings/>

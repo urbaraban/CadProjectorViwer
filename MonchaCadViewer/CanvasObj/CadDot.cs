@@ -16,20 +16,34 @@ namespace MonchaCadViewer.CanvasObj
 
         public double Size { get; set; }
 
-        protected override Geometry DefiningGeometry => UpdatePoint();
+        protected override Geometry DefiningGeometry => this._rectg;
 
 
         public CadDot(MonchaPoint3D point, double Size, bool Calibration, bool capturemouse, bool move) : base (capturemouse, point, move)
         {
             this.Size = Size;
             this._calibration = Calibration;
+            this.Focusable = true;
+
+            Canvas.SetLeft(this, this.BaseContextPoint.GetMPoint.X - Size / 2);
+            Canvas.SetTop(this, this.BaseContextPoint.GetMPoint.Y - Size / 2); //Y inverted in calibration stat
+            Canvas.SetZIndex(this, 999);
+            this._rect = new Rect(new Size(Size, Size));
+            this._rectg = new RectangleGeometry(_rect);
 
             ContextMenuLib.DotContextMenu(this.ContextMenu);
 
             this.ContextMenuClosing += DotShape_ContextMenuClosing;
             this.MouseLeftButtonUp += DotShape_MouseLeftButtonUp;
+            this.Loaded += CadDot_Loaded;
 
             this.BaseContextPoint.ChangePoint += MonchaPoint_ChangePoint;
+        }
+
+        private void CadDot_Loaded(object sender, RoutedEventArgs e)
+        {
+            if (this.Parent is CadCanvas canvas)
+                canvas.SubsObj(this);
         }
 
         private void MonchaPoint_ChangePoint(object sender, MonchaPoint3D e)
@@ -55,34 +69,35 @@ namespace MonchaCadViewer.CanvasObj
 
         private void DotShape_ContextMenuClosing(object sender, ContextMenuEventArgs e)
         {
-            MenuItem cmindex = (MenuItem)this.ContextMenu.DataContext;
-            switch (cmindex.Header)
+            if (this.ContextMenu.DataContext is MenuItem cmindex)
             {
-                case "Fix":
-                    if (this.BaseContextPoint is MonchaPoint3D point)
-                        point.IsFix = !point.IsFix;
-                    break;
-                case "Remove":
-                    if (this.Parent is CadCanvas canvas)
-                    {
-                        canvas.Children.Remove(this);
-                    }
-                    break;
+                switch (cmindex.Header)
+                {
+                    case "Fix":
+                        if (this.BaseContextPoint is MonchaPoint3D point)
+                            point.IsFix = !point.IsFix;
+                        break;
+                    case "Remove":
+                        if (this.Parent is CadCanvas canvas)
+                        {
+                            canvas.Children.Remove(this);
+                        }
+                        break;
+                }
             }
         }
 
-        public Geometry UpdatePoint()
+        public void UpdatePoint()
         {
-            this._rect = new Rect(new Size(Size, Size));
-            this._rectg = new RectangleGeometry(_rect);
             if (this.BaseContextPoint is MonchaPoint3D point && !point.IsFix)
             {
                 Canvas.SetLeft(this, this.BaseContextPoint.GetMPoint.X - Size / 2);
                 Canvas.SetTop(this, this.BaseContextPoint.GetMPoint.Y - Size / 2); //Y inverted in calibration stat
                 Canvas.SetZIndex(this, 999);
             }
-
-            return this._rectg;
+            this.UpdateLayout();
+            this.intEvent();
+            
         }
 
         public bool Contains(Point point)

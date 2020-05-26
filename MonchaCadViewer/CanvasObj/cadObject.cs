@@ -13,6 +13,7 @@ namespace MonchaCadViewer.CanvasObj
     public class CadObject : Shape
     {
         public event EventHandler<CadObject> Selected;
+        public event EventHandler<CadObject> Updated;
 
         protected Point MousePos = new Point();
         protected Point BasePos = new Point();
@@ -58,6 +59,11 @@ namespace MonchaCadViewer.CanvasObj
             this.MouseForce = move;
         }
 
+        public void intEvent()
+        {
+            if (this.Updated != null)
+                this.Updated(this, this);
+        }
         private void ContextMenu_Closing(object sender, RoutedEventArgs e)
         {
 
@@ -78,16 +84,22 @@ namespace MonchaCadViewer.CanvasObj
         private void CadObject_MouseLeave(object sender, System.Windows.Input.MouseEventArgs e)
         {
             this.WasMove = false;
+            StatColorSelect();
         }
 
         private void CadObject_LayoutUpdated(object sender, EventArgs e)
+        {
+            StatColorSelect();
+        }
+
+        private void StatColorSelect()
         {
             if (this.IsMouseOver)
             {
                 if (this.Fill != Brushes.Transparent) this.Fill = Brushes.Orange;
                 if (this.Stroke != null) this.Stroke = Brushes.Orange;
             }
-            else if (this.BaseContextPoint is MonchaPoint3D point && !point.IsFix)
+            else if (!this.BaseContextPoint.IsFix)
             {
                 if (this.Fill != Brushes.Transparent) this.Fill = Brushes.Black;
                 if (this.Stroke != null) this.Stroke = Brushes.Black;
@@ -102,6 +114,9 @@ namespace MonchaCadViewer.CanvasObj
                 if (this.Fill != Brushes.Transparent) this.Fill = Brushes.Blue;
                 if (this.Stroke != null) this.Stroke = Brushes.Blue;
             }
+
+            if (Updated != null)
+                Updated(this, this);
         }
 
         private void CadObject_MouseLeftButtonUp(object sender, System.Windows.Input.MouseButtonEventArgs e)
@@ -133,6 +148,7 @@ namespace MonchaCadViewer.CanvasObj
                     if (this.Selected != null)
                         this.Selected(this, this);
                 }
+            StatColorSelect();
         }
 
         private void CadObject_MouseMove(object sender, MouseEventArgs e)

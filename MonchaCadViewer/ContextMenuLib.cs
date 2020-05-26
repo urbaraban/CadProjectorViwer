@@ -48,7 +48,8 @@ namespace MonchaCadViewer.CanvasObj
 
         public static void DeviceTreeMenu(ContextMenu contextMenu)
         {
-            AddItem("Rectangle", contextMenu);
+            AddItem("CanvasRectangle", contextMenu);
+            AddItem("ZoneRectangle", contextMenu);
         }
 
         private static void AddItem(string Name, ContextMenu menu)

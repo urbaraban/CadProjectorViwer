@@ -42,6 +42,8 @@ namespace MonchaCadViewer.CanvasObj
             this.Background = Brushes.Transparent; //backBrush;
             this.Width = this._size.GetMPoint.X;
             this.Height = this._size.GetMPoint.Y;
+            this.ClipToBounds = true;
+
 
             this._size.ChangePoint += _size_ChangePoint;
             this._size.M.ChangePoint += _size_ChangePoint;
@@ -91,13 +93,21 @@ namespace MonchaCadViewer.CanvasObj
             }
         }
 
+        public void SubsObj (CadObject obj)
+        {
+            obj.Updated += Obj_Updated;
+        }
+
+        private void Obj_Updated(object sender, CadObject e)
+        {
+            SendProcessor.Worker(this);
+        }
+
         public void DrawRectangle(MonchaPoint3D point1, MonchaPoint3D point2)
         {
             CadRectangle cadRectangle = new CadRectangle(true, point1, point2, false);
             CadDot cadDot1 = new CadDot(point1, 50, false, true, false);
             CadDot cadDot2 = new CadDot(point2, 50, false, true, false);
-
-            cadRectangle.Updated += CadObject_Updated;
 
             this.Children.Add(cadRectangle);
             this.Children.Add(cadDot1);
@@ -122,10 +132,6 @@ namespace MonchaCadViewer.CanvasObj
             this.Children.Add(lineSbcr);
         }
 
-        private void CadObject_Updated(object sender, CadObject e)
-        {
-
-        }
 
         private void Canvas_MouseLeftDown(object sender, MouseButtonEventArgs e)
         {

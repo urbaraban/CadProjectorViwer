@@ -35,6 +35,7 @@ namespace MonchaCadViewer.CanvasObj
 
             this.Stroke = Brushes.Black;
             this.StrokeThickness = 40;
+            this.Focusable = true;
 
             this._lineGeometry = new LineGeometry();
 
@@ -52,6 +53,7 @@ namespace MonchaCadViewer.CanvasObj
         {
             if (this.Parent is CadCanvas canvas)
             {
+                canvas.SubsObj(this);
                 this.adornerLayer = AdornerLayer.GetAdornerLayer(canvas);
                 AdornerLineDim myAdorner = new AdornerLineDim(this);
                 myAdorner.DataContext = this;
@@ -156,7 +158,8 @@ namespace MonchaCadViewer.CanvasObj
             this._lineGeometry.StartPoint = this.BaseContextPoint.GetMPoint;
             this._lineGeometry.EndPoint = this.SecondContextPoint.GetMPoint;
 
-            this.UpdateLayout();
+            this.intEvent();
+
             adornerLayer.Update();
 
         }

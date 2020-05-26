@@ -9,7 +9,7 @@ namespace MonchaCadViewer.CanvasObj
 {
     public class CadRectangle : CadObject
     {
-        public event EventHandler<CadObject> Updated;
+        
 
         private RectangleGeometry _rectg;
         private Rect _rect;
@@ -29,10 +29,25 @@ namespace MonchaCadViewer.CanvasObj
             this.Fill = Brushes.Transparent;
             this.SecondContextPoint = secondPoint;
             this.BaseContextPoint.ChangePoint += BaseContextPoint_ChangePoint;
+            this.BaseContextPoint.ChangePointDelta += BaseContextPoint_ChangePointDelta;
             this.SecondContextPoint.ChangePoint += BaseContextPoint_ChangePoint;
+            this.Loaded += CadRectangle_Loaded;
             this._rect = new Rect();
             this._rectg = new RectangleGeometry(this._rect);
             this.Update();
+        }
+
+        private void BaseContextPoint_ChangePointDelta(object sender, MonchaPoint3D e)
+        {
+            Console.WriteLine("Delta " + e);
+            if (this.WasMove)
+                this.SecondContextPoint.Add(e, true);
+        }
+
+        private void CadRectangle_Loaded(object sender, RoutedEventArgs e)
+        {
+            if (this.Parent is CadCanvas canvas)
+                canvas.SubsObj(this);
         }
 
         private void BaseContextPoint_ChangePoint(object sender, MonchaPoint3D e)
@@ -42,21 +57,17 @@ namespace MonchaCadViewer.CanvasObj
 
         public async void Update()
         {
+            this.SecondContextPoint.X = this.BaseContextPoint.X > this.SecondContextPoint.X ? this.BaseContextPoint.X : this.SecondContextPoint.X;
+            this.SecondContextPoint.Y = this.BaseContextPoint.Y > this.SecondContextPoint.Y ? this.BaseContextPoint.Y : this.SecondContextPoint.Y;
+
             this._rect.X = this.BaseContextPoint.GetMPoint.X;
             this._rect.Y = this.BaseContextPoint.GetMPoint.Y;
-            this._rect.Width = this.SecondContextPoint.GetMPoint.X - this.BaseContextPoint.GetMPoint.X;
+            this._rect.Width =  this.SecondContextPoint.GetMPoint.X - this.BaseContextPoint.GetMPoint.X;
             this._rect.Height = this.SecondContextPoint.GetMPoint.Y - this.BaseContextPoint.GetMPoint.Y;
             //this._rect = new Rect(this.BaseContextPoint.GetMPoint, this.SecondContextPoint.GetMPoint);
             this._rectg.Rect = this._rect;
-            if (Updated != null)
-                Updated(this, this);
-            if (this.Parent != null)
-            {
-                this.Parent.Dispatcher.BeginInvoke((Action)delegate
-                {
-                    this.UpdateLayout();
-                });
-            }
+
+            this.intEvent();
         }
 
 

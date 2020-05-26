@@ -10,10 +10,8 @@ namespace MonchaCadViewer.CanvasObj
 {
     public static class SendProcessor
     {
-        public static void Worker (Viewbox CanvasBox)
+        public static void Worker (CadCanvas canvas)
         {
-            if (CanvasBox.Child is CadCanvas canvas)
-            {
                 LObjectList tempList = new LObjectList();
                 foreach (CadObject cadObject in canvas.Children)
                 {
@@ -76,11 +74,8 @@ namespace MonchaCadViewer.CanvasObj
                     MonchaHub.MainFrame = tempList;
                     MonchaHub.RefreshFrame();
                 }
-
-            }
-
-
         }
+
         public static void DrawZone(MonchaDevice device)
         {
             LObjectList tempList = new LObjectList();

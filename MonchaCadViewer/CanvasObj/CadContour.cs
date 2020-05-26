@@ -24,7 +24,6 @@ namespace MonchaCadViewer.CanvasObj
         public bool Mirror { get; set; } = false;
         public double Angle { get; set; } = 0;
 
-
         public Size Size => _path.Bounds.Size;
 
         public CadContour(LObjectList point3Ds, MonchaPoint3D Center, bool maincanvas, bool Capturemouse) : base (Capturemouse, Center, false)
@@ -108,7 +107,12 @@ namespace MonchaCadViewer.CanvasObj
         {
             if (this.Parent is CadCanvas canvas)
             {
+                canvas.SubsObj(this);
                 this.adornerLayer = AdornerLayer.GetAdornerLayer(canvas);
+                this.adornerLayer.ClipToBounds = true;
+
+                this.Width = canvas.Width;
+                this.Height = canvas.Height;
                 this.myAdorner = new AdornerContourFrame(this, canvas);
                 myAdorner.DataContext = this;
                 adornerLayer.Add(myAdorner);
@@ -221,7 +225,7 @@ namespace MonchaCadViewer.CanvasObj
             Canvas.SetLeft(this, this.BaseContextPoint.GetMPoint.X);
             Canvas.SetTop(this, this.BaseContextPoint.GetMPoint.Y);
 
-            this.UpdateLayout();
+            this.intEvent();
         }
     }
 }

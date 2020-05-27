@@ -42,7 +42,6 @@ namespace MonchaCadViewer.CanvasObj
 
         private void BaseContextPoint_ChangePointDelta(object sender, MonchaPoint3D e)
         {
-            Console.WriteLine("Delta " + e);
             if (this.WasMove)
                 this.SecondContextPoint.Add(e, true);
         }

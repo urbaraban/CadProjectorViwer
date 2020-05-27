@@ -16,7 +16,8 @@ namespace MonchaCadViewer.CanvasObj
     {
         private StreamGeometry _path;
         private LObjectList _points;
-        private bool wasmove = false;
+        private bool _maincanvas;
+
 
         protected override Geometry DefiningGeometry => this._path;
 
@@ -31,9 +32,10 @@ namespace MonchaCadViewer.CanvasObj
         {
             this._points = point3Ds;
             this._path = new StreamGeometry();
+            this._maincanvas = maincanvas;
             this.UpdateGeometry();
 
-            if (maincanvas)
+            if (this._maincanvas)
             {
                 ContextMenuLib.ViewContourMenu(this.ContextMenu);
                 this.Cursor = Cursors.Hand;
@@ -46,7 +48,7 @@ namespace MonchaCadViewer.CanvasObj
                 this.BaseContextPoint.ChangePoint += ViewContour_MoveBasePoint;
             }
 
-           
+            this.Fill = Brushes.Transparent;
             this.StrokeThickness = MonchaHub.GetThinkess() * 0.5;
             this.Stroke = Brushes.Red;
 
@@ -101,13 +103,14 @@ namespace MonchaCadViewer.CanvasObj
 
         private void ViewContour_Loaded(object sender, RoutedEventArgs e)
         {
-            if (this.Parent is CadCanvas canvas)
+            if (this.Parent is CadCanvas canvas && this._maincanvas)
             {
                 canvas.SubsObj(this);
                 this.adornerLayer = AdornerLayer.GetAdornerLayer(canvas);
 
-                this.Width = canvas.Width;
-                this.Height = canvas.Height;
+              /*  this.Width = canvas.Width;
+                this.Height = canvas.Height;*/
+
                 this.myAdorner = new AdornerContourFrame(this, canvas);
                 myAdorner.DataContext = this;
                 adornerLayer.Add(myAdorner);
@@ -123,10 +126,10 @@ namespace MonchaCadViewer.CanvasObj
 
         private void Contour_MouseLeftUp(object sender, MouseButtonEventArgs e)
         {
-            if (wasmove)
+            if (this.WasMove)
             {
                 this.ReleaseMouseCapture();
-                this.wasmove = false;
+                this.WasMove = false;
             }
             else
             {
@@ -187,8 +190,6 @@ namespace MonchaCadViewer.CanvasObj
 
         public void UpdateGeometry(bool FromAdorner = false)
         {
-            PathFigureCollection _pathFigures = new PathFigureCollection();
-
             List<List<MonchaPoint3D>> workPoint = GiveModPoint();
 
             this._path.Clear();
@@ -215,7 +216,6 @@ namespace MonchaCadViewer.CanvasObj
 
             if (adornerLayer != null && !FromAdorner)
                 adornerLayer.Update();
-            this.Fill = Brushes.Transparent;
 
             Canvas.SetLeft(this, this.BaseContextPoint.GetMPoint.X);
             Canvas.SetTop(this, this.BaseContextPoint.GetMPoint.Y);

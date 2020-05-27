@@ -90,7 +90,7 @@ namespace MonchaCadViewer.CanvasObj
 
         private void CadObject_LayoutUpdated(object sender, EventArgs e)
         {
-            StatColorSelect();
+            //StatColorSelect();
         }
 
         private void StatColorSelect()
@@ -174,8 +174,10 @@ namespace MonchaCadViewer.CanvasObj
                 this.WasMove = true;
                 this.Editing = true;
 
-                this.BaseContextPoint.Update(this.BasePos.X + (e.GetPosition(canvas).X - this.MousePos.X), 
-                    this.BasePos.Y + (e.GetPosition(canvas).Y - this.MousePos.Y));
+                Point tPoint = e.GetPosition(canvas);
+
+                this.BaseContextPoint.Update(this.BasePos.X + (tPoint.X - this.MousePos.X), 
+                    this.BasePos.Y + (tPoint.Y - this.MousePos.Y));
 
                 this.CaptureMouse();
                 this.Cursor = Cursors.SizeAll;

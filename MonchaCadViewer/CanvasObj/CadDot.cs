@@ -25,8 +25,6 @@ namespace MonchaCadViewer.CanvasObj
             this._calibration = Calibration;
             this.Focusable = true;
 
-            Canvas.SetLeft(this, this.BaseContextPoint.GetMPoint.X - Size / 2);
-            Canvas.SetTop(this, this.BaseContextPoint.GetMPoint.Y - Size / 2); //Y inverted in calibration stat
             Canvas.SetZIndex(this, 999);
             this._rect = new Rect(new Size(Size, Size));
             this._rectg = new RectangleGeometry(_rect);
@@ -38,12 +36,17 @@ namespace MonchaCadViewer.CanvasObj
             this.Loaded += CadDot_Loaded;
 
             this.BaseContextPoint.ChangePoint += MonchaPoint_ChangePoint;
+
+            this.Fill = Brushes.Black;
+
+            UpdatePoint();
         }
 
         private void CadDot_Loaded(object sender, RoutedEventArgs e)
         {
             if (this.Parent is CadCanvas canvas)
                 canvas.SubsObj(this);
+            this.UpdateLayout();
         }
 
         private void MonchaPoint_ChangePoint(object sender, MonchaPoint3D e)
@@ -92,7 +95,6 @@ namespace MonchaCadViewer.CanvasObj
                 Canvas.SetTop(this, this.BaseContextPoint.GetMPoint.Y - Size / 2); //Y inverted in calibration stat
                 Canvas.SetZIndex(this, 999);
             }
-            this.UpdateLayout();
             this.intEvent();
             
         }

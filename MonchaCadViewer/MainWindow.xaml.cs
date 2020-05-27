@@ -820,7 +820,6 @@ namespace MonchaCadViewer
                         {
                             if (cadObject.IsSelected  && !cadObject.BaseContextPoint.IsFix)
                             {
-                                Console.WriteLine("Left " + left + " Right " + top);
                                 cadObject.BaseContextPoint.Add(left, top);
 
                                 if (cadObject.DataContext is MonchaDeviceMesh mesh)

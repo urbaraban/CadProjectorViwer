@@ -7,6 +7,8 @@ using System.Windows.Shapes;
 using MonchaSDK.Device;
 using MonchaSDK.Object;
 using System.Windows.Documents;
+using MonchaCadViewer.CanvasObj.DimObj;
+using PropertyTools.DataAnnotations;
 
 namespace MonchaCadViewer.CanvasObj
 {
@@ -21,6 +23,9 @@ namespace MonchaCadViewer.CanvasObj
 
         public bool IsSelected { get; set; } = false;
 
+        protected override Geometry DefiningGeometry => throw new NotImplementedException();
+
+        [Category("Data")]
         public bool Render { get; set; } = true;
         
         public bool IsFix { get; set; } = false;
@@ -35,9 +40,9 @@ namespace MonchaCadViewer.CanvasObj
 
         public AdornerLayer adornerLayer { get; set; }
 
-        public MonchaPoint3D BaseContextPoint { get; set; }
+        public Adorner ObjAdorner { get; set; }
 
-        protected override Geometry DefiningGeometry => throw new NotImplementedException();
+        public MonchaPoint3D BaseContextPoint { get; set; }
 
         public CadObject(bool mouseevent, MonchaPoint3D monchaPoint, bool move)
         {
@@ -56,7 +61,7 @@ namespace MonchaCadViewer.CanvasObj
             this.ContextMenu.ContextMenuClosing += ContextMenu_Closing;
 
             ContextMenuLib.CadObjMenu(this.ContextMenu);
-
+            StatColorSelect();
             this.MouseForce = move;
         }
 
@@ -97,22 +102,22 @@ namespace MonchaCadViewer.CanvasObj
         {
             if (this.IsMouseOver)
             {
-                if (this.Fill != Brushes.Transparent) this.Fill = Brushes.Orange;
+                if (this.Fill != Brushes.Transparent && this.Fill != null) this.Fill = Brushes.Orange;
                 if (this.Stroke != null) this.Stroke = Brushes.Orange;
             }
             else if (!this.BaseContextPoint.IsFix)
             {
-                if (this.Fill != Brushes.Transparent) this.Fill = Brushes.Black;
+                if (this.Fill != Brushes.Transparent && this.Fill != null) this.Fill = Brushes.Black;
                 if (this.Stroke != null) this.Stroke = Brushes.Black;
             }
             else if (this.IsSelected)
             {
-                if (this.Fill != Brushes.Transparent) this.Fill = Brushes.Red;
+                if (this.Fill != Brushes.Transparent && this.Fill != null) this.Fill = Brushes.Red;
                 if (this.Stroke != null) this.Stroke = Brushes.Red;
             }
             else
             {
-                if (this.Fill != Brushes.Transparent) this.Fill = Brushes.Blue;
+                if (this.Fill != Brushes.Transparent && this.Fill != null) this.Fill = Brushes.Blue;
                 if (this.Stroke != null) this.Stroke = Brushes.Blue;
             }
 
@@ -130,14 +135,11 @@ namespace MonchaCadViewer.CanvasObj
                     if (this.IsSelected && !Keyboard.IsKeyDown(Key.LeftShift))
 
                         canvas.UnselectAll(this);
-                    if (this.adornerLayer != null)
-                    {
-                        if (this.adornerLayer.Visibility == Visibility.Visible)
-                            this.adornerLayer.Visibility = Visibility.Hidden;
-                        else
-                            this.adornerLayer.Visibility = Visibility.Visible;
-                    }
 
+                    if (this.IsSelected && this.ObjAdorner != null)
+                        this.ObjAdorner.Visibility = Visibility.Visible;
+                    else
+                        this.ObjAdorner.Visibility = Visibility.Hidden;
                 }
                 else
                 {

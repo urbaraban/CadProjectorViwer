@@ -5,15 +5,6 @@
     <Setting Name="cl_moncha_path" Type="System.String" Scope="User">
       <Value Profile="(Default)" />
     </Setting>
-    <Setting Name="base_width" Type="System.Double" Scope="User">
-      <Value Profile="(Default)">3000</Value>
-    </Setting>
-    <Setting Name="base_height" Type="System.Double" Scope="User">
-      <Value Profile="(Default)">3000</Value>
-    </Setting>
-    <Setting Name="base_deep" Type="System.Double" Scope="User">
-      <Value Profile="(Default)">3000</Value>
-    </Setting>
     <Setting Name="cl_start_blank" Type="System.Int32" Scope="User">
       <Value Profile="(Default)">1</Value>
     </Setting>
@@ -25,9 +16,6 @@
     </Setting>
     <Setting Name="stg_last_file_path" Type="System.String" Scope="User">
       <Value Profile="(Default)" />
-    </Setting>
-    <Setting Name="cl_mash_multiplier" Type="System.Double" Scope="User">
-      <Value Profile="(Default)">1</Value>
     </Setting>
     <Setting Name="int_multi" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">True</Value>
@@ -60,15 +48,6 @@
       <Value Profile="(Default)">0</Value>
     </Setting>
     <Setting Name="base_distance" Type="System.Double" Scope="User">
-      <Value Profile="(Default)">0</Value>
-    </Setting>
-    <Setting Name="tmp_width" Type="System.Double" Scope="User">
-      <Value Profile="(Default)">0</Value>
-    </Setting>
-    <Setting Name="tmp_height" Type="System.Double" Scope="User">
-      <Value Profile="(Default)">0</Value>
-    </Setting>
-    <Setting Name="tmp_deep" Type="System.Double" Scope="User">
       <Value Profile="(Default)">0</Value>
     </Setting>
   </Settings>

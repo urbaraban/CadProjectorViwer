@@ -53,9 +53,21 @@ namespace MonchaCadViewer.CanvasObj
             this.KeyUp += Canvas_KeyUp;
             this.MouseLeftButtonDown += Canvas_MouseLeftDown;
 
+            MonchaHub.ChangeSize += MonchaHub_ChangeSize;
+
+        }
+
+        private void MonchaHub_ChangeSize(object sender, MonchaPoint3D e)
+        {
+            ResizeCanvas();
         }
 
         private void _size_ChangePoint(object sender, MonchaPoint3D e)
+        {
+            ResizeCanvas();
+        }
+
+        public void ResizeCanvas()
         {
             if (this._size.X != 0 && this._size.Y != 0 && this._size.Z != 0 && this._size.M.X != 0)
             {
@@ -90,12 +102,19 @@ namespace MonchaCadViewer.CanvasObj
                 polygon.OnBaseMesh = false;
                 this.Children.Add(polygon);
 
+                SendProcessor.Worker(this);
             }
         }
 
         public void SubsObj (CadObject obj)
         {
             obj.Updated += Obj_Updated;
+            obj.Selected += Obj_Selected;
+        }
+
+        private void Obj_Selected(object sender, CadObject e)
+        {
+            this.SelectedObject(this, e);
         }
 
         private void Obj_Updated(object sender, CadObject e)
@@ -106,8 +125,8 @@ namespace MonchaCadViewer.CanvasObj
         public void DrawRectangle(MonchaPoint3D point1, MonchaPoint3D point2)
         {
             CadRectangle cadRectangle = new CadRectangle(true, point1, point2, false);
-            CadDot cadDot1 = new CadDot(point1, MonchaHub.GetThinkess() * 4, false, true, false);
-            CadDot cadDot2 = new CadDot(point2, MonchaHub.GetThinkess() * 4, false, true, false);
+            CadDot cadDot1 = new CadDot(point1, MonchaHub.GetThinkess() * 4, true, false);
+            CadDot cadDot2 = new CadDot(point2, MonchaHub.GetThinkess() * 4, true, false);
             cadRectangle.Render = false;
             this.Children.Add(cadRectangle);
             this.Children.Add(cadDot1);
@@ -162,7 +181,7 @@ namespace MonchaCadViewer.CanvasObj
         private CadDot NewAnchor(bool Calibration, bool mousemove, bool move )
         {
             Point point = Mouse.GetPosition(this);
-            CadDot anchor = new CadDot(new MonchaPoint3D(point.X, point.Y, 0), this.ActualWidth * 0.02, false, mousemove, move);
+            CadDot anchor = new CadDot(new MonchaPoint3D(point.X, point.Y, 0), this.ActualWidth * 0.02, mousemove, move);
             anchors.Add(anchor);
             return anchor;
         }
@@ -232,7 +251,6 @@ namespace MonchaCadViewer.CanvasObj
                             //multiplier
 
                             //calibration flag
-                            true,
                             true,
                             false);
 

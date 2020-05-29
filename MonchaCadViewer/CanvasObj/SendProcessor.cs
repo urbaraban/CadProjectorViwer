@@ -10,60 +10,60 @@ namespace MonchaCadViewer.CanvasObj
 {
     public static class SendProcessor
     {
-        public static void Worker (CadCanvas canvas)
+        public static void Worker(CadCanvas canvas)
         {
-                LObjectList tempList = new LObjectList();
-                foreach (CadObject cadObject in canvas.Children)
+            LObjectList tempList = new LObjectList();
+            foreach (CadObject cadObject in canvas.Children)
+            {
+                if (cadObject.Render)
                 {
-                    if (cadObject.Render)
+                    if (cadObject is CadContour polygon)
                     {
-                        if (cadObject is CadContour polygon)
+                        foreach (List<MonchaPoint3D> points in polygon.GiveModPoint())
                         {
-                            foreach (List<MonchaPoint3D> points in polygon.GiveModPoint())
-                            {
-                                LObject lContour = new LObject();
-                                foreach (MonchaPoint3D point3D in points)
-                                    lContour.Add(new MonchaPoint3D(polygon.BaseContextPoint.GetMPoint.X + point3D.X,
-                                        polygon.BaseContextPoint.GetMPoint.Y + point3D.Y, 
-                                        point3D.Z, point3D.T));
-                                lContour.Closed = true;
-                                tempList.Add(lContour);
-
-                            }
-                        }
-
-                        if (cadObject is CadLine line)
-                        {
-
                             LObject lContour = new LObject();
+                            foreach (MonchaPoint3D point3D in points)
+                                lContour.Add(new MonchaPoint3D(polygon.BaseContextPoint.GetMPoint.X + point3D.X,
+                                    polygon.BaseContextPoint.GetMPoint.Y + point3D.Y,
+                                    point3D.Z, point3D.T));
+                            lContour.Closed = true;
+                            tempList.Add(lContour);
 
-                            lContour.Add(line.BaseContextPoint.GetMPoint3D);
-                            lContour.Add(line.SecondContextPoint.GetMPoint3D);
-                        
-                            if (lContour.Count > 1)
-                                tempList.Add(lContour);
                         }
+                    }
 
-                        if (cadObject is CadDot dpoint)
-                        {
-                            if (dpoint.IsSelected)
-                            {
-                                LObject lObject = new LObject(
-                                    new List<MonchaPoint3D>() {
-                                        new MonchaPoint3D(
-                                            dpoint.BaseContextPoint.GetMPoint.X,
-                                            dpoint.BaseContextPoint.GetMPoint.Y)
-                                    });
-
-                                tempList.Add(lObject);
-                            }
-                        }
-
-                    if (cadObject is CadRectangle cadRectangle)
+                    if (cadObject is CadLine line)
                     {
+
+                        LObject lContour = new LObject();
+
+                        lContour.Add(line.BaseContextPoint.GetMPoint3D);
+                        lContour.Add(line.SecondContextPoint.GetMPoint3D);
+
+                        if (lContour.Count > 1)
+                            tempList.Add(lContour);
+                    }
+
+                    if (cadObject is CadDot dpoint)
+                    {
+                        if (dpoint.IsSelected)
+                        {
                             LObject lObject = new LObject(
                                 new List<MonchaPoint3D>() {
                                         new MonchaPoint3D(
+                                            dpoint.BaseContextPoint.GetMPoint.X,
+                                            dpoint.BaseContextPoint.GetMPoint.Y)
+                                });
+
+                            tempList.Add(lObject);
+                        }
+                    }
+
+                    if (cadObject is CadRectangle cadRectangle)
+                    {
+                        LObject lObject = new LObject(
+                            new List<MonchaPoint3D>() {
+                                        new MonchaPoint3D(
                                             cadRectangle.BaseContextPoint.GetMPoint.X,
                                             cadRectangle.BaseContextPoint.GetMPoint.Y),
                                         new MonchaPoint3D(
@@ -76,27 +76,27 @@ namespace MonchaCadViewer.CanvasObj
                                             cadRectangle.SecondContextPoint.GetMPoint.X,
                                             cadRectangle.BaseContextPoint.GetMPoint.Y),
 
-                                });
+                            });
 
-                            tempList.Add(lObject);
+                        tempList.Add(lObject);
 
                     }
                 }
 
 
-                    tempList.OnBaseMesh = cadObject.OnBaseMesh;
+                tempList.OnBaseMesh = cadObject.OnBaseMesh;
 
-                }
+            }
 
-                tempList.Bop = new MonchaPoint3D(0, 0, 0);
-                tempList.Top = MonchaHub.Size.GetMPoint3D;
+            tempList.Bop = new MonchaPoint3D(0, 0, 0);
+            tempList.Top = MonchaHub.Size.GetMPoint3D;
 
 
-                if (tempList.Count > 0)
-                {
-                    MonchaHub.MainFrame = tempList;
-                    MonchaHub.RefreshFrame();
-                }
+            if (tempList.Count > 0)
+            {
+                MonchaHub.MainFrame = tempList;
+                MonchaHub.RefreshFrame();
+            }
         }
 
         public static void DrawZone(MonchaDevice device)

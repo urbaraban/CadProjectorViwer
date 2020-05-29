@@ -12,17 +12,15 @@ namespace MonchaCadViewer.CanvasObj
     {
         private RectangleGeometry _rectg;
         private Rect _rect;
-        private bool _calibration;
 
         public double Size { get; set; }
 
         protected override Geometry DefiningGeometry => this._rectg;
 
 
-        public CadDot(MonchaPoint3D point, double Size, bool Calibration, bool capturemouse, bool move) : base (capturemouse, point, move)
+        public CadDot(MonchaPoint3D point, double Size, bool capturemouse, bool move) : base (capturemouse, point, move)
         {
             this.Size = Size;
-            this._calibration = Calibration;
             this.Focusable = true;
 
             Canvas.SetZIndex(this, 999);

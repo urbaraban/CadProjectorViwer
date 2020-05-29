@@ -55,9 +55,9 @@ namespace MonchaCadViewer.CanvasObj
             {
                 canvas.SubsObj(this);
                 this.adornerLayer = AdornerLayer.GetAdornerLayer(canvas);
-                AdornerLineDim myAdorner = new AdornerLineDim(this);
-                myAdorner.DataContext = this;
-                adornerLayer.Add(myAdorner);
+                this.ObjAdorner = new AdornerLineDim(this);
+                this.ObjAdorner.DataContext = this;
+                adornerLayer.Add(this.ObjAdorner);
                 adornerLayer.Update();
                 //myAdorner.AngleChange += MyAdorner_AngleChange;
             }

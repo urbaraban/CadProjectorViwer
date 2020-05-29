@@ -19,7 +19,7 @@ namespace MonchaCadViewer.CanvasObj.DimObj
         // The surrounding boarder.
         private Path outline;
 
-        private CadContour _adornedElement;
+        private CadContour Contour;
 
         private VisualCollection visualChildren;
 
@@ -33,14 +33,13 @@ namespace MonchaCadViewer.CanvasObj.DimObj
         // The bounds of the Strokes;
         private Rect strokeBounds = Rect.Empty;
 
-        private FormattedText widthtext;
-        private FormattedText heighttext;
-        private FormattedText angletext;
+        private Pen LinePen;
+        private double Textsize;
 
-        public AdornerContourFrame(UIElement adornedElement, CadCanvas canvas)
+        public AdornerContourFrame(UIElement adornedElement)
             : base(adornedElement)
         {
-            this._adornedElement = adornedElement as CadContour;
+            this.Contour = adornedElement as CadContour;
             this.IsClipEnabled = true;
             visualChildren = new VisualCollection(this);
             rotateHandle = new Thumb();
@@ -61,6 +60,8 @@ namespace MonchaCadViewer.CanvasObj.DimObj
             visualChildren.Add(rotateHandle);
 
             strokeBounds = new Rect(-AdornedStrokes.DesiredSize.Width, - AdornedStrokes.DesiredSize.Height, AdornedStrokes.DesiredSize.Width * 2, AdornedStrokes.DesiredSize.Height * 2);
+            LinePen = new Pen(Brushes.LightGray, MonchaHub.GetThinkess() / 2);
+            Textsize = MonchaHub.GetThinkess() * 5;
         }
 
         /// <summary>
@@ -182,24 +183,55 @@ namespace MonchaCadViewer.CanvasObj.DimObj
             // Draws the thumb and the rectangle around the strokes.
             rotateHandle.Arrange(handleRect);
             outline.Data = new RectangleGeometry(strokeBounds);
-            outline.Arrange(new Rect(_adornedElement.Size));
+            outline.Arrange(new Rect(Contour.Size));
+
+            //Line side to contour
+            //Top 
+            //Line
+            DrawMarginLine(new Point(0, -Contour.BaseContextPoint.GetMPoint.Y), 
+            new Point(0, -outline.ActualHeight / 2),
+            new Point(Textsize / 2, (-Contour.BaseContextPoint.GetMPoint.Y - outline.ActualHeight / 2) / 2 - Textsize));
+            //Bottom
+            DrawMarginLine(new Point(0, MonchaHub.Size.GetMPoint.Y - Contour.BaseContextPoint.GetMPoint.Y),
+            new Point(0, outline.ActualHeight / 2),
+            new Point(Textsize / 2, (MonchaHub.Size.GetMPoint.Y - Contour.BaseContextPoint.GetMPoint.Y + outline.ActualHeight / 2) / 2));
+            //Left
+            DrawMarginLine(new Point(-Contour.BaseContextPoint.GetMPoint.X, 0),
+            new Point(-outline.ActualWidth / 2, 0),
+            new Point(-Contour.BaseContextPoint.GetMPoint.X / 2 - outline.ActualWidth / 2, Textsize / 2));
+            //Right
+            DrawMarginLine(new Point(MonchaHub.Size.GetMPoint.X - Contour.BaseContextPoint.GetMPoint.X, 0),
+            new Point(outline.ActualWidth / 2, 0),
+            new Point((MonchaHub.Size.GetMPoint.X - Contour.BaseContextPoint.GetMPoint.X + outline.ActualWidth / 2) / 2, Textsize /2));
 
             //width
-            widthtext = new FormattedText("X:" + Math.Round(Math.Round(outline.ActualWidth), 2).ToString(), new System.Globalization.CultureInfo("ru-RU"), FlowDirection.LeftToRight,
-            new Typeface("Segoe UI"), (int)MonchaHub.GetThinkess() * 5, Brushes.Gray);
-            drawingContext.DrawText(widthtext, new Point(outline.Data.Bounds.Location.X + outline.Data.Bounds.Width / 2, outline.Data.Bounds.Location.Y + outline.Data.Bounds.Height / 2 - widthtext.Height * 1.5));
+
+            drawingContext.DrawText(new FormattedText("X:" + Math.Round(Math.Round(outline.ActualWidth), 2).ToString(), new System.Globalization.CultureInfo("ru-RU"), FlowDirection.LeftToRight,
+            new Typeface("Segoe UI"), (int)Textsize, Brushes.Gray), 
+            new Point(outline.Data.Bounds.Location.X + outline.Data.Bounds.Width / 2, outline.Data.Bounds.Location.Y + outline.Data.Bounds.Height / 2 - Textsize * 1.5));
 
             //height
-            heighttext = new FormattedText("Y:" + Math.Round(Math.Round(outline.ActualHeight), 2).ToString(), new System.Globalization.CultureInfo("ru-RU"), FlowDirection.LeftToRight,
-           new Typeface("Segoe UI"), (int)MonchaHub.GetThinkess() * 5, Brushes.Gray);
-            drawingContext.DrawText(heighttext, new Point(outline.Data.Bounds.Location.X + outline.Data.Bounds.Width / 2, outline.Data.Bounds.Location.Y + outline.Data.Bounds.Height / 2));
+            drawingContext.DrawText(new FormattedText("Y:" + Math.Round(Math.Round(outline.ActualHeight), 2).ToString(), new System.Globalization.CultureInfo("ru-RU"), FlowDirection.LeftToRight,
+           new Typeface("Segoe UI"), (int)Textsize, Brushes.Gray), 
+           new Point(outline.Data.Bounds.Location.X + outline.Data.Bounds.Width / 2, outline.Data.Bounds.Location.Y + outline.Data.Bounds.Height / 2));
 
             //angle
             if (rotation != null)
             {
-                angletext = new FormattedText("a:" + Math.Round(Math.Round(rotation.Angle), 2).ToString(), new System.Globalization.CultureInfo("ru-RU"), FlowDirection.LeftToRight,
-            new Typeface("Segoe UI"), (int)MonchaHub.GetThinkess() * 5, Brushes.Gray);
-                drawingContext.DrawText(angletext, new Point(outline.Data.Bounds.Location.X + outline.Data.Bounds.Width / 2, outline.Data.Bounds.Location.Y + outline.Data.Bounds.Height / 2 + widthtext.Height));
+                drawingContext.DrawText(new FormattedText("a:" + Math.Round(Math.Round(rotation.Angle), 2).ToString(), new System.Globalization.CultureInfo("ru-RU"), 
+                    FlowDirection.LeftToRight,
+            new Typeface("Segoe UI"), 
+            (int)Textsize, Brushes.Gray), 
+            new Point(outline.Data.Bounds.Location.X + outline.Data.Bounds.Width / 2, outline.Data.Bounds.Location.Y + outline.Data.Bounds.Height / 2 + Textsize));
+            }
+            void DrawMarginLine(Point point1, Point point2, Point TextPoint)
+            {
+                drawingContext.DrawLine(LinePen, point1, point2);
+                //text
+                drawingContext.DrawText(
+                    new FormattedText(Math.Round(Math.Sqrt(Math.Pow(point2.X - point1.X, 2) + Math.Pow(point2.Y - point1.Y, 2)), 2).ToString(),
+                    new System.Globalization.CultureInfo("ru-RU"), FlowDirection.LeftToRight, new Typeface("Segoe UI"), (int)Textsize, Brushes.Gray),
+                TextPoint);
             }
         }
 

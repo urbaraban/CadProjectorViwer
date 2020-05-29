@@ -12,7 +12,7 @@ namespace MonchaCadViewer.Properties {
     
     
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Editors.SettingsDesigner.SettingsSingleFileGenerator", "16.4.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Editors.SettingsDesigner.SettingsSingleFileGenerator", "16.6.0.0")]
     internal sealed partial class Settings : global::System.Configuration.ApplicationSettingsBase {
         
         private static Settings defaultInstance = ((Settings)(global::System.Configuration.ApplicationSettingsBase.Synchronized(new Settings())));
@@ -32,42 +32,6 @@ namespace MonchaCadViewer.Properties {
             }
             set {
                 this["cl_moncha_path"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("3000")]
-        public double base_width {
-            get {
-                return ((double)(this["base_width"]));
-            }
-            set {
-                this["base_width"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("3000")]
-        public double base_height {
-            get {
-                return ((double)(this["base_height"]));
-            }
-            set {
-                this["base_height"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("3000")]
-        public double base_deep {
-            get {
-                return ((double)(this["base_deep"]));
-            }
-            set {
-                this["base_deep"] = value;
             }
         }
         
@@ -116,18 +80,6 @@ namespace MonchaCadViewer.Properties {
             }
             set {
                 this["stg_last_file_path"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("1")]
-        public double cl_mash_multiplier {
-            get {
-                return ((double)(this["cl_mash_multiplier"]));
-            }
-            set {
-                this["cl_mash_multiplier"] = value;
             }
         }
         
@@ -260,42 +212,6 @@ namespace MonchaCadViewer.Properties {
             }
             set {
                 this["base_distance"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("0")]
-        public double tmp_width {
-            get {
-                return ((double)(this["tmp_width"]));
-            }
-            set {
-                this["tmp_width"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("0")]
-        public double tmp_height {
-            get {
-                return ((double)(this["tmp_height"]));
-            }
-            set {
-                this["tmp_height"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("0")]
-        public double tmp_deep {
-            get {
-                return ((double)(this["tmp_deep"]));
-            }
-            set {
-                this["tmp_deep"] = value;
             }
         }
     }

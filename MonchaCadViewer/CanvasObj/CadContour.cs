@@ -14,24 +14,23 @@ namespace MonchaCadViewer.CanvasObj
 {
     class CadContour : CadObject
     {
-        private StreamGeometry _path;
+        public StreamGeometry Path { get; set; }
         private LObjectList _points;
         private bool _maincanvas;
+        private AdornerContourFrame adornerContour;
 
+        protected override Geometry DefiningGeometry => this.Path;
 
-        protected override Geometry DefiningGeometry => this._path;
-
-        AdornerContourFrame myAdorner;
 
         public bool Mirror { get; set; } = false;
         public double Angle { get; set; } = 0;
 
-        public Size Size => _path.Bounds.Size;
+        public Size Size => Path.Bounds.Size;
 
         public CadContour(LObjectList point3Ds, MonchaPoint3D Center, bool maincanvas, bool Capturemouse) : base (Capturemouse, Center, false)
         {
             this._points = point3Ds;
-            this._path = new StreamGeometry();
+            this.Path = new StreamGeometry();
             this._maincanvas = maincanvas;
             this.UpdateGeometry();
 
@@ -59,7 +58,7 @@ namespace MonchaCadViewer.CanvasObj
         {
             Angle += Math.Abs(e.Delta)/e.Delta * (Keyboard.Modifiers == ModifierKeys.Shift ? 5 : 1);
             UpdateGeometry();
-            myAdorner.Rotate(this.Angle);
+            this.adornerContour.Rotate(this.Angle);
         }
 
         private void CadContour_MouseDown(object sender, MouseButtonEventArgs e)
@@ -111,10 +110,12 @@ namespace MonchaCadViewer.CanvasObj
               /*  this.Width = canvas.Width;
                 this.Height = canvas.Height;*/
 
-                this.myAdorner = new AdornerContourFrame(this, canvas);
-                myAdorner.DataContext = this;
-                adornerLayer.Add(myAdorner);
-                myAdorner.AngleChange += MyAdorner_AngleChange;
+                this.ObjAdorner = new AdornerContourFrame(this);
+                this.ObjAdorner.Visibility = Visibility.Hidden;
+                this.ObjAdorner.DataContext = this;
+                adornerLayer.Add(this.ObjAdorner);
+                this.adornerContour = this.ObjAdorner as AdornerContourFrame;
+                this.adornerContour.AngleChange += MyAdorner_AngleChange;
             }
         }
 
@@ -154,7 +155,7 @@ namespace MonchaCadViewer.CanvasObj
                 {
                     MonchaPoint3D modPoint = _points[i][j];
                     if (this.Mirror)
-                        modPoint = new MonchaPoint3D(- modPoint.X, modPoint.Y, modPoint.Z, modPoint.M);
+                        modPoint.Update(- modPoint.X, modPoint.Y, modPoint.Z);
 
                     if (this.Angle != 0)
                         modPoint = RotatePoint(modPoint, new MonchaPoint3D(0, 0, 0));
@@ -192,9 +193,9 @@ namespace MonchaCadViewer.CanvasObj
         {
             List<List<MonchaPoint3D>> workPoint = GiveModPoint();
 
-            this._path.Clear();
+            this.Path.Clear();
 
-            using (StreamGeometryContext ctx = this._path.Open())
+            using (StreamGeometryContext ctx = this.Path.Open())
             {
                 for (int i = 0; i < workPoint.Count; i++)
                 {

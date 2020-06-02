@@ -1,4 +1,5 @@
-﻿using MonchaSDK;
+﻿using Kompas6API7;
+using MonchaSDK;
 using System;
 using System.Windows;
 using System.Windows.Controls.Primitives;
@@ -187,22 +188,21 @@ namespace MonchaCadViewer.CanvasObj.DimObj
 
             //Line side to contour
             //Top 
-            //Line
             DrawMarginLine(new Point(0, -Contour.BaseContextPoint.GetMPoint.Y), 
             new Point(0, -outline.ActualHeight / 2),
-            new Point(Textsize / 2, (-Contour.BaseContextPoint.GetMPoint.Y - outline.ActualHeight / 2) / 2 - Textsize));
+            new Point(0, -Contour.BaseContextPoint.GetMPoint.Y));
             //Bottom
             DrawMarginLine(new Point(0, MonchaHub.Size.GetMPoint.Y - Contour.BaseContextPoint.GetMPoint.Y),
             new Point(0, outline.ActualHeight / 2),
-            new Point(Textsize / 2, (MonchaHub.Size.GetMPoint.Y - Contour.BaseContextPoint.GetMPoint.Y + outline.ActualHeight / 2) / 2));
+            new Point(0, MonchaHub.Size.GetMPoint.Y - Contour.BaseContextPoint.GetMPoint.Y - Textsize * 2));
             //Left
             DrawMarginLine(new Point(-Contour.BaseContextPoint.GetMPoint.X, 0),
             new Point(-outline.ActualWidth / 2, 0),
-            new Point(-Contour.BaseContextPoint.GetMPoint.X / 2 - outline.ActualWidth / 2, Textsize / 2));
+            new Point(-Contour.BaseContextPoint.GetMPoint.X, 0));
             //Right
             DrawMarginLine(new Point(MonchaHub.Size.GetMPoint.X - Contour.BaseContextPoint.GetMPoint.X, 0),
             new Point(outline.ActualWidth / 2, 0),
-            new Point((MonchaHub.Size.GetMPoint.X - Contour.BaseContextPoint.GetMPoint.X + outline.ActualWidth / 2) / 2, Textsize /2));
+            new Point(MonchaHub.Size.GetMPoint.X - Contour.BaseContextPoint.GetMPoint.X -Textsize * 2, 0));
 
             //width
 

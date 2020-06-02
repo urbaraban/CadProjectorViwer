@@ -42,7 +42,6 @@ namespace MonchaCadViewer.CanvasObj
             this.Background = Brushes.Transparent; //backBrush;
             this.Width = this._size.GetMPoint.X;
             this.Height = this._size.GetMPoint.Y;
-            this.ClipToBounds = true;
 
 
             this._size.ChangePoint += _size_ChangePoint;

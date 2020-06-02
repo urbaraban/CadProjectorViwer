@@ -21,7 +21,6 @@ namespace MonchaCadViewer.CanvasObj
 
         protected override Geometry DefiningGeometry => this.Path;
 
-
         public bool Mirror { get; set; } = false;
         public double Angle { get; set; } = 0;
 
@@ -153,12 +152,12 @@ namespace MonchaCadViewer.CanvasObj
                 List<MonchaPoint3D> Points = new List<MonchaPoint3D>();
                 for (int j = 0; j < _points[i].Count; j++)
                 {
-                    MonchaPoint3D modPoint = _points[i][j];
+                    MonchaPoint3D modPoint = new MonchaPoint3D(_points[i][j]);
                     if (this.Mirror)
-                        modPoint.Update(- modPoint.X, modPoint.Y, modPoint.Z);
+                        modPoint.Update(-_points[i][j].X, _points[i][j].Y, _points[i][j].Z);
 
                     if (this.Angle != 0)
-                        modPoint = RotatePoint(modPoint, new MonchaPoint3D(0, 0, 0));
+                        modPoint = RotatePoint(_points[i][j], new MonchaPoint3D(0, 0, 0));
 
                     Points.Add(modPoint);
                 }

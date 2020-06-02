@@ -109,18 +109,6 @@ namespace MonchaCadViewer.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("True")]
-        public bool int_realtime {
-            get {
-                return ((bool)(this["int_realtime"]));
-            }
-            set {
-                this["int_realtime"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute(",")]
         public char svg_separator1 {
             get {
@@ -140,18 +128,6 @@ namespace MonchaCadViewer.Properties {
             }
             set {
                 this["svg_separator2"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("15")]
-        public double cl_crs {
-            get {
-                return ((double)(this["cl_crs"]));
-            }
-            set {
-                this["cl_crs"] = value;
             }
         }
         
@@ -212,6 +188,18 @@ namespace MonchaCadViewer.Properties {
             }
             set {
                 this["base_distance"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("35")]
+        public double cl_crs {
+            get {
+                return ((double)(this["cl_crs"]));
+            }
+            set {
+                this["cl_crs"] = value;
             }
         }
     }

@@ -168,9 +168,12 @@ namespace MonchaCadViewer
                 DeepUpDn.DataContext = MonchaHub.Size;
                 DeepUpDn.SetBinding(NumericUpDown.ValueProperty, "Z");
 
-                MashMultiplierUpDn.DataContext = MonchaHub.Size.M;
-                MashMultiplierUpDn.SetBinding(NumericUpDown.ValueProperty, "X");
+                MashMultiplierUpDn.Value = MonchaHub.Size.M.X;
 
+            }
+            else
+            {
+                BrowseMoncha();
             }
         }
 
@@ -388,8 +391,15 @@ namespace MonchaCadViewer
             MonchaHub.CanPlay = !MonchaHub.CanPlay;
             if (MonchaHub.CanPlay)
             {
-                MonchaHub.Play();
-                PlayBtn.Background = Brushes.YellowGreen;
+                if (MonchaHub.Devices.Count > 0)
+                {
+                    MonchaHub.Play();
+                    PlayBtn.Background = Brushes.YellowGreen;
+                }
+                else
+                {
+                    MessageBox.Show("Не найден проектор. Нажмите 'Обновить'", "Внимание", MessageBoxButton.OK);
+                }
             }
             else
             {
@@ -588,14 +598,14 @@ namespace MonchaCadViewer
         {
             args.Interval = 0;
             MashMultiplierUpDn.Value = MashMultiplierUpDn.Value.Value * 10;
-            MonchaHub.Size.M.Update(1/MashMultiplierUpDn.Value.Value);
+            MonchaHub.Size.M.Update(MashMultiplierUpDn.Value.Value);
         }
 
         private void MashMultiplierUpDn_ValueDecremented(object sender, NumericUpDownChangedRoutedEventArgs args)
         {
             args.Interval = 0;
             MashMultiplierUpDn.Value = MashMultiplierUpDn.Value.Value / 10;
-            MonchaHub.Size.M.Update(1/MashMultiplierUpDn.Value.Value);
+            MonchaHub.Size.M.Update(MashMultiplierUpDn.Value.Value);
         }
 
 
@@ -641,12 +651,6 @@ namespace MonchaCadViewer
         }
 
 
-        private void RealTimeToggle_Toggled(object sender, RoutedEventArgs e)
-        {
-            AppSt.Default.int_realtime = RealTimeToggle.IsOn;
-        }
-
-
         private void ScanRateRealSlider_PreviewMouseDown(object sender, MouseButtonEventArgs e)
         {
             if (sender is Slider slider)
@@ -660,16 +664,20 @@ namespace MonchaCadViewer
         {
             if (KmpsAppl.KompasAPI == null)
             {
-                KmpsAppl.Connect();
-                KmpsAppl.ChangeDoc += KmpsAppl_ChangeDoc;
-                KmpsAppl.ConnectBoolEvent += KmpsAppl_ConnectBoolEvent;
+                if (KmpsAppl.Connect())
+                {
+                    
+                    KmpsAppl.ChangeDoc += KmpsAppl_ChangeDoc;
+                    KmpsAppl.ConnectBoolEvent += KmpsAppl_ConnectBoolEvent;
 
-                kmpsConnectToggle.IsOn = KmpsAppl.KompasAPI != null;
+                    kmpsConnectToggle.IsOn = KmpsAppl.KompasAPI != null;
 
-                KmpsAppl.SelectDoc();
+                    KmpsAppl.SelectDoc();
+                }
 
             }
         }
+
 
         private void KmpsAppl_ChangeDoc(object sender, KmpsDoc e)
         {
@@ -696,7 +704,7 @@ namespace MonchaCadViewer
         {
             if (KmpsAppl.KompasAPI != null)
             {
-                LObjectList lObjectList = KMPS.GetContour(AppSt.Default.cl_crs, MashMultiplierUpDn.Value.Value, false, true);
+                LObjectList lObjectList = KMPS.GetContour(MonchaHub.CRS * MonchaHub.Size.M.X, MonchaHub.Size.M.X, false, true);
                 ContourProcessor(false, new List<LObjectList>() { lObjectList });
             }
 
@@ -706,7 +714,7 @@ namespace MonchaCadViewer
         {
             if (KmpsAppl.KompasAPI != null)
             {
-                LObjectList lObjectList = KMPS.GetContour(AppSt.Default.cl_crs, MashMultiplierUpDn.Value.Value, true, true);
+                LObjectList lObjectList = KMPS.GetContour(MonchaHub.CRS * MonchaHub.Size.M.X, MashMultiplierUpDn.Value.Value, true, true);
                 ContourProcessor(false, new List<LObjectList>() { lObjectList });
             }
         }
@@ -821,12 +829,12 @@ namespace MonchaCadViewer
                 LogBox.Items.Add((AppSt.Default.save_qr_path ? AppSt.Default.save_base_folder : AppSt.Default.save_work_folder) + @qrpath);
                 if (File.Exists((AppSt.Default.save_qr_path ? AppSt.Default.save_base_folder : AppSt.Default.save_work_folder) + @qrpath))
                     {
-                    Progressinfo.Content = "Файл найден!";
+                    //Progressinfo.Content = "Файл найден!";
                     OpenFile((AppSt.Default.save_qr_path ? AppSt.Default.save_base_folder : AppSt.Default.save_work_folder) + @qrpath);
                     }
                 else
                 {
-                    Progressinfo.Content = "Файл не найден!";
+                   // Progressinfo.Content = "Файл не найден!";
                 }
             }
         }
@@ -856,7 +864,10 @@ namespace MonchaCadViewer
 
         private void QRBtn_Click(object sender, RoutedEventArgs e)
         {
+            if (QRBtn.IsChecked.Value)
+            {
 
+            }
 
         }
 

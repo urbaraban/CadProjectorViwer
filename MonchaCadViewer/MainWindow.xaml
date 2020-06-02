@@ -6,9 +6,9 @@
         xmlns:local="clr-namespace:MonchaCadViewer"
         xmlns:Controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
         xmlns:Properties="clr-namespace:MonchaCadViewer.Properties" xmlns:controlzex="urn:controlzex"
-    xmlns:pt="http://propertytools.org/wpf" x:Name="MainWindow1" x:Class="MonchaCadViewer.MainWindow"
+    xmlns:pt="http://propertytools.org/wpf" xmlns:c="clr-namespace:CalcBinding;assembly=CalcBinding" x:Name="MainWindow1" x:Class="MonchaCadViewer.MainWindow"
         mc:Ignorable="d"
-        Title="Тукат" Focusable="False" ResizeMode="CanResizeWithGrip" SizeToContent="Manual" KeyboardNavigation.TabNavigation="None"  AllowDrop="True" Height="688.898" Width="947" Closing="Window_Closing" Closed="Window_Closed" controlzex:KeyboardNavigationEx.AlwaysShowFocusVisual="True" WindowStartupLocation="CenterScreen" Icon="logo-01.png" KeyUp="MainWindow1_KeyUp" TextInput="MainWindow1_TextInput" PreviewKeyDown="MainWindow1_PreviewKeyDown">
+        Title="2CUT" Focusable="False" ResizeMode="CanResizeWithGrip" SizeToContent="Manual" KeyboardNavigation.TabNavigation="None"  AllowDrop="True" Height="766.898" Width="999" Closing="Window_Closing" Closed="Window_Closed" controlzex:KeyboardNavigationEx.AlwaysShowFocusVisual="True" WindowStartupLocation="CenterScreen" Icon="logo-01.png" KeyUp="MainWindow1_KeyUp" TextInput="MainWindow1_TextInput" PreviewKeyDown="MainWindow1_PreviewKeyDown">
     <Window.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -37,307 +37,347 @@
         </ResourceDictionary>
     </Window.Resources>
     <Grid>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="30"/>
-            <RowDefinition Height="50"/>
-            <RowDefinition Height="343*"/>
-            <RowDefinition Height="117*"/>
-            <RowDefinition Height="88"/>
-            <RowDefinition Height="30"/>
-        </Grid.RowDefinitions>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="224"/>
-            <ColumnDefinition/>
-            <ColumnDefinition Width="278"/>
-        </Grid.ColumnDefinitions>
-        <Menu x:Name="menu" HorizontalAlignment="Stretch" Width="Auto" VerticalContentAlignment="Center" Padding="4,2,0,0" Grid.ColumnSpan="3" Margin="0,1,0,0">
-            <MenuItem Header="Файл">
-                <MenuItem x:Name="menuConnect" Header="Подключить" />
-                <Separator/>
-                <MenuItem x:Name="Menu_NewFile" Header="Создать" />
-                <MenuItem x:Name="Menu_OpenFile" Header="Открыть" Click="OpenBtn_Click"/>
-                <Separator/>
-                <MenuItem Header="Сохранить"/>
-                <Separator/>
-                <MenuItem Header="Закрыть компас"/>
-                <MenuItem Header="Выход" />
-            </MenuItem>
-            <MenuItem Header="Папки">
-                <MenuItem x:Name="WorkFolder" Header="Рабочая папка" />
-            </MenuItem>
+        <DockPanel Grid.ColumnSpan="3" Grid.RowSpan="5" Grid.Row="1">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="215"/>
+                    <ColumnDefinition/>
+                    <ColumnDefinition Width="290"/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="628*"/>
+                    <RowDefinition Height="35*"/>
+                </Grid.RowDefinitions>
+                <DockPanel Grid.ColumnSpan="3">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition/>
+                            <ColumnDefinition Width="290"/>
+                        </Grid.ColumnDefinitions>
+                        <DockPanel>
+                            <ToolBarPanel Orientation="Horizontal">
+                                <ToolBar Grid.ColumnSpan="2">
+                                    <ToolBarPanel Orientation="Vertical" Width="100">
+                                        <Button x:Name="OpenBtn" AllowDrop="True" Content="Open" DragEnter="OpenBtn_DragEnter" DragOver="OpenBtn_DragOver" DragLeave="OpenBtn_DragLeave" Drop="OpenBtn_DragDrop" Click="OpenBtn_Click" Grid.ColumnSpan="2" Background="{x:Null}" BorderBrush="{x:Null}"/>
+                                        <Separator></Separator>
+                                        <ToggleButton x:Name="QRBtn" Content="QR" Click="QRBtn_Click" Focusable="False" Margin="0,0,0,0" Background="{x:Null}" BorderBrush="{x:Null}"/>
+                                    </ToolBarPanel>
+                                    <Separator></Separator>
 
-        </Menu>
+                                    <Button x:Name="ReloadBtn" Content="Refresh" Margin="5,5,5,5" HorizontalAlignment="Right"  Click="ReloadBtn_Click" Grid.Column="1" VerticalAlignment="Stretch"/>
+                                </ToolBar>
+                                <ToolBar>
+                                    <Button x:Name="LineBtn" Content="Line" Height="40" VerticalAlignment="Top" Width="40" Click="LineBtn_Click"/>
+                                    <Button x:Name="ClearBtn" Content="CLear" Height="40" VerticalAlignment="Top" Width="74" Click="ClearBtn_Click"/>
+                                </ToolBar>
+                            </ToolBarPanel>
+                        </DockPanel>
+                        <DockPanel Grid.Column="1" >
+                            <Grid>
+                                <Grid.RowDefinitions>
+                                </Grid.RowDefinitions>
+                                <Grid.ColumnDefinitions>
 
-        <Border x:Name="CanvasBorder" Style="{StaticResource Border}" Background="LightGray" Grid.Column="1" Grid.Row="2" Margin="0,0,0,20" Grid.RowSpan="2">
-            <Viewbox x:Name="MainViewBox" ClipToBounds="True" StretchDirection="DownOnly"  Stretch="Uniform"  Margin="0,0,0,0" ForceCursor="True" KeyboardNavigation.TabNavigation="Once" DragEnter="MainViewBox_DragEnter" Drop="MainViewBox_Drop">
-                <Viewbox.DataContext>
-                    <Properties:Settings/>
-                </Viewbox.DataContext>
-                <Border x:Name="CanvasBoxBorder" Background="White"  Style="{StaticResource Border}" Grid.Column="1" Grid.Row="2" Margin="3" >
-                    <Viewbox  x:Name="CanvasBox"  Stretch="Uniform" StretchDirection="DownOnly">
-                    </Viewbox>
-                </Border>
-            </Viewbox>
-        </Border>
+                                </Grid.ColumnDefinitions>
+                                <Button x:Name="PlayBtn" Content="Play" Margin="5,5,5,5" Click="PlayBtn_Click" Background="#FFFFD100"/>
+                            </Grid>
 
-        <StackPanel Width="437" HorizontalAlignment="Right" Orientation="Horizontal" Grid.Row="5" Grid.Column="1">
-            <Label x:Name="Progressinfo" Content="Info" Width="267" HorizontalAlignment="Right"/>
-            <ProgressBar x:Name="PgBar" Margin="3" Width="148"/>
-        </StackPanel>
 
-        <TabControl x:Name="tabControl" Margin="5,0,5,1" Grid.Column="2" Grid.Row="2" Grid.RowSpan="3">
-            <TabItem x:Name="ContourSettingTab" Header="Device" Controls:HeaderedControlHelper.HeaderFontSize="18">
-                <Grid Background="#FFE5E5E5">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="52.333"/>
-                        <ColumnDefinition Width="52"/>
-                        <ColumnDefinition Width="48"/>
-                        <ColumnDefinition Width="54"/>
-                        <ColumnDefinition Width="13*"/>
-                        <ColumnDefinition/>
-                    </Grid.ColumnDefinitions>
-                    <Slider x:Name="AngleWaitSlider" Margin="0,0,0,59" Value="1" Minimum="1"  SmallChange="1" Grid.Column="1" Grid.ColumnSpan="4" Maximum="30" Height="30" VerticalAlignment="Bottom" ValueChanged="SettingSlider_ValueChanged"/>
-                    <ComboBox x:Name="DeviceCombo" Margin="10,25,0,0" VerticalAlignment="Top" IsEnabled="True"  DataContextChanged="DeviceCombo_DataContextChanged" Height="26" SelectionChanged="DeviceCombo_SelectionChanged" RenderTransformOrigin="0.5,0.5" Grid.ColumnSpan="2"/>
-                    <Controls:ToggleSwitch x:Name="InvertXtoggle" Content="Invert X" HorizontalAlignment="Left" Margin="16,325,0,0" VerticalAlignment="Top" HorizontalContentAlignment="Right" FlowDirection="RightToLeft" Controls:HeaderedControlHelper.HeaderFontSize="12" FontSize="12" Grid.ColumnSpan="3" Height="20" Width="108" Toggled="SettingToggle_Toggled"/>
-                    <Controls:ToggleSwitch x:Name="InvertYtoggle" Content="Invert Y" HorizontalAlignment="Stretch" Margin="34,325,10,0" VerticalAlignment="Top" HorizontalContentAlignment="Right" FlowDirection="RightToLeft" FontSize="12" Height="20" Grid.ColumnSpan="3" Grid.Column="2" Toggled="SettingToggle_Toggled"/>
+                        </DockPanel>
+                    </Grid>
+                </DockPanel>
 
-                    <Controls:NumericUpDown x:Name="DistanceUpDn" Margin="0,77,0,0" Value="{Binding cl_distance, Mode=TwoWay}" Background="White" Height="26" VerticalAlignment="Top" Grid.ColumnSpan="3" Grid.Column="1"/>
+                <DockPanel Grid.Row="1">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="47*"/>
+                            <RowDefinition Height="60*"/>
+                        </Grid.RowDefinitions>
+                        <DockPanel>
 
-                    <Label x:Name="DistanceLabel" Content="(00000)" Margin="3,77,0,0" VerticalAlignment="Top" Grid.Column="4" Height="26"/>
-                    <Label x:Name="label_Copy5" Content="Дальность" HorizontalAlignment="Left" Margin="10,51,0,0" VerticalAlignment="Top" Width="74" Height="26" Grid.ColumnSpan="2"/>
-                    <ComboBox x:Name="LaserMetersCombo" Margin="5,25,0,0" VerticalAlignment="Top" Grid.Column="2" Height="26" Grid.ColumnSpan="2"/>
-                    <Controls:ToggleSwitch x:Name="LaserMeterToggle"  Content="" HorizontalAlignment="Right" Margin="0,27,0,0" VerticalAlignment="Top" IsOn="False" RenderTransformOrigin="0.5,0.5" HorizontalContentAlignment="Center" Height="25" Grid.Column="4" Width="47">
-                        <Controls:ToggleSwitch.DataContext>
-                            <Properties:Settings/>
-                        </Controls:ToggleSwitch.DataContext>
-                    </Controls:ToggleSwitch>
-                    <Label x:Name="label_Copy6" Content="Дальномер" HorizontalAlignment="Left" Margin="5,-1,0,0" VerticalAlignment="Top" Width="74" Height="26" Grid.ColumnSpan="2" Grid.Column="2"/>
-                    <Controls:NumericUpDown x:Name="RedUpDn" Margin="0,217,0,0" Value="255" Maximum="255" Minimum="1" Background="White" Height="26" VerticalAlignment="Top" Grid.Column="2" Grid.ColumnSpan="3" ValueChanged="SettingUpDn_ValueChanged"/>
-                    <Label x:Name="StartWaitLabel" Content="{Binding Value, ElementName=AngleWaitSlider}" Margin="0,0,0,64" Height="26" VerticalAlignment="Bottom" HorizontalContentAlignment="Center"/>
-                    <Label x:Name="StartWaitLabel_Copy" Margin="0,0,0,81" Content="Время ожидания угла" FontSize="8" Grid.Column="1" HorizontalContentAlignment="Center" Grid.ColumnSpan="4" Height="21" VerticalAlignment="Bottom"/>
-                    <Slider x:Name="ScanRateCalc" Margin="10,159,0,0" VerticalAlignment="Top" Value="20000" Minimum="1000" Maximum="40000" SmallChange="1" AllowDrop="False" PreviewMouseDown="ScanRateRealSlider_PreviewMouseDown" Grid.ColumnSpan="5" Height="25" ValueChanged="SettingSlider_ValueChanged"/>
-                    <Label x:Name="ScanRateLabel" Margin="10,144,0,0" VerticalAlignment="Top" Content="ScanRateCalc:" FontSize="8" Height="21" Grid.ColumnSpan="2" RenderTransformOrigin="0.439,0.556"/>
-                    <Controls:ToggleSwitch x:Name="RedToggle" Background="Red"  Content="Red" HorizontalAlignment="Stretch" Margin="10,217,0,0" VerticalAlignment="Top" Height="26" Grid.ColumnSpan="2" Toggled="SettingToggle_Toggled"/>
-                    <Controls:NumericUpDown x:Name="GreenUpDn" Margin="0,248,0,0" Value="255" Maximum="255" Minimum="1" Background="White" Height="26" VerticalAlignment="Top" Grid.Column="2" Grid.ColumnSpan="3" ValueChanged="SettingUpDn_ValueChanged"/>
-                    <Controls:ToggleSwitch x:Name="GreenToggle"  Content="Green" HorizontalAlignment="Stretch" Margin="10,249,0,0" VerticalAlignment="Top" Height="25" Grid.ColumnSpan="2" Toggled="SettingToggle_Toggled"/>
-                    <Controls:NumericUpDown x:Name="BlueUpDn" Margin="0,281,0,0" Value="255" Maximum="255" Minimum="1" Background="White" Height="26" VerticalAlignment="Top" Grid.Column="2" Grid.ColumnSpan="3" ValueChanged="SettingUpDn_ValueChanged"/>
-                    <Controls:ToggleSwitch x:Name="BlueToggle"  Content="Blue" HorizontalAlignment="Stretch" Margin="9,282,1,0" VerticalAlignment="Top" Height="25" Grid.ColumnSpan="2" Toggled="SettingToggle_Toggled"/>
-                    <Slider x:Name="AlphaSlider" Margin="10,364,0,0" VerticalAlignment="Top" Value="255" Maximum="255" Minimum="1" Grid.ColumnSpan="5" Height="22" ValueChanged="SettingSlider_ValueChanged"/>
-                    <Label x:Name="ScanRateLabel_Copy" Margin="0,350,0,0" VerticalAlignment="Top" Content="Яркость" FontSize="8" Grid.Column="1" Height="22" HorizontalContentAlignment="Center" Grid.ColumnSpan="3"/>
-                    <Controls:NumericUpDown x:Name="FPSUpDn" Margin="0,186,0,0" Value="30" Maximum="40" Minimum="14.2" Background="White" Height="26" VerticalAlignment="Top" Grid.Column="2" Grid.ColumnSpan="3" ValueChanged="SettingUpDn_ValueChanged"/>
-                    <Label x:Name="FPSLabel" Content="FPS" Height="26" Margin="10,185,1,0" VerticalAlignment="Top" RenderTransformOrigin="0.5,0.5" AutomationProperties.HelpText="Кадров в секунду" HorizontalContentAlignment="Center" Grid.ColumnSpan="2">
-                        <Label.RenderTransform>
-                            <TransformGroup>
-                                <ScaleTransform/>
-                                <SkewTransform/>
-                                <RotateTransform Angle="0.155"/>
-                                <TranslateTransform/>
-                            </TransformGroup>
-                        </Label.RenderTransform>
-                    </Label>
-                    <Slider x:Name="ScanRateRealSlider" Margin="10,125,0,0" VerticalAlignment="Top"  Minimum="1000" Maximum="40000" SmallChange="1" AllowDrop="False" PreviewMouseDown="ScanRateRealSlider_PreviewMouseDown" Grid.ColumnSpan="5" Height="20" ValueChanged="SettingSlider_ValueChanged"/>
-                    <Label x:Name="ScanRateLabel_Copy1" Margin="10,108,1,0" VerticalAlignment="Top" Content="ScanRateReal:" FontSize="8" Height="21" Grid.ColumnSpan="2"/>
-                    <ToggleButton x:Name="ScanRateAnchor" Content="🔗" Margin="0,140,6,0" VerticalAlignment="Top" Height="25" Padding="1,1,1,1" IsChecked="{Binding int_scan_anchor, Mode=TwoWay}" Click="ScanRateAnchor_Click" Grid.Column="4" HorizontalAlignment="Right" Width="25">
-                        <ToggleButton.DataContext>
-                            <Properties:Settings/>
-                        </ToggleButton.DataContext>
-                    </ToggleButton>
-                    <Slider x:Name="StartBlankSlider" Height="21" Margin="0,0,0,36" VerticalAlignment="Bottom" Value="1" Minimum="1" SmallChange="1" Grid.Column="1" Grid.ColumnSpan="4" Maximum="29" ValueChanged="SettingSlider_ValueChanged">
+                            <Border Grid.Row="2" Style="{StaticResource Border}" Margin="5,5,2,0">
+                                <TreeView x:Name="treeView" Grid.Row="1" KeyboardNavigation.DirectionalNavigation="None" KeyboardNavigation.TabNavigation="None" Margin="0,0,0,-1">
+                                    <StackPanel x:Name="TreeHead" Orientation="Horizontal" HorizontalAlignment="Left" Margin="-21,0,0,0">
+                                        <TextBlock Margin="5,0,5,0" VerticalAlignment="Center" Height="20"><Run Text="Component"/></TextBlock>
+                                        <Button x:Name="RefreshLaser" FontFamily="Segoe MDL2 Assets" Content="&#xEDAB;" Height="26" Margin="0,0,5,0" VerticalAlignment="Top" HorizontalAlignment="Right" Width="25" Background="{x:Null}" BorderBrush="{x:Null}" Click="RefreshLaser_Click_1"/>
+                                        <Button x:Name="AddLaser" FontFamily="Segoe MDL2 Assets" Content="&#xE948;" Height="26" Margin="0,0,5,0" VerticalAlignment="Top" HorizontalAlignment="Right" Width="25" Background="{x:Null}" BorderBrush="{x:Null}" Click="AddLaser_Click" />
+                                        <Button x:Name="RemoveLaser" FontFamily="Segoe MDL2 Assets" Content="&#xE947;" Height="26" Margin="0,0,5,0" VerticalAlignment="Top" HorizontalAlignment="Right" Width="25" Background="{x:Null}" BorderBrush="{x:Null}"/>
+                                    </StackPanel>
+                                    <TreeViewItem x:Name="DeviceTree" Header="Devices" VerticalContentAlignment="Center">
+                                        <TreeViewItem x:Name="MeshTree" Header="Mesh"/>
+                                    </TreeViewItem>
+                                    <TreeViewItem x:Name="FrameTree" Header="Frames" DisplayMemberPath="Uid" AllowDrop="False" />
+                                </TreeView>
+                            </Border>
+                        </DockPanel>
+                        <DockPanel Margin="5,2,2,5" Grid.Row="1">
+                            <Border  Grid.Row="3" Style="{StaticResource Border}" Grid.RowSpan="2">
+                                <pt:PropertyGrid x:Name="PrptGrid" AutomationProperties.IsColumnHeader="True" Margin="0,0,0,0">
+                                </pt:PropertyGrid>
+                            </Border>
+                        </DockPanel>
+                    </Grid>
+                </DockPanel>
 
-                    </Slider>
-                    <Label x:Name="StartWaitLabel_Copy1" Content="{Binding Value, ElementName=StartBlankSlider}" Margin="0,0,0,35" Height="23" VerticalAlignment="Bottom" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"/>
-                    <Slider x:Name="EndBlankSlider" Margin="0,0,0,9" Value="1" Minimum="1" SmallChange="1" Grid.Column="1" Grid.ColumnSpan="4" Maximum="30" Height="22" VerticalAlignment="Bottom" ValueChanged="SettingSlider_ValueChanged"/>
-                    <Label x:Name="StartWaitLabel_Copy2" Content="{Binding Value, ElementName=EndBlankSlider}" Margin="0,0,0,7" Height="26" VerticalAlignment="Bottom" HorizontalContentAlignment="Center"/>
-                    <Label x:Name="StartWaitLabel_Copy3" Margin="0,0,0,48" Content="Время ожидания начала Blank" FontSize="8" Grid.Column="1" Grid.ColumnSpan="4" HorizontalContentAlignment="Center" Height="21" VerticalAlignment="Bottom"/>
-                    <Label x:Name="StartWaitLabel_Copy4" Margin="0,0,0,22" Content="Время ожидания окончания Blank" FontSize="8" Grid.Column="1" Grid.ColumnSpan="4" HorizontalContentAlignment="Center" Height="21" VerticalAlignment="Bottom"/>
-                    <Slider x:Name="ColorShiftSlider" Margin="0,0,0,89" Value="1" Minimum="1" SmallChange="1" Grid.Column="1" Grid.ColumnSpan="4" Maximum="30" Height="30" VerticalAlignment="Bottom" ValueChanged="SettingSlider_ValueChanged"/>
-                    <Label x:Name="StartWaitLabel_Copy5" Margin="0,0,0,112" Content="Затухание" FontSize="8" Grid.Column="1" HorizontalContentAlignment="Center" Grid.ColumnSpan="4" Height="21" VerticalAlignment="Bottom"/>
-                    <Label x:Name="StartWaitLabel_Copy6" Content="{Binding Value, ElementName=ColorShiftSlider}" Margin="0,0,0,95" Height="26" VerticalAlignment="Bottom" HorizontalContentAlignment="Center"/>
-                    <Label x:Name="label_Copy7" Content="Устройство" HorizontalAlignment="Left" Margin="10,-1,0,0" VerticalAlignment="Top" Width="74" Height="26" Grid.ColumnSpan="2"/>
-                    <Button x:Name="SetDistanceBtn" Content="Set" HorizontalAlignment="Left" Height="26" Margin="10,77,0,0" VerticalAlignment="Top" Width="42"/>
-
-                </Grid>
-            </TabItem>
-            <TabItem Header="Format" Controls:HeaderedControlHelper.HeaderFontSize="18">
-                <Grid Background="#FFE5E5E5">
-                    <TabControl x:Name="TabItem">
-                        <TabItem Header="Компас" Controls:HeaderedControlHelper.HeaderFontSize="14">
+                <DockPanel Grid.Column="1" Margin="5,5,0,0" Grid.Row="1">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition/>
+                            <RowDefinition Height="105"/>
+                        </Grid.RowDefinitions>
+                        <DockPanel DockPanel.Dock="Top">
+                            <Border x:Name="CanvasBorder" Style="{StaticResource Border}" Background="LightGray" Grid.Column="1" Grid.Row="2" Margin="0" Grid.RowSpan="2">
+                                <Viewbox x:Name="MainViewBox" ClipToBounds="True" StretchDirection="DownOnly"  Stretch="Uniform"  Margin="0,0,0,0" ForceCursor="True" KeyboardNavigation.TabNavigation="Once" DragEnter="MainViewBox_DragEnter" Drop="MainViewBox_Drop">
+                                    <Viewbox.DataContext>
+                                        <Properties:Settings/>
+                                    </Viewbox.DataContext>
+                                    <Border x:Name="CanvasBoxBorder" Background="White"  Style="{StaticResource Border}" Grid.Column="1" Grid.Row="2" Margin="3" >
+                                        <Viewbox  x:Name="CanvasBox"  Stretch="Uniform" StretchDirection="DownOnly">
+                                        </Viewbox>
+                                    </Border>
+                                </Viewbox>
+                            </Border>
+                        </DockPanel>
+                        <DockPanel DockPanel.Dock="Bottom" Grid.Row="1" Margin="2,5">
+                            <Border Style="{StaticResource Border}" Grid.Column="1" Margin="0,5,0,0" Grid.Row="4" ScrollViewer.VerticalScrollBarVisibility="Disabled">
+                                <StackPanel x:Name="FrameStack" Orientation="Horizontal" HorizontalAlignment="Left" CanHorizontallyScroll="True" ScrollViewer.HorizontalScrollBarVisibility="Visible" ScrollViewer.VerticalScrollBarVisibility="Disabled" ScrollViewer.CanContentScroll="True">
+                                    <Viewbox>
+                                        <Canvas/>
+                                    </Viewbox>
+                                </StackPanel>
+                            </Border>
+                        </DockPanel>
+                    </Grid>
+                </DockPanel>
+                <DockPanel Grid.Column="2" Grid.Row="1" Margin="5,5,5,5">
+                    <TabControl x:Name="tabControl" DockPanel.Dock="Right" Grid.Column="2" Grid.Row="2" Grid.RowSpan="3">
+                        <TabItem x:Name="ContourSettingTab" Header="Device" Controls:HeaderedControlHelper.HeaderFontSize="18">
                             <Grid Background="#FFE5E5E5">
-                                <Button x:Name="kmpsSelectBtn" Content="Select" HorizontalAlignment="Left" Margin="10,86,0,0" VerticalAlignment="Top" Width="125" Height="50" Click="kmpsSelectBtn_Click"/>
-                                <Button x:Name="kmpsAddBtn" Content="Add in..." HorizontalAlignment="Left" Margin="140,86,0,0" VerticalAlignment="Top" Width="78" Height="50" Click="kmpsAddBtn_Click"/>
-                                <Controls:ToggleSwitch x:Name="kmpsConnectToggle"  Content="Connect" HorizontalAlignment="Left" Margin="10,12,0,0" VerticalAlignment="Top" RenderTransformOrigin="0.5,0.5" Toggled="kmpsConnectToggle_Toggled" HorizontalContentAlignment="Center" Height="24" Width="201">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="52.333"/>
+                                    <ColumnDefinition Width="52"/>
+                                    <ColumnDefinition Width="48"/>
+                                    <ColumnDefinition Width="54"/>
+                                    <ColumnDefinition Width="13*"/>
+                                    <ColumnDefinition/>
+                                </Grid.ColumnDefinitions>
+                                <Slider x:Name="AngleWaitSlider" Margin="0,0,0,59" Value="1" Minimum="1"  SmallChange="1" Grid.Column="1" Grid.ColumnSpan="4" Maximum="30" Height="30" VerticalAlignment="Bottom" ValueChanged="SettingSlider_ValueChanged"/>
+                                <ComboBox x:Name="DeviceCombo" Margin="10,25,0,0" VerticalAlignment="Top" IsEnabled="{c:Binding !IsChecked, ElementName=QRBtn}"  DataContextChanged="DeviceCombo_DataContextChanged" Height="26" SelectionChanged="DeviceCombo_SelectionChanged" RenderTransformOrigin="0.5,0.5" Grid.ColumnSpan="2" />
+                                <Controls:ToggleSwitch x:Name="InvertXtoggle" Content="Invert X" HorizontalAlignment="Left" Margin="16,325,0,0" VerticalAlignment="Top" HorizontalContentAlignment="Right" FlowDirection="RightToLeft" Controls:HeaderedControlHelper.HeaderFontSize="12" FontSize="12" Grid.ColumnSpan="3" Height="20" Width="108" Toggled="SettingToggle_Toggled"/>
+                                <Controls:ToggleSwitch x:Name="InvertYtoggle" Content="Invert Y" HorizontalAlignment="Stretch" Margin="34,325,10,0" VerticalAlignment="Top" HorizontalContentAlignment="Right" FlowDirection="RightToLeft" FontSize="12" Height="20" Grid.ColumnSpan="3" Grid.Column="2" Toggled="SettingToggle_Toggled"/>
+
+                                <Controls:NumericUpDown x:Name="DistanceUpDn" Margin="0,77,52,0" Value="{Binding cl_distance, Mode=TwoWay}" Background="White" Height="26" VerticalAlignment="Top" Grid.ColumnSpan="4" Grid.Column="1" IsEnabled="{c:Binding !IsChecked, ElementName=QRBtn}"/>
+
+                                <Label x:Name="DistanceLabel" Content="(00000)" Margin="0,77,0,0" VerticalAlignment="Top" Grid.Column="4" Height="26" HorizontalAlignment="Right" Width="52"/>
+                                <Label x:Name="label_Copy5" Content="Дальность" HorizontalAlignment="Left" Margin="10,51,0,0" VerticalAlignment="Top" Width="74" Height="26" Grid.ColumnSpan="2"/>
+                                <ComboBox x:Name="LaserMetersCombo" Margin="5,25,52,0" VerticalAlignment="Top" Grid.Column="2" Height="26" Grid.ColumnSpan="3" IsEnabled="{c:Binding !IsChecked, ElementName=QRBtn}"/>
+                                <Controls:ToggleSwitch x:Name="LaserMeterToggle"  Content="" HorizontalAlignment="Right" Margin="0,27,0,0" VerticalAlignment="Top" IsOn="False" RenderTransformOrigin="0.5,0.5" HorizontalContentAlignment="Center" Height="25" Grid.Column="4" Width="47">
                                     <Controls:ToggleSwitch.DataContext>
                                         <Properties:Settings/>
                                     </Controls:ToggleSwitch.DataContext>
                                 </Controls:ToggleSwitch>
-                                <Controls:NumericUpDown x:Name="CRSUpDnKMPS" Margin="10,146,93,0" Value="{Binding cl_crs, Mode=TwoWay}" Maximum="99" Minimum="3" Background="White" Height="26" VerticalAlignment="Top" ValueChanged="CRSUpDnKMPS_ValueChanged">
+                                <Label x:Name="label_Copy6" Content="Дальномер" HorizontalAlignment="Left" Margin="5,-1,0,0" VerticalAlignment="Top" Width="74" Height="26" Grid.ColumnSpan="2" Grid.Column="2"/>
+                                <Controls:NumericUpDown x:Name="RedUpDn" Margin="0,217,0,0" Value="255" Maximum="255" Minimum="1" Background="White" Height="26" VerticalAlignment="Top" Grid.Column="2" Grid.ColumnSpan="3" IsEnabled="{c:Binding !IsChecked, ElementName=QRBtn}" ValueChanged="SettingUpDn_ValueChanged"/>
+                                <Label x:Name="StartWaitLabel" Content="{Binding Value, ElementName=AngleWaitSlider}" Margin="0,0,0,64" Height="26" VerticalAlignment="Bottom" HorizontalContentAlignment="Center"/>
+                                <Label x:Name="StartWaitLabel_Copy" Margin="0,0,0,81" Content="Время ожидания угла" FontSize="8" Grid.Column="1" HorizontalContentAlignment="Center" Grid.ColumnSpan="4" Height="21" VerticalAlignment="Bottom"/>
+                                <Slider x:Name="ScanRateCalc" Margin="10,159,0,0" VerticalAlignment="Top" Value="20000" Minimum="1000" Maximum="40000" SmallChange="1" AllowDrop="False" PreviewMouseDown="ScanRateRealSlider_PreviewMouseDown" Grid.ColumnSpan="5" Height="25" ValueChanged="SettingSlider_ValueChanged"/>
+                                <Label x:Name="ScanRateLabel" Margin="10,144,0,0" VerticalAlignment="Top" Content="ScanRateCalc:" FontSize="8" Height="21" Grid.ColumnSpan="2" RenderTransformOrigin="0.439,0.556"/>
+                                <Controls:ToggleSwitch x:Name="RedToggle" Background="Red"  Content="Red" HorizontalAlignment="Stretch" Margin="10,217,0,0" VerticalAlignment="Top" Height="26" Grid.ColumnSpan="2" Toggled="SettingToggle_Toggled"/>
+                                <Controls:NumericUpDown x:Name="GreenUpDn" Margin="0,248,0,0" Value="255" Maximum="255" Minimum="1" Background="White" Height="26" VerticalAlignment="Top" Grid.Column="2" Grid.ColumnSpan="3" IsEnabled="{c:Binding !IsChecked, ElementName=QRBtn}" ValueChanged="SettingUpDn_ValueChanged"/>
+                                <Controls:ToggleSwitch x:Name="GreenToggle"  Content="Green" HorizontalAlignment="Stretch" Margin="10,249,0,0" VerticalAlignment="Top" Height="25" Grid.ColumnSpan="2" Toggled="SettingToggle_Toggled"/>
+                                <Controls:NumericUpDown x:Name="BlueUpDn" Margin="0,281,0,0" Value="255" Maximum="255" Minimum="1" Background="White" Height="26" VerticalAlignment="Top" Grid.Column="2" Grid.ColumnSpan="3" IsEnabled="{c:Binding !IsChecked, ElementName=QRBtn}" ValueChanged="SettingUpDn_ValueChanged"/>
+                                <Controls:ToggleSwitch x:Name="BlueToggle"  Content="Blue" HorizontalAlignment="Stretch" Margin="9,282,1,0" VerticalAlignment="Top" Height="25" Grid.ColumnSpan="2" Toggled="SettingToggle_Toggled"/>
+                                <Slider x:Name="AlphaSlider" Margin="10,364,0,0" VerticalAlignment="Top" Value="255" Maximum="255" Minimum="1" Grid.ColumnSpan="5" Height="22" ValueChanged="SettingSlider_ValueChanged"/>
+                                <Label x:Name="ScanRateLabel_Copy" Margin="0,350,0,0" VerticalAlignment="Top" Content="Яркость" FontSize="8" Grid.Column="1" Height="22" HorizontalContentAlignment="Center" Grid.ColumnSpan="3"/>
+                                <Controls:NumericUpDown x:Name="FPSUpDn" Margin="0,186,0,0" Value="30" Maximum="40" Minimum="14.2" Background="White" Height="26" VerticalAlignment="Top" Grid.Column="2" Grid.ColumnSpan="3" ValueChanged="SettingUpDn_ValueChanged" IsEnabled="{c:Binding !IsChecked, ElementName=QRBtn}"/>
+                                <Label x:Name="FPSLabel" Content="FPS" Height="26" Margin="10,185,1,0" VerticalAlignment="Top" RenderTransformOrigin="0.5,0.5" AutomationProperties.HelpText="Кадров в секунду" HorizontalContentAlignment="Center" Grid.ColumnSpan="2">
+                                    <Label.RenderTransform>
+                                        <TransformGroup>
+                                            <ScaleTransform/>
+                                            <SkewTransform/>
+                                            <RotateTransform Angle="0.155"/>
+                                            <TranslateTransform/>
+                                        </TransformGroup>
+                                    </Label.RenderTransform>
+                                </Label>
+                                <Slider x:Name="ScanRateRealSlider" Margin="10,125,0,0" VerticalAlignment="Top"  Minimum="1000" Maximum="40000" SmallChange="1" AllowDrop="False" PreviewMouseDown="ScanRateRealSlider_PreviewMouseDown" Grid.ColumnSpan="5" Height="20" ValueChanged="SettingSlider_ValueChanged"/>
+                                <Label x:Name="ScanRateLabel_Copy1" Margin="10,108,1,0" VerticalAlignment="Top" Content="ScanRateReal:" FontSize="8" Height="21" Grid.ColumnSpan="2"/>
+                                <ToggleButton x:Name="ScanRateAnchor" Content="🔗" Margin="0,140,6,0" VerticalAlignment="Top" Height="25" Padding="1,1,1,1" IsChecked="{Binding int_scan_anchor, Mode=TwoWay}" Click="ScanRateAnchor_Click" Grid.Column="4" HorizontalAlignment="Right" Width="25">
+                                    <ToggleButton.DataContext>
+                                        <Properties:Settings/>
+                                    </ToggleButton.DataContext>
+                                </ToggleButton>
+                                <Slider x:Name="StartBlankSlider" Height="21" Margin="0,0,0,36" VerticalAlignment="Bottom" Value="1" Minimum="1" SmallChange="1" Grid.Column="1" Grid.ColumnSpan="4" Maximum="29" ValueChanged="SettingSlider_ValueChanged">
+
+                                </Slider>
+                                <Label x:Name="StartWaitLabel_Copy1" Content="{Binding Value, ElementName=StartBlankSlider}" Margin="0,0,0,35" Height="23" VerticalAlignment="Bottom" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"/>
+                                <Slider x:Name="EndBlankSlider" Margin="0,0,0,9" Value="1" Minimum="1" SmallChange="1" Grid.Column="1" Grid.ColumnSpan="4" Maximum="30" Height="22" VerticalAlignment="Bottom" ValueChanged="SettingSlider_ValueChanged"/>
+                                <Label x:Name="StartWaitLabel_Copy2" Content="{Binding Value, ElementName=EndBlankSlider}" Margin="0,0,0,7" Height="26" VerticalAlignment="Bottom" HorizontalContentAlignment="Center"/>
+                                <Label x:Name="StartWaitLabel_Copy3" Margin="0,0,0,48" Content="Время ожидания начала Blank" FontSize="8" Grid.Column="1" Grid.ColumnSpan="4" HorizontalContentAlignment="Center" Height="21" VerticalAlignment="Bottom"/>
+                                <Label x:Name="StartWaitLabel_Copy4" Margin="0,0,0,22" Content="Время ожидания окончания Blank" FontSize="8" Grid.Column="1" Grid.ColumnSpan="4" HorizontalContentAlignment="Center" Height="21" VerticalAlignment="Bottom"/>
+                                <Slider x:Name="ColorShiftSlider" Margin="0,0,0,89" Value="1" Minimum="1" SmallChange="1" Grid.Column="1" Grid.ColumnSpan="4" Maximum="30" Height="30" VerticalAlignment="Bottom" ValueChanged="SettingSlider_ValueChanged"/>
+                                <Label x:Name="StartWaitLabel_Copy5" Margin="0,0,0,112" Content="Затухание" FontSize="8" Grid.Column="1" HorizontalContentAlignment="Center" Grid.ColumnSpan="4" Height="21" VerticalAlignment="Bottom"/>
+                                <Label x:Name="StartWaitLabel_Copy6" Content="{Binding Value, ElementName=ColorShiftSlider}" Margin="0,0,0,95" Height="26" VerticalAlignment="Bottom" HorizontalContentAlignment="Center"/>
+                                <Label x:Name="label_Copy7" Content="Устройство" HorizontalAlignment="Left" Margin="10,-1,0,0" VerticalAlignment="Top" Width="74" Height="26" Grid.ColumnSpan="2"/>
+                                <Button x:Name="SetDistanceBtn" Content="Set" HorizontalAlignment="Left" Height="26" Margin="10,77,0,0" VerticalAlignment="Top" Width="42"/>
+
+                            </Grid>
+                        </TabItem>
+                        <TabItem Header="Format" Controls:HeaderedControlHelper.HeaderFontSize="18">
+                            <Grid Background="#FFE5E5E5">
+                                <TabControl x:Name="TabItem">
+                                    <TabItem Header="Компас" Controls:HeaderedControlHelper.HeaderFontSize="14">
+                                        <Grid Background="#FFE5E5E5">
+                                            <Button x:Name="kmpsSelectBtn" Content="Select" HorizontalAlignment="Left" Margin="10,86,0,0" VerticalAlignment="Top" Width="125" Height="50" Click="kmpsSelectBtn_Click"/>
+                                            <Button x:Name="kmpsAddBtn" Content="Add in..." HorizontalAlignment="Left" Margin="140,86,0,0" VerticalAlignment="Top" Width="78" Height="50" Click="kmpsAddBtn_Click"/>
+                                            <Controls:ToggleSwitch x:Name="kmpsConnectToggle"  Content="Connect" HorizontalAlignment="Left" Margin="10,26,0,0" VerticalAlignment="Top" RenderTransformOrigin="0.5,0.5" Toggled="kmpsConnectToggle_Toggled" HorizontalContentAlignment="Center" Height="24" Width="201">
+                                                <Controls:ToggleSwitch.DataContext>
+                                                    <Properties:Settings/>
+                                                </Controls:ToggleSwitch.DataContext>
+                                            </Controls:ToggleSwitch>
+                                            <Controls:NumericUpDown x:Name="CRSUpDnKMPS" Margin="10,146,93,0" Value="{Binding cl_crs, Mode=TwoWay}" Maximum="99" Minimum="3" Background="White" Height="26" VerticalAlignment="Top" ValueChanged="CRSUpDnKMPS_ValueChanged">
+                                                <Controls:NumericUpDown.DataContext>
+                                                    <Properties:Settings/>
+                                                </Controls:NumericUpDown.DataContext>
+                                            </Controls:NumericUpDown>
+                                            <Label x:Name="CRSLabel_Copy" Content="CRS(mm)" Height="26" Margin="0,147,11,0" VerticalAlignment="Top" RenderTransformOrigin="0.5,0.5" AutomationProperties.HelpText="Шаг точки для кривой" HorizontalContentAlignment="Center" HorizontalAlignment="Right" Width="77"/>
+                                            <Label x:Name="KmpsNameLbl" Content="Пусто" HorizontalAlignment="Left" Margin="10,55,0,0" VerticalAlignment="Top" Width="208"/>
+                                        </Grid>
+                                    </TabItem>
+                                    <TabItem Header="DXF" Controls:HeaderedControlHelper.HeaderFontSize="14">
+                                        <Grid Background="#FFE5E5E5"/>
+                                    </TabItem>
+                                    <TabItem Header="SVG" Controls:HeaderedControlHelper.HeaderFontSize="14">
+                                        <Grid Background="#FFE5E5E5">
+                                            <TextBox x:Name="svgSeparatorBox1" HorizontalAlignment="Left" Height="23" Margin="114,59,0,0" TextWrapping="Wrap" Text="{Binding svg_separator1, Mode=TwoWay}" VerticalAlignment="Top" Width="104" TextChanged="stlSeparatorBox_TextChanged">
+                                                <TextBox.DataContext>
+                                                    <Properties:Settings/>
+                                                </TextBox.DataContext>
+                                            </TextBox>
+                                            <Label x:Name="label1" Content="Разделитель 1" HorizontalAlignment="Left" Margin="10,59,0,0" VerticalAlignment="Top" Width="99"/>
+                                            <TextBox x:Name="svgSeparatorBox2" HorizontalAlignment="Left" Height="23" Margin="114,90,0,0" TextWrapping="Wrap" Text="{Binding svg_separator2, Mode=TwoWay}" VerticalAlignment="Top" Width="104" TextChanged="stlSeparatorBox_TextChanged">
+                                                <TextBox.DataContext>
+                                                    <Properties:Settings/>
+                                                </TextBox.DataContext>
+                                            </TextBox>
+                                            <Label x:Name="label1_Copy" Content="Разделитель 2" HorizontalAlignment="Left" Margin="10,90,0,0" VerticalAlignment="Top" Width="99"/>
+                                            <ComboBox x:Name="svg_settingcombo" HorizontalAlignment="Left" Margin="16,26,0,0" VerticalAlignment="Top" Width="138"/>
+                                            <Label x:Name="svg_label_setting" Content="Сохраненные настройки" HorizontalAlignment="Left" Margin="10,0,0,0" VerticalAlignment="Top" Width="208"/>
+                                            <Button x:Name="button1" Content="–" Margin="0,26,10,0" VerticalAlignment="Top" HorizontalAlignment="Right" Width="27"/>
+                                            <Button x:Name="button1_Copy" Content="+" Margin="0,26,42,0" VerticalAlignment="Top" HorizontalAlignment="Right" Width="27"/>
+                                        </Grid>
+                                    </TabItem>
+                                    <TabItem Header="STL" Controls:HeaderedControlHelper.HeaderFontSize="14">
+                                        <Grid Background="#FFE5E5E5"/>
+                                    </TabItem>
+                                    <TabItem Header="QR" Controls:HeaderedControlHelper.HeaderFontSize="14">
+                                        <Grid Background="#FFE5E5E5">
+                                            <Controls:ToggleSwitch x:Name="QrToggler" Margin="10,74,0,312" OffContent="QRCode: FileName" OnContent="QRCode: FilePath" ContentDirection="RightToLeft" IsOn="{Binding save_qr_path, Mode=TwoWay}" Toggled="QrToggler_Toggled">
+                                                <Controls:ToggleSwitch.DataContext>
+                                                    <Properties:Settings/>
+                                                </Controls:ToggleSwitch.DataContext>
+
+                                            </Controls:ToggleSwitch>
+                                            <TextBox x:Name="BasePathBox" Height="23" TextWrapping="Wrap" Text="{Binding save_base_folder, Mode=TwoWay}" Margin="10,12,109,0" VerticalAlignment="Top">
+                                                <TextBox.DataContext>
+                                                    <Properties:Settings/>
+                                                </TextBox.DataContext>
+                                            </TextBox>
+                                            <TextBox x:Name="AlreadyPathBox" Height="23" TextWrapping="Wrap" Text="{Binding save_work_folder, Mode=TwoWay}" Margin="10,43,109,0" VerticalAlignment="Top">
+                                                <TextBox.DataContext>
+                                                    <Properties:Settings/>
+                                                </TextBox.DataContext>
+                                            </TextBox>
+                                            <Button x:Name="BaseFolderSelect" Content="Browse..." HorizontalAlignment="Left" Margin="124,12,0,0" VerticalAlignment="Top" Width="94" Height="26" Click="BaseFolderSelect_Click"/>
+                                            <Button x:Name="WorkFolderSelect" Content="Browse..." HorizontalAlignment="Left" Margin="124,43,0,0" VerticalAlignment="Top" Width="94" Height="26" Click="WorkFolderSelect_Click"/>
+                                        </Grid>
+                                    </TabItem>
+                                </TabControl>
+
+                            </Grid>
+                        </TabItem>
+                        <TabItem x:Name="Calibration" Header="Calibration" Controls:HeaderedControlHelper.HeaderFontSize="18">
+                            <Grid Background="#FFE5E5E5">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="33*"/>
+                                    <ColumnDefinition Width="53*"/>
+                                    <ColumnDefinition Width="54*"/>
+                                    <ColumnDefinition Width="49*"/>
+                                    <ColumnDefinition Width="73*"/>
+                                </Grid.ColumnDefinitions>
+                                <TextBox x:Name="MonchaPathBox" HorizontalAlignment="Left" Height="23" Margin="15,28,0,0" TextWrapping="Wrap" Text="{Binding cl_moncha_path}" VerticalAlignment="Top" Width="131" Grid.ColumnSpan="4">
+                                    <TextBox.DataContext>
+                                        <Properties:Settings/>
+                                    </TextBox.DataContext>
+                                </TextBox>
+                                <Button x:Name="BrowseMonchaBtn" Content="Browse..." Margin="17,28,10,0" VerticalAlignment="Top" Click="BrowseMonchaBtn_Click" Height="23" Grid.Column="3" Grid.ColumnSpan="2"/>
+                                <Label x:Name="label" Content="Путь до файла Moncha (*.mws)" HorizontalAlignment="Left" Margin="10,2,0,0" VerticalAlignment="Top" Grid.ColumnSpan="4" Height="26" Width="178"/>
+                                <Controls:NumericUpDown x:Name="WidthUpDn" Margin="0,70,10,0" Value="{Binding cl_width, Mode=TwoWay}" Background="White" Height="26" VerticalAlignment="Top" Grid.Column="2" Grid.ColumnSpan="3" ValueChanged="SettingUpDn_ValueChanged">
                                     <Controls:NumericUpDown.DataContext>
                                         <Properties:Settings/>
                                     </Controls:NumericUpDown.DataContext>
                                 </Controls:NumericUpDown>
-                                <Label x:Name="CRSLabel_Copy" Content="CRS(mm)" Height="26" Margin="0,147,11,0" VerticalAlignment="Top" RenderTransformOrigin="0.5,0.5" AutomationProperties.HelpText="Шаг точки для кривой" HorizontalContentAlignment="Center" HorizontalAlignment="Right" Width="77"/>
-                                <Label x:Name="KmpsNameLbl" Content="Пусто" HorizontalAlignment="Left" Margin="10,55,0,0" VerticalAlignment="Top" Width="208"/>
-                            </Grid>
-                        </TabItem>
-                        <TabItem Header="DXF" Controls:HeaderedControlHelper.HeaderFontSize="14">
-                            <Grid Background="#FFE5E5E5"/>
-                        </TabItem>
-                        <TabItem Header="SVG" Controls:HeaderedControlHelper.HeaderFontSize="14">
-                            <Grid Background="#FFE5E5E5">
-                                <TextBox x:Name="svgSeparatorBox1" HorizontalAlignment="Left" Height="23" Margin="114,59,0,0" TextWrapping="Wrap" Text="{Binding svg_separator1, Mode=TwoWay}" VerticalAlignment="Top" Width="104" TextChanged="stlSeparatorBox_TextChanged">
-                                    <TextBox.DataContext>
+                                <Label x:Name="label_Copy" Content="Ширина" HorizontalAlignment="Left" Margin="6,70,0,0" VerticalAlignment="Top" Width="74" Height="26" Grid.ColumnSpan="2"/>
+                                <Controls:NumericUpDown x:Name="HeightUpD" Margin="0,106,10,0" Value="{Binding cl_height, Mode=TwoWay}" Background="White" Height="26" VerticalAlignment="Top" Grid.Column="2" Grid.ColumnSpan="3" ValueChanged="SettingUpDn_ValueChanged">
+                                    <Controls:NumericUpDown.DataContext>
                                         <Properties:Settings/>
-                                    </TextBox.DataContext>
-                                </TextBox>
-                                <Label x:Name="label1" Content="Разделитель 1" HorizontalAlignment="Left" Margin="10,59,0,0" VerticalAlignment="Top" Width="99"/>
-                                <TextBox x:Name="svgSeparatorBox2" HorizontalAlignment="Left" Height="23" Margin="114,90,0,0" TextWrapping="Wrap" Text="{Binding svg_separator2, Mode=TwoWay}" VerticalAlignment="Top" Width="104" TextChanged="stlSeparatorBox_TextChanged">
-                                    <TextBox.DataContext>
+                                    </Controls:NumericUpDown.DataContext>
+                                </Controls:NumericUpDown>
+                                <Label x:Name="label_Copy1" Content="Высота" HorizontalAlignment="Left" Margin="6,106,0,0" VerticalAlignment="Top" Width="74" Height="26" Grid.ColumnSpan="2"/>
+                                <Controls:NumericUpDown x:Name="DeepUpDn" Margin="0,142,10,0" Value="{Binding cl_deep, Mode=TwoWay}" Background="White" Height="26" VerticalAlignment="Top" Grid.Column="2" Grid.ColumnSpan="3" ValueChanged="SettingUpDn_ValueChanged">
+                                    <Controls:NumericUpDown.DataContext>
                                         <Properties:Settings/>
-                                    </TextBox.DataContext>
-                                </TextBox>
-                                <Label x:Name="label1_Copy" Content="Разделитель 2" HorizontalAlignment="Left" Margin="10,90,0,0" VerticalAlignment="Top" Width="99"/>
-                                <ComboBox x:Name="svg_settingcombo" HorizontalAlignment="Left" Margin="16,26,0,0" VerticalAlignment="Top" Width="138"/>
-                                <Label x:Name="svg_label_setting" Content="Сохраненные настройки" HorizontalAlignment="Left" Margin="10,0,0,0" VerticalAlignment="Top" Width="208"/>
-                                <Button x:Name="button1" Content="–" Margin="0,26,10,0" VerticalAlignment="Top" HorizontalAlignment="Right" Width="27"/>
-                                <Button x:Name="button1_Copy" Content="+" Margin="0,26,42,0" VerticalAlignment="Top" HorizontalAlignment="Right" Width="27"/>
-                            </Grid>
-                        </TabItem>
-                        <TabItem Header="STL" Controls:HeaderedControlHelper.HeaderFontSize="14">
-                            <Grid Background="#FFE5E5E5"/>
-                        </TabItem>
-                        <TabItem Header="QR" Controls:HeaderedControlHelper.HeaderFontSize="14">
-                            <Grid Background="#FFE5E5E5">
-                                <Controls:ToggleSwitch x:Name="QrToggler" Margin="10,74,0,312" OffContent="QRCode: FileName" OnContent="QRCode: FilePath" ContentDirection="RightToLeft" IsOn="{Binding save_qr_path, Mode=TwoWay}" Toggled="QrToggler_Toggled">
-                                    <Controls:ToggleSwitch.DataContext>
-                                        <Properties:Settings/>
-                                    </Controls:ToggleSwitch.DataContext>
+                                    </Controls:NumericUpDown.DataContext>
+                                </Controls:NumericUpDown>
+                                <Label x:Name="label_Copy2" Content="Глубина" HorizontalAlignment="Left" Margin="6,142,0,0" VerticalAlignment="Top" Width="74" Height="26" Grid.ColumnSpan="2"/>
+                                <Button x:Name="SaveSizeBtn" Content="Save size" Margin="0,306,10,0" VerticalAlignment="Top" Height="30" Controls:ControlsHelper.ContentCharacterCasing="Normal" Grid.Column="3" Grid.ColumnSpan="2"/>
 
-                                </Controls:ToggleSwitch>
-                                <TextBox x:Name="BasePathBox" Height="23" TextWrapping="Wrap" Text="{Binding save_base_folder, Mode=TwoWay}" Margin="10,12,109,0" VerticalAlignment="Top">
-                                    <TextBox.DataContext>
+                                <Button x:Name="SaveMeshBtn" Content="Calc" Height="30" Margin="0,343,10,0" VerticalAlignment="Top" Click="SaveMeshBtn_Click" IsEnabled="{Binding IsOn, ElementName=EditMeshToggle}" Grid.Column="3" Grid.ColumnSpan="2"/>
+
+                                <Controls:ToggleSwitch x:Name="EditMeshToggle" Content="Edit" HorizontalAlignment="Stretch" Margin="3,311,0,0" VerticalAlignment="Top" Grid.ColumnSpan="3" Height="20"/>
+                                <Controls:NumericUpDown x:Name="MashMultiplierUpDn" Margin="0,176,10,0"  Background="White" Height="26" Maximum="1" Minimum="0.001" VerticalAlignment="Top" Speedup="False" Controls:ScrollViewerHelper.IsHorizontalScrollWheelEnabled="True" ValueIncremented="MashMultiplierUpDn_ValueIncremented" ValueDecremented="MashMultiplierUpDn_ValueDecremented" Grid.Column="2" Grid.ColumnSpan="3" ValueChanged="SettingUpDn_ValueChanged">
+                                    <Controls:NumericUpDown.DataContext>
                                         <Properties:Settings/>
-                                    </TextBox.DataContext>
-                                </TextBox>
-                                <TextBox x:Name="AlreadyPathBox" Height="23" TextWrapping="Wrap" Text="{Binding save_work_folder, Mode=TwoWay}" Margin="10,43,109,0" VerticalAlignment="Top">
-                                    <TextBox.DataContext>
+                                    </Controls:NumericUpDown.DataContext>
+                                </Controls:NumericUpDown>
+                                <Label x:Name="label_Copy3" Content="Множитель" HorizontalAlignment="Left" Margin="6,176,0,0" VerticalAlignment="Top" Height="26" Width="74" Grid.ColumnSpan="2"/>
+                                <Controls:ToggleSwitch x:Name="MorphToggle" Content="Morph" HorizontalAlignment="Stretch" Margin="3,348,0,0" VerticalAlignment="Top" IsOn="True" IsEnabled="{Binding IsOn, ElementName=EditMeshToggle}" Toggled="MorphToggle_Toggled" Grid.ColumnSpan="3" Height="20"/>
+                                <Controls:ToggleSwitch x:Name="HorizontalToggle" Content="Horizontal" HorizontalAlignment="Stretch" Margin="3,384,0,0" VerticalAlignment="Top" IsEnabled="{Binding IsOn, ElementName=EditMeshToggle}" Toggled="HorizontalToggle_Toggled" Grid.ColumnSpan="3" Height="20"/>
+                                <Controls:NumericUpDown x:Name="PointStepUpDn" Margin="5,421,14,0"  Background="White" Height="26" VerticalAlignment="Top" NumericInputMode="Decimal" Maximum="10" Minimum="0" Interval="0.1"  Value="0.1" Grid.Column="2" Grid.ColumnSpan="3" Focusable="False" IsTabStop="False" AllowDrop="False">
+                                    <Controls:NumericUpDown.DataContext>
                                         <Properties:Settings/>
-                                    </TextBox.DataContext>
-                                </TextBox>
-                                <Button x:Name="BaseFolderSelect" Content="Browse..." HorizontalAlignment="Left" Margin="124,12,0,0" VerticalAlignment="Top" Width="94" Height="26" Click="BaseFolderSelect_Click"/>
-                                <Button x:Name="WorkFolderSelect" Content="Browse..." HorizontalAlignment="Left" Margin="124,43,0,0" VerticalAlignment="Top" Width="94" Height="26" Click="WorkFolderSelect_Click"/>
+                                    </Controls:NumericUpDown.DataContext>
+                                </Controls:NumericUpDown>
+                                <Label x:Name="label_Copy4" Content="Шаг" HorizontalAlignment="Left" Margin="10,421,0,0" VerticalAlignment="Top" Height="26" Width="32" Grid.ColumnSpan="2"/>
+                                <Button x:Name="ClearCalcMeshBtn" Content="DellCalc" Height="30" Margin="0,379,10,0" VerticalAlignment="Top" IsEnabled="{Binding IsOn, ElementName=EditMeshToggle}" Click="ClearCalcMeshBtn_Click" Grid.Column="3" Grid.ColumnSpan="2"/>
+
+                            </Grid>
+                        </TabItem>
+                        <TabItem Header="Log" Controls:HeaderedControlHelper.HeaderFontSize="18">
+                            <Grid>
+                                <ListBox x:Name="LogBox"/>
+
                             </Grid>
                         </TabItem>
                     </TabControl>
+                </DockPanel>
+                <DockPanel DockPanel.Dock="Bottom" Grid.ColumnSpan="3" Grid.Row="2">
+                    <StatusBar>
+                        <DockPanel>
+                            <DockPanel DockPanel.Dock="Left">
+                                <TextBlock x:Name="infoText" Text="Hello world!" Margin="5, 0 , 0 ,0" Width="206"/>
 
-                </Grid>
-            </TabItem>
-            <TabItem x:Name="Calibration" Header="Calibration" Controls:HeaderedControlHelper.HeaderFontSize="18">
-                <Grid Background="#FFE5E5E5">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="33*"/>
-                        <ColumnDefinition Width="53*"/>
-                        <ColumnDefinition Width="54*"/>
-                        <ColumnDefinition Width="49*"/>
-                        <ColumnDefinition Width="73*"/>
-                    </Grid.ColumnDefinitions>
-                    <TextBox x:Name="MonchaPathBox" HorizontalAlignment="Left" Height="23" Margin="15,28,0,0" TextWrapping="Wrap" Text="{Binding cl_moncha_path}" VerticalAlignment="Top" Width="131" Grid.ColumnSpan="4">
-                        <TextBox.DataContext>
-                            <Properties:Settings/>
-                        </TextBox.DataContext>
-                    </TextBox>
-                    <Button x:Name="BrowseMonchaBtn" Content="Browse..." Margin="17,28,10,0" VerticalAlignment="Top" Click="BrowseMonchaBtn_Click" Height="23" Grid.Column="3" Grid.ColumnSpan="2"/>
-                    <Label x:Name="label" Content="Путь до файла Moncha (*.mws)" HorizontalAlignment="Left" Margin="10,2,0,0" VerticalAlignment="Top" Grid.ColumnSpan="4" Height="26" Width="178"/>
-                    <Controls:NumericUpDown x:Name="WidthUpDn" Margin="0,70,10,0" Value="{Binding cl_width, Mode=TwoWay}" Background="White" Height="26" VerticalAlignment="Top" Grid.Column="2" Grid.ColumnSpan="3" ValueChanged="SettingUpDn_ValueChanged">
-                        <Controls:NumericUpDown.DataContext>
-                            <Properties:Settings/>
-                        </Controls:NumericUpDown.DataContext>
-                    </Controls:NumericUpDown>
-                    <Label x:Name="label_Copy" Content="Ширина" HorizontalAlignment="Left" Margin="6,70,0,0" VerticalAlignment="Top" Width="74" Height="26" Grid.ColumnSpan="2"/>
-                    <Controls:NumericUpDown x:Name="HeightUpD" Margin="0,106,10,0" Value="{Binding cl_height, Mode=TwoWay}" Background="White" Height="26" VerticalAlignment="Top" Grid.Column="2" Grid.ColumnSpan="3" ValueChanged="SettingUpDn_ValueChanged">
-                        <Controls:NumericUpDown.DataContext>
-                            <Properties:Settings/>
-                        </Controls:NumericUpDown.DataContext>
-                    </Controls:NumericUpDown>
-                    <Label x:Name="label_Copy1" Content="Высота" HorizontalAlignment="Left" Margin="6,106,0,0" VerticalAlignment="Top" Width="74" Height="26" Grid.ColumnSpan="2"/>
-                    <Controls:NumericUpDown x:Name="DeepUpDn" Margin="0,142,10,0" Value="{Binding cl_deep, Mode=TwoWay}" Background="White" Height="26" VerticalAlignment="Top" Grid.Column="2" Grid.ColumnSpan="3" ValueChanged="SettingUpDn_ValueChanged">
-                        <Controls:NumericUpDown.DataContext>
-                            <Properties:Settings/>
-                        </Controls:NumericUpDown.DataContext>
-                    </Controls:NumericUpDown>
-                    <Label x:Name="label_Copy2" Content="Глубина" HorizontalAlignment="Left" Margin="6,142,0,0" VerticalAlignment="Top" Width="74" Height="26" Grid.ColumnSpan="2"/>
-                    <Button x:Name="SaveSizeBtn" Content="Save size" Margin="0,306,10,0" VerticalAlignment="Top" Height="30" Controls:ControlsHelper.ContentCharacterCasing="Normal" Grid.Column="3" Grid.ColumnSpan="2"/>
+                            </DockPanel>
+                            <ProgressBar x:Name="ProgBar" Margin="5, 2, 2 0" Height="26" Width="171"/>
+                        </DockPanel>
+                           </StatusBar>
+                </DockPanel>
 
-                    <Button x:Name="SaveMeshBtn" Content="Calc" Height="30" Margin="0,343,10,0" VerticalAlignment="Top" Click="SaveMeshBtn_Click" IsEnabled="{Binding IsOn, ElementName=EditMeshToggle}" Grid.Column="3" Grid.ColumnSpan="2"/>
+            </Grid>
 
-                    <Controls:ToggleSwitch x:Name="EditMeshToggle" Content="Edit" HorizontalAlignment="Stretch" Margin="3,311,0,0" VerticalAlignment="Top" Grid.ColumnSpan="3" Height="20"/>
-                    <Controls:NumericUpDown x:Name="MashMultiplierUpDn" Margin="0,176,10,0" Value="{Binding cl_mash_multiplier, Mode=TwoWay}" Background="White" Height="26" Maximum="1000" Minimum="1" VerticalAlignment="Top" Speedup="False" Controls:ScrollViewerHelper.IsHorizontalScrollWheelEnabled="True" ValueIncremented="MashMultiplierUpDn_ValueIncremented" ValueDecremented="MashMultiplierUpDn_ValueDecremented" Grid.Column="2" Grid.ColumnSpan="3" ValueChanged="SettingUpDn_ValueChanged">
-                        <Controls:NumericUpDown.DataContext>
-                            <Properties:Settings/>
-                        </Controls:NumericUpDown.DataContext>
-                    </Controls:NumericUpDown>
-                    <Label x:Name="label_Copy3" Content="Множитель" HorizontalAlignment="Left" Margin="6,176,0,0" VerticalAlignment="Top" Height="26" Width="74" Grid.ColumnSpan="2"/>
-                    <Controls:ToggleSwitch x:Name="MorphToggle" Content="Morph" HorizontalAlignment="Stretch" Margin="3,348,0,0" VerticalAlignment="Top" IsOn="True" IsEnabled="{Binding IsOn, ElementName=EditMeshToggle}" Toggled="MorphToggle_Toggled" Grid.ColumnSpan="3" Height="20"/>
-                    <Controls:ToggleSwitch x:Name="HorizontalToggle" Content="Horizontal" HorizontalAlignment="Stretch" Margin="3,384,0,0" VerticalAlignment="Top" IsEnabled="{Binding IsOn, ElementName=EditMeshToggle}" Toggled="HorizontalToggle_Toggled" Grid.ColumnSpan="3" Height="20"/>
-                    <Controls:NumericUpDown x:Name="PointStepUpDn" Margin="5,421,14,0"  Background="White" Height="26" VerticalAlignment="Top" NumericInputMode="Decimal" Maximum="10" Minimum="0" Interval="0.1"  Value="0.1" Grid.Column="2" Grid.ColumnSpan="3" Focusable="False" IsTabStop="False" AllowDrop="False">
-                        <Controls:NumericUpDown.DataContext>
-                            <Properties:Settings/>
-                        </Controls:NumericUpDown.DataContext>
-                    </Controls:NumericUpDown>
-                    <Label x:Name="label_Copy4" Content="Шаг" HorizontalAlignment="Left" Margin="10,421,0,0" VerticalAlignment="Top" Height="26" Width="32" Grid.ColumnSpan="2"/>
-                    <Button x:Name="ClearCalcMeshBtn" Content="DellCalc" Height="30" Margin="0,379,10,0" VerticalAlignment="Top" IsEnabled="{Binding IsOn, ElementName=EditMeshToggle}" Click="ClearCalcMeshBtn_Click" Grid.Column="3" Grid.ColumnSpan="2"/>
-
-                </Grid>
-            </TabItem>
-            <TabItem Header="Log" Controls:HeaderedControlHelper.HeaderFontSize="18">
-                <Grid>
-                    <ListBox x:Name="LogBox"/>
-
-                </Grid>
-            </TabItem>
-        </TabControl>
-        <Button x:Name="PlayBtn" Content="Play" Grid.Column="2" Margin="5" Click="PlayBtn_Click" Background="#FFFFD100" Grid.Row="1"/>
-        <Border Grid.Row="2" Style="{StaticResource Border}" Margin="5,0,5,10">
-            <TreeView x:Name="treeView" Grid.Row="1" Margin="2" KeyboardNavigation.DirectionalNavigation="None" KeyboardNavigation.TabNavigation="None">
-                <StackPanel x:Name="TreeHead" Orientation="Horizontal" HorizontalAlignment="Left" Margin="-21,0,0,0">
-                    <TextBlock Margin="5,0,5,0" VerticalAlignment="Center" Height="20"><Run Text="Component"/></TextBlock>
-                    <Button x:Name="RefreshLaser" FontFamily="Segoe MDL2 Assets" Content="&#xEDAB;" Height="26" Margin="0,0,5,0" VerticalAlignment="Top" HorizontalAlignment="Right" Width="25" Background="{x:Null}" BorderBrush="{x:Null}" Click="RefreshLaser_Click_1"/>
-                    <Button x:Name="AddLaser" FontFamily="Segoe MDL2 Assets" Content="&#xE948;" Height="26" Margin="0,0,5,0" VerticalAlignment="Top" HorizontalAlignment="Right" Width="25" Background="{x:Null}" BorderBrush="{x:Null}" Click="AddLaser_Click" />
-                    <Button x:Name="RemoveLaser" FontFamily="Segoe MDL2 Assets" Content="&#xE947;" Height="26" Margin="0,0,5,0" VerticalAlignment="Top" HorizontalAlignment="Right" Width="25" Background="{x:Null}" BorderBrush="{x:Null}"/>
-                </StackPanel>
-
-                <TreeViewItem x:Name="DeviceTree" Header="Devices" VerticalContentAlignment="Center">
-                    <TreeViewItem x:Name="MeshTree" Header="Mesh"/>
-                </TreeViewItem>
-                <TreeViewItem x:Name="FrameTree" Header="Frames" DisplayMemberPath="Uid" AllowDrop="False" />
-            </TreeView>
-        </Border>
-        <Border Margin="5,0,6,0" Grid.Row="3" Style="{StaticResource Border}" Grid.RowSpan="2">
-            <pt:PropertyGrid x:Name="PrptGrid" AutomationProperties.IsColumnHeader="True">
-
-            </pt:PropertyGrid>
-        </Border>
-
-        <Button x:Name="OpenBtn" AllowDrop="True" Content="Open" Margin="51,5" Grid.Row="1" DragEnter="OpenBtn_DragEnter" DragOver="OpenBtn_DragOver" DragLeave="OpenBtn_DragLeave" Drop="OpenBtn_DragDrop" Click="OpenBtn_Click"/>
-        <Button x:Name="ReloadBtn" Content="Refresh" Margin="0,5,6,5" Grid.Row="1" HorizontalAlignment="Right" Width="41" Click="ReloadBtn_Click"/>
-        <Border Style="{StaticResource Border}" Grid.Column="1" Margin="0,5,0,0" Grid.Row="4">
-            <StackPanel x:Name="FrameStack" Orientation="Horizontal" HorizontalAlignment="Left" CanHorizontallyScroll="True">
-                <Viewbox>
-                    <Canvas/>
-                </Viewbox>
-            </StackPanel>
-        </Border>
-        <DockPanel Grid.Column="1" LastChildFill="False" Grid.Row="1" Margin="0,5,115,5">
-            <Button x:Name="LineBtn" Content="Line" Height="40" VerticalAlignment="Top" Width="40" Click="LineBtn_Click"/>
-            <Button x:Name="ClearBtn" Content="CLear" Height="40" VerticalAlignment="Top" Width="74" Click="ClearBtn_Click"/>
         </DockPanel>
-        <Controls:ToggleSwitch x:Name="RealTimeToggle"  Content="Realtime " HorizontalAlignment="Right" Margin="0,14,10,16" VerticalAlignment="Stretch" IsOn="{Binding int_realtime, Mode=TwoWay}" Grid.Row="1" RenderTransformOrigin="0.5,0.5" Grid.Column="1" Toggled="RealTimeToggle_Toggled" HorizontalContentAlignment="Right" Width="106" FlowDirection="RightToLeft" Padding="1,0,0,0">
-            <Controls:ToggleSwitch.DataContext>
-                <Properties:Settings/>
-            </Controls:ToggleSwitch.DataContext>
-        </Controls:ToggleSwitch>
-        <ToggleButton x:Name="QRBtn" Content="QR" Margin="5,5,0,5" Grid.Row="1" Click="QRBtn_Click" HorizontalAlignment="Left" Width="41" Focusable="False"/>
-
-
-
     </Grid>
+
+
 </Window>

@@ -108,7 +108,7 @@ namespace MonchaCadViewer.Format
                         catch
                         {
                             ICurve2D contourLineSegment = (ICurve2D)pDrawObj.Curve2D;
-                            double[] arrayCurve = contourLineSegment.CalculatePolygonByStep(crs / mash / contourLineSegment.Length);
+                            double[] arrayCurve = contourLineSegment.CalculatePolygonByStep(crs / contourLineSegment.Length);
                             for (int j = 0; j < arrayCurve.Length; j += 2)
                                 if (lContour.IndexOf(new MonchaPoint3D(arrayCurve[j], arrayCurve[j + 1], 0)) == -1) //Если координата занесена
                                 {

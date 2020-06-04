@@ -155,8 +155,7 @@ namespace MonchaCadViewer.CanvasObj
             this._lineGeometry.StartPoint = this.BaseContextPoint.GetMPoint;
             this._lineGeometry.EndPoint = this.SecondContextPoint.GetMPoint;
 
-            this.intEvent();
-
+            CadObject.StatColorSelect(this);
             adornerLayer.Update();
 
         }

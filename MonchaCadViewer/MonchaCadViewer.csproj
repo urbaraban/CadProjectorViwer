@@ -31,7 +31,7 @@
     <SuiteName>Viwer</SuiteName>
     <WebPage>publish.htm</WebPage>
     <OpenBrowserOnPublish>false</OpenBrowserOnPublish>
-    <ApplicationRevision>16</ApplicationRevision>
+    <ApplicationRevision>21</ApplicationRevision>
     <ApplicationVersion>0.8.0.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <CreateDesktopShortcut>true</CreateDesktopShortcut>
@@ -79,7 +79,7 @@
     <StartupObject>MonchaCadViewer.App</StartupObject>
   </PropertyGroup>
   <PropertyGroup>
-    <ApplicationIcon>logo-01.ico</ApplicationIcon>
+    <ApplicationIcon>logo.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="CalcBinding, Version=2.5.2.0, Culture=neutral, processorArchitecture=MSIL">
@@ -183,7 +183,7 @@
     <Compile Include="CanvasObj\DimObj\AdornerContourFrame.cs" />
     <Compile Include="CanvasObj\CadObject.cs" />
     <Compile Include="CanvasObj\DimObj\AdornerLineDim.cs" />
-    <Compile Include="ContextMenuLib.cs" />
+    <Compile Include="CanvasObj\ContextMenuLib.cs" />
     <Compile Include="CanvasObj\CadDot.cs" />
     <Compile Include="CanvasObj\CadLine.cs" />
     <Compile Include="CanvasObj\CadCanvas.cs" />
@@ -271,10 +271,13 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="logo-01.png" />
+    <Resource Include="logo.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="logo-01.ico" />
+    <Resource Include="logo.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="logo.jpg" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

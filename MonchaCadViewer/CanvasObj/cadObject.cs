@@ -26,6 +26,7 @@ namespace MonchaCadViewer.CanvasObj
         protected override Geometry DefiningGeometry => throw new NotImplementedException();
 
         [Category("Data")]
+        [DisplayName("Given name")]
         public bool Render { get; set; } = true;
         
         public bool IsFix { get; set; } = false;
@@ -50,26 +51,28 @@ namespace MonchaCadViewer.CanvasObj
             {
                 this.MouseLeave += CadObject_MouseLeave;
                 this.MouseLeftButtonUp += CadObject_MouseLeftButtonUp;
-                this.LayoutUpdated += CadObject_LayoutUpdated;
                 this.MouseMove += CadObject_MouseMove;
                 this.MouseLeftButtonDown += CadObject_MouseLeftButtonDown;
             }
 
             this.BaseContextPoint = monchaPoint;
 
+            this.BaseContextPoint.ChangePoint += BaseContextPoint_ChangePoint;
+
             if (this.ContextMenu == null) this.ContextMenu = new System.Windows.Controls.ContextMenu();
             this.ContextMenu.ContextMenuClosing += ContextMenu_Closing;
 
             ContextMenuLib.CadObjMenu(this.ContextMenu);
-            StatColorSelect();
             this.MouseForce = move;
         }
 
-        public void intEvent()
+
+        private void BaseContextPoint_ChangePoint(object sender, MonchaPoint3D e)
         {
-            if (this.Updated != null)
-                this.Updated(this, this);
+            if (Updated != null)
+                Updated(this, this);
         }
+
         private void ContextMenu_Closing(object sender, RoutedEventArgs e)
         {
 
@@ -90,39 +93,39 @@ namespace MonchaCadViewer.CanvasObj
         private void CadObject_MouseLeave(object sender, System.Windows.Input.MouseEventArgs e)
         {
             this.WasMove = false;
-            StatColorSelect();
+            if (Updated != null)
+                Updated(this, this);
         }
 
-        private void CadObject_LayoutUpdated(object sender, EventArgs e)
+        public static void StatColorSelect(CadObject obj)
         {
-            //StatColorSelect();
-        }
+            if (obj.Fill == null) obj.Fill = Brushes.Gray;
 
-        private void StatColorSelect()
-        {
-            if (this.IsMouseOver)
+            if (obj.IsMouseOver)
             {
-                if (this.Fill != Brushes.Transparent && this.Fill != null) this.Fill = Brushes.Orange;
-                if (this.Stroke != null) this.Stroke = Brushes.Orange;
+                if (obj.Fill != Brushes.Transparent && obj.Fill != null) obj.Fill = Brushes.Orange;
+                if (obj.Stroke != null) obj.Stroke = Brushes.Orange;
             }
-            else if (!this.BaseContextPoint.IsFix)
+            else if (obj.IsSelected)
             {
-                if (this.Fill != Brushes.Transparent && this.Fill != null) this.Fill = Brushes.Black;
-                if (this.Stroke != null) this.Stroke = Brushes.Black;
+                if (obj.Fill != Brushes.Transparent && obj.Fill != null) obj.Fill = Brushes.Red;
+                if (obj.Stroke != null) obj.Stroke = Brushes.Red;
             }
-            else if (this.IsSelected)
+            else if (!obj.Render)
             {
-                if (this.Fill != Brushes.Transparent && this.Fill != null) this.Fill = Brushes.Red;
-                if (this.Stroke != null) this.Stroke = Brushes.Red;
+                if (obj.Fill != Brushes.Transparent && obj.Fill != null) obj.Fill = Brushes.LightGray;
+                if (obj.Stroke != null) obj.Stroke = Brushes.LightGray;
+            }
+            else if (obj.BaseContextPoint.IsFix)
+            {
+                if (obj.Fill != Brushes.Transparent && obj.Fill != null) obj.Fill = Brushes.LightBlue;
+                if (obj.Stroke != null) obj.Stroke = Brushes.LightBlue;
             }
             else
             {
-                if (this.Fill != Brushes.Transparent && this.Fill != null) this.Fill = Brushes.Blue;
-                if (this.Stroke != null) this.Stroke = Brushes.Blue;
+                if (obj.Fill != Brushes.Transparent && obj.Fill != null) obj.Fill = Brushes.Gray;
+                if (obj.Stroke != null) obj.Stroke = Brushes.Blue;
             }
-
-            if (Updated != null)
-                Updated(this, this);
         }
 
         private void CadObject_MouseLeftButtonUp(object sender, System.Windows.Input.MouseButtonEventArgs e)
@@ -136,10 +139,17 @@ namespace MonchaCadViewer.CanvasObj
 
                         canvas.UnselectAll(this);
 
-                    if (this.IsSelected && this.ObjAdorner != null)
-                        this.ObjAdorner.Visibility = Visibility.Visible;
-                    else
-                        this.ObjAdorner.Visibility = Visibility.Hidden;
+                    if (this.ObjAdorner != null) 
+                    {
+                        if (this.IsSelected)
+                        {
+                            this.ObjAdorner.Visibility = Visibility.Visible;
+                        }
+                        else
+                        {
+                            this.ObjAdorner.Visibility = Visibility.Hidden;
+                        }   
+                    }
                 }
                 else
                 {
@@ -151,7 +161,6 @@ namespace MonchaCadViewer.CanvasObj
                     if (this.Selected != null)
                         this.Selected(this, this);
                 }
-            StatColorSelect();
         }
 
         public bool Remove()
@@ -169,6 +178,7 @@ namespace MonchaCadViewer.CanvasObj
 
         private void CadObject_MouseMove(object sender, MouseEventArgs e)
         {
+
             CadCanvas canvas = this.Parent as CadCanvas;
 
             if ((e.LeftButton == MouseButtonState.Pressed && canvas.Status == 0) || MouseForce)
@@ -178,8 +188,11 @@ namespace MonchaCadViewer.CanvasObj
 
                 Point tPoint = e.GetPosition(canvas);
 
-                this.BaseContextPoint.Update(this.BasePos.X + (tPoint.X - this.MousePos.X), 
-                    this.BasePos.Y + (tPoint.Y - this.MousePos.Y));
+                if (!this.BaseContextPoint.IsFix)
+                {
+                    this.BaseContextPoint.Update(this.BasePos.X + (tPoint.X - this.MousePos.X),
+                        this.BasePos.Y + (tPoint.Y - this.MousePos.Y));
+                }
 
                 this.CaptureMouse();
                 this.Cursor = Cursors.SizeAll;
@@ -198,6 +211,14 @@ namespace MonchaCadViewer.CanvasObj
             {
                 this.Cursor = Cursors.Hand;
             }
+
+            if (Updated != null)
+                Updated(this, this);
+        }
+
+        public void Update()
+        {
+            Updated(this, this);
         }
 
 

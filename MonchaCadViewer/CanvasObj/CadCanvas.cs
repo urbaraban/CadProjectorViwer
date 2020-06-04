@@ -19,7 +19,6 @@ namespace MonchaCadViewer.CanvasObj
 
         public event EventHandler<CadObject> SelectedObject;
 
-        private bool CalibrationStat = false;
         private MonchaPoint3D _size;
         private List<CadDot> anchors = new List<CadDot>();
         private int _status = 0;
@@ -99,6 +98,7 @@ namespace MonchaCadViewer.CanvasObj
 
                 CadContour polygon = new CadContour(_innerList, Center, maincanvas, mousemove);
                 polygon.OnBaseMesh = false;
+                polygon.BaseContextPoint.IsFix = !mousemove;
                 this.Children.Add(polygon);
 
                 SendProcessor.Worker(this);
@@ -125,7 +125,9 @@ namespace MonchaCadViewer.CanvasObj
         {
             CadRectangle cadRectangle = new CadRectangle(true, point1, point2, false);
             CadDot cadDot1 = new CadDot(point1, MonchaHub.GetThinkess() * 4, true, false);
+            cadDot1.Render = false;
             CadDot cadDot2 = new CadDot(point2, MonchaHub.GetThinkess() * 4, true, false);
+            cadDot2.Render = false;
             cadRectangle.Render = false;
             this.Children.Add(cadRectangle);
             this.Children.Add(cadDot1);
@@ -223,18 +225,17 @@ namespace MonchaCadViewer.CanvasObj
         }
 
         //Рисуем квадраты в поле согласно схеме
-        public void DrawMesh(MonchaDeviceMesh mesh, MonchaDevice _device, bool calibration, bool OnBaseMesh, bool Render)
+        public void DrawMesh(MonchaDeviceMesh mesh, MonchaDevice _device)
         {
             if (_device != null)
             {
-                _device.Calibration = calibration;
+                _device.Calibration = !mesh.OnlyEdge;
                 this.DataContext = _device;
                 this.Children.Clear();
 
                 if (mesh == null)
                     mesh = _device.BaseMesh;
 
-                this.CalibrationStat = calibration;
                 //
                 // Поинты
                 //
@@ -252,14 +253,15 @@ namespace MonchaCadViewer.CanvasObj
                             //calibration flag
                             true,
                             false);
+                        dot.BaseContextPoint.IsFix = !mesh.OnlyEdge;
 
-                        dot.Fill = Brushes.Black;
                         dot.StrokeThickness = 0;
                         dot.Uid = i.ToString() + ":" + j.ToString();
                         dot.ToolTip = "Позиция: " + i + ":" + j + "\nX: " + mesh[i, j].X + "\n" + "Y: " + mesh[i, j].Y;
                         dot.DataContext = mesh;
-                        dot.OnBaseMesh = OnBaseMesh;
-                        dot.Render = Render;
+                        dot.OnBaseMesh = !mesh.OnlyEdge;
+                        dot.Render = !mesh.OnlyEdge;
+                        CadObject.StatColorSelect(dot);
                         this.Children.Add(dot);
                     }
 

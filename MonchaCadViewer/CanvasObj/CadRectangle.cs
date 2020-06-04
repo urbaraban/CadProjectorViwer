@@ -69,7 +69,6 @@ namespace MonchaCadViewer.CanvasObj
             //this._rect = new Rect(this.BaseContextPoint.GetMPoint, this.SecondContextPoint.GetMPoint);
             this._rectg.Rect = this._rect;
 
-            this.intEvent();
         }
 
         private void ContextMenu_Closed(object sender, RoutedEventArgs e)

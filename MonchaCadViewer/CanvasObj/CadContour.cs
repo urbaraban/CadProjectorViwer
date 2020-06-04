@@ -42,8 +42,7 @@ namespace MonchaCadViewer.CanvasObj
                 this.Loaded += ViewContour_Loaded;
                 this.ContextMenuClosing += ViewContour_ContextMenuClosing;
                 this.MouseWheel += CadContour_MouseWheel;
-
-                this.BaseContextPoint.ChangePoint += ViewContour_MoveBasePoint;
+                this.Updated += CadContour_Updated;
             }
 
             this.Fill = Brushes.Transparent;
@@ -51,6 +50,11 @@ namespace MonchaCadViewer.CanvasObj
             this.Stroke = Brushes.Red;
 
 
+        }
+
+        private void CadContour_Updated(object sender, CadObject e)
+        {
+            this.UpdateGeometry();
         }
 
         private void CadContour_MouseWheel(object sender, MouseWheelEventArgs e)
@@ -63,11 +67,6 @@ namespace MonchaCadViewer.CanvasObj
         private void CadContour_MouseDown(object sender, MouseButtonEventArgs e)
         {
            
-        }
-
-        private void ViewContour_MoveBasePoint(object sender, MonchaPoint3D e)
-        {
-            this.UpdateGeometry();
         }
 
         private void ViewContour_ContextMenuClosing(object sender, ContextMenuEventArgs e)
@@ -154,10 +153,10 @@ namespace MonchaCadViewer.CanvasObj
                 {
                     MonchaPoint3D modPoint = new MonchaPoint3D(_points[i][j]);
                     if (this.Mirror)
-                        modPoint.Update(-_points[i][j].X, _points[i][j].Y, _points[i][j].Z);
+                        modPoint.Update(-modPoint.X, modPoint.Y, modPoint.Z);
 
                     if (this.Angle != 0)
-                        modPoint = RotatePoint(_points[i][j], new MonchaPoint3D(0, 0, 0));
+                        modPoint = RotatePoint(modPoint, new MonchaPoint3D(0, 0, 0));
 
                     Points.Add(modPoint);
                 }
@@ -220,7 +219,7 @@ namespace MonchaCadViewer.CanvasObj
             Canvas.SetLeft(this, this.BaseContextPoint.GetMPoint.X);
             Canvas.SetTop(this, this.BaseContextPoint.GetMPoint.Y);
 
-            this.intEvent();
+            CadObject.StatColorSelect(this);
         }
     }
 }

@@ -35,11 +35,10 @@ namespace MonchaCadViewer
                     //if not
                     if (!MonchaHub.CheckDevice(iPs[i]))
                     {
-                        MonchaDevice device = new MonchaDevice(iPs[i]);
-                        if (device.Connect)
-                            device.Device.Disconnect();
+                        MonchaDevice device = MonchaHub.ConnectDevice(iPs[i]);
 
-                        this.Devices.Add(device);
+                        if (device != null)
+                            this.Devices.Add(device);
                     }
                 }
             }
@@ -55,8 +54,12 @@ namespace MonchaCadViewer
         {
             foreach (MonchaDevice device in DeviceList.Items)
             {
-                if (device.Selected)
+                if (device != null && device.Selected)
                     MonchaHub.Devices.Add(device);
+                else
+                {
+                    device.Disconnect();
+                }
             }
 
             MonchaHub.RefreshDevice();

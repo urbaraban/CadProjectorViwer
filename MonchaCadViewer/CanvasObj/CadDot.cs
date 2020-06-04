@@ -32,11 +32,17 @@ namespace MonchaCadViewer.CanvasObj
             this.ContextMenuClosing += DotShape_ContextMenuClosing;
             this.MouseLeftButtonUp += DotShape_MouseLeftButtonUp;
             this.Loaded += CadDot_Loaded;
+            this.Updated += CadDot_Updated;
 
-            this.BaseContextPoint.ChangePoint += MonchaPoint_ChangePoint;
+            // this.BaseContextPoint.ChangePoint += MonchaPoint_ChangePoint;
 
-            this.Fill = Brushes.Black;
+            UpdatePoint();
 
+
+        }
+
+        private void CadDot_Updated(object sender, CadObject e)
+        {
             UpdatePoint();
         }
 
@@ -46,12 +52,6 @@ namespace MonchaCadViewer.CanvasObj
                 canvas.SubsObj(this);
             this.UpdateLayout();
         }
-
-        private void MonchaPoint_ChangePoint(object sender, MonchaPoint3D e)
-        {
-            UpdatePoint();
-        }
-
 
 
         private void DotShape_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
@@ -93,8 +93,7 @@ namespace MonchaCadViewer.CanvasObj
                 Canvas.SetTop(this, this.BaseContextPoint.GetMPoint.Y - Size / 2); //Y inverted in calibration stat
                 Canvas.SetZIndex(this, 999);
             }
-            this.intEvent();
-            
+            CadObject.StatColorSelect(this);            
         }
 
         public bool Contains(Point point)

@@ -8,7 +8,7 @@
         xmlns:Properties="clr-namespace:MonchaCadViewer.Properties" xmlns:controlzex="urn:controlzex"
     xmlns:pt="http://propertytools.org/wpf" xmlns:c="clr-namespace:CalcBinding;assembly=CalcBinding" x:Name="MainWindow1" x:Class="MonchaCadViewer.MainWindow"
         mc:Ignorable="d"
-        Title="2CUT" Focusable="False" ResizeMode="CanResizeWithGrip" SizeToContent="Manual" KeyboardNavigation.TabNavigation="None"  AllowDrop="True" Height="766.898" Width="999" Closing="Window_Closing" Closed="Window_Closed" controlzex:KeyboardNavigationEx.AlwaysShowFocusVisual="True" WindowStartupLocation="CenterScreen" Icon="logo-01.png" KeyUp="MainWindow1_KeyUp" TextInput="MainWindow1_TextInput" PreviewKeyDown="MainWindow1_PreviewKeyDown">
+        Title="CUT" Focusable="False" KeyboardNavigation.TabNavigation="None"  AllowDrop="True" Height="766.898" Width="999" Closing="Window_Closing" Closed="Window_Closed" controlzex:KeyboardNavigationEx.AlwaysShowFocusVisual="True" WindowStartupLocation="CenterScreen" Icon="logo.png" KeyUp="MainWindow1_KeyUp" TextInput="MainWindow1_TextInput" PreviewKeyDown="MainWindow1_PreviewKeyDown" WindowStyle="None" ResizeMode="CanResizeWithGrip" BorderBrush="#FFE01414" VerticalAlignment="Top">
     <Window.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -36,8 +36,8 @@
             </Style>
         </ResourceDictionary>
     </Window.Resources>
-    <Grid>
-        <DockPanel Grid.ColumnSpan="3" Grid.RowSpan="5" Grid.Row="1">
+    <Border>
+    <DockPanel Grid.ColumnSpan="3" Grid.RowSpan="5" Grid.Row="1" Margin="0,0,0,0">
             <Grid>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="215"/>
@@ -45,11 +45,39 @@
                     <ColumnDefinition Width="290"/>
                 </Grid.ColumnDefinitions>
                 <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="628*"/>
-                    <RowDefinition Height="35*"/>
+                    <RowDefinition Height="30"/>
+                    <RowDefinition Height="51"/>
+                    <RowDefinition Height="644*"/>
+                    <RowDefinition Height="37*"/>
                 </Grid.RowDefinitions>
-                <DockPanel Grid.ColumnSpan="3">
+                <DockPanel x:Name="TopBar" Grid.ColumnSpan="3" Margin="0,0,0,0" Background="{DynamicResource {x:Static SystemColors.MenuBrushKey}}" MouseLeftButtonDown="TopBar_MouseLeftButtonDown" VerticalAlignment="Top" LastChildFill="False">
+
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" DockPanel.Dock="Left">
+                        <Image Width="25" Height="25" Margin="2" Source="logo.png"/>
+                        <Separator/>
+                        <Label Content="CUT — Viwer" Padding="5,2" VerticalContentAlignment="Center"/>
+
+                        <StackPanel Margin="10,0,0,0" Orientation="Horizontal" HorizontalAlignment="Right" DockPanel.Dock="Right" UseLayoutRounding="True">
+
+                            <Button x:Name="MenuSaveBtn" FontFamily="Segoe MDL2 Assets" Content="&#xE792;" Width="25" Height="25" Margin="2" Padding="0,-1,0,0" FontSize="18" BorderBrush="{x:Null}" Background="{x:Null}" Click="MenuSaveBtn_Click">
+
+                            </Button>
+
+                        </StackPanel>
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" DockPanel.Dock="Right" Margin="5,0">
+                        <Button x:Name="MinimizedBtn" FontFamily="Segoe MDL2 Assets" Content="&#xE921;" Width="25" Height="25" Margin="2" Click="MinimizedBtn_Click">
+
+                        </Button>
+                        <Button x:Name="FullSizeBtn" FontFamily="Segoe MDL2 Assets" Content="&#xE922;" Width="25" Height="25" Margin="2" Click="FullSizeBtn_Click">
+
+                        </Button>
+                        <Button x:Name="CloseBtn"  FontFamily="Segoe MDL2 Assets" Content="&#xE8BB;" Width="25" Height="25" Margin="2" Click="CloseBtn_Click">
+
+                        </Button>
+                    </StackPanel>
+                </DockPanel>
+                <DockPanel Grid.ColumnSpan="3" Grid.Row="1">
                     <Grid>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition/>
@@ -68,8 +96,8 @@
                                     <Button x:Name="ReloadBtn" Content="Refresh" Margin="5,5,5,5" HorizontalAlignment="Right"  Click="ReloadBtn_Click" Grid.Column="1" VerticalAlignment="Stretch"/>
                                 </ToolBar>
                                 <ToolBar>
-                                    <Button x:Name="LineBtn" Content="Line" Height="40" VerticalAlignment="Top" Width="40" Click="LineBtn_Click"/>
-                                    <Button x:Name="ClearBtn" Content="CLear" Height="40" VerticalAlignment="Top" Width="74" Click="ClearBtn_Click"/>
+                                    <Button x:Name="LineBtn" Content="Line"    Click="LineBtn_Click"/>
+                                    <Button x:Name="ClearBtn" Content="Clear"  Click="ClearBtn_Click"/>
                                 </ToolBar>
                             </ToolBarPanel>
                         </DockPanel>
@@ -88,7 +116,7 @@
                     </Grid>
                 </DockPanel>
 
-                <DockPanel Grid.Row="1">
+                <DockPanel Grid.Row="2">
                     <Grid>
                         <Grid.RowDefinitions>
                             <RowDefinition Height="47*"/>
@@ -99,7 +127,6 @@
                             <Border Grid.Row="2" Style="{StaticResource Border}" Margin="5,5,2,0">
                                 <TreeView x:Name="treeView" Grid.Row="1" KeyboardNavigation.DirectionalNavigation="None" KeyboardNavigation.TabNavigation="None" Margin="0,0,0,-1">
                                     <StackPanel x:Name="TreeHead" Orientation="Horizontal" HorizontalAlignment="Left" Margin="-21,0,0,0">
-                                        <TextBlock Margin="5,0,5,0" VerticalAlignment="Center" Height="20"><Run Text="Component"/></TextBlock>
                                         <Button x:Name="RefreshLaser" FontFamily="Segoe MDL2 Assets" Content="&#xEDAB;" Height="26" Margin="0,0,5,0" VerticalAlignment="Top" HorizontalAlignment="Right" Width="25" Background="{x:Null}" BorderBrush="{x:Null}" Click="RefreshLaser_Click_1"/>
                                         <Button x:Name="AddLaser" FontFamily="Segoe MDL2 Assets" Content="&#xE948;" Height="26" Margin="0,0,5,0" VerticalAlignment="Top" HorizontalAlignment="Right" Width="25" Background="{x:Null}" BorderBrush="{x:Null}" Click="AddLaser_Click" />
                                         <Button x:Name="RemoveLaser" FontFamily="Segoe MDL2 Assets" Content="&#xE947;" Height="26" Margin="0,0,5,0" VerticalAlignment="Top" HorizontalAlignment="Right" Width="25" Background="{x:Null}" BorderBrush="{x:Null}"/>
@@ -120,7 +147,7 @@
                     </Grid>
                 </DockPanel>
 
-                <DockPanel Grid.Column="1" Margin="5,5,0,0" Grid.Row="1">
+                <DockPanel Grid.Column="1" Margin="5,5,0,0" Grid.Row="2">
                     <Grid>
                         <Grid.RowDefinitions>
                             <RowDefinition/>
@@ -141,19 +168,21 @@
                         </DockPanel>
                         <DockPanel DockPanel.Dock="Bottom" Grid.Row="1" Margin="2,5">
                             <Border Style="{StaticResource Border}" Grid.Column="1" Margin="0,5,0,0" Grid.Row="4" ScrollViewer.VerticalScrollBarVisibility="Disabled">
-                                <StackPanel x:Name="FrameStack" Orientation="Horizontal" HorizontalAlignment="Left" CanHorizontallyScroll="True" ScrollViewer.HorizontalScrollBarVisibility="Visible" ScrollViewer.VerticalScrollBarVisibility="Disabled" ScrollViewer.CanContentScroll="True">
-                                    <Viewbox>
-                                        <Canvas/>
-                                    </Viewbox>
-                                </StackPanel>
+                                <ScrollViewer HorizontalScrollBarVisibility="Visible" VerticalScrollBarVisibility="Disabled">
+                                    <StackPanel x:Name="FrameStack" Orientation="Horizontal" HorizontalAlignment="Stretch"  CanHorizontallyScroll="True" ScrollViewer.HorizontalScrollBarVisibility="Visible" ScrollViewer.VerticalScrollBarVisibility="Disabled" ScrollViewer.CanContentScroll="True">
+                                        <Viewbox>
+                                            <Canvas/>
+                                        </Viewbox>
+                                    </StackPanel>
+                                </ScrollViewer>
                             </Border>
                         </DockPanel>
                     </Grid>
                 </DockPanel>
-                <DockPanel Grid.Column="2" Grid.Row="1" Margin="5,5,5,5">
+                <DockPanel Grid.Column="2" Grid.Row="2" Margin="5,5,5,5">
                     <TabControl x:Name="tabControl" DockPanel.Dock="Right" Grid.Column="2" Grid.Row="2" Grid.RowSpan="3">
                         <TabItem x:Name="ContourSettingTab" Header="Device" Controls:HeaderedControlHelper.HeaderFontSize="18">
-                            <Grid Background="#FFE5E5E5">
+                            <Grid Background="{DynamicResource {x:Static SystemColors.MenuBrushKey}}">
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="52.333"/>
                                     <ColumnDefinition Width="52"/>
@@ -362,22 +391,15 @@
                         </TabItem>
                     </TabControl>
                 </DockPanel>
-                <DockPanel DockPanel.Dock="Bottom" Grid.ColumnSpan="3" Grid.Row="2">
-                    <StatusBar>
+                <DockPanel Grid.ColumnSpan="3" Grid.Row="3">
+                    <StatusBar Background="{DynamicResource {x:Static SystemColors.MenuBarBrushKey}}">
                         <DockPanel>
-                            <DockPanel DockPanel.Dock="Left">
-                                <TextBlock x:Name="infoText" Text="Hello world!" Margin="5, 0 , 0 ,0" Width="206"/>
-
-                            </DockPanel>
-                            <ProgressBar x:Name="ProgBar" Margin="5, 2, 2 0" Height="26" Width="171"/>
+                            <DockPanel DockPanel.Dock="Left"/>
                         </DockPanel>
-                           </StatusBar>
+                    </StatusBar>
                 </DockPanel>
 
             </Grid>
-
         </DockPanel>
-    </Grid>
-
-
+    </Border>
 </Window>

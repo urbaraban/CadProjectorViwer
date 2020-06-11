@@ -1,6 +1,5 @@
 ﻿using MonchaSDK;
 using MonchaSDK.Device;
-using MonchaSDK.Object;
 using System;
 using System.Collections.Generic;
 using System.Threading;
@@ -10,6 +9,7 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Threading;
+using MonchaSDK.Object;
 
 namespace MonchaCadViewer.CanvasObj
 {
@@ -19,7 +19,7 @@ namespace MonchaCadViewer.CanvasObj
 
         public event EventHandler<CadObject> SelectedObject;
 
-        private MonchaPoint3D _size;
+        private LPoint3D _size;
         private List<CadDot> anchors = new List<CadDot>();
         private int _status = 0;
 
@@ -33,7 +33,7 @@ namespace MonchaCadViewer.CanvasObj
             set => _status = value;
         }
 
-        public CadCanvas(MonchaPoint3D Size)
+        public CadCanvas(LPoint3D Size)
         {
             this._size = Size;
             
@@ -55,12 +55,12 @@ namespace MonchaCadViewer.CanvasObj
 
         }
 
-        private void MonchaHub_ChangeSize(object sender, MonchaPoint3D e)
+        private void MonchaHub_ChangeSize(object sender, LPoint3D e)
         {
             ResizeCanvas();
         }
 
-        private void _size_ChangePoint(object sender, MonchaPoint3D e)
+        private void _size_ChangePoint(object sender, LPoint3D e)
         {
             ResizeCanvas();
         }
@@ -79,9 +79,9 @@ namespace MonchaCadViewer.CanvasObj
             }
         }
 
-        public void DrawContour(LObjectList _innerList, bool maincanvas, bool add, bool mousemove)
+        public void DrawContour(PathGeometry _innerList, bool maincanvas, bool add, bool mousemove)
         {
-            if (_innerList.Count > 0)
+            if (_innerList.Figures.Count > 0)
             {
                 foreach (MonchaDevice device in MonchaHub.Devices)
                 {
@@ -93,12 +93,11 @@ namespace MonchaCadViewer.CanvasObj
                     this.Children.Clear();
                 }
 
-                MonchaPoint3D Center = new MonchaPoint3D(0.5, 0.5, 0);
+                LPoint3D Center = new LPoint3D(0.5, 0.5, 0);
                 Center.M = this._size;
 
-                CadContour polygon = new CadContour(_innerList, Center, maincanvas, mousemove);
+                CadContour polygon = new CadContour(_innerList, maincanvas, mousemove);
                 polygon.OnBaseMesh = false;
-                polygon.BaseContextPoint.IsFix = !mousemove;
                 this.Children.Add(polygon);
 
                 SendProcessor.Worker(this);
@@ -121,7 +120,7 @@ namespace MonchaCadViewer.CanvasObj
             SendProcessor.Worker(this);
         }
 
-        public void DrawRectangle(MonchaPoint3D point1, MonchaPoint3D point2)
+        public void DrawRectangle(LPoint3D point1, LPoint3D point2)
         {
             CadRectangle cadRectangle = new CadRectangle(true, point1, point2, false);
             CadDot cadDot1 = new CadDot(point1, MonchaHub.GetThinkess() * 4, true, false);
@@ -182,7 +181,7 @@ namespace MonchaCadViewer.CanvasObj
         private CadDot NewAnchor(bool Calibration, bool mousemove, bool move )
         {
             Point point = Mouse.GetPosition(this);
-            CadDot anchor = new CadDot(new MonchaPoint3D(point.X, point.Y, 0), this.ActualWidth * 0.02, mousemove, move);
+            CadDot anchor = new CadDot(new LPoint3D(point.X, point.Y, 0), this.ActualWidth * 0.02, mousemove, move);
             anchors.Add(anchor);
             return anchor;
         }

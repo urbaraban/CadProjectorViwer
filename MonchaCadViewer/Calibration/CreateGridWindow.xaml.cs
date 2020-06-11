@@ -1,11 +1,7 @@
-﻿using MonchaCadViewer.CanvasObj;
-using MonchaSDK.Device;
-using MonchaSDK.Object;
+﻿using MonchaSDK.Device;
 using System;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Media;
-using System.Windows.Media.Media3D;
+
 
 namespace MonchaCadViewer
 {

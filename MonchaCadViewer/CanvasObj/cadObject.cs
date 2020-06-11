@@ -5,25 +5,41 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Shapes;
 using MonchaSDK.Device;
-using MonchaSDK.Object;
 using System.Windows.Documents;
-using MonchaCadViewer.CanvasObj.DimObj;
 using PropertyTools.DataAnnotations;
+using MonchaSDK.Object;
+using StclLibrary.Mathematics;
+using System.Windows.Media.Media3D;
+using MonchaSDK;
 
 namespace MonchaCadViewer.CanvasObj
 {
     public class CadObject : Shape
     {
+        //Event
         public event EventHandler<CadObject> Selected;
         public event EventHandler<CadObject> Updated;
         public event EventHandler<CadObject> Removed;
 
-        protected Point MousePos = new Point();
-        protected Point BasePos = new Point();
+        //Geometry
+        public Geometry GmtrObj { get; set; }
+
+        public Size Size => GmtrObj.Bounds.Size;
+
+        public bool Mirror { get; set; } = false;
+        public double Angle { get; set; } = 0;
 
         public bool IsSelected { get; set; } = false;
 
-        protected override Geometry DefiningGeometry => throw new NotImplementedException();
+        protected Point MousePos = new Point();
+        protected Point BasePos = new Point();
+
+        public TransformGroup Transform = new TransformGroup();
+        public TranslateTransform Translate = new TranslateTransform();
+        public RotateTransform Rotate = new RotateTransform();
+        public ScaleTransform Scale = new ScaleTransform();
+
+        protected override Geometry DefiningGeometry => GmtrObj;
 
         [Category("Data")]
         [DisplayName("Given name")]
@@ -43,9 +59,9 @@ namespace MonchaCadViewer.CanvasObj
 
         public Adorner ObjAdorner { get; set; }
 
-        public MonchaPoint3D BaseContextPoint { get; set; }
+        public LPoint3D BaseContextPoint { get; set; }
 
-        public CadObject(bool mouseevent, MonchaPoint3D monchaPoint, bool move)
+        public CadObject(bool mouseevent, bool move)
         {
             if (mouseevent || move)
             {
@@ -55,19 +71,25 @@ namespace MonchaCadViewer.CanvasObj
                 this.MouseLeftButtonDown += CadObject_MouseLeftButtonDown;
             }
 
-            this.BaseContextPoint = monchaPoint;
-
-            this.BaseContextPoint.ChangePoint += BaseContextPoint_ChangePoint;
-
             if (this.ContextMenu == null) this.ContextMenu = new System.Windows.Controls.ContextMenu();
             this.ContextMenu.ContextMenuClosing += ContextMenu_Closing;
 
             ContextMenuLib.CadObjMenu(this.ContextMenu);
             this.MouseForce = move;
+
+            this.Transform.Children.Add(Scale);
+            this.Transform.Children.Add(Rotate);
+            this.Transform.Children.Add(Translate);
+
+            if (Translate.X == 0 && Translate.Y == 0)
+            {
+                Translate.X = MonchaHub.Size.GetMPoint.X / 2;
+                Translate.Y = MonchaHub.Size.GetMPoint.Y / 2;
+            }
         }
 
 
-        private void BaseContextPoint_ChangePoint(object sender, MonchaPoint3D e)
+        private void BaseContextPoint_ChangePoint(object sender, LPoint3D e)
         {
             if (Updated != null)
                 Updated(this, this);
@@ -87,7 +109,9 @@ namespace MonchaCadViewer.CanvasObj
         {
             Canvas canvas = this.Parent as Canvas;
             this.MousePos = Mouse.GetPosition(canvas);
-            this.BasePos = this.BaseContextPoint.GetMPoint;
+
+            MatrixTransform matrixTransform = this.GmtrObj.Transform as MatrixTransform;
+            this.BasePos = new Point(this.Translate.X, this.Translate.Y);
         }
 
         private void CadObject_MouseLeave(object sender, System.Windows.Input.MouseEventArgs e)
@@ -188,11 +212,10 @@ namespace MonchaCadViewer.CanvasObj
 
                 Point tPoint = e.GetPosition(canvas);
 
-                if (!this.BaseContextPoint.IsFix)
-                {
-                    this.BaseContextPoint.Update(this.BasePos.X + (tPoint.X - this.MousePos.X),
-                        this.BasePos.Y + (tPoint.Y - this.MousePos.Y));
-                }
+                Translate.X = this.BasePos.X + (tPoint.X - this.MousePos.X);
+                Translate.Y = this.BasePos.Y + (tPoint.Y - this.MousePos.Y);
+
+
 
                 this.CaptureMouse();
                 this.Cursor = Cursors.SizeAll;
@@ -220,7 +243,5 @@ namespace MonchaCadViewer.CanvasObj
         {
             Updated(this, this);
         }
-
-
     }
 }

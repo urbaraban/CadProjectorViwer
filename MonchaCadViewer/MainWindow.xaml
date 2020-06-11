@@ -37,7 +37,7 @@
         </ResourceDictionary>
     </Window.Resources>
     <Border>
-    <DockPanel Grid.ColumnSpan="3" Grid.RowSpan="5" Grid.Row="1" Margin="0,0,0,0">
+        <DockPanel Grid.ColumnSpan="3" Grid.RowSpan="5" Grid.Row="1" Margin="0,0,0,0">
             <Grid>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="215"/>
@@ -46,11 +46,11 @@
                 </Grid.ColumnDefinitions>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="30"/>
-                    <RowDefinition Height="51"/>
-                    <RowDefinition Height="644*"/>
+                    <RowDefinition Height="62"/>
+                    <RowDefinition Height="630*"/>
                     <RowDefinition Height="37*"/>
                 </Grid.RowDefinitions>
-                <DockPanel x:Name="TopBar" Grid.ColumnSpan="3" Margin="0,0,0,0" Background="{DynamicResource {x:Static SystemColors.MenuBrushKey}}" MouseLeftButtonDown="TopBar_MouseLeftButtonDown" VerticalAlignment="Top" LastChildFill="False">
+                <DockPanel x:Name="TopBar" Grid.ColumnSpan="3" Margin="0,0,0,0" Background="{DynamicResource {x:Static SystemColors.MenuBrushKey}}" MouseLeftButtonDown="TopBar_MouseLeftButtonDown" VerticalAlignment="Top" LastChildFill="False" Height="29">
 
                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" DockPanel.Dock="Left">
                         <Image Width="25" Height="25" Margin="2" Source="logo.png"/>
@@ -83,7 +83,7 @@
                             <ColumnDefinition/>
                             <ColumnDefinition Width="290"/>
                         </Grid.ColumnDefinitions>
-                        <DockPanel>
+                        <DockPanel LastChildFill="False" >
                             <ToolBarPanel Orientation="Horizontal">
                                 <ToolBar Grid.ColumnSpan="2">
                                     <ToolBarPanel Orientation="Vertical" Width="100">
@@ -92,14 +92,32 @@
                                         <ToggleButton x:Name="QRBtn" Content="QR" Click="QRBtn_Click" Focusable="False" Margin="0,0,0,0" Background="{x:Null}" BorderBrush="{x:Null}"/>
                                     </ToolBarPanel>
                                     <Separator></Separator>
-
                                     <Button x:Name="ReloadBtn" Content="Refresh" Margin="5,5,5,5" HorizontalAlignment="Right"  Click="ReloadBtn_Click" Grid.Column="1" VerticalAlignment="Stretch"/>
                                 </ToolBar>
                                 <ToolBar>
                                     <Button x:Name="LineBtn" Content="Line"    Click="LineBtn_Click"/>
                                     <Button x:Name="ClearBtn" Content="Clear"  Click="ClearBtn_Click"/>
                                 </ToolBar>
+
+
                             </ToolBarPanel>
+                            <DockPanel DockPanel.Dock="Right" Width="136">
+                                <ToolBarPanel DockPanel.Dock="Right" >
+                                    <ToolBar Height="60">
+                                        <StackPanel Orientation="Vertical" HorizontalAlignment="Center"  Width="106">
+                                            <Label Content="CRS(mm)" Height="26"  VerticalAlignment="Top" RenderTransformOrigin="0.5,0.5" AutomationProperties.HelpText="Шаг точки для кривой" HorizontalContentAlignment="Center" Margin="10,0,0,0"/>
+
+                                            <Controls:NumericUpDown x:Name="CRSUpDn" Margin="10,0" Value="{Binding cl_crs, Mode=TwoWay}" Maximum="999" Minimum="3" Background="White" Height="26" VerticalAlignment="Top" ValueChanged="CRSUpDnKMPS_ValueChanged">
+                                                <Controls:NumericUpDown.DataContext>
+                                                    <Properties:Settings/>
+                                                </Controls:NumericUpDown.DataContext>
+                                            </Controls:NumericUpDown>
+
+                                        </StackPanel>
+                                    </ToolBar>
+                                </ToolBarPanel>
+                            </DockPanel>
+
                         </DockPanel>
                         <DockPanel Grid.Column="1" >
                             <Grid>
@@ -265,12 +283,6 @@
                                                     <Properties:Settings/>
                                                 </Controls:ToggleSwitch.DataContext>
                                             </Controls:ToggleSwitch>
-                                            <Controls:NumericUpDown x:Name="CRSUpDnKMPS" Margin="10,146,93,0" Value="{Binding cl_crs, Mode=TwoWay}" Maximum="99" Minimum="3" Background="White" Height="26" VerticalAlignment="Top" ValueChanged="CRSUpDnKMPS_ValueChanged">
-                                                <Controls:NumericUpDown.DataContext>
-                                                    <Properties:Settings/>
-                                                </Controls:NumericUpDown.DataContext>
-                                            </Controls:NumericUpDown>
-                                            <Label x:Name="CRSLabel_Copy" Content="CRS(mm)" Height="26" Margin="0,147,11,0" VerticalAlignment="Top" RenderTransformOrigin="0.5,0.5" AutomationProperties.HelpText="Шаг точки для кривой" HorizontalContentAlignment="Center" HorizontalAlignment="Right" Width="77"/>
                                             <Label x:Name="KmpsNameLbl" Content="Пусто" HorizontalAlignment="Left" Margin="10,55,0,0" VerticalAlignment="Top" Width="208"/>
                                         </Grid>
                                     </TabItem>

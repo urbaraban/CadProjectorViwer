@@ -95,9 +95,6 @@
     <Reference Include="DynamicExpresso.Core, Version=2.3.1.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\DynamicExpresso.Core.2.3.1\lib\net45\DynamicExpresso.Core.dll</HintPath>
     </Reference>
-    <Reference Include="IxMilia.Dxf, Version=0.7.3.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\IxMilia.Dxf.0.7.3\lib\net45\IxMilia.Dxf.dll</HintPath>
-    </Reference>
     <Reference Include="KAPITypes">
       <HintPath>..\..\..\..\..\..\Program Files\ASCON\KOMPAS-3D V16\SDK\C#\Common\KAPITypes.dll</HintPath>
     </Reference>
@@ -129,7 +126,7 @@
       <EmbedInteropTypes>True</EmbedInteropTypes>
     </Reference>
     <Reference Include="MahApps.Metro, Version=2.0.0.0, Culture=neutral, PublicKeyToken=51482d6f650b2b3f, processorArchitecture=MSIL">
-      <HintPath>..\packages\MahApps.Metro.2.0.0\lib\net46\MahApps.Metro.dll</HintPath>
+      <HintPath>..\packages\MahApps.Metro.2.0.1\lib\net46\MahApps.Metro.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.Xaml.Behaviors, Version=1.1.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.Xaml.Behaviors.Wpf.1.1.19\lib\net45\Microsoft.Xaml.Behaviors.dll</HintPath>
@@ -195,10 +192,6 @@
     <Compile Include="DeviceManager\DeviceManager.xaml.cs">
       <DependentUpon>DeviceManager.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Format\DXF.cs" />
-    <Compile Include="Format\KMPS.cs" />
-    <Compile Include="Format\STL.cs" />
-    <Compile Include="Format\SVG.cs" />
     <Page Include="Calibration\CreateGridWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -254,13 +247,13 @@
       <Project>{BE456A82-4E1A-45F9-89DB-74E4924FC4B6}</Project>
       <Name>MonchaSDK</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\ToPointConverter\ToPointConverter\ToGeometryConverter.csproj">
+      <Project>{1EDBFBC8-4A81-4530-9BC6-B4C475E53E3C}</Project>
+      <Name>ToGeometryConverter</Name>
+    </ProjectReference>
     <ProjectReference Include="D:\Программы\KompasLib\KompasLib\KompasLib\KompasLib.csproj">
       <Project>{25CE4066-36A4-40BD-A38F-EC08E7AA509F}</Project>
       <Name>KompasLib</Name>
-    </ProjectReference>
-    <ProjectReference Include="D:\Программы\stl-master\stl-master\src\IxMilia.Stl\IxMilia.Stl.csproj">
-      <Project>{6C23AEE1-484A-42A8-B803-6DB159C2E9CB}</Project>
-      <Name>IxMilia.Stl</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

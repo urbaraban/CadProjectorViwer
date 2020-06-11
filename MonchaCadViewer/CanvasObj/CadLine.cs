@@ -1,12 +1,11 @@
 ﻿using MonchaCadViewer.CanvasObj.DimObj;
-using MonchaSDK.Object;
 using System;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
-
+using MonchaSDK.Object;
 
 namespace MonchaCadViewer.CanvasObj
 {
@@ -18,10 +17,9 @@ namespace MonchaCadViewer.CanvasObj
         protected override Geometry DefiningGeometry => _lineGeometry;
 
         public double Lenth { get => GetLenth(); set => this._lenth = value; }
-        public MonchaPoint3D SecondContextPoint { get; set; }
+        public LPoint3D SecondContextPoint { get; set; }
 
-
-        public CadLine(MonchaPoint3D StartPoint, MonchaPoint3D EndPoint, bool Capturemouse) : base(Capturemouse, new MonchaPoint3D(StartPoint.X, StartPoint.Y, 0), false)
+        public CadLine(LPoint3D StartPoint, LPoint3D EndPoint, bool Capturemouse) : base(Capturemouse, false)
         {
             //associate and subcribe
             this.BaseContextPoint = StartPoint;
@@ -74,7 +72,7 @@ namespace MonchaCadViewer.CanvasObj
             this.StrokeThickness = 80;
         }
 
-        private void ContextPoint_Relink(object sender, MonchaPoint3D e)
+        private void ContextPoint_Relink(object sender, LPoint3D e)
         {
             if (this.BaseContextPoint == sender)
             {
@@ -89,7 +87,7 @@ namespace MonchaCadViewer.CanvasObj
             GetLine();
         }
 
-        private void ContextPoint_ChangePoint(object sender, MonchaPoint3D e)
+        private void ContextPoint_ChangePoint(object sender, LPoint3D e)
         {
             if (!this.Editing)
             {
@@ -110,7 +108,7 @@ namespace MonchaCadViewer.CanvasObj
             GetLine();
         }
 
-        private void ContextPoint_ChangeDeltaPoint(object sender, MonchaPoint3D e)
+        private void ContextPoint_ChangeDeltaPoint(object sender, LPoint3D e)
         {
             if (this.Editing)
                 this.SecondContextPoint.Add(e, false);
@@ -161,7 +159,7 @@ namespace MonchaCadViewer.CanvasObj
         }
 
 
-        private MonchaPoint3D GetPointOnLine(MonchaPoint3D point0, MonchaPoint3D point1)
+        private LPoint3D GetPointOnLine(LPoint3D point0, LPoint3D point1)
         {
             //находим длину исходного отрезка
             var dx = point1.X - point0.X;
@@ -174,10 +172,10 @@ namespace MonchaCadViewer.CanvasObj
             dirX *= this._lenth;
             dirY *= this._lenth;
             //находим точку
-            return new MonchaPoint3D(dirX + point0.X, dirY + point0.Y, point1.Z);
+            return new LPoint3D(dirX + point0.X, dirY + point0.Y, point1.Z);
         }
 
-        public static double PtPLenth(MonchaPoint3D point1, MonchaPoint3D point2)
+        public static double PtPLenth(LPoint3D point1, LPoint3D point2)
         {
             return Math.Sqrt(Math.Pow(point2.X - point1.X, 2) + Math.Pow(point2.Y - point1.Y, 2) + Math.Pow(point2.Z - point1.Z, 2));
         }
@@ -187,7 +185,7 @@ namespace MonchaCadViewer.CanvasObj
             if (this._lenth == 0)
             {
 
-                if (this.BaseContextPoint is MonchaPoint3D point1 && this.SecondContextPoint is MonchaPoint3D point2)
+                if (this.BaseContextPoint is LPoint3D point1 && this.SecondContextPoint is LPoint3D point2)
                     return Math.Sqrt(Math.Pow(point2.X - point1.X, 2) + Math.Pow(point2.Y - point1.Y, 2) + Math.Pow(point2.Z - point1.Z, 2));
                 else
                     return 0;

@@ -1,10 +1,7 @@
-﻿using MonchaSDK.Object;
-using System;
-using System.Threading;
-using System.Threading.Tasks;
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
+using MonchaSDK.Object;
 
 namespace MonchaCadViewer.CanvasObj
 {
@@ -16,12 +13,12 @@ namespace MonchaCadViewer.CanvasObj
 
         public double Size { get; set; }
 
-        public MonchaPoint3D SecondContextPoint { get; set; }
+        public LPoint3D SecondContextPoint { get; set; }
 
 
         protected override Geometry DefiningGeometry => this._rectg;
 
-        public CadRectangle(bool mouseevent, MonchaPoint3D basePoint, MonchaPoint3D secondPoint, bool move) : base (mouseevent, basePoint, move)
+        public CadRectangle(bool mouseevent, LPoint3D basePoint, LPoint3D secondPoint, bool move) : base (mouseevent, move)
         {
             this.SecondContextPoint = secondPoint;
             this.Stroke = Brushes.Gray;
@@ -40,7 +37,7 @@ namespace MonchaCadViewer.CanvasObj
             this.Update();
         }
 
-        private void BaseContextPoint_ChangePointDelta(object sender, MonchaPoint3D e)
+        private void BaseContextPoint_ChangePointDelta(object sender, LPoint3D e)
         {
             if (this.WasMove)
                 this.SecondContextPoint.Add(e, true);
@@ -52,7 +49,7 @@ namespace MonchaCadViewer.CanvasObj
                 canvas.SubsObj(this);
         }
 
-        private void BaseContextPoint_ChangePoint(object sender, MonchaPoint3D e)
+        private void BaseContextPoint_ChangePoint(object sender, LPoint3D e)
         {
            this.Update();
         }

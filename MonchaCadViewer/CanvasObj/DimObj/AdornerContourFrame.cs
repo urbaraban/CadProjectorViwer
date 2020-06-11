@@ -29,7 +29,7 @@ namespace MonchaCadViewer.CanvasObj.DimObj
 
         public event EventHandler<double> AngleChange;
 
-        RotateTransform rotation;
+        public RotateTransform Rotation;
 
         // The bounds of the Strokes;
         private Rect strokeBounds = Rect.Empty;
@@ -60,9 +60,9 @@ namespace MonchaCadViewer.CanvasObj.DimObj
             visualChildren.Add(outline);
             visualChildren.Add(rotateHandle);
 
-            strokeBounds = new Rect(-AdornedStrokes.DesiredSize.Width, - AdornedStrokes.DesiredSize.Height, AdornedStrokes.DesiredSize.Width * 2, AdornedStrokes.DesiredSize.Height * 2);
+            strokeBounds = this.Contour.Transform.TransformBounds(this.Contour.GmtrObj.Bounds);
             LinePen = new Pen(Brushes.LightGray, MonchaHub.GetThinkess() / 2);
-            Textsize = MonchaHub.GetThinkess() * 5;
+            Textsize = MonchaHub.GetThinkess() * 5 + 1;
         }
 
         /// <summary>
@@ -121,19 +121,13 @@ namespace MonchaCadViewer.CanvasObj.DimObj
             angle = (int)(angle / mult) * mult;
 
             // Apply the rotation to the strokes' outline.
-            rotation = new RotateTransform(angle, center.X, center.Y);
-            outline.RenderTransform = rotation;
+            this.Rotation = new RotateTransform(angle, center.X, center.Y);
+            outline.RenderTransform = this.Rotation;
 
             if (AngleChange != null)
                 AngleChange(this, angle);
 
             //this._adornedElement.UpdateGeometry(true);
-        }
-
-        public void Rotate(double angle)
-        {
-            rotation = new RotateTransform(angle, center.X, center.Y);
-            outline.RenderTransform = rotation;
         }
 
         /// <summary>
@@ -142,7 +136,7 @@ namespace MonchaCadViewer.CanvasObj.DimObj
         void rotateHandle_DragCompleted(object sender,
                                         DragCompletedEventArgs e)
         {
-            if (rotation == null)
+            if (this.Rotation == null)
             {
                 return;
             }
@@ -176,9 +170,9 @@ namespace MonchaCadViewer.CanvasObj.DimObj
                                                     MonchaHub.GetThinkess() * 7),
                                   strokeBounds.Width, strokeBounds.Height);
 
-            if (rotation != null)
+            if (this.Rotation != null)
             {
-                handleRect.Transform(rotation.Value);
+                handleRect.Transform(this.Rotation.Value);
             }
 
             // Draws the thumb and the rectangle around the strokes.
@@ -186,6 +180,7 @@ namespace MonchaCadViewer.CanvasObj.DimObj
             outline.Data = new RectangleGeometry(strokeBounds);
             outline.Arrange(new Rect(Contour.Size));
 
+            /*
             //Line side to contour
             //Top 
             DrawMarginLine(new Point(0, -Contour.BaseContextPoint.GetMPoint.Y), 
@@ -203,6 +198,7 @@ namespace MonchaCadViewer.CanvasObj.DimObj
             DrawMarginLine(new Point(MonchaHub.Size.GetMPoint.X - Contour.BaseContextPoint.GetMPoint.X, 0),
             new Point(outline.ActualWidth / 2, 0),
             new Point(MonchaHub.Size.GetMPoint.X - Contour.BaseContextPoint.GetMPoint.X -Textsize * 2, 0));
+            */
 
             //width
 
@@ -216,9 +212,9 @@ namespace MonchaCadViewer.CanvasObj.DimObj
            new Point(outline.Data.Bounds.Location.X + outline.Data.Bounds.Width / 2, outline.Data.Bounds.Location.Y + outline.Data.Bounds.Height / 2));
 
             //angle
-            if (rotation != null)
+            if (this.Rotation != null)
             {
-                drawingContext.DrawText(new FormattedText("a:" + Math.Round(Math.Round(rotation.Angle), 2).ToString(), new System.Globalization.CultureInfo("ru-RU"), 
+                drawingContext.DrawText(new FormattedText("a:" + Math.Round(Math.Round(this.Rotation.Angle), 2).ToString(), new System.Globalization.CultureInfo("ru-RU"), 
                     FlowDirection.LeftToRight,
             new Typeface("Segoe UI"), 
             (int)Textsize, Brushes.Gray), 

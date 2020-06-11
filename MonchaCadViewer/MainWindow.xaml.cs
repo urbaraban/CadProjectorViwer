@@ -15,12 +15,12 @@ using System.Linq;
 using System.Diagnostics;
 using KompasLib.Tools;
 using MonchaCadViewer.CanvasObj;
-using MonchaCadViewer.Format;
 using System.Globalization;
 using MonchaSDK;
 using MonchaSDK.Device;
+using ToPointConverter.Format;
 using MonchaSDK.Object;
-
+using KompasLib.KompasTool;
 
 namespace MonchaCadViewer
 {
@@ -224,7 +224,7 @@ namespace MonchaCadViewer
                 FPSUpDn.DataContext = tempdevice;
                 FPSUpDn.SetBinding(NumericUpDown.ValueProperty, "FPS");
 
-                AppSt.Default.cl_crs = MonchaHub.CRS;
+                AppSt.Default.cl_crs = ReadyFrame.CRS / MonchaHub.Size.M.X;
 
                 AngleWaitSlider.DataContext = tempdevice;
                 AngleWaitSlider.SetBinding(Slider.ValueProperty, "StartLineWait");
@@ -426,15 +426,14 @@ namespace MonchaCadViewer
 
         private void OpenFile(string filename)
         {
-            List<LObjectList> _actualFrames = new List<LObjectList>();
+            PathGeometry _actualFrames = new PathGeometry();
 
             if (filename.Split('.').Last() == "svg")
-                _actualFrames.Add(SVG.Get(filename, AppSt.Default.svg_separator1, AppSt.Default.svg_separator2));
+                _actualFrames = SVG.Get(filename);
 
             else if (filename.Split('.').Last() == "dxf")
-                _actualFrames.Add(DXF.Get(filename));
-            else if (filename.Split('.').Last() == "stl")
-                _actualFrames.Add(STL.Get(filename));
+                _actualFrames = DXF.Get(filename);
+
             else if ((filename.Split('.').Last() == "frw") || (filename.Split('.').Last() == "cdw"))
             {
                 if (KmpsAppl.KompasAPI == null)
@@ -453,7 +452,7 @@ namespace MonchaCadViewer
                 MonchaWrt(filename);
             */
 
-            if (_actualFrames.Count > 0)
+            if (_actualFrames != null && _actualFrames.Figures.Count > 0)
                 AppSt.Default.stg_last_file_path = filename;
             else return;
 
@@ -462,7 +461,7 @@ namespace MonchaCadViewer
             ContourProcessor(false, _actualFrames);
         }
 
-        private void ContourProcessor(bool remove, List<LObjectList> _frames, bool show = true)
+        private void ContourProcessor(bool remove, PathGeometry frame, bool show = true)
         {
             if (remove)
             {
@@ -470,8 +469,6 @@ namespace MonchaCadViewer
                 FrameStack.Children.Clear();
             }
 
-            foreach (LObjectList contoursList in _frames)
-            {
                 Border _viewborder = new Border();
                 _viewborder.BorderThickness = new Thickness(1, 0, 1, 0);
                 _viewborder.BorderBrush = Brushes.Gray;
@@ -482,7 +479,7 @@ namespace MonchaCadViewer
                 _viewbox.Stretch = Stretch.Uniform;
                 _viewbox.StretchDirection = StretchDirection.DownOnly;
                 _viewbox.Margin = new Thickness(0);
-                _viewbox.DataContext = contoursList;
+                _viewbox.DataContext = frame;
                 _viewbox.ClipToBounds = true;
                 _viewbox.MouseLeftButtonUp += DrawTreeContour;
 
@@ -499,18 +496,18 @@ namespace MonchaCadViewer
                 _viewborder.Child = _viewbox;
                 FrameStack.Children.Add(_viewborder);
 
-                _canvas.DrawContour(contoursList, false, false, true);
+                _canvas.DrawContour(frame, false, false, true);
 
                 TreeViewItem contourTree = new TreeViewItem();
-                contourTree.Header = contoursList.DisplayName == string.Empty ? "Frame " + FrameTree.Items.Count : "Frame:" + contoursList.DisplayName;
-                contourTree.DataContext = contoursList;
+                //contourTree.Header = contoursList.DisplayName == string.Empty ? "Frame " + FrameTree.Items.Count : "Frame:" + contoursList.DisplayName;
+                contourTree.DataContext = frame;
                 contourTree.MouseLeftButtonUp += DrawTreeContour;
 
                 FrameTree.Items.Add(contourTree);
 
                 if (show && CanvasBox.Child is CadCanvas canvas) 
-                    canvas.DrawContour(contoursList, true, false, true);
-            }
+                    canvas.DrawContour(frame, true, false, true);
+            
         }
 
         private void DrawTreeContour(object sender, MouseButtonEventArgs e)
@@ -518,14 +515,14 @@ namespace MonchaCadViewer
             if (sender is TreeViewItem viewItem)
             {
                 //_selectedindex = FrameTree.Items.IndexOf(viewItem);
-                if (viewItem.DataContext is LObjectList tempList && CanvasBox.Child is CadCanvas canvas)
+                if (viewItem.DataContext is PathGeometry tempList && CanvasBox.Child is CadCanvas canvas)
                     canvas.DrawContour(tempList, true, Keyboard.Modifiers == ModifierKeys.Shift, true);
             }
 
             if (sender is Viewbox viewbox)
             {
                 //_selectedindex = FrameStack.Children.IndexOf(viewbox.Parent as Border);
-                if (viewbox.DataContext is LObjectList tempList && CanvasBox.Child is CadCanvas canvas)
+                if (viewbox.DataContext is PathGeometry tempList && CanvasBox.Child is CadCanvas canvas)
                     canvas.DrawContour(tempList, true, Keyboard.Modifiers == ModifierKeys.Shift, true);
             }
         }
@@ -684,8 +681,8 @@ namespace MonchaCadViewer
         {
             if (KmpsAppl.KompasAPI != null)
             {
-                LObjectList lObjectList = KMPS.GetContour(MonchaHub.CRS * MonchaHub.Size.M.X, MonchaHub.Size.M.X, false, true);
-                ContourProcessor(false, new List<LObjectList>() { lObjectList });
+                PathGeometry lObjectList = ContourCalc.GetPoint(ReadyFrame.CRS, false, true);
+                ContourProcessor(false, lObjectList);
             }
 
         }
@@ -694,8 +691,8 @@ namespace MonchaCadViewer
         {
             if (KmpsAppl.KompasAPI != null)
             {
-                LObjectList lObjectList = KMPS.GetContour(MonchaHub.CRS * MonchaHub.Size.M.X, MashMultiplierUpDn.Value.Value, true, true);
-                ContourProcessor(false, new List<LObjectList>() { lObjectList });
+                PathGeometry lObjectList = ContourCalc.GetPoint(ReadyFrame.CRS, true, true);
+                ContourProcessor(false, lObjectList);
             }
         }
 
@@ -793,7 +790,7 @@ namespace MonchaCadViewer
                     {
                         if (canvas.Children[i] is CadObject cadObject)
                         {
-                            if (cadObject.IsSelected && cadObject.BaseContextPoint is MonchaPoint3D point)
+                            if (cadObject.IsSelected && cadObject.BaseContextPoint is LPoint3D point)
                             {
                                 point.IsFix = !point.IsFix;
                             }
@@ -939,7 +936,7 @@ namespace MonchaCadViewer
 
         private void CRSUpDnKMPS_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double?> e)
         {
-            MonchaHub.CRS = AppSt.Default.cl_crs;
+            ReadyFrame.CRS = AppSt.Default.cl_crs * MonchaHub.Size.M.X;
             AppSt.Default.cl_crs = e.NewValue.Value;
             AppSt.Default.Save();
         }

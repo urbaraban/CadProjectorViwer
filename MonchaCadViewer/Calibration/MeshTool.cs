@@ -3,8 +3,6 @@ using MonchaSDK.Device;
 using MonchaSDK.Object;
 using System;
 
-using System.Windows.Controls;
-using System.Windows.Media.Media3D;
 
 namespace MonchaCadViewer.Calibration
 {
@@ -45,7 +43,7 @@ namespace MonchaCadViewer.Calibration
                 int x = 0;
                 while (_xstart + x != _xend + _xstep && _xstart + x >= 0)
                 {
-                    if (ShapeMesh[_ystart + y, _xstart + x].BaseContextPoint is MonchaPoint3D point && point.IsFix)
+                    if (ShapeMesh[_ystart + y, _xstart + x].BaseContextPoint is LPoint3D point && point.IsFix)
                         return new Tuple<int, int>(_xstart + x, _ystart + y);
 
                     x += _xstep;

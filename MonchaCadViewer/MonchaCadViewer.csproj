@@ -31,7 +31,7 @@
     <SuiteName>Viwer</SuiteName>
     <WebPage>publish.htm</WebPage>
     <OpenBrowserOnPublish>false</OpenBrowserOnPublish>
-    <ApplicationRevision>21</ApplicationRevision>
+    <ApplicationRevision>23</ApplicationRevision>
     <ApplicationVersion>0.8.0.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <CreateDesktopShortcut>true</CreateDesktopShortcut>
@@ -175,6 +175,9 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Calibration\DotEdit.xaml.cs">
+      <DependentUpon>DotEdit.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Calibration\MeshTool.cs" />
     <Compile Include="CanvasObj\CadRectangle.cs" />
     <Compile Include="CanvasObj\DimObj\AdornerContourFrame.cs" />
@@ -193,6 +196,10 @@
       <DependentUpon>DeviceManager.xaml</DependentUpon>
     </Compile>
     <Page Include="Calibration\CreateGridWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Calibration\DotEdit.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

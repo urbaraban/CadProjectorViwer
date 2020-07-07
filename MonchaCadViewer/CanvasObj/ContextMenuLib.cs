@@ -22,6 +22,7 @@ namespace MonchaCadViewer.CanvasObj
         {
             if (contextMenu.Items.Count > 0)
                 contextMenu.Items.Add(new Separator());
+            AddItem("Edit", contextMenu);
 
         }
 

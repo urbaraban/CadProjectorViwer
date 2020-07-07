@@ -18,9 +18,9 @@ using MonchaCadViewer.CanvasObj;
 using System.Globalization;
 using MonchaSDK;
 using MonchaSDK.Device;
-using ToPointConverter.Format;
 using MonchaSDK.Object;
 using KompasLib.KompasTool;
+using ToGeometryConverter.Format;
 
 namespace MonchaCadViewer
 {
@@ -39,10 +39,11 @@ namespace MonchaCadViewer
         {
             InitializeComponent();
             MonchaHub.RefreshedDevice += MonchaHub_RefreshDevice;
+
             LoadMoncha();
 
             CanvasBoxBorder.BorderThickness = new Thickness(MonchaHub.GetThinkess());
-            CadCanvas cadCanvas = new CadCanvas(MonchaHub.Size);
+            CadCanvas cadCanvas = new CadCanvas(MonchaHub.Size, true);
             cadCanvas.Focusable = true;
 
             cadCanvas.SelectedObject += CadCanvas_SelectedObject;
@@ -51,6 +52,11 @@ namespace MonchaCadViewer
         }
 
 
+        private void MonchaHub_UpdatedFrame(object sender, LObjectList e)
+        {
+           // if (CanvasBox.Child != null)
+             //   SendProcessor.Worker(CanvasBox.Child as CadCanvas);
+        }
 
         private void CadCanvas_SelectedObject(object sender, CadObject e)
         {
@@ -135,7 +141,7 @@ namespace MonchaCadViewer
 
                 DeviceTree.Items.Add(LaserMeters);
 
-                foreach (LaserMeters device in MonchaHub.LMeters)
+                foreach (VLTLaserMeters device in MonchaHub.LMeters)
                 {
                     TreeViewItem treeViewBaseMesh = new TreeViewItem();
                     treeViewBaseMesh.Header = "LaserMeter " + device.Adress;
@@ -193,6 +199,11 @@ namespace MonchaCadViewer
                 DistanceUpDn.DataContext = tempdevice.LMeter;
                 DistanceUpDn.SetBinding(NumericUpDown.ValueProperty, "Distance");
 
+                DistanceLabel.DataContext = tempdevice.LMeter;
+                DistanceLabel.SetBinding(Label.ContentProperty, "RealDistance");
+
+                SetDistanceBtn.DataContext = tempdevice.LMeter;
+
                 //Device
                 ScanRateRealSlider.DataContext = tempdevice;
                 ScanRateRealSlider.SetBinding(Slider.ValueProperty, "ScanRateReal");
@@ -224,7 +235,10 @@ namespace MonchaCadViewer
                 FPSUpDn.DataContext = tempdevice;
                 FPSUpDn.SetBinding(NumericUpDown.ValueProperty, "FPS");
 
-                AppSt.Default.cl_crs = ReadyFrame.CRS / MonchaHub.Size.M.X;
+                CRSUpDn.DataContext = ReadyFrame.CRS;
+                CRSUpDn.SetBinding(NumericUpDown.ValueProperty, "MX");
+                ReadyFrame.CRS.M.ChangePoint += M_ChangePoint;
+
 
                 AngleWaitSlider.DataContext = tempdevice;
                 AngleWaitSlider.SetBinding(Slider.ValueProperty, "StartLineWait");
@@ -245,6 +259,10 @@ namespace MonchaCadViewer
             }
         }
 
+        private void M_ChangePoint(object sender, LPoint3D e)
+        {
+            CRSUpDn.SetBinding(NumericUpDown.ValueProperty, "MX");
+        }
 
         private void TreeBaseMesh(object sender, MouseButtonEventArgs e)
         {
@@ -331,7 +349,7 @@ namespace MonchaCadViewer
             {
                 AppSt.Default.cl_moncha_path = fileDialog.FileName;
                 AppSt.Default.Save();
-                MonchaPathBox.Text = fileDialog.FileName;
+                MonchaPathBox.Content = fileDialog.FileName;
                 LoadMoncha();
             }
         }
@@ -398,10 +416,6 @@ namespace MonchaCadViewer
             }
         }
 
-
-
-
-
         private void OpenBtn_Click(object sender, EventArgs e)
         {
             WinForms.OpenFileDialog openFile = new WinForms.OpenFileDialog();
@@ -432,7 +446,7 @@ namespace MonchaCadViewer
                 _actualFrames = SVG.Get(filename);
 
             else if (filename.Split('.').Last() == "dxf")
-                _actualFrames = DXF.Get(filename);
+                _actualFrames = DXF.Get(filename, ReadyFrame.CRS.MX);
 
             else if ((filename.Split('.').Last() == "frw") || (filename.Split('.').Last() == "cdw"))
             {
@@ -469,6 +483,14 @@ namespace MonchaCadViewer
                 FrameStack.Children.Clear();
             }
 
+            if (frame.Transform is TransformGroup transformGroup && transformGroup.Children[2] is TranslateTransform translateTranform) 
+            {
+                TranslateTransform translate = transformGroup.Children[2] as TranslateTransform;
+
+                translateTranform.X = MonchaHub.Size.GetMPoint.X / 2 - (frame.Bounds.X - translate.X + frame.Bounds.Width / 2);
+                translateTranform.Y = MonchaHub.Size.GetMPoint.Y / 2 - (frame.Bounds.Y - translate.Y + frame.Bounds.Height / 2);
+            }
+
                 Border _viewborder = new Border();
                 _viewborder.BorderThickness = new Thickness(1, 0, 1, 0);
                 _viewborder.BorderBrush = Brushes.Gray;
@@ -482,13 +504,15 @@ namespace MonchaCadViewer
                 _viewbox.DataContext = frame;
                 _viewbox.ClipToBounds = true;
                 _viewbox.MouseLeftButtonUp += DrawTreeContour;
+                _viewbox.MouseRightButtonUp += _viewbox_MouseRightButtonUp;
+
 
                 Viewbox _canvasviewbox = new Viewbox();
                 _canvasviewbox.Stretch = Stretch.Uniform;
                 _canvasviewbox.StretchDirection = StretchDirection.DownOnly;
                 _canvasviewbox.Margin = new Thickness(0);
 
-                CadCanvas _canvas = new CadCanvas(MonchaHub.Size);
+                CadCanvas _canvas = new CadCanvas(MonchaHub.Size, false);
                 _canvas.Background = Brushes.White;
 
                 _canvasviewbox.Child = _canvas;
@@ -508,6 +532,28 @@ namespace MonchaCadViewer
                 if (show && CanvasBox.Child is CadCanvas canvas) 
                     canvas.DrawContour(frame, true, false, true);
             
+        }
+
+        private void _viewbox_MouseRightButtonUp(object sender, MouseButtonEventArgs e)
+        {
+            if (sender is Viewbox viewItem)
+            {
+                if (viewItem.DataContext is PathGeometry Gmtr && CanvasBox.Child is CadCanvas canvas)
+                {
+                    TransformGroup tempTransform = Gmtr.Transform as TransformGroup;
+                    TranslateTransform Translate = tempTransform.Children[2] as TranslateTransform;
+                    RotateTransform Rotate = tempTransform.Children[1] as RotateTransform;
+                    ScaleTransform Scale = tempTransform.Children[0] as ScaleTransform;
+
+                    Rotate.Angle = 0;
+
+                    Scale.ScaleX = 1;
+                    Scale.ScaleY = 1;
+
+                    Translate.X = MonchaHub.Size.GetMPoint.X / 2 - (Gmtr.Bounds.X - Translate.X + Gmtr.Bounds.Width / 2 );
+                    Translate.Y = MonchaHub.Size.GetMPoint.Y / 2 - (Gmtr.Bounds.Y - Translate.Y + Gmtr.Bounds.Height / 2);
+                }
+            }
         }
 
         private void DrawTreeContour(object sender, MouseButtonEventArgs e)
@@ -575,14 +621,14 @@ namespace MonchaCadViewer
         {
             args.Interval = 0;
             MashMultiplierUpDn.Value = MashMultiplierUpDn.Value.Value * 10;
-            MonchaHub.Size.M.Update(MashMultiplierUpDn.Value.Value);
+            MonchaHub.Size.M.Set(MashMultiplierUpDn.Value.Value);
         }
 
         private void MashMultiplierUpDn_ValueDecremented(object sender, NumericUpDownChangedRoutedEventArgs args)
         {
             args.Interval = 0;
             MashMultiplierUpDn.Value = MashMultiplierUpDn.Value.Value / 10;
-            MonchaHub.Size.M.Update(MashMultiplierUpDn.Value.Value);
+            MonchaHub.Size.M.Set(MashMultiplierUpDn.Value.Value);
         }
 
 
@@ -681,7 +727,7 @@ namespace MonchaCadViewer
         {
             if (KmpsAppl.KompasAPI != null)
             {
-                PathGeometry lObjectList = ContourCalc.GetPoint(ReadyFrame.CRS, false, true);
+                PathGeometry lObjectList = ContourCalc.GetPoint(ReadyFrame.CRS.MX, false, true);
                 ContourProcessor(false, lObjectList);
             }
 
@@ -691,7 +737,7 @@ namespace MonchaCadViewer
         {
             if (KmpsAppl.KompasAPI != null)
             {
-                PathGeometry lObjectList = ContourCalc.GetPoint(ReadyFrame.CRS, true, true);
+                PathGeometry lObjectList = ContourCalc.GetPoint(ReadyFrame.CRS.MX, true, true);
                 ContourProcessor(false, lObjectList);
             }
         }
@@ -740,15 +786,17 @@ namespace MonchaCadViewer
                         {
                             if (cadObject.IsSelected)
                             {
-                                cadObject.BaseContextPoint.IsFix = true;
+                                cadObject.IsFix = true;
                                 cadObject.IsSelected = false;
-                                cadObject.Update();
+                                cadObject.Render = false;
+                                cadObject.StatColorSelect();
                                 if (i + 1 < canvas.Children.Count)
                                     if (canvas.Children[i + 1] is CadObject cadObject2)
                                     {
                                         cadObject2.IsSelected = true;
-                                        cadObject2.BaseContextPoint.IsFix = false;
-                                        cadObject2.Update();
+                                        cadObject2.IsFix = false;
+                                        cadObject2.Render = true;
+                                        cadObject2.StatColorSelect();
                                     }
                                 break;
                             }
@@ -765,17 +813,11 @@ namespace MonchaCadViewer
                     {
                         if (canvas.Children[i] is CadObject cadObject)
                         {
-                            if (cadObject.IsSelected  && !cadObject.BaseContextPoint.IsFix)
+                            if (cadObject.IsSelected  && !cadObject.IsFix)
                             {
-                                cadObject.BaseContextPoint.Add(left, top);
-
-                                if (cadObject.DataContext is MonchaDeviceMesh mesh)
-                                {
-                                    if (mesh.OnlyEdge)
-                                        mesh.OnEdge();
-                                    else
-                                        mesh.MorphMesh(cadObject.BaseContextPoint);
-                                }
+                                cadObject.Translate.X += left;
+                                cadObject.Translate.Y += top;
+                                Console.WriteLine(cadObject.Translate.X + " " + cadObject.Translate.Y);
                             }
                         }
                     }
@@ -790,9 +832,9 @@ namespace MonchaCadViewer
                     {
                         if (canvas.Children[i] is CadObject cadObject)
                         {
-                            if (cadObject.IsSelected && cadObject.BaseContextPoint is LPoint3D point)
+                            if (cadObject.IsSelected)
                             {
-                                point.IsFix = !point.IsFix;
+                                cadObject.IsFix = !cadObject.IsFix;
                             }
                         }
                     }
@@ -934,12 +976,7 @@ namespace MonchaCadViewer
         }
 
 
-        private void CRSUpDnKMPS_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double?> e)
-        {
-            ReadyFrame.CRS = AppSt.Default.cl_crs * MonchaHub.Size.M.X;
-            AppSt.Default.cl_crs = e.NewValue.Value;
-            AppSt.Default.Save();
-        }
+
 
         private void AddLaser_Click(object sender, RoutedEventArgs e)
         {
@@ -989,6 +1026,14 @@ namespace MonchaCadViewer
         private void TopBar_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
             this.DragMove();
+        }
+
+        private void SetDistanceBtn_Click(object sender, RoutedEventArgs e)
+        {
+           if (SetDistanceBtn.DataContext is VLTLaserMeters laserMeters)
+            {
+                laserMeters.Distance = laserMeters.RealDistance;
+            }
         }
     }
     

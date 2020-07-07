@@ -28,7 +28,7 @@ namespace MonchaCadViewer
         {
             if (this.IsLoaded)
             {
-                this._mesh = MonchaDeviceMesh.MakeMesh((int)HeightUpDn.Value.Value, (int)WidthUpDn.Value.Value, this._mesh.Name);
+                this._mesh.Points = MonchaDeviceMesh.MakeMeshPoint((int)HeightUpDn.Value.Value, (int)WidthUpDn.Value.Value);
             }
         }
 
@@ -44,10 +44,23 @@ namespace MonchaCadViewer
                 WidthUpDn.Value = Width;
                 HeightUpDn.Value = Height;
 
-                _mesh = MonchaDeviceMesh.MakeMesh(Height, Width, this._mesh.Name);
+                this._mesh.Points = MonchaDeviceMesh.MakeMeshPoint(Height, Width);
             }
         }
 
+        private void MonchaToggle_Toggled(object sender, RoutedEventArgs e)
+        {
+            if (MonchaToggle.IsOn)
+            {
+                WidthUpDn.Maximum = 20;
+                HeightUpDn.Maximum = 20;
+            }
+            else
+            {
+                WidthUpDn.Maximum = 999;
+                HeightUpDn.Maximum = 999;
+            }
+        }
     }
 
   

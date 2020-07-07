@@ -180,25 +180,25 @@ namespace MonchaCadViewer.CanvasObj.DimObj
             outline.Data = new RectangleGeometry(strokeBounds);
             outline.Arrange(new Rect(Contour.Size));
 
-            /*
             //Line side to contour
             //Top 
-            DrawMarginLine(new Point(0, -Contour.BaseContextPoint.GetMPoint.Y), 
-            new Point(0, -outline.ActualHeight / 2),
-            new Point(0, -Contour.BaseContextPoint.GetMPoint.Y));
-            //Bottom
-            DrawMarginLine(new Point(0, MonchaHub.Size.GetMPoint.Y - Contour.BaseContextPoint.GetMPoint.Y),
-            new Point(0, outline.ActualHeight / 2),
-            new Point(0, MonchaHub.Size.GetMPoint.Y - Contour.BaseContextPoint.GetMPoint.Y - Textsize * 2));
-            //Left
-            DrawMarginLine(new Point(-Contour.BaseContextPoint.GetMPoint.X, 0),
-            new Point(-outline.ActualWidth / 2, 0),
-            new Point(-Contour.BaseContextPoint.GetMPoint.X, 0));
+            DrawMarginLine(this.Contour.GmtrObj.Bounds.TopLeft, 
+            this.Contour.GmtrObj.Bounds.TopRight,
+            new Point ((this.Contour.GmtrObj.Bounds.TopLeft.X + this.Contour.GmtrObj.Bounds.TopRight.X) / 2, this.Contour.GmtrObj.Bounds.TopLeft.Y - MonchaHub.GetThinkess() * 4));
             //Right
-            DrawMarginLine(new Point(MonchaHub.Size.GetMPoint.X - Contour.BaseContextPoint.GetMPoint.X, 0),
-            new Point(outline.ActualWidth / 2, 0),
-            new Point(MonchaHub.Size.GetMPoint.X - Contour.BaseContextPoint.GetMPoint.X -Textsize * 2, 0));
-            */
+            DrawMarginLine(this.Contour.GmtrObj.Bounds.TopRight,
+            this.Contour.GmtrObj.Bounds.BottomRight,
+            this.Contour.GmtrObj.Bounds.BottomRight);
+            //Bottom
+            DrawMarginLine(this.Contour.GmtrObj.Bounds.BottomRight,
+            this.Contour.GmtrObj.Bounds.BottomLeft,
+            this.Contour.GmtrObj.Bounds.BottomRight);
+            //Left
+            DrawMarginLine(this.Contour.GmtrObj.Bounds.BottomLeft,
+            this.Contour.GmtrObj.Bounds.TopLeft,
+            this.Contour.GmtrObj.Bounds.BottomRight);
+;
+
 
             //width
 

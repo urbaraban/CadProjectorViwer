@@ -107,7 +107,7 @@
                                         <StackPanel Orientation="Vertical" HorizontalAlignment="Center"  Width="106">
                                             <Label Content="CRS(mm)" Height="26"  VerticalAlignment="Top" RenderTransformOrigin="0.5,0.5" AutomationProperties.HelpText="Шаг точки для кривой" HorizontalContentAlignment="Center" Margin="10,0,0,0"/>
 
-                                            <Controls:NumericUpDown x:Name="CRSUpDn" Margin="10,0" Value="{Binding cl_crs, Mode=TwoWay}" Maximum="999" Minimum="3" Background="White" Height="26" VerticalAlignment="Top" ValueChanged="CRSUpDnKMPS_ValueChanged">
+                                            <Controls:NumericUpDown x:Name="CRSUpDn" Margin="10,0" Value="{Binding cl_crs, Mode=TwoWay}" Maximum="999" Minimum="3" Background="White" Height="26" VerticalAlignment="Top">
                                                 <Controls:NumericUpDown.DataContext>
                                                     <Properties:Settings/>
                                                 </Controls:NumericUpDown.DataContext>
@@ -267,7 +267,7 @@
                                 <Label x:Name="StartWaitLabel_Copy5" Margin="0,0,0,112" Content="Затухание" FontSize="8" Grid.Column="1" HorizontalContentAlignment="Center" Grid.ColumnSpan="4" Height="21" VerticalAlignment="Bottom"/>
                                 <Label x:Name="StartWaitLabel_Copy6" Content="{Binding Value, ElementName=ColorShiftSlider}" Margin="0,0,0,95" Height="26" VerticalAlignment="Bottom" HorizontalContentAlignment="Center"/>
                                 <Label x:Name="label_Copy7" Content="Устройство" HorizontalAlignment="Left" Margin="10,-1,0,0" VerticalAlignment="Top" Width="74" Height="26" Grid.ColumnSpan="2"/>
-                                <Button x:Name="SetDistanceBtn" Content="Set" HorizontalAlignment="Left" Height="26" Margin="10,77,0,0" VerticalAlignment="Top" Width="42"/>
+                                <Button x:Name="SetDistanceBtn" Content="Set" HorizontalAlignment="Left" Height="26" Margin="10,77,0,0" VerticalAlignment="Top" Width="42" Click="SetDistanceBtn_Click"/>
 
                             </Grid>
                         </TabItem>
@@ -347,11 +347,11 @@
                                     <ColumnDefinition Width="49*"/>
                                     <ColumnDefinition Width="73*"/>
                                 </Grid.ColumnDefinitions>
-                                <TextBox x:Name="MonchaPathBox" HorizontalAlignment="Left" Height="23" Margin="15,28,0,0" TextWrapping="Wrap" Text="{Binding cl_moncha_path}" VerticalAlignment="Top" Width="131" Grid.ColumnSpan="4">
-                                    <TextBox.DataContext>
+                                <Label x:Name="MonchaPathBox" HorizontalAlignment="Left" Height="23" Margin="15,28,0,0"  Content="{Binding cl_moncha_path}" VerticalAlignment="Top" Width="131" Grid.ColumnSpan="4">
+                                    <Label.DataContext>
                                         <Properties:Settings/>
-                                    </TextBox.DataContext>
-                                </TextBox>
+                                    </Label.DataContext>
+                                </Label>
                                 <Button x:Name="BrowseMonchaBtn" Content="Browse..." Margin="17,28,10,0" VerticalAlignment="Top" Click="BrowseMonchaBtn_Click" Height="23" Grid.Column="3" Grid.ColumnSpan="2"/>
                                 <Label x:Name="label" Content="Путь до файла Moncha (*.mws)" HorizontalAlignment="Left" Margin="10,2,0,0" VerticalAlignment="Top" Grid.ColumnSpan="4" Height="26" Width="178"/>
                                 <Controls:NumericUpDown x:Name="WidthUpDn" Margin="0,70,10,0" Value="{Binding cl_width, Mode=TwoWay}" Background="White" Height="26" VerticalAlignment="Top" Grid.Column="2" Grid.ColumnSpan="3" ValueChanged="SettingUpDn_ValueChanged">

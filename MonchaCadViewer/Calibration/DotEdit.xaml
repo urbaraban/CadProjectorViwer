@@ -1,0 +1,46 @@
+﻿<Window x:Class="MonchaCadViewer.Calibration.DotEdit"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:MonchaCadViewer.Calibration" xmlns:Controls="http://metro.mahapps.com/winfx/xaml/controls"
+        mc:Ignorable="d"
+        Title="DotEdit" Height="174.923" Width="283.892" ResizeMode="NoResize">
+    <Window.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Controls.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Fonts.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Themes/Light.Blue.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+            <Style x:Key="Border" TargetType="{x:Type Border}">
+                <Setter Property="BorderBrush" Value="DarkGray"/>
+                <Setter Property="BorderThickness" Value="1"/>
+                <Style.Triggers>
+                    <Trigger Property="IsMouseOver" Value="true">
+                        <Setter Property="BorderBrush" Value="CadetBlue"/>
+                    </Trigger>
+                </Style.Triggers>
+            </Style>
+        </ResourceDictionary>
+
+    </Window.Resources>
+
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="117*"/>
+            <ColumnDefinition Width="161*"/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="13*"/>
+            <RowDefinition Height="35*"/>
+        </Grid.RowDefinitions>
+        <RadioButton x:Name="radioAbs" Content="Абсолютно" Margin="14,11,10,0" VerticalAlignment="Top" Height="20" IsChecked="True" Checked="RadioProp_Checked"/>
+        <RadioButton x:Name="RadioProp" Content="Пропорционально" Margin="10,11,10,0" VerticalAlignment="Top" Grid.Column="1" Height="19" Checked="RadioProp_Checked"/>
+        <Controls:NumericUpDown x:Name="WidthNum" Margin="10,14,10,64" Grid.Row="1" Grid.Column="1"/>
+        <Controls:NumericUpDown x:Name="HeightNum" Margin="10,59,10,19" Grid.Row="1" Grid.Column="1"/>
+        <Label x:Name="label" Content="Ось Х" Margin="15,14,5,0" Grid.Row="1" VerticalAlignment="Top" HorizontalAlignment="Center"/>
+        <Label x:Name="label_Copy" Content="Ось Y" Margin="15,59,5,0" Grid.Row="1" VerticalAlignment="Top" HorizontalAlignment="Center"/>
+
+    </Grid>
+</Window>

@@ -44,8 +44,5 @@
     <Setting Name="base_distance" Type="System.Double" Scope="User">
       <Value Profile="(Default)">0</Value>
     </Setting>
-    <Setting Name="cl_crs" Type="System.Double" Scope="User">
-      <Value Profile="(Default)">35</Value>
-    </Setting>
   </Settings>
 </SettingsFile>

@@ -190,17 +190,5 @@ namespace MonchaCadViewer.Properties {
                 this["base_distance"] = value;
             }
         }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("35")]
-        public double cl_crs {
-            get {
-                return ((double)(this["cl_crs"]));
-            }
-            set {
-                this["cl_crs"] = value;
-            }
-        }
     }
 }

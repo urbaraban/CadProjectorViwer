@@ -33,7 +33,7 @@ namespace MonchaCadViewer.CanvasObj
             set => _status = value;
         }
 
-        public CadCanvas(LPoint3D Size)
+        public CadCanvas(LPoint3D Size, bool MainCanvas)
         {
             this._size = Size;
             
@@ -47,12 +47,21 @@ namespace MonchaCadViewer.CanvasObj
             this._size.M.ChangePoint += _size_ChangePoint;
 
             this.Focusable = true;
-            
-            this.KeyUp += Canvas_KeyUp;
-            this.MouseLeftButtonDown += Canvas_MouseLeftDown;
+
+            if (MainCanvas)
+            {
+                this.KeyUp += Canvas_KeyUp;
+                this.MouseLeftButtonDown += Canvas_MouseLeftDown;
+                MonchaHub.NeedUpdateFrame += MonchaHub_NeedUpdateFrame;
+            }
 
             MonchaHub.ChangeSize += MonchaHub_ChangeSize;
 
+        }
+
+        private void MonchaHub_NeedUpdateFrame(object sender, bool e)
+        {
+            SendProcessor.Worker(this);
         }
 
         private void MonchaHub_ChangeSize(object sender, LPoint3D e)
@@ -98,16 +107,17 @@ namespace MonchaCadViewer.CanvasObj
 
                 CadContour polygon = new CadContour(_innerList, maincanvas, mousemove);
                 polygon.OnBaseMesh = false;
-                this.Children.Add(polygon);
+                AddSubsObj(polygon);
 
                 SendProcessor.Worker(this);
             }
         }
 
-        public void SubsObj (CadObject obj)
+        public void AddSubsObj (CadObject obj)
         {
             obj.Updated += Obj_Updated;
             obj.Selected += Obj_Selected;
+            this.Children.Add(obj);
         }
 
         private void Obj_Selected(object sender, CadObject e)
@@ -122,34 +132,19 @@ namespace MonchaCadViewer.CanvasObj
 
         public void DrawRectangle(LPoint3D point1, LPoint3D point2)
         {
-            CadRectangle cadRectangle = new CadRectangle(true, point1, point2, false);
-            CadDot cadDot1 = new CadDot(point1, MonchaHub.GetThinkess() * 4, true, false);
+
+            CadDot cadDot1 = new CadDot(point1, MonchaHub.GetThinkess() * 3, true, false);
             cadDot1.Render = false;
-            CadDot cadDot2 = new CadDot(point2, MonchaHub.GetThinkess() * 4, true, false);
+            CadDot cadDot2 = new CadDot(point2, MonchaHub.GetThinkess() * 3, true, false);
             cadDot2.Render = false;
-            cadRectangle.Render = false;
-            this.Children.Add(cadRectangle);
             this.Children.Add(cadDot1);
             this.Children.Add(cadDot2);
+
+            CadRectangle cadRectangle = new CadRectangle(true, point1, point2, false);
+            cadRectangle.Render = false;
+            this.Children.Add(cadRectangle);
         }
 
-        public void DrawLine()
-        {
-            CadDot newdot1 = this.UndrMouseAnchor(Mouse.GetPosition(this), null);
-            if (newdot1 == null)
-            {
-                newdot1 = NewAnchor(false, true, false);
-                newdot1.WasMove = true;
-                this.Children.Add(newdot1);
-            }
-
-            CadDot newdot2 = NewAnchor(false, true, true);
-            this.Children.Add(newdot2);
-
-            CadLine lineSbcr = new CadLine(newdot1.BaseContextPoint, newdot2.BaseContextPoint, true);
-
-            this.Children.Add(lineSbcr);
-        }
 
 
         private void Canvas_MouseLeftDown(object sender, MouseButtonEventArgs e)
@@ -157,7 +152,7 @@ namespace MonchaCadViewer.CanvasObj
             switch (_status)
             {
                 case 1:
-                    DrawLine();
+
                     break;
             }
         }
@@ -252,19 +247,25 @@ namespace MonchaCadViewer.CanvasObj
                             //calibration flag
                             true,
                             false);
-                        dot.BaseContextPoint.IsFix = !mesh.OnlyEdge;
+                        dot.IsFix = false; // !mesh.OnlyEdge;
 
                         dot.StrokeThickness = 0;
                         dot.Uid = i.ToString() + ":" + j.ToString();
                         dot.ToolTip = "Позиция: " + i + ":" + j + "\nX: " + mesh[i, j].X + "\n" + "Y: " + mesh[i, j].Y;
                         dot.DataContext = mesh;
                         dot.OnBaseMesh = !mesh.OnlyEdge;
-                        dot.Render = !mesh.OnlyEdge;
-                        CadObject.StatColorSelect(dot);
+                        dot.Render = false;
+                        dot.StatColorSelect();
+                        dot.Updated += Dot_Updated;
                         this.Children.Add(dot);
                     }
 
             }
+        }
+
+        private void Dot_Updated(object sender, CadObject e)
+        {
+            SendProcessor.Worker(this);
         }
     }
 }

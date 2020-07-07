@@ -10,7 +10,7 @@ using MonchaSDK.Object;
 namespace MonchaCadViewer.CanvasObj
 {
     class CadLine : CadObject
-    {
+    {/*
         private LineGeometry _lineGeometry;
         private double _lenth;
 
@@ -18,9 +18,10 @@ namespace MonchaCadViewer.CanvasObj
 
         public double Lenth { get => GetLenth(); set => this._lenth = value; }
         public LPoint3D SecondContextPoint { get; set; }
+        */
 
-        public CadLine(LPoint3D StartPoint, LPoint3D EndPoint, bool Capturemouse) : base(Capturemouse, false)
-        {
+        public CadLine(LPoint3D StartPoint, LPoint3D EndPoint, bool Capturemouse) : base(Capturemouse, false, null)
+        {/*
             //associate and subcribe
             this.BaseContextPoint = StartPoint;
             this.BaseContextPoint.ChangePoint += ContextPoint_ChangePoint;
@@ -44,9 +45,11 @@ namespace MonchaCadViewer.CanvasObj
             this.MouseLeave += LineSbcr_MouseLeave;
             this.ContextMenu.Closed += ContextMenu_Closed;
             this.Loaded += LineSbcr_Loaded;
+            */
 
         }
 
+        /*
         private void LineSbcr_Loaded(object sender, RoutedEventArgs e)
         {
             if (this.Parent is CadCanvas canvas)
@@ -192,5 +195,7 @@ namespace MonchaCadViewer.CanvasObj
             }
             else return this._lenth;
         }
+    
+        */
     }
 }

@@ -1,64 +1,97 @@
-﻿using System.Windows;
+﻿using System;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
+using MonchaCadViewer.Calibration;
+using MonchaSDK.Device;
 using MonchaSDK.Object;
 
 namespace MonchaCadViewer.CanvasObj
 {
     public class CadDot : CadObject
     {
-        private Rect _rect;
+        private bool Translated = false;
+        private Rect rect;
+        private double size;
 
-        public double Size { get; set; }
+        public LPoint3D Point { get; set; }
 
 
-        public CadDot(LPoint3D point, double Size, bool capturemouse, bool move) : base (capturemouse, move)
+        public CadDot(LPoint3D Point, double Size, bool capturemouse, bool move) : base (capturemouse, move, new RectangleGeometry(new Rect(new Size(Size, Size))))
         {
-            this.Size = Size;
+            this.Point = Point;
+            this.size = Size;
+
+            if (this.GmtrObj is RectangleGeometry rectangle)
+            {
+                rect = rectangle.Rect;
+            }
+
             this.Focusable = true;
 
             Canvas.SetZIndex(this, 999);
-            this._rect = new Rect(new Size(Size, Size));
-            this.GmtrObj = new RectangleGeometry(_rect);
 
             ContextMenuLib.DotContextMenu(this.ContextMenu);
 
             this.ContextMenuClosing += DotShape_ContextMenuClosing;
-            this.MouseLeftButtonUp += DotShape_MouseLeftButtonUp;
-            this.Loaded += CadDot_Loaded;
-            this.Updated += CadDot_Updated;
+            this.MouseLeftButtonUp += CadDot_MouseLeftButtonUp;
+            this.Fixed += CadDot_Fixed;
 
-            // this.BaseContextPoint.ChangePoint += MonchaPoint_ChangePoint;
+            this.Translate.X = Point.GetMPoint.X - this.size / 2;
+            this.Translate.Y = Point.GetMPoint.Y - this.size / 2;
 
-            UpdatePoint();
 
+            this.Translate.Changed += Translate_Changed;
+            this.Point.ChangePoint += Point_ChangePoint;
+
+            this.Fill = Brushes.Black;
 
         }
 
-        private void CadDot_Updated(object sender, CadObject e)
+        private void CadDot_Fixed(object sender, bool e)
         {
-            UpdatePoint();
+            this.Point.IsFix = e;
         }
 
-        private void CadDot_Loaded(object sender, RoutedEventArgs e)
+        private void CadDot_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
         {
-            if (this.Parent is CadCanvas canvas)
-                canvas.SubsObj(this);
-            this.UpdateLayout();
-        }
-
-
-        private void DotShape_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
-        {
-            if (this.Parent is CadCanvas canvas)
+            if (!this.WasMove)
             {
-                CadDot FindDot = canvas.UndrMouseAnchor(Mouse.GetPosition(canvas), this);
-                if (FindDot != null && FindDot != this)
+                this.Render = this.IsSelected;
+            }
+
+        }
+
+        private void Point_ChangePoint(object sender, LPoint3D e)
+        {
+            if (!Translated)
+            {
+                Translated = true;
+                this.Translate.X = this.Point.GetMPoint.X - this.size / 2;
+                this.Translate.Y = this.Point.GetMPoint.Y - this.size / 2;
+                Translated = false;
+            }
+
+        }
+
+        private void Translate_Changed(object sender, System.EventArgs e)
+        {
+            if (!Translated)
+            {
+                Translated = true;
+                this.Point.Set(this.Translate.X + this.size / 2, this.Translate.Y + this.size / 2);
+
+                if (this.DataContext is MonchaDeviceMesh mesh)
                 {
-                    this.BaseContextPoint.ReLink(FindDot.BaseContextPoint);
-                    canvas.RemoveAnchor(this);
+                    if (mesh.OnlyEdge)
+                        mesh.OnEdge();
+                    else
+                        mesh.MorphMesh(this.Point);
                 }
+
+                Translated = false;
+
             }
         }
 
@@ -70,31 +103,27 @@ namespace MonchaCadViewer.CanvasObj
                 switch (cmindex.Header)
                 {
                     case "Fix":
-                        if (this.BaseContextPoint is LPoint3D point)
-                            point.IsFix = !point.IsFix;
+                          this.IsFix = !this.IsFix;
                         break;
                     case "Remove":
                         this.Remove();
+                        break;
+                    case "Edit":
+                        DotEdit dotEdit = new DotEdit(this.Point);
+                        dotEdit.Show();
                         break;
                 }
             }
         }
 
-        public void UpdatePoint()
-        {
-            if (this.BaseContextPoint is LPoint3D point && !point.IsFix)
-            {
-                Canvas.SetLeft(this, this.BaseContextPoint.GetMPoint.X - Size / 2);
-                Canvas.SetTop(this, this.BaseContextPoint.GetMPoint.Y - Size / 2); //Y inverted in calibration stat
-                Canvas.SetZIndex(this, 999);
-            }
-            CadObject.StatColorSelect(this);            
-        }
-
         public bool Contains(Point point)
         {
-            return (this.BaseContextPoint.GetMPoint.X - Size / 2 < point.X && this.BaseContextPoint.GetMPoint.X + Size / 2 > point.X) 
-                && (this.BaseContextPoint.GetMPoint.Y - Size / 2 < point.Y && this.BaseContextPoint.GetMPoint.Y + Size / 2 > point.Y);
+            if (this.GmtrObj is RectangleGeometry rectangle)
+            {
+                return (this.Point.GetMPoint.X - rectangle.Rect.Size.Width / 2 < point.X && this.Point.GetMPoint.X + rectangle.Rect.Size.Width / 2 > point.X) 
+                && (this.Point.GetMPoint.Y - rectangle.Rect.Size.Height / 2 < point.Y && this.Point.GetMPoint.Y + rectangle.Rect.Size.Height / 2 > point.Y);
+            }
+            return false;
         }
     }
 }

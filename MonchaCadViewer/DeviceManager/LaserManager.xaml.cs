@@ -11,12 +11,12 @@ namespace MonchaCadViewer
     /// <summary>
     /// Логика взаимодействия для DeviceManager.xaml
     /// </summary>
-    public partial class DeviceManager : Window
+    public partial class LaserManager : Window
     {
         private List<IPAddress> iPs = new List<IPAddress>();
         public List<MonchaDevice> Devices = new List<MonchaDevice>();
 
-        public DeviceManager()
+        public LaserManager()
         {
             InitializeComponent();
             RefreshList();
@@ -33,7 +33,7 @@ namespace MonchaCadViewer
                 for (int i = 0; i < iPs.Count; i++) //no include work laser (change to i = 0)
                 {
                     //if not
-                    if (!MonchaHub.CheckDevice(iPs[i]))
+                    if (!MonchaHub.CheckDeviceIP(iPs[i]))
                     {
                         MonchaDevice device = MonchaHub.ConnectDevice(iPs[i]);
 

@@ -21,6 +21,7 @@ using MonchaSDK.Device;
 using MonchaSDK.Object;
 using KompasLib.KompasTool;
 using ToGeometryConverter.Format;
+using MonchaCadViewer.DeviceManager;
 
 namespace MonchaCadViewer
 {
@@ -72,8 +73,8 @@ namespace MonchaCadViewer
             DeviceCombo.ItemsSource = MonchaHub.Devices;
             DeviceCombo.DataContext = MonchaHub.Devices;
 
-            LaserMetersCombo.DisplayMemberPath = "Adress";
-            LaserMetersCombo.SelectedValuePath = "Adress";
+            LaserMetersCombo.DisplayMemberPath = "HWIdentifier";
+            LaserMetersCombo.SelectedValuePath = "HWIdentifier";
             LaserMetersCombo.ItemsSource = MonchaHub.LMeters;
             LaserMetersCombo.DataContext = MonchaHub.LMeters;
 
@@ -134,25 +135,53 @@ namespace MonchaCadViewer
                 }
             }
 
+            TreeViewItem LaserMeters = new TreeViewItem();
+            LaserMeters.Header = "LaserMeters";
+            LaserMeters.ContextMenu = new ContextMenu();
+            ContextMenuLib.LaserMeterHeadTreeMenu(LaserMeters.ContextMenu);
+            LaserMeters.ContextMenuClosing += LaserMeters_ContextMenuClosing;
+            DeviceTree.Items.Add(LaserMeters);
+
+
             if (MonchaHub.LMeters.Count > 0)
             {
-                TreeViewItem LaserMeters = new TreeViewItem();
-                LaserMeters.Header = "LaserMeters";
-
-                DeviceTree.Items.Add(LaserMeters);
-
                 foreach (VLTLaserMeters device in MonchaHub.LMeters)
                 {
-                    TreeViewItem treeViewBaseMesh = new TreeViewItem();
-                    treeViewBaseMesh.Header = "LaserMeter " + device.Adress;
-                    treeViewBaseMesh.DataContext = device;
+                    TreeViewItem treeLaserMeterDevice = new TreeViewItem();
+                    treeLaserMeterDevice.Header = "LaserMeter " + device.IP;
+                    treeLaserMeterDevice.DataContext = device;
+                    treeLaserMeterDevice.ContextMenu = new ContextMenu();
+                    treeLaserMeterDevice.MouseDoubleClick += TreeLaserMeterDevice_MouseDoubleClick;
+                    ContextMenuLib.LaserMeterDeviceTreeMenu(treeLaserMeterDevice.ContextMenu);
+                    LaserMeters.Items.Add(treeLaserMeterDevice);
                 }
             }
         }
 
-        private void TreeViewDevice_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+        private void TreeLaserMeterDevice_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
+            if (sender is TreeViewItem viewItem)
+            {
+                MonchaCadViewer.DeviceManager.LaserMeterWindows laserMeterWindows = new MonchaCadViewer.DeviceManager.LaserMeterWindows(viewItem.DataContext as VLTLaserMeters);
+                laserMeterWindows.ShowDialog();
+            }
+        }
 
+        private void LaserMeters_ContextMenuClosing(object sender, ContextMenuEventArgs e)
+        {
+            if (sender is TreeViewItem viewItem)
+            {
+                if (viewItem.ContextMenu.DataContext is MenuItem cmindex && sender is TreeViewItem treeView)
+
+                    switch (cmindex.Header)
+                    {
+                        case "Add":
+                            MonchaCadViewer.DeviceManager.LaserMeterWindows laserMeterWindows = new MonchaCadViewer.DeviceManager.LaserMeterWindows(new VLTLaserMeters());
+                            laserMeterWindows.ShowDialog();
+                            MonchaHub.RefreshDevice();
+                            break;
+                    }
+            }
         }
 
 
@@ -191,18 +220,23 @@ namespace MonchaCadViewer
             if (DeviceCombo.SelectedItem is MonchaDevice tempdevice)
             {
                 //LaserMeter
-                LaserMetersCombo.SelectedValue = tempdevice.LMeter;
+                if (tempdevice.LMeter != null)
+                {
+                    LaserMetersCombo.SelectedValue = tempdevice.LMeter.HWIdentifier;
 
-                LaserMeterToggle.DataContext = tempdevice.LMeter;
-                LaserMeterToggle.SetBinding(ToggleSwitch.IsOnProperty, "IsTurn");
+                    LaserMeterToggle.DataContext = tempdevice.LMeter;
+                    LaserMeterToggle.SetBinding(ToggleSwitch.IsOnProperty, "IsTurn");
 
-                DistanceUpDn.DataContext = tempdevice.LMeter;
-                DistanceUpDn.SetBinding(NumericUpDown.ValueProperty, "Distance");
+                    DistanceUpDn.DataContext = tempdevice.LMeter;
+                    DistanceUpDn.SetBinding(NumericUpDown.ValueProperty, "Distance");
 
-                DistanceLabel.DataContext = tempdevice.LMeter;
-                DistanceLabel.SetBinding(Label.ContentProperty, "RealDistance");
+                    DistanceLabel.DataContext = tempdevice.LMeter;
+                    DistanceLabel.SetBinding(Label.ContentProperty, "RealDistance");
 
-                SetDistanceBtn.DataContext = tempdevice.LMeter;
+                    tempdevice.LMeter.ChangeDimention += LMeter_ChangeDimention;
+
+                    SetDistanceBtn.DataContext = tempdevice.LMeter;
+                }
 
                 //Device
                 ScanRateRealSlider.DataContext = tempdevice;
@@ -257,6 +291,13 @@ namespace MonchaCadViewer
 
 
             }
+        }
+
+        private void LMeter_ChangeDimention(object sender, double e)
+        {
+            DistanceLabel.Invoke(() => {
+                DistanceLabel.Content = e;
+            });
         }
 
         private void M_ChangePoint(object sender, LPoint3D e)
@@ -980,7 +1021,7 @@ namespace MonchaCadViewer
 
         private void AddLaser_Click(object sender, RoutedEventArgs e)
         {
-            DeviceManager deviceManager = new DeviceManager();
+            LaserManager deviceManager = new LaserManager();
             deviceManager.Show();
         }
 
@@ -1030,9 +1071,36 @@ namespace MonchaCadViewer
 
         private void SetDistanceBtn_Click(object sender, RoutedEventArgs e)
         {
-           if (SetDistanceBtn.DataContext is VLTLaserMeters laserMeters)
+            SetDistanceBtn.Invoke(() => 
             {
-                laserMeters.Distance = laserMeters.RealDistance;
+                if (LaserMetersCombo.SelectedItem is VLTLaserMeters laserMeters)
+                {
+                    laserMeters.Distance = laserMeters.RealDistance;
+                    DistanceUpDn.Value = laserMeters.Distance;
+                }
+            });
+
+        }
+
+        private void LaserMetersCombo_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (DeviceCombo.SelectedItem is MonchaDevice monchaDevice)
+            {
+                monchaDevice.ReconnectLMeter(LaserMetersCombo.SelectedItem as VLTLaserMeters);
+
+                DistanceUpDn.DataContext = monchaDevice.LMeter;
+                DistanceUpDn.SetBinding(NumericUpDown.ValueProperty, "Distance");
+
+                DistanceLabel.DataContext = monchaDevice.LMeter;
+                DistanceLabel.SetBinding(Label.ContentProperty, "RealDistance");
+            }
+        }
+
+        private void LaserMeterToggle_Toggled(object sender, RoutedEventArgs e)
+        {
+            if (LaserMetersCombo.SelectedItem is VLTLaserMeters laserMeters)
+            {
+                laserMeters.Turn(LaserMeterToggle.IsOn);
             }
         }
     }

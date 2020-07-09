@@ -122,7 +122,8 @@ namespace MonchaCadViewer.CanvasObj
 
         private void Obj_Selected(object sender, CadObject e)
         {
-            this.SelectedObject(this, e);
+            if (this.SelectedObject != null)
+                this.SelectedObject(this, e);
         }
 
         private void Obj_Updated(object sender, CadObject e)

@@ -218,8 +218,8 @@
 
                                 <Label x:Name="DistanceLabel" Content="(00000)" Margin="0,77,0,0" VerticalAlignment="Top" Grid.Column="4" Height="26" HorizontalAlignment="Right" Width="52"/>
                                 <Label x:Name="label_Copy5" Content="Дальность" HorizontalAlignment="Left" Margin="10,51,0,0" VerticalAlignment="Top" Width="74" Height="26" Grid.ColumnSpan="2"/>
-                                <ComboBox x:Name="LaserMetersCombo" Margin="5,25,52,0" VerticalAlignment="Top" Grid.Column="2" Height="26" Grid.ColumnSpan="3" IsEnabled="{c:Binding !IsChecked, ElementName=QRBtn}"/>
-                                <Controls:ToggleSwitch x:Name="LaserMeterToggle"  Content="" HorizontalAlignment="Right" Margin="0,27,0,0" VerticalAlignment="Top" IsOn="False" RenderTransformOrigin="0.5,0.5" HorizontalContentAlignment="Center" Height="25" Grid.Column="4" Width="47">
+                                <ComboBox x:Name="LaserMetersCombo" Margin="5,25,52,0" VerticalAlignment="Top" Grid.Column="2" Height="26" Grid.ColumnSpan="3" IsEnabled="{c:Binding !IsChecked, ElementName=QRBtn}" SelectionChanged="LaserMetersCombo_SelectionChanged"/>
+                                <Controls:ToggleSwitch x:Name="LaserMeterToggle"  Content="" HorizontalAlignment="Right" Margin="0,27,0,0" VerticalAlignment="Top" IsOn="False" RenderTransformOrigin="0.5,0.5" HorizontalContentAlignment="Center" Height="25" Grid.Column="4" Width="47" Toggled="LaserMeterToggle_Toggled">
                                     <Controls:ToggleSwitch.DataContext>
                                         <Properties:Settings/>
                                     </Controls:ToggleSwitch.DataContext>

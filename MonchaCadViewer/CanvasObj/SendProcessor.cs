@@ -11,6 +11,11 @@ namespace MonchaCadViewer.CanvasObj
 {
     public static class SendProcessor
     {
+        /// <summary>
+        /// Обрабатывает объекты и готовит их на лазер
+        /// </summary>
+        /// <param name="canvas">Отправляемое рабочее поле</param>
+        /// <returns>N_{i,degree}(step)</returns>
         public static void Worker(CadCanvas canvas)
         {
             LObjectList tempList = new LObjectList();
@@ -31,6 +36,11 @@ namespace MonchaCadViewer.CanvasObj
             }
         }
 
+        /// <summary>
+        /// Send work rectangle projector
+        /// </summary>
+        /// <param name="device">The right device</param>
+        /// <returns>N_{i,degree}(step)</returns>
         public static void DrawZone(MonchaDevice device)
         {
             LObjectList tempList = new LObjectList();
@@ -108,70 +118,75 @@ namespace MonchaCadViewer.CanvasObj
                     lObject.Add(new LPoint3D(figure.StartPoint));
 
                     Point LastPoint = figure.StartPoint;
-                    foreach (PathSegment segment in figure.Segments)
+
+                    if (figure.Segments.Count > 0)
                     {
-                        switch (segment.GetType().FullName)
+                        foreach (PathSegment segment in figure.Segments)
                         {
-                            case "System.Windows.Media.BezierSegment":
-                                System.Windows.Media.BezierSegment bezierSegment = (System.Windows.Media.BezierSegment)segment;
-                                lObject.AddRange(BezieByStep(LastPoint, bezierSegment.Point1, bezierSegment.Point2, bezierSegment.Point3));
-                                LastPoint = bezierSegment.Point3;
-                                break;
-                            case "System.Windows.Media.PolyBezierSegment":
-                                System.Windows.Media.PolyBezierSegment polyBezierSegment = (System.Windows.Media.PolyBezierSegment)segment;
-                                for (int i = 0; i < polyBezierSegment.Points.Count - 2; i += 3)
-                                {
-                                    lObject.AddRange(BezieByStep(LastPoint, polyBezierSegment.Points[i], polyBezierSegment.Points[i + 3], polyBezierSegment.Points[i + 2]));
-                                    LastPoint = polyBezierSegment.Points[i + 2];
-                                }
+                            switch (segment.GetType().FullName)
+                            {
+                                case "System.Windows.Media.BezierSegment":
+                                    System.Windows.Media.BezierSegment bezierSegment = (System.Windows.Media.BezierSegment)segment;
+                                    lObject.AddRange(BezieByStep(LastPoint, bezierSegment.Point1, bezierSegment.Point2, bezierSegment.Point3));
+                                    LastPoint = bezierSegment.Point3;
+                                    break;
+                                case "System.Windows.Media.PolyBezierSegment":
+                                    System.Windows.Media.PolyBezierSegment polyBezierSegment = (System.Windows.Media.PolyBezierSegment)segment;
+                                    for (int i = 0; i < polyBezierSegment.Points.Count - 2; i += 3)
+                                    {
+                                        lObject.AddRange(BezieByStep(LastPoint, polyBezierSegment.Points[i], polyBezierSegment.Points[i + 3], polyBezierSegment.Points[i + 2]));
+                                        LastPoint = polyBezierSegment.Points[i + 2];
+                                    }
 
-                                break;
+                                    break;
 
-                            case "System.Windows.Media.LineSegment":
-                                System.Windows.Media.LineSegment lineSegment = (System.Windows.Media.LineSegment)segment;
-                                lObject.Add(new LPoint3D(lineSegment.Point));
-                                LastPoint = lineSegment.Point;
-                                break;
+                                case "System.Windows.Media.LineSegment":
+                                    System.Windows.Media.LineSegment lineSegment = (System.Windows.Media.LineSegment)segment;
+                                    lObject.Add(new LPoint3D(lineSegment.Point));
+                                    LastPoint = lineSegment.Point;
+                                    break;
 
-                            case "System.Windows.Media.PolyLineSegment":
-                                System.Windows.Media.PolyLineSegment polyLineSegment = (System.Windows.Media.PolyLineSegment)segment;
-                                for (int i = 0; i < polyLineSegment.Points.Count; i++)
-                                {
-                                    lObject.Add(new LPoint3D(polyLineSegment.Points[i]));
-                                    LastPoint = polyLineSegment.Points.Last();
-                                }
-                                break;
+                                case "System.Windows.Media.PolyLineSegment":
+                                    System.Windows.Media.PolyLineSegment polyLineSegment = (System.Windows.Media.PolyLineSegment)segment;
+                                    for (int i = 0; i < polyLineSegment.Points.Count; i++)
+                                    {
+                                        lObject.Add(new LPoint3D(polyLineSegment.Points[i]));
+                                        LastPoint = polyLineSegment.Points.Last();
+                                    }
+                                    break;
 
-                            case "System.Windows.Media.PolyQuadraticBezierSegment":
-                                System.Windows.Media.PolyQuadraticBezierSegment polyQuadraticBezier = (System.Windows.Media.PolyQuadraticBezierSegment)segment;
-                                for (int i = 0; i < polyQuadraticBezier.Points.Count - 1; i += 2)
-                                {
-                                    lObject.AddRange(QBezierByStep(LastPoint, polyQuadraticBezier.Points[i], polyQuadraticBezier.Points[i + 1]));
-                                    LastPoint = polyQuadraticBezier.Points[i + 1];
-                                }
+                                case "System.Windows.Media.PolyQuadraticBezierSegment":
+                                    System.Windows.Media.PolyQuadraticBezierSegment polyQuadraticBezier = (System.Windows.Media.PolyQuadraticBezierSegment)segment;
+                                    for (int i = 0; i < polyQuadraticBezier.Points.Count - 1; i += 2)
+                                    {
+                                        lObject.AddRange(QBezierByStep(LastPoint, polyQuadraticBezier.Points[i], polyQuadraticBezier.Points[i + 1]));
+                                        LastPoint = polyQuadraticBezier.Points[i + 1];
+                                    }
 
-                                break;
+                                    break;
 
-                            case "System.Windows.Media.QuadraticBezierSegment":
-                                System.Windows.Media.QuadraticBezierSegment quadraticBezierSegment = (System.Windows.Media.QuadraticBezierSegment)segment;
-                                lObject.AddRange(QBezierByStep(LastPoint, quadraticBezierSegment.Point1, quadraticBezierSegment.Point2));
-                                LastPoint = quadraticBezierSegment.Point2;
-                                break;
+                                case "System.Windows.Media.QuadraticBezierSegment":
+                                    System.Windows.Media.QuadraticBezierSegment quadraticBezierSegment = (System.Windows.Media.QuadraticBezierSegment)segment;
+                                    lObject.AddRange(QBezierByStep(LastPoint, quadraticBezierSegment.Point1, quadraticBezierSegment.Point2));
+                                    LastPoint = quadraticBezierSegment.Point2;
+                                    break;
 
-                            case "System.Windows.Media.ArcSegment":
-                                System.Windows.Media.ArcSegment arcSegment = (System.Windows.Media.ArcSegment)segment;
-                                lObject.AddRange(CircleByStep(LastPoint,
-                                    arcSegment.Point, arcSegment.Size.Width, arcSegment.SweepDirection, arcSegment.RotationAngle));
-                                LastPoint = arcSegment.Point;
+                                case "System.Windows.Media.ArcSegment":
+                                    System.Windows.Media.ArcSegment arcSegment = (System.Windows.Media.ArcSegment)segment;
+                                    lObject.AddRange(CircleByStep(LastPoint,
+                                        arcSegment.Point, arcSegment.Size.Width, arcSegment.SweepDirection, arcSegment.RotationAngle));
+                                    LastPoint = arcSegment.Point;
 
-                                break;
+                                    break;
+                            }
                         }
                     }
-
                     if (lObject.Count > 0)
-                        PathList.FindEndAddRange(PointsMagic(lObject, pathGeometry));
+                        PathList.Add(PointsMagic(lObject, pathGeometry));
                 }
             }
+            PathList.Optimize();
+            Console.WriteLine("Count List " + PathList.GetOnlyPoints.Count);
             return PathList;
         }
 

@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 
@@ -51,6 +46,16 @@ namespace MonchaCadViewer.CanvasObj
         {
             AddItem("CanvasRectangle", contextMenu);
             AddItem("ZoneRectangle", contextMenu);
+        }
+
+        public static void LaserMeterHeadTreeMenu(ContextMenu contextMenu)
+        {
+            AddItem("Add", contextMenu);
+        }
+        public static void LaserMeterDeviceTreeMenu(ContextMenu contextMenu)
+        {
+            AddItem("Edit", contextMenu);
+            AddItem("Remove", contextMenu);
         }
 
         private static void AddItem(string Name, ContextMenu menu)

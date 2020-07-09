@@ -7,9 +7,9 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MonchaCadViewer", "MonchaCa
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MonchaSDK", "..\MonchaSDK\MonchaSDK\MonchaSDK.csproj", "{BE456A82-4E1A-45F9-89DB-74E4924FC4B6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KompasLib", "D:\Программы\KompasLib\KompasLib\KompasLib\KompasLib.csproj", "{25CE4066-36A4-40BD-A38F-EC08E7AA509F}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KompasLib", "..\KompasLib\KompasLib\KompasLib\KompasLib.csproj", "{25CE4066-36A4-40BD-A38F-EC08E7AA509F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ToGeometryConverter", "..\ToPointConverter\ToPointConverter\ToGeometryConverter.csproj", "{1EDBFBC8-4A81-4530-9BC6-B4C475E53E3C}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ToGeometryConverter", "..\ToGeometryConverter\ToGeometryConverter\ToGeometryConverter.csproj", "{1EDBFBC8-4A81-4530-9BC6-B4C475E53E3C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

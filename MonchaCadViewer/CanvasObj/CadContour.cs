@@ -13,6 +13,8 @@ namespace MonchaCadViewer.CanvasObj
 {
     class CadContour : CadObject
     {
+        public double CRS => ReadyFrame.CRS.MX / Math.Max(this.Scale.ScaleX, this.Scale.ScaleY);
+
         private bool _maincanvas;
         private AdornerContourFrame adornerContour;
 
@@ -37,10 +39,6 @@ namespace MonchaCadViewer.CanvasObj
             this.Stroke = Brushes.Red;
         }
 
-        public LObjectList GetPoint()
-        {
-            return SendProcessor.CalcContour(this.GmtrObj as PathGeometry);
-        }
 
         private void CadContour_MouseWheel(object sender, MouseWheelEventArgs e)
         {
@@ -56,7 +54,6 @@ namespace MonchaCadViewer.CanvasObj
                 {
                     case "Mirror":
                         this.Mirror = !this.Mirror;
-                        this.Scale.ScaleX *= -1;
                         break;
 
                     case "Fix":

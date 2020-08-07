@@ -165,20 +165,20 @@ namespace MonchaCadViewer.CanvasObj.DimObj
                                strokeBounds.Y + strokeBounds.Height / 2);
 
             // The rectangle that determines the position of the Thumb.
-            Rect handleRect = new Rect(strokeBounds.X,
+           /* Rect handleRect = new Rect(strokeBounds.X,
                                   strokeBounds.Y - (strokeBounds.Height / 2 +
                                                     MonchaHub.GetThinkess() * 7),
-                                  strokeBounds.Width, strokeBounds.Height);
+                                  strokeBounds.Width, strokeBounds.Height);*/
 
-            if (this.Rotation != null)
+            /*if (this.Rotation != null)
             {
                 handleRect.Transform(this.Rotation.Value);
-            }
+            }*/
 
             // Draws the thumb and the rectangle around the strokes.
-            rotateHandle.Arrange(handleRect);
+           // rotateHandle.Arrange(handleRect);
             outline.Data = new RectangleGeometry(strokeBounds);
-            outline.Arrange(new Rect(Contour.Size));
+            outline.Arrange(new Rect(Contour.Bounds.Size));
 
             //Line side to contour
             //Top 
@@ -212,14 +212,7 @@ namespace MonchaCadViewer.CanvasObj.DimObj
            new Point(outline.Data.Bounds.Location.X + outline.Data.Bounds.Width / 2, outline.Data.Bounds.Location.Y + outline.Data.Bounds.Height / 2));
 
             //angle
-            if (this.Rotation != null)
-            {
-                drawingContext.DrawText(new FormattedText("a:" + Math.Round(Math.Round(this.Rotation.Angle), 2).ToString(), new System.Globalization.CultureInfo("ru-RU"), 
-                    FlowDirection.LeftToRight,
-            new Typeface("Segoe UI"), 
-            (int)Textsize, Brushes.Gray), 
-            new Point(outline.Data.Bounds.Location.X + outline.Data.Bounds.Width / 2, outline.Data.Bounds.Location.Y + outline.Data.Bounds.Height / 2 + Textsize));
-            }
+
             void DrawMarginLine(Point point1, Point point2, Point TextPoint)
             {
                 drawingContext.DrawLine(LinePen, point1, point2);

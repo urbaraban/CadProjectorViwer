@@ -4,31 +4,47 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Shapes;
-using MonchaSDK.Device;
 using System.Windows.Documents;
 using PropertyTools.DataAnnotations;
-using MonchaSDK.Object;
-using MonchaSDK;
+
 
 namespace MonchaCadViewer.CanvasObj
 {
     public class CadObject : Shape
     {
         private bool _isfix = false;
+        private bool _mirror = false;
 
         //Event
         public event EventHandler<CadObject> Selected;
         public event EventHandler<bool> Fixed;
         public event EventHandler<CadObject> Updated;
         public event EventHandler<CadObject> Removed;
-        public event EventHandler<Point> TranslateDelta;
 
         //Geometry
         public Geometry GmtrObj { get; set; }
 
-        public Size Size => GmtrObj.Bounds.Size;
+        public Rect Bounds => GmtrObj.Bounds;
 
-        public bool Mirror { get; set; } = false;
+        public bool Mirror { 
+            get => this._mirror;
+            set
+            {
+                this._mirror = value;
+                this.Scale.CenterX = this.GmtrObj.Bounds.X - this.Translate.X + this.GmtrObj.Bounds.Width / 2;
+                this.Scale.CenterY = this.GmtrObj.Bounds.Y - this.Translate.Y + this.GmtrObj.Bounds.Height / 2;
+                if (this._mirror && this.Scale.ScaleX > 0)
+                {
+                    this.Scale.ScaleX = -this.Scale.ScaleX;
+                }
+                else if (this._mirror == false && this.Scale.ScaleX < 0)
+                {
+                    this.Scale.ScaleX = -this.Scale.ScaleX;
+                }
+
+
+            }
+        }
         public double Angle { get; set; } = 0;
 
         public bool IsSelected { get; set; } = false;
@@ -43,8 +59,6 @@ namespace MonchaCadViewer.CanvasObj
 
         protected override Geometry DefiningGeometry => GmtrObj;
 
-        [Category("Data")]
-        [DisplayName("Given name")]
         public bool Render { get; set; } = true;
         
         public bool IsFix { get => _isfix; set => Fixing(value); }
@@ -52,7 +66,8 @@ namespace MonchaCadViewer.CanvasObj
         private void Fixing(bool stat)
         {
             this._isfix = stat;
-            Fixed(this, stat);
+            if (Fixed != null)
+                Fixed(this, stat);
         }
 
         public bool WasMove { get; set; } = false;
@@ -95,8 +110,8 @@ namespace MonchaCadViewer.CanvasObj
                 tempTransform.Children.Add(Scale);
                 tempTransform.Children.Add(Rotate);
                 tempTransform.Children.Add(Translate);
-
                 this.GmtrObj.Transform = tempTransform;
+               
             }
 
             this.Transform = this.GmtrObj.Transform as TransformGroup;
@@ -104,6 +119,7 @@ namespace MonchaCadViewer.CanvasObj
             this.Rotate = (RotateTransform)this.Transform.Children[1];
             this.Scale = (ScaleTransform)this.Transform.Children[0];
         }
+
 
         private void ContextMenu_Closing(object sender, RoutedEventArgs e)
         {
@@ -162,7 +178,7 @@ namespace MonchaCadViewer.CanvasObj
         private void CadObject_MouseLeftButtonUp(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
            
-                if (!this.WasMove)
+                if (this.WasMove == false)
                 {
                     this.IsSelected = !this.IsSelected;
 
@@ -189,9 +205,15 @@ namespace MonchaCadViewer.CanvasObj
                     this.Editing = false;
                     this.ReleaseMouseCapture();
 
-                    if (this.Selected != null)
-                        Selected(this, this);
                 }
+
+            if (Selected != null)
+            {
+                if (this.IsSelected)
+                    Selected(this, this);
+                else
+                    Selected(this, null);
+            }
         }
 
         public bool Remove()

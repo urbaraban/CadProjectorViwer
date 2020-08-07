@@ -107,24 +107,13 @@ namespace MonchaCadViewer.CanvasObj
 
                 CadContour polygon = new CadContour(_innerList, maincanvas, mousemove);
                 polygon.OnBaseMesh = false;
-                AddSubsObj(polygon);
+                this.Add(polygon);
 
                 SendProcessor.Worker(this);
             }
         }
 
-        public void AddSubsObj (CadObject obj)
-        {
-            obj.Updated += Obj_Updated;
-            obj.Selected += Obj_Selected;
-            this.Children.Add(obj);
-        }
 
-        private void Obj_Selected(object sender, CadObject e)
-        {
-            if (this.SelectedObject != null)
-                this.SelectedObject(this, e);
-        }
 
         private void Obj_Updated(object sender, CadObject e)
         {
@@ -166,20 +155,6 @@ namespace MonchaCadViewer.CanvasObj
                         return dot;
 
             return null;
-        }
-
-        public void RemoveAnchor(CadDot anchor)
-        {
-            this.Children.Remove(anchor);
-            anchors.Remove(anchor);
-        }
-
-        private CadDot NewAnchor(bool Calibration, bool mousemove, bool move )
-        {
-            Point point = Mouse.GetPosition(this);
-            CadDot anchor = new CadDot(new LPoint3D(point.X, point.Y, 0), this.ActualWidth * 0.02, mousemove, move);
-            anchors.Add(anchor);
-            return anchor;
         }
 
 
@@ -256,9 +231,8 @@ namespace MonchaCadViewer.CanvasObj
                         dot.DataContext = mesh;
                         dot.OnBaseMesh = !mesh.OnlyEdge;
                         dot.Render = false;
-                        dot.StatColorSelect();
-                        dot.Updated += Dot_Updated;
-                        this.Children.Add(dot);
+                        dot.StatColorSelect();;
+                        this.Add(dot);
                     }
 
             }
@@ -267,6 +241,32 @@ namespace MonchaCadViewer.CanvasObj
         private void Dot_Updated(object sender, CadObject e)
         {
             SendProcessor.Worker(this);
+        }
+
+        public void Clear()
+        {
+            foreach (CadObject cadObject in this.Children)
+            {
+                cadObject.Updated -= Obj_Updated;
+                cadObject.Selected -= Obj_Selected;
+            }
+            SelectedObject(this, null);
+            this.Children.Clear();
+        }
+
+        public void Add(CadObject cadObject)
+        {
+            cadObject.Updated += Obj_Updated;
+            cadObject.Selected += Obj_Selected;
+            this.Children.Add(cadObject);
+        }
+
+        private void Obj_Selected(object sender, CadObject e)
+        {
+            if (this.SelectedObject != null)
+                this.SelectedObject(this, e);
+
+            this.UnselectAll(e);
         }
     }
 }

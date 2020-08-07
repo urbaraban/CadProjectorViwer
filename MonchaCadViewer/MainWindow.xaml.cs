@@ -34,12 +34,15 @@ namespace MonchaCadViewer
 
         private string qrpath = string.Empty;
 
+        private KmpsAppl kmpsAppl;
+
         //private DotShape[,] BaseMeshRectangles;
 
         public MainWindow()
         {
             InitializeComponent();
             MonchaHub.RefreshedDevice += MonchaHub_RefreshDevice;
+
 
             LoadMoncha();
 
@@ -61,7 +64,7 @@ namespace MonchaCadViewer
 
         private void CadCanvas_SelectedObject(object sender, CadObject e)
         {
-            //PrptGrid.SelectedObject = e;
+            ObjectPanel.DataContextUpdate(e);
         }
 
         private void MonchaHub_RefreshDevice(object sender, List<MonchaDevice> e)
@@ -497,7 +500,7 @@ namespace MonchaCadViewer
                 }
                 else
                 {
-                    KmpsAppl.OpenFile(filename);
+                    this.kmpsAppl.OpenFile(filename);
                 }
             }
 
@@ -579,9 +582,9 @@ namespace MonchaCadViewer
         {
             if (sender is Viewbox viewItem)
             {
-                if (viewItem.DataContext is PathGeometry Gmtr && CanvasBox.Child is CadCanvas canvas)
+                if (viewItem.DataContext is PathGeometry CadObj && CanvasBox.Child is CadCanvas canvas)
                 {
-                    TransformGroup tempTransform = Gmtr.Transform as TransformGroup;
+                    TransformGroup tempTransform = CadObj.Transform as TransformGroup;
                     TranslateTransform Translate = tempTransform.Children[2] as TranslateTransform;
                     RotateTransform Rotate = tempTransform.Children[1] as RotateTransform;
                     ScaleTransform Scale = tempTransform.Children[0] as ScaleTransform;
@@ -591,8 +594,8 @@ namespace MonchaCadViewer
                     Scale.ScaleX = 1;
                     Scale.ScaleY = 1;
 
-                    Translate.X = MonchaHub.Size.GetMPoint.X / 2 - (Gmtr.Bounds.X - Translate.X + Gmtr.Bounds.Width / 2 );
-                    Translate.Y = MonchaHub.Size.GetMPoint.Y / 2 - (Gmtr.Bounds.Y - Translate.Y + Gmtr.Bounds.Height / 2);
+                    Translate.X = MonchaHub.Size.GetMPoint.X / 2 - (CadObj.Bounds.X - Translate.X + CadObj.Bounds.Width / 2 );
+                    Translate.Y = MonchaHub.Size.GetMPoint.Y / 2 - (CadObj.Bounds.Y - Translate.Y + CadObj.Bounds.Height / 2);
                 }
             }
         }
@@ -728,15 +731,15 @@ namespace MonchaCadViewer
         {
             if (KmpsAppl.KompasAPI == null)
             {
-                if (KmpsAppl.Connect())
+                kmpsAppl = new KmpsAppl();
+
+                if (kmpsAppl.Connect())
                 {
-                    
-                    KmpsAppl.ChangeDoc += KmpsAppl_ChangeDoc;
-                    KmpsAppl.ConnectBoolEvent += KmpsAppl_ConnectBoolEvent;
+                    kmpsAppl.ConnectBoolEvent += KmpsAppl_ConnectBoolEvent;
 
                     kmpsConnectToggle.IsOn = KmpsAppl.KompasAPI != null;
 
-                    KmpsAppl.SelectDoc();
+                    kmpsAppl.SelectDoc();
                 }
 
             }
@@ -768,7 +771,7 @@ namespace MonchaCadViewer
         {
             if (KmpsAppl.KompasAPI != null)
             {
-                PathGeometry lObjectList = ContourCalc.GetPoint(ReadyFrame.CRS.MX, false, true);
+                PathGeometry lObjectList = ContourCalc.GetPoint(this.kmpsAppl.Doc, ReadyFrame.CRS.MX, false, true);
                 ContourProcessor(false, lObjectList);
             }
 
@@ -778,7 +781,7 @@ namespace MonchaCadViewer
         {
             if (KmpsAppl.KompasAPI != null)
             {
-                PathGeometry lObjectList = ContourCalc.GetPoint(ReadyFrame.CRS.MX, true, true);
+                PathGeometry lObjectList = ContourCalc.GetPoint(this.kmpsAppl.Doc, ReadyFrame.CRS.MX, true, true);
                 ContourProcessor(false, lObjectList);
             }
         }
@@ -938,7 +941,7 @@ namespace MonchaCadViewer
         {
             if (CanvasBox.Child is CadCanvas canvas)
             {
-                canvas.Children.Clear();
+                canvas.Clear();
             }
         }
 

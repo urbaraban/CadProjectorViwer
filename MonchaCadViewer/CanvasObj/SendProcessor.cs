@@ -1,7 +1,6 @@
 ﻿using MonchaSDK;
 using MonchaSDK.Device;
 using MonchaSDK.Object;
-using AppSt = MonchaCadViewer.Properties.Settings;
 using System.Linq;
 using System.Windows;
 using System.Windows.Media;
@@ -77,7 +76,8 @@ namespace MonchaCadViewer.CanvasObj
                     Console.WriteLine("Snd " + cadObject.Translate.X + " " + cadObject.Translate.Y);
                     break;
                 case "MonchaCadViewer.CanvasObj.CadContour":
-                    lObjectList.AddRange(CalcContour(cadObject.GmtrObj));
+                    CadContour cadContour = cadObject as CadContour;
+                    lObjectList.AddRange(CalcContour(cadObject.GmtrObj, cadContour.CRS));
                     break;
 
             }
@@ -88,9 +88,14 @@ namespace MonchaCadViewer.CanvasObj
 
 
         }
-        public static LObjectList CalcContour(Geometry pg)
+        public static LObjectList CalcContour(Geometry pg, double CRS)
         {
             LObjectList PathList = new LObjectList();
+
+           TransformGroup transformGroup = pg.Transform as TransformGroup;
+               TranslateTransform Translate = (TranslateTransform)transformGroup.Children[2];
+                RotateTransform Rotate = (RotateTransform)transformGroup.Children[1];
+                ScaleTransform Scale = (ScaleTransform)transformGroup.Children[0];
 
             switch (pg.GetType().FullName)
             {
@@ -127,14 +132,14 @@ namespace MonchaCadViewer.CanvasObj
                             {
                                 case "System.Windows.Media.BezierSegment":
                                     System.Windows.Media.BezierSegment bezierSegment = (System.Windows.Media.BezierSegment)segment;
-                                    lObject.AddRange(BezieByStep(LastPoint, bezierSegment.Point1, bezierSegment.Point2, bezierSegment.Point3));
+                                    lObject.AddRange(BezieByStep(LastPoint, bezierSegment.Point1, bezierSegment.Point2, bezierSegment.Point3, CRS));
                                     LastPoint = bezierSegment.Point3;
                                     break;
                                 case "System.Windows.Media.PolyBezierSegment":
                                     System.Windows.Media.PolyBezierSegment polyBezierSegment = (System.Windows.Media.PolyBezierSegment)segment;
                                     for (int i = 0; i < polyBezierSegment.Points.Count - 2; i += 3)
                                     {
-                                        lObject.AddRange(BezieByStep(LastPoint, polyBezierSegment.Points[i], polyBezierSegment.Points[i + 3], polyBezierSegment.Points[i + 2]));
+                                        lObject.AddRange(BezieByStep(LastPoint, polyBezierSegment.Points[i], polyBezierSegment.Points[i + 3], polyBezierSegment.Points[i + 2], CRS));
                                         LastPoint = polyBezierSegment.Points[i + 2];
                                     }
 
@@ -159,7 +164,7 @@ namespace MonchaCadViewer.CanvasObj
                                     System.Windows.Media.PolyQuadraticBezierSegment polyQuadraticBezier = (System.Windows.Media.PolyQuadraticBezierSegment)segment;
                                     for (int i = 0; i < polyQuadraticBezier.Points.Count - 1; i += 2)
                                     {
-                                        lObject.AddRange(QBezierByStep(LastPoint, polyQuadraticBezier.Points[i], polyQuadraticBezier.Points[i + 1]));
+                                        lObject.AddRange(QBezierByStep(LastPoint, polyQuadraticBezier.Points[i], polyQuadraticBezier.Points[i + 1], CRS));
                                         LastPoint = polyQuadraticBezier.Points[i + 1];
                                     }
 
@@ -167,14 +172,14 @@ namespace MonchaCadViewer.CanvasObj
 
                                 case "System.Windows.Media.QuadraticBezierSegment":
                                     System.Windows.Media.QuadraticBezierSegment quadraticBezierSegment = (System.Windows.Media.QuadraticBezierSegment)segment;
-                                    lObject.AddRange(QBezierByStep(LastPoint, quadraticBezierSegment.Point1, quadraticBezierSegment.Point2));
+                                    lObject.AddRange(QBezierByStep(LastPoint, quadraticBezierSegment.Point1, quadraticBezierSegment.Point2, CRS));
                                     LastPoint = quadraticBezierSegment.Point2;
                                     break;
 
                                 case "System.Windows.Media.ArcSegment":
                                     System.Windows.Media.ArcSegment arcSegment = (System.Windows.Media.ArcSegment)segment;
                                     lObject.AddRange(CircleByStep(LastPoint,
-                                        arcSegment.Point, arcSegment.Size.Width, arcSegment.SweepDirection, arcSegment.RotationAngle));
+                                        arcSegment.Point, arcSegment.Size.Width, arcSegment.SweepDirection, CRS, arcSegment.RotationAngle));
                                     LastPoint = arcSegment.Point;
 
                                     break;
@@ -190,7 +195,7 @@ namespace MonchaCadViewer.CanvasObj
             return PathList;
         }
 
-        public static LObject QBezierByStep (Point StartPoint, Point ControlPoint, Point EndPoint)
+        public static LObject QBezierByStep (Point StartPoint, Point ControlPoint, Point EndPoint, double CRS)
         {
             LPoint3D LastPoint = new LPoint3D(StartPoint);
             double Lenth = 0;
@@ -201,7 +206,7 @@ namespace MonchaCadViewer.CanvasObj
                 LastPoint = tempPoint;
             }
 
-            int CountStep = (int)(Lenth / ReadyFrame.CRS.MX) >= 2 ? (int)(Lenth / ReadyFrame.CRS.MX) : 2;
+            int CountStep = (int)(Lenth / (CRS)) >= 2 ? (int)(Lenth / CRS) : 2;
             LObject tempObj = new LObject();
 
             for (int t = 0; t < CountStep; t++)
@@ -219,7 +224,7 @@ namespace MonchaCadViewer.CanvasObj
             }
         }
 
-        public static LObject BezieByStep(Point point0, Point point1, Point point2, Point point3)
+        public static LObject BezieByStep(Point point0, Point point1, Point point2, Point point3, double CRS)
         {
             double Lenth = 0;
             LPoint3D LastPoint = new LPoint3D(point1);
@@ -233,7 +238,7 @@ namespace MonchaCadViewer.CanvasObj
 
             LObject tempObj = new LObject();
 
-            int CountStep = (int)(Lenth / ReadyFrame.CRS.MX) >= 2 ? (int)(Lenth / ReadyFrame.CRS.MX) : 2;
+            int CountStep = (int)(Lenth / CRS) >= 2 ? (int)(Lenth / CRS) : 2;
 
             for (int t = 0; t < CountStep; t++)
             {
@@ -256,7 +261,7 @@ namespace MonchaCadViewer.CanvasObj
             }
         }
 
-        public static LObject CircleByStep(Point StartPoint, Point EndPoint, double radius, SweepDirection clockwise, double Delta = 360)
+        public static LObject CircleByStep(Point StartPoint, Point EndPoint, double radius, SweepDirection clockwise, double CRS, double Delta = 360)
         {
             Delta = (Math.PI * 2 + Delta * Math.PI / 180 * (clockwise == SweepDirection.Clockwise ? -1 : 1)) % (Math.PI * 2); //to radian
 
@@ -268,7 +273,7 @@ namespace MonchaCadViewer.CanvasObj
             double StartAngle = Math.PI * 2 - Math.Atan2(StartPoint.Y - Center.Y, StartPoint.X - Center.X);
 
             LObject lObject = new LObject();
-            double RadianStep = Delta * (ReadyFrame.CRS.MX / (radius * Delta));
+            double RadianStep = Delta * ((CRS) / (radius * Delta));
 
 
             for (double radian = RadianStep; radian <= Delta * 1.005; radian += RadianStep)
@@ -310,70 +315,13 @@ namespace MonchaCadViewer.CanvasObj
                 RotateTransform Rotate = (RotateTransform)transformGroup.Children[1];
                 ScaleTransform Scale = (ScaleTransform)transformGroup.Children[0];
 
-                //зеркалим
-                if (Scale.ScaleX == -1)
+                foreach (LPoint3D lPoint3D in lObject)
                 {
-                    //не влияет на габарит, так как вокруг центра Х
-                    pointMirror(lObject);
+                    Point point = new Point();
+                    transformGroup.TryTransform(lPoint3D.GetMPoint, out point);
+                    lPoint3D.Set(point);
                 }
-
-                //Вращаем
-                if (Rotate.Angle != 0)
-                {
-
-                    pointRotate(lObject);
-                }
-
-                //смещаем
-                pointOffcet(lObject);
-
-                //Функция вращения
-                LObject pointRotate(LObject _obj)
-                {
-                    for (int p = 0; p < _obj.Count; p++)
-                    {
-                        RotatePoint(_obj[p]);
-                    }
-
-                    return _obj;
-
-                    void RotatePoint(LPoint3D pointToRotate)
-                    {
-                        double angleInRadians = Rotate.Angle * ((float)Math.PI / 180);
-                        double cosTheta = Math.Cos(angleInRadians);
-                        double sinTheta = Math.Sin(angleInRadians);
-                        pointToRotate.Set(
-                                // X
-                                (cosTheta * (pointToRotate.X - Rotate.CenterX) -
-                                sinTheta * (pointToRotate.Y - Rotate.CenterY) + Rotate.CenterX),
-                                //Y
-                                (sinTheta * (pointToRotate.X - Rotate.CenterX) +
-                                cosTheta * (pointToRotate.Y - Rotate.CenterY) + Rotate.CenterY),
-                                //Z
-                                pointToRotate.Z
-                            );
-                    }
-                }
-
-                //Функция смещения
-                //Смещает крайнюю нижнюю точку в ноль
-                LObject pointOffcet(LObject _obj)
-                {
-                    for (int i = 0; i < _obj.Count; i++)
-                    {
-                        _obj[i].X += Translate.X;
-                        _obj[i].Y += Translate.Y;
-                    }
-                    return _obj;
-                }
-
-                //Функция отзеркаливания
-                LObject pointMirror(LObject _obj)
-                {
-                    for (int i = 0; i < _obj.Count; i++)
-                        _obj[i].X = Translate.X -_obj[i].X;
-                    return _obj;
-                }
+                
             }
 
             return lObject;

@@ -1,4 +1,5 @@
-﻿using System.Windows;
+﻿using System;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 
@@ -40,6 +41,13 @@ namespace MonchaCadViewer.CanvasObj
         {
             AddItem("Create", contextMenu);
             AddItem("Refresh", contextMenu);
+            AddItem("Inverse", contextMenu);
+        }
+
+        public static void CanvasMenu(ContextMenu contextMenu)
+        {
+            AddItem("Freeze All", contextMenu);
+            AddItem("Unselect All", contextMenu);
         }
 
         public static void DeviceTreeMenu(ContextMenu contextMenu)
@@ -77,5 +85,6 @@ namespace MonchaCadViewer.CanvasObj
             }
             (obj as ContextMenu).DataContext = sender;
         }
+
     }
 }

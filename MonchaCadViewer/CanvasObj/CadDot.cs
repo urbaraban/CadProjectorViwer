@@ -21,6 +21,10 @@ namespace MonchaCadViewer.CanvasObj
         public CadDot(LPoint3D Point, double Size, bool capturemouse, bool move) : base (capturemouse, move, new RectangleGeometry(new Rect(new Size(Size, Size))))
         {
             this.Point = Point;
+
+            this.Point.Selected += Point_Selected;
+            this.Point.ChangePoint += Point_ChangePoint;
+
             this.size = Size;
 
             if (this.GmtrObj is RectangleGeometry rectangle)
@@ -36,17 +40,30 @@ namespace MonchaCadViewer.CanvasObj
 
             this.ContextMenuClosing += DotShape_ContextMenuClosing;
             this.MouseLeftButtonUp += CadDot_MouseLeftButtonUp;
+            this.MouseLeftButtonDown += CadDot_MouseLeftButtonDown;
             this.Fixed += CadDot_Fixed;
 
-            this.Translate.X = Point.GetMPoint.X - this.size / 2;
-            this.Translate.Y = Point.GetMPoint.Y - this.size / 2;
+            this.X = Point.GetMPoint.X - this.size / 2;
+            this.Y = Point.GetMPoint.Y - this.size / 2;
 
+            this.TranslateChanged += CadDot_TranslateChanged;
 
-            this.Translate.Changed += Translate_Changed;
             this.Point.ChangePoint += Point_ChangePoint;
 
             this.Fill = Brushes.Black;
 
+        }
+
+        private void CadDot_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            //this.Point.Select = true;
+        }
+
+
+
+        private void Point_Selected(object sender, bool e)
+        {
+            this.IsSelected = e;
         }
 
         private void CadDot_Fixed(object sender, bool e)
@@ -56,43 +73,29 @@ namespace MonchaCadViewer.CanvasObj
 
         private void CadDot_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
         {
-            if (!this.WasMove)
+            if (this.WasMove == false)
             {
                 this.Render = this.IsSelected;
             }
 
         }
 
-        private void Point_ChangePoint(object sender, LPoint3D e)
+        private void CadDot_TranslateChanged(object sender, Rect e)
         {
-            if (!Translated)
+            if (Translated == false)
             {
-                Translated = true;
-                this.Translate.X = this.Point.GetMPoint.X - this.size / 2;
-                this.Translate.Y = this.Point.GetMPoint.Y - this.size / 2;
-                Translated = false;
+                this.Point.Set(this.X, this.Y);
             }
 
         }
 
-        private void Translate_Changed(object sender, System.EventArgs e)
+        private void Point_ChangePoint(object sender, LPoint3D e)
         {
-            if (!Translated)
-            {
-                Translated = true;
-                this.Point.Set(this.Translate.X + this.size / 2, this.Translate.Y + this.size / 2);
+            Translated = true;
+            this.X = this.Point.GetMPoint.X;
+            this.Y = this.Point.GetMPoint.Y;
+            Translated = false;
 
-                if (this.DataContext is MonchaDeviceMesh mesh)
-                {
-                    if (mesh.OnlyEdge)
-                        mesh.OnEdge();
-                    else
-                        mesh.MorphMesh(this.Point);
-                }
-
-                Translated = false;
-
-            }
         }
 
 

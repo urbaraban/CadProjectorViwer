@@ -6,6 +6,7 @@ using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using MonchaSDK.Object;
+using HelixToolkit.Wpf;
 
 namespace MonchaCadViewer.CanvasObj
 {

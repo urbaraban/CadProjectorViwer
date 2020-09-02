@@ -42,15 +42,15 @@ namespace MonchaCadViewer.CanvasObj
 
             basePoint.ChangePoint += BaseContextPoint_ChangePoint;
             secondPoint.ChangePoint += BaseContextPoint_ChangePoint;
-            this.Translate.Changed += Translate_Changed;
+            this.TranslateChanged += Translate_Changed;
 
             this.ContextMenuClosing += ContextMenu_Closed;
         }
 
-        private void Translate_Changed(object sender, System.EventArgs e)
+        private void Translate_Changed(object sender, Rect e)
         {
-            this.BasePoint.Set(this._rectg.Bounds.TopLeft);
-            this.SecondPoint.Set(this._rectg.Bounds.BottomRight);
+            this.BasePoint.Set(e.TopLeft);
+            this.SecondPoint.Set(e.BottomRight);
         }
 
         private void BaseContextPoint_ChangePoint(object sender, LPoint3D e)

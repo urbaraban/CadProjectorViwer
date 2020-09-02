@@ -5,18 +5,34 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Shapes;
 using System.Windows.Documents;
-using PropertyTools.DataAnnotations;
-
+using System.ComponentModel;
+using System.Runtime.CompilerServices;
+using System.Windows.Media.Media3D;
 
 namespace MonchaCadViewer.CanvasObj
 {
-    public class CadObject : Shape
+    public abstract class CadObject : Shape, INotifyPropertyChanged
     {
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        public void OnPropertyChanged([CallerMemberName] string prop = "")
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(prop));
+        }
+
+
         private bool _isfix = false;
         private bool _mirror = false;
+        private bool _render = true;
+        private RotateTransform _rotate = new RotateTransform();
+        private TranslateTransform _translate = new TranslateTransform();
+        private ScaleTransform _scale = new ScaleTransform();
+        private bool _isselected = false;
 
         //Event
         public event EventHandler<CadObject> Selected;
+        public event EventHandler<Rect> TranslateChanged;
         public event EventHandler<bool> Fixed;
         public event EventHandler<CadObject> Updated;
         public event EventHandler<CadObject> Removed;
@@ -31,43 +47,168 @@ namespace MonchaCadViewer.CanvasObj
             set
             {
                 this._mirror = value;
-                this.Scale.CenterX = this.GmtrObj.Bounds.X - this.Translate.X + this.GmtrObj.Bounds.Width / 2;
-                this.Scale.CenterY = this.GmtrObj.Bounds.Y - this.Translate.Y + this.GmtrObj.Bounds.Height / 2;
-                if (this._mirror && this.Scale.ScaleX > 0)
+                OnPropertyChanged("Mirror");
+                this.CenterX = this.GmtrObj.Bounds.X - this._translate.X + this.GmtrObj.Bounds.Width / 2;
+                this.CenterY = this.GmtrObj.Bounds.Y - this._translate.Y + this.GmtrObj.Bounds.Height / 2;
+                if (this._mirror && this.ScaleX > 0)
                 {
-                    this.Scale.ScaleX = -this.Scale.ScaleX;
+                    this.ScaleX = -this.ScaleX;
                 }
-                else if (this._mirror == false && this.Scale.ScaleX < 0)
+                else if (this._mirror == false && this.ScaleX < 0)
                 {
-                    this.Scale.ScaleX = -this.Scale.ScaleX;
+                    this.ScaleX = -this.ScaleX;
                 }
-
+                this.Updated?.Invoke(this, this);
 
             }
         }
-        public double Angle { get; set; } = 0;
 
-        public bool IsSelected { get; set; } = false;
+        public bool IsSelected 
+        {
+            get => this._isselected;
+            set
+            {
+                this._isselected = value;
+                Selected?.Invoke(this, this);
+                OnPropertyChanged("IsSelected");
+            }
+        }
 
         protected Point MousePos = new Point();
         protected Point BasePos = new Point();
 
         public TransformGroup Transform = new TransformGroup();
-        public TranslateTransform Translate = new TranslateTransform();
-        public RotateTransform Rotate = new RotateTransform();
-        public ScaleTransform Scale = new ScaleTransform();
+        public double X
+        {
+            get => this._translate.X;
+            set
+            {
+                if (this.IsFix == false)
+                {
+                    this._translate.X = value;
+                    OnPropertyChanged("X");
+                    TranslateChanged?.Invoke(this, this.GmtrObj.Bounds);
+                    if (this.Render == true)
+                    {
+                        Updated?.Invoke(this, this);
+                    }
+                }
+            }
+        }
+
+        public double Y
+        {
+            get => this._translate.Y;
+            set
+            {
+                if (this.IsFix == false)
+                {
+                    this._translate.Y = value;
+                    OnPropertyChanged("Y");
+                    TranslateChanged?.Invoke(this, this.GmtrObj.Bounds);
+                    if (this.Render == true)
+                    {
+                        Updated?.Invoke(this, this);
+                    }
+                }
+            }
+        }
+
+        public double Angle
+        {
+            get => this._rotate.Angle;
+            set
+            {
+                this._rotate.Angle = value;
+                OnPropertyChanged("Angle");
+                if (this.Render == true)
+                {
+                    Updated?.Invoke(this, this);
+                }
+            }
+        }
+
+        public double ScaleX
+        {
+            get => this._scale.ScaleX;
+            set
+            {
+                this._scale.ScaleX = value;
+                OnPropertyChanged("ScaleX");
+                if (this.Render == true)
+                {
+                    Updated?.Invoke(this, this);
+                }
+            }
+        }
+
+        public double ScaleY
+        {
+            get => this._scale.ScaleY;
+            set
+            {
+                this._scale.ScaleY = value;
+                OnPropertyChanged("ScaleY");
+                if (this.Render == true)
+                {
+                    Updated?.Invoke(this, this);
+                }
+            }
+        }
+
+        public double CenterX
+        {
+            get => this._scale.CenterX;
+            set
+            {
+                this._scale.CenterX = value;
+                OnPropertyChanged("CenterX");
+                if (this.Render == true)
+                {
+                    Updated?.Invoke(this, this);
+                }
+            }
+        }
+
+        public double CenterY
+        {
+            get => this._scale.CenterY;
+            set
+            {
+                this._scale.CenterY = value;
+                OnPropertyChanged("CenterY");
+                if (this.Render == true)
+                {
+                    Updated?.Invoke(this, this);
+                }
+            }
+        }
 
         protected override Geometry DefiningGeometry => GmtrObj;
 
-        public bool Render { get; set; } = true;
-        
-        public bool IsFix { get => _isfix; set => Fixing(value); }
-
-        private void Fixing(bool stat)
+        public bool Render
         {
-            this._isfix = stat;
-            if (Fixed != null)
-                Fixed(this, stat);
+            get => this._render;
+            set
+            {
+                this._render = value;
+                OnPropertyChanged("Render");
+                this.Updated?.Invoke(this, this);
+            }
+        }
+        
+        public bool IsFix { get => _isfix; 
+            set 
+            {
+                this._isfix = value;
+                OnPropertyChanged("IsFix");
+                if (Fixed != null)
+                    Fixed(this, value);
+                if (this.Render == true)
+                {
+                    Updated?.Invoke(this, this);
+                }
+            } 
         }
 
         public bool WasMove { get; set; } = false;
@@ -87,6 +228,8 @@ namespace MonchaCadViewer.CanvasObj
         {
             this.GmtrObj = Path;
 
+            this.PropertyChanged += CadObject_PropertyChanged;
+
             if (mouseevent || move)
             {
                 this.MouseLeave += CadObject_MouseLeave;
@@ -101,47 +244,26 @@ namespace MonchaCadViewer.CanvasObj
             ContextMenuLib.CadObjMenu(this.ContextMenu);
             this.MouseForce = move;
 
-            if (!(this.GmtrObj.Transform is TransformGroup))
-            {
-                TransformGroup tempTransform = new TransformGroup();
-                TranslateTransform Translate = new TranslateTransform();
-                RotateTransform Rotate = new RotateTransform();
-                ScaleTransform Scale = new ScaleTransform();
-                tempTransform.Children.Add(Scale);
-                tempTransform.Children.Add(Rotate);
-                tempTransform.Children.Add(Translate);
-                this.GmtrObj.Transform = tempTransform;
-               
+            if (this.GmtrObj.Transform is TransformGroup transformGroup) {
+                this.Transform = transformGroup;
+                this._translate = (TranslateTransform)this.Transform.Children[2];
+                this._rotate = (RotateTransform)this.Transform.Children[1];
+                this._scale = (ScaleTransform)this.Transform.Children[0];
             }
-
-            this.Transform = this.GmtrObj.Transform as TransformGroup;
-            this.Translate = (TranslateTransform)this.Transform.Children[2];
-            this.Rotate = (RotateTransform)this.Transform.Children[1];
-            this.Scale = (ScaleTransform)this.Transform.Children[0];
+            else
+            {
+                this.GmtrObj.Transform = new TransformGroup();
+                this.Transform = (TransformGroup)this.GmtrObj.Transform;
+                this._scale = new ScaleTransform();
+                this.Transform.Children.Add(this._scale);
+                this._rotate = new RotateTransform();
+                this.Transform.Children.Add(this._rotate);
+                this._translate = new TranslateTransform();
+                this.Transform.Children.Add(this._translate);
+            }
         }
 
-
-        private void ContextMenu_Closing(object sender, RoutedEventArgs e)
-        {
-
-        }
-
-        private void CadObject_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
-        {
-            Canvas canvas = this.Parent as Canvas;
-            this.MousePos = e.GetPosition(canvas);
-            this.BasePos = new Point(this.Translate.X, this.Translate.Y);
-        }
-
-        private void CadObject_MouseLeave(object sender, System.Windows.Input.MouseEventArgs e)
-        {
-            this.WasMove = false;
-            if (Updated != null)
-                Updated(this, this);
-            this.StatColorSelect();
-        }
-
-        public void StatColorSelect()
+        private void CadObject_PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
             if (this.Fill == null) this.Fill = Brushes.Gray;
 
@@ -170,9 +292,25 @@ namespace MonchaCadViewer.CanvasObj
                 if (this.Fill != Brushes.Transparent && this.Fill != null) this.Fill = Brushes.Gray;
                 if (this.Stroke != null) this.Stroke = Brushes.Blue;
             }
+        }
 
-            if (Updated != null)
-                Updated(this, this);
+        private void ContextMenu_Closing(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void CadObject_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            Canvas canvas = this.Parent as Canvas;
+            this.MousePos = e.GetPosition(canvas);
+            this.BasePos = new Point(this._translate.X, this._translate.Y);
+        }
+
+        private void CadObject_MouseLeave(object sender, System.Windows.Input.MouseEventArgs e)
+        {
+            OnPropertyChanged("MouseLeave");
+
+            this.WasMove = false;
         }
 
         private void CadObject_MouseLeftButtonUp(object sender, System.Windows.Input.MouseButtonEventArgs e)
@@ -231,36 +369,30 @@ namespace MonchaCadViewer.CanvasObj
 
         private void CadObject_MouseMove(object sender, MouseEventArgs e)
         {
-            StatColorSelect();
+            OnPropertyChanged("MouseMove");
 
-            CadCanvas canvas = this.Parent as CadCanvas;
-
-            if ((e.LeftButton == MouseButtonState.Pressed && canvas.Status == 0) || MouseForce)
+            if (this.IsFix == false)
             {
-                this.WasMove = true;
-                this.Editing = true;
+                CadCanvas canvas = this.Parent as CadCanvas;
 
-                Point tPoint = e.GetPosition(canvas);
+                if ((e.LeftButton == MouseButtonState.Pressed && canvas.Status == 0) || MouseForce)
+                {
+                    this.WasMove = true;
+                    this.Editing = true;
 
-                Translate.X = this.BasePos.X + (tPoint.X - this.MousePos.X);
-                Translate.Y = this.BasePos.Y + (tPoint.Y - this.MousePos.Y);
+                    Point tPoint = e.GetPosition(canvas);
 
-                this.CaptureMouse();
-                this.Cursor = Cursors.SizeAll;
+                    this.X = this.BasePos.X + (tPoint.X - this.MousePos.X);
+                    this.Y = this.BasePos.Y + (tPoint.Y - this.MousePos.Y);
+
+                    this.CaptureMouse();
+                    this.Cursor = Cursors.SizeAll;
+                }
+                else
+                {
+                    this.Cursor = Cursors.Hand;
+                }
             }
-            else
-            {
-                this.Cursor = Cursors.Hand;
-            }
-
-            if (Updated != null)
-                Updated(this, this);
-        }
-
-        public void Update()
-        {
-            if (Updated != null)
-                Updated(this, this);
         }
     }
 }

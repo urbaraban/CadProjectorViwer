@@ -11,9 +11,9 @@ using System.Windows.Media;
 
 namespace MonchaCadViewer.CanvasObj
 {
-    class CadContour : CadObject
+    public class CadContour : CadObject
     {
-        public double CRS => ReadyFrame.CRS.MX / Math.Max(this.Scale.ScaleX, this.Scale.ScaleY);
+        public double CRS => ReadyFrame.CRS.MX; // / Math.Max(this.ScaleX, this.ScaleY);
 
         private bool _maincanvas;
         private AdornerContourFrame adornerContour;
@@ -42,7 +42,7 @@ namespace MonchaCadViewer.CanvasObj
 
         private void CadContour_MouseWheel(object sender, MouseWheelEventArgs e)
         {
-            this.Rotate.Angle += Math.Abs(e.Delta)/e.Delta * (Keyboard.Modifiers == ModifierKeys.Shift ? 1 : 5);
+            this.Angle += Math.Abs(e.Delta)/e.Delta * (Keyboard.Modifiers == ModifierKeys.Shift ? 1 : 5);
         }
 
 
@@ -83,7 +83,7 @@ namespace MonchaCadViewer.CanvasObj
 
                 adornerLayer.Add(this.ObjAdorner);
                 this.adornerContour = this.ObjAdorner as AdornerContourFrame;
-                this.adornerContour.Rotation = this.Rotate;
+                //this.adornerContour.Rotation = this.Rotate;
             }
         }
 

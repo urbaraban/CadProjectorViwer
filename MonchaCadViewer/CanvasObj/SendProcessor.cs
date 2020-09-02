@@ -49,9 +49,9 @@ namespace MonchaCadViewer.CanvasObj
 
             LObject lObject = new LObject();
             lObject.Add(new LPoint3D(device.TBOP.X * MonchaHub.Size.X, device.TBOP.Y * MonchaHub.Size.Y, 0, 1));
-            lObject.Add(new LPoint3D(device.TTOP.X * MonchaHub.Size.X, device.TBOP.Y * MonchaHub.Size.Y, 0, 1));
-            lObject.Add(new LPoint3D(device.TTOP.X * MonchaHub.Size.X, device.TTOP.Y * MonchaHub.Size.Y, 0, 1));
-            lObject.Add(new LPoint3D(device.TBOP.X * MonchaHub.Size.X, device.TTOP.Y * MonchaHub.Size.Y, 0, 1));
+            lObject.Add(new LPoint3D(device.TTOP.X * MonchaHub.Size.X * 0.99, device.TBOP.Y * MonchaHub.Size.Y, 0, 1));
+            lObject.Add(new LPoint3D(device.TTOP.X * MonchaHub.Size.X * 0.99, device.TTOP.Y * MonchaHub.Size.Y * 0.99, 0, 1));
+            lObject.Add(new LPoint3D(device.TBOP.X * MonchaHub.Size.X * 0.99, device.TTOP.Y * MonchaHub.Size.Y, 0, 1));
             lObject.Closed = true;
 
             tempList.Add(lObject);
@@ -72,12 +72,10 @@ namespace MonchaCadViewer.CanvasObj
             switch (cadObject.GetType().FullName)
             {
                 case "MonchaCadViewer.CanvasObj.CadDot":
-                    lObjectList.Add(new LObject(new LPoint3D(cadObject.Translate.X, cadObject.Translate.Y)));
-                    Console.WriteLine("Snd " + cadObject.Translate.X + " " + cadObject.Translate.Y);
+                    lObjectList.Add(new LObject(new LPoint3D(cadObject.X, cadObject.Y)));
                     break;
                 case "MonchaCadViewer.CanvasObj.CadContour":
-                    CadContour cadContour = cadObject as CadContour;
-                    lObjectList.AddRange(CalcContour(cadObject.GmtrObj, cadContour.CRS));
+                    lObjectList.AddRange(CalcContour(cadObject as CadContour));
                     break;
 
             }
@@ -88,19 +86,17 @@ namespace MonchaCadViewer.CanvasObj
 
 
         }
-        public static LObjectList CalcContour(Geometry pg, double CRS)
+        public static LObjectList CalcContour(CadContour cadContour)
         {
             LObjectList PathList = new LObjectList();
 
-           TransformGroup transformGroup = pg.Transform as TransformGroup;
-               TranslateTransform Translate = (TranslateTransform)transformGroup.Children[2];
-                RotateTransform Rotate = (RotateTransform)transformGroup.Children[1];
-                ScaleTransform Scale = (ScaleTransform)transformGroup.Children[0];
 
-            switch (pg.GetType().FullName)
+           TransformGroup transformGroup = cadContour.GmtrObj.Transform as TransformGroup;
+
+            switch (cadContour.GmtrObj.GetType().FullName)
             {
                 case "System.Windows.Media.RectangleGeometry":
-                    RectangleGeometry rectangleGeometry = (RectangleGeometry)pg;
+                    RectangleGeometry rectangleGeometry = (RectangleGeometry)cadContour.GmtrObj;
                     LObject RectangleObject = new LObject();
                     RectangleObject.Closed = true;
                     RectangleObject.Add(new LPoint3D(rectangleGeometry.Rect.X, rectangleGeometry.Rect.Y));
@@ -109,7 +105,7 @@ namespace MonchaCadViewer.CanvasObj
 
                     break;
                 case "System.Windows.Media.PathGeometry":
-                    pathfigurecalc(pg as PathGeometry);
+                    pathfigurecalc(cadContour.GmtrObj as PathGeometry);
                     break;
             }
 
@@ -120,9 +116,11 @@ namespace MonchaCadViewer.CanvasObj
                     LObject lObject = new LObject();
                     lObject.Closed = figure.IsClosed;
 
-                    lObject.Add(new LPoint3D(figure.StartPoint));
+                    lObject.Add(
+                        new LPoint3D(
+                            TransPoint(figure.StartPoint)));
 
-                    Point LastPoint = figure.StartPoint;
+                    Point LastPoint = TransPoint(figure.StartPoint);
 
                     if (figure.Segments.Count > 0)
                     {
@@ -132,31 +130,39 @@ namespace MonchaCadViewer.CanvasObj
                             {
                                 case "System.Windows.Media.BezierSegment":
                                     System.Windows.Media.BezierSegment bezierSegment = (System.Windows.Media.BezierSegment)segment;
-                                    lObject.AddRange(BezieByStep(LastPoint, bezierSegment.Point1, bezierSegment.Point2, bezierSegment.Point3, CRS));
-                                    LastPoint = bezierSegment.Point3;
+                                    lObject.AddRange(
+                                        BezieByStep(
+                                            LastPoint, TransPoint(bezierSegment.Point1), TransPoint(bezierSegment.Point2), TransPoint(bezierSegment.Point3), cadContour.CRS));
+                                    LastPoint = TransPoint(bezierSegment.Point3);
                                     break;
                                 case "System.Windows.Media.PolyBezierSegment":
                                     System.Windows.Media.PolyBezierSegment polyBezierSegment = (System.Windows.Media.PolyBezierSegment)segment;
                                     for (int i = 0; i < polyBezierSegment.Points.Count - 2; i += 3)
                                     {
-                                        lObject.AddRange(BezieByStep(LastPoint, polyBezierSegment.Points[i], polyBezierSegment.Points[i + 3], polyBezierSegment.Points[i + 2], CRS));
-                                        LastPoint = polyBezierSegment.Points[i + 2];
+                                        lObject.AddRange(
+                                            BezieByStep(
+                                                LastPoint, TransPoint(polyBezierSegment.Points[i]), TransPoint(polyBezierSegment.Points[i + 3]), TransPoint(polyBezierSegment.Points[i + 2]), cadContour.CRS));
+                                        LastPoint = TransPoint(polyBezierSegment.Points[i + 2]);
                                     }
 
                                     break;
 
                                 case "System.Windows.Media.LineSegment":
                                     System.Windows.Media.LineSegment lineSegment = (System.Windows.Media.LineSegment)segment;
-                                    lObject.Add(new LPoint3D(lineSegment.Point));
-                                    LastPoint = lineSegment.Point;
+                                    lObject.Add(
+                                        new LPoint3D(
+                                            TransPoint(lineSegment.Point)));
+                                    LastPoint = TransPoint(lineSegment.Point);
                                     break;
 
                                 case "System.Windows.Media.PolyLineSegment":
                                     System.Windows.Media.PolyLineSegment polyLineSegment = (System.Windows.Media.PolyLineSegment)segment;
                                     for (int i = 0; i < polyLineSegment.Points.Count; i++)
                                     {
-                                        lObject.Add(new LPoint3D(polyLineSegment.Points[i]));
-                                        LastPoint = polyLineSegment.Points.Last();
+                                        lObject.Add(
+                                            new LPoint3D(
+                                                TransPoint(polyLineSegment.Points[i])));
+                                        LastPoint = TransPoint(polyLineSegment.Points.Last());
                                     }
                                     break;
 
@@ -164,35 +170,45 @@ namespace MonchaCadViewer.CanvasObj
                                     System.Windows.Media.PolyQuadraticBezierSegment polyQuadraticBezier = (System.Windows.Media.PolyQuadraticBezierSegment)segment;
                                     for (int i = 0; i < polyQuadraticBezier.Points.Count - 1; i += 2)
                                     {
-                                        lObject.AddRange(QBezierByStep(LastPoint, polyQuadraticBezier.Points[i], polyQuadraticBezier.Points[i + 1], CRS));
-                                        LastPoint = polyQuadraticBezier.Points[i + 1];
+                                        lObject.AddRange(
+                                            QBezierByStep(
+                                                LastPoint, TransPoint(polyQuadraticBezier.Points[i]), TransPoint(polyQuadraticBezier.Points[i + 1]), cadContour.CRS));
+                                        LastPoint = TransPoint(polyQuadraticBezier.Points[i + 1]);
                                     }
-
                                     break;
 
                                 case "System.Windows.Media.QuadraticBezierSegment":
                                     System.Windows.Media.QuadraticBezierSegment quadraticBezierSegment = (System.Windows.Media.QuadraticBezierSegment)segment;
-                                    lObject.AddRange(QBezierByStep(LastPoint, quadraticBezierSegment.Point1, quadraticBezierSegment.Point2, CRS));
-                                    LastPoint = quadraticBezierSegment.Point2;
+                                    lObject.AddRange(
+                                        QBezierByStep(
+                                            LastPoint, TransPoint(quadraticBezierSegment.Point1), TransPoint(quadraticBezierSegment.Point2), cadContour.CRS));
+                                    LastPoint = TransPoint(quadraticBezierSegment.Point2);
                                     break;
 
                                 case "System.Windows.Media.ArcSegment":
                                     System.Windows.Media.ArcSegment arcSegment = (System.Windows.Media.ArcSegment)segment;
-                                    lObject.AddRange(CircleByStep(LastPoint,
-                                        arcSegment.Point, arcSegment.Size.Width, arcSegment.SweepDirection, CRS, arcSegment.RotationAngle));
-                                    LastPoint = arcSegment.Point;
+                                    lObject.AddRange(
+                                        CircleByStep(
+                                            LastPoint, TransPoint(arcSegment.Point), arcSegment.Size.Width, arcSegment.SweepDirection, cadContour.CRS, arcSegment.RotationAngle));
+                                    LastPoint = TransPoint(arcSegment.Point);
 
                                     break;
                             }
                         }
                     }
                     if (lObject.Count > 0)
-                        PathList.Add(PointsMagic(lObject, pathGeometry));
+                        PathList.Add(lObject);
                 }
             }
             PathList.Optimize();
             Console.WriteLine("Count List " + PathList.GetOnlyPoints.Count);
             return PathList;
+
+            Point TransPoint(Point inPoint)
+            {
+                transformGroup.TryTransform(inPoint, out Point outPoint);
+                return outPoint;
+            }
         }
 
         public static LObject QBezierByStep (Point StartPoint, Point ControlPoint, Point EndPoint, double CRS)
@@ -263,9 +279,11 @@ namespace MonchaCadViewer.CanvasObj
 
         public static LObject CircleByStep(Point StartPoint, Point EndPoint, double radius, SweepDirection clockwise, double CRS, double Delta = 360)
         {
-            Delta = (Math.PI * 2 + Delta * Math.PI / 180 * (clockwise == SweepDirection.Clockwise ? -1 : 1)) % (Math.PI * 2); //to radian
+            Delta *= Math.PI / 180;
 
-            Point Center = GetCenterArc(StartPoint, EndPoint, radius, clockwise == SweepDirection.Clockwise, Delta > Math.PI);
+            //Delta = (Math.PI * 2 + Delta * (clockwise == SweepDirection.Clockwise ? -1 : 1)) % (Math.PI * 2); //to radian
+
+            Point Center = GetCenterArc(StartPoint, EndPoint, radius, clockwise == SweepDirection.Clockwise, Delta > Math.PI && clockwise == SweepDirection.Counterclockwise);
 
             if (Delta > Math.PI)
              Console.WriteLine("Cntr" + Center);
@@ -304,27 +322,6 @@ namespace MonchaCadViewer.CanvasObj
                     );
             }
 
-        }
-
-
-        public static LObject PointsMagic(LObject lObject, Geometry geometry)
-        {
-            if (geometry.Transform is TransformGroup transformGroup)
-            {
-                TranslateTransform Translate = (TranslateTransform)transformGroup.Children[2];
-                RotateTransform Rotate = (RotateTransform)transformGroup.Children[1];
-                ScaleTransform Scale = (ScaleTransform)transformGroup.Children[0];
-
-                foreach (LPoint3D lPoint3D in lObject)
-                {
-                    Point point = new Point();
-                    transformGroup.TryTransform(lPoint3D.GetMPoint, out point);
-                    lPoint3D.Set(point);
-                }
-                
-            }
-
-            return lObject;
         }
     }
 }

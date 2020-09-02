@@ -2,7 +2,6 @@
 using MonchaSDK.Device;
 using System;
 using System.Collections.Generic;
-using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -15,15 +14,16 @@ namespace MonchaCadViewer.CanvasObj
 {
     public class CadCanvas : Canvas
     {
-        static Dispatcher dispatcher = System.Windows.Application.Current.Dispatcher;
 
         public event EventHandler<CadObject> SelectedObject;
+        //public event EventHandler<string> ErrorMessageEvent;
 
         private LPoint3D _size;
         private List<CadDot> anchors = new List<CadDot>();
         private int _status = 0;
+        private bool _maincanvas;
 
-        public bool MorphMesh { get; set; } = true;
+        public bool InverseStep { get; set; } = true;
         public bool HorizontalMesh { get; set; } = false;
 
 
@@ -36,7 +36,8 @@ namespace MonchaCadViewer.CanvasObj
         public CadCanvas(LPoint3D Size, bool MainCanvas)
         {
             this._size = Size;
-            
+            this._maincanvas = MainCanvas;
+
             this.Name = "CCanvas";
             this.Background = Brushes.Transparent; //backBrush;
             this.Width = this._size.GetMPoint.X;
@@ -47,10 +48,9 @@ namespace MonchaCadViewer.CanvasObj
             this._size.M.ChangePoint += _size_ChangePoint;
 
             this.Focusable = true;
-
-            if (MainCanvas)
+            this.KeyUp += Canvas_KeyUp;
+            if (this._maincanvas)
             {
-                this.KeyUp += Canvas_KeyUp;
                 this.MouseLeftButtonDown += Canvas_MouseLeftDown;
                 MonchaHub.NeedUpdateFrame += MonchaHub_NeedUpdateFrame;
             }
@@ -61,7 +61,9 @@ namespace MonchaCadViewer.CanvasObj
 
         private void MonchaHub_NeedUpdateFrame(object sender, bool e)
         {
-            SendProcessor.Worker(this);
+            Console.WriteLine("NeedUpdate");
+            if (this._maincanvas)
+                SendProcessor.Worker(this);
         }
 
         private void MonchaHub_ChangeSize(object sender, LPoint3D e)
@@ -99,7 +101,7 @@ namespace MonchaCadViewer.CanvasObj
 
                 if (!add)
                 {
-                    this.Children.Clear();
+                    this.Clear();
                 }
 
                 LPoint3D Center = new LPoint3D(0.5, 0.5, 0);
@@ -107,17 +109,25 @@ namespace MonchaCadViewer.CanvasObj
 
                 CadContour polygon = new CadContour(_innerList, maincanvas, mousemove);
                 polygon.OnBaseMesh = false;
+                polygon.Updated += Object_Updated;
                 this.Add(polygon);
 
-                SendProcessor.Worker(this);
+                if (this._maincanvas)
+                    SendProcessor.Worker(this);
             }
         }
 
-
+        private void Object_Updated(object sender, CadObject e)
+        {
+            if (this._maincanvas)
+                SendProcessor.Worker(this);
+        }
 
         private void Obj_Updated(object sender, CadObject e)
         {
-            SendProcessor.Worker(this);
+            Console.WriteLine("UpdateObj");
+            if (this._maincanvas)
+                SendProcessor.Worker(this);
         }
 
         public void DrawRectangle(LPoint3D point1, LPoint3D point2)
@@ -163,25 +173,6 @@ namespace MonchaCadViewer.CanvasObj
 
         }
 
-        public async void UnselectAll(CadObject SelectObj = null)
-        {
-            try
-            {
-                foreach (CadObject cadObject in this.Children)
-                    await Task.Run(() =>
-                    {
-                        if (cadObject != SelectObj)
-                        {
-                            cadObject.IsSelected = false;
-                        }
-                    });
-            }
-            catch (Exception e) 
-            {
-                Console.WriteLine(e.Message);
-            };
-
-        }
 
         public CadDot[,] GetMeshDot(int Height, int Width)
         {
@@ -218,29 +209,21 @@ namespace MonchaCadViewer.CanvasObj
                         CadDot dot = new CadDot(
                              mesh[i, j],
                             this.ActualWidth * 0.02,
-                            //multiplier
-
                             //calibration flag
-                            true,
-                            false);
-                        dot.IsFix = false; // !mesh.OnlyEdge;
+                            true, false);
 
+                        dot.IsFix = false; // !mesh.OnlyEdge;
                         dot.StrokeThickness = 0;
                         dot.Uid = i.ToString() + ":" + j.ToString();
                         dot.ToolTip = "Позиция: " + i + ":" + j + "\nX: " + mesh[i, j].X + "\n" + "Y: " + mesh[i, j].Y;
                         dot.DataContext = mesh;
                         dot.OnBaseMesh = !mesh.OnlyEdge;
                         dot.Render = false;
-                        dot.StatColorSelect();;
+                        dot.Updated += Object_Updated;
                         this.Add(dot);
                     }
 
             }
-        }
-
-        private void Dot_Updated(object sender, CadObject e)
-        {
-            SendProcessor.Worker(this);
         }
 
         public void Clear()
@@ -250,7 +233,7 @@ namespace MonchaCadViewer.CanvasObj
                 cadObject.Updated -= Obj_Updated;
                 cadObject.Selected -= Obj_Selected;
             }
-            SelectedObject(this, null);
+            SelectedObject?.Invoke(this, null);
             this.Children.Clear();
         }
 
@@ -263,10 +246,7 @@ namespace MonchaCadViewer.CanvasObj
 
         private void Obj_Selected(object sender, CadObject e)
         {
-            if (this.SelectedObject != null)
-                this.SelectedObject(this, e);
-
-            this.UnselectAll(e);
+            this.SelectedObject?.Invoke(this, e);
         }
     }
 }

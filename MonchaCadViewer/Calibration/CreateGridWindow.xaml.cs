@@ -44,7 +44,7 @@ namespace MonchaCadViewer
                 WidthUpDn.Value = Width;
                 HeightUpDn.Value = Height;
 
-                this._mesh.Points = MonchaDeviceMesh.MakeMeshPoint(Height, Width);
+                this._mesh = new MonchaDeviceMesh(MonchaDeviceMesh.MakeMeshPoint(Height, Width), this._mesh.Name);
             }
         }
 

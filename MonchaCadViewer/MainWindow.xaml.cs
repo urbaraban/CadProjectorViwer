@@ -21,7 +21,9 @@ using MonchaSDK.Device;
 using MonchaSDK.Object;
 using KompasLib.KompasTool;
 using ToGeometryConverter.Format;
-using MonchaCadViewer.DeviceManager;
+using HelixToolkit.Wpf;
+using System.Windows.Shapes;
+using System.Windows.Media.Media3D;
 
 namespace MonchaCadViewer
 {
@@ -49,12 +51,44 @@ namespace MonchaCadViewer
             CanvasBoxBorder.BorderThickness = new Thickness(MonchaHub.GetThinkess());
             CadCanvas cadCanvas = new CadCanvas(MonchaHub.Size, true);
             cadCanvas.Focusable = true;
-
             cadCanvas.SelectedObject += CadCanvas_SelectedObject;
+            cadCanvas.ContextMenu = new ContextMenu();
+            ContextMenuLib.CanvasMenu(cadCanvas.ContextMenu);
+            cadCanvas.ContextMenuClosing += CadCanvas_ContextMenuClosing;
+            //cadCanvas.ErrorMessageEvent += CadCanvas_ErrorMessageEvent;
 
             CanvasBox.Child = cadCanvas;
         }
 
+        private void CadCanvas_ErrorMessageEvent(object sender, string e)
+        {
+            LogBox.Items.Add(e);
+        }
+
+        private void CadCanvas_ContextMenuClosing(object sender, ContextMenuEventArgs e)
+        {
+            if (sender is CadCanvas canvas)
+            {
+                if (canvas.ContextMenu.DataContext is MenuItem cmindex)
+                {
+                    switch (cmindex.Header)
+                    {
+                        case "Freeze All":
+                            foreach(CadObject cadObject in canvas.Children)
+                            {
+                                cadObject.IsFix = true;
+                            }
+                            break;
+                        case "Unselect All":
+                            foreach (CadObject cadObject in canvas.Children)
+                            {
+                                cadObject.IsSelected = false;
+                            }
+                            break;
+                    }
+                }
+            }
+        }
 
         private void MonchaHub_UpdatedFrame(object sender, LObjectList e)
         {
@@ -368,6 +402,14 @@ namespace MonchaCadViewer
                                     deviceMesh = mws.GetMeshDot(device2.HWIdentifier, deviceMesh.Name);
                                 }
                             break;
+                        case "Inverse":
+                            if (sender is TreeViewItem meshTree3 &&
+                                meshTree3.Parent is TreeViewItem DeviceTree3)
+                                if (DeviceTree3.DataContext is MonchaDevice device3 && meshTree3.DataContext is MonchaDeviceMesh deviceMesh)
+                                {
+                                    deviceMesh.InverseYPosition();
+                                }
+                            break;
                     }
                 }
             }
@@ -545,8 +587,9 @@ namespace MonchaCadViewer
                 _viewbox.Stretch = Stretch.Uniform;
                 _viewbox.StretchDirection = StretchDirection.DownOnly;
                 _viewbox.Margin = new Thickness(0);
-                _viewbox.DataContext = frame;
+                _viewbox.DataContext = new CadContour(frame, false, false);
                 _viewbox.ClipToBounds = true;
+            _viewbox.Cursor = Cursors.Hand;
                 _viewbox.MouseLeftButtonUp += DrawTreeContour;
                 _viewbox.MouseRightButtonUp += _viewbox_MouseRightButtonUp;
 
@@ -575,6 +618,20 @@ namespace MonchaCadViewer
 
                 if (show && CanvasBox.Child is CadCanvas canvas) 
                     canvas.DrawContour(frame, true, false, true);
+
+
+                
+
+        LinesVisual3D linesVisual3D = new LinesVisual3D();
+            linesVisual3D.Color = Color.FromRgb(255, 0, 0);
+            linesVisual3D.Thickness = 1;
+            linesVisual3D.Points.Add(new Point3D(0, 0, 0));
+            linesVisual3D.Points.Add(new Point3D(2, 2, 2));
+            linesVisual3D.Points.Add(new Point3D(7, 0, 2));
+            linesVisual3D.Points.Add(new Point3D(4, 2, 2));
+
+            HelixCanvas.Children.Add(linesVisual3D);
+
             
         }
 
@@ -582,20 +639,15 @@ namespace MonchaCadViewer
         {
             if (sender is Viewbox viewItem)
             {
-                if (viewItem.DataContext is PathGeometry CadObj && CanvasBox.Child is CadCanvas canvas)
+                if (viewItem.DataContext is CadObject CadObj)
                 {
-                    TransformGroup tempTransform = CadObj.Transform as TransformGroup;
-                    TranslateTransform Translate = tempTransform.Children[2] as TranslateTransform;
-                    RotateTransform Rotate = tempTransform.Children[1] as RotateTransform;
-                    ScaleTransform Scale = tempTransform.Children[0] as ScaleTransform;
+                    CadObj.Angle = 0;
 
-                    Rotate.Angle = 0;
+                    CadObj.ScaleX = 1;
+                    CadObj.ScaleY = 1;
 
-                    Scale.ScaleX = 1;
-                    Scale.ScaleY = 1;
-
-                    Translate.X = MonchaHub.Size.GetMPoint.X / 2 - (CadObj.Bounds.X - Translate.X + CadObj.Bounds.Width / 2 );
-                    Translate.Y = MonchaHub.Size.GetMPoint.Y / 2 - (CadObj.Bounds.Y - Translate.Y + CadObj.Bounds.Height / 2);
+                    CadObj.X = MonchaHub.Size.GetMPoint.X / 2 - (CadObj.Bounds.X - CadObj.X + CadObj.Bounds.Width / 2 );
+                    CadObj.Y = MonchaHub.Size.GetMPoint.Y / 2 - (CadObj.Bounds.Y - CadObj.Y + CadObj.Bounds.Height / 2);
                 }
             }
         }
@@ -612,8 +664,8 @@ namespace MonchaCadViewer
             if (sender is Viewbox viewbox)
             {
                 //_selectedindex = FrameStack.Children.IndexOf(viewbox.Parent as Border);
-                if (viewbox.DataContext is PathGeometry tempList && CanvasBox.Child is CadCanvas canvas)
-                    canvas.DrawContour(tempList, true, Keyboard.Modifiers == ModifierKeys.Shift, true);
+                if (viewbox.DataContext is CadContour contour && CanvasBox.Child is CadCanvas canvas)
+                    canvas.DrawContour((PathGeometry)contour.GmtrObj, true, Keyboard.Modifiers == ModifierKeys.Shift, true);
             }
         }
 
@@ -703,13 +755,6 @@ namespace MonchaCadViewer
             if (DeviceCombo.SelectedIndex == -1) DeviceCombo.SelectedIndex = 0;
         }
 
-        private void MorphToggle_Toggled(object sender, RoutedEventArgs e)
-        {
-            if (this.IsLoaded)
-                if (CanvasBox.Child is CadCanvas cadCanvas)
-                    cadCanvas.MorphMesh = MorphToggle.IsOn;
-        }
-
         private void HorizontalToggle_Toggled(object sender, RoutedEventArgs e)
         {
             if (this.IsLoaded)
@@ -737,14 +782,22 @@ namespace MonchaCadViewer
                 {
                     kmpsAppl.ConnectBoolEvent += KmpsAppl_ConnectBoolEvent;
 
+                    kmpsAppl.OpenedDoc += KmpsAppl_OpenedDoc;
+
                     kmpsConnectToggle.IsOn = KmpsAppl.KompasAPI != null;
 
                     kmpsAppl.SelectDoc();
+
                 }
 
             }
         }
 
+        private void KmpsAppl_OpenedDoc(object sender, object e)
+        {
+            if (e is KmpsDoc kmpsDoc)
+            KmpsNameLbl.Content = kmpsDoc.D7.Name;
+        }
 
         private void KmpsAppl_ChangeDoc(object sender, KmpsDoc e)
         {
@@ -771,7 +824,7 @@ namespace MonchaCadViewer
         {
             if (KmpsAppl.KompasAPI != null)
             {
-                PathGeometry lObjectList = ContourCalc.GetPoint(this.kmpsAppl.Doc, ReadyFrame.CRS.MX, false, true);
+                PathGeometry lObjectList = Tools.MakeTransform(ContourCalc.GetGeometry(this.kmpsAppl.Doc, ReadyFrame.CRS.MX, false, true));
                 ContourProcessor(false, lObjectList);
             }
 
@@ -781,7 +834,7 @@ namespace MonchaCadViewer
         {
             if (KmpsAppl.KompasAPI != null)
             {
-                PathGeometry lObjectList = ContourCalc.GetPoint(this.kmpsAppl.Doc, ReadyFrame.CRS.MX, true, true);
+                PathGeometry lObjectList = Tools.MakeTransform(ContourCalc.GetGeometry(this.kmpsAppl.Doc, ReadyFrame.CRS.MX, true, true));
                 ContourProcessor(false, lObjectList);
             }
         }
@@ -815,8 +868,16 @@ namespace MonchaCadViewer
                     MoveCanvasSet(step * _mult, 0);
                     break;
                 case Key.F:
-                    FixSelect();
+                    MirrorPosition();
                     break;
+                case Key.OemPlus:
+                    MirrorPosition();
+                    break;
+
+            }
+
+            void DeviceBright()
+            {
 
             }
 
@@ -833,15 +894,22 @@ namespace MonchaCadViewer
                                 cadObject.IsFix = true;
                                 cadObject.IsSelected = false;
                                 cadObject.Render = false;
-                                cadObject.StatColorSelect();
-                                if (i + 1 < canvas.Children.Count)
-                                    if (canvas.Children[i + 1] is CadObject cadObject2)
+
+                                try
+                                {
+                                    if (canvas.Children[i + (InverseToggle.IsOn ? -1 : +1)] is CadObject cadObject2)
                                     {
                                         cadObject2.IsSelected = true;
                                         cadObject2.IsFix = false;
                                         cadObject2.Render = true;
-                                        cadObject2.StatColorSelect();
                                     }
+                                }
+                                catch (Exception exeption)
+                                {
+                                    LogBox.Items.Add($"Main: {exeption.Message}");
+                                    InverseToggle.IsOn = !InverseToggle.IsOn;
+                                    cadObject.IsSelected = true;
+                                }
                                 break;
                             }
                         }
@@ -859,26 +927,29 @@ namespace MonchaCadViewer
                         {
                             if (cadObject.IsSelected  && !cadObject.IsFix)
                             {
-                                cadObject.Translate.X += left;
-                                cadObject.Translate.Y += top;
-                                Console.WriteLine(cadObject.Translate.X + " " + cadObject.Translate.Y);
+                                cadObject.X += left;
+                                cadObject.Y += top;
                             }
                         }
                     }
                 }
             }
 
-            void FixSelect()
+            void MirrorPosition()
             {
                 if (CanvasBox.Child is CadCanvas canvas)
                 {
                     for (int i = 0; i < canvas.Children.Count; i++)
                     {
-                        if (canvas.Children[i] is CadObject cadObject)
+                        if (canvas.Children[i] is CadObject cadObject1)
                         {
-                            if (cadObject.IsSelected)
+                            if (cadObject1.IsSelected)
                             {
-                                cadObject.IsFix = !cadObject.IsFix;
+                               if (cadObject1.DataContext is MonchaDeviceMesh deviceMesh && cadObject1 is CadDot dot)
+                                {
+                                    deviceMesh.MirrorPoint(dot.Point);
+                                    return;
+                                }
                             }
                         }
                     }
@@ -1104,6 +1175,28 @@ namespace MonchaCadViewer
             if (LaserMetersCombo.SelectedItem is VLTLaserMeters laserMeters)
             {
                 laserMeters.Turn(LaserMeterToggle.IsOn);
+            }
+        }
+
+        private void Helix_Loaded(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void PointStepUpDn_ValueDecremented(object sender, NumericUpDownChangedRoutedEventArgs args)
+        {
+            if ((Math.Round(PointStepUpDn.Value.Value, 4) - PointStepUpDn.Interval) == 0)
+            {
+                PointStepUpDn.Interval = PointStepUpDn.Interval / 10;
+                args.Interval = args.Interval / 10;
+            }
+        }
+
+        private void PointStepUpDn_ValueIncremented(object sender, NumericUpDownChangedRoutedEventArgs args)
+        {
+            if (Math.Round(PointStepUpDn.Value.Value + PointStepUpDn.Interval, 4) >= PointStepUpDn.Interval * 10)
+            {
+                PointStepUpDn.Interval = PointStepUpDn.Interval * 10;
             }
         }
     }

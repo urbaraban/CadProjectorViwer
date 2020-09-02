@@ -6,6 +6,7 @@
         xmlns:ur="clr-namespace:MonchaCadViewer.ToolsPanel"
         xmlns:local="clr-namespace:MonchaCadViewer"
         xmlns:Controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
+        xmlns:HelixToolkit="clr-namespace:HelixToolkit.Wpf;assembly=HelixToolkit.Wpf"
         xmlns:Properties="clr-namespace:MonchaCadViewer.Properties" xmlns:controlzex="urn:controlzex"
     xmlns:pt="http://propertytools.org/wpf" xmlns:c="clr-namespace:CalcBinding;assembly=CalcBinding" x:Name="MainWindow1" x:Class="MonchaCadViewer.MainWindow"
         mc:Ignorable="d"
@@ -185,17 +186,42 @@
                             <RowDefinition Height="105"/>
                         </Grid.RowDefinitions>
                         <DockPanel DockPanel.Dock="Top">
-                            <Border x:Name="CanvasBorder" Style="{StaticResource Border}" Background="LightGray" Grid.Column="1" Grid.Row="2" Margin="0" Grid.RowSpan="2">
-                                <Viewbox x:Name="MainViewBox" ClipToBounds="True" StretchDirection="DownOnly"  Stretch="Uniform"  Margin="0,0,0,0" ForceCursor="True" KeyboardNavigation.TabNavigation="Once" DragEnter="MainViewBox_DragEnter" Drop="MainViewBox_Drop">
-                                    <Viewbox.DataContext>
-                                        <Properties:Settings/>
-                                    </Viewbox.DataContext>
-                                    <Border x:Name="CanvasBoxBorder" Background="White"  Style="{StaticResource Border}" Grid.Column="1" Grid.Row="2" Margin="3" >
-                                        <Viewbox  x:Name="CanvasBox"  Stretch="Uniform" StretchDirection="DownOnly">
+                            <TabControl TabStripPlacement="Top">
+                                <TabItem Header="PathFigure">
+                                    <Border x:Name="CanvasBorder" Style="{StaticResource Border}" Background="LightGray" Grid.Column="1" Grid.Row="2" Margin="0" Grid.RowSpan="2">
+                                        <Viewbox x:Name="MainViewBox" ClipToBounds="True" StretchDirection="DownOnly"  Stretch="Uniform"  Margin="0,0,0,0" ForceCursor="True" KeyboardNavigation.TabNavigation="Once" DragEnter="MainViewBox_DragEnter" Drop="MainViewBox_Drop">
+                                            <Viewbox.DataContext>
+                                                <Properties:Settings/>
+                                            </Viewbox.DataContext>
+                                            <Border x:Name="CanvasBoxBorder" Background="White"  Style="{StaticResource Border}" Grid.Column="1" Grid.Row="2" Margin="3" >
+                                                <Viewbox  x:Name="CanvasBox"  Stretch="Uniform" StretchDirection="DownOnly">
+                                                </Viewbox>
+                                            </Border>
                                         </Viewbox>
                                     </Border>
-                                </Viewbox>
-                            </Border>
+                                </TabItem>
+                                <TabItem Header="ViewPort3D">
+                                    <HelixToolkit:HelixViewport3D x:Name="HelixCanvas" ShowFrameRate="True" ZoomExtentsWhenLoaded="True" ZoomAroundMouseDownPoint="True" RotateAroundMouseDownPoint="True" IsTopBottomViewOrientedToFrontBack="True" IsViewCubeEdgeClicksEnabled="True" Loaded="Helix_Loaded">
+
+
+                                        <!--  Remember to add light to the scene  -->
+                                        <HelixToolkit:SunLight />
+
+                                        <!--  The content of this visual is defined in MainViewModel.cs  -->
+                                        <ModelVisual3D Content="{Binding Model}" />
+
+                                        <!--  You can also add elements here in the xaml  -->
+                                        <HelixToolkit:GridLinesVisual3D
+                                        Width="5000"
+                                        Length="8000"
+                                        MajorDistance="1000"
+                                        MinorDistance="100"
+                                        Thickness="10" />
+
+                                    </HelixToolkit:HelixViewport3D>
+                                </TabItem>
+                            </TabControl>
+
                         </DockPanel>
                         <DockPanel DockPanel.Dock="Bottom" Grid.Row="1" Margin="2,5">
                             <Border Style="{StaticResource Border}" Grid.Column="1" Margin="0,5,0,0" Grid.Row="4" ScrollViewer.VerticalScrollBarVisibility="Disabled">
@@ -385,7 +411,7 @@
                                     </Controls:NumericUpDown.DataContext>
                                 </Controls:NumericUpDown>
                                 <Label x:Name="label_Copy2" Content="Глубина" HorizontalAlignment="Left" Margin="6,142,0,0" VerticalAlignment="Top" Width="74" Height="26" Grid.ColumnSpan="2"/>
-                                <Button x:Name="SaveSizeBtn" Content="Save size" Margin="0,306,10,0" VerticalAlignment="Top" Height="30" Controls:ControlsHelper.ContentCharacterCasing="Normal" Grid.Column="3" Grid.ColumnSpan="2"/>
+                                <Button x:Name="SaveSizeBtn" Content="Save size" Margin="10,207,10,0" VerticalAlignment="Top" Height="30" Controls:ControlsHelper.ContentCharacterCasing="Normal" Grid.ColumnSpan="5"/>
 
                                 <Button x:Name="SaveMeshBtn" Content="Calc" Height="30" Margin="0,343,10,0" VerticalAlignment="Top" Click="SaveMeshBtn_Click" IsEnabled="{Binding IsOn, ElementName=EditMeshToggle}" Grid.Column="3" Grid.ColumnSpan="2"/>
 
@@ -396,9 +422,9 @@
                                     </Controls:NumericUpDown.DataContext>
                                 </Controls:NumericUpDown>
                                 <Label x:Name="label_Copy3" Content="Множитель" HorizontalAlignment="Left" Margin="6,176,0,0" VerticalAlignment="Top" Height="26" Width="74" Grid.ColumnSpan="2"/>
-                                <Controls:ToggleSwitch x:Name="MorphToggle" Content="Morph" HorizontalAlignment="Stretch" Margin="3,348,0,0" VerticalAlignment="Top" IsOn="True" IsEnabled="{Binding IsOn, ElementName=EditMeshToggle}" Toggled="MorphToggle_Toggled" Grid.ColumnSpan="3" Height="20"/>
-                                <Controls:ToggleSwitch x:Name="HorizontalToggle" Content="Horizontal" HorizontalAlignment="Stretch" Margin="3,384,0,0" VerticalAlignment="Top" IsEnabled="{Binding IsOn, ElementName=EditMeshToggle}" Toggled="HorizontalToggle_Toggled" Grid.ColumnSpan="3" Height="20"/>
-                                <Controls:NumericUpDown x:Name="PointStepUpDn" Margin="5,421,14,0"  Background="White" Height="26" VerticalAlignment="Top" NumericInputMode="Decimal" Maximum="10" Minimum="0" Interval="0.1"  Value="0.1" Grid.Column="2" Grid.ColumnSpan="3" Focusable="False" IsTabStop="False" AllowDrop="False">
+                                <Controls:ToggleSwitch x:Name="InverseToggle" Content="InverseStep" HorizontalAlignment="Stretch" Margin="3,348,0,0" VerticalAlignment="Top" IsOn="True" Grid.ColumnSpan="3" Height="20"/>
+                                <Controls:ToggleSwitch x:Name="HorizontalToggle" Content="Horizontal" HorizontalAlignment="Stretch" Margin="3,384,0,0" VerticalAlignment="Top" Toggled="HorizontalToggle_Toggled" Grid.ColumnSpan="3" Height="20"/>
+                                <Controls:NumericUpDown x:Name="PointStepUpDn" Margin="5,421,14,0"  Background="White" Height="26" VerticalAlignment="Top" NumericInputMode="Decimal" Maximum="10" Minimum="0" Interval="0.1"  Value="1" Grid.Column="2" Grid.ColumnSpan="3" Focusable="False" IsTabStop="False" AllowDrop="False" ValueDecremented="PointStepUpDn_ValueDecremented" ValueIncremented="PointStepUpDn_ValueIncremented">
                                     <Controls:NumericUpDown.DataContext>
                                         <Properties:Settings/>
                                     </Controls:NumericUpDown.DataContext>

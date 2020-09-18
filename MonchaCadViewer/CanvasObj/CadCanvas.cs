@@ -14,7 +14,6 @@ namespace MonchaCadViewer.CanvasObj
 {
     public class CadCanvas : Canvas
     {
-
         public event EventHandler<CadObject> SelectedObject;
         //public event EventHandler<string> ErrorMessageEvent;
 
@@ -190,7 +189,7 @@ namespace MonchaCadViewer.CanvasObj
         {
             if (_device != null)
             {
-                _device.Calibration = !mesh.OnlyEdge;
+                _device.Calibration = !mesh.Affine;
                 this.DataContext = _device;
                 this.Children.Clear();
 
@@ -217,7 +216,7 @@ namespace MonchaCadViewer.CanvasObj
                         dot.Uid = i.ToString() + ":" + j.ToString();
                         dot.ToolTip = "Позиция: " + i + ":" + j + "\nX: " + mesh[i, j].X + "\n" + "Y: " + mesh[i, j].Y;
                         dot.DataContext = mesh;
-                        dot.OnBaseMesh = !mesh.OnlyEdge;
+                        dot.OnBaseMesh = !mesh.Affine;
                         dot.Render = false;
                         dot.Updated += Object_Updated;
                         this.Add(dot);

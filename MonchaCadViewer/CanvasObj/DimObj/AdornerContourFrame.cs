@@ -178,7 +178,8 @@ namespace MonchaCadViewer.CanvasObj.DimObj
             // Draws the thumb and the rectangle around the strokes.
            // rotateHandle.Arrange(handleRect);
             outline.Data = new RectangleGeometry(strokeBounds);
-            outline.Arrange(new Rect(Contour.Bounds.Size));
+            if (Contour.Bounds.Size != Size.Empty)
+                outline.Arrange(new Rect(Contour.Bounds.Size));
 
             //Line side to contour
             //Top 

@@ -21,7 +21,6 @@ namespace MonchaCadViewer.CanvasObj
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(prop));
         }
 
-
         private bool _isfix = false;
         private bool _mirror = false;
         private bool _render = true;

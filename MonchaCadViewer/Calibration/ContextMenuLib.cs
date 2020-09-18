@@ -37,11 +37,15 @@ namespace MonchaCadViewer.CanvasObj
             AddItem("Render", contextMenu);
         }
 
+
         public static void MeshMenu(ContextMenu contextMenu)
         {
             AddItem("Create", contextMenu);
             AddItem("Refresh", contextMenu);
             AddItem("Inverse", contextMenu);
+            AddItem("ReturnPoint", contextMenu);
+            AddItem("Morph", contextMenu);
+            AddItem("Affine", contextMenu);
         }
 
         public static void CanvasMenu(ContextMenu contextMenu)
@@ -52,8 +56,9 @@ namespace MonchaCadViewer.CanvasObj
 
         public static void DeviceTreeMenu(ContextMenu contextMenu)
         {
-            AddItem("CanvasRectangle", contextMenu);
-            AddItem("ZoneRectangle", contextMenu);
+            AddItem("%CanvasRectangle%", contextMenu);
+            AddItem("%ZoneRectangle%", contextMenu);
+            AddItem("%PolyMeshUsed%", contextMenu);
         }
 
         public static void LaserMeterHeadTreeMenu(ContextMenu contextMenu)

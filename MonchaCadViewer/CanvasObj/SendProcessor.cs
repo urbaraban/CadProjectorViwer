@@ -42,20 +42,22 @@ namespace MonchaCadViewer.CanvasObj
         /// <returns>N_{i,degree}(step)</returns>
         public static void DrawZone(MonchaDevice device)
         {
+
+            device.Calibration = false;
+
             LObjectList tempList = new LObjectList();
 
             tempList.Bop = new LPoint3D(0, 0, 0);
-            tempList.Top = new LPoint3D(1, 1, 1);
+            tempList.Top = new LPoint3D(0.999999, 0.999999, 0.999999);
 
             LObject lObject = new LObject();
-            lObject.Add(new LPoint3D(device.TBOP.X * MonchaHub.Size.X, device.TBOP.Y * MonchaHub.Size.Y, 0, 1));
-            lObject.Add(new LPoint3D(device.TTOP.X * MonchaHub.Size.X * 0.99, device.TBOP.Y * MonchaHub.Size.Y, 0, 1));
-            lObject.Add(new LPoint3D(device.TTOP.X * MonchaHub.Size.X * 0.99, device.TTOP.Y * MonchaHub.Size.Y * 0.99, 0, 1));
-            lObject.Add(new LPoint3D(device.TBOP.X * MonchaHub.Size.X * 0.99, device.TTOP.Y * MonchaHub.Size.Y, 0, 1));
+            lObject.Add(new LPoint3D(device.TBOP.MX, device.TBOP.MY, 0, 1));
+            lObject.Add(new LPoint3D(device.TTOP.MX, device.TBOP.MY, 0, 1));
+            lObject.Add(new LPoint3D(device.TTOP.MX, device.TTOP.MY, 0, 1));
+            lObject.Add(new LPoint3D(device.TBOP.MX, device.TTOP.MY, 0, 1));
             lObject.Closed = true;
 
             tempList.Add(lObject);
-
             tempList.OnBaseMesh = false;
 
             if (tempList.Count > 0)
@@ -141,8 +143,8 @@ namespace MonchaCadViewer.CanvasObj
                                     {
                                         lObject.AddRange(
                                             BezieByStep(
-                                                LastPoint, TransPoint(polyBezierSegment.Points[i]), TransPoint(polyBezierSegment.Points[i + 3]), TransPoint(polyBezierSegment.Points[i + 2]), cadContour.CRS));
-                                        LastPoint = TransPoint(polyBezierSegment.Points[i + 2]);
+                                                LastPoint, TransPoint(polyBezierSegment.Points[i]), TransPoint(polyBezierSegment.Points[i + 2]), TransPoint(polyBezierSegment.Points[i + 1]), cadContour.CRS));
+                                        LastPoint = TransPoint(polyBezierSegment.Points[i + 1]);
                                     }
 
                                     break;
@@ -281,30 +283,49 @@ namespace MonchaCadViewer.CanvasObj
         {
             Delta *= Math.PI / 180;
 
-            //Delta = (Math.PI * 2 + Delta * (clockwise == SweepDirection.Clockwise ? -1 : 1)) % (Math.PI * 2); //to radian
-
-            Point Center = GetCenterArc(StartPoint, EndPoint, radius, clockwise == SweepDirection.Clockwise, Delta > Math.PI && clockwise == SweepDirection.Counterclockwise);
-
-            if (Delta > Math.PI)
-             Console.WriteLine("Cntr" + Center);
-
-            double StartAngle = Math.PI * 2 - Math.Atan2(StartPoint.Y - Center.Y, StartPoint.X - Center.X);
-
             LObject lObject = new LObject();
-            double RadianStep = Delta * ((CRS) / (radius * Delta));
 
-
-            for (double radian = RadianStep; radian <= Delta * 1.005; radian += RadianStep)
+            if (Delta != 0)
             {
-                double Angle = (StartAngle + (clockwise == SweepDirection.Counterclockwise ? radian : -radian)) % (2 * Math.PI);
 
-                lObject.Add(new LPoint3D(
-                    Center.X + (radius * Math.Cos(Angle)),
-                    Center.Y - (radius * Math.Sin(Angle)),
-                    1));
+                //Delta = (Math.PI * 2 + Delta * (clockwise == SweepDirection.Clockwise ? -1 : 1)) % (Math.PI * 2); //to radian
+
+                Point Center = GetCenterArc(StartPoint, EndPoint, radius, clockwise == SweepDirection.Clockwise, Delta > Math.PI && clockwise == SweepDirection.Counterclockwise);
+
+                if (Delta > Math.PI)
+                    Console.WriteLine("Cntr" + Center);
+
+                double StartAngle = Math.PI * 2 - Math.Atan2(StartPoint.Y - Center.Y, StartPoint.X - Center.X);
+
+               
+                double RadianStep = Delta * ((CRS) / (radius * Delta));
+
+                for (double radian = RadianStep; radian <= Delta * 1.005; radian += RadianStep)
+                {
+                    double Angle = (StartAngle + (clockwise == SweepDirection.Counterclockwise ? radian : -radian)) % (2 * Math.PI);
+
+                    lObject.Add(new LPoint3D(
+                        Center.X + (radius * Math.Cos(Angle)),
+                        Center.Y - (radius * Math.Sin(Angle)),
+                        1));
+                }
+                if (lObject.Count > 0)
+                    lObject.Last().T = 0;
             }
-            if (lObject.Count > 0)
-                lObject.Last().T = 0;
+            else
+            {
+                if (clockwise == SweepDirection.Counterclockwise)
+                {
+                    lObject.Add(new LPoint3D(StartPoint));
+                    lObject.Add(new LPoint3D(EndPoint));
+                }
+                else
+                {
+                    lObject.Add(new LPoint3D(EndPoint));
+                    lObject.Add(new LPoint3D(StartPoint));
+                }
+                
+            }
 
             return lObject;
 
@@ -314,8 +335,13 @@ namespace MonchaCadViewer.CanvasObj
                 double q = Math.Sqrt(Math.Pow(EndPt.X - StartPt.X, 2) + Math.Pow(EndPt.Y - StartPt.Y, 2));
                 double x3 = (StartPt.X + EndPt.X) / 2;
                 double y3 = (StartPt.Y + EndPt.Y) / 2;
-                double d1 = Math.Sqrt(radsq - ((q / 2) * (q / 2))) * ((StartPt.Y - EndPt.Y) / q) * (large ? -1 : 1);
-                double d2 = Math.Sqrt(radsq - ((q / 2) * (q / 2))) * ((EndPt.X - StartPt.X) / q) * (large ? -1 : 1);
+                double d1 = 0;
+                double d2 = 0;
+                if (radsq > 0)
+                {
+                    d1 = Math.Sqrt(radsq - ((q / 2) * (q / 2))) * ((StartPt.Y - EndPt.Y) / q) * (large ? -1 : 1);
+                    d2 = Math.Sqrt(radsq - ((q / 2) * (q / 2))) * ((EndPt.X - StartPt.X) / q) * (large ? -1 : 1);
+                }
                 return new Point(
                     x3 + (Clockwise ? d1 : - d1),
                     y3 + (Clockwise ? d2 : - d2)

@@ -8,7 +8,7 @@
         xmlns:Controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
         xmlns:HelixToolkit="clr-namespace:HelixToolkit.Wpf;assembly=HelixToolkit.Wpf"
         xmlns:Properties="clr-namespace:MonchaCadViewer.Properties" xmlns:controlzex="urn:controlzex"
-    xmlns:pt="http://propertytools.org/wpf" xmlns:c="clr-namespace:CalcBinding;assembly=CalcBinding" x:Name="MainWindow1" x:Class="MonchaCadViewer.MainWindow"
+        xmlns:pt="http://propertytools.org/wpf" xmlns:c="clr-namespace:CalcBinding;assembly=CalcBinding" x:Name="MainWindow1" x:Class="MonchaCadViewer.MainWindow"
         mc:Ignorable="d"
         Title="CUT" Focusable="False" KeyboardNavigation.TabNavigation="None"  AllowDrop="True" Height="766.898" Width="999" Closing="Window_Closing" Closed="Window_Closed" controlzex:KeyboardNavigationEx.AlwaysShowFocusVisual="True" WindowStartupLocation="CenterScreen" Icon="logo.png" KeyUp="MainWindow1_KeyUp" TextInput="MainWindow1_TextInput" PreviewKeyDown="MainWindow1_PreviewKeyDown" WindowStyle="None" ResizeMode="CanResizeWithGrip" BorderBrush="#FFE01414" VerticalAlignment="Top">
     <Window.Resources>
@@ -200,8 +200,8 @@
                                         </Viewbox>
                                     </Border>
                                 </TabItem>
-                                <TabItem Header="ViewPort3D">
-                                    <HelixToolkit:HelixViewport3D x:Name="HelixCanvas" ShowFrameRate="True" ZoomExtentsWhenLoaded="True" ZoomAroundMouseDownPoint="True" RotateAroundMouseDownPoint="True" IsTopBottomViewOrientedToFrontBack="True" IsViewCubeEdgeClicksEnabled="True" Loaded="Helix_Loaded">
+                                <TabItem Header="ViewPort3D" Visibility="Visible">
+                                    <HelixToolkit:HelixViewport3D x:Name="HelixCanvas" ShowFrameRate="True" ZoomExtentsWhenLoaded="True" ZoomAroundMouseDownPoint="True" RotateAroundMouseDownPoint="True" IsTopBottomViewOrientedToFrontBack="True" IsViewCubeEdgeClicksEnabled="True" Loaded="Helix_Loaded" CoordinateSystemHeight="60" ShowCameraInfo="True">
 
 
                                         <!--  Remember to add light to the scene  -->
@@ -239,76 +239,10 @@
                 <DockPanel Grid.Column="2" Grid.Row="2" Margin="5,5,5,5">
                     <TabControl x:Name="tabControl" DockPanel.Dock="Right" Grid.Column="2" Grid.Row="2" Grid.RowSpan="3">
                         <TabItem x:Name="ContourSettingTab" Header="Device" Controls:HeaderedControlHelper.HeaderFontSize="18">
-                            <Grid Background="{DynamicResource {x:Static SystemColors.MenuBrushKey}}">
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="52.333"/>
-                                    <ColumnDefinition Width="52"/>
-                                    <ColumnDefinition Width="48"/>
-                                    <ColumnDefinition Width="54"/>
-                                    <ColumnDefinition Width="13*"/>
-                                    <ColumnDefinition/>
-                                </Grid.ColumnDefinitions>
-                                <Slider x:Name="AngleWaitSlider" Margin="0,0,0,59" Value="1" Minimum="1"  SmallChange="1" Grid.Column="1" Grid.ColumnSpan="4" Maximum="30" Height="30" VerticalAlignment="Bottom" ValueChanged="SettingSlider_ValueChanged"/>
-                                <ComboBox x:Name="DeviceCombo" Margin="10,25,0,0" VerticalAlignment="Top" IsEnabled="{c:Binding !IsChecked, ElementName=QRBtn}"  DataContextChanged="DeviceCombo_DataContextChanged" Height="26" SelectionChanged="DeviceCombo_SelectionChanged" RenderTransformOrigin="0.5,0.5" Grid.ColumnSpan="2" />
-                                <Controls:ToggleSwitch x:Name="InvertXtoggle" Content="Invert X" HorizontalAlignment="Left" Margin="16,325,0,0" VerticalAlignment="Top" HorizontalContentAlignment="Right" FlowDirection="RightToLeft" Controls:HeaderedControlHelper.HeaderFontSize="12" FontSize="12" Grid.ColumnSpan="3" Height="20" Width="108" Toggled="SettingToggle_Toggled"/>
-                                <Controls:ToggleSwitch x:Name="InvertYtoggle" Content="Invert Y" HorizontalAlignment="Stretch" Margin="34,325,10,0" VerticalAlignment="Top" HorizontalContentAlignment="Right" FlowDirection="RightToLeft" FontSize="12" Height="20" Grid.ColumnSpan="3" Grid.Column="2" Toggled="SettingToggle_Toggled"/>
-
-                                <Controls:NumericUpDown x:Name="DistanceUpDn" Margin="0,77,52,0" Value="{Binding cl_distance, Mode=TwoWay}" Background="White" Height="26" VerticalAlignment="Top" Grid.ColumnSpan="4" Grid.Column="1" IsEnabled="{c:Binding !IsChecked, ElementName=QRBtn}"/>
-
-                                <Label x:Name="DistanceLabel" Content="(00000)" Margin="0,77,0,0" VerticalAlignment="Top" Grid.Column="4" Height="26" HorizontalAlignment="Right" Width="52"/>
-                                <Label x:Name="label_Copy5" Content="Дальность" HorizontalAlignment="Left" Margin="10,51,0,0" VerticalAlignment="Top" Width="74" Height="26" Grid.ColumnSpan="2"/>
-                                <ComboBox x:Name="LaserMetersCombo" Margin="5,25,52,0" VerticalAlignment="Top" Grid.Column="2" Height="26" Grid.ColumnSpan="3" IsEnabled="{c:Binding !IsChecked, ElementName=QRBtn}" SelectionChanged="LaserMetersCombo_SelectionChanged"/>
-                                <Controls:ToggleSwitch x:Name="LaserMeterToggle"  Content="" HorizontalAlignment="Right" Margin="0,27,0,0" VerticalAlignment="Top" IsOn="False" RenderTransformOrigin="0.5,0.5" HorizontalContentAlignment="Center" Height="25" Grid.Column="4" Width="47" Toggled="LaserMeterToggle_Toggled">
-                                    <Controls:ToggleSwitch.DataContext>
-                                        <Properties:Settings/>
-                                    </Controls:ToggleSwitch.DataContext>
-                                </Controls:ToggleSwitch>
-                                <Label x:Name="label_Copy6" Content="Дальномер" HorizontalAlignment="Left" Margin="5,-1,0,0" VerticalAlignment="Top" Width="74" Height="26" Grid.ColumnSpan="2" Grid.Column="2"/>
-                                <Controls:NumericUpDown x:Name="RedUpDn" Margin="0,217,0,0" Value="255" Maximum="255" Minimum="1" Background="White" Height="26" VerticalAlignment="Top" Grid.Column="2" Grid.ColumnSpan="3" IsEnabled="{c:Binding !IsChecked, ElementName=QRBtn}" ValueChanged="SettingUpDn_ValueChanged"/>
-                                <Label x:Name="StartWaitLabel" Content="{Binding Value, ElementName=AngleWaitSlider}" Margin="0,0,0,64" Height="26" VerticalAlignment="Bottom" HorizontalContentAlignment="Center"/>
-                                <Label x:Name="StartWaitLabel_Copy" Margin="0,0,0,81" Content="Время ожидания угла" FontSize="8" Grid.Column="1" HorizontalContentAlignment="Center" Grid.ColumnSpan="4" Height="21" VerticalAlignment="Bottom"/>
-                                <Slider x:Name="ScanRateCalc" Margin="10,159,0,0" VerticalAlignment="Top" Value="20000" Minimum="1000" Maximum="40000" SmallChange="1" AllowDrop="False" PreviewMouseDown="ScanRateRealSlider_PreviewMouseDown" Grid.ColumnSpan="5" Height="25" ValueChanged="SettingSlider_ValueChanged"/>
-                                <Label x:Name="ScanRateLabel" Margin="10,144,0,0" VerticalAlignment="Top" Content="ScanRateCalc:" FontSize="8" Height="21" Grid.ColumnSpan="2" RenderTransformOrigin="0.439,0.556"/>
-                                <Controls:ToggleSwitch x:Name="RedToggle" Background="Red"  Content="Red" HorizontalAlignment="Stretch" Margin="10,217,0,0" VerticalAlignment="Top" Height="26" Grid.ColumnSpan="2" Toggled="SettingToggle_Toggled"/>
-                                <Controls:NumericUpDown x:Name="GreenUpDn" Margin="0,248,0,0" Value="255" Maximum="255" Minimum="1" Background="White" Height="26" VerticalAlignment="Top" Grid.Column="2" Grid.ColumnSpan="3" IsEnabled="{c:Binding !IsChecked, ElementName=QRBtn}" ValueChanged="SettingUpDn_ValueChanged"/>
-                                <Controls:ToggleSwitch x:Name="GreenToggle"  Content="Green" HorizontalAlignment="Stretch" Margin="10,249,0,0" VerticalAlignment="Top" Height="25" Grid.ColumnSpan="2" Toggled="SettingToggle_Toggled"/>
-                                <Controls:NumericUpDown x:Name="BlueUpDn" Margin="0,281,0,0" Value="255" Maximum="255" Minimum="1" Background="White" Height="26" VerticalAlignment="Top" Grid.Column="2" Grid.ColumnSpan="3" IsEnabled="{c:Binding !IsChecked, ElementName=QRBtn}" ValueChanged="SettingUpDn_ValueChanged"/>
-                                <Controls:ToggleSwitch x:Name="BlueToggle"  Content="Blue" HorizontalAlignment="Stretch" Margin="9,282,1,0" VerticalAlignment="Top" Height="25" Grid.ColumnSpan="2" Toggled="SettingToggle_Toggled"/>
-                                <Slider x:Name="AlphaSlider" Margin="10,364,0,0" VerticalAlignment="Top" Value="255" Maximum="255" Minimum="1" Grid.ColumnSpan="5" Height="22" ValueChanged="SettingSlider_ValueChanged"/>
-                                <Label x:Name="ScanRateLabel_Copy" Margin="0,350,0,0" VerticalAlignment="Top" Content="Яркость" FontSize="8" Grid.Column="1" Height="22" HorizontalContentAlignment="Center" Grid.ColumnSpan="3"/>
-                                <Controls:NumericUpDown x:Name="FPSUpDn" Margin="0,186,0,0" Value="30" Maximum="40" Minimum="14.2" Background="White" Height="26" VerticalAlignment="Top" Grid.Column="2" Grid.ColumnSpan="3" ValueChanged="SettingUpDn_ValueChanged" IsEnabled="{c:Binding !IsChecked, ElementName=QRBtn}"/>
-                                <Label x:Name="FPSLabel" Content="FPS" Height="26" Margin="10,185,1,0" VerticalAlignment="Top" RenderTransformOrigin="0.5,0.5" AutomationProperties.HelpText="Кадров в секунду" HorizontalContentAlignment="Center" Grid.ColumnSpan="2">
-                                    <Label.RenderTransform>
-                                        <TransformGroup>
-                                            <ScaleTransform/>
-                                            <SkewTransform/>
-                                            <RotateTransform Angle="0.155"/>
-                                            <TranslateTransform/>
-                                        </TransformGroup>
-                                    </Label.RenderTransform>
-                                </Label>
-                                <Slider x:Name="ScanRateRealSlider" Margin="10,125,0,0" VerticalAlignment="Top"  Minimum="1000" Maximum="40000" SmallChange="1" AllowDrop="False" PreviewMouseDown="ScanRateRealSlider_PreviewMouseDown" Grid.ColumnSpan="5" Height="20" ValueChanged="SettingSlider_ValueChanged"/>
-                                <Label x:Name="ScanRateLabel_Copy1" Margin="10,108,1,0" VerticalAlignment="Top" Content="ScanRateReal:" FontSize="8" Height="21" Grid.ColumnSpan="2"/>
-                                <ToggleButton x:Name="ScanRateAnchor" Content="🔗" Margin="0,140,6,0" VerticalAlignment="Top" Height="25" Padding="1,1,1,1" IsChecked="{Binding int_scan_anchor, Mode=TwoWay}" Click="ScanRateAnchor_Click" Grid.Column="4" HorizontalAlignment="Right" Width="25">
-                                    <ToggleButton.DataContext>
-                                        <Properties:Settings/>
-                                    </ToggleButton.DataContext>
-                                </ToggleButton>
-                                <Slider x:Name="StartBlankSlider" Height="21" Margin="0,0,0,36" VerticalAlignment="Bottom" Value="1" Minimum="1" SmallChange="1" Grid.Column="1" Grid.ColumnSpan="4" Maximum="29" ValueChanged="SettingSlider_ValueChanged">
-
-                                </Slider>
-                                <Label x:Name="StartWaitLabel_Copy1" Content="{Binding Value, ElementName=StartBlankSlider}" Margin="0,0,0,35" Height="23" VerticalAlignment="Bottom" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"/>
-                                <Slider x:Name="EndBlankSlider" Margin="0,0,0,9" Value="1" Minimum="1" SmallChange="1" Grid.Column="1" Grid.ColumnSpan="4" Maximum="30" Height="22" VerticalAlignment="Bottom" ValueChanged="SettingSlider_ValueChanged"/>
-                                <Label x:Name="StartWaitLabel_Copy2" Content="{Binding Value, ElementName=EndBlankSlider}" Margin="0,0,0,7" Height="26" VerticalAlignment="Bottom" HorizontalContentAlignment="Center"/>
-                                <Label x:Name="StartWaitLabel_Copy3" Margin="0,0,0,48" Content="Время ожидания начала Blank" FontSize="8" Grid.Column="1" Grid.ColumnSpan="4" HorizontalContentAlignment="Center" Height="21" VerticalAlignment="Bottom"/>
-                                <Label x:Name="StartWaitLabel_Copy4" Margin="0,0,0,22" Content="Время ожидания окончания Blank" FontSize="8" Grid.Column="1" Grid.ColumnSpan="4" HorizontalContentAlignment="Center" Height="21" VerticalAlignment="Bottom"/>
-                                <Slider x:Name="ColorShiftSlider" Margin="0,0,0,89" Value="1" Minimum="1" SmallChange="1" Grid.Column="1" Grid.ColumnSpan="4" Maximum="30" Height="30" VerticalAlignment="Bottom" ValueChanged="SettingSlider_ValueChanged"/>
-                                <Label x:Name="StartWaitLabel_Copy5" Margin="0,0,0,112" Content="Затухание" FontSize="8" Grid.Column="1" HorizontalContentAlignment="Center" Grid.ColumnSpan="4" Height="21" VerticalAlignment="Bottom"/>
-                                <Label x:Name="StartWaitLabel_Copy6" Content="{Binding Value, ElementName=ColorShiftSlider}" Margin="0,0,0,95" Height="26" VerticalAlignment="Bottom" HorizontalContentAlignment="Center"/>
-                                <Label x:Name="label_Copy7" Content="Устройство" HorizontalAlignment="Left" Margin="10,-1,0,0" VerticalAlignment="Top" Width="74" Height="26" Grid.ColumnSpan="2"/>
-                                <Button x:Name="SetDistanceBtn" Content="Set" HorizontalAlignment="Left" Height="26" Margin="10,77,0,0" VerticalAlignment="Top" Width="42" Click="SetDistanceBtn_Click"/>
-
+                            <Grid>
+                                <ur:DeviceTab x:Name="DevicePanel"/>
                             </Grid>
+                            
                         </TabItem>
                         <TabItem Header="Format" Controls:HeaderedControlHelper.HeaderFontSize="18">
                             <Grid Background="#FFE5E5E5">
@@ -413,8 +347,6 @@
                                 <Label x:Name="label_Copy2" Content="Глубина" HorizontalAlignment="Left" Margin="6,142,0,0" VerticalAlignment="Top" Width="74" Height="26" Grid.ColumnSpan="2"/>
                                 <Button x:Name="SaveSizeBtn" Content="Save size" Margin="10,207,10,0" VerticalAlignment="Top" Height="30" Controls:ControlsHelper.ContentCharacterCasing="Normal" Grid.ColumnSpan="5"/>
 
-                                <Button x:Name="SaveMeshBtn" Content="Calc" Height="30" Margin="0,343,10,0" VerticalAlignment="Top" Click="SaveMeshBtn_Click" IsEnabled="{Binding IsOn, ElementName=EditMeshToggle}" Grid.Column="3" Grid.ColumnSpan="2"/>
-
                                 <Controls:ToggleSwitch x:Name="EditMeshToggle" Content="Edit" HorizontalAlignment="Stretch" Margin="3,311,0,0" VerticalAlignment="Top" Grid.ColumnSpan="3" Height="20"/>
                                 <Controls:NumericUpDown x:Name="MashMultiplierUpDn" Margin="0,176,10,0"  Background="White" Height="26" Maximum="1" Minimum="0.001" VerticalAlignment="Top" Speedup="False" Controls:ScrollViewerHelper.IsHorizontalScrollWheelEnabled="True" ValueIncremented="MashMultiplierUpDn_ValueIncremented" ValueDecremented="MashMultiplierUpDn_ValueDecremented" Grid.Column="2" Grid.ColumnSpan="3" ValueChanged="SettingUpDn_ValueChanged">
                                     <Controls:NumericUpDown.DataContext>
@@ -430,8 +362,7 @@
                                     </Controls:NumericUpDown.DataContext>
                                 </Controls:NumericUpDown>
                                 <Label x:Name="label_Copy4" Content="Шаг" HorizontalAlignment="Left" Margin="10,421,0,0" VerticalAlignment="Top" Height="26" Width="32" Grid.ColumnSpan="2"/>
-                                <Button x:Name="ClearCalcMeshBtn" Content="DellCalc" Height="30" Margin="0,379,10,0" VerticalAlignment="Top" IsEnabled="{Binding IsOn, ElementName=EditMeshToggle}" Click="ClearCalcMeshBtn_Click" Grid.Column="3" Grid.ColumnSpan="2"/>
-
+                                
                             </Grid>
                         </TabItem>
                         <TabItem Header="Log" Controls:HeaderedControlHelper.HeaderFontSize="18">

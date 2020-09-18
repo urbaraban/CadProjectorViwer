@@ -59,8 +59,6 @@ namespace MonchaCadViewer.CanvasObj
             //this.Point.Select = true;
         }
 
-
-
         private void Point_Selected(object sender, bool e)
         {
             this.IsSelected = e;

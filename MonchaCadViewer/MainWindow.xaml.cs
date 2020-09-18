@@ -48,6 +48,11 @@ namespace MonchaCadViewer
 
             LoadMoncha();
 
+            if (DevicePanel.Device == null && MonchaHub.Devices.Count > 0)
+            {
+                DevicePanel.DataContext = MonchaHub.Devices[0];
+            }
+
             CanvasBoxBorder.BorderThickness = new Thickness(MonchaHub.GetThinkess());
             CadCanvas cadCanvas = new CadCanvas(MonchaHub.Size, true);
             cadCanvas.Focusable = true;
@@ -105,16 +110,6 @@ namespace MonchaCadViewer
         {
             DeviceTree.Items.Clear();
 
-            DeviceCombo.DisplayMemberPath = "HWIdentifier";
-            DeviceCombo.SelectedValuePath = "HWIdentifier";
-            DeviceCombo.ItemsSource = MonchaHub.Devices;
-            DeviceCombo.DataContext = MonchaHub.Devices;
-
-            LaserMetersCombo.DisplayMemberPath = "HWIdentifier";
-            LaserMetersCombo.SelectedValuePath = "HWIdentifier";
-            LaserMetersCombo.ItemsSource = MonchaHub.LMeters;
-            LaserMetersCombo.DataContext = MonchaHub.LMeters;
-
             TreeViewItem LaserScanners = new TreeViewItem();
             LaserScanners.Header = "LaserScanners";
 
@@ -132,17 +127,30 @@ namespace MonchaCadViewer
                     treeViewDevice.MouseLeftButtonUp += LoadDeviceSetting;
                     treeViewDevice.ContextMenuClosing += TreeViewDevice_ContextMenuClosing;
 
+                    if (device.PolyMeshUsed)
+                    { 
+                        TreeViewItem treeViewBaseMesh = new TreeViewItem();
+                        treeViewBaseMesh.Header = "BaseMesh";
+                        treeViewBaseMesh.DataContext = device.BaseMesh;
+                        treeViewBaseMesh.MouseDoubleClick += TreeBaseMesh;
 
-                    TreeViewItem treeViewBaseMesh = new TreeViewItem();
-                    treeViewBaseMesh.Header = "BaseMesh";
-                    treeViewBaseMesh.DataContext = device.BaseMesh;
-                    treeViewBaseMesh.MouseDoubleClick += TreeBaseMesh;
+                        TreeViewItem treeViewVirtualMesh = new TreeViewItem();
+                        treeViewVirtualMesh.Header = "VirtualMesh";
+                        treeViewVirtualMesh.DataContext = device.VirtualMesh;
+                        treeViewVirtualMesh.MouseDoubleClick += TreeBaseMesh;
 
-                    TreeViewItem treeViewVirtualMesh = new TreeViewItem();
-                    treeViewVirtualMesh.Header = "VirtualMesh";
-                    treeViewVirtualMesh.DataContext = device.VirtualMesh;
-                    treeViewVirtualMesh.MouseDoubleClick += TreeBaseMesh;
 
+                        if (treeViewBaseMesh.ContextMenu == null) treeViewBaseMesh.ContextMenu = new System.Windows.Controls.ContextMenu();
+                        ContextMenuLib.MeshMenu(treeViewBaseMesh.ContextMenu);
+                        treeViewBaseMesh.ContextMenuClosing += TreeViewBaseMesh_ContextMenuClosing;
+
+                        if (treeViewVirtualMesh.ContextMenu == null) treeViewVirtualMesh.ContextMenu = new System.Windows.Controls.ContextMenu();
+                        ContextMenuLib.MeshMenu(treeViewVirtualMesh.ContextMenu);
+                        treeViewVirtualMesh.ContextMenuClosing += TreeViewBaseMesh_ContextMenuClosing;
+
+                        treeViewDevice.Items.Add(treeViewBaseMesh);
+                        treeViewDevice.Items.Add(treeViewVirtualMesh);
+                    }
 
                     TreeViewItem treeViewCalculationMesh = new TreeViewItem();
                     treeViewCalculationMesh.Header = "CalculateMesh";
@@ -156,16 +164,6 @@ namespace MonchaCadViewer
                     treeViewDevice.Items.Add(treeViewCalculationMesh);
 
 
-                    if (treeViewBaseMesh.ContextMenu == null) treeViewBaseMesh.ContextMenu = new System.Windows.Controls.ContextMenu();
-                    ContextMenuLib.MeshMenu(treeViewBaseMesh.ContextMenu);
-                    treeViewBaseMesh.ContextMenuClosing += TreeViewBaseMesh_ContextMenuClosing;
-
-                    if (treeViewVirtualMesh.ContextMenu == null) treeViewVirtualMesh.ContextMenu = new System.Windows.Controls.ContextMenu();
-                    ContextMenuLib.MeshMenu(treeViewVirtualMesh.ContextMenu);
-                    treeViewVirtualMesh.ContextMenuClosing += TreeViewBaseMesh_ContextMenuClosing;
-
-                    treeViewDevice.Items.Add(treeViewBaseMesh);
-                    treeViewDevice.Items.Add(treeViewVirtualMesh);
 
                     LaserScanners.Items.Add(treeViewDevice);
                     LaserScanners.ExpandSubtree();
@@ -226,116 +224,33 @@ namespace MonchaCadViewer
         {
             //check path to setting file
             if (AppSt.Default.cl_moncha_path == string.Empty)
+            {
                 BrowseMoncha(); //select if not
-
-            //recheck
-            if (File.Exists(AppSt.Default.cl_moncha_path))
-            {
-                //send path to hub class
-                MonchaHub.Load(AppSt.Default.cl_moncha_path);
-
-                WidthUpDn.DataContext = MonchaHub.Size;
-                WidthUpDn.SetBinding(NumericUpDown.ValueProperty, "X");
-
-                HeightUpD.DataContext = MonchaHub.Size;
-                HeightUpD.SetBinding(NumericUpDown.ValueProperty, "Y");
-
-                DeepUpDn.DataContext = MonchaHub.Size;
-                DeepUpDn.SetBinding(NumericUpDown.ValueProperty, "Z");
-
-                MashMultiplierUpDn.Value = MonchaHub.Size.M.X;
-
             }
-            else
-            {
-                BrowseMoncha();
-            }
-        }
 
-        private void DeviceCombo_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            if (DeviceCombo.SelectedItem is MonchaDevice tempdevice)
-            {
-                //LaserMeter
-                if (tempdevice.LMeter != null)
+                //recheck
+                if (File.Exists(AppSt.Default.cl_moncha_path))
                 {
-                    LaserMetersCombo.SelectedValue = tempdevice.LMeter.HWIdentifier;
+                    //send path to hub class
+                    MonchaHub.Load(AppSt.Default.cl_moncha_path);
 
-                    LaserMeterToggle.DataContext = tempdevice.LMeter;
-                    LaserMeterToggle.SetBinding(ToggleSwitch.IsOnProperty, "IsTurn");
+                    WidthUpDn.DataContext = MonchaHub.Size;
+                    WidthUpDn.SetBinding(NumericUpDown.ValueProperty, "X");
 
-                    DistanceUpDn.DataContext = tempdevice.LMeter;
-                    DistanceUpDn.SetBinding(NumericUpDown.ValueProperty, "Distance");
+                    HeightUpD.DataContext = MonchaHub.Size;
+                    HeightUpD.SetBinding(NumericUpDown.ValueProperty, "Y");
 
-                    DistanceLabel.DataContext = tempdevice.LMeter;
-                    DistanceLabel.SetBinding(Label.ContentProperty, "RealDistance");
+                    DeepUpDn.DataContext = MonchaHub.Size;
+                    DeepUpDn.SetBinding(NumericUpDown.ValueProperty, "Z");
 
-                    tempdevice.LMeter.ChangeDimention += LMeter_ChangeDimention;
+                    MashMultiplierUpDn.Value = MonchaHub.Size.M.X;
 
-                    SetDistanceBtn.DataContext = tempdevice.LMeter;
+                    CRSUpDn.DataContext = ReadyFrame.CRS;
+                    CRSUpDn.SetBinding(NumericUpDown.ValueProperty, "MX");
+                    ReadyFrame.CRS.M.ChangePoint += M_ChangePoint;
                 }
-
-                //Device
-                ScanRateRealSlider.DataContext = tempdevice;
-                ScanRateRealSlider.SetBinding(Slider.ValueProperty, "ScanRateReal");
-
-                ScanRateCalc.DataContext = tempdevice;
-                ScanRateCalc.SetBinding(Slider.ValueProperty, "ScanRateCalc");
-
-                RedUpDn.DataContext = tempdevice;
-                RedUpDn.SetBinding(NumericUpDown.ValueProperty, "Red");
-
-                RedToggle.DataContext = tempdevice;
-                RedToggle.SetBinding(ToggleSwitch.IsOnProperty, "RedOn");
-
-                GreenUpDn.DataContext = tempdevice;
-                GreenUpDn.SetBinding(NumericUpDown.ValueProperty, "Green");
-
-                GreenToggle.DataContext = tempdevice;
-                GreenToggle.SetBinding(ToggleSwitch.IsOnProperty, "GreenOn");
-
-                BlueUpDn.DataContext = tempdevice;
-                BlueUpDn.SetBinding(NumericUpDown.ValueProperty, "Blue");
-
-                BlueToggle.DataContext = tempdevice;
-                BlueToggle.SetBinding(ToggleSwitch.IsOnProperty, "BlueOn");
-
-                AlphaSlider.DataContext = tempdevice;
-                AlphaSlider.SetBinding(Slider.ValueProperty, "Alpha");
-
-                FPSUpDn.DataContext = tempdevice;
-                FPSUpDn.SetBinding(NumericUpDown.ValueProperty, "FPS");
-
-                CRSUpDn.DataContext = ReadyFrame.CRS;
-                CRSUpDn.SetBinding(NumericUpDown.ValueProperty, "MX");
-                ReadyFrame.CRS.M.ChangePoint += M_ChangePoint;
-
-
-                AngleWaitSlider.DataContext = tempdevice;
-                AngleWaitSlider.SetBinding(Slider.ValueProperty, "StartLineWait");
-
-                EndBlankSlider.DataContext = tempdevice;
-                EndBlankSlider.SetBinding(Slider.ValueProperty, "EndBlanckWait");
-
-                StartBlankSlider.DataContext = tempdevice;
-                StartBlankSlider.SetBinding(Slider.ValueProperty, "StartBlankWait");
-
-                InvertXtoggle.DataContext = tempdevice;
-                InvertXtoggle.SetBinding(ToggleSwitch.IsOnProperty, "InvertedX");
-
-                InvertYtoggle.DataContext = tempdevice;
-                InvertYtoggle.SetBinding(ToggleSwitch.IsOnProperty, "InvertedY");
-
-
-            }
         }
 
-        private void LMeter_ChangeDimention(object sender, double e)
-        {
-            DistanceLabel.Invoke(() => {
-                DistanceLabel.Content = e;
-            });
-        }
 
         private void M_ChangePoint(object sender, LPoint3D e)
         {
@@ -349,6 +264,17 @@ namespace MonchaCadViewer
                 if (DeviceTree.DataContext is MonchaDevice device && BaseMeshItem.DataContext is MonchaDeviceMesh mesh && CanvasBox.Child is CadCanvas canvas)
                 {
                     canvas.DrawMesh(mesh, device);
+
+                    PointsVisual3D points = new PointsVisual3D();
+                    points.Size = 20;
+
+                    for (int i = 0; i < mesh.GetLength(0); i++)
+                        for (int j = 0; j < mesh.GetLength(1); j++)
+                        {
+                            points.Points.Add(new Point3D(mesh[i, j].MX, mesh[i, j].MY, mesh[i, j].MZ));
+                        }
+                    HelixCanvas.Children.Clear();
+                    HelixCanvas.Children.Add(points);
                 }
             }
         }
@@ -361,15 +287,22 @@ namespace MonchaCadViewer
 
                     switch (cmindex.Header)
                     {
-                        case "ZoneRectangle":
+                        case "%ZoneRectangle%":
                             SendProcessor.DrawZone(viewItem.DataContext as MonchaDevice);
                             break;
 
-                        case "CanvasRectangle":
+                        case "%CanvasRectangle%":
                             if (CanvasBox.Child is CadCanvas canvas &&
                             treeView.DataContext is MonchaDevice device)
                             {
                                 canvas.DrawRectangle(device.BBOP, device.BTOP);
+                            }
+                            break;
+                        case "%PolyMeshUsed%":
+                            if (treeView.DataContext is MonchaDevice device2)
+                            {
+                                device2.PolyMeshUsed = !device2.PolyMeshUsed;
+                                MonchaHub.RefreshDevice();
                             }
                             break;
 
@@ -384,32 +317,30 @@ namespace MonchaCadViewer
             {
                 if (viewItem.ContextMenu.DataContext is MenuItem cmindex)
                 {
-                    switch (cmindex.Header)
+                    if (sender is TreeViewItem meshTree && meshTree.Parent is TreeViewItem DeviceTree && DeviceTree.DataContext is MonchaDevice device && meshTree.DataContext is MonchaDeviceMesh deviceMesh)
                     {
-                        case "Create":
-                            if (sender is TreeViewItem meshTree &&
-                                meshTree.Parent is TreeViewItem DeviceTree)
-                            {
-                                CreateGridWindow createGridWindow = new CreateGridWindow(DeviceTree.DataContext as MonchaDevice, meshTree.DataContext as MonchaDeviceMesh );
-                                createGridWindow.ShowDialog();
-                            }
-                            break;
-                        case "Refresh":
-                            if (sender is TreeViewItem meshTree2 &&
-                                meshTree2.Parent is TreeViewItem DeviceTree2)
-                                if (DeviceTree2.DataContext is MonchaDevice device2 && meshTree2.DataContext is MonchaDeviceMesh deviceMesh)
-                                {
-                                    deviceMesh = mws.GetMeshDot(device2.HWIdentifier, deviceMesh.Name);
-                                }
-                            break;
-                        case "Inverse":
-                            if (sender is TreeViewItem meshTree3 &&
-                                meshTree3.Parent is TreeViewItem DeviceTree3)
-                                if (DeviceTree3.DataContext is MonchaDevice device3 && meshTree3.DataContext is MonchaDeviceMesh deviceMesh)
-                                {
-                                    deviceMesh.InverseYPosition();
-                                }
-                            break;
+                        switch (cmindex.Header)
+                        {
+                            case "Create":
+                                    CreateGridWindow createGridWindow = new CreateGridWindow(DeviceTree.DataContext as MonchaDevice, meshTree.DataContext as MonchaDeviceMesh);
+                                    createGridWindow.ShowDialog();
+                                break;
+                            case "Refresh":
+                                    deviceMesh = mws.GetMeshDot(device.HWIdentifier, deviceMesh.Name, deviceMesh.Affine);
+                                break;
+                            case "Inverse":
+                                        deviceMesh.InverseYPosition();
+                                break;
+                            case "ReturnPoint":
+                                        deviceMesh.ReturnPoint();
+                                break;
+                            case "Morph":
+                                deviceMesh.Morph = !deviceMesh.Morph;
+                                break;
+                            case "Affine":
+                                deviceMesh.Affine = !deviceMesh.Affine;
+                                break;
+                        }
                     }
                 }
             }
@@ -418,7 +349,9 @@ namespace MonchaCadViewer
         private void LoadDeviceSetting(object sender, MouseButtonEventArgs e)
         {
             if (sender is TreeViewItem treeViewItem)
-            DeviceCombo.SelectedValue = ((MonchaDevice)treeViewItem.DataContext).HWIdentifier;
+            {
+                DevicePanel.DataContext = (MonchaDevice)treeViewItem.DataContext;
+            }
         }
 
 
@@ -495,9 +428,8 @@ namespace MonchaCadViewer
 
         private void SaveMeshBtn_Click(object sender, RoutedEventArgs e)
         {
-            if (DeviceCombo.SelectedItem is MonchaDevice device)
+            if (DevicePanel.Device != null)
             {
-                device.CalculatedMesh();
                 MonchaHub.Save();
             }
         }
@@ -626,9 +558,9 @@ namespace MonchaCadViewer
             linesVisual3D.Color = Color.FromRgb(255, 0, 0);
             linesVisual3D.Thickness = 1;
             linesVisual3D.Points.Add(new Point3D(0, 0, 0));
-            linesVisual3D.Points.Add(new Point3D(2, 2, 2));
-            linesVisual3D.Points.Add(new Point3D(7, 0, 2));
-            linesVisual3D.Points.Add(new Point3D(4, 2, 2));
+            linesVisual3D.Points.Add(new Point3D(200, 2000, 2));
+            linesVisual3D.Points.Add(new Point3D(700, 0, 200));
+            linesVisual3D.Points.Add(new Point3D(400, 200, 200));
 
             HelixCanvas.Children.Add(linesVisual3D);
 
@@ -749,12 +681,6 @@ namespace MonchaCadViewer
             }
         }
 
-
-        private void DeviceCombo_DataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
-        {
-            if (DeviceCombo.SelectedIndex == -1) DeviceCombo.SelectedIndex = 0;
-        }
-
         private void HorizontalToggle_Toggled(object sender, RoutedEventArgs e)
         {
             if (this.IsLoaded)
@@ -763,14 +689,6 @@ namespace MonchaCadViewer
         }
 
 
-        private void ScanRateRealSlider_PreviewMouseDown(object sender, MouseButtonEventArgs e)
-        {
-            if (sender is Slider slider)
-            {
-                Point point = Mouse.GetPosition(slider);
-                slider.Value = slider.Minimum + (point.X / slider.ActualWidth) * (slider.Maximum - slider.Minimum);
-            }
-        }
 
         private void kmpsConnectToggle_Toggled(object sender, RoutedEventArgs e)
         {
@@ -840,10 +758,7 @@ namespace MonchaCadViewer
         }
 
       
-        private void ScanRateAnchor_Click(object sender, RoutedEventArgs e)
-        {
-            AppSt.Default.int_scananchor = ScanRateAnchor.IsChecked.Value;
-        }
+
 
         private void MainWindow1_KeyUp(object sender, KeyEventArgs e)
         {
@@ -1082,38 +997,12 @@ namespace MonchaCadViewer
             CanvasBorder.Background = Brushes.LightGray;
         }
 
-        private void ClearCalcMeshBtn_Click(object sender, RoutedEventArgs e)
-        {
-            if (DeviceCombo.SelectedItem is MonchaDevice device)
-            {
-                device.CalculateMesh.Points = null;
-            }
-        }
-
-
-
-
         private void AddLaser_Click(object sender, RoutedEventArgs e)
         {
             LaserManager deviceManager = new LaserManager();
             deviceManager.Show();
         }
 
-        private void SettingUpDn_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double?> e)
-        {
-            MonchaHub.RefreshSize();
-            MonchaHub.RefreshFrame();
-        }
-
-        private void SettingToggle_Toggled(object sender, RoutedEventArgs e)
-        {
-            MonchaHub.RefreshFrame();
-        }
-
-        private void SettingSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
-        {
-            MonchaHub.RefreshFrame();
-        }
 
         private void MinimizedBtn_Click(object sender, RoutedEventArgs e)
         {
@@ -1143,40 +1032,25 @@ namespace MonchaCadViewer
             this.DragMove();
         }
 
-        private void SetDistanceBtn_Click(object sender, RoutedEventArgs e)
-        {
-            SetDistanceBtn.Invoke(() => 
-            {
-                if (LaserMetersCombo.SelectedItem is VLTLaserMeters laserMeters)
-                {
-                    laserMeters.Distance = laserMeters.RealDistance;
-                    DistanceUpDn.Value = laserMeters.Distance;
-                }
-            });
 
+        private void SettingUpDn_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double?> e)
+        {
+            MonchaHub.RefreshSize();
+            MonchaHub.RefreshFrame();
         }
 
-        private void LaserMetersCombo_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        private void SettingToggle_Toggled(object sender, RoutedEventArgs e)
         {
-            if (DeviceCombo.SelectedItem is MonchaDevice monchaDevice)
-            {
-                monchaDevice.ReconnectLMeter(LaserMetersCombo.SelectedItem as VLTLaserMeters);
-
-                DistanceUpDn.DataContext = monchaDevice.LMeter;
-                DistanceUpDn.SetBinding(NumericUpDown.ValueProperty, "Distance");
-
-                DistanceLabel.DataContext = monchaDevice.LMeter;
-                DistanceLabel.SetBinding(Label.ContentProperty, "RealDistance");
-            }
+            MonchaHub.RefreshFrame();
         }
 
-        private void LaserMeterToggle_Toggled(object sender, RoutedEventArgs e)
+        private void SettingSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
-            if (LaserMetersCombo.SelectedItem is VLTLaserMeters laserMeters)
-            {
-                laserMeters.Turn(LaserMeterToggle.IsOn);
-            }
+            MonchaHub.RefreshFrame();
         }
+
+
+
 
         private void Helix_Loaded(object sender, RoutedEventArgs e)
         {

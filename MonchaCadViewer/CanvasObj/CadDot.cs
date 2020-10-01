@@ -3,6 +3,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
+using System.Windows.Shapes;
 using MonchaCadViewer.Calibration;
 using MonchaSDK.Device;
 using MonchaSDK.Object;
@@ -12,25 +13,32 @@ namespace MonchaCadViewer.CanvasObj
     public class CadDot : CadObject
     {
         private bool Translated = false;
-        private Rect rect;
         private double size;
+        private RectangleGeometry rectangle;
 
         public LPoint3D Point { get; set; }
 
 
-        public CadDot(LPoint3D Point, double Size, bool capturemouse, bool move) : base (capturemouse, move, new RectangleGeometry(new Rect(new Size(Size, Size))))
+        public CadDot(LPoint3D Point, double Size, bool capturemouse, bool move) : base(capturemouse, move )
         {
-            this.Point = Point;
+            this.rectangle = new RectangleGeometry(new Rect(new Size(Size, Size)));
 
+            this.ObjectShape = new Path
+            {
+                Data = this.rectangle
+            };
+
+
+            this.Point = Point;
             this.Point.Selected += Point_Selected;
             this.Point.ChangePoint += Point_ChangePoint;
 
-            this.size = Size;
+            this.X = Point.MX - this.size / 2;
+            this.Y = Point.MY - this.size / 2;
 
-            if (this.GmtrObj is RectangleGeometry rectangle)
-            {
-                rect = rectangle.Rect;
-            }
+            this.TranslateChanged += CadDot_TranslateChanged;
+
+            this.size = Size;
 
             this.Focusable = true;
 
@@ -42,13 +50,6 @@ namespace MonchaCadViewer.CanvasObj
             this.MouseLeftButtonUp += CadDot_MouseLeftButtonUp;
             this.MouseLeftButtonDown += CadDot_MouseLeftButtonDown;
             this.Fixed += CadDot_Fixed;
-
-            this.X = Point.GetMPoint.X - this.size / 2;
-            this.Y = Point.GetMPoint.Y - this.size / 2;
-
-            this.TranslateChanged += CadDot_TranslateChanged;
-
-            this.Point.ChangePoint += Point_ChangePoint;
 
             this.Fill = Brushes.Black;
 
@@ -104,7 +105,7 @@ namespace MonchaCadViewer.CanvasObj
                 switch (cmindex.Header)
                 {
                     case "Fix":
-                          this.IsFix = !this.IsFix;
+                        this.IsFix = !this.IsFix;
                         break;
                     case "Remove":
                         this.Remove();
@@ -119,12 +120,8 @@ namespace MonchaCadViewer.CanvasObj
 
         public bool Contains(Point point)
         {
-            if (this.GmtrObj is RectangleGeometry rectangle)
-            {
-                return (this.Point.GetMPoint.X - rectangle.Rect.Size.Width / 2 < point.X && this.Point.GetMPoint.X + rectangle.Rect.Size.Width / 2 > point.X) 
-                && (this.Point.GetMPoint.Y - rectangle.Rect.Size.Height / 2 < point.Y && this.Point.GetMPoint.Y + rectangle.Rect.Size.Height / 2 > point.Y);
-            }
-            return false;
+            return (this.Point.GetMPoint.X - this.rectangle.Rect.Size.Width / 2 < point.X && this.Point.GetMPoint.X + this.rectangle.Rect.Size.Width / 2 > point.X)
+            && (this.Point.GetMPoint.Y - this.rectangle.Rect.Size.Height / 2 < point.Y && this.Point.GetMPoint.Y + this.rectangle.Rect.Size.Height / 2 > point.Y);
         }
     }
 }

@@ -37,7 +37,7 @@ namespace MonchaCadViewer
         private string qrpath = string.Empty;
 
         private KmpsAppl kmpsAppl;
-
+        private CadCanvas MainCanvas;
         //private DotShape[,] BaseMeshRectangles;
 
         public MainWindow()
@@ -45,8 +45,11 @@ namespace MonchaCadViewer
             InitializeComponent();
             MonchaHub.RefreshedDevice += MonchaHub_RefreshDevice;
 
+            MultPanel.NeedUpdate += MultPanel_NeedUpdate;
 
             LoadMoncha();
+
+            MultPanel.DataContext = MonchaHub.ProjectionSetting;
 
             if (DevicePanel.Device == null && MonchaHub.Devices.Count > 0)
             {
@@ -54,15 +57,24 @@ namespace MonchaCadViewer
             }
 
             CanvasBoxBorder.BorderThickness = new Thickness(MonchaHub.GetThinkess());
-            CadCanvas cadCanvas = new CadCanvas(MonchaHub.Size, true);
-            cadCanvas.Focusable = true;
-            cadCanvas.SelectedObject += CadCanvas_SelectedObject;
-            cadCanvas.ContextMenu = new ContextMenu();
-            ContextMenuLib.CanvasMenu(cadCanvas.ContextMenu);
-            cadCanvas.ContextMenuClosing += CadCanvas_ContextMenuClosing;
+
+            this.MainCanvas = new CadCanvas(MonchaHub.Size, true);
+            this.MainCanvas.Focusable = true;
+            this.MainCanvas.SelectedObject += CadCanvas_SelectedObject;
+            this.MainCanvas.ContextMenu = new ContextMenu();
+            ContextMenuLib.CanvasMenu(this.MainCanvas.ContextMenu);
+            this.MainCanvas.ContextMenuClosing += CadCanvas_ContextMenuClosing;
             //cadCanvas.ErrorMessageEvent += CadCanvas_ErrorMessageEvent;
 
-            CanvasBox.Child = cadCanvas;
+            CanvasBox.Child = this.MainCanvas;
+        }
+
+        private void MultPanel_NeedUpdate(object sender, EventArgs e)
+        {
+            if (this.IsLoaded)
+            {
+                this.MainCanvas.UpdateProjection();
+            }
         }
 
         private void CadCanvas_ErrorMessageEvent(object sender, string e)
@@ -79,7 +91,7 @@ namespace MonchaCadViewer
                     switch (cmindex.Header)
                     {
                         case "Freeze All":
-                            foreach(CadObject cadObject in canvas.Children)
+                            foreach (CadObject cadObject in canvas.Children)
                             {
                                 cadObject.IsFix = true;
                             }
@@ -97,13 +109,14 @@ namespace MonchaCadViewer
 
         private void MonchaHub_UpdatedFrame(object sender, LObjectList e)
         {
-           // if (CanvasBox.Child != null)
-             //   SendProcessor.Worker(CanvasBox.Child as CadCanvas);
+            // if (CanvasBox.Child != null)
+            //   SendProcessor.Worker(CanvasBox.Child as CadCanvas);
         }
 
         private void CadCanvas_SelectedObject(object sender, CadObject e)
         {
-            ObjectPanel.DataContextUpdate(e);
+            ObjectPanel.DataContext = e;
+            MultPanel.DataContext = e;
         }
 
         private void MonchaHub_RefreshDevice(object sender, List<MonchaDevice> e)
@@ -128,7 +141,7 @@ namespace MonchaCadViewer
                     treeViewDevice.ContextMenuClosing += TreeViewDevice_ContextMenuClosing;
 
                     if (device.PolyMeshUsed)
-                    { 
+                    {
                         TreeViewItem treeViewBaseMesh = new TreeViewItem();
                         treeViewBaseMesh.Header = "BaseMesh";
                         treeViewBaseMesh.DataContext = device.BaseMesh;
@@ -228,34 +241,25 @@ namespace MonchaCadViewer
                 BrowseMoncha(); //select if not
             }
 
-                //recheck
-                if (File.Exists(AppSt.Default.cl_moncha_path))
-                {
-                    //send path to hub class
-                    MonchaHub.Load(AppSt.Default.cl_moncha_path);
+            //recheck
+            if (File.Exists(AppSt.Default.cl_moncha_path))
+            {
+                //send path to hub class
+                MonchaHub.Load(AppSt.Default.cl_moncha_path);
 
-                    WidthUpDn.DataContext = MonchaHub.Size;
-                    WidthUpDn.SetBinding(NumericUpDown.ValueProperty, "X");
+                WidthUpDn.DataContext = MonchaHub.Size;
+                WidthUpDn.SetBinding(NumericUpDown.ValueProperty, "X");
 
-                    HeightUpD.DataContext = MonchaHub.Size;
-                    HeightUpD.SetBinding(NumericUpDown.ValueProperty, "Y");
+                HeightUpD.DataContext = MonchaHub.Size;
+                HeightUpD.SetBinding(NumericUpDown.ValueProperty, "Y");
 
-                    DeepUpDn.DataContext = MonchaHub.Size;
-                    DeepUpDn.SetBinding(NumericUpDown.ValueProperty, "Z");
+                DeepUpDn.DataContext = MonchaHub.Size;
+                DeepUpDn.SetBinding(NumericUpDown.ValueProperty, "Z");
 
-                    MashMultiplierUpDn.Value = MonchaHub.Size.M.X;
-
-                    CRSUpDn.DataContext = ReadyFrame.CRS;
-                    CRSUpDn.SetBinding(NumericUpDown.ValueProperty, "MX");
-                    ReadyFrame.CRS.M.ChangePoint += M_ChangePoint;
-                }
+                MashMultiplierUpDn.Value = MonchaHub.Size.M.X;
+            }
         }
 
-
-        private void M_ChangePoint(object sender, LPoint3D e)
-        {
-            CRSUpDn.SetBinding(NumericUpDown.ValueProperty, "MX");
-        }
 
         private void TreeBaseMesh(object sender, MouseButtonEventArgs e)
         {
@@ -322,17 +326,17 @@ namespace MonchaCadViewer
                         switch (cmindex.Header)
                         {
                             case "Create":
-                                    CreateGridWindow createGridWindow = new CreateGridWindow(DeviceTree.DataContext as MonchaDevice, meshTree.DataContext as MonchaDeviceMesh);
-                                    createGridWindow.ShowDialog();
+                                CreateGridWindow createGridWindow = new CreateGridWindow(DeviceTree.DataContext as MonchaDevice, meshTree.DataContext as MonchaDeviceMesh);
+                                createGridWindow.ShowDialog();
                                 break;
                             case "Refresh":
-                                    deviceMesh = mws.GetMeshDot(device.HWIdentifier, deviceMesh.Name, deviceMesh.Affine);
+                                deviceMesh = mws.GetMeshDot(device.HWIdentifier, deviceMesh.Name, deviceMesh.Affine);
                                 break;
                             case "Inverse":
-                                        deviceMesh.InverseYPosition();
+                                deviceMesh.InverseYPosition();
                                 break;
                             case "ReturnPoint":
-                                        deviceMesh.ReturnPoint();
+                                deviceMesh.ReturnPoint();
                                 break;
                             case "Morph":
                                 deviceMesh.Morph = !deviceMesh.Morph;
@@ -458,13 +462,13 @@ namespace MonchaCadViewer
 
         private void OpenFile(string filename)
         {
-            PathGeometry _actualFrames = new PathGeometry();
+            List<Shape> _actualFrames = new List<Shape>();
 
             if (filename.Split('.').Last() == "svg")
                 _actualFrames = SVG.Get(filename);
 
             else if (filename.Split('.').Last() == "dxf")
-                _actualFrames = DXF.Get(filename, ReadyFrame.CRS.MX);
+                _actualFrames = DXF.Get(filename, MonchaHub.ProjectionSetting.PointStep.MX);
 
             else if ((filename.Split('.').Last() == "frw") || (filename.Split('.').Last() == "cdw"))
             {
@@ -484,7 +488,7 @@ namespace MonchaCadViewer
                 MonchaWrt(filename);
             */
 
-            if (_actualFrames != null && _actualFrames.Figures.Count > 0)
+            if (_actualFrames.Count > 0)
                 AppSt.Default.stg_last_file_path = filename;
             else return;
 
@@ -493,7 +497,7 @@ namespace MonchaCadViewer
             ContourProcessor(false, _actualFrames);
         }
 
-        private void ContourProcessor(bool remove, PathGeometry frame, bool show = true)
+        private void ContourProcessor(bool remove, List<Shape> shapes, bool show = true)
         {
             if (remove)
             {
@@ -501,60 +505,59 @@ namespace MonchaCadViewer
                 FrameStack.Children.Clear();
             }
 
-            if (frame.Transform is TransformGroup transformGroup && transformGroup.Children[2] is TranslateTransform translateTranform) 
-            {
-                TranslateTransform translate = transformGroup.Children[2] as TranslateTransform;
+            CadObjectsGroup cadObjectsGroup = new CadObjectsGroup(shapes);
 
-                translateTranform.X = MonchaHub.Size.GetMPoint.X / 2 - (frame.Bounds.X - translate.X + frame.Bounds.Width / 2);
-                translateTranform.Y = MonchaHub.Size.GetMPoint.Y / 2 - (frame.Bounds.Y - translate.Y + frame.Bounds.Height / 2);
+            Border _viewborder = new Border();
+            _viewborder.BorderThickness = new Thickness(1, 0, 1, 0);
+            _viewborder.BorderBrush = Brushes.Gray;
+            _viewborder.Width = FrameStack.ActualHeight;
+            _viewborder.Background = Brushes.Gray;
+
+            Viewbox _viewbox = new Viewbox();
+            _viewbox.Stretch = Stretch.Uniform;
+            _viewbox.StretchDirection = StretchDirection.DownOnly;
+            _viewbox.Margin = new Thickness(0);
+            _viewbox.DataContext = cadObjectsGroup;
+            _viewbox.ClipToBounds = true;
+            _viewbox.Cursor = Cursors.Hand;
+            _viewbox.MouseLeftButtonUp += DrawTreeContour;
+            _viewbox.MouseRightButtonUp += _viewbox_MouseRightButtonUp;
+
+
+            Viewbox _canvasviewbox = new Viewbox();
+            _canvasviewbox.Stretch = Stretch.Uniform;
+            _canvasviewbox.StretchDirection = StretchDirection.DownOnly;
+            _canvasviewbox.Margin = new Thickness(0);
+
+            CadCanvas _canvas = new CadCanvas(MonchaHub.Size, false);
+            _canvas.Background = Brushes.White;
+
+            _canvasviewbox.Child = _canvas;
+            _viewbox.Child = _canvasviewbox;
+            _viewborder.Child = _viewbox;
+            FrameStack.Children.Add(_viewborder);
+
+
+            _canvas.DrawContour(new CadContour(cadObjectsGroup, false, false), false, false, true);
+
+            TreeViewItem contourTree = new TreeViewItem();
+            //contourTree.Header = contoursList.DisplayName == string.Empty ? "Frame " + FrameTree.Items.Count : "Frame:" + contoursList.DisplayName;
+            contourTree.DataContext = shapes;
+            contourTree.MouseLeftButtonUp += DrawTreeContour;
+
+            FrameTree.Items.Add(contourTree);
+
+            if (show)
+            {
+                this.MainCanvas.Clear();
+
+                foreach (CadObject cadObject in cadObjectsGroup.Objects)
+                {
+                    this.MainCanvas.DrawContour(cadObject, true, true, true);
+                }
             }
 
-                Border _viewborder = new Border();
-                _viewborder.BorderThickness = new Thickness(1, 0, 1, 0);
-                _viewborder.BorderBrush = Brushes.Gray;
-                _viewborder.Width = FrameStack.ActualHeight;
-                _viewborder.Background = Brushes.Gray;
-
-                Viewbox _viewbox = new Viewbox();
-                _viewbox.Stretch = Stretch.Uniform;
-                _viewbox.StretchDirection = StretchDirection.DownOnly;
-                _viewbox.Margin = new Thickness(0);
-                _viewbox.DataContext = new CadContour(frame, false, false);
-                _viewbox.ClipToBounds = true;
-            _viewbox.Cursor = Cursors.Hand;
-                _viewbox.MouseLeftButtonUp += DrawTreeContour;
-                _viewbox.MouseRightButtonUp += _viewbox_MouseRightButtonUp;
-
-
-                Viewbox _canvasviewbox = new Viewbox();
-                _canvasviewbox.Stretch = Stretch.Uniform;
-                _canvasviewbox.StretchDirection = StretchDirection.DownOnly;
-                _canvasviewbox.Margin = new Thickness(0);
-
-                CadCanvas _canvas = new CadCanvas(MonchaHub.Size, false);
-                _canvas.Background = Brushes.White;
-
-                _canvasviewbox.Child = _canvas;
-                _viewbox.Child = _canvasviewbox;
-                _viewborder.Child = _viewbox;
-                FrameStack.Children.Add(_viewborder);
-
-                _canvas.DrawContour(frame, false, false, true);
-
-                TreeViewItem contourTree = new TreeViewItem();
-                //contourTree.Header = contoursList.DisplayName == string.Empty ? "Frame " + FrameTree.Items.Count : "Frame:" + contoursList.DisplayName;
-                contourTree.DataContext = frame;
-                contourTree.MouseLeftButtonUp += DrawTreeContour;
-
-                FrameTree.Items.Add(contourTree);
-
-                if (show && CanvasBox.Child is CadCanvas canvas) 
-                    canvas.DrawContour(frame, true, false, true);
-
-
-                
-
-        LinesVisual3D linesVisual3D = new LinesVisual3D();
+            LinesVisual3D linesVisual3D = new LinesVisual3D();
             linesVisual3D.Color = Color.FromRgb(255, 0, 0);
             linesVisual3D.Thickness = 1;
             linesVisual3D.Points.Add(new Point3D(0, 0, 0));
@@ -564,45 +567,52 @@ namespace MonchaCadViewer
 
             HelixCanvas.Children.Add(linesVisual3D);
 
-            
+
         }
 
         private void _viewbox_MouseRightButtonUp(object sender, MouseButtonEventArgs e)
         {
             if (sender is Viewbox viewItem)
             {
-                if (viewItem.DataContext is CadObject CadObj)
+                if (viewItem.DataContext is CadObjectsGroup CadObj)
                 {
-                    CadObj.Angle = 0;
-
-                    CadObj.ScaleX = 1;
-                    CadObj.ScaleY = 1;
-
-                    CadObj.X = MonchaHub.Size.GetMPoint.X / 2 - (CadObj.Bounds.X - CadObj.X + CadObj.Bounds.Width / 2 );
-                    CadObj.Y = MonchaHub.Size.GetMPoint.Y / 2 - (CadObj.Bounds.Y - CadObj.Y + CadObj.Bounds.Height / 2);
+                    CadObj.UpdateTransform();
                 }
             }
         }
 
         private void DrawTreeContour(object sender, MouseButtonEventArgs e)
         {
+            if (Keyboard.Modifiers != ModifierKeys.Shift)
+            {
+                this.MainCanvas.Clear();
+            }
+
             if (sender is TreeViewItem viewItem)
             {
                 //_selectedindex = FrameTree.Items.IndexOf(viewItem);
-                if (viewItem.DataContext is PathGeometry tempList && CanvasBox.Child is CadCanvas canvas)
-                    canvas.DrawContour(tempList, true, Keyboard.Modifiers == ModifierKeys.Shift, true);
+                if (viewItem.DataContext is CadObjectsGroup cadObjectsGroup && CanvasBox.Child is CadCanvas canvas)
+                {
+                    foreach (CadObject cadObject in cadObjectsGroup.Objects)
+                    {
+                        canvas.DrawContour(cadObject, true, true, true);
+                    }
+                }
             }
 
             if (sender is Viewbox viewbox)
             {
                 //_selectedindex = FrameStack.Children.IndexOf(viewbox.Parent as Border);
-                if (viewbox.DataContext is CadContour contour && CanvasBox.Child is CadCanvas canvas)
-                    canvas.DrawContour((PathGeometry)contour.GmtrObj, true, Keyboard.Modifiers == ModifierKeys.Shift, true);
+                if (viewbox.DataContext is CadObjectsGroup cadObjectsGroup && CanvasBox.Child is CadCanvas canvas)
+                {
+                    foreach (CadObject cadObject in cadObjectsGroup.Objects)
+                    {
+                        canvas.DrawContour(cadObject, true, true, true);
+                    }
+                }
+                    
             }
         }
-
-
-
 
 
         private void OpenBtn_DragDrop(object sender, DragEventArgs e)
@@ -672,9 +682,9 @@ namespace MonchaCadViewer
             {
                 if (canvas.Status != 1)
                     canvas.Status = 1;
-                else 
+                else
                     canvas.Status = 0;
-                if (canvas.Status == 1) 
+                if (canvas.Status == 1)
                     (sender as Button).Background = Brushes.Green;
                 else
                     (sender as Button).Background = Brushes.White;
@@ -714,7 +724,7 @@ namespace MonchaCadViewer
         private void KmpsAppl_OpenedDoc(object sender, object e)
         {
             if (e is KmpsDoc kmpsDoc)
-            KmpsNameLbl.Content = kmpsDoc.D7.Name;
+                KmpsNameLbl.Content = kmpsDoc.D7.Name;
         }
 
         private void KmpsAppl_ChangeDoc(object sender, KmpsDoc e)
@@ -733,8 +743,8 @@ namespace MonchaCadViewer
         private void stlSeparatorBox_TextChanged(object sender, TextChangedEventArgs e)
         {
             if (svgSeparatorBox1.Text != string.Empty)
-                AppSt.Default.svg_separator1 =  svgSeparatorBox1.Text.Last();
-            if(svgSeparatorBox2.Text != string.Empty)
+                AppSt.Default.svg_separator1 = svgSeparatorBox1.Text.Last();
+            if (svgSeparatorBox2.Text != string.Empty)
                 AppSt.Default.svg_separator2 = svgSeparatorBox2.Text.Last();
         }
 
@@ -742,8 +752,7 @@ namespace MonchaCadViewer
         {
             if (KmpsAppl.KompasAPI != null)
             {
-                PathGeometry lObjectList = Tools.MakeTransform(ContourCalc.GetGeometry(this.kmpsAppl.Doc, ReadyFrame.CRS.MX, false, true));
-                ContourProcessor(false, lObjectList);
+                ContourProcessor(false, ContourCalc.GetGeometry(this.kmpsAppl.Doc, MonchaHub.ProjectionSetting.PointStep.MX, false, true));
             }
 
         }
@@ -752,12 +761,11 @@ namespace MonchaCadViewer
         {
             if (KmpsAppl.KompasAPI != null)
             {
-                PathGeometry lObjectList = Tools.MakeTransform(ContourCalc.GetGeometry(this.kmpsAppl.Doc, ReadyFrame.CRS.MX, true, true));
-                ContourProcessor(false, lObjectList);
+                ContourProcessor(false, ContourCalc.GetGeometry(this.kmpsAppl.Doc, MonchaHub.ProjectionSetting.PointStep.MX, true, true));
             }
         }
 
-      
+
 
 
         private void MainWindow1_KeyUp(object sender, KeyEventArgs e)
@@ -788,12 +796,66 @@ namespace MonchaCadViewer
                 case Key.OemPlus:
                     MirrorPosition();
                     break;
+                case Key.D1:
+                    if (Keyboard.Modifiers == ModifierKeys.Control)
+                    {
+                        DeviceBright(2);
+                    }
+                    break;
+                case Key.D2:
+                    if (Keyboard.Modifiers == ModifierKeys.Control)
+                    {
+                        DeviceBright(3);
+                    }
+                    break;
+                case Key.D3:
+                    if (Keyboard.Modifiers == ModifierKeys.Control)
+                    {
+                        DeviceBright(4);
+                    }
+                    break;
+                case Key.D4:
+                    if (Keyboard.Modifiers == ModifierKeys.Control)
+                    {
+                        DeviceBright(5);
+                    }
+                    break;
+                case Key.D5:
+                    if (Keyboard.Modifiers == ModifierKeys.Control)
+                    {
+                        DeviceBright(6);
+                    }
+                    break;
+                case Key.D6:
+                    if (Keyboard.Modifiers == ModifierKeys.Control)
+                    {
+                        DeviceBright(7);
+                    }
+                    break;
+                case Key.D7:
+                    if (Keyboard.Modifiers == ModifierKeys.Control)
+                    {
+                        DeviceBright(8);
+                    }
+                    break;
+                case Key.D8:
+                    if (Keyboard.Modifiers == ModifierKeys.Control)
+                    {
+                        DeviceBright(9);
+                    }
+                    break;
+                case Key.D9:
+                    if (Keyboard.Modifiers == ModifierKeys.Control)
+                    {
+                        DeviceBright(10);
+                    }
+                    break;
 
             }
 
-            void DeviceBright()
+            void DeviceBright(double TenPercent)
             {
-
+                DevicePanel.Device.Alpha = (byte)(255 * TenPercent / 10);
             }
 
             void SelectNext()
@@ -834,17 +896,14 @@ namespace MonchaCadViewer
 
             void MoveCanvasSet(double left, double top)
             {
-                if (CanvasBox.Child is CadCanvas canvas)
+                for (int i = 0; i < this.MainCanvas.Children.Count; i++)
                 {
-                    for (int i = 0; i < canvas.Children.Count; i++)
+                    if (this.MainCanvas.Children[i] is CadObject cadObject)
                     {
-                        if (canvas.Children[i] is CadObject cadObject)
+                        if (cadObject.IsSelected && !cadObject.IsFix)
                         {
-                            if (cadObject.IsSelected  && !cadObject.IsFix)
-                            {
-                                cadObject.X += left;
-                                cadObject.Y += top;
-                            }
+                            cadObject.X += left;
+                            cadObject.Y += top;
                         }
                     }
                 }
@@ -860,7 +919,7 @@ namespace MonchaCadViewer
                         {
                             if (cadObject1.IsSelected)
                             {
-                               if (cadObject1.DataContext is MonchaDeviceMesh deviceMesh && cadObject1 is CadDot dot)
+                                if (cadObject1.DataContext is MonchaDeviceMesh deviceMesh && cadObject1 is CadDot dot)
                                 {
                                     deviceMesh.MirrorPoint(dot.Point);
                                     return;
@@ -880,13 +939,13 @@ namespace MonchaCadViewer
                 qrpath += keyChar;
                 LogBox.Items.Add((AppSt.Default.save_qr_path ? AppSt.Default.save_base_folder : AppSt.Default.save_work_folder) + @qrpath);
                 if (File.Exists((AppSt.Default.save_qr_path ? AppSt.Default.save_base_folder : AppSt.Default.save_work_folder) + @qrpath))
-                    {
+                {
                     //Progressinfo.Content = "Файл найден!";
                     OpenFile((AppSt.Default.save_qr_path ? AppSt.Default.save_base_folder : AppSt.Default.save_work_folder) + @qrpath);
-                    }
+                }
                 else
                 {
-                   // Progressinfo.Content = "Файл не найден!";
+                    // Progressinfo.Content = "Файл не найден!";
                 }
             }
         }
@@ -903,7 +962,7 @@ namespace MonchaCadViewer
             {
                 qrpath = string.Empty;
                 AppSt.Default.save_qr_path = true;
-                
+
             }
             else if (qrpath.Contains("&"))
             {
@@ -978,9 +1037,9 @@ namespace MonchaCadViewer
             OpenBtn.Background = Brushes.Yellow;
             string[] filePaths = (string[])(e.Data.GetData(DataFormats.FileDrop));
             if (filePaths != null)
-            foreach (string fileLoc in filePaths) //переберает всю инфу пока не найдет строку адреса
-                if (File.Exists(fileLoc))
-                    OpenBtn.Content = "Открыть " + fileLoc.Split('\\').Last();
+                foreach (string fileLoc in filePaths) //переберает всю инфу пока не найдет строку адреса
+                    if (File.Exists(fileLoc))
+                        OpenBtn.Content = "Открыть " + fileLoc.Split('\\').Last();
             CanvasBorder.Background = Brushes.LightYellow;
         }
 
@@ -1073,6 +1132,7 @@ namespace MonchaCadViewer
                 PointStepUpDn.Interval = PointStepUpDn.Interval * 10;
             }
         }
+
     }
-    
+
 }

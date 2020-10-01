@@ -74,12 +74,8 @@ namespace MonchaCadViewer.ToolsPanel
                     DistanceUpDn.DataContext = tempdevice.LMeter;
                     DistanceUpDn.SetBinding(NumericUpDown.ValueProperty, "Distance");
 
-                    DistanceLabel.DataContext = tempdevice.LMeter;
-                    DistanceLabel.SetBinding(Label.ContentProperty, "RealDistance");
-
                     tempdevice.LMeter.ChangeDimention += LMeter_ChangeDimention;
 
-                    SetDistanceBtn.DataContext = tempdevice.LMeter;
                 }
 
                 //Device
@@ -89,52 +85,58 @@ namespace MonchaCadViewer.ToolsPanel
                 ScanRateCalc.DataContext = tempdevice;
                 ScanRateCalc.SetBinding(Slider.ValueProperty, "ScanRateCalc");
 
-                RedUpDn.DataContext = tempdevice;
-                RedUpDn.SetBinding(NumericUpDown.ValueProperty, "Red");
-
-                RedToggle.DataContext = tempdevice;
-                RedToggle.SetBinding(ToggleSwitch.IsOnProperty, "RedOn");
-
-                GreenUpDn.DataContext = tempdevice;
-                GreenUpDn.SetBinding(NumericUpDown.ValueProperty, "Green");
-
-                GreenToggle.DataContext = tempdevice;
-                GreenToggle.SetBinding(ToggleSwitch.IsOnProperty, "GreenOn");
-
-                BlueUpDn.DataContext = tempdevice;
-                BlueUpDn.SetBinding(NumericUpDown.ValueProperty, "Blue");
-
-                BlueToggle.DataContext = tempdevice;
-                BlueToggle.SetBinding(ToggleSwitch.IsOnProperty, "BlueOn");
-
-                AlphaSlider.DataContext = tempdevice;
-                AlphaSlider.SetBinding(Slider.ValueProperty, "Alpha");
-
                 FPSUpDn.DataContext = tempdevice;
                 FPSUpDn.SetBinding(NumericUpDown.ValueProperty, "FPS");
-
-                AngleWaitSlider.DataContext = tempdevice;
-                AngleWaitSlider.SetBinding(Slider.ValueProperty, "StartLineWait");
-
-                EndBlankSlider.DataContext = tempdevice;
-                EndBlankSlider.SetBinding(Slider.ValueProperty, "EndBlanckWait");
-
-                StartBlankSlider.DataContext = tempdevice;
-                StartBlankSlider.SetBinding(Slider.ValueProperty, "StartBlankWait");
 
                 InvertXtoggle.DataContext = tempdevice;
                 InvertXtoggle.SetBinding(ToggleSwitch.IsOnProperty, "InvertedX");
 
                 InvertYtoggle.DataContext = tempdevice;
                 InvertYtoggle.SetBinding(ToggleSwitch.IsOnProperty, "InvertedY");
+
+                //ObjectReadySetting
+                RedUpDn.DataContext = tempdevice.ProjectionSetting;
+                RedUpDn.SetBinding(NumericUpDown.ValueProperty, "Red");
+
+                RedToggle.DataContext = tempdevice.ProjectionSetting;
+                RedToggle.SetBinding(ToggleSwitch.IsOnProperty, "RedOn");
+
+                GreenUpDn.DataContext = tempdevice.ProjectionSetting;
+                GreenUpDn.SetBinding(NumericUpDown.ValueProperty, "Green");
+
+                GreenToggle.DataContext = tempdevice.ProjectionSetting;
+                GreenToggle.SetBinding(ToggleSwitch.IsOnProperty, "GreenOn");
+
+                BlueUpDn.DataContext = tempdevice.ProjectionSetting;
+                BlueUpDn.SetBinding(NumericUpDown.ValueProperty, "Blue");
+
+                BlueToggle.DataContext = tempdevice.ProjectionSetting;
+                BlueToggle.SetBinding(ToggleSwitch.IsOnProperty, "BlueOn");
+
+                AlphaSlider.DataContext = tempdevice;
+                AlphaSlider.SetBinding(Slider.ValueProperty, "Alpha");
+
+                AngleWaitSlider.DataContext = tempdevice.ProjectionSetting;
+                AngleWaitSlider.SetBinding(Slider.ValueProperty, "StartLineWait");
+
+                EndBlankSlider.DataContext = tempdevice.ProjectionSetting;
+                EndBlankSlider.SetBinding(Slider.ValueProperty, "EndBlanckWait");
+
+                StartBlankSlider.DataContext = tempdevice.ProjectionSetting;
+                StartBlankSlider.SetBinding(Slider.ValueProperty, "StartBlankWait");
+
+                CRSUpDn.DataContext = tempdevice.ProjectionSetting.PointStep;
+                CRSUpDn.SetBinding(NumericUpDown.ValueProperty, "MX");
+
             }
         }
 
+
         private void LMeter_ChangeDimention(object sender, double e)
         {
-            DistanceLabel.Invoke(() => {
+           /* DistanceLabel.Invoke(() => {
                 DistanceLabel.Content = e;
-            });
+            });*/
         }
 
         private void ScanRateAnchor_Click(object sender, RoutedEventArgs e)
@@ -164,21 +166,19 @@ namespace MonchaCadViewer.ToolsPanel
                 DistanceUpDn.DataContext = monchaDevice.LMeter;
                 DistanceUpDn.SetBinding(NumericUpDown.ValueProperty, "Distance");
 
-                DistanceLabel.DataContext = monchaDevice.LMeter;
-                DistanceLabel.SetBinding(Label.ContentProperty, "RealDistance");
             }
         }
 
         private void SetDistanceBtn_Click(object sender, RoutedEventArgs e)
         {
-            SetDistanceBtn.Invoke(() =>
+           /* SetDistanceBtn.Invoke(() =>
             {
                 if (LaserMetersCombo.SelectedItem is VLTLaserMeters laserMeters)
                 {
                     laserMeters.Distance = laserMeters.RealDistance;
                     DistanceUpDn.Value = laserMeters.Distance;
                 }
-            });
+            });*/
 
         }
 

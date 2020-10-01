@@ -60,7 +60,7 @@ namespace MonchaCadViewer.CanvasObj.DimObj
             visualChildren.Add(outline);
             visualChildren.Add(rotateHandle);
 
-            strokeBounds = this.Contour.Transform.TransformBounds(this.Contour.GmtrObj.Bounds);
+           // strokeBounds = this.Contour.Transform.TransformBounds(this.Contour.GmtrObj.Bounds);
             LinePen = new Pen(Brushes.LightGray, MonchaHub.GetThinkess() / 2);
             Textsize = MonchaHub.GetThinkess() * 5 + 1;
         }
@@ -177,7 +177,7 @@ namespace MonchaCadViewer.CanvasObj.DimObj
 
             // Draws the thumb and the rectangle around the strokes.
            // rotateHandle.Arrange(handleRect);
-            outline.Data = new RectangleGeometry(strokeBounds);
+          /*  outline.Data = new RectangleGeometry(strokeBounds);
             if (Contour.Bounds.Size != Size.Empty)
                 outline.Arrange(new Rect(Contour.Bounds.Size));
 
@@ -197,12 +197,12 @@ namespace MonchaCadViewer.CanvasObj.DimObj
             //Left
             DrawMarginLine(this.Contour.GmtrObj.Bounds.BottomLeft,
             this.Contour.GmtrObj.Bounds.TopLeft,
-            this.Contour.GmtrObj.Bounds.BottomRight);
+            this.Contour.GmtrObj.Bounds.BottomRight);*/
 ;
 
 
             //width
-
+            /*
             drawingContext.DrawText(new FormattedText("X:" + Math.Round(Math.Round(outline.ActualWidth), 2).ToString(), new System.Globalization.CultureInfo("ru-RU"), FlowDirection.LeftToRight,
             new Typeface("Segoe UI"), (int)Textsize, Brushes.Gray), 
             new Point(outline.Data.Bounds.Location.X + outline.Data.Bounds.Width / 2, outline.Data.Bounds.Location.Y + outline.Data.Bounds.Height / 2 - Textsize * 1.5));
@@ -222,7 +222,7 @@ namespace MonchaCadViewer.CanvasObj.DimObj
                     new FormattedText(Math.Round(Math.Sqrt(Math.Pow(point2.X - point1.X, 2) + Math.Pow(point2.Y - point1.Y, 2)), 2).ToString(),
                     new System.Globalization.CultureInfo("ru-RU"), FlowDirection.LeftToRight, new Typeface("Segoe UI"), (int)Textsize, Brushes.Gray),
                 TextPoint);
-            }
+            }*/
         }
 
 

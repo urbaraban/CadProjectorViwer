@@ -35,6 +35,7 @@ namespace MonchaCadViewer.CanvasObj
             AddItem("Fix", contextMenu);
             AddItem("Remove", contextMenu);
             AddItem("Render", contextMenu);
+            AddItem("Open", contextMenu);
         }
 
 

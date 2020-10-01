@@ -9,6 +9,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Threading;
 using MonchaSDK.Object;
+using System.Windows.Shapes;
 
 namespace MonchaCadViewer.CanvasObj
 {
@@ -58,6 +59,10 @@ namespace MonchaCadViewer.CanvasObj
 
         }
 
+        public void UpdateProjection()
+        {
+            SendProcessor.Worker(this);
+        }
         private void MonchaHub_NeedUpdateFrame(object sender, bool e)
         {
             Console.WriteLine("NeedUpdate");
@@ -89,31 +94,28 @@ namespace MonchaCadViewer.CanvasObj
             }
         }
 
-        public void DrawContour(PathGeometry _innerList, bool maincanvas, bool add, bool mousemove)
+        public void DrawContour(Shape obj, bool maincanvas, bool add, bool mousemove)
         {
-            if (_innerList.Figures.Count > 0)
+
+            foreach (MonchaDevice device in MonchaHub.Devices)
             {
-                foreach (MonchaDevice device in MonchaHub.Devices)
-                {
-                    device.Calibration = false;
-                }
-
-                if (!add)
-                {
-                    this.Clear();
-                }
-
-                LPoint3D Center = new LPoint3D(0.5, 0.5, 0);
-                Center.M = this._size;
-
-                CadContour polygon = new CadContour(_innerList, maincanvas, mousemove);
-                polygon.OnBaseMesh = false;
-                polygon.Updated += Object_Updated;
-                this.Add(polygon);
-
-                if (this._maincanvas)
-                    SendProcessor.Worker(this);
+                device.Calibration = false;
             }
+
+            if (add == false)
+            {
+                this.Clear();
+            }
+
+            if (obj is CadObject cadObject)
+            {
+                cadObject.Updated += Object_Updated;
+            }
+
+            this.Add(obj);
+
+            if (this._maincanvas)
+                SendProcessor.Worker(this);
         }
 
         private void Object_Updated(object sender, CadObject e)
@@ -124,24 +126,18 @@ namespace MonchaCadViewer.CanvasObj
 
         private void Obj_Updated(object sender, CadObject e)
         {
-            Console.WriteLine("UpdateObj");
             if (this._maincanvas)
                 SendProcessor.Worker(this);
         }
 
         public void DrawRectangle(LPoint3D point1, LPoint3D point2)
         {
-
             CadDot cadDot1 = new CadDot(point1, MonchaHub.GetThinkess() * 3, true, false);
             cadDot1.Render = false;
             CadDot cadDot2 = new CadDot(point2, MonchaHub.GetThinkess() * 3, true, false);
             cadDot2.Render = false;
             this.Children.Add(cadDot1);
             this.Children.Add(cadDot2);
-
-            CadRectangle cadRectangle = new CadRectangle(true, point1, point2, false);
-            cadRectangle.Render = false;
-            this.Children.Add(cadRectangle);
         }
 
 
@@ -236,11 +232,18 @@ namespace MonchaCadViewer.CanvasObj
             this.Children.Clear();
         }
 
-        public void Add(CadObject cadObject)
+        public void Add(Shape obj)
         {
-            cadObject.Updated += Obj_Updated;
-            cadObject.Selected += Obj_Selected;
-            this.Children.Add(cadObject);
+            if (this.Children.Equals(obj) == false)
+            {
+                if (obj is CadObject cadObject)
+                {
+                    cadObject.Updated += Obj_Updated;
+                    cadObject.Selected += Obj_Selected;
+                }
+                this.Children.Add(obj);
+            }
+
         }
 
         private void Obj_Selected(object sender, CadObject e)

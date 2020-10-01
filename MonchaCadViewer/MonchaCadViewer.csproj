@@ -33,7 +33,7 @@
     <SuiteName>Viwer</SuiteName>
     <WebPage>publish.htm</WebPage>
     <OpenBrowserOnPublish>false</OpenBrowserOnPublish>
-    <ApplicationRevision>58</ApplicationRevision>
+    <ApplicationRevision>59</ApplicationRevision>
     <ApplicationVersion>0.8.0.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <CreateDesktopShortcut>true</CreateDesktopShortcut>
@@ -209,13 +209,12 @@
       <DependentUpon>DotEdit.xaml</DependentUpon>
     </Compile>
     <Compile Include="Calibration\MeshTool.cs" />
-    <Compile Include="CanvasObj\CadRectangle.cs" />
+    <Compile Include="CanvasObj\CadObjectsGroup.cs" />
     <Compile Include="CanvasObj\DimObj\AdornerContourFrame.cs" />
     <Compile Include="CanvasObj\CadObject.cs" />
     <Compile Include="CanvasObj\DimObj\AdornerLineDim.cs" />
-    <Compile Include="Calibration\ContextMenuLib.cs" />
+    <Compile Include="ContextMenuLib.cs" />
     <Compile Include="CanvasObj\CadDot.cs" />
-    <Compile Include="CanvasObj\CadLine.cs" />
     <Compile Include="CanvasObj\CadCanvas.cs" />
     <Compile Include="CanvasObj\SendProcessor.cs" />
     <Compile Include="CanvasObj\CadContour.cs" />
@@ -231,6 +230,9 @@
     </Compile>
     <Compile Include="ToolsPanel\DeviceTab.xaml.cs">
       <DependentUpon>DeviceTab.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ToolsPanel\multiplierpanel.xaml.cs">
+      <DependentUpon>multiplierpanel.xaml</DependentUpon>
     </Compile>
     <Page Include="Calibration\CreateGridWindow.xaml">
       <SubType>Designer</SubType>
@@ -268,6 +270,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="ToolsPanel\DeviceTab.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="ToolsPanel\multiplierpanel.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

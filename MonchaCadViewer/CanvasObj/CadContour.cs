@@ -8,21 +8,20 @@ using System.Windows.Controls;
 using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
+using System.Windows.Shapes;
 
 namespace MonchaCadViewer.CanvasObj
 {
     public class CadContour : CadObject
     {
-        public double CRS => ReadyFrame.CRS.MX; // / Math.Max(this.ScaleX, this.ScaleY);
-
         private bool _maincanvas;
         private AdornerContourFrame adornerContour;
 
-        public CadContour(PathGeometry Path, bool maincanvas, bool Capturemouse) : base (Capturemouse, false, Path)
+        public CadContour(Shape Shapes,  bool maincanvas, bool Capturemouse) : base(Capturemouse, false)
         {
-           
+            this.ObjectShape = Shapes;
             this._maincanvas = maincanvas;
-            
+
             if (this._maincanvas)
             {
                 ContextMenuLib.ViewContourMenu(this.ContextMenu);
@@ -36,13 +35,13 @@ namespace MonchaCadViewer.CanvasObj
 
             this.Fill = Brushes.Transparent;
             this.StrokeThickness = (MonchaHub.GetThinkess() < 0 ? 1 : MonchaHub.GetThinkess()) * 0.5;
-            this.Stroke = Brushes.Red;
+            this.Stroke = Brushes.Blue;
         }
 
 
         private void CadContour_MouseWheel(object sender, MouseWheelEventArgs e)
         {
-            this.Angle += Math.Abs(e.Delta)/e.Delta * (Keyboard.Modifiers == ModifierKeys.Shift ? 1 : 5);
+            this.Angle += Math.Abs(e.Delta) / e.Delta * (Keyboard.Modifiers == ModifierKeys.Shift ? 1 : 5);
         }
 
 
@@ -99,13 +98,13 @@ namespace MonchaCadViewer.CanvasObj
             {
 
             }
-            
+
         }
 
         private void Contour_MouseLeave(object sender, MouseEventArgs e)
         {
             this.ReleaseMouseCapture();
         }
-   }
+    }
 }
 

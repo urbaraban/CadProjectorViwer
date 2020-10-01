@@ -22,7 +22,6 @@ namespace MonchaCadViewer.ToolsPanel
         {
             this.DataContext = cadObject;
 
-
             if (this.DataContext is CadObject cadObjectDC)
             {
                 this.IsEnabled = true;

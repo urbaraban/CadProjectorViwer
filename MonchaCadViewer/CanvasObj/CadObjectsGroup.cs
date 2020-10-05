@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Documents;
+using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Shapes;
 using ToGeometryConverter.Object;
@@ -32,6 +33,23 @@ namespace MonchaCadViewer.CanvasObj
             }
             this.UpdateTransform();
         }
+
+        /*private void CadObjectsGroup_Selected(object sender, CadObject e)
+        {
+            if (e.IsSelected == true && e.NoEvent == false)
+            {
+                if (Keyboard.Modifiers != ModifierKeys.Control && Keyboard.Modifiers != ModifierKeys.Shift)
+                {
+                    foreach (CadObject cadObject in this.Objects)
+                    {
+                        if (cadObject != e && cadObject.IsSelected == true)
+                        {
+                            cadObject.IsSelected = false;
+                        }
+                    }
+                }
+            }
+        }*/
 
         public void UpdateTransform()
         {

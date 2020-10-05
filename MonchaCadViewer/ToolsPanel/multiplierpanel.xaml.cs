@@ -5,6 +5,7 @@ using MonchaSDK.Object;
 using MonchaSDK.Setting;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -64,13 +65,12 @@ namespace MonchaCadViewer.ToolsPanel
 
             CRSUpDn.DataContext = projectionSetting.PointStep;
             CRSUpDn.SetBinding(NumericUpDown.ValueProperty, "MX");
-            projectionSetting.PointStep.M.ChangePoint += M_ChangePoint;
+            projectionSetting.PointStep.M.PropertyChanged += M_ChangePoint;
 
             RadiusSlider.Value = projectionSetting.RadiusEdge;
             RadiusSlider.DataContext = projectionSetting;
             RadiusSlider.SetBinding(Slider.ValueProperty, "RadiusEdge");
-            RadiusSlider.ValueChanged += RadiusSlider_ValueChanged;
-            MonchaHub.Size.ChangePoint += Size_ChangePoint;
+            MonchaHub.Size.PropertyChanged += Size_ChangePoint;
 
             MultiplierSlider.Value = projectionSetting.StartLineWait;
             MultiplierSlider.DataContext = projectionSetting;
@@ -93,40 +93,25 @@ namespace MonchaCadViewer.ToolsPanel
 
             BlueToggle.DataContext = projectionSetting;
             BlueToggle.SetBinding(ToggleSwitch.IsOnProperty, "BlueOn");
+
+            projectionSetting.PropertyChanged += ProjectionSetting_PropertyChanged;
+            projectionSetting.PointStep.PropertyChanged += ProjectionSetting_PropertyChanged;
         }
 
-        private void RadiusSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+        private void ProjectionSetting_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
-            cadObject.ProjectionSetting.RadiusEdge = (int)RadiusSlider.Value;
-            NeedUpdate?.Invoke(this, null);
+            this.NeedUpdate?.Invoke(this, null);
         }
 
-        private void Size_ChangePoint(object sender, LPoint3D e)
+        private void Size_ChangePoint(object sender, PropertyChangedEventArgs e)
         {
-            RadiusSlider.Maximum = Math.Max(e.MX, e.MY);
+            RadiusSlider.Maximum = Math.Max(MonchaHub.Size.MX, MonchaHub.Size.MY);
         }
 
-        private void M_ChangePoint(object sender, LPoint3D e)
+        private void M_ChangePoint(object sender, PropertyChangedEventArgs e)
         {
             CRSUpDn.SetBinding(NumericUpDown.ValueProperty, "PointStep");
         }
-
-        private void CRSUpDn_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double?> e)
-        {
-            NeedUpdate?.Invoke(this, null);
-        }
-
-        private void SettingUpDn_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double?> e)
-        {
-            MonchaHub.RefreshSize();
-            MonchaHub.RefreshFrame();
-        }
-
-        private void SettingToggle_Toggled(object sender, RoutedEventArgs e)
-        {
-            MonchaHub.RefreshFrame();
-        }
-
 
         private void OtherSettingSwitch_Toggled(object sender, RoutedEventArgs e)
         {

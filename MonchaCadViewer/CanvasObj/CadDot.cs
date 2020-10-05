@@ -19,7 +19,7 @@ namespace MonchaCadViewer.CanvasObj
         public LPoint3D Point { get; set; }
 
 
-        public CadDot(LPoint3D Point, double Size, bool capturemouse, bool move) : base(capturemouse, move )
+        public CadDot(LPoint3D Point, double Size, bool OnBaseMesh, bool capturemouse, bool move) : base(capturemouse, move )
         {
             this.rectangle = new RectangleGeometry(new Rect(new Size(Size, Size)));
 
@@ -28,10 +28,13 @@ namespace MonchaCadViewer.CanvasObj
                 Data = this.rectangle
             };
 
+            this.UpdateTransform(null);
+
+            this.OnBaseMesh = OnBaseMesh;
 
             this.Point = Point;
             this.Point.Selected += Point_Selected;
-            this.Point.ChangePoint += Point_ChangePoint;
+            this.Point.PropertyChanged += Point_PropertyChanged; ;
 
             this.X = Point.MX - this.size / 2;
             this.Y = Point.MY - this.size / 2;
@@ -53,6 +56,14 @@ namespace MonchaCadViewer.CanvasObj
 
             this.Fill = Brushes.Black;
 
+        }
+
+        private void Point_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            Translated = true;
+            this.X = this.Point.GetMPoint.X;
+            this.Y = this.Point.GetMPoint.Y;
+            Translated = false;
         }
 
         private void CadDot_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
@@ -85,15 +96,6 @@ namespace MonchaCadViewer.CanvasObj
             {
                 this.Point.Set(this.X, this.Y);
             }
-
-        }
-
-        private void Point_ChangePoint(object sender, LPoint3D e)
-        {
-            Translated = true;
-            this.X = this.Point.GetMPoint.X;
-            this.Y = this.Point.GetMPoint.Y;
-            Translated = false;
 
         }
 

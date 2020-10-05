@@ -26,6 +26,7 @@ namespace MonchaCadViewer.CanvasObj
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(prop));
         }
 
+        public bool NoEvent = false;
         private bool _isfix = false;
         private bool _mirror = false;
         private bool _render = true;
@@ -119,7 +120,10 @@ namespace MonchaCadViewer.CanvasObj
             set
             {
                 this._isselected = value;
-                Selected?.Invoke(this, this);
+                if (this.NoEvent == false)
+                {
+                    Selected?.Invoke(this, this);
+                }
                 OnPropertyChanged("IsSelected");
             }
         }
@@ -233,6 +237,10 @@ namespace MonchaCadViewer.CanvasObj
             }
         }
 
+        public Geometry Data
+        {
+            get => this.DefiningGeometry;
+        }
         //protected override Geometry DefiningGeometry => GmtrObj;
 
         protected override Geometry DefiningGeometry
@@ -264,10 +272,6 @@ namespace MonchaCadViewer.CanvasObj
             }
         }
 
-        public Geometry Data
-        {
-            get => this.DefiningGeometry;
-        }
 
         public bool Render
         {
@@ -295,6 +299,13 @@ namespace MonchaCadViewer.CanvasObj
             }
         }
 
+        public void SetSelect(bool value, bool noevent)
+        {
+            this.NoEvent = noevent;
+            this.IsSelected = value;
+            this.NoEvent = false;
+        }
+
         public bool WasMove { get; set; } = false;
 
         public bool Editing { get; set; } = false;
@@ -318,6 +329,7 @@ namespace MonchaCadViewer.CanvasObj
                 this.MouseLeftButtonUp += CadObject_MouseLeftButtonUp;
                 this.MouseMove += CadObject_MouseMove;
                 this.MouseLeftButtonDown += CadObject_MouseLeftButtonDown;
+                this.KeyUp += CadObject_KeyUp;
 
                 if (this.ContextMenu == null) this.ContextMenu = new System.Windows.Controls.ContextMenu();
                 this.ContextMenu.ContextMenuClosing += ContextMenu_Closing;
@@ -326,18 +338,41 @@ namespace MonchaCadViewer.CanvasObj
             this.MouseForce = move;
         }
 
+        private void CadObject_KeyUp(object sender, KeyEventArgs e)
+        {
+            throw new NotImplementedException();
+        }
+
         public void UpdateTransform(TransformGroup transformGroup)
         {
-            this.Transform = transformGroup;
-            this._scale = this.Transform.Children[0] != null ? (ScaleTransform)this.Transform.Children[0] :  new ScaleTransform();
-            this._rotate = this.Transform.Children[1] != null ? (RotateTransform)this.Transform.Children[1] : new RotateTransform();          
-            this._translate = this.Transform.Children[2] != null ? (TranslateTransform)this.Transform.Children[2] : new TranslateTransform();
+            if (transformGroup != null)
+            {
+                this.Transform = transformGroup;
+                this._scale = this.Transform.Children[0] != null ? (ScaleTransform)this.Transform.Children[0] : new ScaleTransform();
+                this._rotate = this.Transform.Children[1] != null ? (RotateTransform)this.Transform.Children[1] : new RotateTransform();
+                this._translate = this.Transform.Children[2] != null ? (TranslateTransform)this.Transform.Children[2] : new TranslateTransform();
+            }
+            else
+            {
+                this.Transform = new TransformGroup()
+                {
+                    Children = new TransformCollection()
+                    {
+                        new ScaleTransform(),
+                        new RotateTransform(),
+                        new TranslateTransform()
+                    }
+                };
+
+                this._scale = (ScaleTransform)this.Transform.Children[0];
+                this._rotate = (RotateTransform)this.Transform.Children[1];
+                this._translate = (TranslateTransform)this.Transform.Children[2];
+            }
         }
 
         private void CadObject_PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            if (this.Fill == null) this.Fill = Brushes.Gray;
-
+           
             if (this.IsMouseOver)
             {
                 if (this.Fill != Brushes.Transparent && this.Fill != null) this.Fill = Brushes.Orange;
@@ -414,14 +449,6 @@ namespace MonchaCadViewer.CanvasObj
                 this.Editing = false;
                 this.ReleaseMouseCapture();
 
-            }
-
-            if (Selected != null)
-            {
-                if (this.IsSelected)
-                    Selected(this, this);
-                else
-                    Selected(this, null);
             }
         }
 

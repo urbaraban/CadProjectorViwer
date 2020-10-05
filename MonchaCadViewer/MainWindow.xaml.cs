@@ -24,6 +24,8 @@ using ToGeometryConverter.Format;
 using HelixToolkit.Wpf;
 using System.Windows.Shapes;
 using System.Windows.Media.Media3D;
+using MonchaSDK.ILDA;
+using StclLibrary.Laser;
 
 namespace MonchaCadViewer
 {
@@ -46,6 +48,7 @@ namespace MonchaCadViewer
             MonchaHub.RefreshedDevice += MonchaHub_RefreshDevice;
 
             MultPanel.NeedUpdate += MultPanel_NeedUpdate;
+            DevicePanel.NeedUpdate += MultPanel_NeedUpdate;
 
             LoadMoncha();
 
@@ -487,7 +490,10 @@ namespace MonchaCadViewer
             else if (filename.Split('.').Last() == "ild")
                 MonchaWrt(filename);
             */
-
+            if (_actualFrames == null)
+            {
+                return;
+            }
             if (_actualFrames.Count > 0)
                 AppSt.Default.stg_last_file_path = filename;
             else return;
@@ -796,6 +802,9 @@ namespace MonchaCadViewer
                 case Key.OemPlus:
                     MirrorPosition();
                     break;
+                case Key.Delete:
+                    this.MainCanvas.RemoveSelectObject();
+                    break;
                 case Key.D1:
                     if (Keyboard.Modifiers == ModifierKeys.Control)
                     {
@@ -1098,19 +1107,6 @@ namespace MonchaCadViewer
             MonchaHub.RefreshFrame();
         }
 
-        private void SettingToggle_Toggled(object sender, RoutedEventArgs e)
-        {
-            MonchaHub.RefreshFrame();
-        }
-
-        private void SettingSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
-        {
-            MonchaHub.RefreshFrame();
-        }
-
-
-
-
         private void Helix_Loaded(object sender, RoutedEventArgs e)
         {
 
@@ -1133,6 +1129,24 @@ namespace MonchaCadViewer
             }
         }
 
+        private void ILDASaveBtn_Click(object sender, RoutedEventArgs e)
+        {
+            SaveFileDialog saveFileDialog = new SaveFileDialog();
+            saveFileDialog.Filter = "(*.ild)|*.ild| All Files (*.*)|*.*";
+            saveFileDialog.ShowDialog();
+            IldaWriter ildaWriter = new IldaWriter();
+
+            for (int i = 0; i < MonchaHub.Devices.Count; i++)
+            {
+                ildaWriter.Write(($"{saveFileDialog.FileName.Replace(".ild", string.Empty)}_{i}.ild"), new List<LFrame>()
+                {
+                    MonchaHub.Devices[i].GetLFrame(MonchaHub.MainFrame)
+                }, 5);
+            }
+            
+
+            
+        }
     }
 
 }

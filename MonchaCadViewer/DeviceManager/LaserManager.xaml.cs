@@ -45,14 +45,15 @@ namespace MonchaCadViewer
 
             if (this.Devices.Count > 0)
             {
-                DeviceList.ItemsSource = this.Devices;
+                FoundDeviceList.ItemsSource = this.Devices;
+                MonchaDeviceList.ItemsSource = MonchaHub.Devices;
             }
 
         }
 
         private void DeviceManagerForm_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
-            foreach (MonchaDevice device in DeviceList.Items)
+            foreach (MonchaDevice device in FoundDeviceList.Items)
             {
                 if (device != null && device.Selected)
                     MonchaHub.Devices.Add(device);
@@ -68,6 +69,10 @@ namespace MonchaCadViewer
         private void OkBtn_Click(object sender, RoutedEventArgs e)
         {
             this.Close();
+        }
+
+        private void AddVirtualBtn_Click(object sender, RoutedEventArgs e)
+        {
         }
     }
 }

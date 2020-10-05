@@ -242,7 +242,7 @@
                                     </TabItem>
                                     <TabItem Header="ILDA" Controls:HeaderedControlHelper.HeaderFontSize="14">
                                         <Grid Background="#FFE5E5E5">
-                                            <Button x:Name="ILDASaveBtn" Content="Сохранить в ILDA" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Width="248" Height="29"/>
+                                            <Button x:Name="ILDASaveBtn" Content="Сохранить в ILDA" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Width="248" Height="29" Click="ILDASaveBtn_Click"/>
                                         </Grid>
                                     </TabItem>
                                     <TabItem Header="SVG" Controls:HeaderedControlHelper.HeaderFontSize="14">

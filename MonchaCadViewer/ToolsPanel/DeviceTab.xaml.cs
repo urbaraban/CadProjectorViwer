@@ -31,6 +31,9 @@ namespace MonchaCadViewer.ToolsPanel
         public MonchaDevice Device { get => this._device; }
 
         public event EventHandler<MonchaDevice> DeviceChange;
+
+        public event EventHandler NeedUpdate;
+
         public DeviceTab()
         {
             InitializeComponent();
@@ -128,9 +131,16 @@ namespace MonchaCadViewer.ToolsPanel
                 CRSUpDn.DataContext = tempdevice.ProjectionSetting.PointStep;
                 CRSUpDn.SetBinding(NumericUpDown.ValueProperty, "MX");
 
+                tempdevice.PropertyChanged += ProjectionSetting_PropertyChanged;
+                tempdevice.ProjectionSetting.PropertyChanged += ProjectionSetting_PropertyChanged;
+                tempdevice.ProjectionSetting.PointStep.PropertyChanged += ProjectionSetting_PropertyChanged;
             }
         }
 
+        private void ProjectionSetting_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            NeedUpdate?.Invoke(this, null);
+        }
 
         private void LMeter_ChangeDimention(object sender, double e)
         {
@@ -186,25 +196,6 @@ namespace MonchaCadViewer.ToolsPanel
         {
                this._device.CalculateMesh.Points = null;
         }
-
-
-        private void SettingUpDn_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double?> e)
-        {
-            MonchaHub.RefreshSize();
-            MonchaHub.RefreshFrame();
-        }
-
-        private void SettingToggle_Toggled(object sender, RoutedEventArgs e)
-        {
-            MonchaHub.RefreshFrame();
-        }
-
-        private void SettingSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
-        {
-            MonchaHub.RefreshFrame();
-        }
-
-
 
         private void ScanRateRealSlider_PreviewMouseDown(object sender, MouseButtonEventArgs e)
         {

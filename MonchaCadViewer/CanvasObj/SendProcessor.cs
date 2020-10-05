@@ -13,8 +13,6 @@ namespace MonchaCadViewer.CanvasObj
 {
     public static class SendProcessor
     {
-        public static int CRS;
-
         /// <summary>
         /// Обрабатывает объекты и готовит их на лазер
         /// </summary>
@@ -23,14 +21,17 @@ namespace MonchaCadViewer.CanvasObj
         public static void Worker(CadCanvas canvas)
         {
             LObjectList tempList = new LObjectList();
-            foreach (CadObject cadObject in canvas.Children)
+            foreach (object obj in canvas.Children)
             {
-                if (cadObject.Render)
+                if (obj is CadObject cadObject)
                 {
-                    tempList.AddRange(GetPoint(cadObject));
-                }
+                    if (cadObject.Render)
+                    {
+                        tempList.AddRange(GetPoint(cadObject));
+                    }
 
-                tempList.OnBaseMesh = cadObject.OnBaseMesh;
+                    tempList.OnBaseMesh = cadObject.OnBaseMesh;
+                }
             }
 
             if (tempList.Count > 0)
@@ -80,13 +81,21 @@ namespace MonchaCadViewer.CanvasObj
             {
                 case "MonchaCadViewer.CanvasObj.CadDot":
                     lObjectList.Add(new LObject(new LPoint3D(cadObject.X, cadObject.Y)));
+
                     break;
                 case "MonchaCadViewer.CanvasObj.CadContour":
                     lObjectList.AddRange(CalcContour(cadObject as CadContour));
                     break;
 
             }
-            return lObjectList.Transform(cadObject.Transform);
+            if (cadObject.OnBaseMesh == true)
+            {
+                return lObjectList;
+            }
+            else
+            {
+                return lObjectList.Transform(cadObject.Transform);
+            }
         }
 
         public static LObjectList CalcContour(CadObject cadObject)
@@ -208,7 +217,7 @@ namespace MonchaCadViewer.CanvasObj
                                     }
 
                                     foreach (Point lPoint3D in CircleByStep(
-                                            LastPoint, arcSegment.Point, arcSegment.Size.Width, sweepDirection, projectionSetting.PointStep.MX, arcSegment.RotationAngle))
+                                            LastPoint, arcSegment.Point, arcSegment.Size.Width, projectionSetting.RadiusEdge, sweepDirection, projectionSetting.PointStep.MX, arcSegment.RotationAngle))
                                     {
                                         lObject.Add(new LPoint3D(lPoint3D));
                                     }
@@ -293,7 +302,7 @@ namespace MonchaCadViewer.CanvasObj
             }
         }
 
-        public static PointCollection CircleByStep(Point StartPoint, Point EndPoint, double radius, SweepDirection clockwise, double CRS, double Delta = 360)
+        public static PointCollection CircleByStep(Point StartPoint, Point EndPoint, double radius, double radiusEdge, SweepDirection clockwise, double CRS, double Delta = 360)
         {
             Delta *= Math.PI / 180;
 
@@ -303,12 +312,12 @@ namespace MonchaCadViewer.CanvasObj
             {
                 Point Center = GetCenterArc(StartPoint, EndPoint, radius, clockwise == SweepDirection.Clockwise, Delta > Math.PI && clockwise == SweepDirection.Counterclockwise);
 
-                if (Delta > Math.PI)
-                    Console.WriteLine("Cntr" + Center);
-
                 double StartAngle = Math.PI * 2 - Math.Atan2(StartPoint.Y - Center.Y, StartPoint.X - Center.X);
 
-                double RadianStep = Delta * ((CRS) / (radius * Delta));
+                double koeff = (radius / radiusEdge) > 3 ? 3 : (radius / radiusEdge);
+                koeff = (radius / radiusEdge) < 0.3 ? 0.3 : (radius / radiusEdge);
+
+                double RadianStep = Delta * (CRS) / (radius * Delta) * koeff;
 
                 for (double radian = RadianStep; radian <= Delta * 1.005; radian += RadianStep)
                 {

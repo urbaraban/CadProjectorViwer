@@ -76,6 +76,7 @@ namespace MonchaCadViewer
             switch (messageBoxResult)
             {
                 case MessageBoxResult.Yes:
+                    this._mesh.SubscribePoint(false);
                     this._mesh.Points = MonchaDeviceMesh.MakeMeshPoint((int)HeightUpDn.Value.Value, (int)WidthUpDn.Value.Value);
                     this._mesh.SubscribePoint(true);
                     break;

@@ -61,8 +61,6 @@ namespace MonchaCadViewer.ToolsPanel
 
         private void BindingCadObject(LProjectionSetting projectionSetting)
         {
-            Console.WriteLine(projectionSetting != MonchaHub.ProjectionSetting);
-
             CRSUpDn.DataContext = projectionSetting.PointStep;
             CRSUpDn.SetBinding(NumericUpDown.ValueProperty, "MX");
             projectionSetting.PointStep.M.PropertyChanged += M_ChangePoint;

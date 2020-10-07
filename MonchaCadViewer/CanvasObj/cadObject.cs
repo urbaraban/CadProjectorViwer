@@ -12,6 +12,7 @@ using MonchaSDK;
 using System.Collections.Generic;
 using ToGeometryConverter.Object;
 using MonchaSDK.Setting;
+using System.Threading;
 
 namespace MonchaCadViewer.CanvasObj
 {
@@ -54,20 +55,22 @@ namespace MonchaCadViewer.CanvasObj
 
         public TransformGroup Transform = new TransformGroup();
 
-        private RotateTransform _rotate = new RotateTransform();
-        private TranslateTransform _translate = new TranslateTransform();
-        private ScaleTransform _scale = new ScaleTransform();
+        public RotateTransform Rotate = new RotateTransform();
+        public TranslateTransform Translate = new TranslateTransform();
+        public ScaleTransform Scale = new ScaleTransform();
 
         private bool _isselected = false;
 
         //Event
-        public event EventHandler<CadObject> Selected;
-        public event EventHandler<Rect> TranslateChanged;
+        public event EventHandler<bool> OnObject;
+        public event EventHandler<bool> Selected;
+        //public event EventHandler TranslateChanged;
         public event EventHandler<bool> Fixed;
         public event EventHandler<CadObject> Updated;
         public event EventHandler<CadObject> Removed;
         public event EventHandler<CadObject> Opening;
 
+        #region Variable
         public Rect Bounds
         {
             get
@@ -80,7 +83,7 @@ namespace MonchaCadViewer.CanvasObj
                         break;
                     case "NurbsShape":
                         NurbsShape nurbsShape = (NurbsShape)this.ObjectShape;
-                        return nurbsShape.Data.Bounds;
+                        return nurbsShape.RenderedGeometry.Bounds;
                         break;
                     case "CadContour":
                         CadContour cadContour = (CadContour)this.ObjectShape;
@@ -99,8 +102,8 @@ namespace MonchaCadViewer.CanvasObj
             {
                 this._mirror = value;
                 OnPropertyChanged("Mirror");
-                this.CenterX = this.DefiningGeometry.Bounds.X - this._translate.X + this.DefiningGeometry.Bounds.Width / 2;
-                this.CenterY = this.DefiningGeometry.Bounds.Y - this._translate.Y + this.DefiningGeometry.Bounds.Height / 2;
+                this.CenterX = this.DefiningGeometry.Bounds.X - this.Translate.X + this.DefiningGeometry.Bounds.Width / 2;
+                this.CenterY = this.DefiningGeometry.Bounds.Y - this.Translate.Y + this.DefiningGeometry.Bounds.Height / 2;
                 if (this._mirror && this.ScaleX > 0)
                 {
                     this.ScaleX = -this.ScaleX;
@@ -109,8 +112,6 @@ namespace MonchaCadViewer.CanvasObj
                 {
                     this.ScaleX = -this.ScaleX;
                 }
-                this.Updated?.Invoke(this, this);
-
             }
         }
 
@@ -122,7 +123,7 @@ namespace MonchaCadViewer.CanvasObj
                 this._isselected = value;
                 if (this.NoEvent == false)
                 {
-                    Selected?.Invoke(this, this);
+                    Selected?.Invoke(this, this._isselected);
                 }
                 OnPropertyChanged("IsSelected");
             }
@@ -131,109 +132,81 @@ namespace MonchaCadViewer.CanvasObj
         protected Point MousePos = new Point();
         protected Point BasePos = new Point();
 
-        public double X
+        public virtual double X
         {
-            get => this._translate.X;
+            get => this.Translate.X;
             set
             {
                 if (this.IsFix == false)
                 {
-                    this._translate.X = value;
+                    this.Translate.X = value;
+                    //TranslateChanged?.Invoke(this, null);
                     OnPropertyChanged("X");
-                    TranslateChanged?.Invoke(this, this.DefiningGeometry.Bounds);
-                    if (this.Render == true)
-                    {
-                        Updated?.Invoke(this, this);
-                    }
                 }
             }
         }
 
-        public double Y
+        public virtual double Y
         {
-            get => this._translate.Y;
+            get => this.Translate.Y;
             set
             {
                 if (this.IsFix == false)
                 {
-                    this._translate.Y = value;
+                    this.Translate.Y = value;
+                    //TranslateChanged?.Invoke(this, null);
                     OnPropertyChanged("Y");
-                    TranslateChanged?.Invoke(this, this.DefiningGeometry.Bounds);
-                    if (this.Render == true)
-                    {
-                        Updated?.Invoke(this, this);
-                    }
                 }
             }
         }
 
         public double Angle
         {
-            get => this._rotate.Angle;
+            get => this.Rotate.Angle;
             set
             {
-                this._rotate.Angle = value;
+                this.Rotate.Angle = value;
                 OnPropertyChanged("Angle");
-                if (this.Render == true)
-                {
-                    Updated?.Invoke(this, this);
-                }
             }
         }
 
         public double ScaleX
         {
-            get => this._scale.ScaleX;
+            get => this.Scale.ScaleX;
             set
             {
-                this._scale.ScaleX = value;
+                this.Scale.ScaleX = value;
                 OnPropertyChanged("ScaleX");
-                if (this.Render == true)
-                {
-                    Updated?.Invoke(this, this);
-                }
             }
         }
 
         public double ScaleY
         {
-            get => this._scale.ScaleY;
+            get => this.Scale.ScaleY;
             set
             {
-                this._scale.ScaleY = value;
+                this.Scale.ScaleY = value;
                 OnPropertyChanged("ScaleY");
-                if (this.Render == true)
-                {
-                    Updated?.Invoke(this, this);
-                }
             }
         }
 
         public double CenterX
         {
-            get => this._scale.CenterX;
+            get => this.Scale.CenterX;
             set
             {
-                this._scale.CenterX = value;
+                this.Scale.CenterX = value;
                 OnPropertyChanged("CenterX");
-                if (this.Render == true)
-                {
-                    Updated?.Invoke(this, this);
-                }
             }
         }
 
         public double CenterY
         {
-            get => this._scale.CenterY;
+            get => this.Scale.CenterY;
             set
             {
-                this._scale.CenterY = value;
+                this.Scale.CenterY = value;
                 OnPropertyChanged("CenterY");
-                if (this.Render == true)
-                {
-                    Updated?.Invoke(this, this);
-                }
             }
         }
 
@@ -249,23 +222,23 @@ namespace MonchaCadViewer.CanvasObj
             {
                 Geometry geometry = null;
 
-                    switch (this.ObjectShape.GetType().Name)
-                    {
+                switch (this.ObjectShape.GetType().Name)
+                {
                     case "CadObjectsGroup":
                         CadObjectsGroup objectGroup = (CadObjectsGroup)this.ObjectShape;
                         geometry = objectGroup.Data;
                         break;
 
-                        case "Path":
-                            Path path = (Path)this.ObjectShape;
-                             geometry = path.Data;
+                    case "Path":
+                        Path path = (Path)this.ObjectShape;
+                        geometry = path.Data;
 
-                            break;
-                        case "NurbsShape":
-                            NurbsShape nurbsShape = (NurbsShape)this.ObjectShape;
-                            geometry = nurbsShape.Data;
-                            break;
-                    }
+                        break;
+                    case "NurbsShape":
+                        NurbsShape nurbsShape = (NurbsShape)this.ObjectShape;
+                        geometry = nurbsShape.Data;
+                        break;
+                }
 
                 geometry.Transform = this.Transform;
                 return geometry;
@@ -280,7 +253,6 @@ namespace MonchaCadViewer.CanvasObj
             {
                 this._render = value;
                 OnPropertyChanged("Render");
-                this.Updated?.Invoke(this, this);
             }
         }
 
@@ -292,10 +264,6 @@ namespace MonchaCadViewer.CanvasObj
                 this._isfix = value;
                 OnPropertyChanged("IsFix");
                 Fixed?.Invoke(this, value);
-                if (this.Render == true)
-                {
-                    Updated?.Invoke(this, this);
-                }
             }
         }
 
@@ -317,19 +285,18 @@ namespace MonchaCadViewer.CanvasObj
         public AdornerLayer adornerLayer { get; set; }
 
         public Adorner ObjAdorner { get; set; }
-
+        #endregion
 
         public CadObject(bool mouseevent, bool move)
         {
-            this.PropertyChanged += CadObject_PropertyChanged;
-
             if (mouseevent || move)
             {
                 this.MouseLeave += CadObject_MouseLeave;
                 this.MouseLeftButtonUp += CadObject_MouseLeftButtonUp;
                 this.MouseMove += CadObject_MouseMove;
+                this.MouseEnter += CadObject_MouseEnter;
                 this.MouseLeftButtonDown += CadObject_MouseLeftButtonDown;
-                this.KeyUp += CadObject_KeyUp;
+                this.PropertyChanged += CadObject_PropertyChanged;
 
                 if (this.ContextMenu == null) this.ContextMenu = new System.Windows.Controls.ContextMenu();
                 this.ContextMenu.ContextMenuClosing += ContextMenu_Closing;
@@ -338,19 +305,28 @@ namespace MonchaCadViewer.CanvasObj
             this.MouseForce = move;
         }
 
-        private void CadObject_KeyUp(object sender, KeyEventArgs e)
+        public void Update()
         {
-            throw new NotImplementedException();
+            if (this.Render == true)
+            {
+                this.Updated?.Invoke(this, this);
+            }
         }
+
+        private void CadObject_MouseEnter(object sender, MouseEventArgs e)
+        {
+            OnObject?.Invoke(this, this.IsMouseOver);
+        }
+
 
         public void UpdateTransform(TransformGroup transformGroup)
         {
             if (transformGroup != null)
             {
                 this.Transform = transformGroup;
-                this._scale = this.Transform.Children[0] != null ? (ScaleTransform)this.Transform.Children[0] : new ScaleTransform();
-                this._rotate = this.Transform.Children[1] != null ? (RotateTransform)this.Transform.Children[1] : new RotateTransform();
-                this._translate = this.Transform.Children[2] != null ? (TranslateTransform)this.Transform.Children[2] : new TranslateTransform();
+                this.Scale = this.Transform.Children[0] != null ? (ScaleTransform)this.Transform.Children[0] : new ScaleTransform();
+                this.Rotate = this.Transform.Children[1] != null ? (RotateTransform)this.Transform.Children[1] : new RotateTransform();
+                this.Translate = this.Transform.Children[2] != null ? (TranslateTransform)this.Transform.Children[2] : new TranslateTransform();
             }
             else
             {
@@ -364,31 +340,30 @@ namespace MonchaCadViewer.CanvasObj
                     }
                 };
 
-                this._scale = (ScaleTransform)this.Transform.Children[0];
-                this._rotate = (RotateTransform)this.Transform.Children[1];
-                this._translate = (TranslateTransform)this.Transform.Children[2];
+                this.Scale = (ScaleTransform)this.Transform.Children[0];
+                this.Rotate = (RotateTransform)this.Transform.Children[1];
+                this.Translate = (TranslateTransform)this.Transform.Children[2];
             }
         }
 
         private void CadObject_PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-           
-            if (this.IsMouseOver)
+            if (this.IsMouseOver == true)
             {
                 if (this.Fill != Brushes.Transparent && this.Fill != null) this.Fill = Brushes.Orange;
                 if (this.Stroke != null) this.Stroke = Brushes.Orange;
             }
-            else if (this.IsSelected)
+            else if (this._isselected == true)
             {
                 if (this.Fill != Brushes.Transparent && this.Fill != null) this.Fill = Brushes.Red;
                 if (this.Stroke != null) this.Stroke = Brushes.Red;
             }
-            else if (!this.Render)
+            else if (!this._render == true)
             {
                 if (this.Fill != Brushes.Transparent && this.Fill != null) this.Fill = Brushes.LightGray;
                 if (this.Stroke != null) this.Stroke = Brushes.LightGray;
             }
-            else if (this.IsFix)
+            else if (this._isfix == true)
             {
                 if (this.Fill != Brushes.Transparent && this.Fill != null) this.Fill = Brushes.LightBlue;
                 if (this.Stroke != null) this.Stroke = Brushes.LightBlue;
@@ -398,6 +373,11 @@ namespace MonchaCadViewer.CanvasObj
                 if (this.Fill != Brushes.Transparent && this.Fill != null) this.Fill = Brushes.Gray;
                 if (this.Stroke != null) this.Stroke = Brushes.Blue;
             }
+            if (this.Render == true)
+            {
+                this.Updated?.Invoke(this, this);
+            }
+
         }
 
         private void ContextMenu_Closing(object sender, RoutedEventArgs e)
@@ -409,38 +389,20 @@ namespace MonchaCadViewer.CanvasObj
         {
             Canvas canvas = this.Parent as Canvas;
             this.MousePos = e.GetPosition(canvas);
-            this.BasePos = new Point(this._translate.X, this._translate.Y);
+            this.BasePos = new Point(this.Translate.X, this.Translate.Y);
         }
 
         private void CadObject_MouseLeave(object sender, System.Windows.Input.MouseEventArgs e)
         {
-            OnPropertyChanged("MouseLeave");
-
+            OnObject?.Invoke(this, this.IsMouseOver);
             this.WasMove = false;
         }
 
         private void CadObject_MouseLeftButtonUp(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
-
             if (this.WasMove == false)
             {
-                this.IsSelected = !this.IsSelected;
-
-                /* if (this.IsSelected && !Keyboard.IsKeyDown(Key.LeftShift))
-                     if (this.Parent is CadCanvas canvas)
-                         canvas.UnselectAll(this);*/
-
-                if (this.ObjAdorner != null)
-                {
-                    if (this.IsSelected)
-                    {
-                        this.ObjAdorner.Visibility = Visibility.Visible;
-                    }
-                    else
-                    {
-                        this.ObjAdorner.Visibility = Visibility.Hidden;
-                    }
-                }
+                this.IsSelected = !this._isselected;
             }
             else
             {
@@ -448,7 +410,6 @@ namespace MonchaCadViewer.CanvasObj
                 this.WasMove = false;
                 this.Editing = false;
                 this.ReleaseMouseCapture();
-
             }
         }
 
@@ -467,8 +428,6 @@ namespace MonchaCadViewer.CanvasObj
 
         private void CadObject_MouseMove(object sender, MouseEventArgs e)
         {
-            OnPropertyChanged("MouseMove");
-
             if (this.IsFix == false)
             {
                 CadCanvas canvas = this.Parent as CadCanvas;
@@ -482,7 +441,7 @@ namespace MonchaCadViewer.CanvasObj
 
                     this.X = this.BasePos.X + (tPoint.X - this.MousePos.X);
                     this.Y = this.BasePos.Y + (tPoint.Y - this.MousePos.Y);
-
+  
                     this.CaptureMouse();
                     this.Cursor = Cursors.SizeAll;
                 }
@@ -490,6 +449,7 @@ namespace MonchaCadViewer.CanvasObj
                 {
                     this.Cursor = Cursors.Hand;
                 }
+
             }
         }
     }

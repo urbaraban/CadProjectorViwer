@@ -49,6 +49,7 @@ namespace MonchaCadViewer
 
             MultPanel.NeedUpdate += MultPanel_NeedUpdate;
             DevicePanel.NeedUpdate += MultPanel_NeedUpdate;
+            ObjectPanel.NeedUpdate += MultPanel_NeedUpdate;
 
             LoadMoncha();
 
@@ -66,7 +67,6 @@ namespace MonchaCadViewer
             this.MainCanvas.SelectedObject += CadCanvas_SelectedObject;
             this.MainCanvas.ContextMenu = new ContextMenu();
             ContextMenuLib.CanvasMenu(this.MainCanvas.ContextMenu);
-            this.MainCanvas.ContextMenuClosing += CadCanvas_ContextMenuClosing;
             //cadCanvas.ErrorMessageEvent += CadCanvas_ErrorMessageEvent;
 
             CanvasBox.Child = this.MainCanvas;
@@ -74,9 +74,11 @@ namespace MonchaCadViewer
 
         private void MultPanel_NeedUpdate(object sender, EventArgs e)
         {
-            if (this.IsLoaded)
+            if (this.IsLoaded && this.MainCanvas.Editing == false)
             {
-                this.MainCanvas.UpdateProjection();
+                this.MainCanvas.Editing = true;
+                this.MainCanvas.UpdateProjection(false);
+                this.MainCanvas.Editing = false;
             }
         }
 
@@ -85,30 +87,7 @@ namespace MonchaCadViewer
             LogBox.Items.Add(e);
         }
 
-        private void CadCanvas_ContextMenuClosing(object sender, ContextMenuEventArgs e)
-        {
-            if (sender is CadCanvas canvas)
-            {
-                if (canvas.ContextMenu.DataContext is MenuItem cmindex)
-                {
-                    switch (cmindex.Header)
-                    {
-                        case "Freeze All":
-                            foreach (CadObject cadObject in canvas.Children)
-                            {
-                                cadObject.IsFix = true;
-                            }
-                            break;
-                        case "Unselect All":
-                            foreach (CadObject cadObject in canvas.Children)
-                            {
-                                cadObject.IsSelected = false;
-                            }
-                            break;
-                    }
-                }
-            }
-        }
+
 
         private void MonchaHub_UpdatedFrame(object sender, LObjectList e)
         {
@@ -444,7 +423,7 @@ namespace MonchaCadViewer
         private void OpenBtn_Click(object sender, EventArgs e)
         {
             WinForms.OpenFileDialog openFile = new WinForms.OpenFileDialog();
-            openFile.Filter = "(*.frw; *.cdw; *.svg; *.dxf; *.stp)|*.frw; *.cdw; *.svg; *.dxf, *.stp| All Files (*.*)|*.*";
+            openFile.Filter = "(*.frw; *.cdw; *.svg; *.dxf; *.stp; *.ild)|*.frw; *.cdw; *.svg; *.dxf, *.stp, *.ild| All Files (*.*)|*.*";
 
             if (AppSt.Default.save_work_folder == string.Empty)
             {
@@ -468,11 +447,17 @@ namespace MonchaCadViewer
             List<Shape> _actualFrames = new List<Shape>();
 
             if (filename.Split('.').Last() == "svg")
+            {
                 _actualFrames = SVG.Get(filename);
-
+            }
             else if (filename.Split('.').Last() == "dxf")
+            {
                 _actualFrames = DXF.Get(filename, MonchaHub.ProjectionSetting.PointStep.MX);
-
+            }
+            else if (filename.Split('.').Last() == "ild")
+            {
+              //  _actualFrames = IldaReader.ReadFile(filename);
+            }
             else if ((filename.Split('.').Last() == "frw") || (filename.Split('.').Last() == "cdw"))
             {
                 if (KmpsAppl.KompasAPI == null)
@@ -561,6 +546,7 @@ namespace MonchaCadViewer
                 {
                     this.MainCanvas.DrawContour(cadObject, true, true, true);
                 }
+                this.MainCanvas.UpdateProjection(true);
             }
 
             LinesVisual3D linesVisual3D = new LinesVisual3D();
@@ -879,7 +865,6 @@ namespace MonchaCadViewer
                             {
                                 cadObject.IsFix = true;
                                 cadObject.IsSelected = false;
-                                cadObject.Render = false;
 
                                 try
                                 {
@@ -887,7 +872,6 @@ namespace MonchaCadViewer
                                     {
                                         cadObject2.IsSelected = true;
                                         cadObject2.IsFix = false;
-                                        cadObject2.Render = true;
                                     }
                                 }
                                 catch (Exception exeption)
@@ -914,8 +898,11 @@ namespace MonchaCadViewer
                             cadObject.X += left;
                             cadObject.Y += top;
                         }
+                        cadObject.Update();
                     }
                 }
+
+                
             }
 
             void MirrorPosition()
@@ -1136,16 +1123,16 @@ namespace MonchaCadViewer
             saveFileDialog.ShowDialog();
             IldaWriter ildaWriter = new IldaWriter();
 
-            for (int i = 0; i < MonchaHub.Devices.Count; i++)
+            if (saveFileDialog.FileName != string.Empty)
             {
-                ildaWriter.Write(($"{saveFileDialog.FileName.Replace(".ild", string.Empty)}_{i}.ild"), new List<LFrame>()
+                for (int i = 0; i < MonchaHub.Devices.Count; i++)
+                {
+                    ildaWriter.Write(($"{saveFileDialog.FileName.Replace(".ild", string.Empty)}_{i}.ild"), new List<LFrame>()
                 {
                     MonchaHub.Devices[i].GetLFrame(MonchaHub.MainFrame)
                 }, 5);
+                }
             }
-            
-
-            
         }
     }
 

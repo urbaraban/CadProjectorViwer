@@ -84,6 +84,7 @@ namespace MonchaCadViewer.ToolsPanel
                 //Device
                 ScanRateRealSlider.DataContext = tempdevice;
                 ScanRateRealSlider.SetBinding(Slider.ValueProperty, "ScanRateReal");
+                ScanRateRealSlider.Maximum = tempdevice.nETInfo.maxScanrate;
 
                 ScanRateCalc.DataContext = tempdevice;
                 ScanRateCalc.SetBinding(Slider.ValueProperty, "ScanRateCalc");

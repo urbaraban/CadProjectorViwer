@@ -33,7 +33,7 @@
     <SuiteName>Viwer</SuiteName>
     <WebPage>publish.htm</WebPage>
     <OpenBrowserOnPublish>false</OpenBrowserOnPublish>
-    <ApplicationRevision>59</ApplicationRevision>
+    <ApplicationRevision>63</ApplicationRevision>
     <ApplicationVersion>0.8.0.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <CreateDesktopShortcut>true</CreateDesktopShortcut>
@@ -102,8 +102,8 @@
     <Reference Include="ControlzEx, Version=4.0.0.0, Culture=neutral, PublicKeyToken=69f1c32f803d307e, processorArchitecture=MSIL">
       <HintPath>..\packages\ControlzEx.4.3.2\lib\net45\ControlzEx.dll</HintPath>
     </Reference>
-    <Reference Include="DynamicExpresso.Core, Version=2.3.1.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\DynamicExpresso.Core.2.3.1\lib\net45\DynamicExpresso.Core.dll</HintPath>
+    <Reference Include="DynamicExpresso.Core, Version=2.3.3.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\DynamicExpresso.Core.2.3.3\lib\net45\DynamicExpresso.Core.dll</HintPath>
     </Reference>
     <Reference Include="HelixToolkit, Version=2.12.0.0, Culture=neutral, PublicKeyToken=52aa3500039caf0d, processorArchitecture=MSIL">
       <HintPath>..\packages\HelixToolkit.2.12.0\lib\netstandard1.1\HelixToolkit.dll</HintPath>

@@ -8,17 +8,17 @@
     <Grid>
         <Label x:Name="label" Content="X:" HorizontalAlignment="Left" Margin="5,5,0,0" VerticalAlignment="Top"/>
         <Label x:Name="label_Copy" Content="Y:" HorizontalAlignment="Left" Margin="5,30,0,0" VerticalAlignment="Top"/>
-        <mah:NumericUpDown x:Name="XUpDn" HorizontalAlignment="Left" Height="22" Margin="24,6,0,0"  VerticalAlignment="Top" Width="102" Culture="ru-RU"/>
-        <mah:NumericUpDown x:Name="YUpDn" HorizontalAlignment="Left" Height="22" Margin="24,32,0,0"  VerticalAlignment="Top" Width="102"/>
+        <mah:NumericUpDown x:Name="XUpDn" HorizontalAlignment="Left" Height="22" Margin="24,6,0,0"  VerticalAlignment="Top" Width="102" Culture="ru-RU" ValueChanged="XUpDn_ValueChanged"/>
+        <mah:NumericUpDown x:Name="YUpDn" HorizontalAlignment="Left" Height="22" Margin="24,32,0,0"  VerticalAlignment="Top" Width="102" ValueChanged="XUpDn_ValueChanged"/>
         <CheckBox x:Name="MirrorCheck" Content="Mirror" HorizontalAlignment="Left" Margin="131,6,0,0" VerticalAlignment="Top" />
         <CheckBox x:Name="RenderCheck" Content="Render" HorizontalAlignment="Left" Margin="131,24,0,0" VerticalAlignment="Top"/>
         <CheckBox x:Name="FixCheck" Content="Fix" HorizontalAlignment="Left" Margin="131,43,0,0" VerticalAlignment="Top"/>
-        <mah:NumericUpDown x:Name="AngleUpDn" HorizontalAlignment="Left" Height="22" Margin="196,31,0,0"  VerticalAlignment="Top" Width="104" Culture="ru-RU"/>
+        <mah:NumericUpDown x:Name="AngleUpDn" HorizontalAlignment="Left" Height="22" Margin="196,31,0,0"  VerticalAlignment="Top" Width="104" Culture="ru-RU" ValueChanged="XUpDn_ValueChanged"/>
         <Label x:Name="label1" Content="Angel" HorizontalAlignment="Left" Margin="196,1,0,0" VerticalAlignment="Top"/>
         <Label x:Name="WidthLbl" Content="Width" HorizontalAlignment="Left" Margin="304,5,0,0" VerticalAlignment="Top"/>
         <Label x:Name="HeightLbl" Content="Height" HorizontalAlignment="Left" Margin="305,30,0,0" VerticalAlignment="Top"/>
-        <mah:NumericUpDown x:Name="WidthUpDn" HorizontalAlignment="Left" Height="22" Margin="356,6,0,0"  VerticalAlignment="Top" Width="102" Culture="ru-RU" DecimalPointCorrection="Number"/>
-        <mah:NumericUpDown x:Name="HeightUpDn" HorizontalAlignment="Left" Height="22" Margin="356,32,0,0"  VerticalAlignment="Top" Width="102" DecimalPointCorrection="Number"/>
+        <mah:NumericUpDown x:Name="WidthUpDn" HorizontalAlignment="Left" Height="22" Margin="356,6,0,0"  VerticalAlignment="Top" Width="102" Culture="ru-RU" DecimalPointCorrection="Number" ValueChanged="XUpDn_ValueChanged"/>
+        <mah:NumericUpDown x:Name="HeightUpDn" HorizontalAlignment="Left" Height="22" Margin="356,32,0,0"  VerticalAlignment="Top" Width="102" DecimalPointCorrection="Number" ValueChanged="XUpDn_ValueChanged"/>
 
     </Grid>
 </UserControl>

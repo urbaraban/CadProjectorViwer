@@ -18,6 +18,34 @@ namespace MonchaCadViewer.CanvasObj
 
         public LPoint3D Point { get; set; }
 
+        public override double X
+        {
+            get => this.Point.MX;
+            set
+            {
+                if (this.IsFix == false)
+                {
+                    this.Point.MX = value;
+                    this.Translate.X = value;
+                    OnPropertyChanged("X");
+                }
+            }
+        }
+
+        public override double Y
+        {
+            get => this.Point.MY;
+            set
+            {
+                if (this.IsFix == false)
+                {
+                    this.Point.MY = value;
+                    this.Translate.Y = value;
+                    OnPropertyChanged("Y");
+                }
+            }
+        }
+
 
         public CadDot(LPoint3D Point, double Size, bool OnBaseMesh, bool capturemouse, bool move) : base(capturemouse, move )
         {
@@ -33,13 +61,12 @@ namespace MonchaCadViewer.CanvasObj
             this.OnBaseMesh = OnBaseMesh;
 
             this.Point = Point;
-            this.Point.Selected += Point_Selected;
-            this.Point.PropertyChanged += Point_PropertyChanged; ;
 
-            this.X = Point.MX - this.size / 2;
-            this.Y = Point.MY - this.size / 2;
+            this.Translate.X = Point.MX;
+            this.Translate.Y = Point.MY;
 
-            this.TranslateChanged += CadDot_TranslateChanged;
+            this.Point.PropertyChanged += Point_PropertyChanged;
+            this.Removed += CadDot_Removed;
 
             this.size = Size;
 
@@ -50,55 +77,50 @@ namespace MonchaCadViewer.CanvasObj
             ContextMenuLib.DotContextMenu(this.ContextMenu);
 
             this.ContextMenuClosing += DotShape_ContextMenuClosing;
-            this.MouseLeftButtonUp += CadDot_MouseLeftButtonUp;
             this.MouseLeftButtonDown += CadDot_MouseLeftButtonDown;
             this.Fixed += CadDot_Fixed;
-
+            this.Selected += CadDot_Selected;
+            this.Point.Selected += Point_Selected;
             this.Fill = Brushes.Black;
 
         }
 
+        private void Point_Selected(object sender, bool e)
+        {
+            this.Render = e;
+        }
+
+        private void CadDot_Selected(object sender, bool e)
+        {
+            this.Point.Select = e;
+        }
+
         private void Point_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
-            Translated = true;
-            this.X = this.Point.GetMPoint.X;
-            this.Y = this.Point.GetMPoint.Y;
-            Translated = false;
+            if (e.PropertyName == "MX" || e.PropertyName == "MY" || e.PropertyName == "Point")
+            {
+                this.Translate.X = this.Point.MX;
+                this.Translate.Y = this.Point.MY;
+            }
         }
+
+        private void CadDot_Removed(object sender, CadObject e)
+        {
+          
+        }
+
+
+
 
         private void CadDot_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
             //this.Point.Select = true;
         }
 
-        private void Point_Selected(object sender, bool e)
-        {
-            this.IsSelected = e;
-        }
-
         private void CadDot_Fixed(object sender, bool e)
         {
             this.Point.IsFix = e;
         }
-
-        private void CadDot_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
-        {
-            if (this.WasMove == false)
-            {
-                this.Render = this.IsSelected;
-            }
-
-        }
-
-        private void CadDot_TranslateChanged(object sender, Rect e)
-        {
-            if (Translated == false)
-            {
-                this.Point.Set(this.X, this.Y);
-            }
-
-        }
-
 
         private void DotShape_ContextMenuClosing(object sender, ContextMenuEventArgs e)
         {

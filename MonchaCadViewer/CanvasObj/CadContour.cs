@@ -26,8 +26,7 @@ namespace MonchaCadViewer.CanvasObj
             {
                 ContextMenuLib.ViewContourMenu(this.ContextMenu);
                 this.Cursor = Cursors.Hand;
-                this.MouseLeave += Contour_MouseLeave;
-                this.MouseLeftButtonUp += Contour_MouseLeftUp;
+      
                 this.Loaded += ViewContour_Loaded;
                 this.ContextMenuClosing += ViewContour_ContextMenuClosing;
                 this.MouseWheel += CadContour_MouseWheel;
@@ -41,7 +40,10 @@ namespace MonchaCadViewer.CanvasObj
 
         private void CadContour_MouseWheel(object sender, MouseWheelEventArgs e)
         {
-            this.Angle += Math.Abs(e.Delta) / e.Delta * (Keyboard.Modifiers == ModifierKeys.Shift ? 1 : 5);
+            if (e.Delta != 0)
+            {
+                this.Angle += Math.Abs(e.Delta) / e.Delta * (Keyboard.Modifiers == ModifierKeys.Shift ? 1 : 5);
+            }
         }
 
 
@@ -86,25 +88,6 @@ namespace MonchaCadViewer.CanvasObj
             }
         }
 
-
-        private void Contour_MouseLeftUp(object sender, MouseButtonEventArgs e)
-        {
-            if (this.WasMove)
-            {
-                this.ReleaseMouseCapture();
-                this.WasMove = false;
-            }
-            else
-            {
-
-            }
-
-        }
-
-        private void Contour_MouseLeave(object sender, MouseEventArgs e)
-        {
-            this.ReleaseMouseCapture();
-        }
     }
 }
 

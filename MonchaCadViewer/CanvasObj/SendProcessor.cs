@@ -45,7 +45,6 @@ namespace MonchaCadViewer.CanvasObj
         /// Send work rectangle projector
         /// </summary>
         /// <param name="device">The right device</param>
-        /// <returns>N_{i,degree}(step)</returns>
         public static void DrawZone(MonchaDevice device)
         {
 
@@ -73,6 +72,11 @@ namespace MonchaCadViewer.CanvasObj
             }
         }
 
+        /// <summary>
+        /// Get point from inner object
+        /// </summary>
+        /// <param name="cadObject">inner object</param>
+        /// <returns>Object collection</returns>
         public static LObjectList GetPoint(CadObject cadObject)
         {
             LObjectList lObjectList = new LObjectList();
@@ -80,7 +84,44 @@ namespace MonchaCadViewer.CanvasObj
             switch (cadObject.GetType().FullName)
             {
                 case "MonchaCadViewer.CanvasObj.CadDot":
-                    lObjectList.Add(new LObject(new LPoint3D(cadObject.X, cadObject.Y)));
+                    CadDot cadDot = (CadDot)cadObject;
+                    if (cadObject.DataContext is MonchaDeviceMesh deviceMesh)
+                    {
+                       Tuple<int, int> tuple = deviceMesh.CoordinatesOf(cadDot.Point);
+                        int height = deviceMesh.GetLength(0) - 1;
+                        int width = deviceMesh.GetLength(1) - 1;
+                        LObject MeshRectangle = new LObject();
+
+                        MeshRectangle.Add(deviceMesh[tuple.Item2, tuple.Item1].GetMLpoint3D);
+                        Console.WriteLine($"First:{tuple.Item2}");
+                        int delta = tuple.Item2 <= (height - tuple.Item2) ? 1 : -1;
+
+                        for (int i = delta; Math.Abs(i) <= Math.Abs(height - tuple.Item2 * 2); i += delta)
+                        {
+                            Console.WriteLine($"First:{tuple.Item2 + i}");
+                            MeshRectangle.Add(deviceMesh[tuple.Item2 + i, tuple.Item1].GetMLpoint3D);
+                        }
+
+                        MeshRectangle.Add(deviceMesh[height - tuple.Item2 , width - tuple.Item1].GetMLpoint3D);
+                        Console.WriteLine($"Second:{height - tuple.Item2}");
+                        delta = tuple.Item2 > (height - tuple.Item2) ? 1 : -1;
+
+                        for (int i = delta; Math.Abs(i) <= Math.Abs(height - tuple.Item2 * 2); i += delta)
+                        {
+                            Console.WriteLine($"Second:{height - tuple.Item2 + i}");
+                            MeshRectangle.Add(deviceMesh[height - tuple.Item2 + i, width - tuple.Item1].GetMLpoint3D);
+                        }
+
+                        MeshRectangle.Closed = true;
+                        lObjectList.Add(MeshRectangle);
+                    }
+                    else
+                    {
+                        lObjectList.Add(new LObject()
+                        {
+                            cadDot.Point.GetMLpoint3D
+                        });
+                    }
 
                     break;
                 case "MonchaCadViewer.CanvasObj.CadContour":
@@ -98,6 +139,9 @@ namespace MonchaCadViewer.CanvasObj
             }
         }
 
+        /// <summary>
+        /// Convert inner object in LPoint3D's
+        /// </summary>
         public static LObjectList CalcContour(CadObject cadObject)
         {
             LObjectList PathList = new LObjectList();
@@ -231,11 +275,13 @@ namespace MonchaCadViewer.CanvasObj
                 }
                 return PathObjectList;
             }
-        } 
+        }
 
 
 
-
+        /// <summary>
+        /// interpolation Qbezier
+        /// </summary>
         public static LObject QBezierByStep(Point StartPoint, Point ControlPoint, Point EndPoint, double CRS)
         {
             LPoint3D LastPoint = new LPoint3D(StartPoint);
@@ -265,6 +311,9 @@ namespace MonchaCadViewer.CanvasObj
             }
         }
 
+        /// <summary>
+        /// interpolation bezier
+        /// </summary>
         public static LObject BezieByStep(Point point0, Point point1, Point point2, Point point3, double CRS)
         {
             double Lenth = 0;
@@ -302,6 +351,9 @@ namespace MonchaCadViewer.CanvasObj
             }
         }
 
+        /// <summary>
+        /// interpolation Circle or arc
+        /// </summary>
         public static PointCollection CircleByStep(Point StartPoint, Point EndPoint, double radius, double radiusEdge, SweepDirection clockwise, double CRS, double Delta = 360)
         {
             Delta *= Math.PI / 180;

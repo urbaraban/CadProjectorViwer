@@ -18,34 +18,6 @@ namespace MonchaCadViewer.CanvasObj
 
         public LPoint3D Point { get; set; }
 
-        public override double X
-        {
-            get => this.Point.MX;
-            set
-            {
-                if (this.IsFix == false)
-                {
-                    this.Point.MX = value;
-                    this.Translate.X = value;
-                    OnPropertyChanged("X");
-                }
-            }
-        }
-
-        public override double Y
-        {
-            get => this.Point.MY;
-            set
-            {
-                if (this.IsFix == false)
-                {
-                    this.Point.MY = value;
-                    this.Translate.Y = value;
-                    OnPropertyChanged("Y");
-                }
-            }
-        }
-
 
         public CadDot(LPoint3D Point, double Size, bool OnBaseMesh, bool capturemouse, bool move) : base(capturemouse, move )
         {
@@ -79,10 +51,30 @@ namespace MonchaCadViewer.CanvasObj
             this.ContextMenuClosing += DotShape_ContextMenuClosing;
             this.MouseLeftButtonDown += CadDot_MouseLeftButtonDown;
             this.Fixed += CadDot_Fixed;
-            this.Selected += CadDot_Selected;
             this.Point.Selected += Point_Selected;
+            this.PropertyChanged += CadDot_PropertyChanged;
             this.Fill = Brushes.Black;
 
+        }
+
+        private void CadDot_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == "IsSelected" && this.Point.Select == false)
+            {
+                this.Point.Select = true;
+            }
+            else if (e.PropertyName == "Leave" && this.Point.Select == true)
+            {
+                this.Point.Select = false;
+            }
+            else if (e.PropertyName == "X")
+            {
+                this.Point.MX = this.X;
+            }
+            else if (e.PropertyName == "Y")
+            {
+                this.Point.MY = this.Y;
+            }
         }
 
         private void Point_Selected(object sender, bool e)

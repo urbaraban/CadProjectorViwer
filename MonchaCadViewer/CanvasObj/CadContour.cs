@@ -42,6 +42,9 @@ namespace MonchaCadViewer.CanvasObj
         {
             if (e.Delta != 0)
             {
+                Point point = this.RenderedGeometry.Bounds.TopLeft;
+                this.Rotate.CenterX = this.Translate.X;
+                this.Rotate.CenterY = this.Translate.Y;
                 this.Angle += Math.Abs(e.Delta) / e.Delta * (Keyboard.Modifiers == ModifierKeys.Shift ? 1 : 5);
             }
         }

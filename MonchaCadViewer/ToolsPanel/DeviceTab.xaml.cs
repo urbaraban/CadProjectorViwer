@@ -82,9 +82,10 @@ namespace MonchaCadViewer.ToolsPanel
                 }
 
                 //Device
+                ScanRateRealSlider.Maximum = tempdevice.nETInfo.maxScanrate;
                 ScanRateRealSlider.DataContext = tempdevice;
                 ScanRateRealSlider.SetBinding(Slider.ValueProperty, "ScanRateReal");
-                ScanRateRealSlider.Maximum = tempdevice.nETInfo.maxScanrate;
+                
 
                 ScanRateCalc.DataContext = tempdevice;
                 ScanRateCalc.SetBinding(Slider.ValueProperty, "ScanRateCalc");
@@ -97,6 +98,9 @@ namespace MonchaCadViewer.ToolsPanel
 
                 InvertYtoggle.DataContext = tempdevice;
                 InvertYtoggle.SetBinding(ToggleSwitch.IsOnProperty, "InvertedY");
+
+                AlphaSlider.DataContext = tempdevice;
+                AlphaSlider.SetBinding(Slider.ValueProperty, "Alpha");
 
                 //ObjectReadySetting
                 RedUpDn.DataContext = tempdevice.ProjectionSetting;
@@ -117,8 +121,7 @@ namespace MonchaCadViewer.ToolsPanel
                 BlueToggle.DataContext = tempdevice.ProjectionSetting;
                 BlueToggle.SetBinding(ToggleSwitch.IsOnProperty, "BlueOn");
 
-                AlphaSlider.DataContext = tempdevice;
-                AlphaSlider.SetBinding(Slider.ValueProperty, "Alpha");
+
 
                 AngleWaitSlider.DataContext = tempdevice.ProjectionSetting;
                 AngleWaitSlider.SetBinding(Slider.ValueProperty, "StartLineWait");

@@ -13,6 +13,8 @@ namespace MonchaCadViewer.CanvasObj
 {
     public static class SendProcessor
     {
+        public static bool Processing = false;
+
         /// <summary>
         /// Обрабатывает объекты и готовит их на лазер
         /// </summary>
@@ -20,25 +22,30 @@ namespace MonchaCadViewer.CanvasObj
         /// <returns>N_{i,degree}(step)</returns>
         public static void Worker(CadCanvas canvas)
         {
-            LObjectList tempList = new LObjectList();
-            foreach (object obj in canvas.Children)
-            {
-                if (obj is CadObject cadObject)
+            Console.WriteLine("Worker");
+
+                Processing = true;
+                LObjectList tempList = new LObjectList();
+                foreach (object obj in canvas.Children)
                 {
-                    if (cadObject.Render)
+                    if (obj is CadObject cadObject)
                     {
-                        tempList.AddRange(GetPoint(cadObject));
+                        if (cadObject.Render)
+                        {
+                            tempList.AddRange(GetPoint(cadObject));
+                        }
+
+                        tempList.OnBaseMesh = cadObject.OnBaseMesh;
                     }
-
-                    tempList.OnBaseMesh = cadObject.OnBaseMesh;
                 }
-            }
 
-            if (tempList.Count > 0)
-            {
-                MonchaHub.MainFrame = tempList;
-                MonchaHub.RefreshFrame();
-            }
+                if (tempList.Count > 0)
+                {
+                    MonchaHub.MainFrame = tempList;
+                    MonchaHub.RefreshFrame();
+                }
+                Processing = false;
+            
         }
 
         /// <summary>
@@ -47,9 +54,6 @@ namespace MonchaCadViewer.CanvasObj
         /// <param name="device">The right device</param>
         public static void DrawZone(MonchaDevice device)
         {
-
-            device.Calibration = false;
-
             LObjectList tempList = new LObjectList();
 
             tempList.Bop = new LPoint3D(0, 0, 0);
@@ -93,27 +97,24 @@ namespace MonchaCadViewer.CanvasObj
                         LObject MeshRectangle = new LObject();
 
                         MeshRectangle.Add(deviceMesh[tuple.Item2, tuple.Item1].GetMLpoint3D);
-                        Console.WriteLine($"First:{tuple.Item2}");
                         int delta = tuple.Item2 <= (height - tuple.Item2) ? 1 : -1;
 
                         for (int i = delta; Math.Abs(i) <= Math.Abs(height - tuple.Item2 * 2); i += delta)
                         {
-                            Console.WriteLine($"First:{tuple.Item2 + i}");
                             MeshRectangle.Add(deviceMesh[tuple.Item2 + i, tuple.Item1].GetMLpoint3D);
                         }
 
                         MeshRectangle.Add(deviceMesh[height - tuple.Item2 , width - tuple.Item1].GetMLpoint3D);
-                        Console.WriteLine($"Second:{height - tuple.Item2}");
                         delta = tuple.Item2 > (height - tuple.Item2) ? 1 : -1;
 
                         for (int i = delta; Math.Abs(i) <= Math.Abs(height - tuple.Item2 * 2); i += delta)
                         {
-                            Console.WriteLine($"Second:{height - tuple.Item2 + i}");
                             MeshRectangle.Add(deviceMesh[height - tuple.Item2 + i, width - tuple.Item1].GetMLpoint3D);
                         }
 
                         MeshRectangle.Closed = true;
                         lObjectList.Add(MeshRectangle);
+                        lObjectList.NoMesh = true;
                     }
                     else
                     {

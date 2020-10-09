@@ -74,11 +74,9 @@ namespace MonchaCadViewer
 
         private void MultPanel_NeedUpdate(object sender, EventArgs e)
         {
-            if (this.IsLoaded && this.MainCanvas.Editing == false)
+            if (this.IsLoaded == true)
             {
-                this.MainCanvas.Editing = true;
                 this.MainCanvas.UpdateProjection(false);
-                this.MainCanvas.Editing = false;
             }
         }
 
@@ -95,10 +93,13 @@ namespace MonchaCadViewer
             //   SendProcessor.Worker(CanvasBox.Child as CadCanvas);
         }
 
-        private void CadCanvas_SelectedObject(object sender, CadObject e)
+        private void CadCanvas_SelectedObject(object sender, bool e)
         {
-            ObjectPanel.DataContext = e;
-            MultPanel.DataContext = e;
+            if (e == true)
+            {
+                ObjectPanel.DataContext = sender;
+                MultPanel.DataContext = sender;
+            }
         }
 
         private void MonchaHub_RefreshDevice(object sender, List<MonchaDevice> e)
@@ -898,7 +899,6 @@ namespace MonchaCadViewer
                             cadObject.X += left;
                             cadObject.Y += top;
                         }
-                        cadObject.Update();
                     }
                 }
 
@@ -1087,13 +1087,6 @@ namespace MonchaCadViewer
             this.DragMove();
         }
 
-
-        private void SettingUpDn_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double?> e)
-        {
-            MonchaHub.RefreshSize();
-            MonchaHub.RefreshFrame();
-        }
-
         private void Helix_Loaded(object sender, RoutedEventArgs e)
         {
 
@@ -1129,7 +1122,7 @@ namespace MonchaCadViewer
                 {
                     ildaWriter.Write(($"{saveFileDialog.FileName.Replace(".ild", string.Empty)}_{i}.ild"), new List<LFrame>()
                 {
-                    MonchaHub.Devices[i].GetLFrame(MonchaHub.MainFrame)
+                    MonchaHub.Devices[i].GetReadyFrame.GetLFrame(MonchaHub.Devices[i], MonchaHub.MainFrame)
                 }, 5);
                 }
             }

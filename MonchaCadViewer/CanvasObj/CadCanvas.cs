@@ -16,7 +16,7 @@ namespace MonchaCadViewer.CanvasObj
 {
     public class CadCanvas : Canvas
     {
-        public event EventHandler<CadObject> SelectedObject;
+        public event EventHandler<bool> SelectedObject;
         //public event EventHandler<string> ErrorMessageEvent;
 
         private object MouseOnObject = null;
@@ -26,8 +26,8 @@ namespace MonchaCadViewer.CanvasObj
         private List<CadDot> anchors = new List<CadDot>();
         private int _status = 0;
         private bool _maincanvas;
-        private bool _freecursor = true;
-        public bool Editing = false;
+        private bool _nofreecursor = true;
+
 
         private Rectangle _selectedRectangle = new Rectangle();
 
@@ -50,6 +50,7 @@ namespace MonchaCadViewer.CanvasObj
             this.Background = Brushes.Transparent; //backBrush;
             this.Width = this._size.GetMPoint.X;
             this.Height = this._size.GetMPoint.Y;
+            this.Focusable = false;
 
             this._selectedRectangle.Fill = Brushes.Transparent;
             this._selectedRectangle.Stroke = Brushes.DimGray;
@@ -62,7 +63,7 @@ namespace MonchaCadViewer.CanvasObj
 
             this.ContextMenuClosing += CadCanvas_ContextMenuClosing;
 
-            this.Focusable = true;
+
             if (this._maincanvas)
             {
                 this.MouseLeftButtonDown += Canvas_MouseLeftDown;
@@ -76,7 +77,7 @@ namespace MonchaCadViewer.CanvasObj
 
         public void UpdateProjection(bool force)
         {
-            if ((this._maincanvas == true && this.Editing == false) || force == true)
+            if ((this._maincanvas == true && SendProcessor.Processing == false) || force == true)
             {
                 SendProcessor.Worker(this);
             }
@@ -112,12 +113,6 @@ namespace MonchaCadViewer.CanvasObj
 
         public void DrawContour(Shape obj, bool maincanvas, bool add, bool mousemove)
         {
-
-            foreach (MonchaDevice device in MonchaHub.Devices)
-            {
-                device.Calibration = false;
-            }
-
             if (add == false)
             {
                 this.Clear();
@@ -145,11 +140,6 @@ namespace MonchaCadViewer.CanvasObj
             this.MouseOnObject = sender;
         }
 
-        private void Object_Updated(object sender, CadObject e)
-        {
-            UpdateProjection(false);
-        }
-
 
         public void DrawRectangle(LPoint3D point1, LPoint3D point2)
         {
@@ -165,7 +155,7 @@ namespace MonchaCadViewer.CanvasObj
 
         private void Canvas_MouseLeftDown(object sender, MouseButtonEventArgs e)
         {
-            if (this._freecursor == true)
+            if (this._nofreecursor == false)
             {
                 switch (_status)
                 {
@@ -219,11 +209,15 @@ namespace MonchaCadViewer.CanvasObj
             {
                 if (obj != noclearobj && obj is CadObject cadObject)
                 {
-                    cadObject.SetSelect(false, true);
+                    cadObject.IsSelected = false;
+                }
+                else
+                {
+
                 }
 
             }
-            SelectedObject?.Invoke(this, null);
+           
         }
 
         private void CadCanvas_MouseUp(object sender, MouseButtonEventArgs e)
@@ -252,7 +246,7 @@ namespace MonchaCadViewer.CanvasObj
                             new Point(/*cadObject.X +*/ cadObject.RenderedGeometry.Bounds.BottomRight.X - Canvas.GetLeft(this._selectedRectangle), 
                                 /*cadObject.Y +*/ cadObject.RenderedGeometry.Bounds.BottomRight.Y - Canvas.GetTop(this._selectedRectangle))))
                     {
-                        cadObject.SetSelect(true, true);
+                        cadObject.IsSelected = true;
                     }
                     
                 }
@@ -301,7 +295,7 @@ namespace MonchaCadViewer.CanvasObj
                     i--;
                 }
             }
-            SelectedObject?.Invoke(this, null);
+            SelectedObject?.Invoke(this, false);
             UpdateProjection(false);
         }
 
@@ -321,9 +315,8 @@ namespace MonchaCadViewer.CanvasObj
         {
             if (_device != null)
             {
-                _device.Calibration = !mesh.Affine;
                 this.DataContext = _device;
-                this.Children.Clear();
+                this.Clear();
 
                 if (mesh == null)
                     mesh = _device.BaseMesh;
@@ -370,8 +363,9 @@ namespace MonchaCadViewer.CanvasObj
 
         public void RemoveChildren(CadObject cadObject)
         {
-            cadObject.Updated -= Object_Updated;
-            cadObject.Selected -= Obj_Selected;
+            cadObject.Selected -= CadObject_Selected;
+            cadObject.OnObject -= CadObject_OnObject1;
+            cadObject.Updated -= CadObject_Updated;
             cadObject.Remove();
             this.Children.Remove(cadObject);
         }
@@ -382,24 +376,35 @@ namespace MonchaCadViewer.CanvasObj
             {
                 if (obj is CadObject cadObject)
                 {
-                    cadObject.Updated += Object_Updated;
-                    cadObject.Selected += Obj_Selected;
-                    cadObject.OnObject += CadObject_OnObject;
+                    cadObject.Selected += CadObject_Selected;
+                    cadObject.OnObject += CadObject_OnObject1;
+                    cadObject.Updated += CadObject_Updated;
                 }
                 this.Children.Add(obj);
             }
 
         }
 
-        private void CadObject_OnObject(object sender, bool e)
+        private void CadObject_Updated(object sender, string e)
         {
-            this._freecursor = !e;
+            Console.WriteLine(e);
+            UpdateProjection(false);
         }
 
-        private void Obj_Selected(object sender, bool e)
+        private void CadObject_OnObject1(object sender, bool e)
         {
-            this.ClearSelectedObject((CadObject)sender);
-            this.SelectedObject?.Invoke(this, (CadObject)sender);
+            this._nofreecursor = e;
         }
+
+        private void CadObject_Selected(object sender, bool e)
+        {
+            if (Keyboard.Modifiers != ModifierKeys.Shift)
+            {
+                this.ClearSelectedObject((CadObject)sender);
+            }
+            SelectedObject?.Invoke(sender, e);
+        }
+
+
     }
 }

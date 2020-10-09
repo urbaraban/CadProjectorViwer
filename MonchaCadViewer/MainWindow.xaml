@@ -310,19 +310,19 @@
                                 </Label>
                                 <Button x:Name="BrowseMonchaBtn" Content="Browse..." Margin="17,28,10,0" VerticalAlignment="Top" Click="BrowseMonchaBtn_Click" Height="23" Grid.Column="3" Grid.ColumnSpan="2"/>
                                 <Label x:Name="label" Content="Путь до файла Moncha (*.mws)" HorizontalAlignment="Left" Margin="10,2,0,0" VerticalAlignment="Top" Grid.ColumnSpan="4" Height="26" Width="178"/>
-                                <Controls:NumericUpDown x:Name="WidthUpDn" Margin="0,70,10,0"  Background="White" Height="26" VerticalAlignment="Top" Grid.Column="2" Grid.ColumnSpan="3" ValueChanged="SettingUpDn_ValueChanged">
+                                <Controls:NumericUpDown x:Name="WidthUpDn" Margin="0,70,10,0"  Background="White" Height="26" VerticalAlignment="Top" Grid.Column="2" Grid.ColumnSpan="3" >
                                     <Controls:NumericUpDown.DataContext>
                                         <Properties:Settings/>
                                     </Controls:NumericUpDown.DataContext>
                                 </Controls:NumericUpDown>
                                 <Label x:Name="label_Copy" Content="Ширина" HorizontalAlignment="Left" Margin="6,70,0,0" VerticalAlignment="Top" Width="74" Height="26" Grid.ColumnSpan="2"/>
-                                <Controls:NumericUpDown x:Name="HeightUpD" Margin="0,106,10,0"  Background="White" Height="26" VerticalAlignment="Top" Grid.Column="2" Grid.ColumnSpan="3" ValueChanged="SettingUpDn_ValueChanged">
+                                <Controls:NumericUpDown x:Name="HeightUpD" Margin="0,106,10,0"  Background="White" Height="26" VerticalAlignment="Top" Grid.Column="2" Grid.ColumnSpan="3" >
                                     <Controls:NumericUpDown.DataContext>
                                         <Properties:Settings/>
                                     </Controls:NumericUpDown.DataContext>
                                 </Controls:NumericUpDown>
                                 <Label x:Name="label_Copy1" Content="Высота" HorizontalAlignment="Left" Margin="6,106,0,0" VerticalAlignment="Top" Width="74" Height="26" Grid.ColumnSpan="2"/>
-                                <Controls:NumericUpDown x:Name="DeepUpDn" Margin="0,142,10,0" Background="White" Height="26" VerticalAlignment="Top" Grid.Column="2" Grid.ColumnSpan="3" ValueChanged="SettingUpDn_ValueChanged">
+                                <Controls:NumericUpDown x:Name="DeepUpDn" Margin="0,142,10,0" Background="White" Height="26" VerticalAlignment="Top" Grid.Column="2" Grid.ColumnSpan="3">
                                     <Controls:NumericUpDown.DataContext>
                                         <Properties:Settings/>
                                     </Controls:NumericUpDown.DataContext>
@@ -331,7 +331,7 @@
                                 <Button x:Name="SaveSizeBtn" Content="Save size" Margin="10,207,10,0" VerticalAlignment="Top" Height="30" Controls:ControlsHelper.ContentCharacterCasing="Normal" Grid.ColumnSpan="5"/>
 
                                 <Controls:ToggleSwitch x:Name="EditMeshToggle" Content="Edit" HorizontalAlignment="Stretch" Margin="3,311,0,0" VerticalAlignment="Top" Grid.ColumnSpan="3" Height="20"/>
-                                <Controls:NumericUpDown x:Name="MashMultiplierUpDn" Margin="0,176,10,0"  Background="White" Height="26" Maximum="1" Minimum="0.001" VerticalAlignment="Top" Speedup="False" Controls:ScrollViewerHelper.IsHorizontalScrollWheelEnabled="True" ValueIncremented="MashMultiplierUpDn_ValueIncremented" ValueDecremented="MashMultiplierUpDn_ValueDecremented" Grid.Column="2" Grid.ColumnSpan="3" ValueChanged="SettingUpDn_ValueChanged">
+                                <Controls:NumericUpDown x:Name="MashMultiplierUpDn" Margin="0,176,10,0"  Background="White" Height="26" Maximum="1" Minimum="0.001" VerticalAlignment="Top" Speedup="False" Controls:ScrollViewerHelper.IsHorizontalScrollWheelEnabled="True" ValueIncremented="MashMultiplierUpDn_ValueIncremented" ValueDecremented="MashMultiplierUpDn_ValueDecremented" Grid.Column="2" Grid.ColumnSpan="3">
                                     <Controls:NumericUpDown.DataContext>
                                         <Properties:Settings/>
                                     </Controls:NumericUpDown.DataContext>

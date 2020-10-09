@@ -62,11 +62,11 @@ namespace MonchaCadViewer.CanvasObj
         private bool _isselected = false;
 
         //Event
-        public event EventHandler<bool> OnObject;
-        public event EventHandler<bool> Selected;
         //public event EventHandler TranslateChanged;
         public event EventHandler<bool> Fixed;
-        public event EventHandler<CadObject> Updated;
+        public event EventHandler<bool> Selected;
+        public event EventHandler<bool> OnObject;
+        public event EventHandler<string> Updated;
         public event EventHandler<CadObject> Removed;
         public event EventHandler<CadObject> Opening;
 
@@ -120,12 +120,15 @@ namespace MonchaCadViewer.CanvasObj
             get => this._isselected;
             set
             {
-                this._isselected = value;
-                if (this.NoEvent == false)
+                if (this._isselected != value)
                 {
-                    Selected?.Invoke(this, this._isselected);
+                    this._isselected = value;
+                    if (this.NoEvent == false)
+                    {
+                        Selected?.Invoke(this, this._isselected);
+                    }
+                    OnPropertyChanged("IsSelected");
                 }
-                OnPropertyChanged("IsSelected");
             }
         }
 
@@ -139,9 +142,15 @@ namespace MonchaCadViewer.CanvasObj
             {
                 if (this.IsFix == false)
                 {
-                    this.Translate.X = value;
-                    //TranslateChanged?.Invoke(this, null);
-                    OnPropertyChanged("X");
+                    if (this.Translate.X != value)
+                    {
+                        this.Translate.X = value;
+                        if (this.Render == true)
+                        {
+                            Updated?.Invoke(this, "X");
+                        }
+                        OnPropertyChanged("X");
+                    }
                 }
             }
         }
@@ -153,9 +162,15 @@ namespace MonchaCadViewer.CanvasObj
             {
                 if (this.IsFix == false)
                 {
-                    this.Translate.Y = value;
-                    //TranslateChanged?.Invoke(this, null);
-                    OnPropertyChanged("Y");
+                    if (this.Translate.Y != value)
+                    {
+                        this.Translate.Y = value;
+                        if (this.Render == true)
+                        {
+                            Updated?.Invoke(this, "Y");
+                        }
+                        OnPropertyChanged("Y");
+                    }
                 }
             }
         }
@@ -165,8 +180,14 @@ namespace MonchaCadViewer.CanvasObj
             get => this.Rotate.Angle;
             set
             {
+                this.Rotate.CenterX = this.DefiningGeometry.Bounds.X - this.Translate.X + this.DefiningGeometry.Bounds.Width / 2;
+                this.Rotate.CenterY = this.DefiningGeometry.Bounds.Y - this.Translate.Y + this.DefiningGeometry.Bounds.Height / 2;
                 this.Rotate.Angle = value;
                 OnPropertyChanged("Angle");
+                if (this.Render == true)
+                {
+                    Updated?.Invoke(this, "Angel");
+                }
             }
         }
 
@@ -176,6 +197,10 @@ namespace MonchaCadViewer.CanvasObj
             set
             {
                 this.Scale.ScaleX = value;
+                if (this.Render == true)
+                {
+                    Updated?.Invoke(this, "ScaleX");
+                }
                 OnPropertyChanged("ScaleX");
             }
         }
@@ -186,6 +211,10 @@ namespace MonchaCadViewer.CanvasObj
             set
             {
                 this.Scale.ScaleY = value;
+                if (this.Render == true)
+                {
+                    Updated?.Invoke(this, "ScaleY");
+                }
                 OnPropertyChanged("ScaleY");
             }
         }
@@ -251,8 +280,12 @@ namespace MonchaCadViewer.CanvasObj
             get => this._render;
             set
             {
-                this._render = value;
-                OnPropertyChanged("Render");
+                if (value != this.Render)
+                {
+                    this._render = value;
+                    Updated?.Invoke(this, "Render");
+                    OnPropertyChanged("Render");
+                }
             }
         }
 
@@ -265,13 +298,6 @@ namespace MonchaCadViewer.CanvasObj
                 OnPropertyChanged("IsFix");
                 Fixed?.Invoke(this, value);
             }
-        }
-
-        public void SetSelect(bool value, bool noevent)
-        {
-            this.NoEvent = noevent;
-            this.IsSelected = value;
-            this.NoEvent = false;
         }
 
         public bool WasMove { get; set; } = false;
@@ -309,7 +335,7 @@ namespace MonchaCadViewer.CanvasObj
         {
             if (this.Render == true)
             {
-                this.Updated?.Invoke(this, this);
+                this.Updated?.Invoke(this, string.Empty);
             }
         }
 
@@ -358,7 +384,7 @@ namespace MonchaCadViewer.CanvasObj
                 if (this.Fill != Brushes.Transparent && this.Fill != null) this.Fill = Brushes.Red;
                 if (this.Stroke != null) this.Stroke = Brushes.Red;
             }
-            else if (!this._render == true)
+            else if (this._render == false)
             {
                 if (this.Fill != Brushes.Transparent && this.Fill != null) this.Fill = Brushes.LightGray;
                 if (this.Stroke != null) this.Stroke = Brushes.LightGray;
@@ -372,10 +398,6 @@ namespace MonchaCadViewer.CanvasObj
             {
                 if (this.Fill != Brushes.Transparent && this.Fill != null) this.Fill = Brushes.Gray;
                 if (this.Stroke != null) this.Stroke = Brushes.Blue;
-            }
-            if (this.Render == true)
-            {
-                this.Updated?.Invoke(this, this);
             }
 
         }
@@ -394,8 +416,8 @@ namespace MonchaCadViewer.CanvasObj
 
         private void CadObject_MouseLeave(object sender, System.Windows.Input.MouseEventArgs e)
         {
-            OnObject?.Invoke(this, this.IsMouseOver);
             this.WasMove = false;
+            OnObject?.Invoke(this, this.IsMouseOver);
         }
 
         private void CadObject_MouseLeftButtonUp(object sender, System.Windows.Input.MouseButtonEventArgs e)

@@ -180,13 +180,11 @@ namespace MonchaCadViewer.CanvasObj
             get => this.Rotate.Angle;
             set
             {
-                this.Rotate.CenterX = this.DefiningGeometry.Bounds.X - this.Translate.X + this.DefiningGeometry.Bounds.Width / 2;
-                this.Rotate.CenterY = this.DefiningGeometry.Bounds.Y - this.Translate.Y + this.DefiningGeometry.Bounds.Height / 2;
                 this.Rotate.Angle = value;
                 OnPropertyChanged("Angle");
                 if (this.Render == true)
                 {
-                    Updated?.Invoke(this, "Angel");
+                    Updated?.Invoke(this, "Angle");
                 }
             }
         }
@@ -365,9 +363,9 @@ namespace MonchaCadViewer.CanvasObj
                         new TranslateTransform()
                     }
                 };
-
                 this.Scale = (ScaleTransform)this.Transform.Children[0];
                 this.Rotate = (RotateTransform)this.Transform.Children[1];
+                
                 this.Translate = (TranslateTransform)this.Transform.Children[2];
             }
         }

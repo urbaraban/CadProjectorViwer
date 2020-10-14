@@ -48,33 +48,7 @@ namespace MonchaCadViewer.CanvasObj
             
         }
 
-        /// <summary>
-        /// Send work rectangle projector
-        /// </summary>
-        /// <param name="device">The right device</param>
-        public static void DrawZone(MonchaDevice device)
-        {
-            LObjectList tempList = new LObjectList();
 
-            tempList.Bop = new LPoint3D(0, 0, 0);
-            tempList.Top = new LPoint3D(0.999999, 0.999999, 0.999999);
-
-            LObject lObject = new LObject();
-            lObject.Add(new LPoint3D(device.TBOP.MX, device.TBOP.MY, 0, 1));
-            lObject.Add(new LPoint3D(device.TTOP.MX, device.TBOP.MY, 0, 1));
-            lObject.Add(new LPoint3D(device.TTOP.MX, device.TTOP.MY, 0, 1));
-            lObject.Add(new LPoint3D(device.TBOP.MX, device.TTOP.MY, 0, 1));
-            lObject.Closed = true;
-
-            tempList.Add(lObject);
-            tempList.OnBaseMesh = false;
-
-            if (tempList.Count > 0)
-            {
-                MonchaHub.MainFrame = tempList;
-                MonchaHub.RefreshFrame();
-            }
-        }
 
         /// <summary>
         /// Get point from inner object

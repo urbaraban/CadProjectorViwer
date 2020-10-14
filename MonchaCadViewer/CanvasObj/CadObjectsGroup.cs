@@ -60,12 +60,16 @@ namespace MonchaCadViewer.CanvasObj
             this.Transform.Children.Clear();
             this.Transform.Children.Add(scaleTransform);
             this.Transform.Children.Add(rotateTransform);
+         
             this.Transform.Children.Add(translateTransform);
 
             Rect rect = this.Bounds;
 
-            scaleTransform.CenterX = rect.Width / 2;
-            scaleTransform.CenterY = rect.Height / 2;
+            scaleTransform.CenterX = rect.X + rect.Width / 2;
+            scaleTransform.CenterY = rect.Y + rect.Height / 2;
+
+            rotateTransform.CenterX = rect.X + rect.Width / 2;
+            rotateTransform.CenterY = rect.Y + rect.Height / 2;
 
             translateTransform.X = MonchaHub.Size.GetMPoint.X / 2 - (rect.X + rect.Width / 2);
             translateTransform.Y = MonchaHub.Size.GetMPoint.Y / 2 - (rect.Y + rect.Height / 2);

@@ -270,27 +270,24 @@ namespace MonchaCadViewer
         {
             if (sender is TreeViewItem viewItem)
             {
-                if (viewItem.ContextMenu.DataContext is MenuItem cmindex && sender is TreeViewItem treeView)
+                if (viewItem.ContextMenu.DataContext is MenuItem cmindex && sender is TreeViewItem treeView &&
+                            treeView.DataContext is MonchaDevice device)
 
                     switch (cmindex.Header)
                     {
                         case "%ZoneRectangle%":
-                            SendProcessor.DrawZone(viewItem.DataContext as MonchaDevice);
+                            device.DrawZone();
                             break;
 
                         case "%CanvasRectangle%":
-                            if (CanvasBox.Child is CadCanvas canvas &&
-                            treeView.DataContext is MonchaDevice device)
+                            if (CanvasBox.Child is CadCanvas canvas)
                             {
                                 canvas.DrawRectangle(device.BBOP, device.BTOP);
                             }
                             break;
                         case "%PolyMeshUsed%":
-                            if (treeView.DataContext is MonchaDevice device2)
-                            {
-                                device2.PolyMeshUsed = !device2.PolyMeshUsed;
-                                MonchaHub.RefreshDevice();
-                            }
+                            device.PolyMeshUsed = !device.PolyMeshUsed;
+                            MonchaHub.RefreshDevice();
                             break;
 
 
@@ -313,7 +310,7 @@ namespace MonchaCadViewer
                                 createGridWindow.ShowDialog();
                                 break;
                             case "Refresh":
-                                deviceMesh = mws.GetMeshDot(device.HWIdentifier, deviceMesh.Name, deviceMesh.Affine);
+                                deviceMesh = MonchaHub.MWS.GetMeshDot(device.HWIdentifier, deviceMesh.Name, deviceMesh.Affine);
                                 break;
                             case "Inverse":
                                 deviceMesh.InverseYPosition();

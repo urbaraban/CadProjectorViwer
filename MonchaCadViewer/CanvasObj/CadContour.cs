@@ -32,7 +32,7 @@ namespace MonchaCadViewer.CanvasObj
                 this.MouseWheel += CadContour_MouseWheel;
             }
 
-            this.Fill = null;
+            this.Fill = Brushes.Transparent;
             this.StrokeThickness = (MonchaHub.GetThinkess() < 0 ? 1 : MonchaHub.GetThinkess()) * 0.5;
             this.Stroke = Brushes.Blue;
         }

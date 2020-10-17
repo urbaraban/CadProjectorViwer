@@ -17,7 +17,7 @@
     <IsWebBootstrapper>false</IsWebBootstrapper>
     <NuGetPackageImportStamp>
     </NuGetPackageImportStamp>
-    <PublishUrl>Z:\soft\LaserCat\</PublishUrl>
+    <PublishUrl>C:\Soft\2Cut\</PublishUrl>
     <Install>true</Install>
     <InstallFrom>Disk</InstallFrom>
     <UpdateEnabled>true</UpdateEnabled>
@@ -33,7 +33,7 @@
     <SuiteName>Viwer</SuiteName>
     <WebPage>publish.htm</WebPage>
     <OpenBrowserOnPublish>false</OpenBrowserOnPublish>
-    <ApplicationRevision>72</ApplicationRevision>
+    <ApplicationRevision>75</ApplicationRevision>
     <ApplicationVersion>0.8.0.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <CreateDesktopShortcut>true</CreateDesktopShortcut>
@@ -118,15 +118,19 @@
       <HintPath>..\..\..\..\..\..\Program Files\ASCON\KOMPAS-3D V16\SDK\C#\Common\KGAXLib.dll</HintPath>
     </Reference>
     <Reference Include="Kompas6API5">
-      <HintPath>..\..\..\..\..\..\Program Files\ASCON\KOMPAS-3D V16\SDK\C#\Common\Kompas6API5.dll</HintPath>
+      <HintPath>..\..\KompasLib\KompasLib\Lib16.15\Kompas6API5.dll</HintPath>
       <EmbedInteropTypes>True</EmbedInteropTypes>
     </Reference>
     <Reference Include="Kompas6Constants">
-      <HintPath>..\..\..\..\..\..\Program Files\ASCON\KOMPAS-3D V16\SDK\C#\Common\Kompas6Constants.dll</HintPath>
+      <HintPath>..\..\KompasLib\KompasLib\Lib16.15\Kompas6Constants.dll</HintPath>
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+    </Reference>
+    <Reference Include="Kompas6Constants3D">
+      <HintPath>..\..\KompasLib\KompasLib\Lib16.15\Kompas6Constants3D.dll</HintPath>
       <EmbedInteropTypes>True</EmbedInteropTypes>
     </Reference>
     <Reference Include="KompasAPI7">
-      <HintPath>..\..\..\..\..\..\Program Files\ASCON\KOMPAS-3D V16\SDK\C#\Common\KompasAPI7.dll</HintPath>
+      <HintPath>..\..\KompasLib\KompasLib\Lib16.15\KompasAPI7.dll</HintPath>
       <EmbedInteropTypes>True</EmbedInteropTypes>
     </Reference>
     <Reference Include="MahApps.Metro, Version=2.0.0.0, Culture=neutral, PublicKeyToken=51482d6f650b2b3f, processorArchitecture=MSIL">

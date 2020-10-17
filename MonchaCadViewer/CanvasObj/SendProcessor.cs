@@ -22,8 +22,6 @@ namespace MonchaCadViewer.CanvasObj
         /// <returns>N_{i,degree}(step)</returns>
         public static void Worker(CadCanvas canvas)
         {
-            Console.WriteLine("Worker");
-
                 Processing = true;
                 LObjectList tempList = new LObjectList();
                 foreach (object obj in canvas.Children)

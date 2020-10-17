@@ -387,7 +387,6 @@ namespace MonchaCadViewer.CanvasObj
 
         private void CadObject_Updated(object sender, string e)
         {
-            Console.WriteLine(e);
             UpdateProjection(false);
         }
 

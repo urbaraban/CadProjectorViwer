@@ -260,8 +260,6 @@ namespace MonchaCadViewer
                         {
                             points.Points.Add(new Point3D(mesh[i, j].MX, mesh[i, j].MY, mesh[i, j].MZ));
                         }
-                    HelixCanvas.Children.Clear();
-                    HelixCanvas.Children.Add(points);
                 }
             }
         }
@@ -546,18 +544,6 @@ namespace MonchaCadViewer
                 }
                 this.MainCanvas.UpdateProjection(true);
             }
-
-            LinesVisual3D linesVisual3D = new LinesVisual3D();
-            linesVisual3D.Color = Color.FromRgb(255, 0, 0);
-            linesVisual3D.Thickness = 1;
-            linesVisual3D.Points.Add(new Point3D(0, 0, 0));
-            linesVisual3D.Points.Add(new Point3D(200, 2000, 2));
-            linesVisual3D.Points.Add(new Point3D(700, 0, 200));
-            linesVisual3D.Points.Add(new Point3D(400, 200, 200));
-
-            HelixCanvas.Children.Add(linesVisual3D);
-
-
         }
 
         private void _viewbox_MouseRightButtonUp(object sender, MouseButtonEventArgs e)

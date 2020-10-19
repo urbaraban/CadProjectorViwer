@@ -182,25 +182,7 @@
                                     </Border>
                                 </TabItem>
                                 <TabItem Header="ViewPort3D" Visibility="Visible">
-                                    <HelixToolkit:HelixViewport3D x:Name="HelixCanvas" ShowFrameRate="True" ZoomExtentsWhenLoaded="True" ZoomAroundMouseDownPoint="True" RotateAroundMouseDownPoint="True" IsTopBottomViewOrientedToFrontBack="True" IsViewCubeEdgeClicksEnabled="True" Loaded="Helix_Loaded" CoordinateSystemHeight="60" ShowCameraInfo="True">
-
-
-                                        <!--  Remember to add light to the scene  -->
-                                        <HelixToolkit:SunLight />
-
-                                        <!--  The content of this visual is defined in MainViewModel.cs  -->
-                                        <ModelVisual3D Content="{Binding Model}" />
-
-                                        <!--  You can also add elements here in the xaml  -->
-                                        <HelixToolkit:GridLinesVisual3D
-                                        Width="5000"
-                                        Length="8000"
-                                        MajorDistance="1000"
-                                        MinorDistance="100"
-                                        Thickness="10" />
-
-                                    </HelixToolkit:HelixViewport3D>
-                                </TabItem>
+  </TabItem>
                             </TabControl>
 
                         </DockPanel>

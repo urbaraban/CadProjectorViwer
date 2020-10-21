@@ -224,23 +224,20 @@ namespace MonchaCadViewer
                 BrowseMoncha(); //select if not
             }
 
-            //recheck
-            if (File.Exists(AppSt.Default.cl_moncha_path))
-            {
-                //send path to hub class
-                MonchaHub.Load(AppSt.Default.cl_moncha_path);
+            //send path to hub class
+            MonchaHub.Load(AppSt.Default.cl_moncha_path);
 
-                WidthUpDn.DataContext = MonchaHub.Size;
-                WidthUpDn.SetBinding(NumericUpDown.ValueProperty, "X");
+            WidthUpDn.DataContext = MonchaHub.Size;
+            WidthUpDn.SetBinding(NumericUpDown.ValueProperty, "X");
 
-                HeightUpD.DataContext = MonchaHub.Size;
-                HeightUpD.SetBinding(NumericUpDown.ValueProperty, "Y");
+            HeightUpD.DataContext = MonchaHub.Size;
+            HeightUpD.SetBinding(NumericUpDown.ValueProperty, "Y");
 
-                DeepUpDn.DataContext = MonchaHub.Size;
-                DeepUpDn.SetBinding(NumericUpDown.ValueProperty, "Z");
+            DeepUpDn.DataContext = MonchaHub.Size;
+            DeepUpDn.SetBinding(NumericUpDown.ValueProperty, "Z");
 
-                MashMultiplierUpDn.Value = MonchaHub.Size.M.X;
-            }
+            MashMultiplierUpDn.Value = MonchaHub.Size.M.X;
+
         }
 
 
@@ -358,20 +355,35 @@ namespace MonchaCadViewer
 
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
+            e.Cancel = SaveMoncha();
+        }
+
+        private bool SaveMoncha()
+        {
             MessageBoxResult messageBoxResult = MessageBox.Show("Сохранить настройки?", "Внимание", MessageBoxButton.YesNoCancel, MessageBoxImage.Warning);
             switch (messageBoxResult)
             {
                 case MessageBoxResult.Yes:
-                    AppSt.Default.Save();
-                    MonchaHub.Save();
+                    AppSt.Default.cl_moncha_path = MonchaHub.Save();
+                    if (File.Exists(AppSt.Default.cl_moncha_path) == false)
+                    {
+                        SaveMoncha();
+                    }
+                    else
+                    {
+                        AppSt.Default.Save();
+                    }
 
+                    return false;
                     break;
                 case MessageBoxResult.No:
+                    return false;
                     break;
                 case MessageBoxResult.Cancel:
-                    e.Cancel = true;
+                    return true;
                     break;
             }
+            return false;
         }
 
 
@@ -405,15 +417,6 @@ namespace MonchaCadViewer
                 PlayBtn.Background = Brushes.Yellow;
             }
 
-        }
-
-
-        private void SaveMeshBtn_Click(object sender, RoutedEventArgs e)
-        {
-            if (DevicePanel.Device != null)
-            {
-                MonchaHub.Save();
-            }
         }
 
         private void OpenBtn_Click(object sender, EventArgs e)
@@ -768,10 +771,10 @@ namespace MonchaCadViewer
                     MoveCanvasSet(step * _mult, 0);
                     break;
                 case Key.F:
-                    MirrorPosition();
+                    FixPosition();
                     break;
                 case Key.OemPlus:
-                    MirrorPosition();
+
                     break;
                 case Key.Delete:
                     this.MainCanvas.RemoveSelectObject();
@@ -889,7 +892,7 @@ namespace MonchaCadViewer
                 
             }
 
-            void MirrorPosition()
+            void FixPosition()
             {
                 if (CanvasBox.Child is CadCanvas canvas)
                 {
@@ -899,11 +902,7 @@ namespace MonchaCadViewer
                         {
                             if (cadObject1.IsSelected)
                             {
-                                if (cadObject1.DataContext is MonchaDeviceMesh deviceMesh && cadObject1 is CadDot dot)
-                                {
-                                    deviceMesh.MirrorPoint(dot.Point);
-                                    return;
-                                }
+                                cadObject1.IsFix = !cadObject1.IsFix;
                             }
                         }
                     }
@@ -1062,18 +1061,14 @@ namespace MonchaCadViewer
 
         private void MenuSaveBtn_Click(object sender, RoutedEventArgs e)
         {
-            AppSt.Default.Save();
             MonchaHub.Save();
+            AppSt.Default.Save();
+           
         }
 
         private void TopBar_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
             this.DragMove();
-        }
-
-        private void Helix_Loaded(object sender, RoutedEventArgs e)
-        {
-
         }
 
         private void PointStepUpDn_ValueDecremented(object sender, NumericUpDownChangedRoutedEventArgs args)
@@ -1110,6 +1105,11 @@ namespace MonchaCadViewer
                 }, 5);
                 }
             }
+        }
+
+        private void RemoveLaser_Click(object sender, RoutedEventArgs e)
+        {
+            MonchaHub.RemoveDevice(DevicePanel.Device);
         }
     }
 

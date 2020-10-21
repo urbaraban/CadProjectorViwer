@@ -22,28 +22,28 @@ namespace MonchaCadViewer.CanvasObj
         /// <returns>N_{i,degree}(step)</returns>
         public static void Worker(CadCanvas canvas)
         {
-                Processing = true;
-                LObjectList tempList = new LObjectList();
-                foreach (object obj in canvas.Children)
+            Processing = true;
+            LObjectList tempList = new LObjectList();
+            foreach (object obj in canvas.Children)
+            {
+                if (obj is CadObject cadObject)
                 {
-                    if (obj is CadObject cadObject)
+                    if (cadObject.Render)
                     {
-                        if (cadObject.Render)
-                        {
-                            tempList.AddRange(GetPoint(cadObject));
-                        }
-
-                        tempList.OnBaseMesh = cadObject.OnBaseMesh;
+                        tempList.AddRange(GetPoint(cadObject));
                     }
-                }
 
-                if (tempList.Count > 0)
-                {
-                    MonchaHub.MainFrame = tempList;
-                    MonchaHub.RefreshFrame();
+                    tempList.OnBaseMesh = cadObject.OnBaseMesh;
                 }
-                Processing = false;
-            
+            }
+            Processing = false;
+            if (tempList.Count > 0)
+            {
+                MonchaHub.MainFrame = tempList;
+                MonchaHub.RefreshFrame();
+            }
+
+
         }
 
 
@@ -66,26 +66,24 @@ namespace MonchaCadViewer.CanvasObj
                        Tuple<int, int> tuple = deviceMesh.CoordinatesOf(cadDot.Point);
                         int height = deviceMesh.GetLength(0) - 1;
                         int width = deviceMesh.GetLength(1) - 1;
+
                         LObject MeshRectangle = new LObject();
 
-                        MeshRectangle.Add(deviceMesh[tuple.Item2, tuple.Item1].GetMLpoint3D);
-                        int delta = tuple.Item2 <= (height - tuple.Item2) ? 1 : -1;
-
-                        for (int i = delta; Math.Abs(i) <= Math.Abs(height - tuple.Item2 * 2); i += delta)
+                        for (int i = 0; i <= height; i += 1)
                         {
-                            MeshRectangle.Add(deviceMesh[tuple.Item2 + i, tuple.Item1].GetMLpoint3D);
+                            MeshRectangle.Add(deviceMesh[i, tuple.Item1].GetMLpoint3D);
                         }
 
-                        MeshRectangle.Add(deviceMesh[height - tuple.Item2 , width - tuple.Item1].GetMLpoint3D);
-                        delta = tuple.Item2 > (height - tuple.Item2) ? 1 : -1;
-
-                        for (int i = delta; Math.Abs(i) <= Math.Abs(height - tuple.Item2 * 2); i += delta)
-                        {
-                            MeshRectangle.Add(deviceMesh[height - tuple.Item2 + i, width - tuple.Item1].GetMLpoint3D);
-                        }
-
-                        MeshRectangle.Closed = true;
                         lObjectList.Add(MeshRectangle);
+                        MeshRectangle = new LObject();
+
+                        for (int i = 0; i <= width; i += 1)
+                        {
+                            MeshRectangle.Add(deviceMesh[tuple.Item2, i].GetMLpoint3D);
+                        }
+
+                        lObjectList.Add(MeshRectangle);
+
                         lObjectList.NoMesh = true;
                     }
                     else

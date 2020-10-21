@@ -93,6 +93,7 @@ namespace MonchaCadViewer.CanvasObj
             {
                 this.Translate.X = this.Point.MX;
                 this.Translate.Y = this.Point.MY;
+                this.Update();
             }
         }
 

@@ -82,13 +82,13 @@ namespace MonchaCadViewer.ToolsPanel
                 }
 
                 //Device
-                ScanRateRealSlider.Maximum = tempdevice.Device.Config.Value.maxScanrate;
-                ScanRateRealSlider.Minimum = tempdevice.Device.Config.Value.minScanrate;
+                ScanRateRealSlider.Maximum = 40000;
+                ScanRateRealSlider.Minimum = 500;
                 ScanRateRealSlider.DataContext = tempdevice;
                 ScanRateRealSlider.SetBinding(Slider.ValueProperty, "ScanRateReal");
 
-                ScanRateCalc.Maximum = tempdevice.Device.Config.Value.maxScanrate;
-                ScanRateCalc.Minimum = tempdevice.Device.Config.Value.minScanrate;
+                ScanRateCalc.Maximum = 40000;
+                ScanRateCalc.Minimum = 500;
                 ScanRateCalc.DataContext = tempdevice;
                 ScanRateCalc.SetBinding(Slider.ValueProperty, "ScanRateCalc");
 

@@ -104,7 +104,8 @@ namespace MonchaCadViewer.ToolsPanel
 
         private void XUpDn_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double?> e)
         {
-           // NeedUpdate?.Invoke(this, null);
+
         }
+
     }
 }

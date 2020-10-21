@@ -191,10 +191,10 @@ namespace MonchaCadViewer.CanvasObj
 
         public double ScaleX
         {
-            get => this.Scale.ScaleX;
+            get => this.Scale.ScaleX * 100;
             set
             {
-                this.Scale.ScaleX = value;
+                this.Scale.ScaleX = value / 100;
                 if (this.Render == true)
                 {
                     Updated?.Invoke(this, "ScaleX");
@@ -205,10 +205,10 @@ namespace MonchaCadViewer.CanvasObj
 
         public double ScaleY
         {
-            get => this.Scale.ScaleY;
+            get => this.Scale.ScaleY * 100;
             set
             {
-                this.Scale.ScaleY = value;
+                this.Scale.ScaleY = value / 100;
                 if (this.Render == true)
                 {
                     Updated?.Invoke(this, "ScaleY");

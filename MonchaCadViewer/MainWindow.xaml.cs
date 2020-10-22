@@ -219,7 +219,7 @@ namespace MonchaCadViewer
         private void LoadMoncha()
         {
             //check path to setting file
-            if (AppSt.Default.cl_moncha_path == string.Empty)
+            if (File.Exists(AppSt.Default.cl_moncha_path) == false)
             {
                 BrowseMoncha(); //select if not
             }
@@ -364,7 +364,17 @@ namespace MonchaCadViewer
             switch (messageBoxResult)
             {
                 case MessageBoxResult.Yes:
-                    AppSt.Default.cl_moncha_path = MonchaHub.Save();
+                    if (File.Exists(AppSt.Default.cl_moncha_path) == false)
+                    {
+                        SaveFileDialog saveFileDialog = new SaveFileDialog();
+                        saveFileDialog.Filter = "Moncha File (*.mws)|*.mws";
+                        if (saveFileDialog.ShowDialog() == true) 
+                        {
+                           AppSt.Default.cl_moncha_path = saveFileDialog.FileName;
+                        }
+                    }
+                    MonchaHub.Save(AppSt.Default.cl_moncha_path);
+
                     if (File.Exists(AppSt.Default.cl_moncha_path) == false)
                     {
                         SaveMoncha();
@@ -373,7 +383,6 @@ namespace MonchaCadViewer
                     {
                         AppSt.Default.Save();
                     }
-
                     return false;
                     break;
                 case MessageBoxResult.No:
@@ -1061,7 +1070,7 @@ namespace MonchaCadViewer
 
         private void MenuSaveBtn_Click(object sender, RoutedEventArgs e)
         {
-            MonchaHub.Save();
+            MonchaHub.Save(AppSt.Default.cl_moncha_path);
             AppSt.Default.Save();
            
         }

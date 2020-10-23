@@ -10,11 +10,11 @@
         <ListView x:Name="FoundDeviceList" Margin="10,10,10,233">
             <ListView.View>
                 <GridView>
-                    <GridViewColumn Header="Name" DisplayMemberBinding="{Binding HWIdentifier}" />
+                    <GridViewColumn Header="Name" DisplayMemberBinding="{Binding GetIP}" />
                     <GridViewColumn Header="Select">
                         <GridViewColumn.CellTemplate>
                             <DataTemplate>
-                                <CheckBox IsChecked="{Binding Selected, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"></CheckBox>
+                                <CheckBox IsChecked="{Binding IsSelected, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"></CheckBox>
                             </DataTemplate>
                         </GridViewColumn.CellTemplate>
                     </GridViewColumn>
@@ -22,15 +22,15 @@
             </ListView.View>
         </ListView>
         <Button x:Name="OkBtn" Content="Ok" HorizontalAlignment="Left" Margin="222,363,0,0" VerticalAlignment="Top" Width="113" Height="24" Click="OkBtn_Click"/>
-        <Button x:Name="OkBtn_Copy" Content="Search" HorizontalAlignment="Left" Margin="10,363,0,0" VerticalAlignment="Top" Width="113" Height="24"/>
+        <Button x:Name="SearchBtn" Content="Search" HorizontalAlignment="Left" Margin="10,363,0,0" VerticalAlignment="Top" Width="113" Height="24" Click="SearchBtn_Click"/>
         <ListView x:Name="MonchaDeviceList" Margin="10,195,10,44">
             <ListView.View>
                 <GridView>
-                    <GridViewColumn Header="Name" DisplayMemberBinding="{Binding HWIdentifier}" />
+                    <GridViewColumn Header="Name" DisplayMemberBinding="{Binding GetIP}" />
                     <GridViewColumn Header="Select">
                         <GridViewColumn.CellTemplate>
                             <DataTemplate>
-                                <CheckBox IsChecked="{Binding Selected, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                                <CheckBox IsChecked="{Binding IsSelected, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
                             </DataTemplate>
                         </GridViewColumn.CellTemplate>
                     </GridViewColumn>

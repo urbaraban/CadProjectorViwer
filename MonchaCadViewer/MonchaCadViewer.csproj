@@ -33,7 +33,7 @@
     <SuiteName>Viwer</SuiteName>
     <WebPage>publish.htm</WebPage>
     <OpenBrowserOnPublish>false</OpenBrowserOnPublish>
-    <ApplicationRevision>77</ApplicationRevision>
+    <ApplicationRevision>92</ApplicationRevision>
     <ApplicationVersion>0.8.0.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <CreateDesktopShortcut>true</CreateDesktopShortcut>

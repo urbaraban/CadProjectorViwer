@@ -22,48 +22,39 @@ namespace MonchaCadViewer.ToolsPanel
 
         public void DataContextUpdate(CadObject cadObject)
         {
-            this.DataContext = cadObject;
+            this.IsEnabled = true;
+            XUpDn.Value = cadObject.X;
+            XUpDn.SetBinding(NumericUpDown.ValueProperty, "X");
+            XUpDn.DataContext = cadObject;
 
-            DisconnectBinding();
+            YUpDn.Value = cadObject.Y;
+            YUpDn.SetBinding(NumericUpDown.ValueProperty, "Y");
+            YUpDn.DataContext = cadObject;
 
-            if (this.DataContext is CadObject cadObjectDC)
-            {
-                this.IsEnabled = true;
-                XUpDn.Value = cadObjectDC.X;
-                XUpDn.SetBinding(NumericUpDown.ValueProperty, "X");
-                XUpDn.DataContext = cadObjectDC;
+            MirrorCheck.DataContext = this.DataContext;
+            MirrorCheck.IsChecked = cadObject.Mirror;
+            MirrorCheck.SetBinding(CheckBox.IsCheckedProperty, "Mirror");
 
-                YUpDn.Value = cadObjectDC.Y;
-                YUpDn.SetBinding(NumericUpDown.ValueProperty, "Y");
-                YUpDn.DataContext = cadObjectDC; 
+            RenderCheck.IsChecked = cadObject.Render;
+            RenderCheck.SetBinding(CheckBox.IsCheckedProperty, "Render");
+            RenderCheck.DataContext = this.DataContext;
 
-                MirrorCheck.DataContext = this.DataContext;
-                MirrorCheck.IsChecked = cadObjectDC.Mirror;
-                MirrorCheck.SetBinding(CheckBox.IsCheckedProperty, "Mirror");
+            FixCheck.IsChecked = cadObject.IsFix;
+            FixCheck.SetBinding(CheckBox.IsCheckedProperty, "IsFix");
+            FixCheck.DataContext = this.DataContext;
 
-                RenderCheck.IsChecked = cadObjectDC.Render;
-                RenderCheck.SetBinding(CheckBox.IsCheckedProperty, "Render");
-                RenderCheck.DataContext = this.DataContext;
+            AngleUpDn.Value = cadObject.Angle;
+            AngleUpDn.SetBinding(NumericUpDown.ValueProperty, "Angle");
+            AngleUpDn.DataContext = this.DataContext;
 
-                FixCheck.IsChecked = cadObjectDC.IsFix;
-                FixCheck.SetBinding(CheckBox.IsCheckedProperty, "IsFix");
-                FixCheck.DataContext = this.DataContext;
+            WidthUpDn.Value = cadObject.ScaleX;
+            WidthUpDn.SetBinding(NumericUpDown.ValueProperty, "ScaleX");
+            WidthUpDn.DataContext = this.DataContext;
 
-                AngleUpDn.Value = cadObjectDC.Angle;
-                AngleUpDn.SetBinding(NumericUpDown.ValueProperty, "Angle");
-                AngleUpDn.DataContext = this.DataContext;
+            HeightUpDn.Value = cadObject.ScaleY;
+            HeightUpDn.SetBinding(NumericUpDown.ValueProperty, "ScaleY");
+            HeightUpDn.DataContext = this.DataContext;
 
-                WidthUpDn.Value = cadObjectDC.ScaleX;
-                WidthUpDn.SetBinding(NumericUpDown.ValueProperty, "ScaleX");
-                WidthUpDn.DataContext = this.DataContext;
-
-                HeightUpDn.Value = cadObjectDC.ScaleY;
-                HeightUpDn.SetBinding(NumericUpDown.ValueProperty, "ScaleY");
-                HeightUpDn.DataContext = this.DataContext;
-
-                
-                
-            }
         }
 
         private void DisconnectBinding()
@@ -99,7 +90,13 @@ namespace MonchaCadViewer.ToolsPanel
         private void CadObjectPanel_DataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
         {
             if (this.DataContext is CadObject cadObject)
+            {
                 DataContextUpdate(cadObject);
+            }
+            else
+            {
+                DisconnectBinding();
+            }
         }
 
         private void XUpDn_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double?> e)

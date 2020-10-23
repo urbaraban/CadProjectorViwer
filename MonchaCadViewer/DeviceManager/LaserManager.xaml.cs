@@ -1,7 +1,9 @@
 ﻿using MonchaNETDll.MonchaBroadcast;
 using MonchaSDK;
 using MonchaSDK.Device;
+using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Net;
 using System.Windows;
 
@@ -13,53 +15,62 @@ namespace MonchaCadViewer
     /// </summary>
     public partial class LaserManager : Window
     {
-        private List<IPAddress> iPs = new List<IPAddress>();
-        public List<MonchaDevice> Devices = new List<MonchaDevice>();
+        private List<BroadcastReply2> iPs = new List<BroadcastReply2>();
+        public List<IpSelect> OldDevices = new List<IpSelect>();
+        public List<IpSelect> NewDevices = new List<IpSelect>();
 
         public LaserManager()
         {
             InitializeComponent();
             RefreshList();
-
         }
 
         private void RefreshList()
         {
-            this.iPs = MonchaSearch.FindDevicesOverBroadcast(MonchaSearch.GetAvailabeBroadcastAddresses());
+            this.iPs = MonchaSearch.FindDevicesOverBroadcast2(MonchaSearch.GetAvailabeBroadcastAddresses());
 
             if (this.iPs.Count > 0)
             {
-                this.Devices.Clear();
-                for (int i = 0; i < iPs.Count; i++) //no include work laser (change to i = 0)
+                this.NewDevices.Clear();
+                foreach(BroadcastReply2 broadcastReply in iPs)
                 {
+                    IpSelect ipSelect = new IpSelect() { BroadcastReply = broadcastReply, IsSelected = false };
                     //if not
-                    if (!MonchaHub.CheckDeviceIP(iPs[i]))
+                    if (MonchaHub.CheckDeviceIP(ipSelect.GetIP) == false)
                     {
-                        MonchaDevice device = MonchaHub.ConnectDevice(iPs[i]);
-
-                        if (device != null)
-                            this.Devices.Add(device);
+                        this.NewDevices.Add(ipSelect);
                     }
+                }
+                this.OldDevices.Clear();
+                foreach (MonchaDevice monchaDevice in MonchaHub.Devices)
+                {
+                    this.OldDevices.Add(new IpSelect() { BroadcastReply = monchaDevice.BroadcastReply, IsSelected = true });
                 }
             }
 
-            if (this.Devices.Count > 0)
+            if (this.NewDevices.Count > 0)
             {
-                FoundDeviceList.ItemsSource = this.Devices;
-                MonchaDeviceList.ItemsSource = MonchaHub.Devices;
+                FoundDeviceList.ItemsSource = this.NewDevices;
+                MonchaDeviceList.ItemsSource = this.OldDevices;
             }
 
         }
 
         private void DeviceManagerForm_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
-            foreach (MonchaDevice device in FoundDeviceList.Items)
+            foreach (IpSelect device in FoundDeviceList.Items)
             {
-                if (device != null && device.Selected)
-                    MonchaHub.Devices.Add(device);
-                else
+                if (device != null && device.IsSelected == true)
                 {
-                    device.Disconnect();
+                    MonchaHub.Devices.Add(MonchaHub.ConnectDevice(device.BroadcastReply));
+                }
+            }
+
+            foreach (IpSelect device in MonchaDeviceList.Items)
+            {
+                if (device != null && device.IsSelected == false)
+                {
+                    MonchaHub.RemoveDevice(device.GetIP);
                 }
             }
 
@@ -74,5 +85,43 @@ namespace MonchaCadViewer
         private void AddVirtualBtn_Click(object sender, RoutedEventArgs e)
         {
         }
+
+        private void SearchBtn_Click(object sender, RoutedEventArgs e)
+        {
+            RefreshList();
+        }
     }
+
+    public class IpSelect : INotifyPropertyChanged
+    {
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        private BroadcastReply2 broadcastReply;
+        private bool selected;
+        public BroadcastReply2 BroadcastReply
+        {
+            get => this.broadcastReply;
+            set
+            {
+                this.broadcastReply = value;
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("IP"));
+            }
+        }
+    
+        public bool IsSelected
+        {
+            get => this.selected;
+            set
+            {
+                this.selected = value;
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("IP"));
+            }
+        }
+
+        public IPAddress GetIP => new IPAddress(BitConverter.GetBytes(broadcastReply.ipv4));
+
+
+
+    }
+
 }

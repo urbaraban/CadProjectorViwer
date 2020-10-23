@@ -45,6 +45,7 @@ namespace MonchaCadViewer
         public MainWindow()
         {
             InitializeComponent();
+            MonchaHub.Loging += MonchaHub_Loging;
             MonchaHub.RefreshedDevice += MonchaHub_RefreshDevice;
 
             MultPanel.NeedUpdate += MultPanel_NeedUpdate;
@@ -70,6 +71,11 @@ namespace MonchaCadViewer
             //cadCanvas.ErrorMessageEvent += CadCanvas_ErrorMessageEvent;
 
             CanvasBox.Child = this.MainCanvas;
+        }
+
+        private void MonchaHub_Loging(object sender, string e)
+        {
+            LogBox.Invoke(()=> { LogBox.Items.Add(e); });
         }
 
         private void MultPanel_NeedUpdate(object sender, EventArgs e)
@@ -99,6 +105,11 @@ namespace MonchaCadViewer
             {
                 ObjectPanel.DataContext = sender;
                 MultPanel.DataContext = sender;
+            }
+            else
+            {
+                ObjectPanel.DataContext = null;
+                MultPanel.DataContext = null;
             }
         }
 

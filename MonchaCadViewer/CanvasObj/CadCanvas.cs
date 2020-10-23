@@ -125,6 +125,7 @@ namespace MonchaCadViewer.CanvasObj
             }
 
             this.Add(obj);
+            SelectedObject?.Invoke(null, false);
         }
 
         private void CadObject_MouseLeave(object sender, MouseEventArgs e)
@@ -149,6 +150,7 @@ namespace MonchaCadViewer.CanvasObj
             cadDot2.Render = false;
             this.Children.Add(cadDot1);
             this.Children.Add(cadDot2);
+
         }
 
 
@@ -217,6 +219,7 @@ namespace MonchaCadViewer.CanvasObj
                 }
 
             }
+            SelectedObject?.Invoke(null, false);
            
         }
 
@@ -347,6 +350,7 @@ namespace MonchaCadViewer.CanvasObj
                     }
 
             }
+            SelectedObject?.Invoke(null, false);
         }
 
         public void Clear()

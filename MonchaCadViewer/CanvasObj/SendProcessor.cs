@@ -32,8 +32,6 @@ namespace MonchaCadViewer.CanvasObj
                     {
                         tempList.AddRange(GetPoint(cadObject));
                     }
-
-                    tempList.OnBaseMesh = cadObject.OnBaseMesh;
                 }
             }
             Processing = false;
@@ -67,15 +65,9 @@ namespace MonchaCadViewer.CanvasObj
                         int height = deviceMesh.GetLength(0) - 1;
                         int width = deviceMesh.GetLength(1) - 1;
 
+
+                        //Vertical
                         LObject MeshRectangle = new LObject();
-
-                        for (int i = 0; i <= height; i += 1)
-                        {
-                            MeshRectangle.Add(deviceMesh[i, tuple.Item1].GetMLpoint3D);
-                        }
-
-                        lObjectList.Add(MeshRectangle);
-                        MeshRectangle = new LObject();
 
                         for (int i = 0; i <= width; i += 1)
                         {
@@ -83,6 +75,19 @@ namespace MonchaCadViewer.CanvasObj
                         }
 
                         lObjectList.Add(MeshRectangle);
+                        //Vertical
+
+                        //Horizontal
+                         MeshRectangle = new LObject();
+
+                        for (int i = 0; i <= height; i += 1)
+                        {
+                            MeshRectangle.Add(deviceMesh[i, tuple.Item1].GetMLpoint3D);
+                        }
+
+                        lObjectList.Add(MeshRectangle);
+                        //Horizontal
+
 
                         lObjectList.NoMesh = true;
                     }
@@ -100,7 +105,7 @@ namespace MonchaCadViewer.CanvasObj
                     break;
 
             }
-            if (cadObject.OnBaseMesh == true)
+            if (lObjectList.NoMesh == true)
             {
                 return lObjectList;
             }

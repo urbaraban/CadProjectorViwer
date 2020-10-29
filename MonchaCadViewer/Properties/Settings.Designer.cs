@@ -109,30 +109,6 @@ namespace MonchaCadViewer.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute(",")]
-        public char svg_separator1 {
-            get {
-                return ((char)(this["svg_separator1"]));
-            }
-            set {
-                this["svg_separator1"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute(",")]
-        public char svg_separator2 {
-            get {
-                return ((char)(this["svg_separator2"]));
-            }
-            set {
-                this["svg_separator2"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("True")]
         public bool main_formoncha {
             get {
@@ -188,6 +164,66 @@ namespace MonchaCadViewer.Properties {
             }
             set {
                 this["base_distance"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("100")]
+        public double default_scale_x {
+            get {
+                return ((double)(this["default_scale_x"]));
+            }
+            set {
+                this["default_scale_x"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("100")]
+        public double default_scale_y {
+            get {
+                return ((double)(this["default_scale_y"]));
+            }
+            set {
+                this["default_scale_y"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool default_mirror {
+            get {
+                return ((bool)(this["default_mirror"]));
+            }
+            set {
+                this["default_mirror"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("0")]
+        public double default_angle {
+            get {
+                return ((double)(this["default_angle"]));
+            }
+            set {
+                this["default_angle"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool defailt_tesselate {
+            get {
+                return ((bool)(this["defailt_tesselate"]));
+            }
+            set {
+                this["defailt_tesselate"] = value;
             }
         }
     }

@@ -39,11 +39,11 @@
             <Viewbox x:Name="CadViewBox" Margin="-1"/>
         </Border>
         <Controls:ToggleSwitch x:Name="MonchaToggle"  Content="Moncha" HorizontalAlignment="Left" Margin="15,17,0,0" VerticalAlignment="Top" Width="153" Height="32" Grid.Column="1" IsOn="{Binding main_formoncha, Mode=TwoWay}" Toggled="MonchaToggle_Toggled"/>
-        <Controls:NumericUpDown x:Name="WidthUpDn" Margin="15,80,67,0" Value="2" Maximum="50" Minimum="2" Background="White" Height="26" VerticalAlignment="Top"  Grid.Column="1" ValueChanged="WidthUpDn_ValueChanged"/>
-        <Controls:NumericUpDown x:Name="HeightUpDn" Margin="15,140,67,0" Value="2" Maximum="50" Minimum="2" Background="White" Height="26" VerticalAlignment="Top"  Grid.Column="1" ValueChanged="WidthUpDn_ValueChanged"/>
+        <Controls:NumericUpDown x:Name="WidthUpDn"  Margin="15,80,67,0" Maximum="50" Minimum="2" Value="2" Background="White" Height="26" VerticalAlignment="Top"  Grid.Column="1" ValueChanged="WidthUpDn_ValueChanged"/>
+        <Controls:NumericUpDown x:Name="HeightUpDn" Margin="15,140,67,0" Maximum="50" Minimum="2" Value="2" Background="White" Height="26" VerticalAlignment="Top"  Grid.Column="1" ValueChanged="WidthUpDn_ValueChanged"/>
         <Label x:Name="label" Content="Ширина" Grid.Column="1" HorizontalAlignment="Left" Margin="15,54,0,0" VerticalAlignment="Top" Height="26" Width="55"/>
         <Label x:Name="label_Copy" Content="Высота" Grid.Column="1" HorizontalAlignment="Left" Margin="15,114,0,0" VerticalAlignment="Top" Height="26" Width="49"/>
-        <Controls:NumericUpDown x:Name="StepUpDn" Margin="15,193,67,0" Value="300" Maximum="9999" Minimum="2" Background="White" Height="26" VerticalAlignment="Top"  Grid.Column="1" ValueChanged="StepUpDn_ValueChanged"/>
+        <Controls:NumericUpDown x:Name="StepUpDn" Margin="15,193,67,0" Maximum="9999" Value="300" Minimum="2" Background="White" Height="26" VerticalAlignment="Top"  Grid.Column="1" ValueChanged="StepUpDn_ValueChanged" />
         <Label x:Name="label_Copy1" Content="Каждые" Grid.Column="1" HorizontalAlignment="Left" Margin="15,167,0,0" VerticalAlignment="Top" Height="26" Width="53"/>
         <Label x:Name="WidthStepLabel" Content="(0.0)" Grid.Column="1" HorizontalAlignment="Left" Margin="135,80,0,0" VerticalAlignment="Top" Height="26" Width="33"/>
         <Label x:Name="HeightStepLabel" Content="(0.0)" Grid.Column="1" HorizontalAlignment="Left" Margin="135,140,0,0" VerticalAlignment="Top" Width="52" Height="26"/>

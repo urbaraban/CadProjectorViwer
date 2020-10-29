@@ -365,9 +365,10 @@ namespace MonchaCadViewer.CanvasObj
                 };
                 this.Scale = (ScaleTransform)this.Transform.Children[0];
                 this.Rotate = (RotateTransform)this.Transform.Children[1];
-                
                 this.Translate = (TranslateTransform)this.Transform.Children[2];
             }
+
+            if (this.ScaleX < 0) this._mirror = true;
         }
 
         private void CadObject_PropertyChanged(object sender, PropertyChangedEventArgs e)

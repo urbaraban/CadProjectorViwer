@@ -69,7 +69,6 @@ namespace MonchaCadViewer.CanvasObj
                 this.MouseLeftButtonDown += Canvas_MouseLeftDown;
                 this.MouseMove += CadCanvas_MouseMove;
                 this.MouseUp += CadCanvas_MouseUp;
-                MonchaHub.NeedUpdateFrame += MonchaHub_NeedUpdateFrame;
             }
 
             MonchaHub.ChangeSize += MonchaHub_ChangeSize;
@@ -81,10 +80,6 @@ namespace MonchaCadViewer.CanvasObj
             {
                 SendProcessor.Worker(this);
             }
-        }
-        private void MonchaHub_NeedUpdateFrame(object sender, bool e)
-        {
-            UpdateProjection(e);
         }
 
         private void MonchaHub_ChangeSize(object sender, LPoint3D e)

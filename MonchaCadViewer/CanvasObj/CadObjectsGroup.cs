@@ -11,6 +11,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Shapes;
 using ToGeometryConverter.Object;
+using AppSt = MonchaCadViewer.Properties.Settings;
 
 namespace MonchaCadViewer.CanvasObj
 {
@@ -74,6 +75,9 @@ namespace MonchaCadViewer.CanvasObj
             translateTransform.X = MonchaHub.Size.GetMPoint.X / 2 - (rect.X + rect.Width / 2);
             translateTransform.Y = MonchaHub.Size.GetMPoint.Y / 2 - (rect.Y + rect.Height / 2);
 
+            scaleTransform.ScaleX = AppSt.Default.default_scale_x / 100 * (AppSt.Default.default_mirror == true ? -1 : 1);
+            scaleTransform.ScaleY = AppSt.Default.default_scale_y / 100;
+            rotateTransform.Angle = AppSt.Default.default_angle;
 
             foreach (CadObject cadObject in this.Objects)
             {

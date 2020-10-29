@@ -10,6 +10,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Shapes;
 
+
 namespace MonchaCadViewer.CanvasObj
 {
     public class CadContour : CadObject
@@ -42,9 +43,6 @@ namespace MonchaCadViewer.CanvasObj
         {
             if (e.Delta != 0)
             {
-              /*  this.Transform.TryTransform(e.GetPosition(this), out Point point1);
-                this.Rotate.CenterX = point1.X;
-                this.Rotate.CenterY = point1.Y;*/
                 this.Angle += Math.Abs(e.Delta) / e.Delta * (Keyboard.Modifiers == ModifierKeys.Shift ? 1 : 5);
             }
         }
@@ -74,6 +72,7 @@ namespace MonchaCadViewer.CanvasObj
                 }
             }
         }
+
 
         private void ViewContour_Loaded(object sender, RoutedEventArgs e)
         {

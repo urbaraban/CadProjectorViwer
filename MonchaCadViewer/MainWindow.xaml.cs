@@ -413,7 +413,6 @@ namespace MonchaCadViewer
             MonchaHub.Disconnect();
             GC.Collect();
             GC.WaitForPendingFinalizers();
-            this.Close();
         }
 
 
@@ -467,7 +466,7 @@ namespace MonchaCadViewer
 
             if (filename.Split('.').Last() == "svg")
             {
-                _actualFrames = SVG.Get(filename);
+                _actualFrames = SVG.Get(filename, AppSt.Default.defailt_tesselate);
             }
             else if (filename.Split('.').Last() == "dxf")
             {
@@ -659,14 +658,14 @@ namespace MonchaCadViewer
             if (MashMultiplierUpDn.Value == null) MashMultiplierUpDn.Value = 1;
             args.Interval = 0;
             MashMultiplierUpDn.Value = MashMultiplierUpDn.Value.Value * 10;
-            MonchaHub.Size.M.Set(MashMultiplierUpDn.Value.Value);
+            MonchaHub.Size.M.Set(MashMultiplierUpDn.Value.Value, true);
         }
 
         private void MashMultiplierUpDn_ValueDecremented(object sender, NumericUpDownChangedRoutedEventArgs args)
         {
             args.Interval = 0;
             MashMultiplierUpDn.Value = MashMultiplierUpDn.Value.Value / 10;
-            MonchaHub.Size.M.Set(MashMultiplierUpDn.Value.Value);
+            MonchaHub.Size.M.Set(MashMultiplierUpDn.Value.Value, true);
         }
 
 
@@ -740,13 +739,6 @@ namespace MonchaCadViewer
             kmpsConnectToggle.IsOn = e;
         }
 
-        private void stlSeparatorBox_TextChanged(object sender, TextChangedEventArgs e)
-        {
-            if (svgSeparatorBox1.Text != string.Empty)
-                AppSt.Default.svg_separator1 = svgSeparatorBox1.Text.Last();
-            if (svgSeparatorBox2.Text != string.Empty)
-                AppSt.Default.svg_separator2 = svgSeparatorBox2.Text.Last();
-        }
 
         private void kmpsSelectBtn_Click(object sender, RoutedEventArgs e)
         {
@@ -797,7 +789,7 @@ namespace MonchaCadViewer
 
                     break;
                 case Key.Delete:
-                    this.MainCanvas.RemoveSelectObject();
+                   // this.MainCanvas.RemoveSelectObject();
                     break;
                 case Key.D1:
                     if (Keyboard.Modifiers == ModifierKeys.Control)
@@ -1130,6 +1122,16 @@ namespace MonchaCadViewer
         private void RemoveLaser_Click(object sender, RoutedEventArgs e)
         {
             MonchaHub.RemoveDevice(DevicePanel.Device);
+        }
+
+        private void SaveObjStgBtn_Click(object sender, RoutedEventArgs e)
+        {
+            AppSt.Default.default_scale_x = ScaleXBox.Value.Value;
+            AppSt.Default.default_scale_y = ScaleYBox.Value.Value;
+            AppSt.Default.default_angle = AngleBox.Value.Value;
+            AppSt.Default.default_mirror = MirrorBox.IsChecked.Value;
+            AppSt.Default.defailt_tesselate = TesselateCheck.IsChecked.Value;
+            AppSt.Default.Save();
         }
     }
 

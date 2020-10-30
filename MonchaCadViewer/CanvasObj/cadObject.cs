@@ -148,8 +148,10 @@ namespace MonchaCadViewer.CanvasObj
                         if (this.Render == true)
                         {
                             Updated?.Invoke(this, "X");
+
                         }
                         OnPropertyChanged("X");
+
                     }
                 }
             }
@@ -168,8 +170,10 @@ namespace MonchaCadViewer.CanvasObj
                         if (this.Render == true)
                         {
                             Updated?.Invoke(this, "Y");
+                            
                         }
                         OnPropertyChanged("Y");
+
                     }
                 }
             }

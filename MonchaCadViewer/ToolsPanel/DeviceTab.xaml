@@ -49,9 +49,9 @@
         </Grid.ColumnDefinitions>
         <Slider x:Name="AngleWaitSlider" Margin="0,0,0,59" Value="1" Minimum="1"  SmallChange="1" Grid.Column="1" Grid.ColumnSpan="4" Maximum="30" Height="30" VerticalAlignment="Bottom" Grid.Row="2"/>
         <ComboBox x:Name="DeviceCombo" Margin="0,25,0,0" VerticalAlignment="Top" IsEnabled="{c:Binding !IsChecked, ElementName=QRBtn}"  DataContextChanged="DeviceCombo_DataContextChanged" Height="26" SelectionChanged="DeviceCombo_SelectionChanged" RenderTransformOrigin="0.5,0.5" Grid.ColumnSpan="3" Grid.Column="1" />
-        <Controls:ToggleSwitch x:Name="InvertXtoggle" Content="Invert X" HorizontalAlignment="Left" Margin="4,149,0,0" VerticalAlignment="Top" HorizontalContentAlignment="Right" FlowDirection="RightToLeft" Controls:HeaderedControlHelper.HeaderFontSize="12" FontSize="12" Height="20" Grid.Column="1" Grid.Row="2" Width="85"/>
-        <Controls:ToggleSwitch x:Name="InvertYtoggle" Content="Invert Y" HorizontalAlignment="Stretch" Margin="26,149,6,0" VerticalAlignment="Top" HorizontalContentAlignment="Right" FlowDirection="RightToLeft" FontSize="12" Height="20" Grid.ColumnSpan="3" Grid.Column="2" Grid.Row="2"/>
-        <Label Content="Step" Padding="2,3,0,0" Margin="4,0,0,138" HorizontalAlignment="Left" Width="57" Height="26" VerticalAlignment="Bottom" Grid.Column="1" Grid.Row="2"/>
+        <Controls:ToggleSwitch x:Name="InvertXtoggle" Content="{DynamicResource dvc_InvX}" HorizontalAlignment="Left" Margin="4,149,0,0" VerticalAlignment="Top" HorizontalContentAlignment="Right" FlowDirection="RightToLeft" Controls:HeaderedControlHelper.HeaderFontSize="12" FontSize="12" Height="20" Grid.Column="1" Grid.Row="2" Width="85"/>
+        <Controls:ToggleSwitch x:Name="InvertYtoggle" Content="{DynamicResource dvc_InvY}" HorizontalAlignment="Stretch" Margin="26,149,6,0" VerticalAlignment="Top" HorizontalContentAlignment="Right" FlowDirection="RightToLeft" FontSize="12" Height="20" Grid.ColumnSpan="3" Grid.Column="2" Grid.Row="2"/>
+        <Label Content="{DynamicResource dvc_StepPoint}" Padding="2,3,0,0" Margin="4,0,0,138" HorizontalAlignment="Left" Width="57" Height="26" VerticalAlignment="Bottom" Grid.Column="1" Grid.Row="2"/>
         <Controls:NumericUpDown x:Name="CRSUpDn" Margin="26,0,6,138" Maximum="999" Minimum="1" Background="White" Grid.Column="2" RenderTransformOrigin="0.288,1.538" Grid.Row="2" Grid.ColumnSpan="3" Height="26" VerticalAlignment="Bottom" />
 
         <Controls:NumericUpDown x:Name="DistanceUpDn" Margin="4,22,58,0" Value="{Binding cl_distance, Mode=TwoWay}" Background="White" Height="26" VerticalAlignment="Top" Grid.ColumnSpan="3" Grid.Column="2" IsEnabled="{c:Binding !IsChecked, ElementName=QRBtn}" Grid.Row="1"/>
@@ -69,21 +69,21 @@
                 <Properties:Settings/>
             </Controls:ToggleSwitch.DataContext>
         </Controls:ToggleSwitch>
-        <Label x:Name="label_Copy6" Content="Дальномер" HorizontalAlignment="Left" Margin="4,0,0,0" VerticalAlignment="Top" Width="74" Height="26" Grid.Column="1" Grid.Row="1"/>
+        <Label x:Name="label_Copy6" Content="{DynamicResource dvc_Dimmer}" HorizontalAlignment="Left" Margin="4,0,0,0" VerticalAlignment="Top" Width="74" Height="26" Grid.Column="1" Grid.Row="1"/>
         <Label x:Name="StartWaitLabel" Content="{Binding Value, ElementName=AngleWaitSlider}" Margin="0,0,0,64" Height="26" VerticalAlignment="Bottom" HorizontalContentAlignment="Center" Grid.Row="2"/>
-        <Label x:Name="StartWaitLabel_Copy" Margin="0,0,0,81" Content="Время ожидания угла" FontSize="8" Grid.Column="1" HorizontalContentAlignment="Center" Grid.ColumnSpan="4" Height="21" VerticalAlignment="Bottom" Grid.Row="2"/>
+        <Label x:Name="StartWaitLabel_Copy" Margin="0,0,0,81" Content="{DynamicResource dvc_WaintPoint}" FontSize="8" Grid.Column="1" HorizontalContentAlignment="Center" Grid.ColumnSpan="4" Height="21" VerticalAlignment="Bottom" Grid.Row="2"/>
         <Slider x:Name="ScanRateCalc" Margin="0,97,10,0" VerticalAlignment="Top" Value="20000" Minimum="1000" Maximum="40000" SmallChange="1" AllowDrop="False" PreviewMouseDown="ScanRateRealSlider_PreviewMouseDown" Grid.ColumnSpan="4" Height="25" Grid.Column="1" Grid.Row="1" Grid.RowSpan="2"/>
-        <Label x:Name="ScanRateLabel" Margin="0,81,0,0" VerticalAlignment="Top" Content="ScanRateCalc:" FontSize="8" Height="21" RenderTransformOrigin="0.439,0.556" Grid.Column="1" Grid.Row="1"/>
+        <Label x:Name="ScanRateLabel" Margin="0,81,0,0" VerticalAlignment="Top" Content="{DynamicResource dvc_SRC}" FontSize="8" Height="21" RenderTransformOrigin="0.439,0.556" Grid.Column="1" Grid.Row="1"/>
         <Controls:NumericUpDown x:Name="RedUpDn" Margin="26,41,6,0" Value="255" Maximum="255" Minimum="1" Background="White" Height="26" VerticalAlignment="Top" Grid.Column="2" Grid.ColumnSpan="3" IsEnabled="{c:Binding !IsChecked, ElementName=QRBtn}" Grid.Row="2"/>
-        <Controls:ToggleSwitch x:Name="RedToggle" Background="Red"  Content="Red" HorizontalAlignment="Left" Margin="10,41,0,0" VerticalAlignment="Top" Height="26" Grid.Column="1" HorizontalContentAlignment="Center" Grid.Row="2" Width="68" />
+        <Controls:ToggleSwitch x:Name="RedToggle" Background="Red"  Content="{DynamicResource dvc_RED}" HorizontalAlignment="Left" Margin="10,41,0,0" VerticalAlignment="Top" Height="26" Grid.Column="1" HorizontalContentAlignment="Center" Grid.Row="2" Width="68" />
         <Controls:NumericUpDown x:Name="GreenUpDn" Margin="26,72,6,0" Value="255" Maximum="255" Minimum="1" Background="White" Height="26" VerticalAlignment="Top" Grid.Column="2" Grid.ColumnSpan="3" IsEnabled="{c:Binding !IsChecked, ElementName=QRBtn}" Grid.Row="2"/>
-        <Controls:ToggleSwitch x:Name="GreenToggle"  Content="Green" HorizontalAlignment="Left" Margin="10,73,0,0" VerticalAlignment="Top" Height="25" Grid.Column="1" HorizontalContentAlignment="Center" Grid.Row="2" Width="81"/>
+        <Controls:ToggleSwitch x:Name="GreenToggle"  Content="{DynamicResource dvc_GREEN}" HorizontalAlignment="Left" Margin="10,73,0,0" VerticalAlignment="Top" Height="25" Grid.Column="1" HorizontalContentAlignment="Center" Grid.Row="2" Width="81"/>
         <Controls:NumericUpDown x:Name="BlueUpDn" Margin="26,105,6,0" Value="255" Maximum="255" Minimum="1" Background="White" Height="26" VerticalAlignment="Top" Grid.Column="2" Grid.ColumnSpan="3" IsEnabled="{c:Binding !IsChecked, ElementName=QRBtn}" Grid.Row="2"/>
-        <Controls:ToggleSwitch x:Name="BlueToggle"  Content="Blue" HorizontalAlignment="Left" Margin="10,106,0,0" VerticalAlignment="Top" Height="25" Grid.Column="1" HorizontalContentAlignment="Center" Grid.Row="2" Width="71"/>
+        <Controls:ToggleSwitch x:Name="BlueToggle"  Content="{DynamicResource dvc_Blue}" HorizontalAlignment="Left" Margin="10,106,0,0" VerticalAlignment="Top" Height="25" Grid.Column="1" HorizontalContentAlignment="Center" Grid.Row="2" Width="71"/>
         <Slider x:Name="AlphaSlider" Margin="0,188,6,0" VerticalAlignment="Top" Value="255" Maximum="255" Minimum="1" Grid.ColumnSpan="4" Height="22" Grid.Column="1" Grid.Row="2"/>
-        <Label x:Name="ScanRateLabel_Copy" Margin="0,174,0,0" VerticalAlignment="Top" Content="Яркость" FontSize="8" Grid.Column="1" Height="22" HorizontalContentAlignment="Center" Grid.ColumnSpan="4" Grid.Row="2"/>
+        <Label x:Name="ScanRateLabel_Copy" Margin="0,174,0,0" VerticalAlignment="Top" Content="{DynamicResource dvc_Brightness}" FontSize="8" Grid.Column="1" Height="22" HorizontalContentAlignment="Center" Grid.ColumnSpan="4" Grid.Row="2"/>
         <Controls:NumericUpDown x:Name="FPSUpDn" Margin="26,10,6,0" Value="30" Maximum="40" Minimum="14.2" Background="White" Height="26" VerticalAlignment="Top" Grid.Column="2" Grid.ColumnSpan="3" IsEnabled="{c:Binding !IsChecked, ElementName=QRBtn}" Grid.Row="2"/>
-        <Label x:Name="FPSLabel" Content="FPS" Height="26" Margin="2,9,53,0" VerticalAlignment="Top" RenderTransformOrigin="0.5,0.5" AutomationProperties.HelpText="Кадров в секунду" HorizontalContentAlignment="Center" Grid.Column="1" Grid.ColumnSpan="2" Grid.Row="2">
+        <Label x:Name="FPSLabel" Content="{DynamicResource dvc_FPS}" Height="26" Margin="2,9,53,0" VerticalAlignment="Top" RenderTransformOrigin="0.5,0.5" AutomationProperties.HelpText="Кадров в секунду" HorizontalContentAlignment="Center" Grid.Column="1" Grid.ColumnSpan="2" Grid.Row="2">
             <Label.RenderTransform>
                 <TransformGroup>
                     <ScaleTransform/>
@@ -94,7 +94,7 @@
             </Label.RenderTransform>
         </Label>
         <Slider x:Name="ScanRateRealSlider" Margin="0,63,10,0" VerticalAlignment="Top"  Minimum="1000" Maximum="40000" SmallChange="1" AllowDrop="False" PreviewMouseDown="ScanRateRealSlider_PreviewMouseDown" Grid.ColumnSpan="4" Height="20" Grid.Column="1" Grid.Row="1"/>
-        <Label x:Name="ScanRateLabel_Copy1" Margin="0,46,1,0" VerticalAlignment="Top" Content="ScanRateReal:" FontSize="8" Height="21" Grid.Column="1" Grid.Row="1"/>
+        <Label x:Name="ScanRateLabel_Copy1" Margin="0,46,1,0" VerticalAlignment="Top" Content="{DynamicResource dvc_SRR}" FontSize="8" Height="21" Grid.Column="1" Grid.Row="1"/>
         <ToggleButton x:Name="ScanRateAnchor" Content="🔗" Margin="0,78,10,0" VerticalAlignment="Top" Height="25" Padding="1,1,1,1" IsChecked="{Binding int_scan_anchor, Mode=TwoWay}" Click="ScanRateAnchor_Click" Grid.Column="4" HorizontalAlignment="Right" Width="24" Grid.Row="1">
             <ToggleButton.DataContext>
                 <Properties:Settings/>
@@ -104,12 +104,12 @@
         <Label x:Name="StartWaitLabel_Copy1" Content="{Binding Value, ElementName=StartBlankSlider}" Margin="0,0,0,35" Height="23" VerticalAlignment="Bottom" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Grid.Row="2"/>
         <Slider x:Name="EndBlankSlider" Margin="0,0,0,9" Value="1" Minimum="1" SmallChange="1" Grid.Column="1" Grid.ColumnSpan="4" Maximum="30" Height="22" VerticalAlignment="Bottom" Grid.Row="2"/>
         <Label x:Name="StartWaitLabel_Copy2" Content="{Binding Value, ElementName=EndBlankSlider}" Margin="0,0,0,7" Height="26" VerticalAlignment="Bottom" HorizontalContentAlignment="Center" Grid.Row="2"/>
-        <Label x:Name="StartWaitLabel_Copy3" Margin="0,0,0,48" Content="Время ожидания начала Blank" FontSize="8" Grid.Column="1" Grid.ColumnSpan="4" HorizontalContentAlignment="Center" Height="21" VerticalAlignment="Bottom" Grid.Row="2"/>
-        <Label x:Name="StartWaitLabel_Copy4" Margin="0,0,0,22" Content="Время ожидания окончания Blank" FontSize="8" Grid.Column="1" Grid.ColumnSpan="4" HorizontalContentAlignment="Center" Height="21" VerticalAlignment="Bottom" Grid.Row="2"/>
+        <Label x:Name="StartWaitLabel_Copy3" Margin="0,0,0,48" Content="{DynamicResource dvc_WaintPointBlank}" FontSize="8" Grid.Column="1" Grid.ColumnSpan="4" HorizontalContentAlignment="Center" Height="21" VerticalAlignment="Bottom" Grid.Row="2"/>
+        <Label x:Name="StartWaitLabel_Copy4" Margin="0,0,0,22" Content="{DynamicResource dvc_WaintPointEndBlank}" FontSize="8" Grid.Column="1" Grid.ColumnSpan="4" HorizontalContentAlignment="Center" Height="21" VerticalAlignment="Bottom" Grid.Row="2"/>
         <Slider x:Name="ColorShiftSlider" Margin="0,0,0,89" Value="1" Minimum="1" SmallChange="1" Grid.Column="1" Grid.ColumnSpan="4" Maximum="30" Height="30" VerticalAlignment="Bottom" Grid.Row="2"/>
-        <Label x:Name="StartWaitLabel_Copy5" Margin="0,0,0,112" Content="Затухание" FontSize="8" Grid.Column="1" HorizontalContentAlignment="Center" Grid.ColumnSpan="4" Height="21" VerticalAlignment="Bottom" Grid.Row="2"/>
+        <Label x:Name="StartWaitLabel_Copy5" Margin="0,0,0,112" Content="{DynamicResource dvc_FadePoint}" FontSize="8" Grid.Column="1" HorizontalContentAlignment="Center" Grid.ColumnSpan="4" Height="21" VerticalAlignment="Bottom" Grid.Row="2"/>
         <Label x:Name="StartWaitLabel_Copy6" Content="{Binding Value, ElementName=ColorShiftSlider}" Margin="0,0,0,95" Height="26" VerticalAlignment="Bottom" HorizontalContentAlignment="Center" Grid.Row="2"/>
-        <Label x:Name="label_Copy7" Content="Устройство" HorizontalAlignment="Left" VerticalAlignment="Top" Width="74" Height="26" Grid.Column="1"/>
+        <Label x:Name="label_Copy7" Content="{DynamicResource dvc_Device}" HorizontalAlignment="Left" VerticalAlignment="Top" Width="74" Height="26" Grid.Column="1"/>
         <Controls:ToggleSwitch x:Name="CommonSettingToggle"  Content="" HorizontalAlignment="Right" Margin="0,27,8,0" VerticalAlignment="Top" IsOn="False" RenderTransformOrigin="0.5,0.5" HorizontalContentAlignment="Center" Height="25" Grid.Column="4" Width="46">
             <Controls:ToggleSwitch.RenderTransform>
                 <TransformGroup>

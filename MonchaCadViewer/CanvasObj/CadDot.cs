@@ -29,7 +29,6 @@ namespace MonchaCadViewer.CanvasObj
             };
 
             this.UpdateTransform(null);
-
             this.OnBaseMesh = OnBaseMesh;
 
             this.Point = Point;
@@ -89,11 +88,13 @@ namespace MonchaCadViewer.CanvasObj
 
         private void Point_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
-            if (e.PropertyName == "MX" || e.PropertyName == "MY" || e.PropertyName == "Point")
+             if (e.PropertyName == "MX" || e.PropertyName == "MY" || e.PropertyName == "Point")
             {
+                Dispatcher.Invoke(() => { 
                 this.Translate.X = this.Point.MX;
                 this.Translate.Y = this.Point.MY;
                 this.Update();
+                });
             }
         }
 
@@ -133,12 +134,6 @@ namespace MonchaCadViewer.CanvasObj
                         break;
                 }
             }
-        }
-
-        public bool Contains(Point point)
-        {
-            return (this.Point.GetMPoint.X - this.rectangle.Rect.Size.Width / 2 < point.X && this.Point.GetMPoint.X + this.rectangle.Rect.Size.Width / 2 > point.X)
-            && (this.Point.GetMPoint.Y - this.rectangle.Rect.Size.Height / 2 < point.Y && this.Point.GetMPoint.Y + this.rectangle.Rect.Size.Height / 2 > point.Y);
         }
     }
 }

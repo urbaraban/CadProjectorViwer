@@ -68,8 +68,6 @@ namespace MonchaCadViewer
             this.MainCanvas.SelectedObject += CadCanvas_SelectedObject;
             this.MainCanvas.ContextMenu = new ContextMenu();
             ContextMenuLib.CanvasMenu(this.MainCanvas.ContextMenu);
-            //cadCanvas.ErrorMessageEvent += CadCanvas_ErrorMessageEvent;
-
             CanvasBox.Child = this.MainCanvas;
         }
 
@@ -722,8 +720,19 @@ namespace MonchaCadViewer
 
         private void KmpsAppl_OpenedDoc(object sender, object e)
         {
+            KmpsNameLbl.Invoke(() => { 
             if (e is KmpsDoc kmpsDoc)
-                KmpsNameLbl.Content = kmpsDoc.D7.Name;
+            {
+                if (kmpsDoc.D7.Name != null)
+                {
+                    KmpsNameLbl.Content = kmpsDoc.D7.Name;
+                }
+                else
+                {
+                    KmpsNameLbl.Content = "Пустой";
+                }
+            }
+            });
         }
 
         private void KmpsAppl_ChangeDoc(object sender, KmpsDoc e)

@@ -93,7 +93,7 @@
                                         <ToggleButton x:Name="QRBtn" Content="QR" Click="QRBtn_Click" Focusable="False" Margin="0,0,0,0" Background="{x:Null}" BorderBrush="{x:Null}"/>
                                     </ToolBarPanel>
                                     <Separator></Separator>
-                                    <Button x:Name="ReloadBtn" Content="Refresh" Margin="0,5" HorizontalAlignment="Right"  Click="ReloadBtn_Click" Grid.Column="1" VerticalAlignment="Stretch" Width="80"/>
+                                    <Button x:Name="ReloadBtn" Content="{DynamicResource m_Refresh}"  Margin="0,5" HorizontalAlignment="Right"  Click="ReloadBtn_Click" Grid.Column="1" VerticalAlignment="Stretch" Width="80"/>
                                 </ToolBar>
 
 
@@ -145,10 +145,10 @@
                                         <Button x:Name="AddLaser" FontFamily="Segoe MDL2 Assets" Content="&#xE948;" Height="26" Margin="0,0,5,0" VerticalAlignment="Top" HorizontalAlignment="Right" Width="25" Background="{x:Null}" BorderBrush="{x:Null}" Click="AddLaser_Click" />
                                         <Button x:Name="RemoveLaser" FontFamily="Segoe MDL2 Assets" Content="&#xE947;" Height="26" Margin="0,0,5,0" VerticalAlignment="Top" HorizontalAlignment="Right" Width="25" Background="{x:Null}" BorderBrush="{x:Null}" Click="RemoveLaser_Click"/>
                                     </StackPanel>
-                                    <TreeViewItem x:Name="DeviceTree" Header="Devices" VerticalContentAlignment="Center">
-                                        <TreeViewItem x:Name="MeshTree" Header="Mesh"/>
+                                    <TreeViewItem x:Name="DeviceTree" Header="{DynamicResource m_Devices}" VerticalContentAlignment="Center">
+                                        <TreeViewItem x:Name="MeshTree" Header="{DynamicResource m_Mesh}"/>
                                     </TreeViewItem>
-                                    <TreeViewItem x:Name="FrameTree" Header="Frames" DisplayMemberPath="Uid" AllowDrop="False" />
+                                    <TreeViewItem x:Name="FrameTree" Header="{DynamicResource m_Frames}" DisplayMemberPath="Uid" AllowDrop="False" />
                                 </TreeView>
                             </Border>
                         </DockPanel>
@@ -168,7 +168,7 @@
                         </Grid.RowDefinitions>
                         <DockPanel DockPanel.Dock="Top">
                             <TabControl TabStripPlacement="Top">
-                                <TabItem Header="PathFigure">
+                                <TabItem Header="{DynamicResource m_CanvasTab}">
                                     <Border x:Name="CanvasBorder" Style="{StaticResource Border}" Background="LightGray" Grid.Column="1" Grid.Row="2" Margin="0" Grid.RowSpan="2">
                                         <Viewbox x:Name="MainViewBox" ClipToBounds="True" StretchDirection="DownOnly"  Stretch="Uniform"  Margin="0,0,0,0" ForceCursor="True" KeyboardNavigation.TabNavigation="Once" DragEnter="MainViewBox_DragEnter" Drop="MainViewBox_Drop">
                                             <Viewbox.DataContext>

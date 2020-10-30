@@ -120,6 +120,7 @@ namespace MonchaCadViewer.CanvasObj
             }
 
             this.Add(obj);
+            UpdateProjection(true);
             SelectedObject?.Invoke(null, false);
         }
 

@@ -44,8 +44,6 @@ namespace MonchaCadViewer.CanvasObj
 
         }
 
-
-
         /// <summary>
         /// Get point from inner object
         /// </summary>
@@ -61,33 +59,11 @@ namespace MonchaCadViewer.CanvasObj
                     CadDot cadDot = (CadDot)cadObject;
                     if (cadObject.DataContext is MonchaDeviceMesh deviceMesh)
                     {
-                       Tuple<int, int> tuple = deviceMesh.CoordinatesOf(cadDot.Point);
-                        int height = deviceMesh.GetLength(0) - 1;
-                        int width = deviceMesh.GetLength(1) - 1;
-
-
-                        //Vertical
-                        LObject MeshRectangle = new LObject();
-
-                        for (int i = 0; i <= width; i += 1)
-                        {
-                            MeshRectangle.Add(deviceMesh[tuple.Item2, i].GetMLpoint3D);
-                        }
-
-                        lObjectList.Add(MeshRectangle);
-                        //Vertical
-
-                        //Horizontal
-                         MeshRectangle = new LObject();
-
-                        for (int i = 0; i <= height; i += 1)
-                        {
-                            MeshRectangle.Add(deviceMesh[i, tuple.Item1].GetMLpoint3D);
-                        }
-
-                        lObjectList.Add(MeshRectangle);
-                        //Horizontal
-
+                        if (MonchaDeviceMesh.ClbrForm == CalibrationForm.cl_Dot) lObjectList.Add(new LObject() { cadDot.Point.GetMLpoint3D });
+                        if (MonchaDeviceMesh.ClbrForm == CalibrationForm.cl_Rect) lObjectList.AddRange(CalibrationRect(deviceMesh, cadDot.Point));
+                        if (MonchaDeviceMesh.ClbrForm == CalibrationForm.cl_Cross) lObjectList.AddRange(CalibrationCross(deviceMesh, cadDot.Point));
+                        if (MonchaDeviceMesh.ClbrForm == CalibrationForm.cl_HLine) lObjectList.AddRange(CalibrationLineH(deviceMesh, cadDot.Point));
+                        if (MonchaDeviceMesh.ClbrForm == CalibrationForm.cl_WLine) lObjectList.AddRange(CalibrationLineW(deviceMesh, cadDot.Point));
 
                         lObjectList.NoMesh = true;
                     }
@@ -113,7 +89,141 @@ namespace MonchaCadViewer.CanvasObj
             {
                 return lObjectList.Transform(cadObject.Transform);
             }
+
+            LObjectList CalibrationCross(MonchaDeviceMesh monchaDeviceMesh, LPoint3D lPoint3D)
+            {
+                Tuple<int, int> tuple = monchaDeviceMesh.CoordinatesOf(lPoint3D);
+                int height = monchaDeviceMesh.GetLength(0) - 1;
+                int width = monchaDeviceMesh.GetLength(1) - 1;
+
+
+                //Vertical
+                LObject Line1 = new LObject();
+
+                for (int i = 0; i <= width; i += 1)
+                {
+                    Line1.Add(monchaDeviceMesh[tuple.Item2, i].GetMLpoint3D);
+                }
+
+                //Vertical
+
+                //Horizontal
+                LObject Line2 = new LObject();
+
+                for (int i = 0; i <= height; i += 1)
+                {
+                    Line2.Add(monchaDeviceMesh[i, tuple.Item1].GetMLpoint3D);
+                }
+
+                return new LObjectList()
+            {
+                Line2,
+                Line1
+
+            };
+
+            }
+            LObjectList CalibrationRect(MonchaDeviceMesh monchaDeviceMesh, LPoint3D lPoint3D)
+            {
+                Tuple<int, int> tuple = monchaDeviceMesh.CoordinatesOf(lPoint3D);
+                int height = monchaDeviceMesh.GetLength(0) - 1;
+                int width = monchaDeviceMesh.GetLength(1) - 1;
+
+                //Vertical
+                LObject Line1H = GetLine(tuple.Item1, tuple.Item2, true);
+                //Horizontal
+                LObject Line1W = GetLine(tuple.Item1, height - tuple.Item2, false);
+                //Vertical
+                LObject Line2H = GetLine(width - tuple.Item1, height - tuple.Item2, true);
+                //Horizontal
+                LObject Line2W = GetLine(width - tuple.Item1, tuple.Item2, false);
+
+                return new LObjectList()
+            {
+                Line1H,
+                Line1W,
+                Line2H,
+                Line2W
+            };
+
+
+                LObject GetLine(int xpos, int ypos, bool Vertical)
+                {
+                    LObject Line = new LObject();
+
+                    if (Vertical == true)
+                    {
+                        int ypos2 = height - ypos;
+
+                        int delta = ypos > ypos2 ? -1 : 1;
+
+                        for (int i = 0; i <= Math.Abs(ypos2 - ypos); i += 1)
+                        {
+                            Line.Add(monchaDeviceMesh[ypos + (i * delta), xpos].GetMLpoint3D);
+                        }
+                    }
+                    else
+                    {
+                        int xpos2 = width - xpos;
+
+                        int delta = xpos > xpos2 ? -1 : 1;
+
+                        for (int i = 0; i <= Math.Abs(xpos2 - xpos); i += 1)
+                        {
+                            Line.Add(monchaDeviceMesh[ypos, xpos + (i * delta)].GetMLpoint3D);
+                        }
+                    }
+
+                    return Line;
+                }
+
+            }
+            LObjectList CalibrationLineH(MonchaDeviceMesh monchaDeviceMesh, LPoint3D lPoint3D)
+            {
+                Tuple<int, int> tuple = monchaDeviceMesh.CoordinatesOf(lPoint3D);
+                int height = monchaDeviceMesh.GetLength(0) - 1;
+                int width = monchaDeviceMesh.GetLength(1) - 1;
+
+
+                //Height
+                LObject Line = new LObject();
+
+                for (int i = 0; i <= height; i += 1)
+                {
+                    Line.Add(monchaDeviceMesh[i, tuple.Item1].GetMLpoint3D);
+                }
+
+                return new LObjectList()
+            {
+                Line,
+            };
+
+            }
+            LObjectList CalibrationLineW(MonchaDeviceMesh monchaDeviceMesh, LPoint3D lPoint3D)
+            {
+                Tuple<int, int> tuple = monchaDeviceMesh.CoordinatesOf(lPoint3D);
+                int height = monchaDeviceMesh.GetLength(0) - 1;
+                int width = monchaDeviceMesh.GetLength(1) - 1;
+
+                //width
+                LObject Line = new LObject();
+
+                for (int i = 0; i <= width; i += 1)
+                {
+                    Line.Add(monchaDeviceMesh[tuple.Item2, i].GetMLpoint3D);
+                }
+
+
+
+                return new LObjectList()
+            {
+                Line
+            };
+
+            }
         }
+
+
 
         /// <summary>
         /// Convert inner object in LPoint3D's

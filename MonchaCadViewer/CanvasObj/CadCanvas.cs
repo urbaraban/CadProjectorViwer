@@ -120,8 +120,11 @@ namespace MonchaCadViewer.CanvasObj
             }
 
             this.Add(obj);
-            UpdateProjection(true);
-            SelectedObject?.Invoke(null, false);
+
+            if (maincanvas == true)
+            {
+                SelectedObject?.Invoke(null, false);
+            }
         }
 
         private void CadObject_MouseLeave(object sender, MouseEventArgs e)

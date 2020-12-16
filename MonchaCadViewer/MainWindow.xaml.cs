@@ -40,6 +40,7 @@ namespace MonchaCadViewer
 
         private KmpsAppl kmpsAppl;
         private CadCanvas MainCanvas;
+        private bool inverseToggle = true;
         //private DotShape[,] BaseMeshRectangles;
 
         public MainWindow()
@@ -246,6 +247,13 @@ namespace MonchaCadViewer
             DeepUpDn.SetBinding(NumericUpDown.ValueProperty, "Z");
 
             MashMultiplierUpDn.Value = MonchaHub.Size.M.X;
+
+            CalibrationFormCombo.Items.Clear();
+            CalibrationFormCombo.Items.Add(CalibrationForm.cl_Dot);
+            CalibrationFormCombo.Items.Add(CalibrationForm.cl_Rect);
+            CalibrationFormCombo.Items.Add(CalibrationForm.cl_Cross);
+            CalibrationFormCombo.Items.Add(CalibrationForm.cl_HLine);
+            CalibrationFormCombo.Items.Add(CalibrationForm.cl_WLine);
 
         }
 
@@ -669,6 +677,7 @@ namespace MonchaCadViewer
 
         private void RefreshLaser_Click_1(object sender, RoutedEventArgs e)
         {
+            MonchaHub.CanPlay = false;
             LoadMoncha();
             treeView.UpdateLayout();
         }
@@ -686,13 +695,6 @@ namespace MonchaCadViewer
                 else
                     (sender as Button).Background = Brushes.White;
             }
-        }
-
-        private void HorizontalToggle_Toggled(object sender, RoutedEventArgs e)
-        {
-            if (this.IsLoaded)
-                if (CanvasBox.Child is CadCanvas cadCanvas)
-                    cadCanvas.HorizontalMesh = HorizontalToggle.IsOn;
         }
 
 
@@ -877,7 +879,7 @@ namespace MonchaCadViewer
 
                                 try
                                 {
-                                    if (canvas.Children[i + (InverseToggle.IsOn ? -1 : +1)] is CadObject cadObject2)
+                                    if (canvas.Children[i + (inverseToggle ? -1 : +1)] is CadObject cadObject2)
                                     {
                                         cadObject2.IsSelected = true;
                                         cadObject2.IsFix = false;
@@ -886,7 +888,7 @@ namespace MonchaCadViewer
                                 catch (Exception exeption)
                                 {
                                     LogBox.Items.Add($"Main: {exeption.Message}");
-                                    InverseToggle.IsOn = !InverseToggle.IsOn;
+                                    inverseToggle = !inverseToggle;
                                     cadObject.IsSelected = true;
                                 }
                                 break;
@@ -1109,7 +1111,12 @@ namespace MonchaCadViewer
             }
         }
 
-        private void ILDASaveBtn_Click(object sender, RoutedEventArgs e)
+        /// <summary>
+        /// Save frame to ILDA file
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private async void ILDASaveBtn_Click(object sender, RoutedEventArgs e)
         {
             SaveFileDialog saveFileDialog = new SaveFileDialog();
             saveFileDialog.Filter = "(*.ild)|*.ild| All Files (*.*)|*.*";
@@ -1120,10 +1127,7 @@ namespace MonchaCadViewer
             {
                 for (int i = 0; i < MonchaHub.Devices.Count; i++)
                 {
-                    ildaWriter.Write(($"{saveFileDialog.FileName.Replace(".ild", string.Empty)}_{i}.ild"), new List<LFrame>()
-                {
-                    MonchaHub.Devices[i].GetReadyFrame.GetLFrame(MonchaHub.Devices[i], MonchaHub.MainFrame)
-                }, 5);
+                    ildaWriter.Write(($"{saveFileDialog.FileName.Replace(".ild", string.Empty)}_{i}.ild"), new List<LFrame>(){await MonchaHub.Devices[i].GetReadyFrame.GetLFrame(MonchaHub.Devices[i], MonchaHub.MainFrame)}, 5);
                 }
             }
         }
@@ -1141,6 +1145,25 @@ namespace MonchaCadViewer
             AppSt.Default.default_mirror = MirrorBox.IsChecked.Value;
             AppSt.Default.defailt_tesselate = TesselateCheck.IsChecked.Value;
             AppSt.Default.Save();
+        }
+
+        private void CalibrationFormCombo_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            MonchaDeviceMesh.ClbrForm = (CalibrationForm)CalibrationFormCombo.SelectedValue;
+            this.MainCanvas.UpdateProjection(true);
+        }
+
+        private void Save_Click(object sender, RoutedEventArgs e)
+        {
+            MonchaHub.Save(AppSt.Default.cl_moncha_path);
+            AppSt.Default.Save();
+        }
+
+        private void CheckBox_Checked(object sender, RoutedEventArgs e)
+        {
+            if (sender is CheckBox checkBox)
+                ReadyFrame.SetEndgePoint = checkBox.IsChecked.Value;
+            MonchaHub.RefreshFrame();
         }
     }
 

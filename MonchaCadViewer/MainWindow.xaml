@@ -122,7 +122,7 @@
                                 <Grid.RowDefinitions>
                                 </Grid.RowDefinitions>
 
-                                <Button x:Name="PlayBtn" Content="Play" Margin="3,26,5,5" Click="PlayBtn_Click" Background="#FFFFD100" Grid.Column="1"/>
+                                <Button x:Name="PlayBtn" Content="{DynamicResource m_Play}" Margin="3,26,5,5" Click="PlayBtn_Click" Background="#FFFFD100" Grid.Column="1"/>
                             </Grid>
 
 
@@ -263,7 +263,7 @@
                                                     <Properties:Settings/>
                                                 </CheckBox.DataContext>
                                             </CheckBox>
-                                                <Button x:Name="SaveObjStgBtn" Content="Save" HorizontalAlignment="Left" Margin="10,193,0,0" VerticalAlignment="Top" Width="248" Grid.ColumnSpan="2" Height="31" Click="SaveObjStgBtn_Click"/>
+                                            <Button x:Name="SaveObjStgBtn" Content="Save" HorizontalAlignment="Left" Margin="10,193,0,0" VerticalAlignment="Top" Width="248" Grid.ColumnSpan="2" Height="31" Click="SaveObjStgBtn_Click"/>
                                             <CheckBox x:Name="TesselateCheck" Content="Tesselate" HorizontalAlignment="Left" Margin="5,162,0,0" VerticalAlignment="Top"  IsChecked="{Binding default_tesselate, Mode=TwoWay}" Grid.Column="1" Width="147">
                                                 <CheckBox.DataContext>
                                                     <Properties:Settings/>
@@ -313,7 +313,7 @@
                                         <Properties:Settings/>
                                     </Label.DataContext>
                                 </Label>
-                                <Button x:Name="BrowseMonchaBtn" Content="Browse..." Margin="17,28,10,0" VerticalAlignment="Top" Click="BrowseMonchaBtn_Click" Height="23" Grid.Column="3" Grid.ColumnSpan="2"/>
+                                <Button x:Name="BrowseMonchaBtn" Content="Browse..." Margin="17,33,10,0" VerticalAlignment="Top" Click="BrowseMonchaBtn_Click" Height="23" Grid.Column="3" Grid.ColumnSpan="2"/>
                                 <Label x:Name="label" Content="Путь до файла Moncha (*.mws)" HorizontalAlignment="Left" Margin="10,2,0,0" VerticalAlignment="Top" Grid.ColumnSpan="4" Height="26" Width="178"/>
                                 <Controls:NumericUpDown x:Name="WidthUpDn" Margin="0,70,10,0"  Background="White" Height="26" VerticalAlignment="Top" Grid.Column="2" Grid.ColumnSpan="3" >
                                     <Controls:NumericUpDown.DataContext>
@@ -333,23 +333,33 @@
                                     </Controls:NumericUpDown.DataContext>
                                 </Controls:NumericUpDown>
                                 <Label x:Name="label_Copy2" Content="Глубина" HorizontalAlignment="Left" Margin="6,142,0,0" VerticalAlignment="Top" Width="74" Height="26" Grid.ColumnSpan="2"/>
-
-                                <Controls:ToggleSwitch x:Name="EditMeshToggle" Content="Edit" HorizontalAlignment="Stretch" Margin="3,311,0,0" VerticalAlignment="Top" Grid.ColumnSpan="3" Height="20"/>
                                 <Controls:NumericUpDown x:Name="MashMultiplierUpDn" Margin="0,176,10,0"  Background="White" Height="26" Maximum="1" Minimum="0.001" VerticalAlignment="Top" Speedup="False" Controls:ScrollViewerHelper.IsHorizontalScrollWheelEnabled="True" ValueIncremented="MashMultiplierUpDn_ValueIncremented" ValueDecremented="MashMultiplierUpDn_ValueDecremented" Grid.Column="2" Grid.ColumnSpan="3">
                                     <Controls:NumericUpDown.DataContext>
                                         <Properties:Settings/>
                                     </Controls:NumericUpDown.DataContext>
                                 </Controls:NumericUpDown>
                                 <Label x:Name="label_Copy3" Content="Множитель" HorizontalAlignment="Left" Margin="6,176,0,0" VerticalAlignment="Top" Height="26" Width="74" Grid.ColumnSpan="2"/>
-                                <Controls:ToggleSwitch x:Name="InverseToggle" Content="InverseStep" HorizontalAlignment="Stretch" Margin="3,348,0,0" VerticalAlignment="Top" IsOn="True" Grid.ColumnSpan="3" Height="20"/>
-                                <Controls:ToggleSwitch x:Name="HorizontalToggle" Content="Horizontal" HorizontalAlignment="Stretch" Margin="3,384,0,0" VerticalAlignment="Top" Toggled="HorizontalToggle_Toggled" Grid.ColumnSpan="3" Height="20"/>
-                                <Controls:NumericUpDown x:Name="PointStepUpDn" Margin="5,421,14,0"  Background="White" Height="26" VerticalAlignment="Top" NumericInputMode="Decimal" Maximum="10" Minimum="0" Interval="0.1"  Value="1" Grid.Column="2" Grid.ColumnSpan="3" Focusable="False" IsTabStop="False" AllowDrop="False" ValueDecremented="PointStepUpDn_ValueDecremented" ValueIncremented="PointStepUpDn_ValueIncremented">
+                                <Controls:NumericUpDown x:Name="PointStepUpDn" Margin="0,218,10,0"  Background="White" Height="26" VerticalAlignment="Top" NumericInputMode="Decimal" Maximum="10" Minimum="0" Interval="0.1"  Value="1" Grid.Column="2" Grid.ColumnSpan="3" Focusable="False" IsTabStop="False" AllowDrop="False" ValueDecremented="PointStepUpDn_ValueDecremented" ValueIncremented="PointStepUpDn_ValueIncremented">
                                     <Controls:NumericUpDown.DataContext>
                                         <Properties:Settings/>
                                     </Controls:NumericUpDown.DataContext>
                                 </Controls:NumericUpDown>
-                                <Label x:Name="label_Copy4" Content="Шаг" HorizontalAlignment="Left" Margin="10,421,0,0" VerticalAlignment="Top" Height="26" Width="32" Grid.ColumnSpan="2"/>
+                                <Label x:Name="label_Copy4" Content="Шаг" Margin="10,218,10,0" VerticalAlignment="Top" Height="26" Grid.ColumnSpan="2"/>
+                                <ComboBox x:Name="CalibrationFormCombo" Grid.ColumnSpan="3" Grid.Column="2" HorizontalAlignment="Left" Margin="0,260,0,0" VerticalAlignment="Top" Width="174" SelectionChanged="CalibrationFormCombo_SelectionChanged">
+                                    <ComboBox.Resources>
+                                        <ResourceDictionary>
 
+                                        </ResourceDictionary>
+                                    </ComboBox.Resources>
+                                    <ComboBoxItem Content="{DynamicResource clb_Dot}"/>
+                                    <ComboBoxItem Content="{DynamicResource clb_Rect}"/>
+                                    <ComboBoxItem Content="{DynamicResource clb_Cross}"/>
+                                    <ComboBoxItem Content="{DynamicResource clb_HLine}"/>
+                                    <ComboBoxItem Content="{DynamicResource clb_WLine}"/>
+                                </ComboBox>
+                                <Label x:Name="CalibrationFormLabel" Content="Тип" Margin="10,260,10,0" VerticalAlignment="Top" Height="26" Grid.ColumnSpan="2"/>
+                                <Button x:Name="Save" Grid.ColumnSpan="5" Content="Save" HorizontalAlignment="Left" Margin="10,332,0,0" VerticalAlignment="Top" Width="254" Height="34" Click="Save_Click"/>
+                                <CheckBox Content="{DynamicResource clb_SetEdgePoint}" Margin="10,296,10,249" Grid.ColumnSpan="5" Checked="CheckBox_Checked" Unchecked="CheckBox_Checked"/>
                             </Grid>
                         </TabItem>
                         <TabItem Header="Log" Controls:HeaderedControlHelper.HeaderFontSize="18">

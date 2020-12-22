@@ -28,8 +28,7 @@ namespace MonchaCadViewer.CanvasObj
         }
 
         public bool NoEvent = false;
-        private bool _isfix = false;
-        private bool _mirror = false;
+        
         private bool _render = true;
 
         private bool _otherprojection = false;
@@ -59,6 +58,22 @@ namespace MonchaCadViewer.CanvasObj
         public TranslateTransform Translate = new TranslateTransform();
         public ScaleTransform Scale = new ScaleTransform();
 
+        public bool IsSelected
+        {
+            get => this._isselected;
+            set
+            {
+                if (this._isselected != value)
+                {
+                    this._isselected = value;
+                    if (this.NoEvent == false)
+                    {
+                        Selected?.Invoke(this, this._isselected);
+                    }
+                    OnPropertyChanged("IsSelected");
+                }
+            }
+        }
         private bool _isselected = false;
 
         //Event
@@ -104,33 +119,12 @@ namespace MonchaCadViewer.CanvasObj
                 OnPropertyChanged("Mirror");
                 this.CenterX = this.DefiningGeometry.Bounds.X - this.Translate.X + this.DefiningGeometry.Bounds.Width / 2;
                 this.CenterY = this.DefiningGeometry.Bounds.Y - this.Translate.Y + this.DefiningGeometry.Bounds.Height / 2;
-                if (this._mirror && this.ScaleX > 0)
-                {
-                    this.ScaleX = -this.ScaleX;
-                }
-                else if (this._mirror == false && this.ScaleX < 0)
-                {
-                    this.ScaleX = -this.ScaleX;
-                }
+                this.ScaleX = this.ScaleX;
             }
         }
+        private bool _mirror = false;
 
-        public bool IsSelected
-        {
-            get => this._isselected;
-            set
-            {
-                if (this._isselected != value)
-                {
-                    this._isselected = value;
-                    if (this.NoEvent == false)
-                    {
-                        Selected?.Invoke(this, this._isselected);
-                    }
-                    OnPropertyChanged("IsSelected");
-                }
-            }
-        }
+
 
         protected Point MousePos = new Point();
         protected Point BasePos = new Point();
@@ -195,10 +189,10 @@ namespace MonchaCadViewer.CanvasObj
 
         public double ScaleX
         {
-            get => this.Scale.ScaleX * 100;
+            get => this.Scale.ScaleX;
             set
             {
-                this.Scale.ScaleX = value / 100;
+                this.Scale.ScaleX = (_mirror == true ? -1 * value : Math.Abs(value));
                 if (this.Render == true)
                 {
                     Updated?.Invoke(this, "ScaleX");
@@ -209,10 +203,10 @@ namespace MonchaCadViewer.CanvasObj
 
         public double ScaleY
         {
-            get => this.Scale.ScaleY * 100;
+            get => this.Scale.ScaleY;
             set
             {
-                this.Scale.ScaleY = value / 100;
+                this.Scale.ScaleY = value;
                 if (this.Render == true)
                 {
                     Updated?.Invoke(this, "ScaleY");
@@ -301,6 +295,7 @@ namespace MonchaCadViewer.CanvasObj
                 Fixed?.Invoke(this, value);
             }
         }
+        private bool _isfix = false;
 
         public bool WasMove { get; set; } = false;
 

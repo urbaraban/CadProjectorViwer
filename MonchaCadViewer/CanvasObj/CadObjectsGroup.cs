@@ -19,6 +19,7 @@ namespace MonchaCadViewer.CanvasObj
     {
         public List<CadObject> Objects = new List<CadObject>();
         public TransformGroup Transform = new TransformGroup();
+        public string Name;
 
         private bool Opened = false;
 
@@ -26,31 +27,15 @@ namespace MonchaCadViewer.CanvasObj
         private TranslateTransform _translate = new TranslateTransform();
         private ScaleTransform _scale = new ScaleTransform();
 
-        public CadObjectsGroup(List<Shape> shapes)
+        public CadObjectsGroup(List<Shape> shapes, string Name)
         {
+            this.Name = Name;
             foreach (Shape shape in shapes)
             {
                 this.Objects.Add(new CadContour(shape, true, true));
             }
             this.UpdateTransform();
         }
-
-        /*private void CadObjectsGroup_Selected(object sender, CadObject e)
-        {
-            if (e.IsSelected == true && e.NoEvent == false)
-            {
-                if (Keyboard.Modifiers != ModifierKeys.Control && Keyboard.Modifiers != ModifierKeys.Shift)
-                {
-                    foreach (CadObject cadObject in this.Objects)
-                    {
-                        if (cadObject != e && cadObject.IsSelected == true)
-                        {
-                            cadObject.IsSelected = false;
-                        }
-                    }
-                }
-            }
-        }*/
 
         public void UpdateTransform()
         {

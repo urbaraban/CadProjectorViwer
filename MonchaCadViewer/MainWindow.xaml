@@ -7,7 +7,7 @@
         xmlns:Controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
         xmlns:HelixToolkit="clr-namespace:HelixToolkit.Wpf;assembly=HelixToolkit.Wpf"
         xmlns:Properties="clr-namespace:MonchaCadViewer.Properties" xmlns:controlzex="urn:controlzex"
-        xmlns:pt="http://propertytools.org/wpf" xmlns:c="clr-namespace:CalcBinding;assembly=CalcBinding" x:Name="MainWindow1" x:Class="MonchaCadViewer.MainWindow"
+        xmlns:pt="http://propertytools.org/wpf" xmlns:c="clr-namespace:CalcBinding;assembly=CalcBinding" xmlns:contourscrollpanel="clr-namespace:MonchaCadViewer.ToolsPanel.ContourScrollPanel" x:Name="MainWindow1" x:Class="MonchaCadViewer.MainWindow"
         mc:Ignorable="d"
         Title="CUT" Focusable="False" KeyboardNavigation.TabNavigation="None"  AllowDrop="True" Height="766.898" Width="999" Closing="Window_Closing" Closed="Window_Closed" controlzex:KeyboardNavigationEx.AlwaysShowFocusVisual="True" WindowStartupLocation="CenterScreen" Icon="logo.png" KeyUp="MainWindow1_KeyUp" TextInput="MainWindow1_TextInput" PreviewKeyDown="MainWindow1_PreviewKeyDown" WindowStyle="None" ResizeMode="CanResizeWithGrip" BorderBrush="#FFE01414" VerticalAlignment="Top">
     <Window.Resources>
@@ -187,15 +187,7 @@
 
                         </DockPanel>
                         <DockPanel DockPanel.Dock="Bottom" Grid.Row="1" Margin="2,5">
-                            <Border Style="{StaticResource Border}" Grid.Column="1" Margin="0,5,0,0" Grid.Row="4" ScrollViewer.VerticalScrollBarVisibility="Disabled">
-                                <ScrollViewer HorizontalScrollBarVisibility="Visible" VerticalScrollBarVisibility="Disabled">
-                                    <StackPanel x:Name="FrameStack" Orientation="Horizontal" HorizontalAlignment="Stretch"  CanHorizontallyScroll="True" ScrollViewer.HorizontalScrollBarVisibility="Visible" ScrollViewer.VerticalScrollBarVisibility="Disabled" ScrollViewer.CanContentScroll="True">
-                                        <Viewbox>
-                                            <Canvas/>
-                                        </Viewbox>
-                                    </StackPanel>
-                                </ScrollViewer>
-                            </Border>
+                            <contourscrollpanel:ScrollPanel x:Name="ContourScrollPanel"/>
                         </DockPanel>
                     </Grid>
                 </DockPanel>
@@ -263,8 +255,18 @@
                                                     <Properties:Settings/>
                                                 </CheckBox.DataContext>
                                             </CheckBox>
-                                            <Button x:Name="SaveObjStgBtn" Content="Save" HorizontalAlignment="Left" Margin="10,193,0,0" VerticalAlignment="Top" Width="248" Grid.ColumnSpan="2" Height="31" Click="SaveObjStgBtn_Click"/>
+                                            <Button x:Name="SaveObjStgBtn" Content="Save" HorizontalAlignment="Left" Margin="10,266,0,0" VerticalAlignment="Top" Width="248" Grid.ColumnSpan="2" Height="31" Click="SaveObjStgBtn_Click"/>
                                             <CheckBox x:Name="TesselateCheck" Content="Tesselate" HorizontalAlignment="Left" Margin="5,162,0,0" VerticalAlignment="Top"  IsChecked="{Binding default_tesselate, Mode=TwoWay}" Grid.Column="1" Width="147">
+                                                <CheckBox.DataContext>
+                                                    <Properties:Settings/>
+                                                </CheckBox.DataContext>
+                                            </CheckBox>
+                                            <CheckBox x:Name="ScalePercentCheck" Content="Percent" HorizontalAlignment="Left" Margin="5,186,0,0" VerticalAlignment="Top"  IsChecked="{Binding stg_scale_percent, Mode=TwoWay}" Grid.Column="1" Width="147">
+                                                <CheckBox.DataContext>
+                                                    <Properties:Settings/>
+                                                </CheckBox.DataContext>
+                                            </CheckBox>
+                                            <CheckBox x:Name="ScaleInvertCheck" Content="Invert Scale" HorizontalAlignment="Left" Margin="5,208,0,0" VerticalAlignment="Top"  IsChecked="{Binding stg_scale_invert, Mode=TwoWay}" Grid.Column="1" Width="147">
                                                 <CheckBox.DataContext>
                                                     <Properties:Settings/>
                                                 </CheckBox.DataContext>
@@ -360,6 +362,26 @@
                                 <Label x:Name="CalibrationFormLabel" Content="Тип" Margin="10,260,10,0" VerticalAlignment="Top" Height="26" Grid.ColumnSpan="2"/>
                                 <Button x:Name="Save" Grid.ColumnSpan="5" Content="Save" HorizontalAlignment="Left" Margin="10,332,0,0" VerticalAlignment="Top" Width="254" Height="34" Click="Save_Click"/>
                                 <CheckBox Content="{DynamicResource clb_SetEdgePoint}" Margin="10,296,10,249" Grid.ColumnSpan="5" Checked="CheckBox_Checked" Unchecked="CheckBox_Checked"/>
+                            </Grid>
+                        </TabItem>
+                        <TabItem Header="WorkFolder">
+                            <Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="36*"/>
+                                    <RowDefinition Height="25*"/>
+                                    <RowDefinition Height="503*"/>
+                                </Grid.RowDefinitions>
+
+                                <Button x:Name="WorkFolderBtn" Content="{DynamicResource m_Browse}" HorizontalAlignment="Left" Margin="32,8,0,8" Width="75" VerticalAlignment="Center" Click="WorkFolderBtn_Click"/>
+                                <Label x:Name="WorkFolderLabel" Content="{Binding save_work_folder, Mode=OneWay}" Margin="116,6,8,4">
+                                    <Label.DataContext>
+                                        <Properties:Settings/>
+                                    </Label.DataContext>
+                                </Label>
+                                <ListBox x:Name="WorkFolderListBox" Margin="5,5,5,5" Grid.Row="2" SelectionChanged="WorkFolderListBox_SelectionChanged"/>
+                                <Button x:Name="WorkFolderRefreshBtn"  FontFamily="Segoe MDL2 Assets" Content="&#xEDAB;" HorizontalAlignment="Left" Margin="5,8,0,8" VerticalAlignment="Center" Width="22" Height="20" Click="WorkFolderRefreshBtn_Click"/>
+                                <TextBox x:Name="WorkFolderFilter" HorizontalAlignment="Left" Margin="5,2,0,2" Grid.Row="1" TextWrapping="Wrap" Width="264" VerticalContentAlignment="Center" TextChanged="WorkFolderFilter_TextChanged"/>
+
                             </Grid>
                         </TabItem>
                         <TabItem Header="Log" Controls:HeaderedControlHelper.HeaderFontSize="18">

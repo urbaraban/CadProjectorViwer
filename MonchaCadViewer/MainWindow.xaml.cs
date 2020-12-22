@@ -26,6 +26,7 @@ using System.Windows.Shapes;
 using System.Windows.Media.Media3D;
 using MonchaSDK.ILDA;
 using StclLibrary.Laser;
+using Microsoft.WindowsAPICodePack.Dialogs;
 
 namespace MonchaCadViewer
 {
@@ -70,6 +71,26 @@ namespace MonchaCadViewer
             this.MainCanvas.ContextMenu = new ContextMenu();
             ContextMenuLib.CanvasMenu(this.MainCanvas.ContextMenu);
             CanvasBox.Child = this.MainCanvas;
+
+            ContourScrollPanel.SelectedFrame += ContourScrollPanel_SelectedFrame;
+        }
+
+        private void ContourScrollPanel_SelectedFrame(object sender, CadObjectsGroup e)
+        {
+            if (e != null)
+            {
+                if (Keyboard.Modifiers != ModifierKeys.Shift)
+                {
+                    this.MainCanvas.Clear();
+                }
+
+                foreach (CadObject cadObject in e.Objects)
+                {
+                    this.MainCanvas.DrawContour(cadObject, true, true);
+                }
+            }
+
+            this.MainCanvas.UpdateProjection(true);
         }
 
         private void MonchaHub_Loging(object sender, string e)
@@ -83,19 +104,6 @@ namespace MonchaCadViewer
             {
                 this.MainCanvas.UpdateProjection(false);
             }
-        }
-
-        private void CadCanvas_ErrorMessageEvent(object sender, string e)
-        {
-            LogBox.Items.Add(e);
-        }
-
-
-
-        private void MonchaHub_UpdatedFrame(object sender, LObjectList e)
-        {
-            // if (CanvasBox.Child != null)
-            //   SendProcessor.Worker(CanvasBox.Child as CadCanvas);
         }
 
         private void CadCanvas_SelectedObject(object sender, bool e)
@@ -509,115 +517,9 @@ namespace MonchaCadViewer
 
             AppSt.Default.Save();
 
-            ContourProcessor(false, _actualFrames);
+            ContourScrollPanel.Add(false, _actualFrames, filename.Split('\\').Last());
         }
-
-        private void ContourProcessor(bool remove, List<Shape> shapes, bool show = true)
-        {
-            if (remove)
-            {
-                FrameTree.Items.Clear();
-                FrameStack.Children.Clear();
-            }
-
-            CadObjectsGroup cadObjectsGroup = new CadObjectsGroup(shapes);
-
-            Border _viewborder = new Border();
-            _viewborder.BorderThickness = new Thickness(1, 0, 1, 0);
-            _viewborder.BorderBrush = Brushes.Gray;
-            _viewborder.Width = FrameStack.ActualHeight;
-            _viewborder.Background = Brushes.Gray;
-
-            Viewbox _viewbox = new Viewbox();
-            _viewbox.Stretch = Stretch.Uniform;
-            _viewbox.StretchDirection = StretchDirection.DownOnly;
-            _viewbox.Margin = new Thickness(0);
-            _viewbox.DataContext = cadObjectsGroup;
-            _viewbox.ClipToBounds = true;
-            _viewbox.Cursor = Cursors.Hand;
-            _viewbox.MouseLeftButtonUp += DrawTreeContour;
-            _viewbox.MouseRightButtonUp += _viewbox_MouseRightButtonUp;
-
-
-            Viewbox _canvasviewbox = new Viewbox();
-            _canvasviewbox.Stretch = Stretch.Uniform;
-            _canvasviewbox.StretchDirection = StretchDirection.DownOnly;
-            _canvasviewbox.Margin = new Thickness(0);
-
-            CadCanvas _canvas = new CadCanvas(MonchaHub.Size, false);
-            _canvas.Background = Brushes.White;
-
-            _canvasviewbox.Child = _canvas;
-            _viewbox.Child = _canvasviewbox;
-            _viewborder.Child = _viewbox;
-            FrameStack.Children.Add(_viewborder);
-
-
-            _canvas.DrawContour(new CadContour(cadObjectsGroup, false, false), false, false, true);
-
-            TreeViewItem contourTree = new TreeViewItem();
-            //contourTree.Header = contoursList.DisplayName == string.Empty ? "Frame " + FrameTree.Items.Count : "Frame:" + contoursList.DisplayName;
-            contourTree.DataContext = shapes;
-            contourTree.MouseLeftButtonUp += DrawTreeContour;
-
-            FrameTree.Items.Add(contourTree);
-
-            if (show)
-            {
-                this.MainCanvas.Clear();
-
-                foreach (CadObject cadObject in cadObjectsGroup.Objects)
-                {
-                    this.MainCanvas.DrawContour(cadObject, true, true, true);
-                }
-                this.MainCanvas.UpdateProjection(true);
-            }
-        }
-
-        private void _viewbox_MouseRightButtonUp(object sender, MouseButtonEventArgs e)
-        {
-            if (sender is Viewbox viewItem)
-            {
-                if (viewItem.DataContext is CadObjectsGroup CadObj)
-                {
-                    CadObj.UpdateTransform();
-                }
-            }
-        }
-
-        private void DrawTreeContour(object sender, MouseButtonEventArgs e)
-        {
-            if (Keyboard.Modifiers != ModifierKeys.Shift)
-            {
-                this.MainCanvas.Clear();
-            }
-
-            if (sender is TreeViewItem viewItem)
-            {
-                //_selectedindex = FrameTree.Items.IndexOf(viewItem);
-                if (viewItem.DataContext is CadObjectsGroup cadObjectsGroup && CanvasBox.Child is CadCanvas canvas)
-                {
-                    foreach (CadObject cadObject in cadObjectsGroup.Objects)
-                    {
-                        canvas.DrawContour(cadObject, true, true, true);
-                    }
-                }
-            }
-
-            if (sender is Viewbox viewbox)
-            {
-                //_selectedindex = FrameStack.Children.IndexOf(viewbox.Parent as Border);
-                if (viewbox.DataContext is CadObjectsGroup cadObjectsGroup && CanvasBox.Child is CadCanvas canvas)
-                {
-                    foreach (CadObject cadObject in cadObjectsGroup.Objects)
-                    {
-                        canvas.DrawContour(cadObject, true, true, true);
-                    }
-                }
-                    
-            }
-        }
-
+       
 
         private void OpenBtn_DragDrop(object sender, DragEventArgs e)
         {
@@ -755,7 +657,7 @@ namespace MonchaCadViewer
         {
             if (KmpsAppl.KompasAPI != null)
             {
-                ContourProcessor(false, ContourCalc.GetGeometry(this.kmpsAppl.Doc, MonchaHub.ProjectionSetting.PointStep.MX, false, true));
+                ContourScrollPanel.Add(false, ContourCalc.GetGeometry(this.kmpsAppl.Doc, MonchaHub.ProjectionSetting.PointStep.MX, false, true), this.kmpsAppl.Doc.D7.Name);
             }
 
         }
@@ -764,7 +666,7 @@ namespace MonchaCadViewer
         {
             if (KmpsAppl.KompasAPI != null)
             {
-                ContourProcessor(false, ContourCalc.GetGeometry(this.kmpsAppl.Doc, MonchaHub.ProjectionSetting.PointStep.MX, true, true));
+                ContourScrollPanel.Add(false, ContourCalc.GetGeometry(this.kmpsAppl.Doc, MonchaHub.ProjectionSetting.PointStep.MX, true, true), this.kmpsAppl.Doc.D7.Name);
             }
         }
 
@@ -1144,13 +1046,18 @@ namespace MonchaCadViewer
             AppSt.Default.default_angle = AngleBox.Value.Value;
             AppSt.Default.default_mirror = MirrorBox.IsChecked.Value;
             AppSt.Default.defailt_tesselate = TesselateCheck.IsChecked.Value;
+            AppSt.Default.stg_scale_invert = ScaleInvertCheck.IsChecked.Value;
+            AppSt.Default.stg_scale_percent = ScalePercentCheck.IsChecked.Value;
             AppSt.Default.Save();
         }
 
         private void CalibrationFormCombo_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            MonchaDeviceMesh.ClbrForm = (CalibrationForm)CalibrationFormCombo.SelectedValue;
-            this.MainCanvas.UpdateProjection(true);
+            if (CalibrationFormCombo.SelectedValue != null)
+            {
+                MonchaDeviceMesh.ClbrForm = (CalibrationForm)CalibrationFormCombo.SelectedValue;
+                this.MainCanvas.UpdateProjection(true);
+            }
         }
 
         private void Save_Click(object sender, RoutedEventArgs e)
@@ -1164,6 +1071,57 @@ namespace MonchaCadViewer
             if (sender is CheckBox checkBox)
                 ReadyFrame.SetEndgePoint = checkBox.IsChecked.Value;
             MonchaHub.RefreshFrame();
+        }
+
+        private void WorkFolderRefreshBtn_Click(object sender, RoutedEventArgs e)
+        {
+            RefreshWorkFolderList();
+        }
+
+        private void RefreshWorkFolderList()
+        {
+            if(Directory.Exists(AppSt.Default.save_work_folder) == true)
+            {
+                WorkFolderListBox.Items.Clear();
+
+                foreach (string path in Directory.GetFiles(AppSt.Default.save_work_folder))
+                {
+                    string format = path.Split('.').Last();
+                    if (format == "svg" || format == "dxf" || format == "frw") {
+                        WorkFolderListBox.Items.Add(path.Split('\\').Last());
+                    }
+                }
+            }
+        }
+
+        private void WorkFolderListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (WorkFolderListBox.SelectedItem != null)
+            {
+                OpenFile($"{AppSt.Default.save_work_folder}\\{WorkFolderListBox.SelectedItem.ToString()}");
+            }
+        }
+
+        private void WorkFolderBtn_Click(object sender, RoutedEventArgs e)
+        {
+            var dialog = new CommonOpenFileDialog();
+            dialog.IsFolderPicker = true;
+            CommonFileDialogResult result = dialog.ShowDialog();
+            if (result == CommonFileDialogResult.Ok)
+            {
+                if (Directory.Exists(dialog.FileName) == true)
+                {
+                    AppSt.Default.save_work_folder = dialog.FileName;
+                    AppSt.Default.Save();
+                    RefreshWorkFolderList();
+                }
+            }
+           
+        }
+
+        private void WorkFolderFilter_TextChanged(object sender, TextChangedEventArgs e)
+        {
+
         }
     }
 

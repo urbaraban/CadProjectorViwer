@@ -1,5 +1,6 @@
 ﻿using MahApps.Metro.Controls;
 using MonchaCadViewer.CanvasObj;
+using MonchaCadViewer.ToolsPanel.ObjectPanel;
 using System;
 using System.Windows;
 using System.Windows.Controls;
@@ -48,11 +49,17 @@ namespace MonchaCadViewer.ToolsPanel
             AngleUpDn.DataContext = this.DataContext;
 
             WidthUpDn.Value = cadObject.ScaleX;
-            WidthUpDn.SetBinding(NumericUpDown.ValueProperty, "ScaleX");
+            WidthUpDn.Interval = MonchaCadViewer.Properties.Settings.Default.stg_scale_percent == true ? 1 : 0.01;
+            Binding bindingScaleX = new Binding("ScaleX");
+            bindingScaleX.Converter = new ScaleConverter(MonchaCadViewer.Properties.Settings.Default.stg_scale_percent, MonchaCadViewer.Properties.Settings.Default.stg_scale_invert);
+            WidthUpDn.SetBinding(NumericUpDown.ValueProperty, bindingScaleX);
             WidthUpDn.DataContext = this.DataContext;
 
             HeightUpDn.Value = cadObject.ScaleY;
-            HeightUpDn.SetBinding(NumericUpDown.ValueProperty, "ScaleY");
+            HeightUpDn.Interval = MonchaCadViewer.Properties.Settings.Default.stg_scale_percent == true ? 1 : 0.01;
+            Binding bindingScaleY = new Binding("ScaleY");
+            bindingScaleY.Converter = new ScaleConverter(MonchaCadViewer.Properties.Settings.Default.stg_scale_percent, MonchaCadViewer.Properties.Settings.Default.stg_scale_invert);
+            HeightUpDn.SetBinding(NumericUpDown.ValueProperty, bindingScaleY);
             HeightUpDn.DataContext = this.DataContext;
 
         }

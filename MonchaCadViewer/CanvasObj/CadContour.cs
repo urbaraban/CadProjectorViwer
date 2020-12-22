@@ -27,8 +27,7 @@ namespace MonchaCadViewer.CanvasObj
             {
                 ContextMenuLib.ViewContourMenu(this.ContextMenu);
                 this.Cursor = Cursors.Hand;
-      
-                this.Loaded += ViewContour_Loaded;
+
                 this.ContextMenuClosing += ViewContour_ContextMenuClosing;
                 this.MouseWheel += CadContour_MouseWheel;
             }
@@ -72,24 +71,6 @@ namespace MonchaCadViewer.CanvasObj
                 }
             }
         }
-
-
-        private void ViewContour_Loaded(object sender, RoutedEventArgs e)
-        {
-            if (this.Parent is CadCanvas canvas && this._maincanvas)
-            {
-                this.adornerLayer = AdornerLayer.GetAdornerLayer(canvas);
-
-                this.ObjAdorner = new AdornerContourFrame(this);
-                this.ObjAdorner.Visibility = Visibility.Hidden;
-                this.ObjAdorner.DataContext = this;
-
-                adornerLayer.Add(this.ObjAdorner);
-                this.adornerContour = this.ObjAdorner as AdornerContourFrame;
-                //this.adornerContour.Rotation = this.Rotate;
-            }
-        }
-
     }
 }
 

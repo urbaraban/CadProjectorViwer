@@ -106,13 +106,15 @@ namespace MonchaCadViewer.CanvasObj
             }
         }
 
-        public void DrawContour(Shape obj, bool maincanvas, bool add, bool mousemove)
+        /// <summary>
+        /// Draw object on canvas.
+        /// </summary>
+        /// <param name="obj">Object</param>
+        /// <param name="maincanvas">property for main canvas attributes</param>
+        /// <param name="add">Add contour for already view</param>
+        /// <param name="mousemove">add mouse event</param>
+        public void DrawContour(Shape obj, bool maincanvas, bool mousemove)
         {
-            if (add == false)
-            {
-                this.Clear();
-            }
-
             if (obj is CadObject cadObject)
             {
                 cadObject.MouseMove += CadObject_MouseMove;
@@ -373,6 +375,10 @@ namespace MonchaCadViewer.CanvasObj
             this.Children.Remove(cadObject);
         }
 
+        /// <summary>
+        /// Add object in Children Canvas
+        /// </summary>
+        /// <param name="obj"></param>
         public void Add(Shape obj)
         {
             if (this.Children.Equals(obj) == false)
@@ -383,7 +389,9 @@ namespace MonchaCadViewer.CanvasObj
                     cadObject.OnObject += CadObject_OnObject1;
                     cadObject.Updated += CadObject_Updated;
                 }
+
                 this.Children.Add(obj);
+
             }
 
         }

@@ -8,7 +8,7 @@
              d:DesignHeight="100" d:DesignWidth="800">
     <Border BorderThickness="1" BorderBrush="DarkGray" Margin="0,0,0,0">
         <DockPanel>
-            <StackPanel DockPanel.Dock="Left" Orientation="Vertical">
+            <StackPanel DockPanel.Dock="Left" Orientation="Vertical" Background="LightGray">
                 <Button x:Name="ClearBtn" FontFamily="Segoe MDL2 Assets" Content="&#xE74D;" FontSize="18" Foreground="Red"  Background="Transparent" BorderThickness="0" Height="30" Width="30" Click="ClearBtn_Click" />
                 <Button x:Name="AllSolvedBtn" FontFamily="Segoe MDL2 Assets" Content="&#xE73E;" FontSize="18" Foreground="Green"  Background="Transparent" BorderThickness="0" Height="30" Width="30" Click="AllSolvedBtn_Click" />
             </StackPanel>

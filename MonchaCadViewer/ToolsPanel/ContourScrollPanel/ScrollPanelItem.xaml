@@ -14,8 +14,8 @@
                 <RowDefinition Height="39*"/>
             </Grid.RowDefinitions>
             <StackPanel Panel.ZIndex="99"  Orientation="Horizontal" Margin="0,0,0,1">
-                <Button x:Name="RemoveBtn" FontFamily="Segoe MDL2 Assets" Content="&#xE947;" MinWidth="25" FontSize="16" Background="Transparent" BorderThickness="0" Foreground="Red" Click="RemoveBtn_Click"/>
-                <ToggleButton x:Name="SolvedToggle" FontFamily="Segoe MDL2 Assets" Content="&#xE73E;" FontSize="18" MinWidth="25"  Background="Transparent" Foreground="Green" Padding="0" BorderThickness="0" Margin="10,0,0,0" Checked="SolvedToggle_Checked" Unchecked="SolvedToggle_Checked"/>
+                <Button x:Name="RemoveBtn" FontFamily="Segoe MDL2 Assets" Content="&#xE947;" MinWidth="25" FontSize="14" Background="Transparent" BorderThickness="0" Foreground="Red" Click="RemoveBtn_Click"/>
+                <ToggleButton x:Name="SolvedToggle" FontFamily="Segoe MDL2 Assets" Content="&#xE73E;" FontSize="14" MinWidth="25"  Background="Transparent" Foreground="Green" Padding="0" BorderThickness="0" Margin="10,0,0,0" Checked="SolvedToggle_Checked" Unchecked="SolvedToggle_Checked"/>
             </StackPanel>
             <Label Padding="0" Panel.ZIndex="99"  x:Name="NameLabel" Content="Name" FontSize="11" Background="WhiteSmoke" Opacity="0.4" Grid.Row="2" Margin="0,2,0,0" MaxWidth="{Binding ActualHeight, ElementName=MainGrid, Mode=OneWay}"/>
 

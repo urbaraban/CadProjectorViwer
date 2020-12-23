@@ -27,6 +27,8 @@ using System.Windows.Media.Media3D;
 using MonchaSDK.ILDA;
 using StclLibrary.Laser;
 using Microsoft.WindowsAPICodePack.Dialogs;
+using System.ComponentModel;
+using System.Windows.Data;
 
 namespace MonchaCadViewer
 {
@@ -806,7 +808,7 @@ namespace MonchaCadViewer
                 {
                     if (this.MainCanvas.Children[i] is CadObject cadObject)
                     {
-                        if (cadObject.IsSelected && !cadObject.IsFix)
+                        if (cadObject.IsSelected == true && cadObject.IsFix == false)
                         {
                             cadObject.X += left;
                             cadObject.Y += top;
@@ -835,57 +837,6 @@ namespace MonchaCadViewer
             }
         }
 
-        private void MainWindow1_TextInput(object sender, TextCompositionEventArgs e)
-        {
-            string keyChar = e.Text;
-            if (QRBtn.IsChecked.Value)
-            {
-                qrpath += keyChar;
-                LogBox.Items.Add((AppSt.Default.save_qr_path ? AppSt.Default.save_base_folder : AppSt.Default.save_work_folder) + @qrpath);
-                if (File.Exists((AppSt.Default.save_qr_path ? AppSt.Default.save_base_folder : AppSt.Default.save_work_folder) + @qrpath))
-                {
-                    //Progressinfo.Content = "Файл найден!";
-                    OpenFile((AppSt.Default.save_qr_path ? AppSt.Default.save_base_folder : AppSt.Default.save_work_folder) + @qrpath);
-                }
-                else
-                {
-                    // Progressinfo.Content = "Файл не найден!";
-                }
-            }
-        }
-
-        private void MainWindow1_PreviewKeyDown(object sender, KeyEventArgs e)
-        {
-            if (QRBtn.IsChecked.Value)
-                InputLanguageManager.SetInputLanguage(this, new CultureInfo("ru-RU"));
-
-            int Temp = KeyInterop.VirtualKeyFromKey(e.Key);
-            //Debug.WriteLine(Temp);
-            // KeyInterop.KeyFromVirtualKey(e.Key);
-            if (qrpath.Contains("#"))
-            {
-                qrpath = string.Empty;
-                AppSt.Default.save_qr_path = true;
-
-            }
-            else if (qrpath.Contains("&"))
-            {
-                qrpath = string.Empty;
-                AppSt.Default.save_qr_path = false;
-
-            }
-            QrToggler.IsOn = AppSt.Default.save_qr_path;
-        }
-
-        private void QRBtn_Click(object sender, RoutedEventArgs e)
-        {
-            if (QRBtn.IsChecked.Value)
-            {
-
-            }
-
-        }
-
         private void ClearBtn_Click(object sender, RoutedEventArgs e)
         {
             if (CanvasBox.Child is CadCanvas canvas)
@@ -894,11 +845,6 @@ namespace MonchaCadViewer
             }
         }
 
-        private void QrToggler_Toggled(object sender, RoutedEventArgs e)
-        {
-            AppSt.Default.save_qr_path = QrToggler.IsOn;
-            AppSt.Default.Save();
-        }
 
         private void BaseFolderSelect_Click(object sender, RoutedEventArgs e)
         {
@@ -1082,16 +1028,25 @@ namespace MonchaCadViewer
         {
             if(Directory.Exists(AppSt.Default.save_work_folder) == true)
             {
-                WorkFolderListBox.Items.Clear();
-
+                List<string> paths = new List<string>();
                 foreach (string path in Directory.GetFiles(AppSt.Default.save_work_folder))
                 {
                     string format = path.Split('.').Last();
                     if (format == "svg" || format == "dxf" || format == "frw") {
-                        WorkFolderListBox.Items.Add(path.Split('\\').Last());
+                        paths.Add(path.Split('\\').Last());
                     }
                 }
+                WorkFolderListBox.ItemsSource = paths;
+                CollectionView view = CollectionViewSource.GetDefaultView(WorkFolderListBox.ItemsSource) as CollectionView;
+                WorkFolderListBox.Items.Filter = new Predicate<object>(Contains);
             }
+        }
+
+        public bool Contains(object pt)
+        {
+            string path = pt as string;
+            //Return members whose Orders have not been filled
+            return path.Contains(WorkFolderFilter.Text);
         }
 
         private void WorkFolderListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -1121,7 +1076,11 @@ namespace MonchaCadViewer
 
         private void WorkFolderFilter_TextChanged(object sender, TextChangedEventArgs e)
         {
-
+            if (WorkFolderListBox.Items.Count < 1)
+            {
+                RefreshWorkFolderList();
+            }
+            CollectionViewSource.GetDefaultView(WorkFolderListBox.ItemsSource).Refresh();
         }
     }
 

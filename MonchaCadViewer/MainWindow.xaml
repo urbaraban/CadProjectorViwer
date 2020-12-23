@@ -9,7 +9,7 @@
         xmlns:Properties="clr-namespace:MonchaCadViewer.Properties" xmlns:controlzex="urn:controlzex"
         xmlns:pt="http://propertytools.org/wpf" xmlns:c="clr-namespace:CalcBinding;assembly=CalcBinding" xmlns:contourscrollpanel="clr-namespace:MonchaCadViewer.ToolsPanel.ContourScrollPanel" x:Name="MainWindow1" x:Class="MonchaCadViewer.MainWindow"
         mc:Ignorable="d"
-        Title="CUT" Focusable="False" KeyboardNavigation.TabNavigation="None"  AllowDrop="True" Height="766.898" Width="999" Closing="Window_Closing" Closed="Window_Closed" controlzex:KeyboardNavigationEx.AlwaysShowFocusVisual="True" WindowStartupLocation="CenterScreen" Icon="logo.png" KeyUp="MainWindow1_KeyUp" TextInput="MainWindow1_TextInput" PreviewKeyDown="MainWindow1_PreviewKeyDown" WindowStyle="None" ResizeMode="CanResizeWithGrip" BorderBrush="#FFE01414" VerticalAlignment="Top">
+        Title="CUT" Focusable="False" KeyboardNavigation.TabNavigation="None"  AllowDrop="True" Height="766.898" Width="999" Closing="Window_Closing" Closed="Window_Closed" controlzex:KeyboardNavigationEx.AlwaysShowFocusVisual="True" WindowStartupLocation="CenterScreen" Icon="logo.png" KeyUp="MainWindow1_KeyUp" WindowStyle="None" ResizeMode="CanResizeWithGrip" BorderBrush="#FFE01414" VerticalAlignment="Top">
     <Window.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -88,10 +88,9 @@
                             <ToolBarPanel Orientation="Horizontal" Width="219" Margin="0,0,0,0">
                                 <ToolBar Grid.ColumnSpan="2" Width="218">
                                     <ToolBarPanel Orientation="Vertical" Width="100">
-                                        <Button x:Name="OpenBtn" AllowDrop="True" Content="Open" DragEnter="OpenBtn_DragEnter" DragOver="OpenBtn_DragOver" DragLeave="OpenBtn_DragLeave" Drop="OpenBtn_DragDrop" Click="OpenBtn_Click" Grid.ColumnSpan="2" Background="{x:Null}" BorderBrush="{x:Null}" Height="38"/>
-                                        <Separator></Separator>
-                                        <ToggleButton x:Name="QRBtn" Content="QR" Click="QRBtn_Click" Focusable="False" Margin="0,0,0,0" Background="{x:Null}" BorderBrush="{x:Null}"/>
-                                    </ToolBarPanel>
+                                        <Button x:Name="OpenBtn" AllowDrop="True" Content="Open" DragEnter="OpenBtn_DragEnter" DragOver="OpenBtn_DragOver" DragLeave="OpenBtn_DragLeave" Drop="OpenBtn_DragDrop" Click="OpenBtn_Click" Grid.ColumnSpan="2" Background="{x:Null}" BorderBrush="{x:Null}" Height="86" />
+
+                                       </ToolBarPanel>
                                     <Separator></Separator>
                                     <Button x:Name="ReloadBtn" Content="{DynamicResource m_Refresh}"  Margin="0,5" HorizontalAlignment="Right"  Click="ReloadBtn_Click" Grid.Column="1" VerticalAlignment="Stretch" Width="80"/>
                                 </ToolBar>
@@ -181,7 +180,7 @@
                                         </Viewbox>
                                     </Border>
                                 </TabItem>
-                                <TabItem Header="ViewPort3D" Visibility="Visible">
+                                <TabItem Header="ViewPort3D" Visibility="Collapsed">
                                 </TabItem>
                             </TabControl>
 
@@ -276,12 +275,6 @@
                                     </TabItem>
                                     <TabItem Header="QR" Controls:HeaderedControlHelper.HeaderFontSize="14">
                                         <Grid Background="#FFE5E5E5">
-                                            <Controls:ToggleSwitch x:Name="QrToggler" Margin="10,74,0,312" OffContent="QRCode: FileName" OnContent="QRCode: FilePath" ContentDirection="RightToLeft" IsOn="{Binding save_qr_path, Mode=TwoWay}" Toggled="QrToggler_Toggled">
-                                                <Controls:ToggleSwitch.DataContext>
-                                                    <Properties:Settings/>
-                                                </Controls:ToggleSwitch.DataContext>
-
-                                            </Controls:ToggleSwitch>
                                             <TextBox x:Name="BasePathBox" Height="23" TextWrapping="Wrap" Text="{Binding save_base_folder, Mode=TwoWay}" Margin="10,12,109,0" VerticalAlignment="Top">
                                                 <TextBox.DataContext>
                                                     <Properties:Settings/>
@@ -378,7 +371,7 @@
                                         <Properties:Settings/>
                                     </Label.DataContext>
                                 </Label>
-                                <ListBox x:Name="WorkFolderListBox" Margin="5,5,5,5" Grid.Row="2" SelectionChanged="WorkFolderListBox_SelectionChanged"/>
+                                <ListView x:Name="WorkFolderListBox" Margin="5,5,5,5" Grid.Row="2" SelectionChanged="WorkFolderListBox_SelectionChanged"/>
                                 <Button x:Name="WorkFolderRefreshBtn"  FontFamily="Segoe MDL2 Assets" Content="&#xEDAB;" HorizontalAlignment="Left" Margin="5,8,0,8" VerticalAlignment="Center" Width="22" Height="20" Click="WorkFolderRefreshBtn_Click"/>
                                 <TextBox x:Name="WorkFolderFilter" HorizontalAlignment="Left" Margin="5,2,0,2" Grid.Row="1" TextWrapping="Wrap" Width="264" VerticalContentAlignment="Center" TextChanged="WorkFolderFilter_TextChanged"/>
 

@@ -37,12 +37,11 @@ namespace MonchaCadViewer
     /// </summary>
     public partial class MainWindow : Window
     {
-        static Dispatcher dispatcher = System.Windows.Application.Current.Dispatcher;
+        private static Dispatcher dispatcher = System.Windows.Application.Current.Dispatcher;
 
         private string qrpath = string.Empty;
 
         private KmpsAppl kmpsAppl;
-        private CadCanvas MainCanvas;
         private bool inverseToggle = true;
         //private DotShape[,] BaseMeshRectangles;
 
@@ -67,32 +66,26 @@ namespace MonchaCadViewer
 
             CanvasBoxBorder.BorderThickness = new Thickness(MonchaHub.GetThinkess());
 
-            this.MainCanvas = new CadCanvas(MonchaHub.Size, true);
             this.MainCanvas.Focusable = true;
-            this.MainCanvas.SelectedObject += CadCanvas_SelectedObject;
-            this.MainCanvas.ContextMenu = new ContextMenu();
-            ContextMenuLib.CanvasMenu(this.MainCanvas.ContextMenu);
-            CanvasBox.Child = this.MainCanvas;
+
+            this.MainCanvas.SelectedObject += MainCanvas_SelectedObject;
 
             ContourScrollPanel.SelectedFrame += ContourScrollPanel_SelectedFrame;
+        }
+
+        private void MainCanvas_SelectedObject(object sender, CadObject e)
+        {
+            MultPanel.DataContext = e;
+            ObjectPanel.DataContext = e;
         }
 
         private void ContourScrollPanel_SelectedFrame(object sender, CadObjectsGroup e)
         {
             if (e != null)
             {
-                if (Keyboard.Modifiers != ModifierKeys.Shift)
-                {
-                    this.MainCanvas.Clear();
-                }
-
-                foreach (CadObject cadObject in e.Objects)
-                {
-                    this.MainCanvas.DrawContour(cadObject, true, true);
-                }
+                this.MainCanvas.DataContext = null;
+                this.MainCanvas.DataContext = e;
             }
-
-            this.MainCanvas.UpdateProjection(true);
         }
 
         private void MonchaHub_Loging(object sender, string e)
@@ -108,19 +101,6 @@ namespace MonchaCadViewer
             }
         }
 
-        private void CadCanvas_SelectedObject(object sender, bool e)
-        {
-            if (e == true)
-            {
-                ObjectPanel.DataContext = sender;
-                MultPanel.DataContext = sender;
-            }
-            else
-            {
-                ObjectPanel.DataContext = null;
-                MultPanel.DataContext = null;
-            }
-        }
 
         private void MonchaHub_RefreshDevice(object sender, List<MonchaDevice> e)
         {
@@ -272,18 +252,9 @@ namespace MonchaCadViewer
         {
             if (sender is TreeViewItem BaseMeshItem && BaseMeshItem.Parent is TreeViewItem DeviceTree)
             {
-                if (DeviceTree.DataContext is MonchaDevice device && BaseMeshItem.DataContext is MonchaDeviceMesh mesh && CanvasBox.Child is CadCanvas canvas)
+                if (DeviceTree.DataContext is MonchaDevice device && BaseMeshItem.DataContext is MonchaDeviceMesh mesh)
                 {
-                    canvas.DrawMesh(mesh, device);
-
-                    PointsVisual3D points = new PointsVisual3D();
-                    points.Size = 20;
-
-                    for (int i = 0; i < mesh.GetLength(0); i++)
-                        for (int j = 0; j < mesh.GetLength(1); j++)
-                        {
-                            points.Points.Add(new Point3D(mesh[i, j].MX, mesh[i, j].MY, mesh[i, j].MZ));
-                        }
+                    MainCanvas.DrawMesh(mesh, device);
                 }
             }
         }
@@ -302,10 +273,9 @@ namespace MonchaCadViewer
                             break;
 
                         case "%CanvasRectangle%":
-                            if (CanvasBox.Child is CadCanvas canvas)
-                            {
-                                canvas.DrawRectangle(device.BBOP, device.BTOP);
-                            }
+
+                                MainCanvas.DrawRectangle(device.BBOP, device.BTOP);
+                            
                             break;
                         case "%PolyMeshUsed%":
                             device.PolyMeshUsed = !device.PolyMeshUsed;
@@ -586,23 +556,6 @@ namespace MonchaCadViewer
             treeView.UpdateLayout();
         }
 
-        private void LineBtn_Click(object sender, RoutedEventArgs e)
-        {
-            if (CanvasBox.Child is CadCanvas canvas)
-            {
-                if (canvas.Status != 1)
-                    canvas.Status = 1;
-                else
-                    canvas.Status = 0;
-                if (canvas.Status == 1)
-                    (sender as Button).Background = Brushes.Green;
-                else
-                    (sender as Button).Background = Brushes.White;
-            }
-        }
-
-
-
         private void kmpsConnectToggle_Toggled(object sender, RoutedEventArgs e)
         {
             if (KmpsAppl.KompasAPI == null)
@@ -683,22 +636,22 @@ namespace MonchaCadViewer
             switch (e.Key)
             {
                 case Key.Q:
-                    SelectNext();
+                    MainCanvas.SelectNext();
                     break;
                 case Key.W:
-                    MoveCanvasSet(0, -step * _mult);
+                    MainCanvas.MoveCanvasSet(0, -step * _mult);
                     break;
                 case Key.S:
-                    MoveCanvasSet(0, step * _mult);
+                    MainCanvas.MoveCanvasSet(0, step * _mult);
                     break;
                 case Key.A:
-                    MoveCanvasSet(-step * _mult, 0);
+                    MainCanvas.MoveCanvasSet(-step * _mult, 0);
                     break;
                 case Key.D:
-                    MoveCanvasSet(step * _mult, 0);
+                    MainCanvas.MoveCanvasSet(step * _mult, 0);
                     break;
                 case Key.F:
-                    FixPosition();
+                    MainCanvas.FixPosition();
                     break;
                 case Key.OemPlus:
 
@@ -767,82 +720,11 @@ namespace MonchaCadViewer
             {
                 DevicePanel.Device.Alpha = (byte)(255 * TenPercent / 10);
             }
-
-            void SelectNext()
-            {
-                if (CanvasBox.Child is CadCanvas canvas)
-                {
-                    for (int i = 0; i < canvas.Children.Count; i++)
-                    {
-                        if (canvas.Children[i] is CadObject cadObject)
-                        {
-                            if (cadObject.IsSelected)
-                            {
-                                cadObject.IsFix = true;
-                                cadObject.IsSelected = false;
-
-                                try
-                                {
-                                    if (canvas.Children[i + (inverseToggle ? -1 : +1)] is CadObject cadObject2)
-                                    {
-                                        cadObject2.IsSelected = true;
-                                        cadObject2.IsFix = false;
-                                    }
-                                }
-                                catch (Exception exeption)
-                                {
-                                    LogBox.Items.Add($"Main: {exeption.Message}");
-                                    inverseToggle = !inverseToggle;
-                                    cadObject.IsSelected = true;
-                                }
-                                break;
-                            }
-                        }
-                    }
-                }
-            }
-
-            void MoveCanvasSet(double left, double top)
-            {
-                for (int i = 0; i < this.MainCanvas.Children.Count; i++)
-                {
-                    if (this.MainCanvas.Children[i] is CadObject cadObject)
-                    {
-                        if (cadObject.IsSelected == true && cadObject.IsFix == false)
-                        {
-                            cadObject.X += left;
-                            cadObject.Y += top;
-                        }
-                    }
-                }
-
-                
-            }
-
-            void FixPosition()
-            {
-                if (CanvasBox.Child is CadCanvas canvas)
-                {
-                    for (int i = 0; i < canvas.Children.Count; i++)
-                    {
-                        if (canvas.Children[i] is CadObject cadObject1)
-                        {
-                            if (cadObject1.IsSelected)
-                            {
-                                cadObject1.IsFix = !cadObject1.IsFix;
-                            }
-                        }
-                    }
-                }
-            }
         }
 
         private void ClearBtn_Click(object sender, RoutedEventArgs e)
         {
-            if (CanvasBox.Child is CadCanvas canvas)
-            {
-                canvas.Clear();
-            }
+            MainCanvas.Clear();
         }
 
 
@@ -975,7 +857,7 @@ namespace MonchaCadViewer
             {
                 for (int i = 0; i < MonchaHub.Devices.Count; i++)
                 {
-                    ildaWriter.Write(($"{saveFileDialog.FileName.Replace(".ild", string.Empty)}_{i}.ild"), new List<LFrame>(){await MonchaHub.Devices[i].GetReadyFrame.GetLFrame(MonchaHub.Devices[i], MonchaHub.MainFrame)}, 5);
+                    ildaWriter.Write(($"{saveFileDialog.FileName.Replace(".ild", string.Empty)}_{i}.ild"), new List<LFrame>(){await MonchaHub.Devices[i].GetReadyFrame.GetLFrame(MonchaHub.Devices[i], MonchaHub.MainFrame, UsedMeshToggle.IsOn)}, 5);
                 }
             }
         }
@@ -1046,7 +928,7 @@ namespace MonchaCadViewer
         {
             string path = pt as string;
             //Return members whose Orders have not been filled
-            return path.Contains(WorkFolderFilter.Text);
+            return path.ToLower().Contains(WorkFolderFilter.Text.ToLower());
         }
 
         private void WorkFolderListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -1081,6 +963,11 @@ namespace MonchaCadViewer
                 RefreshWorkFolderList();
             }
             CollectionViewSource.GetDefaultView(WorkFolderListBox.ItemsSource).Refresh();
+        }
+
+        private void WorkFolderFilter_GotFocus(object sender, RoutedEventArgs e)
+        {
+            WorkFolderFilter.SelectAll();
         }
     }
 

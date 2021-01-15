@@ -11,12 +11,23 @@ using System.Windows.Threading;
 using MonchaSDK.Object;
 using System.Windows.Shapes;
 using System.ComponentModel;
+using MonchaCadViewer.Interface;
+using System.Runtime.CompilerServices;
 
 namespace MonchaCadViewer.CanvasObj
 {
-    public class CadCanvas : Canvas
+    public class CadCanvas : Canvas, TransformObject, INotifyPropertyChanged
     {
-        public event EventHandler<bool> SelectedObject;
+        #region INotifyPropertyChanged
+        public event PropertyChangedEventHandler PropertyChanged;
+        public void OnPropertyChanged([CallerMemberName] string prop = "")
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(prop));
+        }
+        #endregion
+
+        public event EventHandler<CadObject> SelectedObject;
+        public event EventHandler UpdateProjection;
         //public event EventHandler<string> ErrorMessageEvent;
 
         private object MouseOnObject = null;
@@ -27,7 +38,8 @@ namespace MonchaCadViewer.CanvasObj
         private int _status = 0;
         private bool _maincanvas;
         private bool _nofreecursor = true;
-
+        private Point StartMovePoint;
+        private Point StartMousePoint;
 
         private Rectangle _selectedRectangle = new Rectangle();
 
@@ -41,11 +53,24 @@ namespace MonchaCadViewer.CanvasObj
             set => _status = value;
         }
 
+
+
+        public CadCanvas()
+        {
+            this._size = MonchaHub.Size;
+            this._maincanvas = true;
+            LoadSetting();
+        }
+
         public CadCanvas(LPoint3D Size, bool MainCanvas)
         {
             this._size = Size;
             this._maincanvas = MainCanvas;
+            LoadSetting();
+        }
 
+        private void LoadSetting()
+        {
             this.Name = "CCanvas";
             this.Background = Brushes.Transparent; //backBrush;
             this.Width = this._size.GetMPoint.X;
@@ -64,28 +89,102 @@ namespace MonchaCadViewer.CanvasObj
             this.ContextMenuClosing += CadCanvas_ContextMenuClosing;
 
 
+
             if (this._maincanvas)
             {
+                this.ContextMenu = new ContextMenu();
+                ContextMenuLib.CanvasMenu(this.ContextMenu);
+
                 this.MouseLeftButtonDown += Canvas_MouseLeftDown;
                 this.MouseMove += CadCanvas_MouseMove;
                 this.MouseUp += CadCanvas_MouseUp;
+                this.MouseLeftButtonDown += CadCanvas_MouseLeftButtonDown;
+                this.MouseMove += CadCanvas_MouseMove1;
+                this.MouseWheel += CadCanvas_MouseWheel;
+                this.KeyDown += CadCanvas_KeyDown;
+                this.KeyUp += CadCanvas_KeyUp;
+                this.MouseLeave += CadCanvas_MouseLeave;
             }
 
-            MonchaHub.ChangeSize += MonchaHub_ChangeSize;
+            ResetTransform();
         }
 
-        public void UpdateProjection(bool force)
+        private void CadCanvas_MouseLeave(object sender, MouseEventArgs e)
         {
-            if ((this._maincanvas == true && SendProcessor.Processing == false) || force == true)
+            this.Cursor = Cursors.Arrow;
+        }
+
+        private void CadCanvas_KeyUp(object sender, KeyEventArgs e)
+        {
+            this.Cursor = Cursors.Arrow;
+        }
+
+        private void CadCanvas_KeyDown(object sender, KeyEventArgs e)
+        {
+            switch (e.Key)
             {
-                SendProcessor.Worker(this);
+                case Key.LeftCtrl: 
+                case Key.RightCtrl:
+                    this.Cursor = Cursors.SizeAll;
+                    break;
             }
         }
 
-        private void MonchaHub_ChangeSize(object sender, LPoint3D e)
+        private void CadCanvas_MouseWheel(object sender, MouseWheelEventArgs e)
         {
-            ResizeCanvas();
+            if (Keyboard.Modifiers == ModifierKeys.Control)
+            {
+                Point centre = e.GetPosition(this);
+                this.Scale.CenterX = centre.X;
+                this.Scale.CenterY = centre.Y;
+                if (this.Scale.ScaleY + (double)e.Delta / 1000 > 1)
+                {
+                    this.Scale.ScaleX += (double)e.Delta / 1000;
+                    this.Scale.ScaleY += (double)e.Delta / 1000;
+                }
+                else
+                {
+                    this.Scale.ScaleX = 1;
+                    this.Scale.ScaleY = 1;
+                    this.X = 0;
+                    this.Y = 0;
+                }
+            }
         }
+
+        private void CadCanvas_MouseMove1(object sender, MouseEventArgs e)
+        {
+            if (e.LeftButton == MouseButtonState.Pressed && Keyboard.Modifiers == ModifierKeys.Control)
+            {
+                if (this.IsFix == false)
+                {
+                        this.WasMove = true;
+
+                        Point tPoint = e.GetPosition(this.Parent as System.Windows.IInputElement);
+
+                        this.X = this.StartMovePoint.X + (tPoint.X - this.StartMousePoint.X);
+                        this.Y = this.StartMovePoint.Y + (tPoint.Y - this.StartMousePoint.Y);
+
+                        this.CaptureMouse();
+                        
+                }
+            }
+            else if (Keyboard.Modifiers == ModifierKeys.Control)
+            {
+                this.Cursor = Cursors.SizeAll;
+            }
+            else
+            {
+                this.Cursor = Cursors.Arrow;
+            }
+        }
+
+        private void CadCanvas_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            this.StartMousePoint = e.GetPosition(this.Parent as System.Windows.IInputElement);
+            this.StartMovePoint = new Point(this.Translate.X, this.Translate.Y);
+        }
+
 
         private void _size_ChangePoint(object sender, PropertyChangedEventArgs e)
         {
@@ -122,11 +221,6 @@ namespace MonchaCadViewer.CanvasObj
             }
 
             this.Add(obj);
-
-            if (maincanvas == true)
-            {
-                SelectedObject?.Invoke(null, false);
-            }
         }
 
         private void CadObject_MouseLeave(object sender, MouseEventArgs e)
@@ -141,19 +235,6 @@ namespace MonchaCadViewer.CanvasObj
         {
             this.MouseOnObject = sender;
         }
-
-
-        public void DrawRectangle(LPoint3D point1, LPoint3D point2)
-        {
-            CadDot cadDot1 = new CadDot(point1, MonchaHub.GetThinkess() * 3, true, true, false);
-            cadDot1.Render = false;
-            CadDot cadDot2 = new CadDot(point2, MonchaHub.GetThinkess() * 3, true, true, false);
-            cadDot2.Render = false;
-            this.Children.Add(cadDot1);
-            this.Children.Add(cadDot2);
-
-        }
-
 
 
         private void Canvas_MouseLeftDown(object sender, MouseButtonEventArgs e)
@@ -220,7 +301,7 @@ namespace MonchaCadViewer.CanvasObj
                 }
 
             }
-            SelectedObject?.Invoke(null, false);
+            SelectedObject?.Invoke(this, null);
            
         }
 
@@ -299,8 +380,8 @@ namespace MonchaCadViewer.CanvasObj
                     i--;
                 }
             }
-            SelectedObject?.Invoke(this, false);
-            UpdateProjection(false);
+            SelectedObject?.Invoke(this, null);
+            UpdateProjection?.Invoke(this, null);
         }
 
         public CadDot[,] GetMeshDot(int Height, int Width)
@@ -315,44 +396,7 @@ namespace MonchaCadViewer.CanvasObj
         }
 
         //Рисуем квадраты в поле согласно схеме
-        public void DrawMesh(MonchaDeviceMesh mesh, MonchaDevice _device)
-        {
-            if (_device != null)
-            {
-                this.DataContext = _device;
-                this.Clear();
-
-                if (mesh == null)
-                    mesh = _device.BaseMesh;
-
-                //
-                // Поинты
-                //
-
-                for (int i = 0; i < mesh.GetLength(0); i++)
-                    for (int j = 0; j < mesh.GetLength(1); j++)
-                    {
-                        mesh[i, j].M = this._size;
-
-                        CadDot dot = new CadDot(
-                             mesh[i, j],
-                            this.ActualWidth * 0.02,
-                            //calibration flag
-                            true, true, false);
-
-                        dot.IsFix = false; // !mesh.OnlyEdge;
-                        dot.StrokeThickness = 0;
-                        dot.Uid = i.ToString() + ":" + j.ToString();
-                        dot.ToolTip = "Позиция: " + i + ":" + j + "\nX: " + mesh[i, j].X + "\n" + "Y: " + mesh[i, j].Y;
-                        dot.DataContext = mesh;
-                        dot.OnBaseMesh = !mesh.Affine;
-                        dot.Render = false;
-                        this.Add(dot);
-                    }
-
-            }
-            SelectedObject?.Invoke(null, false);
-        }
+       
 
         public void Clear()
         {
@@ -391,14 +435,12 @@ namespace MonchaCadViewer.CanvasObj
                 }
 
                 this.Children.Add(obj);
-
             }
-
         }
 
         private void CadObject_Updated(object sender, string e)
         {
-            UpdateProjection(false);
+            UpdateProjection?.Invoke(this, null);
         }
 
         private void CadObject_OnObject1(object sender, bool e)
@@ -412,9 +454,66 @@ namespace MonchaCadViewer.CanvasObj
             {
                 this.ClearSelectedObject((CadObject)sender);
             }
-            SelectedObject?.Invoke(sender, e);
+            if (e == true)
+            SelectedObject?.Invoke(this, (CadObject)sender);
         }
 
 
+
+        #region TransfromObject
+        public TransformGroup Transform { get; set; }
+        public ScaleTransform Scale { get; set; }
+        public RotateTransform Rotate { get; set; }
+        public TranslateTransform Translate { get; set; }
+
+        public double X { get => this.Translate.X; 
+            set 
+            {
+                this.Translate.X = value;
+            }
+        }
+        public double Y { get => this.Translate.Y;
+            set
+            {
+                this.Translate.Y = value;
+            }
+        }
+        public bool IsFix { get; set; }
+        public bool Mirror { get; set; } = false;
+
+        public bool WasMove { get; set; } = false;
+
+        public void UpdateTransform(TransformGroup transformGroup)
+        {
+            if (transformGroup != null)
+            {
+                this.RenderTransform = Transform;
+                this.Scale = this.Transform.Children[0] != null ? (ScaleTransform)this.Transform.Children[0] : new ScaleTransform();
+                this.Rotate = this.Transform.Children[1] != null ? (RotateTransform)this.Transform.Children[1] : new RotateTransform();
+                this.Translate = this.Transform.Children[2] != null ? (TranslateTransform)this.Transform.Children[2] : new TranslateTransform();
+            }
+            else ResetTransform();
+
+
+            if (this.Scale.ScaleX < 0) this.Mirror = true;
+        }
+
+        public void ResetTransform()
+        {
+            this.Transform = new TransformGroup()
+            {
+                Children = new TransformCollection()
+                    {
+                        new ScaleTransform(),
+                        new RotateTransform(),
+                        new TranslateTransform()
+                    }
+            };
+            this.Scale = (ScaleTransform)this.Transform.Children[0];
+            this.Rotate = (RotateTransform)this.Transform.Children[1];
+            this.Translate = (TranslateTransform)this.Transform.Children[2];
+            this.RenderTransform = this.Transform;
+        }
+        #endregion
     }
 }

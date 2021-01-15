@@ -103,9 +103,6 @@ namespace MonchaCadViewer.CanvasObj
           
         }
 
-
-
-
         private void CadDot_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
             //this.Point.Select = true;

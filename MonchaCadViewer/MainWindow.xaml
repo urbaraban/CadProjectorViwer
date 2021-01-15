@@ -7,7 +7,7 @@
         xmlns:Controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
         xmlns:HelixToolkit="clr-namespace:HelixToolkit.Wpf;assembly=HelixToolkit.Wpf"
         xmlns:Properties="clr-namespace:MonchaCadViewer.Properties" xmlns:controlzex="urn:controlzex"
-        xmlns:pt="http://propertytools.org/wpf" xmlns:c="clr-namespace:CalcBinding;assembly=CalcBinding" xmlns:contourscrollpanel="clr-namespace:MonchaCadViewer.ToolsPanel.ContourScrollPanel" x:Name="MainWindow1" x:Class="MonchaCadViewer.MainWindow"
+        xmlns:contourscrollpanel="clr-namespace:MonchaCadViewer.ToolsPanel.ContourScrollPanel" xmlns:canvaspanel="clr-namespace:MonchaCadViewer.ToolsPanel.CanvasPanel" x:Name="MainWindow1" x:Class="MonchaCadViewer.MainWindow"
         mc:Ignorable="d"
         Title="CUT" Focusable="False" KeyboardNavigation.TabNavigation="None"  AllowDrop="True" Height="766.898" Width="999" Closing="Window_Closing" Closed="Window_Closed" controlzex:KeyboardNavigationEx.AlwaysShowFocusVisual="True" WindowStartupLocation="CenterScreen" Icon="logo.png" KeyUp="MainWindow1_KeyUp" WindowStyle="None" ResizeMode="CanResizeWithGrip" BorderBrush="#FFE01414" VerticalAlignment="Top">
     <Window.Resources>
@@ -52,9 +52,15 @@
                     <RowDefinition Height="37*"/>
                 </Grid.RowDefinitions>
                 <DockPanel x:Name="TopBar" Grid.ColumnSpan="3" Margin="0,0,0,0" Background="{DynamicResource {x:Static SystemColors.MenuBrushKey}}" MouseLeftButtonDown="TopBar_MouseLeftButtonDown" VerticalAlignment="Top" LastChildFill="False" Height="29">
-
                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" DockPanel.Dock="Left">
-                        <Image Width="25" Height="25" Margin="2" Source="logo.png"/>
+                        <Menu>
+                            <Image Width="25" Height="25" Margin="2" Source="logo.png"/>
+                            <MenuItem Header="▼">
+                                <MenuItem Header="Language">
+                                </MenuItem>
+                            </MenuItem>
+                        </Menu>
+
                         <Separator/>
                         <Label Content="CUT — Viwer" Padding="5,2" VerticalContentAlignment="Center"/>
 
@@ -90,14 +96,14 @@
                                     <ToolBarPanel Orientation="Vertical" Width="100">
                                         <Button x:Name="OpenBtn" AllowDrop="True" Content="Open" DragEnter="OpenBtn_DragEnter" DragOver="OpenBtn_DragOver" DragLeave="OpenBtn_DragLeave" Drop="OpenBtn_DragDrop" Click="OpenBtn_Click" Grid.ColumnSpan="2" Background="{x:Null}" BorderBrush="{x:Null}" Height="86" />
 
-                                       </ToolBarPanel>
+                                    </ToolBarPanel>
                                     <Separator></Separator>
                                     <Button x:Name="ReloadBtn" Content="{DynamicResource m_Refresh}"  Margin="0,5" HorizontalAlignment="Right"  Click="ReloadBtn_Click" Grid.Column="1" VerticalAlignment="Stretch" Width="80"/>
                                 </ToolBar>
 
 
                             </ToolBarPanel>
-                            <TabControl x:Name="tabControl1" >
+                            <TabControl x:Name="tabControl1">
 
                                 <TabItem Header="Transform">
                                     <ur:CadObjectPanel x:Name="ObjectPanel"></ur:CadObjectPanel>
@@ -109,7 +115,6 @@
                                             <ColumnDefinition Width="26*"/>
                                         </Grid.ColumnDefinitions>
                                         <ToolBar Margin="0,0,0,0" Grid.ColumnSpan="2">
-                                            <Button x:Name="LineBtn" Content="Line"    Click="LineBtn_Click"/>
                                             <Button x:Name="ClearBtn" Content="Clear"  Click="ClearBtn_Click"/>
                                         </ToolBar>
                                     </Grid>
@@ -135,7 +140,7 @@
                             <RowDefinition Height="47*"/>
                             <RowDefinition Height="60*"/>
                         </Grid.RowDefinitions>
-                        <DockPanel>
+                        <DockPanel Margin="0,0,0,5">
 
                             <Border Grid.Row="2" Style="{StaticResource Border}" Margin="5,5,2,0">
                                 <TreeView x:Name="treeView" Grid.Row="1" KeyboardNavigation.DirectionalNavigation="None" KeyboardNavigation.TabNavigation="None" Margin="0,0,0,-1">
@@ -163,9 +168,9 @@
                     <Grid>
                         <Grid.RowDefinitions>
                             <RowDefinition/>
-                            <RowDefinition Height="105"/>
+                            <RowDefinition Height="119"/>
                         </Grid.RowDefinitions>
-                        <DockPanel DockPanel.Dock="Top">
+                        <DockPanel DockPanel.Dock="Top" Margin="0,0,0,5">
                             <TabControl TabStripPlacement="Top">
                                 <TabItem Header="{DynamicResource m_CanvasTab}">
                                     <Border x:Name="CanvasBorder" Style="{StaticResource Border}" Background="LightGray" Grid.Column="1" Grid.Row="2" Margin="0" Grid.RowSpan="2">
@@ -173,8 +178,9 @@
                                             <Viewbox.DataContext>
                                                 <Properties:Settings/>
                                             </Viewbox.DataContext>
-                                            <Border x:Name="CanvasBoxBorder" Background="White"  Style="{StaticResource Border}" Grid.Column="1" Grid.Row="2" Margin="3" >
+                                            <Border x:Name="CanvasBoxBorder"  Style="{StaticResource Border}" Grid.Column="1" Grid.Row="2" Margin="3" >
                                                 <Viewbox  x:Name="CanvasBox"  Stretch="Uniform" StretchDirection="DownOnly">
+                                                    <canvaspanel:CadCanvasPanel x:Name="MainCanvas"/>
                                                 </Viewbox>
                                             </Border>
                                         </Viewbox>
@@ -215,7 +221,8 @@
                                     </TabItem>
                                     <TabItem Header="ILDA" Controls:HeaderedControlHelper.HeaderFontSize="14">
                                         <Grid Background="#FFE5E5E5">
-                                            <Button x:Name="ILDASaveBtn" Content="Сохранить в ILDA" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Width="248" Height="29" Click="ILDASaveBtn_Click"/>
+                                            <Controls:ToggleSwitch x:Name="UsedMeshToggle" Margin="10,10,0,0" IsOn="True" Content="Used device mesh" VerticalAlignment="Top"/>
+                                            <Button x:Name="ILDASaveBtn" Content="Сохранить в ILDA" HorizontalAlignment="Left" Margin="10,40,0,0" VerticalAlignment="Top" Width="248" Height="29" Click="ILDASaveBtn_Click"/>
                                         </Grid>
                                     </TabItem>
                                     <TabItem Header="SVG" Controls:HeaderedControlHelper.HeaderFontSize="14">
@@ -303,13 +310,13 @@
                                     <ColumnDefinition Width="49*"/>
                                     <ColumnDefinition Width="73*"/>
                                 </Grid.ColumnDefinitions>
-                                <Label x:Name="MonchaPathBox" HorizontalAlignment="Left" Height="23" Margin="15,28,0,0"  Content="{Binding cl_moncha_path}" VerticalAlignment="Top" Width="131" Grid.ColumnSpan="4">
+                                <Label x:Name="MonchaPathBox" Height="23" Margin="16,34,0,0"  Content="{Binding cl_moncha_path}" VerticalAlignment="Top" Grid.ColumnSpan="3" HorizontalContentAlignment="Right">
                                     <Label.DataContext>
                                         <Properties:Settings/>
                                     </Label.DataContext>
                                 </Label>
                                 <Button x:Name="BrowseMonchaBtn" Content="Browse..." Margin="17,33,10,0" VerticalAlignment="Top" Click="BrowseMonchaBtn_Click" Height="23" Grid.Column="3" Grid.ColumnSpan="2"/>
-                                <Label x:Name="label" Content="Путь до файла Moncha (*.mws)" HorizontalAlignment="Left" Margin="10,2,0,0" VerticalAlignment="Top" Grid.ColumnSpan="4" Height="26" Width="178"/>
+                                <Label x:Name="label" Content="Путь до файла Moncha (*.mws)" Margin="10,7,10,0" VerticalAlignment="Top" Grid.ColumnSpan="5" Height="26" HorizontalContentAlignment="Left"/>
                                 <Controls:NumericUpDown x:Name="WidthUpDn" Margin="0,70,10,0"  Background="White" Height="26" VerticalAlignment="Top" Grid.Column="2" Grid.ColumnSpan="3" >
                                     <Controls:NumericUpDown.DataContext>
                                         <Properties:Settings/>
@@ -373,7 +380,7 @@
                                 </Label>
                                 <ListView x:Name="WorkFolderListBox" Margin="5,5,5,5" Grid.Row="2" SelectionChanged="WorkFolderListBox_SelectionChanged"/>
                                 <Button x:Name="WorkFolderRefreshBtn"  FontFamily="Segoe MDL2 Assets" Content="&#xEDAB;" HorizontalAlignment="Left" Margin="5,8,0,8" VerticalAlignment="Center" Width="22" Height="20" Click="WorkFolderRefreshBtn_Click"/>
-                                <TextBox x:Name="WorkFolderFilter" HorizontalAlignment="Left" Margin="5,2,0,2" Grid.Row="1" TextWrapping="Wrap" Width="264" VerticalContentAlignment="Center" TextChanged="WorkFolderFilter_TextChanged"/>
+                                <TextBox x:Name="WorkFolderFilter" HorizontalAlignment="Left" Margin="5,2,0,2" Grid.Row="1" TextWrapping="Wrap" Width="264" VerticalContentAlignment="Center" TextChanged="WorkFolderFilter_TextChanged" Focusable="True" GotFocus="WorkFolderFilter_GotFocus"/>
 
                             </Grid>
                         </TabItem>

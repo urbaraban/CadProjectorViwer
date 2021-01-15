@@ -24,8 +24,11 @@ namespace MonchaCadViewer.CanvasObj
 
         public static void ViewContourMenu(ContextMenu contextMenu)
         {
-            if (contextMenu.Items.Count > 0)
-                contextMenu.Items.Add(new Separator());
+            if (contextMenu != null)
+            {
+                if (contextMenu.Items.Count > 0)
+                    contextMenu.Items.Add(new Separator());
+            }
 
             AddItem("Mirror", contextMenu);
         }

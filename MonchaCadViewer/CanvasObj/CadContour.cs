@@ -40,7 +40,7 @@ namespace MonchaCadViewer.CanvasObj
 
         private void CadContour_MouseWheel(object sender, MouseWheelEventArgs e)
         {
-            if (e.Delta != 0)
+            if ((e.Delta != 0) && (Keyboard.Modifiers != ModifierKeys.Control))
             {
                 this.Angle += Math.Abs(e.Delta) / e.Delta * (Keyboard.Modifiers == ModifierKeys.Shift ? 1 : 5);
             }

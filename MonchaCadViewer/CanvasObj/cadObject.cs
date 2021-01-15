@@ -29,7 +29,7 @@ namespace MonchaCadViewer.CanvasObj
 
         public bool NoEvent = false;
         
-        private bool _render = true;
+
 
         private bool _otherprojection = false;
         public bool OtherProjection
@@ -112,19 +112,16 @@ namespace MonchaCadViewer.CanvasObj
 
         public bool Mirror
         {
-            get => this._mirror;
+            get => this.ScaleX < 0 ? true : false;
             set
             {
-                this._mirror = value;
+
+                this.ScaleX = value == true ? -Math.Abs(this.ScaleX) : Math.Abs(this.ScaleX);
                 OnPropertyChanged("Mirror");
                 this.CenterX = this.DefiningGeometry.Bounds.X - this.Translate.X + this.DefiningGeometry.Bounds.Width / 2;
                 this.CenterY = this.DefiningGeometry.Bounds.Y - this.Translate.Y + this.DefiningGeometry.Bounds.Height / 2;
-                this.ScaleX = this.ScaleX;
             }
         }
-        private bool _mirror = false;
-
-
 
         protected Point MousePos = new Point();
         protected Point BasePos = new Point();
@@ -142,7 +139,6 @@ namespace MonchaCadViewer.CanvasObj
                         if (this.Render == true)
                         {
                             Updated?.Invoke(this, "X");
-
                         }
                         OnPropertyChanged("X");
 
@@ -192,7 +188,7 @@ namespace MonchaCadViewer.CanvasObj
             get => this.Scale.ScaleX;
             set
             {
-                this.Scale.ScaleX = (_mirror == true ? -1 * value : Math.Abs(value));
+                this.Scale.ScaleX = (this.Mirror == true ? -1 * value : Math.Abs(value));
                 if (this.Render == true)
                 {
                     Updated?.Invoke(this, "ScaleX");
@@ -270,7 +266,6 @@ namespace MonchaCadViewer.CanvasObj
             }
         }
 
-
         public bool Render
         {
             get => this._render;
@@ -284,6 +279,7 @@ namespace MonchaCadViewer.CanvasObj
                 }
             }
         }
+        private bool _render = true;
 
         public bool IsFix
         {
@@ -367,7 +363,7 @@ namespace MonchaCadViewer.CanvasObj
                 this.Translate = (TranslateTransform)this.Transform.Children[2];
             }
 
-            if (this.ScaleX < 0) this._mirror = true;
+            if (this.ScaleX < 0) this.Mirror = true;
         }
 
         private void CadObject_PropertyChanged(object sender, PropertyChangedEventArgs e)

@@ -26,7 +26,7 @@ namespace MonchaCadViewer.ToolsPanel.ObjectPanel
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            return (this.invert - (double)value) / this.percent;
+            return Math.Abs((this.invert - (double)value) / this.percent);
         }
     }
 }

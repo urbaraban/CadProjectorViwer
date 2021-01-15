@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:MonchaCadViewer"
         xmlns:Controls="http://metro.mahapps.com/winfx/xaml/controls"
-        xmlns:Properties="clr-namespace:MonchaCadViewer.Properties" x:Class="MonchaCadViewer.CreateGridWindow"
+        xmlns:Properties="clr-namespace:MonchaCadViewer.Properties" xmlns:canvaspanel="clr-namespace:MonchaCadViewer.ToolsPanel.CanvasPanel" x:Class="MonchaCadViewer.CreateGridWindow"
         mc:Ignorable="d"
         Title="CreateGridWindow" Height="446.26" Width="606.787" Closing="Window_Closing" Loaded="Window_Loaded">
     <Window.Resources>
@@ -36,7 +36,9 @@
             <Border.DataContext>
                 <Properties:Settings/>
             </Border.DataContext>
-            <Viewbox x:Name="CadViewBox" Margin="-1"/>
+            <Viewbox x:Name="CadViewBox" Margin="-1">
+                <canvaspanel:CadCanvasPanel x:Name="Canvas"/>
+            </Viewbox>
         </Border>
         <Controls:ToggleSwitch x:Name="MonchaToggle"  Content="Moncha" HorizontalAlignment="Left" Margin="15,17,0,0" VerticalAlignment="Top" Width="153" Height="32" Grid.Column="1" IsOn="{Binding main_formoncha, Mode=TwoWay}" Toggled="MonchaToggle_Toggled"/>
         <Controls:NumericUpDown x:Name="WidthUpDn"  Margin="15,80,67,0" Maximum="50" Minimum="2" Value="2" Background="White" Height="26" VerticalAlignment="Top"  Grid.Column="1" ValueChanged="WidthUpDn_ValueChanged"/>

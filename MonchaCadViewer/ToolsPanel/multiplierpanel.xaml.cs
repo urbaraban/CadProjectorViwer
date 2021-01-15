@@ -1,6 +1,7 @@
 ﻿using MahApps.Metro.Controls;
 using MonchaCadViewer.CanvasObj;
 using MonchaSDK;
+using MonchaSDK.Device;
 using MonchaSDK.Object;
 using MonchaSDK.Setting;
 using System;
@@ -92,6 +93,14 @@ namespace MonchaCadViewer.ToolsPanel
             BlueToggle.DataContext = projectionSetting;
             BlueToggle.SetBinding(ToggleSwitch.IsOnProperty, "BlueOn");
 
+            DeviceLayerCombo.Items.Clear();
+            DeviceLayerCombo.DisplayMemberPath = "HWIdentifier";
+            DeviceLayerCombo.Items.Add(null);
+            foreach(MonchaDevice device in MonchaHub.Devices)
+            {
+                DeviceLayerCombo.Items.Add(device);
+            }
+           
             projectionSetting.PropertyChanged += ProjectionSetting_PropertyChanged;
             projectionSetting.PointStep.PropertyChanged += ProjectionSetting_PropertyChanged;
         }
@@ -120,6 +129,14 @@ namespace MonchaCadViewer.ToolsPanel
             BindingOperations.ClearBinding(RadiusSlider, Slider.ValueProperty);
             BindingOperations.ClearBinding(MultiplierSlider, Slider.ValueProperty);
             BindingCadObject(this.cadObject.OtherProjection == true ? this.cadObject.ProjectionSetting : MonchaHub.ProjectionSetting );
+        }
+
+        private void DeviceLayerCombo_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (this.DataContext is CadObject cadObject)
+            {
+                cadObject.ProjectionSetting.device = (MonchaDevice)DeviceLayerCombo.SelectedItem;
+            }
         }
     }
 }

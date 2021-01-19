@@ -12,147 +12,14 @@ namespace MonchaCadViewer.CanvasObj.DimObj
 {
     class AdornerContourFrame : Adorner
     {
-        // Be sure to call the base class constructor.
-
-        // The Thumb to drag to rotate the strokes.
-        private Thumb rotateHandle;
-
-        // The surrounding boarder.
-        private Path outline;
-
         private CadContour Contour;
 
-        private VisualCollection visualChildren;
-
-        // The center of the strokes.
-        Point center;
-
-        public event EventHandler<double> AngleChange;
-
-        public RotateTransform Rotation;
-
-        // The bounds of the Strokes;
-        private Rect strokeBounds = Rect.Empty;
-
-        private Pen LinePen;
-        private double Textsize;
-
-        public AdornerContourFrame(UIElement adornedElement)
+        public AdornerContourFrame(UIElement adornedElement, Visibility visibility)
             : base(adornedElement)
         {
-            this.Contour = adornedElement as CadContour;
-            this.IsClipEnabled = true;
-            visualChildren = new VisualCollection(this);
-            rotateHandle = new Thumb();
-            rotateHandle.Cursor = Cursors.SizeNWSE;
-            rotateHandle.Width = MonchaHub.GetThinkess() * 5;
-            rotateHandle.Height = MonchaHub.GetThinkess() * 5;
-            rotateHandle.Background = Brushes.Blue;
-
-            rotateHandle.DragDelta += new DragDeltaEventHandler(rotateHandle_DragDelta);
-            rotateHandle.DragCompleted += new DragCompletedEventHandler(rotateHandle_DragCompleted);
-
-            outline = new Path();
-            outline.Stroke = Brushes.Gray;
-            outline.StrokeThickness = MonchaHub.GetThinkess() / 2;
-
- 
-            visualChildren.Add(outline);
-            visualChildren.Add(rotateHandle);
-
-           // strokeBounds = this.Contour.Transform.TransformBounds(this.Contour.GmtrObj.Bounds);
-            LinePen = new Pen(Brushes.LightGray, MonchaHub.GetThinkess() / 2);
-            Textsize = MonchaHub.GetThinkess() * 5 + 1;
-        }
-
-        /// <summary>
-        /// Rotates the rectangle representing the
-        /// strokes' bounds as the user drags the
-        /// Thumb.
-        /// </summary>
-        void rotateHandle_DragDelta(object sender, DragDeltaEventArgs e)
-        {
-            // Find the angle of which to rotate the shape.  Use the right
-            // triangle that uses the center and the mouse's position 
-            // as vertices for the hypotenuse.
-
-            Point pos = Mouse.GetPosition(this);
-
-            double deltaX = pos.X - center.X;
-            double deltaY = pos.Y - center.Y;
-
-            if (deltaY.Equals(0))
-            {
-
-                return;
-            }
-
-            double tan = deltaX / deltaY;
-            double angle = Math.Atan(tan);
-
-            // Convert to degrees.
-            angle = angle * 180 / Math.PI;
-
-            // If the mouse crosses the vertical center, 
-            // find the complementary angle.
-            if (deltaY > 0)
-            {
-                angle = 180 - Math.Abs(angle);
-            }
-
-            // Rotate left if the mouse moves left and right
-            // if the mouse moves right.
-            if (deltaX < 0)
-            {
-                angle = -Math.Abs(angle);
-            }
-            else
-            {
-                angle = Math.Abs(angle);
-            }
-
-            if (Double.IsNaN(angle))
-            {
-                return;
-            }
-
-            int mult = (Keyboard.Modifiers == ModifierKeys.Shift ? 5 : 1);
-
-            angle = (int)(angle / mult) * mult;
-
-            // Apply the rotation to the strokes' outline.
-            this.Rotation = new RotateTransform(angle, center.X, center.Y);
-            outline.RenderTransform = this.Rotation;
-
-            if (AngleChange != null)
-                AngleChange(this, angle);
-
-            //this._adornedElement.UpdateGeometry(true);
-        }
-
-        /// <summary>
-        /// Rotates the strokes to the same angle as outline.
-        /// </summary>
-        void rotateHandle_DragCompleted(object sender,
-                                        DragCompletedEventArgs e)
-        {
-            if (this.Rotation == null)
-            {
-                return;
-            }
-            this.InvalidateArrange();
-        }
-
-        /// <summary>
-        /// Gets the strokes of the adorned element 
-        /// (in this case, an InkPresenter).
-        /// </summary>
-        private UIElement AdornedStrokes
-        {
-            get
-            {
-                return ((UIElement)AdornedElement);
-            }
+            this.RenderTransform = adornedElement.RenderTransform;
+            this.Contour = (CadContour)adornedElement;
+            this.Visibility = visibility;
         }
 
         // Override the VisualChildrenCount and 
@@ -161,23 +28,15 @@ namespace MonchaCadViewer.CanvasObj.DimObj
         protected override void OnRender(DrawingContext drawingContext)
         {
 
-            center = new Point(strokeBounds.X + strokeBounds.Width / 2,
-                               strokeBounds.Y + strokeBounds.Height / 2);
-
             // The rectangle that determines the position of the Thumb.
-           /* Rect handleRect = new Rect(strokeBounds.X,
-                                  strokeBounds.Y - (strokeBounds.Height / 2 +
-                                                    MonchaHub.GetThinkess() * 7),
-                                  strokeBounds.Width, strokeBounds.Height);*/
+            Rect handleRect = Contour.Bounds;
 
-            /*if (this.Rotation != null)
-            {
-                handleRect.Transform(this.Rotation.Value);
-            }*/
+            drawingContext.DrawRectangle(Brushes.Gray, null, Contour.Bounds);
 
+            /*
             // Draws the thumb and the rectangle around the strokes.
-           // rotateHandle.Arrange(handleRect);
-          /*  outline.Data = new RectangleGeometry(strokeBounds);
+            // rotateHandle.Arrange(handleRect);
+            this.Draving = new RectangleGeometry(strokeBounds);
             if (Contour.Bounds.Size != Size.Empty)
                 outline.Arrange(new Rect(Contour.Bounds.Size));
 
@@ -197,12 +56,10 @@ namespace MonchaCadViewer.CanvasObj.DimObj
             //Left
             DrawMarginLine(this.Contour.GmtrObj.Bounds.BottomLeft,
             this.Contour.GmtrObj.Bounds.TopLeft,
-            this.Contour.GmtrObj.Bounds.BottomRight);*/
-;
-
+            this.Contour.GmtrObj.Bounds.BottomRight);
 
             //width
-            /*
+            
             drawingContext.DrawText(new FormattedText("X:" + Math.Round(Math.Round(outline.ActualWidth), 2).ToString(), new System.Globalization.CultureInfo("ru-RU"), FlowDirection.LeftToRight,
             new Typeface("Segoe UI"), (int)Textsize, Brushes.Gray), 
             new Point(outline.Data.Bounds.Location.X + outline.Data.Bounds.Width / 2, outline.Data.Bounds.Location.Y + outline.Data.Bounds.Height / 2 - Textsize * 1.5));
@@ -211,10 +68,10 @@ namespace MonchaCadViewer.CanvasObj.DimObj
             drawingContext.DrawText(new FormattedText("Y:" + Math.Round(Math.Round(outline.ActualHeight), 2).ToString(), new System.Globalization.CultureInfo("ru-RU"), FlowDirection.LeftToRight,
            new Typeface("Segoe UI"), (int)Textsize, Brushes.Gray), 
            new Point(outline.Data.Bounds.Location.X + outline.Data.Bounds.Width / 2, outline.Data.Bounds.Location.Y + outline.Data.Bounds.Height / 2));
-
+            */
             //angle
 
-            void DrawMarginLine(Point point1, Point point2, Point TextPoint)
+            /*void DrawMarginLine(Point point1, Point point2, Point TextPoint)
             {
                 drawingContext.DrawLine(LinePen, point1, point2);
                 //text
@@ -223,17 +80,6 @@ namespace MonchaCadViewer.CanvasObj.DimObj
                     new System.Globalization.CultureInfo("ru-RU"), FlowDirection.LeftToRight, new Typeface("Segoe UI"), (int)Textsize, Brushes.Gray),
                 TextPoint);
             }*/
-        }
-
-
-        protected override int VisualChildrenCount
-        {
-            get { return visualChildren.Count; }
-        }
-
-        protected override Visual GetVisualChild(int index)
-        {
-            return visualChildren[index];
         }
     }
 }

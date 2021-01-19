@@ -34,7 +34,7 @@
     <SuiteName>Viwer</SuiteName>
     <WebPage>publish.htm</WebPage>
     <OpenBrowserOnPublish>false</OpenBrowserOnPublish>
-    <ApplicationRevision>23</ApplicationRevision>
+    <ApplicationRevision>24</ApplicationRevision>
     <ApplicationVersion>0.8.1.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <CreateDesktopShortcut>true</CreateDesktopShortcut>
@@ -238,6 +238,7 @@
     <Compile Include="DeviceManager\LaserManager.xaml.cs">
       <DependentUpon>LaserManager.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Interface\SelectableObject.cs" />
     <Compile Include="Interface\TransformObject.cs" />
     <Compile Include="ObjectsVisual3D\ObjectVisual3D.cs" />
     <Compile Include="ToolsPanel\CanvasPanel\CadCanvasPanel.xaml.cs">

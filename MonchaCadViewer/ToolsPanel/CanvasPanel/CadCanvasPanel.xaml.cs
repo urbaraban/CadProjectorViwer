@@ -24,9 +24,18 @@ namespace MonchaCadViewer.ToolsPanel.CanvasPanel
     /// </summary>
     public partial class CadCanvasPanel : UserControl
     {
+        private Visibility _showadorner = Visibility.Hidden;
+
+
+        private void showadorner() { 
+        }
+
         public event EventHandler<String> Logging;
         public event EventHandler<CadObject> SelectedObject;
 
+        /// <summary>
+        /// Orientation flag for SelecNext void
+        /// </summary>
         public bool InverseSelectFlag = false;
 
         public CadCanvasPanel()
@@ -36,7 +45,6 @@ namespace MonchaCadViewer.ToolsPanel.CanvasPanel
             this.Canvas.UpdateProjection += Canvas_UpdateProjection;
             this.DataContextChanged += CadCanvasPanel_DataContextChanged;
         }
-
 
         private void Canvas_UpdateProjection(object sender, EventArgs e)
         {
@@ -192,6 +200,20 @@ namespace MonchaCadViewer.ToolsPanel.CanvasPanel
             SelectedObject?.Invoke(null, null);
         }
 
+        private void Canvas_SizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            CanvasBrush.Viewport = new Rect(0, 0, 200 * MonchaHub.Size.M.X, 200 * MonchaHub.Size.M.X);
+        }
 
+        private void AdornerShowBtn_Click(object sender, RoutedEventArgs e)
+        {
+            foreach (UIElement uIElement in this.Canvas.Children)
+            {
+                if (uIElement is CadObject cadObject)
+                {
+                    cadObject.ObjAdorner.IsEnabled = true;
+                }
+            }
+        }
     }
 }

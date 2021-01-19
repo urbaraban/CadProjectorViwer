@@ -35,6 +35,7 @@ namespace MonchaCadViewer.ToolsPanel.ContourScrollPanel
                 FrameStack.Children.Clear();
             }
             CadObjectsGroup cadObjectsGroup = new CadObjectsGroup(shapes, Name);
+ 
             ScrollPanelItem scrollPanelItem = new ScrollPanelItem(cadObjectsGroup);
             scrollPanelItem.Selected += ScrollPanelItem_Selected;
             scrollPanelItem.Removed += ScrollPanelItem_Removed;

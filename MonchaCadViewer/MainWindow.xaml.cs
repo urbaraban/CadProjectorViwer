@@ -64,8 +64,6 @@ namespace MonchaCadViewer
                 DevicePanel.DataContext = MonchaHub.Devices[0];
             }
 
-            CanvasBoxBorder.BorderThickness = new Thickness(MonchaHub.GetThinkess());
-
             this.MainCanvas.Focusable = true;
 
             this.MainCanvas.SelectedObject += MainCanvas_SelectedObject;
@@ -462,6 +460,10 @@ namespace MonchaCadViewer
             {
               //  _actualFrames = IldaReader.ReadFile(filename);
             }
+            else if (filename.Split('.').Last() == "dc")
+            {
+                _actualFrames = DC.Get(filename);
+            }
             else if ((filename.Split('.').Last() == "frw") || (filename.Split('.').Last() == "cdw"))
             {
                 if (KmpsAppl.KompasAPI == null)
@@ -772,7 +774,6 @@ namespace MonchaCadViewer
                 foreach (string fileLoc in filePaths) //переберает всю инфу пока не найдет строку адреса
                     if (File.Exists(fileLoc))
                         OpenBtn.Content = "Открыть " + fileLoc.Split('\\').Last();
-            CanvasBorder.Background = Brushes.LightYellow;
         }
 
         private void MainViewBox_Drop(object sender, DragEventArgs e)
@@ -785,7 +786,6 @@ namespace MonchaCadViewer
                         OpenFile(fileLoc);
             }
             OpenBtn.Background = Brushes.Gainsboro;
-            CanvasBorder.Background = Brushes.LightGray;
         }
 
         private void AddLaser_Click(object sender, RoutedEventArgs e)
@@ -968,6 +968,18 @@ namespace MonchaCadViewer
         private void WorkFolderFilter_GotFocus(object sender, RoutedEventArgs e)
         {
             WorkFolderFilter.SelectAll();
+        }
+
+        private void MainCanvas_Drop(object sender, DragEventArgs e)
+        {
+            if (e.Data.GetDataPresent(DataFormats.FileDrop))
+            {
+                string[] filePaths = (string[])(e.Data.GetData(DataFormats.FileDrop));
+                foreach (string fileLoc in filePaths)
+                    if (File.Exists(fileLoc))
+                        OpenFile(fileLoc);
+            }
+            OpenBtn.Background = Brushes.Gainsboro;
         }
     }
 

@@ -13,6 +13,7 @@ using System.Windows.Shapes;
 using System.ComponentModel;
 using MonchaCadViewer.Interface;
 using System.Runtime.CompilerServices;
+using System.Windows.Documents;
 
 namespace MonchaCadViewer.CanvasObj
 {
@@ -87,8 +88,6 @@ namespace MonchaCadViewer.CanvasObj
             this._size.M.PropertyChanged += _size_ChangePoint;
 
             this.ContextMenuClosing += CadCanvas_ContextMenuClosing;
-
-
 
             if (this._maincanvas)
             {
@@ -410,13 +409,15 @@ namespace MonchaCadViewer.CanvasObj
             }
         }
 
-        public void RemoveChildren(CadObject cadObject)
+        public void RemoveChildren(UIElement Object)
         {
-            cadObject.Selected -= CadObject_Selected;
-            cadObject.OnObject -= CadObject_OnObject1;
-            cadObject.Updated -= CadObject_Updated;
-            cadObject.Remove();
-            this.Children.Remove(cadObject);
+            if (Object is CadObject cadObject)
+            {
+                cadObject.Selected -= CadObject_Selected;
+                cadObject.OnObject -= CadObject_OnObject1;
+                cadObject.Updated -= CadObject_Updated;
+            }
+            this.Children.Remove(Object);
         }
 
         /// <summary>
@@ -432,10 +433,16 @@ namespace MonchaCadViewer.CanvasObj
                     cadObject.Selected += CadObject_Selected;
                     cadObject.OnObject += CadObject_OnObject1;
                     cadObject.Updated += CadObject_Updated;
+                    cadObject.Removed += CadObject_Removed;
                 }
 
                 this.Children.Add(obj);
             }
+        }
+
+        private void CadObject_Removed(object sender, CadObject e)
+        {
+            RemoveChildren((UIElement)sender);
         }
 
         private void CadObject_Updated(object sender, string e)

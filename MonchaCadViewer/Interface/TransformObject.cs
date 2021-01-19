@@ -10,7 +10,7 @@ namespace MonchaCadViewer.Interface
 {
     interface TransformObject
     {
-        TransformGroup Transform { get; set; }
+        TransformGroup Transform { get; }
         ScaleTransform Scale { get; }
         RotateTransform Rotate { get; }
         TranslateTransform Translate { get; }

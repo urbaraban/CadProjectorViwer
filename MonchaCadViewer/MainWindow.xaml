@@ -173,18 +173,7 @@
                         <DockPanel DockPanel.Dock="Top" Margin="0,0,0,5">
                             <TabControl TabStripPlacement="Top">
                                 <TabItem Header="{DynamicResource m_CanvasTab}">
-                                    <Border x:Name="CanvasBorder" Style="{StaticResource Border}" Background="LightGray" Grid.Column="1" Grid.Row="2" Margin="0" Grid.RowSpan="2">
-                                        <Viewbox x:Name="MainViewBox" ClipToBounds="True" StretchDirection="DownOnly"  Stretch="Uniform"  Margin="0,0,0,0" ForceCursor="True" KeyboardNavigation.TabNavigation="Once" DragEnter="MainViewBox_DragEnter" Drop="MainViewBox_Drop">
-                                            <Viewbox.DataContext>
-                                                <Properties:Settings/>
-                                            </Viewbox.DataContext>
-                                            <Border x:Name="CanvasBoxBorder"  Style="{StaticResource Border}" Grid.Column="1" Grid.Row="2" Margin="3" >
-                                                <Viewbox  x:Name="CanvasBox"  Stretch="Uniform" StretchDirection="DownOnly">
-                                                    <canvaspanel:CadCanvasPanel x:Name="MainCanvas"/>
-                                                </Viewbox>
-                                            </Border>
-                                        </Viewbox>
-                                    </Border>
+                                    <canvaspanel:CadCanvasPanel x:Name="MainCanvas" AllowDrop="True" Drop="MainCanvas_Drop"/>
                                 </TabItem>
                                 <TabItem Header="ViewPort3D" Visibility="Collapsed">
                                 </TabItem>

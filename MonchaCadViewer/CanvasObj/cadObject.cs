@@ -13,23 +13,23 @@ using System.Collections.Generic;
 using ToGeometryConverter.Object;
 using MonchaSDK.Setting;
 using System.Threading;
+using MonchaCadViewer.Interface;
+using MonchaCadViewer.CanvasObj.DimObj;
 
 namespace MonchaCadViewer.CanvasObj
 {
-    public abstract class CadObject : Shape, INotifyPropertyChanged
+    public abstract class CadObject : Shape, INotifyPropertyChanged, TransformObject
     {
         public Shape ObjectShape;
 
+        #region Property
         public event PropertyChangedEventHandler PropertyChanged;
 
         public void OnPropertyChanged([CallerMemberName] string prop = "")
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(prop));
         }
-
-        public bool NoEvent = false;
-        
-
+        #endregion
 
         private bool _otherprojection = false;
         public bool OtherProjection
@@ -52,11 +52,123 @@ namespace MonchaCadViewer.CanvasObj
 
         public LProjectionSetting ProjectionSetting = MonchaHub.ProjectionSetting;
 
-        public TransformGroup Transform = new TransformGroup();
+        #region TranformObject
+        public TransformGroup Transform { get; set; } = new TransformGroup();
+        public RotateTransform Rotate { get; set; } = new RotateTransform();
+        public TranslateTransform Translate { get; set; } = new TranslateTransform();
+        public ScaleTransform Scale { get; set; } = new ScaleTransform();
 
-        public RotateTransform Rotate = new RotateTransform();
-        public TranslateTransform Translate = new TranslateTransform();
-        public ScaleTransform Scale = new ScaleTransform();
+        public bool Mirror
+        {
+            get => _mirror;
+            set
+            {
+                _mirror = value;
+                this.ScaleX = this.ScaleX;
+                OnPropertyChanged("Mirror");
+            }
+        }
+        private bool _mirror = false;
+
+        protected Point MousePos = new Point();
+        protected Point BasePos = new Point();
+
+        public virtual double X
+        {
+            get => this.Translate.X;
+            set
+            {
+                if (this.IsFix == false)
+                {
+                    if (this.Translate.X != value)
+                    {
+                        this.Translate.X = value;
+                        Updated?.Invoke(this, "X");
+                        
+                        OnPropertyChanged("X");
+
+                    }
+                }
+            }
+        }
+        public virtual double Y
+        {
+            get => this.Translate.Y;
+            set
+            {
+                if (this.IsFix == false)
+                {
+                    if (this.Translate.Y != value)
+                    {
+                        this.Translate.Y = value;
+                        Updated?.Invoke(this, "Y");
+
+                        OnPropertyChanged("Y");
+
+                    }
+                }
+            }
+        }
+        public virtual double Angle
+        {
+            get => this.Rotate.Angle;
+            set
+            {
+                this.Rotate.Angle = value;
+                OnPropertyChanged("Angle");
+                if (this.Render == true)
+                {
+                    Updated?.Invoke(this, "Angle");
+                }
+            }
+        }
+        public virtual double ScaleX
+        {
+            get => this.Scale.ScaleX;
+            set
+            {
+                this.CenterX = this.DefiningGeometry.Bounds.X - this.Translate.X + this.DefiningGeometry.Bounds.Width / 2;
+                this.CenterY = this.DefiningGeometry.Bounds.Y - this.Translate.Y + this.DefiningGeometry.Bounds.Height / 2;
+                this.Scale.ScaleX = (this.Mirror == true ? -1 * Math.Abs(value) : Math.Abs(value));
+                if (this.Render == true)
+                {
+                    Updated?.Invoke(this, "ScaleX");
+                }
+                OnPropertyChanged("ScaleX");
+            }
+        }
+        public virtual double ScaleY
+        {
+            get => this.Scale.ScaleY;
+            set
+            {
+                this.Scale.ScaleY = value;
+                if (this.Render == true)
+                {
+                    Updated?.Invoke(this, "ScaleY");
+                }
+                OnPropertyChanged("ScaleY");
+            }
+        }
+        public virtual double CenterX
+        {
+            get => this.Scale.CenterX;
+            set
+            {
+                this.Scale.CenterX = value;
+                OnPropertyChanged("CenterX");
+            }
+        }
+        public virtual double CenterY
+        {
+            get => this.Scale.CenterY;
+            set
+            {
+                this.Scale.CenterY = value;
+                OnPropertyChanged("CenterY");
+            }
+        }
+        #endregion
 
         public bool IsSelected
         {
@@ -66,10 +178,7 @@ namespace MonchaCadViewer.CanvasObj
                 if (this._isselected != value)
                 {
                     this._isselected = value;
-                    if (this.NoEvent == false)
-                    {
-                        Selected?.Invoke(this, this._isselected);
-                    }
+                    Selected?.Invoke(this, this._isselected);
                     OnPropertyChanged("IsSelected");
                 }
             }
@@ -109,128 +218,6 @@ namespace MonchaCadViewer.CanvasObj
                 return new Rect();
             }
         }
-
-        public bool Mirror
-        {
-            get => this.ScaleX < 0 ? true : false;
-            set
-            {
-
-                this.ScaleX = value == true ? -Math.Abs(this.ScaleX) : Math.Abs(this.ScaleX);
-                OnPropertyChanged("Mirror");
-                this.CenterX = this.DefiningGeometry.Bounds.X - this.Translate.X + this.DefiningGeometry.Bounds.Width / 2;
-                this.CenterY = this.DefiningGeometry.Bounds.Y - this.Translate.Y + this.DefiningGeometry.Bounds.Height / 2;
-            }
-        }
-
-        protected Point MousePos = new Point();
-        protected Point BasePos = new Point();
-
-        public virtual double X
-        {
-            get => this.Translate.X;
-            set
-            {
-                if (this.IsFix == false)
-                {
-                    if (this.Translate.X != value)
-                    {
-                        this.Translate.X = value;
-                        if (this.Render == true)
-                        {
-                            Updated?.Invoke(this, "X");
-                        }
-                        OnPropertyChanged("X");
-
-                    }
-                }
-            }
-        }
-
-        public virtual double Y
-        {
-            get => this.Translate.Y;
-            set
-            {
-                if (this.IsFix == false)
-                {
-                    if (this.Translate.Y != value)
-                    {
-                        this.Translate.Y = value;
-                        if (this.Render == true)
-                        {
-                            Updated?.Invoke(this, "Y");
-                            
-                        }
-                        OnPropertyChanged("Y");
-
-                    }
-                }
-            }
-        }
-
-        public double Angle
-        {
-            get => this.Rotate.Angle;
-            set
-            {
-                this.Rotate.Angle = value;
-                OnPropertyChanged("Angle");
-                if (this.Render == true)
-                {
-                    Updated?.Invoke(this, "Angle");
-                }
-            }
-        }
-
-        public double ScaleX
-        {
-            get => this.Scale.ScaleX;
-            set
-            {
-                this.Scale.ScaleX = (this.Mirror == true ? -1 * value : Math.Abs(value));
-                if (this.Render == true)
-                {
-                    Updated?.Invoke(this, "ScaleX");
-                }
-                OnPropertyChanged("ScaleX");
-            }
-        }
-
-        public double ScaleY
-        {
-            get => this.Scale.ScaleY;
-            set
-            {
-                this.Scale.ScaleY = value;
-                if (this.Render == true)
-                {
-                    Updated?.Invoke(this, "ScaleY");
-                }
-                OnPropertyChanged("ScaleY");
-            }
-        }
-
-        public double CenterX
-        {
-            get => this.Scale.CenterX;
-            set
-            {
-                this.Scale.CenterX = value;
-                OnPropertyChanged("CenterX");
-            }
-        }
-
-        public double CenterY
-        {
-            get => this.Scale.CenterY;
-            set
-            {
-                this.Scale.CenterY = value;
-                OnPropertyChanged("CenterY");
-            }
-        }
-
         public Geometry Data
         {
             get => this.DefiningGeometry;
@@ -301,9 +288,8 @@ namespace MonchaCadViewer.CanvasObj
 
         public bool MouseForce { get; set; } = false;
 
-        public AdornerLayer adornerLayer { get; set; }
+        public virtual Adorner ObjAdorner { get; set; }
 
-        public Adorner ObjAdorner { get; set; }
         #endregion
 
         public CadObject(bool mouseevent, bool move)
@@ -316,12 +302,18 @@ namespace MonchaCadViewer.CanvasObj
                 this.MouseEnter += CadObject_MouseEnter;
                 this.MouseLeftButtonDown += CadObject_MouseLeftButtonDown;
                 this.PropertyChanged += CadObject_PropertyChanged;
+                this.ProjectionSetting.PropertyChanged += CadObject_PropertyChanged;
 
                 if (this.ContextMenu == null) this.ContextMenu = new System.Windows.Controls.ContextMenu();
                 this.ContextMenu.ContextMenuClosing += ContextMenu_Closing;
                 ContextMenuLib.CadObjMenu(this.ContextMenu);
             }
             this.MouseForce = move;
+            this.Stroke = new SolidColorBrush(
+                    Color.FromArgb(255,
+                    (ProjectionSetting.RedOn == true ? ProjectionSetting.Red : (byte)0),
+                    (ProjectionSetting.GreenOn == true ? ProjectionSetting.Green : (byte)0),
+                    (ProjectionSetting.BlueOn == true ? ProjectionSetting.Blue : (byte)0)));
         }
 
         public void Update()
@@ -335,6 +327,7 @@ namespace MonchaCadViewer.CanvasObj
         private void CadObject_MouseEnter(object sender, MouseEventArgs e)
         {
             OnObject?.Invoke(this, this.IsMouseOver);
+            OnPropertyChanged();
         }
 
 
@@ -349,21 +342,26 @@ namespace MonchaCadViewer.CanvasObj
             }
             else
             {
-                this.Transform = new TransformGroup()
-                {
-                    Children = new TransformCollection()
+               
+            }
+
+            if (this.ScaleX < 0) this.Mirror = true;
+        }
+
+        public void ResetTransform()
+        {
+            this.Transform = new TransformGroup()
+            {
+                Children = new TransformCollection()
                     {
                         new ScaleTransform(),
                         new RotateTransform(),
                         new TranslateTransform()
                     }
-                };
-                this.Scale = (ScaleTransform)this.Transform.Children[0];
-                this.Rotate = (RotateTransform)this.Transform.Children[1];
-                this.Translate = (TranslateTransform)this.Transform.Children[2];
-            }
-
-            if (this.ScaleX < 0) this.Mirror = true;
+            };
+            this.Scale = (ScaleTransform)this.Transform.Children[0];
+            this.Rotate = (RotateTransform)this.Transform.Children[1];
+            this.Translate = (TranslateTransform)this.Transform.Children[2];
         }
 
         private void CadObject_PropertyChanged(object sender, PropertyChangedEventArgs e)
@@ -391,9 +389,12 @@ namespace MonchaCadViewer.CanvasObj
             else
             {
                 if (this.Fill != Brushes.Transparent && this.Fill != null) this.Fill = Brushes.Gray;
-                if (this.Stroke != null) this.Stroke = Brushes.Blue;
+                if (this.Stroke != null) this.Stroke = new SolidColorBrush(
+                    Color.FromArgb(255,
+                    (ProjectionSetting.RedOn == true ? ProjectionSetting.Red : (byte)0),
+                    (ProjectionSetting.GreenOn == true ? ProjectionSetting.Green : (byte)0),
+                    (ProjectionSetting.BlueOn == true ? ProjectionSetting.Blue : (byte)0)));
             }
-
         }
 
         private void ContextMenu_Closing(object sender, RoutedEventArgs e)
@@ -412,6 +413,7 @@ namespace MonchaCadViewer.CanvasObj
         {
             this.WasMove = false;
             OnObject?.Invoke(this, this.IsMouseOver);
+            OnPropertyChanged();
         }
 
         private void CadObject_MouseLeftButtonUp(object sender, System.Windows.Input.MouseButtonEventArgs e)
@@ -429,17 +431,9 @@ namespace MonchaCadViewer.CanvasObj
             }
         }
 
-        public bool Remove()
+        public void Remove()
         {
-            if (this.Parent is CadCanvas canvas)
-            {
-                canvas.Children.Remove(this);
-                if (Removed != null)
-                    Removed(this, this);
-                return true;
-            }
-
-            return false;
+            Removed?.Invoke(this, this);
         }
 
         private void CadObject_MouseMove(object sender, MouseEventArgs e)
@@ -465,8 +459,8 @@ namespace MonchaCadViewer.CanvasObj
                 {
                     this.Cursor = Cursors.Hand;
                 }
-
             }
+            OnPropertyChanged();
         }
     }
 }

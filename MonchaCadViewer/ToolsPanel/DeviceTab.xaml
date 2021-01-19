@@ -48,7 +48,7 @@
             <ColumnDefinition Width="0*"/>
         </Grid.ColumnDefinitions>
         <Slider x:Name="AngleWaitSlider" Margin="0,0,0,59" Value="1" Minimum="1"  SmallChange="1" Grid.Column="1" Grid.ColumnSpan="4" Maximum="30" Height="30" VerticalAlignment="Bottom" Grid.Row="2"/>
-        <ComboBox x:Name="DeviceCombo" Margin="0,25,0,0" VerticalAlignment="Top" IsEnabled="{c:Binding !IsChecked, ElementName=QRBtn}"  DataContextChanged="DeviceCombo_DataContextChanged" Height="26" SelectionChanged="DeviceCombo_SelectionChanged" RenderTransformOrigin="0.5,0.5" Grid.ColumnSpan="3" Grid.Column="1" />
+        <ComboBox x:Name="DeviceCombo" Margin="4,25,104.667,0" VerticalAlignment="Top" IsEnabled="{c:Binding !IsChecked, ElementName=QRBtn}"  DataContextChanged="DeviceCombo_DataContextChanged" Height="26" SelectionChanged="DeviceCombo_SelectionChanged" RenderTransformOrigin="0.5,0.5" Grid.ColumnSpan="4" Grid.Column="1" />
         <Controls:ToggleSwitch x:Name="InvertXtoggle" Content="{DynamicResource dvc_InvX}" HorizontalAlignment="Left" Margin="4,149,0,0" VerticalAlignment="Top" HorizontalContentAlignment="Right" FlowDirection="RightToLeft" Controls:HeaderedControlHelper.HeaderFontSize="12" FontSize="12" Height="20" Grid.Column="1" Grid.Row="2" Width="85"/>
         <Controls:ToggleSwitch x:Name="InvertYtoggle" Content="{DynamicResource dvc_InvY}" HorizontalAlignment="Stretch" Margin="26,149,6,0" VerticalAlignment="Top" HorizontalContentAlignment="Right" FlowDirection="RightToLeft" FontSize="12" Height="20" Grid.ColumnSpan="3" Grid.Column="2" Grid.Row="2"/>
         <Label Content="{DynamicResource dvc_StepPoint}" Padding="2,3,0,0" Margin="4,0,0,138" HorizontalAlignment="Left" Width="57" Height="26" VerticalAlignment="Bottom" Grid.Column="1" Grid.Row="2"/>
@@ -109,7 +109,7 @@
         <Slider x:Name="ColorShiftSlider" Margin="0,0,0,89" Value="1" Minimum="1" SmallChange="1" Grid.Column="1" Grid.ColumnSpan="4" Maximum="30" Height="30" VerticalAlignment="Bottom" Grid.Row="2"/>
         <Label x:Name="StartWaitLabel_Copy5" Margin="0,0,0,112" Content="{DynamicResource dvc_FadePoint}" FontSize="8" Grid.Column="1" HorizontalContentAlignment="Center" Grid.ColumnSpan="4" Height="21" VerticalAlignment="Bottom" Grid.Row="2"/>
         <Label x:Name="StartWaitLabel_Copy6" Content="{Binding Value, ElementName=ColorShiftSlider}" Margin="0,0,0,95" Height="26" VerticalAlignment="Bottom" HorizontalContentAlignment="Center" Grid.Row="2"/>
-        <Label x:Name="label_Copy7" Content="{DynamicResource dvc_Device}" HorizontalAlignment="Left" VerticalAlignment="Top" Width="74" Height="26" Grid.Column="1"/>
+        <Label x:Name="label_Copy7" Content="{DynamicResource dvc_Device}" HorizontalAlignment="Left" VerticalAlignment="Top" Width="74" Height="26" Grid.Column="1" Margin="4,0,0,0"/>
         <Controls:ToggleSwitch x:Name="CommonSettingToggle"  Content="" HorizontalAlignment="Right" Margin="0,27,8,0" VerticalAlignment="Top" IsOn="False" RenderTransformOrigin="0.5,0.5" HorizontalContentAlignment="Center" Height="25" Grid.Column="4" Width="46">
             <Controls:ToggleSwitch.RenderTransform>
                 <TransformGroup>

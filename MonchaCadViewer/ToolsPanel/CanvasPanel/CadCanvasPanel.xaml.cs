@@ -16,6 +16,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using AppSt = MonchaCadViewer.Properties.Settings;
 
 namespace MonchaCadViewer.ToolsPanel.CanvasPanel
 {
@@ -25,10 +26,6 @@ namespace MonchaCadViewer.ToolsPanel.CanvasPanel
     public partial class CadCanvasPanel : UserControl
     {
         private Visibility _showadorner = Visibility.Hidden;
-
-
-        private void showadorner() { 
-        }
 
         public event EventHandler<String> Logging;
         public event EventHandler<CadObject> SelectedObject;
@@ -82,9 +79,9 @@ namespace MonchaCadViewer.ToolsPanel.CanvasPanel
 
         public void DrawRectangle(LPoint3D point1, LPoint3D point2)
         {
-            CadDot cadDot1 = new CadDot(point1, MonchaHub.GetThinkess() * 3, true, true, true);
+            CadDot cadDot1 = new CadDot(point1, MonchaHub.GetThinkess * 3, true, true, true);
             cadDot1.Render = false;
-            CadDot cadDot2 = new CadDot(point2, MonchaHub.GetThinkess() * 3, true, true, true);
+            CadDot cadDot2 = new CadDot(point2, MonchaHub.GetThinkess * 3, true, true, true);
             cadDot2.Render = false;
             this.Canvas.Add(cadDot1);
             this.Canvas.Add(cadDot2);
@@ -169,7 +166,9 @@ namespace MonchaCadViewer.ToolsPanel.CanvasPanel
                 this.Canvas.Clear();
 
                 if (mesh == null)
-                    mesh = _device.BaseMesh;
+                {
+                    mesh = _device.CalculateMesh;
+                }
 
                 //
                 // Поинты
@@ -178,11 +177,11 @@ namespace MonchaCadViewer.ToolsPanel.CanvasPanel
                 for (int i = 0; i < mesh.GetLength(0); i++)
                     for (int j = 0; j < mesh.GetLength(1); j++)
                     {
-                        mesh[i, j].M = MonchaHub.Size;
+                        mesh[i, j].M = this.Canvas.Size;
 
                         CadDot dot = new CadDot(
                              mesh[i, j],
-                            this.ActualWidth * 0.02,
+                            MonchaHub.GetThinkess * AppSt.Default.anchor_size,
                             //calibration flag
                             true, true, false);
 
@@ -211,7 +210,10 @@ namespace MonchaCadViewer.ToolsPanel.CanvasPanel
             {
                 if (uIElement is CadObject cadObject)
                 {
-                    cadObject.ObjAdorner.IsEnabled = true;
+                    if (cadObject.ObjAdorner != null)
+                    {
+                        cadObject.ObjAdorner.IsEnabled = true;
+                    }
                 }
             }
         }

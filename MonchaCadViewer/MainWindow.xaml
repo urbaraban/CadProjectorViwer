@@ -56,6 +56,14 @@
                         <Menu>
                             <Image Width="25" Height="25" Margin="2" Source="logo.png"/>
                             <MenuItem Header="▼">
+                                <MenuItem Header="File">
+                                    <MenuItem Header="Browse Moncha" Click="BrowseMonchaBtn_Click"/>
+                                    <Separator/>
+                                    <MenuItem Header="Save Moncha" Click="MenuSaveBtn_Click"/>
+                                    <MenuItem Header="Save Moncha as..." Click="SaveAsItem_Click"/>
+                                    <Separator/>
+                                    <MenuItem Header="Close" Click="CloseBtn_Click"/>
+                                </MenuItem>
                                 <MenuItem Header="Language">
                                 </MenuItem>
                             </MenuItem>
@@ -66,9 +74,12 @@
 
                         <StackPanel Margin="10,0,0,0" Orientation="Horizontal" HorizontalAlignment="Right" DockPanel.Dock="Right" UseLayoutRounding="True">
 
-                            <Button x:Name="MenuSaveBtn" FontFamily="Segoe MDL2 Assets" Content="&#xE792;" Width="25" Height="25" Margin="2" Padding="0,-1,0,0" FontSize="18" BorderBrush="{x:Null}" Background="{x:Null}" Click="MenuSaveBtn_Click">
-
-                            </Button>
+                            <Button x:Name="MenuSaveBtn" FontFamily="Segoe MDL2 Assets" Content="&#xE792;" Width="25" Height="25" Margin="2" Padding="0,-1,0,0" FontSize="18" BorderBrush="{x:Null}" Background="{x:Null}" Click="MenuSaveBtn_Click"/>
+                            <Label x:Name="MonchaPathBox"  Margin="3"   Content="{Binding cl_moncha_path}" VerticalAlignment="Top" Grid.ColumnSpan="3" HorizontalContentAlignment="Right" RenderTransformOrigin="0.7,-1.217" FontSize="10">
+                                <Label.DataContext>
+                                    <Properties:Settings/>
+                                </Label.DataContext>
+                            </Label>
 
                         </StackPanel>
                     </StackPanel>
@@ -116,6 +127,7 @@
                                         </Grid.ColumnDefinitions>
                                         <ToolBar Margin="0,0,0,0" Grid.ColumnSpan="2">
                                             <Button x:Name="ClearBtn" Content="Clear"  Click="ClearBtn_Click"/>
+                                            <Button x:Name="RectBtn" Content="Rect"/>
                                         </ToolBar>
                                     </Grid>
                                 </TabItem>
@@ -290,7 +302,7 @@
 
                             </Grid>
                         </TabItem>
-                        <TabItem x:Name="Calibration" Header="Calibration" Controls:HeaderedControlHelper.HeaderFontSize="18">
+                        <TabItem x:Name="Calibration" Header="Configuration" Controls:HeaderedControlHelper.HeaderFontSize="18">
                             <Grid Background="#FFE5E5E5">
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="33*"/>
@@ -299,44 +311,36 @@
                                     <ColumnDefinition Width="49*"/>
                                     <ColumnDefinition Width="73*"/>
                                 </Grid.ColumnDefinitions>
-                                <Label x:Name="MonchaPathBox" Height="23" Margin="16,34,0,0"  Content="{Binding cl_moncha_path}" VerticalAlignment="Top" Grid.ColumnSpan="3" HorizontalContentAlignment="Right">
-                                    <Label.DataContext>
-                                        <Properties:Settings/>
-                                    </Label.DataContext>
-                                </Label>
-                                <Button x:Name="BrowseMonchaBtn" Content="Browse..." Margin="17,33,10,0" VerticalAlignment="Top" Click="BrowseMonchaBtn_Click" Height="23" Grid.Column="3" Grid.ColumnSpan="2"/>
-                                <Label x:Name="label" Content="Путь до файла Moncha (*.mws)" Margin="10,7,10,0" VerticalAlignment="Top" Grid.ColumnSpan="5" Height="26" HorizontalContentAlignment="Left"/>
+
+                                <Button x:Name="BrowseMonchaBtn" Content="Browse..." Margin="17,8,10,0" VerticalAlignment="Top" Click="BrowseMonchaBtn_Click" Height="23" Grid.Column="3" Grid.ColumnSpan="2"/>
+                                <Button Content="Edit device" Grid.ColumnSpan="5" Margin="10,38,45,479"/>
+                                <Button FontFamily="Segoe MDL2 Assets" Content="&#xEDAB;" Margin="35,38,10,479" Grid.Column="4" Click="RefreshLaser_Click_1"/>
+                                <Label x:Name="label" Content="Open Moncha" Margin="10,7,0,0" VerticalAlignment="Top" Grid.ColumnSpan="3" Height="26" HorizontalContentAlignment="Left"/>
                                 <Controls:NumericUpDown x:Name="WidthUpDn" Margin="0,70,10,0"  Background="White" Height="26" VerticalAlignment="Top" Grid.Column="2" Grid.ColumnSpan="3" >
                                     <Controls:NumericUpDown.DataContext>
                                         <Properties:Settings/>
                                     </Controls:NumericUpDown.DataContext>
                                 </Controls:NumericUpDown>
-                                <Label x:Name="label_Copy" Content="Ширина" HorizontalAlignment="Left" Margin="6,70,0,0" VerticalAlignment="Top" Width="74" Height="26" Grid.ColumnSpan="2"/>
+                                <Label x:Name="label_Copy" Content="{DynamicResource obj_Width}" HorizontalAlignment="Left" Margin="6,70,0,0" VerticalAlignment="Top" Width="74" Height="26" Grid.ColumnSpan="2"/>
                                 <Controls:NumericUpDown x:Name="HeightUpD" Margin="0,106,10,0"  Background="White" Height="26" VerticalAlignment="Top" Grid.Column="2" Grid.ColumnSpan="3" >
                                     <Controls:NumericUpDown.DataContext>
                                         <Properties:Settings/>
                                     </Controls:NumericUpDown.DataContext>
                                 </Controls:NumericUpDown>
-                                <Label x:Name="label_Copy1" Content="Высота" HorizontalAlignment="Left" Margin="6,106,0,0" VerticalAlignment="Top" Width="74" Height="26" Grid.ColumnSpan="2"/>
-                                <Controls:NumericUpDown x:Name="DeepUpDn" Margin="0,142,10,0" Background="White" Height="26" VerticalAlignment="Top" Grid.Column="2" Grid.ColumnSpan="3">
+                                <Label x:Name="label_Copy1" Content="{DynamicResource obj_Height}" HorizontalAlignment="Left" Margin="6,106,0,0" VerticalAlignment="Top" Width="74" Height="26" Grid.ColumnSpan="2"/>
+                                <Controls:NumericUpDown x:Name="MashMultiplierUpDn" Margin="0,143,10,0"  Background="White" Height="26" Maximum="1" Minimum="0.001" VerticalAlignment="Top" Speedup="False" Controls:ScrollViewerHelper.IsHorizontalScrollWheelEnabled="True" ValueIncremented="MashMultiplierUpDn_ValueIncremented" ValueDecremented="MashMultiplierUpDn_ValueDecremented" Grid.Column="2" Grid.ColumnSpan="3">
                                     <Controls:NumericUpDown.DataContext>
                                         <Properties:Settings/>
                                     </Controls:NumericUpDown.DataContext>
                                 </Controls:NumericUpDown>
-                                <Label x:Name="label_Copy2" Content="Глубина" HorizontalAlignment="Left" Margin="6,142,0,0" VerticalAlignment="Top" Width="74" Height="26" Grid.ColumnSpan="2"/>
-                                <Controls:NumericUpDown x:Name="MashMultiplierUpDn" Margin="0,176,10,0"  Background="White" Height="26" Maximum="1" Minimum="0.001" VerticalAlignment="Top" Speedup="False" Controls:ScrollViewerHelper.IsHorizontalScrollWheelEnabled="True" ValueIncremented="MashMultiplierUpDn_ValueIncremented" ValueDecremented="MashMultiplierUpDn_ValueDecremented" Grid.Column="2" Grid.ColumnSpan="3">
+                                <Label x:Name="label_Copy3" Content="Множитель" HorizontalAlignment="Left" Margin="6,143,0,0" VerticalAlignment="Top" Height="26" Width="74" Grid.ColumnSpan="2"/>
+                                <Controls:NumericUpDown x:Name="PointStepUpDn" Margin="0,185,10,0"  Background="White" Height="26" VerticalAlignment="Top" NumericInputMode="Decimal" Maximum="10" Minimum="0" Interval="0.1"  Value="1" Grid.Column="2" Grid.ColumnSpan="3" Focusable="False" IsTabStop="False" AllowDrop="False" ValueDecremented="PointStepUpDn_ValueDecremented" ValueIncremented="PointStepUpDn_ValueIncremented">
                                     <Controls:NumericUpDown.DataContext>
                                         <Properties:Settings/>
                                     </Controls:NumericUpDown.DataContext>
                                 </Controls:NumericUpDown>
-                                <Label x:Name="label_Copy3" Content="Множитель" HorizontalAlignment="Left" Margin="6,176,0,0" VerticalAlignment="Top" Height="26" Width="74" Grid.ColumnSpan="2"/>
-                                <Controls:NumericUpDown x:Name="PointStepUpDn" Margin="0,218,10,0"  Background="White" Height="26" VerticalAlignment="Top" NumericInputMode="Decimal" Maximum="10" Minimum="0" Interval="0.1"  Value="1" Grid.Column="2" Grid.ColumnSpan="3" Focusable="False" IsTabStop="False" AllowDrop="False" ValueDecremented="PointStepUpDn_ValueDecremented" ValueIncremented="PointStepUpDn_ValueIncremented">
-                                    <Controls:NumericUpDown.DataContext>
-                                        <Properties:Settings/>
-                                    </Controls:NumericUpDown.DataContext>
-                                </Controls:NumericUpDown>
-                                <Label x:Name="label_Copy4" Content="Шаг" Margin="10,218,10,0" VerticalAlignment="Top" Height="26" Grid.ColumnSpan="2"/>
-                                <ComboBox x:Name="CalibrationFormCombo" Grid.ColumnSpan="3" Grid.Column="2" HorizontalAlignment="Left" Margin="0,260,0,0" VerticalAlignment="Top" Width="174" SelectionChanged="CalibrationFormCombo_SelectionChanged">
+                                <Label x:Name="label_Copy4" Content="Шаг" Margin="10,185,10,0" VerticalAlignment="Top" Height="26" Grid.ColumnSpan="2"/>
+                                <ComboBox x:Name="CalibrationFormCombo" Grid.ColumnSpan="3" Grid.Column="2" HorizontalAlignment="Left" Margin="0,227,0,0" VerticalAlignment="Top" Width="174" SelectionChanged="CalibrationFormCombo_SelectionChanged">
                                     <ComboBox.Resources>
                                         <ResourceDictionary>
 
@@ -348,9 +352,15 @@
                                     <ComboBoxItem Content="{DynamicResource clb_HLine}"/>
                                     <ComboBoxItem Content="{DynamicResource clb_WLine}"/>
                                 </ComboBox>
-                                <Label x:Name="CalibrationFormLabel" Content="Тип" Margin="10,260,10,0" VerticalAlignment="Top" Height="26" Grid.ColumnSpan="2"/>
-                                <Button x:Name="Save" Grid.ColumnSpan="5" Content="Save" HorizontalAlignment="Left" Margin="10,332,0,0" VerticalAlignment="Top" Width="254" Height="34" Click="Save_Click"/>
-                                <CheckBox Content="{DynamicResource clb_SetEdgePoint}" Margin="10,296,10,249" Grid.ColumnSpan="5" Checked="CheckBox_Checked" Unchecked="CheckBox_Checked"/>
+                                <Label x:Name="CalibrationFormLabel" Content="Тип" Margin="10,227,10,0" VerticalAlignment="Top" Height="26" Grid.ColumnSpan="2"/>
+                                <Button x:Name="Save" Grid.ColumnSpan="5" Content="Save" HorizontalAlignment="Left" Margin="10,378,0,0" VerticalAlignment="Top" Width="254" Height="34" Click="Save_Click"/>
+                                <CheckBox Content="{DynamicResource clb_SetEdgePoint}" Margin="10,342,10,203" Grid.ColumnSpan="5" Checked="CheckBox_Checked" Unchecked="CheckBox_Checked"/>
+                                <Controls:NumericUpDown x:Name="PointStepUpDn_Copy" Margin="0,258,10,0"  Background="White" Height="26" VerticalAlignment="Top" NumericInputMode="Decimal" Maximum="10" Minimum="1" Interval="1"  Value="{Binding anchor_size, Mode=TwoWay, UpdateSourceTrigger=Default}" Grid.Column="3" Grid.ColumnSpan="2" Focusable="False" IsTabStop="False" AllowDrop="False">
+                                    <Controls:NumericUpDown.DataContext>
+                                        <Properties:Settings/>
+                                    </Controls:NumericUpDown.DataContext>
+                                </Controls:NumericUpDown>
+                                <Label x:Name="label_Copy5" Content="Size_anchor" Margin="10,258,10,0" VerticalAlignment="Top" Height="26" Grid.ColumnSpan="2"/>
                             </Grid>
                         </TabItem>
                         <TabItem Header="WorkFolder">
@@ -382,11 +392,17 @@
                     </TabControl>
                 </DockPanel>
                 <DockPanel Grid.ColumnSpan="3" Grid.Row="3">
-                    <StatusBar Background="{DynamicResource {x:Static SystemColors.MenuBarBrushKey}}">
-                        <DockPanel>
-                            <DockPanel DockPanel.Dock="Left"/>
-                        </DockPanel>
-                    </StatusBar>
+                    <Grid Background="{DynamicResource {x:Static SystemColors.MenuBarBrushKey}}">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="216*"/>
+                            <ColumnDefinition Width="488*"/>
+                            <ColumnDefinition Width="287*"/>
+                        </Grid.ColumnDefinitions>
+                        <StatusBar/>
+                        <ProgressBar x:Name="pBar" Margin="3" Grid.Column="2"/>
+                        <Label x:Name="pBarLabel" Visibility="Hidden" Content="Label" Grid.Column="2" HorizontalContentAlignment="Center" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                    </Grid>
+
                 </DockPanel>
 
             </Grid>

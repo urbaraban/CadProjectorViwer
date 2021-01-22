@@ -86,10 +86,8 @@ namespace MonchaCadViewer
             }
         }
 
-        private void MonchaHub_Loging(object sender, string e)
-        {
-            LogBox.Invoke(()=> { LogBox.Items.Add(e); });
-        }
+        private void MonchaHub_Loging(object sender, string e) => LogBox.Invoke(() => { LogBox.Items.Add(e); });
+
 
         private void MultPanel_NeedUpdate(object sender, EventArgs e)
         {
@@ -221,6 +219,7 @@ namespace MonchaCadViewer
             {
                 BrowseMoncha(); //select if not
             }
+            MonchaHub.Disconnect();
 
             //send path to hub class
             MonchaHub.Load(AppSt.Default.cl_moncha_path);
@@ -230,9 +229,6 @@ namespace MonchaCadViewer
 
             HeightUpD.DataContext = MonchaHub.Size;
             HeightUpD.SetBinding(NumericUpDown.ValueProperty, "Y");
-
-            DeepUpDn.DataContext = MonchaHub.Size;
-            DeepUpDn.SetBinding(NumericUpDown.ValueProperty, "Z");
 
             MashMultiplierUpDn.Value = MonchaHub.Size.M.X;
 
@@ -350,46 +346,8 @@ namespace MonchaCadViewer
 
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
-            e.Cancel = SaveMoncha();
+            e.Cancel = SaveConfiguration(false);
         }
-
-        private bool SaveMoncha()
-        {
-            MessageBoxResult messageBoxResult = MessageBox.Show("Сохранить настройки?", "Внимание", MessageBoxButton.YesNoCancel, MessageBoxImage.Warning);
-            switch (messageBoxResult)
-            {
-                case MessageBoxResult.Yes:
-                    if (File.Exists(AppSt.Default.cl_moncha_path) == false)
-                    {
-                        SaveFileDialog saveFileDialog = new SaveFileDialog();
-                        saveFileDialog.Filter = "Moncha File (*.mws)|*.mws";
-                        if (saveFileDialog.ShowDialog() == true) 
-                        {
-                           AppSt.Default.cl_moncha_path = saveFileDialog.FileName;
-                        }
-                    }
-                    MonchaHub.Save(AppSt.Default.cl_moncha_path);
-
-                    if (File.Exists(AppSt.Default.cl_moncha_path) == false)
-                    {
-                        SaveMoncha();
-                    }
-                    else
-                    {
-                        AppSt.Default.Save();
-                    }
-                    return false;
-                    break;
-                case MessageBoxResult.No:
-                    return false;
-                    break;
-                case MessageBoxResult.Cancel:
-                    return true;
-                    break;
-            }
-            return false;
-        }
-
 
         private void Window_Closed(object sender, System.EventArgs e)
         {
@@ -812,12 +770,7 @@ namespace MonchaCadViewer
             this.Close();
         }
 
-        private void MenuSaveBtn_Click(object sender, RoutedEventArgs e)
-        {
-            MonchaHub.Save(AppSt.Default.cl_moncha_path);
-            AppSt.Default.Save();
-           
-        }
+        private void MenuSaveBtn_Click(object sender, RoutedEventArgs e) => SaveConfiguration(false);  
 
         private void TopBar_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
@@ -862,10 +815,7 @@ namespace MonchaCadViewer
             }
         }
 
-        private void RemoveLaser_Click(object sender, RoutedEventArgs e)
-        {
-            MonchaHub.RemoveDevice(DevicePanel.Device);
-        }
+        private void RemoveLaser_Click(object sender, RoutedEventArgs e) => MonchaHub.RemoveDevice(DevicePanel.Device);
 
         private void SaveObjStgBtn_Click(object sender, RoutedEventArgs e)
         {
@@ -901,10 +851,7 @@ namespace MonchaCadViewer
             MonchaHub.RefreshFrame();
         }
 
-        private void WorkFolderRefreshBtn_Click(object sender, RoutedEventArgs e)
-        {
-            RefreshWorkFolderList();
-        }
+        private void WorkFolderRefreshBtn_Click(object sender, RoutedEventArgs e) => RefreshWorkFolderList();
 
         private void RefreshWorkFolderList()
         {
@@ -914,7 +861,7 @@ namespace MonchaCadViewer
                 foreach (string path in Directory.GetFiles(AppSt.Default.save_work_folder))
                 {
                     string format = path.Split('.').Last();
-                    if (format == "svg" || format == "dxf" || format == "frw") {
+                    if (format == "svg" || format == "dxf" || format == "frw" || format == "dc") {
                         paths.Add(path.Split('\\').Last());
                     }
                 }
@@ -965,11 +912,8 @@ namespace MonchaCadViewer
             CollectionViewSource.GetDefaultView(WorkFolderListBox.ItemsSource).Refresh();
         }
 
-        private void WorkFolderFilter_GotFocus(object sender, RoutedEventArgs e)
-        {
-            WorkFolderFilter.SelectAll();
-        }
-
+        private void WorkFolderFilter_GotFocus(object sender, RoutedEventArgs e) => WorkFolderFilter.SelectAll();
+  
         private void MainCanvas_Drop(object sender, DragEventArgs e)
         {
             if (e.Data.GetDataPresent(DataFormats.FileDrop))
@@ -980,6 +924,85 @@ namespace MonchaCadViewer
                         OpenFile(fileLoc);
             }
             OpenBtn.Background = Brushes.Gainsboro;
+        }
+
+        private void SaveAsItem_Click(object sender, RoutedEventArgs e) => SaveConfiguration(true);
+
+        private bool SaveConfiguration(bool saveas)
+        {
+            MessageBoxResult messageBoxResult = MessageBox.Show("Сохранить настройки?", "Внимание", MessageBoxButton.YesNoCancel, MessageBoxImage.Warning);
+            switch (messageBoxResult)
+            {
+                case MessageBoxResult.Yes:
+                    if (File.Exists(AppSt.Default.cl_moncha_path) == false || saveas)
+                    {
+                        SaveFileDialog saveFileDialog = new SaveFileDialog();
+                        saveFileDialog.Filter = "Moncha File (*.mws)|*.mws";
+                        if (saveFileDialog.ShowDialog() == true)
+                        {
+                            pBarStart("Save Moncha", 1, 2);
+                            MonchaHub.Save(saveFileDialog.FileName);
+                            if (File.Exists(saveFileDialog.FileName) == false)
+                            {
+                                pBarUpdate("Not Save", 2);
+                                SaveConfiguration(true);
+                            }
+                            else
+                            {
+                                pBarUpdate("Saved", 2);
+                                AppSt.Default.cl_moncha_path = saveFileDialog.FileName;
+                            }                          
+                        }
+                    }
+                    else
+                    {
+                        MonchaHub.Save(AppSt.Default.cl_moncha_path);
+                    }
+                    MonchaPathBox.Content = AppSt.Default.cl_moncha_path;
+                    AppSt.Default.Save();
+                    pBarEnd();
+                    return false;
+                    break;
+                case MessageBoxResult.No:
+                    pBarEnd();
+                    return false;
+                    break;
+                case MessageBoxResult.Cancel:
+                    pBarEnd();
+                    return true;
+                    break;
+
+            }
+            pBarUpdate("Save Setting", 2);
+            
+            
+            pBarEnd();
+            return false;
+        }
+
+        private void pBarStart(string LabelText, int startValue, int endValue)
+        {
+            pBarLabel.Visibility = Visibility.Visible;
+            pBarLabel.Content = LabelText;
+            pBar.Value = startValue;
+            pBar.Maximum = endValue;
+        }
+        /// <summary>
+        /// Update value progressbar
+        /// </summary>
+        /// <param name="LabelText">Status text</param>
+        /// <param name="value">now value</param>
+        private void pBarUpdate(string LabelText, int value)
+        {
+            if (pBarLabel.Visibility == Visibility.Hidden) pBarLabel.Visibility = Visibility.Visible;
+            pBarLabel.Content = LabelText;
+            pBar.Value = value;
+        }
+
+        private void pBarEnd()
+        {
+            //pBarLabel.Visibility = Visibility.Hidden;
+            pBar.Value = 0;
         }
     }
 

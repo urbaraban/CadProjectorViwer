@@ -34,7 +34,10 @@ namespace MonchaCadViewer.CanvasObj
         private object MouseOnObject = null;
 
         private bool _wasmove = false;
-        private LPoint3D _size;
+
+
+        
+
         private List<CadDot> anchors = new List<CadDot>();
         private int _status = 0;
         private bool _maincanvas;
@@ -43,6 +46,16 @@ namespace MonchaCadViewer.CanvasObj
         private Point StartMousePoint;
 
         private Rectangle _selectedRectangle = new Rectangle();
+
+        public LPoint3D Size
+        {
+            get => this._size;
+            set
+            {
+                this._size = value;
+            }
+        }
+        private LPoint3D _size;
 
         public bool HorizontalMesh { get; set; } = false;
 
@@ -80,7 +93,7 @@ namespace MonchaCadViewer.CanvasObj
 
             this._selectedRectangle.Fill = Brushes.Transparent;
             this._selectedRectangle.Stroke = Brushes.DimGray;
-            this._selectedRectangle.StrokeThickness = MonchaHub.GetThinkess() / 5;
+            this._selectedRectangle.StrokeThickness = MonchaHub.GetThinkess / 5;
             this._selectedRectangle.Visibility = Visibility.Hidden;
             this.Children.Add(this._selectedRectangle);
 

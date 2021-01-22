@@ -20,7 +20,7 @@ namespace MonchaCadViewer.CanvasObj
 {
     public abstract class CadObject : Shape, INotifyPropertyChanged, TransformObject
     {
-        public Shape ObjectShape;
+        public Shape  ObjectShape { get; set; }
 
         #region Property
         public event PropertyChangedEventHandler PropertyChanged;
@@ -187,12 +187,12 @@ namespace MonchaCadViewer.CanvasObj
 
         //Event
         //public event EventHandler TranslateChanged;
-        public event EventHandler<bool> Fixed;
-        public event EventHandler<bool> Selected;
-        public event EventHandler<bool> OnObject;
-        public event EventHandler<string> Updated;
-        public event EventHandler<CadObject> Removed;
-        public event EventHandler<CadObject> Opening;
+        public virtual event EventHandler<bool> Fixed;
+        public virtual event EventHandler<bool> Selected;
+        public virtual event EventHandler<bool> OnObject;
+        public virtual event EventHandler<string> Updated;
+        public virtual event EventHandler<CadObject> Removed;
+        public virtual event EventHandler<CadObject> Opening;
 
         #region Variable
         public Rect Bounds
@@ -342,7 +342,7 @@ namespace MonchaCadViewer.CanvasObj
             }
             else
             {
-               
+                ResetTransform();
             }
 
             if (this.ScaleX < 0) this.Mirror = true;
@@ -378,8 +378,8 @@ namespace MonchaCadViewer.CanvasObj
             }
             else if (this._render == false)
             {
-                if (this.Fill != Brushes.Transparent && this.Fill != null) this.Fill = Brushes.LightGray;
-                if (this.Stroke != null) this.Stroke = Brushes.LightGray;
+                if (this.Fill != Brushes.Transparent && this.Fill != null) this.Fill = Brushes.DarkGray;
+                if (this.Stroke != null) this.Stroke = Brushes.DarkGray;
             }
             else if (this._isfix == true)
             {

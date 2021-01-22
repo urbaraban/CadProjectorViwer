@@ -36,9 +36,9 @@
             <Border.DataContext>
                 <Properties:Settings/>
             </Border.DataContext>
-            <Viewbox x:Name="CadViewBox" Margin="-1">
+            <Grid>
                 <canvaspanel:CadCanvasPanel x:Name="Canvas"/>
-            </Viewbox>
+            </Grid>
         </Border>
         <Controls:ToggleSwitch x:Name="MonchaToggle"  Content="Moncha" HorizontalAlignment="Left" Margin="15,17,0,0" VerticalAlignment="Top" Width="153" Height="32" Grid.Column="1" IsOn="{Binding main_formoncha, Mode=TwoWay}" Toggled="MonchaToggle_Toggled"/>
         <Controls:NumericUpDown x:Name="WidthUpDn"  Margin="15,80,67,0" Maximum="50" Minimum="2" Value="2" Background="White" Height="26" VerticalAlignment="Top"  Grid.Column="1" ValueChanged="WidthUpDn_ValueChanged"/>

@@ -12,31 +12,54 @@ namespace MonchaCadViewer.CanvasObj
 {
     public class CadDot : CadObject
     {
-        private bool Translated = false;
         private double size;
         private RectangleGeometry rectangle;
+
+        public override event EventHandler<string> Updated;
+
+        public override double X 
+        { 
+            get => this.Point.MX;
+            set
+            {
+                this.Translate.X = value;
+                this.Point.MX = value;
+                Updated?.Invoke(this, "X");
+                OnPropertyChanged("X");
+            }
+        }
+
+        public override double Y
+        {
+            get => this.Point.MY;
+            set
+            {
+                this.Translate.Y = value;
+                this.Point.MY = value;
+                Updated?.Invoke(this, "Y");
+                OnPropertyChanged("Y");
+            }
+        }
 
         public LPoint3D Point { get; set; }
 
 
         public CadDot(LPoint3D Point, double Size, bool OnBaseMesh, bool capturemouse, bool move) : base(capturemouse, move )
         {
-            this.rectangle = new RectangleGeometry(new Rect(new Size(Size, Size)));
-
             this.ObjectShape = new Path
             {
-                Data = this.rectangle
+                Data = new RectangleGeometry(new Rect(new Size(Size, Size)))
             };
 
             this.UpdateTransform(null);
             this.OnBaseMesh = OnBaseMesh;
 
             this.Point = Point;
+            this.Point.PropertyChanged += Point_PropertyChanged;
 
             this.Translate.X = Point.MX;
             this.Translate.Y = Point.MY;
 
-            this.Point.PropertyChanged += Point_PropertyChanged;
             this.Removed += CadDot_Removed;
 
             this.size = Size;
@@ -54,6 +77,15 @@ namespace MonchaCadViewer.CanvasObj
             this.PropertyChanged += CadDot_PropertyChanged;
             this.Fill = Brushes.Black;
 
+        }
+
+        private void Point_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            Dispatcher.Invoke(() => 
+            { 
+                this.Translate.X = this.Point.MX;
+                this.Translate.Y = this.Point.MY;
+            });
         }
 
         private void CadDot_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
@@ -86,17 +118,6 @@ namespace MonchaCadViewer.CanvasObj
             this.Point.Select = e;
         }
 
-        private void Point_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
-        {
-             if (e.PropertyName == "MX" || e.PropertyName == "MY" || e.PropertyName == "Point")
-            {
-                Dispatcher.Invoke(() => { 
-                this.Translate.X = this.Point.MX;
-                this.Translate.Y = this.Point.MY;
-                this.Update();
-                });
-            }
-        }
 
         private void CadDot_Removed(object sender, CadObject e)
         {

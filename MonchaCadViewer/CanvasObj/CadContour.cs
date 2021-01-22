@@ -33,7 +33,7 @@ namespace MonchaCadViewer.CanvasObj
             }
 
             this.Fill = Brushes.Transparent;
-            this.StrokeThickness = (MonchaHub.GetThinkess() < 0 ? 1 : MonchaHub.GetThinkess()) * 0.5;
+            this.StrokeThickness = (MonchaHub.GetThinkess < 0 ? 1 : MonchaHub.GetThinkess) * 0.5;
             this.Loaded += CadContour_Loaded;
         }
 

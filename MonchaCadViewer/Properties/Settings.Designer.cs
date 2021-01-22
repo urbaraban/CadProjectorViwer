@@ -250,5 +250,17 @@ namespace MonchaCadViewer.Properties {
                 this["stg_scale_invert"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("2")]
+        public int anchor_size {
+            get {
+                return ((int)(this["anchor_size"]));
+            }
+            set {
+                this["anchor_size"] = value;
+            }
+        }
     }
 }

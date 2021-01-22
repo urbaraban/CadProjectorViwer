@@ -23,14 +23,6 @@ namespace MonchaCadViewer
             this._mesh = Mesh;
             WidthLabel.Content = this._device.BSize.X;
             HeightLabel.Content = this._device.BSize.Y;
-
-            cadCanvas = new CadCanvas(MonchaHub.Size, true);
-            cadCanvas.Background = Brushes.White;
-            cadCanvas.Margin = new Thickness(20);
-            cadCanvas.Focusable = true;
-            cadCanvas.ContextMenu = new ContextMenu();
-            //cadCanvas.ErrorMessageEvent += CadCanvas_ErrorMessageEvent;
-            CadViewBox.Child = cadCanvas;
         }
 
 

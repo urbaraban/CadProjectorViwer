@@ -7,9 +7,9 @@
         xmlns:Controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
         xmlns:HelixToolkit="clr-namespace:HelixToolkit.Wpf;assembly=HelixToolkit.Wpf"
         xmlns:Properties="clr-namespace:MonchaCadViewer.Properties" xmlns:controlzex="urn:controlzex"
-        xmlns:contourscrollpanel="clr-namespace:MonchaCadViewer.ToolsPanel.ContourScrollPanel" xmlns:canvaspanel="clr-namespace:MonchaCadViewer.ToolsPanel.CanvasPanel" x:Name="MainWindow1" x:Class="MonchaCadViewer.MainWindow"
+        xmlns:contourscrollpanel="clr-namespace:MonchaCadViewer.ToolsPanel.ContourScrollPanel" xmlns:canvaspanel="clr-namespace:MonchaCadViewer.ToolsPanel.CanvasPanel" xmlns:devicepanel="clr-namespace:MonchaCadViewer.ToolsPanel.DevicePanel" x:Name="MainWindow1" x:Class="MonchaCadViewer.MainWindow"
         mc:Ignorable="d"
-        Title="CUT" Focusable="False" KeyboardNavigation.TabNavigation="None"  AllowDrop="True" Height="766.898" Width="999" Closing="Window_Closing" Closed="Window_Closed" controlzex:KeyboardNavigationEx.AlwaysShowFocusVisual="True" WindowStartupLocation="CenterScreen" Icon="logo.png" KeyUp="MainWindow1_KeyUp" WindowStyle="None" ResizeMode="CanResizeWithGrip" BorderBrush="#FFE01414" VerticalAlignment="Top">
+        Title="CUT" Focusable="True" KeyboardNavigation.TabNavigation="None"  AllowDrop="True" Height="766.898" Width="999" Closing="Window_Closing" Closed="Window_Closed" controlzex:KeyboardNavigationEx.AlwaysShowFocusVisual="True" WindowStartupLocation="CenterScreen" Icon="logo.png" KeyUp="MainWindow1_KeyUp" WindowStyle="None" ResizeMode="CanResizeWithGrip" BorderBrush="#FFE01414" VerticalAlignment="Top">
     <Window.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -127,7 +127,8 @@
                                         </Grid.ColumnDefinitions>
                                         <ToolBar Margin="0,0,0,0" Grid.ColumnSpan="2">
                                             <Button x:Name="ClearBtn" Content="Clear"  Click="ClearBtn_Click"/>
-                                            <Button x:Name="RectBtn" Content="Rect"/>
+                                            <Button x:Name="Line" Content="Line" Click="Line_Click"/>
+                                            <Button x:Name="RectBtn" Content="Rect" Click="RectBtn_Click"/>
                                         </ToolBar>
                                     </Grid>
                                 </TabItem>
@@ -153,20 +154,7 @@
                             <RowDefinition Height="60*"/>
                         </Grid.RowDefinitions>
                         <DockPanel Margin="0,0,0,5">
-
-                            <Border Grid.Row="2" Style="{StaticResource Border}" Margin="5,5,2,0">
-                                <TreeView x:Name="treeView" Grid.Row="1" KeyboardNavigation.DirectionalNavigation="None" KeyboardNavigation.TabNavigation="None" Margin="0,0,0,-1">
-                                    <StackPanel x:Name="TreeHead" Orientation="Horizontal" HorizontalAlignment="Left" Margin="-21,0,0,0">
-                                        <Button x:Name="RefreshLaser" FontFamily="Segoe MDL2 Assets" Content="&#xEDAB;" Height="26" Margin="0,0,5,0" VerticalAlignment="Top" HorizontalAlignment="Right" Width="25" Background="{x:Null}" BorderBrush="{x:Null}" Click="RefreshLaser_Click_1"/>
-                                        <Button x:Name="AddLaser" FontFamily="Segoe MDL2 Assets" Content="&#xE948;" Height="26" Margin="0,0,5,0" VerticalAlignment="Top" HorizontalAlignment="Right" Width="25" Background="{x:Null}" BorderBrush="{x:Null}" Click="AddLaser_Click" />
-                                        <Button x:Name="RemoveLaser" FontFamily="Segoe MDL2 Assets" Content="&#xE947;" Height="26" Margin="0,0,5,0" VerticalAlignment="Top" HorizontalAlignment="Right" Width="25" Background="{x:Null}" BorderBrush="{x:Null}" Click="RemoveLaser_Click"/>
-                                    </StackPanel>
-                                    <TreeViewItem x:Name="DeviceTree" Header="{DynamicResource m_Devices}" VerticalContentAlignment="Center">
-                                        <TreeViewItem x:Name="MeshTree" Header="{DynamicResource m_Mesh}"/>
-                                    </TreeViewItem>
-                                    <TreeViewItem x:Name="FrameTree" Header="{DynamicResource m_Frames}" DisplayMemberPath="Uid" AllowDrop="False" />
-                                </TreeView>
-                            </Border>
+                            <devicepanel:DeviceTreeTab x:Name="DeviceTree"/>
                         </DockPanel>
                         <DockPanel Margin="5,2,2,5" Grid.Row="1">
                             <Border  Grid.Row="3" Style="{StaticResource Border}" Grid.RowSpan="2">
@@ -223,7 +211,7 @@
                                     <TabItem Header="ILDA" Controls:HeaderedControlHelper.HeaderFontSize="14">
                                         <Grid Background="#FFE5E5E5">
                                             <Controls:ToggleSwitch x:Name="UsedMeshToggle" Margin="10,10,0,0" IsOn="True" Content="Used device mesh" VerticalAlignment="Top"/>
-                                            <Button x:Name="ILDASaveBtn" Content="Сохранить в ILDA" HorizontalAlignment="Left" Margin="10,40,0,0" VerticalAlignment="Top" Width="248" Height="29" Click="ILDASaveBtn_Click"/>
+                                            <Button x:Name="ILDASaveBtn" Content="{DynamicResource m_Saveas}" HorizontalAlignment="Left" Margin="10,40,0,0" VerticalAlignment="Top" Width="248" Height="29" Click="ILDASaveBtn_Click"/>
                                         </Grid>
                                     </TabItem>
                                     <TabItem Header="SVG" Controls:HeaderedControlHelper.HeaderFontSize="14">
@@ -314,7 +302,7 @@
 
                                 <Button x:Name="BrowseMonchaBtn" Content="Browse..." Margin="17,8,10,0" VerticalAlignment="Top" Click="BrowseMonchaBtn_Click" Height="23" Grid.Column="3" Grid.ColumnSpan="2"/>
                                 <Button Content="Edit device" Grid.ColumnSpan="5" Margin="10,38,45,479"/>
-                                <Button FontFamily="Segoe MDL2 Assets" Content="&#xEDAB;" Margin="35,38,10,479" Grid.Column="4" Click="RefreshLaser_Click_1"/>
+                                <Button FontFamily="Segoe MDL2 Assets" Content="&#xEDAB;" Margin="35,38,10,479" Grid.Column="4" Click="Button_Click"/>
                                 <Label x:Name="label" Content="Open Moncha" Margin="10,7,0,0" VerticalAlignment="Top" Grid.ColumnSpan="3" Height="26" HorizontalContentAlignment="Left"/>
                                 <Controls:NumericUpDown x:Name="WidthUpDn" Margin="0,70,10,0"  Background="White" Height="26" VerticalAlignment="Top" Grid.Column="2" Grid.ColumnSpan="3" >
                                     <Controls:NumericUpDown.DataContext>
@@ -333,13 +321,13 @@
                                         <Properties:Settings/>
                                     </Controls:NumericUpDown.DataContext>
                                 </Controls:NumericUpDown>
-                                <Label x:Name="label_Copy3" Content="Множитель" HorizontalAlignment="Left" Margin="6,143,0,0" VerticalAlignment="Top" Height="26" Width="74" Grid.ColumnSpan="2"/>
+                                <Label x:Name="label_Copy3" Content="{DynamicResource clb_Multiplier}" HorizontalAlignment="Left" Margin="6,143,0,0" VerticalAlignment="Top" Height="26" Width="74" Grid.ColumnSpan="2"/>
                                 <Controls:NumericUpDown x:Name="PointStepUpDn" Margin="0,185,10,0"  Background="White" Height="26" VerticalAlignment="Top" NumericInputMode="Decimal" Maximum="10" Minimum="0" Interval="0.1"  Value="1" Grid.Column="2" Grid.ColumnSpan="3" Focusable="False" IsTabStop="False" AllowDrop="False" ValueDecremented="PointStepUpDn_ValueDecremented" ValueIncremented="PointStepUpDn_ValueIncremented">
                                     <Controls:NumericUpDown.DataContext>
                                         <Properties:Settings/>
                                     </Controls:NumericUpDown.DataContext>
                                 </Controls:NumericUpDown>
-                                <Label x:Name="label_Copy4" Content="Шаг" Margin="10,185,10,0" VerticalAlignment="Top" Height="26" Grid.ColumnSpan="2"/>
+                                <Label x:Name="label_Copy4" Content="{DynamicResource obj_Step}" Margin="10,185,10,0" VerticalAlignment="Top" Height="26" Grid.ColumnSpan="2"/>
                                 <ComboBox x:Name="CalibrationFormCombo" Grid.ColumnSpan="3" Grid.Column="2" HorizontalAlignment="Left" Margin="0,227,0,0" VerticalAlignment="Top" Width="174" SelectionChanged="CalibrationFormCombo_SelectionChanged">
                                     <ComboBox.Resources>
                                         <ResourceDictionary>
@@ -352,7 +340,7 @@
                                     <ComboBoxItem Content="{DynamicResource clb_HLine}"/>
                                     <ComboBoxItem Content="{DynamicResource clb_WLine}"/>
                                 </ComboBox>
-                                <Label x:Name="CalibrationFormLabel" Content="Тип" Margin="10,227,10,0" VerticalAlignment="Top" Height="26" Grid.ColumnSpan="2"/>
+                                <Label x:Name="CalibrationFormLabel" Content="{DynamicResource obj_Type}" Margin="10,227,10,0" VerticalAlignment="Top" Height="26" Grid.ColumnSpan="2"/>
                                 <Button x:Name="Save" Grid.ColumnSpan="5" Content="Save" HorizontalAlignment="Left" Margin="10,378,0,0" VerticalAlignment="Top" Width="254" Height="34" Click="Save_Click"/>
                                 <CheckBox Content="{DynamicResource clb_SetEdgePoint}" Margin="10,342,10,203" Grid.ColumnSpan="5" Checked="CheckBox_Checked" Unchecked="CheckBox_Checked"/>
                                 <Controls:NumericUpDown x:Name="PointStepUpDn_Copy" Margin="0,258,10,0"  Background="White" Height="26" VerticalAlignment="Top" NumericInputMode="Decimal" Maximum="10" Minimum="1" Interval="1"  Value="{Binding anchor_size, Mode=TwoWay, UpdateSourceTrigger=Default}" Grid.Column="3" Grid.ColumnSpan="2" Focusable="False" IsTabStop="False" AllowDrop="False">
@@ -360,7 +348,7 @@
                                         <Properties:Settings/>
                                     </Controls:NumericUpDown.DataContext>
                                 </Controls:NumericUpDown>
-                                <Label x:Name="label_Copy5" Content="Size_anchor" Margin="10,258,10,0" VerticalAlignment="Top" Height="26" Grid.ColumnSpan="2"/>
+                                <Label x:Name="label_Copy5" Content="{DynamicResource clb_Sizeanchor}" Margin="10,258,10,0" VerticalAlignment="Top" Height="26" Grid.ColumnSpan="2"/>
                             </Grid>
                         </TabItem>
                         <TabItem Header="WorkFolder">
@@ -377,7 +365,15 @@
                                         <Properties:Settings/>
                                     </Label.DataContext>
                                 </Label>
-                                <ListView x:Name="WorkFolderListBox" Margin="5,5,5,5" Grid.Row="2" SelectionChanged="WorkFolderListBox_SelectionChanged"/>
+                                <ListView x:Name="WorkFolderListBox" Margin="5,5,5,5" Grid.Row="2" >
+                                    <ListBox.ItemTemplate>
+                                        <DataTemplate>
+                                            <TextBlock Text="{Binding}" MouseDown="TextBlock_MouseDown">
+  
+                                            </TextBlock>
+                                        </DataTemplate>
+                                    </ListBox.ItemTemplate>
+                                </ListView>
                                 <Button x:Name="WorkFolderRefreshBtn"  FontFamily="Segoe MDL2 Assets" Content="&#xEDAB;" HorizontalAlignment="Left" Margin="5,8,0,8" VerticalAlignment="Center" Width="22" Height="20" Click="WorkFolderRefreshBtn_Click"/>
                                 <TextBox x:Name="WorkFolderFilter" HorizontalAlignment="Left" Margin="5,2,0,2" Grid.Row="1" TextWrapping="Wrap" Width="264" VerticalContentAlignment="Center" TextChanged="WorkFolderFilter_TextChanged" Focusable="True" GotFocus="WorkFolderFilter_GotFocus"/>
 

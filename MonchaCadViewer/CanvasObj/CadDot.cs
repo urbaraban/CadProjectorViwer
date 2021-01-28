@@ -22,7 +22,7 @@ namespace MonchaCadViewer.CanvasObj
             get => this.Point.MX;
             set
             {
-                this.Translate.X = value;
+                this.Translate.X = value - this.size / 2;
                 this.Point.MX = value;
                 Updated?.Invoke(this, "X");
                 OnPropertyChanged("X");
@@ -34,7 +34,7 @@ namespace MonchaCadViewer.CanvasObj
             get => this.Point.MY;
             set
             {
-                this.Translate.Y = value;
+                this.Translate.Y = value - this.size / 2;
                 this.Point.MY = value;
                 Updated?.Invoke(this, "Y");
                 OnPropertyChanged("Y");
@@ -57,8 +57,8 @@ namespace MonchaCadViewer.CanvasObj
             this.Point = Point;
             this.Point.PropertyChanged += Point_PropertyChanged;
 
-            this.Translate.X = Point.MX;
-            this.Translate.Y = Point.MY;
+            this.Translate.X = Point.MX - Size / 2;
+            this.Translate.Y = Point.MY - Size / 2;
 
             this.Removed += CadDot_Removed;
 
@@ -83,8 +83,8 @@ namespace MonchaCadViewer.CanvasObj
         {
             Dispatcher.Invoke(() => 
             { 
-                this.Translate.X = this.Point.MX;
-                this.Translate.Y = this.Point.MY;
+                this.Translate.X = this.Point.MX - this.size / 2;
+                this.Translate.Y = this.Point.MY - this.size / 2;
             });
         }
 

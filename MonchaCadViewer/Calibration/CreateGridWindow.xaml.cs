@@ -5,6 +5,7 @@ using System;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
+using AppSt = MonchaCadViewer.Properties.Settings;
 
 namespace MonchaCadViewer
 {
@@ -30,7 +31,12 @@ namespace MonchaCadViewer
         {
             if (this.IsLoaded)
             {
-                Canvas.DrawMesh(new MonchaDeviceMesh(MonchaDeviceMesh.MakeMeshPoint((int)HeightUpDn.Value.Value, (int)WidthUpDn.Value.Value), string.Empty, false), this._device);
+                Canvas.Canvas.Add(
+                    CadCanvas.GetMesh(
+                    new MonchaDeviceMesh(MonchaDeviceMesh.MakeMeshPoint((int)HeightUpDn.Value.Value, (int)WidthUpDn.Value.Value), string.Empty, false), 
+                    this._device,
+                    MonchaHub.GetThinkess * AppSt.Default.anchor_size, false
+                    ), true);
             }
         }
 
@@ -85,7 +91,12 @@ namespace MonchaCadViewer
             WidthUpDn.Value = this._mesh.GetLength(1);
             HeightUpDn.Value = this._mesh.GetLength(0);
 
-            Canvas.DrawMesh(new MonchaDeviceMesh(MonchaDeviceMesh.MakeMeshPoint((int)HeightUpDn.Value.Value, (int)WidthUpDn.Value.Value), string.Empty, false), this._device);
+            Canvas.Canvas.Add(
+                     CadCanvas.GetMesh(
+                     new MonchaDeviceMesh(MonchaDeviceMesh.MakeMeshPoint((int)HeightUpDn.Value.Value, (int)WidthUpDn.Value.Value), string.Empty, false),
+                     this._device,
+                     MonchaHub.GetThinkess * AppSt.Default.anchor_size, false
+                     ), true);
         }
     }
 

@@ -3,6 +3,8 @@
                     xmlns:v="clr-namespace:System;assembly=mscorlib">
 
     <v:String x:Key="m_Refresh">Refresh</v:String>
+    <v:String x:Key="m_Save">Save</v:String>
+    <v:String x:Key="m_Saveas">Save as...</v:String>
     <v:String x:Key="m_Open">Open</v:String>
     <v:String x:Key="m_Devices">Devices</v:String>
     <v:String x:Key="m_Frames">Frames</v:String>
@@ -17,6 +19,8 @@
     <v:String x:Key="obj_Angle">Angle</v:String>
     <v:String x:Key="obj_Width">Width</v:String>
     <v:String x:Key="obj_Height">Height</v:String>
+    <v:String x:Key="obj_Step">Step</v:String>
+    <v:String x:Key="obj_Type">Type</v:String>
 
     <v:String x:Key="dvc_Device">Device</v:String>
     <v:String x:Key="dvc_Dimmer">Dimmer</v:String>
@@ -45,7 +49,10 @@
     <v:Int32 x:Key="clb_Cross">2</v:Int32>
     <v:Int32 x:Key="clb_HLine">3</v:Int32>
     <v:Int32 x:Key="clb_WLine">4</v:Int32>
-    <v:String x:Key="clb_SetEdgePoint">Установить крайние точки</v:String>
+    <v:String x:Key="clb_SetEdgePoint">Set edge point</v:String>
+    <v:String x:Key="clb_Sizeanchor">Size anchor</v:String>
+    <v:String x:Key="clb_Multiplier">Multiplier</v:String>
+
 
 
 </ResourceDictionary>

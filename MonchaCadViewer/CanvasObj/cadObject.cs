@@ -20,7 +20,9 @@ namespace MonchaCadViewer.CanvasObj
 {
     public abstract class CadObject : Shape, INotifyPropertyChanged, TransformObject
     {
-        public Shape  ObjectShape { get; set; }
+        public Shape ObjectShape { get; set; }
+
+        public AdornerLayer adornerLayer { get; set; }
 
         #region Property
         public event PropertyChangedEventHandler PropertyChanged;
@@ -286,8 +288,6 @@ namespace MonchaCadViewer.CanvasObj
 
         public bool OnBaseMesh { get; set; } = false;
 
-        public bool MouseForce { get; set; } = false;
-
         public virtual Adorner ObjAdorner { get; set; }
 
         #endregion
@@ -308,12 +308,19 @@ namespace MonchaCadViewer.CanvasObj
                 this.ContextMenu.ContextMenuClosing += ContextMenu_Closing;
                 ContextMenuLib.CadObjMenu(this.ContextMenu);
             }
-            this.MouseForce = move;
             this.Stroke = new SolidColorBrush(
                     Color.FromArgb(255,
                     (ProjectionSetting.RedOn == true ? ProjectionSetting.Red : (byte)0),
                     (ProjectionSetting.GreenOn == true ? ProjectionSetting.Green : (byte)0),
                     (ProjectionSetting.BlueOn == true ? ProjectionSetting.Blue : (byte)0)));
+            this.StrokeThickness = MonchaHub.GetThinkess;
+
+            this.Loaded += CadObject_Loaded;
+        }
+
+        private void CadObject_Loaded(object sender, RoutedEventArgs e)
+        {
+            this.adornerLayer = AdornerLayer.GetAdornerLayer(this);
         }
 
         public void Update()
@@ -424,7 +431,6 @@ namespace MonchaCadViewer.CanvasObj
             }
             else
             {
-                this.MouseForce = false;
                 this.WasMove = false;
                 this.Editing = false;
                 this.ReleaseMouseCapture();
@@ -442,7 +448,7 @@ namespace MonchaCadViewer.CanvasObj
             {
                 CadCanvas canvas = this.Parent as CadCanvas;
 
-                if ((e.LeftButton == MouseButtonState.Pressed && canvas.Status == 0) || MouseForce)
+                if (e.LeftButton == MouseButtonState.Pressed)
                 {
                     this.WasMove = true;
                     this.Editing = true;

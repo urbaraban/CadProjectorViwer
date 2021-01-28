@@ -10,7 +10,7 @@
         <ListView x:Name="FoundDeviceList" Margin="10,10,10,233">
             <ListView.View>
                 <GridView>
-                    <GridViewColumn Header="Name" DisplayMemberBinding="{Binding GetIP}" />
+                    <GridViewColumn Header="Name" DisplayMemberBinding="{Binding GetIpString}" />
                     <GridViewColumn Header="Select">
                         <GridViewColumn.CellTemplate>
                             <DataTemplate>
@@ -26,7 +26,7 @@
         <ListView x:Name="MonchaDeviceList" Margin="10,195,10,44">
             <ListView.View>
                 <GridView>
-                    <GridViewColumn Header="Name" DisplayMemberBinding="{Binding GetIP}" />
+                    <GridViewColumn Header="Name" DisplayMemberBinding="{Binding GetIpString}" />
                     <GridViewColumn Header="Select">
                         <GridViewColumn.CellTemplate>
                             <DataTemplate>
@@ -37,7 +37,7 @@
                 </GridView>
             </ListView.View>
         </ListView>
-        <Button x:Name="AddVirtualBtn" Content="Add Virtual" HorizontalAlignment="Left" Margin="129,363,0,0" VerticalAlignment="Top" Width="89" Height="24" Click="AddVirtualBtn_Click" IsEnabled="False"/>
+        <Button x:Name="AddVirtualBtn" Content="Add Virtual" HorizontalAlignment="Left" Margin="129,363,0,0" VerticalAlignment="Top" Width="89" Height="24" Click="AddVirtualBtn_Click"/>
 
     </Grid>
 </Window>

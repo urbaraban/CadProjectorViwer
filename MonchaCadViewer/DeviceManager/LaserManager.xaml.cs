@@ -34,18 +34,19 @@ namespace MonchaCadViewer
                 this.NewDevices.Clear();
                 foreach(BroadcastReply2 broadcastReply in iPs)
                 {
-                    IpSelect ipSelect = new IpSelect() { BroadcastReply = broadcastReply, IsSelected = false };
+                    IpSelect ipSelect = new IpSelect() { iPAddress = new IPAddress(BitConverter.GetBytes(broadcastReply.ipv4)), IsSelected = false };
                     //if not
-                    if (MonchaHub.CheckDeviceIP(ipSelect.GetIP) == false)
+                    if (MonchaHub.CheckDeviceInHub(ipSelect.iPAddress) == false)
                     {
                         this.NewDevices.Add(ipSelect);
                     }
                 }
-                this.OldDevices.Clear();
-                foreach (MonchaDevice monchaDevice in MonchaHub.Devices)
-                {
-                    this.OldDevices.Add(new IpSelect() { BroadcastReply = monchaDevice.BroadcastReply, IsSelected = true });
-                }
+            }
+
+            this.OldDevices.Clear();
+            foreach (MonchaDevice monchaDevice in MonchaHub.Devices)
+            {
+                this.OldDevices.Add(new IpSelect() { iPAddress = monchaDevice.iPAddress, IsSelected = true });
             }
 
             if (this.NewDevices.Count > 0)
@@ -62,7 +63,7 @@ namespace MonchaCadViewer
             {
                 if (device != null && device.IsSelected == true)
                 {
-                    MonchaHub.Devices.Add(MonchaHub.ConnectDevice(device.BroadcastReply));
+                    MonchaHub.Devices.Add(MonchaHub.ConnectDevice(device.iPAddress));
                 }
             }
 
@@ -70,7 +71,7 @@ namespace MonchaCadViewer
             {
                 if (device != null && device.IsSelected == false)
                 {
-                    MonchaHub.RemoveDevice(device.GetIP);
+                    MonchaHub.RemoveDevice(device.iPAddress);
                 }
             }
 
@@ -84,6 +85,7 @@ namespace MonchaCadViewer
 
         private void AddVirtualBtn_Click(object sender, RoutedEventArgs e)
         {
+            MonchaHub.Devices.Add(new MonchaDevice(new IPAddress(new byte[] { 127, 0, 0, 1 })));
         }
 
         private void SearchBtn_Click(object sender, RoutedEventArgs e)
@@ -96,14 +98,14 @@ namespace MonchaCadViewer
     {
         public event PropertyChangedEventHandler PropertyChanged;
 
-        private BroadcastReply2 broadcastReply;
+        private IPAddress ipadress;
         private bool selected;
-        public BroadcastReply2 BroadcastReply
+        public IPAddress iPAddress
         {
-            get => this.broadcastReply;
+            get => this.ipadress;
             set
             {
-                this.broadcastReply = value;
+                this.ipadress = value;
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("IP"));
             }
         }
@@ -118,10 +120,7 @@ namespace MonchaCadViewer
             }
         }
 
-        public IPAddress GetIP => new IPAddress(BitConverter.GetBytes(broadcastReply.ipv4));
-
-
-
+        public string GetIpString => ipadress.ToString();
     }
 
 }

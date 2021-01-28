@@ -1,5 +1,6 @@
 ﻿using MahApps.Metro.Controls;
 using MonchaCadViewer.CanvasObj;
+using MonchaCadViewer.ToolsPanel.DevicePanel;
 using MonchaSDK;
 using MonchaSDK.Device;
 using System;
@@ -33,6 +34,8 @@ namespace MonchaCadViewer.ToolsPanel
         public event EventHandler<MonchaDevice> DeviceChange;
 
         public event EventHandler NeedUpdate;
+
+        public event EventHandler<List<CadObject>> DrawObjects;
 
         public DeviceTab()
         {
@@ -212,5 +215,16 @@ namespace MonchaCadViewer.ToolsPanel
             }
         }
 
+        private void DeviceSettingBtn_Click(object sender, RoutedEventArgs e)
+        {
+            DeviceSettingDialog deviceSettingDialog = new DeviceSettingDialog((MonchaDevice)DeviceCombo.SelectedItem);
+            deviceSettingDialog.DrawObjects += DeviceSettingDialog_DrawObjects;
+            deviceSettingDialog.Show();
+        }
+
+        private void DeviceSettingDialog_DrawObjects(object sender, List<CadObject> e)
+        {
+            DrawObjects?.Invoke(this, e);
+        }
     }
 }

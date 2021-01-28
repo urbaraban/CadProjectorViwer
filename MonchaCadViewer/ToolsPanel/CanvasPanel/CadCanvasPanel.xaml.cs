@@ -62,10 +62,7 @@ namespace MonchaCadViewer.ToolsPanel.CanvasPanel
                     this.Canvas.DrawContour(cadObject, true, true);
                 }
             }
-            else
-            {
-                this.Canvas.Clear();
-            }
+
 
             SelectedObject?.Invoke(this, null);
             UpdateProjection(true);
@@ -77,15 +74,7 @@ namespace MonchaCadViewer.ToolsPanel.CanvasPanel
             SelectedObject?.Invoke(this, null);
         }
 
-        public void DrawRectangle(LPoint3D point1, LPoint3D point2)
-        {
-            CadDot cadDot1 = new CadDot(point1, MonchaHub.GetThinkess * 3, true, true, true);
-            cadDot1.Render = false;
-            CadDot cadDot2 = new CadDot(point2, MonchaHub.GetThinkess * 3, true, true, true);
-            cadDot2.Render = false;
-            this.Canvas.Add(cadDot1);
-            this.Canvas.Add(cadDot2);
-        }
+
 
         private void CadCanvas_SelectedObject(object sender, CadObject e)
         {
@@ -159,45 +148,7 @@ namespace MonchaCadViewer.ToolsPanel.CanvasPanel
 
         }
 
-        public void DrawMesh(MonchaDeviceMesh mesh, MonchaDevice _device)
-        {
-            if (_device != null)
-            {
-                this.Canvas.Clear();
-
-                if (mesh == null)
-                {
-                    mesh = _device.CalculateMesh;
-                }
-
-                //
-                // Поинты
-                //
-
-                for (int i = 0; i < mesh.GetLength(0); i++)
-                    for (int j = 0; j < mesh.GetLength(1); j++)
-                    {
-                        mesh[i, j].M = this.Canvas.Size;
-
-                        CadDot dot = new CadDot(
-                             mesh[i, j],
-                            MonchaHub.GetThinkess * AppSt.Default.anchor_size,
-                            //calibration flag
-                            true, true, false);
-
-                        dot.IsFix = false; // !mesh.OnlyEdge;
-                        dot.StrokeThickness = 0;
-                        dot.Uid = i.ToString() + ":" + j.ToString();
-                        dot.ToolTip = "Позиция: " + i + ":" + j + "\nX: " + mesh[i, j].X + "\n" + "Y: " + mesh[i, j].Y;
-                        dot.DataContext = mesh;
-                        dot.OnBaseMesh = !mesh.Affine;
-                        dot.Render = false;
-                        this.Canvas.Add(dot);
-                    }
-
-            }
-            SelectedObject?.Invoke(null, null);
-        }
+        
 
         private void Canvas_SizeChanged(object sender, SizeChangedEventArgs e)
         {

@@ -35,7 +35,7 @@
     <SuiteName>Viwer</SuiteName>
     <WebPage>publish.htm</WebPage>
     <OpenBrowserOnPublish>false</OpenBrowserOnPublish>
-    <ApplicationRevision>35</ApplicationRevision>
+    <ApplicationRevision>36</ApplicationRevision>
     <ApplicationVersion>0.8.1.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <CreateDesktopShortcut>true</CreateDesktopShortcut>
@@ -239,6 +239,7 @@
     </Compile>
     <Compile Include="Calibration\MeshTool.cs" />
     <Compile Include="CanvasObj\CadObjectsGroup.cs" />
+    <Compile Include="CanvasObj\CadRectangle.cs" />
     <Compile Include="CanvasObj\DimObj\AdornerContourFrame.cs" />
     <Compile Include="CanvasObj\CadObject.cs" />
     <Compile Include="CanvasObj\DimObj\AdornerLineDim.cs" />
@@ -259,6 +260,12 @@
     <Compile Include="ToolsPanel\CanvasPanel\CadCanvasPanel.xaml.cs">
       <DependentUpon>CadCanvasPanel.xaml</DependentUpon>
     </Compile>
+    <Compile Include="ToolsPanel\DevicePanel\DeviceSettingDialog.xaml.cs">
+      <DependentUpon>DeviceSettingDialog.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ToolsPanel\DevicePanel\DeviceTreeTab.xaml.cs">
+      <DependentUpon>DeviceTreeTab.xaml</DependentUpon>
+    </Compile>
     <Compile Include="ToolsPanel\ObjectPanel\CadObjectPanel.xaml.cs">
       <DependentUpon>CadObjectPanel.xaml</DependentUpon>
     </Compile>
@@ -269,7 +276,7 @@
     <Compile Include="ToolsPanel\ContourScrollPanel\ScrollPanelItem.xaml.cs">
       <DependentUpon>ScrollPanelItem.xaml</DependentUpon>
     </Compile>
-    <Compile Include="ToolsPanel\DeviceTab.xaml.cs">
+    <Compile Include="ToolsPanel\DevicePanel\DeviceTab.xaml.cs">
       <DependentUpon>DeviceTab.xaml</DependentUpon>
     </Compile>
     <Compile Include="ToolsPanel\multiplierpanel.xaml.cs">
@@ -318,6 +325,14 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="ToolsPanel\DevicePanel\DeviceSettingDialog.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="ToolsPanel\DevicePanel\DeviceTreeTab.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="ToolsPanel\ObjectPanel\CadObjectPanel.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -330,7 +345,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="ToolsPanel\DeviceTab.xaml">
+    <Page Include="ToolsPanel\DevicePanel\DeviceTab.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

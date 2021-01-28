@@ -131,6 +131,5 @@ namespace MonchaCadViewer.CanvasObj
                 return geometry;
             }
         }
-
     }
 }

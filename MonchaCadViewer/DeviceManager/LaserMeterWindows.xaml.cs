@@ -83,7 +83,7 @@ namespace MonchaCadViewer.DeviceManager
 
         private void OkBtn_Click(object sender, RoutedEventArgs e)
         {
-            if (!MonchaHub.CheckDeviceIP(this._lasermeter.IP))
+            if (!MonchaHub.CheckDeviceInHub(this._lasermeter.IP))
             {
                 MonchaHub.LMeters.Add(this._lasermeter);
                 

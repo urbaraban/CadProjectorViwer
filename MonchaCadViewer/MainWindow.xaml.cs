@@ -22,7 +22,6 @@ using MonchaSDK.Object;
 using KompasLib.KompasTool;
 using ToGeometryConverter.Format;
 using HelixToolkit.Wpf;
-using System.Windows.Shapes;
 using System.Windows.Media.Media3D;
 using MonchaSDK.ILDA;
 using StclLibrary.Laser;
@@ -67,14 +66,13 @@ namespace MonchaCadViewer
                 DevicePanel.DataContext = MonchaHub.Devices[0];
             }
 
-            this.MainCanvas.Focusable = true;
 
             this.MainCanvas.SelectedObject += MainCanvas_SelectedObject;
 
             ContourScrollPanel.SelectedFrame += ContourScrollPanel_SelectedFrame;
         }
 
-        private void DeviceTree_DrawObjects(object sender, List<CadObject> e)
+        private void DeviceTree_DrawObjects(object sender, List<FrameworkElement> e)
         {
             MainCanvas.Canvas.Add(e, true);
         }
@@ -224,7 +222,7 @@ namespace MonchaCadViewer
 
         private void OpenFile(string filename)
         {
-            List<Shape> _actualFrames = new List<Shape>();
+            GeometryGroup _actualFrames = new GeometryGroup();
 
             if (filename.Split('.').Last() == "svg")
             {
@@ -258,16 +256,11 @@ namespace MonchaCadViewer
                 }
             }
 
-
-            /*
-            else if (filename.Split('.').Last() == "ild")
-                MonchaWrt(filename);
-            */
             if (_actualFrames == null)
             {
                 return;
             }
-            if (_actualFrames.Count > 0)
+            if (_actualFrames.Children.Count > 0)
                 AppSt.Default.stg_last_file_path = filename;
             else return;
 
@@ -826,6 +819,7 @@ namespace MonchaCadViewer
         private void RectBtn_Click(object sender, RoutedEventArgs e) => MainCanvas.Canvas.MouseAction = CanvasObj.MouseAction.Rectangle;
 
         private void Line_Click(object sender, RoutedEventArgs e) => MainCanvas.Canvas.MouseAction = CanvasObj.MouseAction.Line;
+
     }
 
 }

@@ -15,7 +15,6 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
-using System.Windows.Shapes;
 using AppSt = MonchaCadViewer.Properties.Settings;
 
 namespace MonchaCadViewer.ToolsPanel.DevicePanel
@@ -27,7 +26,7 @@ namespace MonchaCadViewer.ToolsPanel.DevicePanel
     {
         public event EventHandler<bool> NeedRefresh;
         public event EventHandler<MonchaDevice> DeviceChange;
-        public event EventHandler<List<CadObject>> DrawObjects;
+        public event EventHandler<List<FrameworkElement>> DrawObjects;
 
         private MonchaDevice selectdevice;
 

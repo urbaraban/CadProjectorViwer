@@ -18,7 +18,7 @@
         </StackPanel>
         <Viewbox Grid.RowSpan="2" Stretch="Uniform">
             <Viewbox  Stretch="Uniform" StretchDirection="DownOnly" Grid.RowSpan="2" Panel.ZIndex="0">
-                <canvasobj:CadCanvas x:Name="Canvas" SizeChanged="Canvas_SizeChanged" Focusable="True"  Grid.Row="1">
+                <canvasobj:CadCanvas x:Name="Canvas" SizeChanged="Canvas_SizeChanged" Focusable="False" Grid.Row="1">
                     <canvasobj:CadCanvas.Background>
                         <DrawingBrush x:Name="CanvasBrush" TileMode="Tile" Viewport="0,0,200,200" 
                                      ViewportUnits="Absolute">

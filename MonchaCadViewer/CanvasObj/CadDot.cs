@@ -3,7 +3,6 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Shapes;
 using MonchaCadViewer.Calibration;
 using MonchaSDK.Device;
 using MonchaSDK.Object;
@@ -15,28 +14,27 @@ namespace MonchaCadViewer.CanvasObj
         private double size;
         private RectangleGeometry rectangle;
 
+        public override Pen myPen { get; } = new Pen(null, 0);
+        public override Brush myBack => this.IsSelected == true ? Brushes.Red : Brushes.DarkGray;
+
         public override event EventHandler<string> Updated;
 
         public override double X 
         { 
-            get => this.Point.MX;
+            get => this.Translate.X;
             set
             {
-                this.Translate.X = value - this.size / 2;
-                this.Point.MX = value;
-                Updated?.Invoke(this, "X");
+                this.Translate.X = value;
                 OnPropertyChanged("X");
             }
         }
 
         public override double Y
         {
-            get => this.Point.MY;
+            get => this.Translate.Y;
             set
             {
-                this.Translate.Y = value - this.size / 2;
-                this.Point.MY = value;
-                Updated?.Invoke(this, "Y");
+                this.Translate.Y = value;
                 OnPropertyChanged("Y");
             }
         }
@@ -46,25 +44,22 @@ namespace MonchaCadViewer.CanvasObj
 
         public CadDot(LPoint3D Point, double Size, bool OnBaseMesh, bool capturemouse, bool move) : base(capturemouse, move )
         {
-            this.ObjectShape = new Path
-            {
-                Data = new RectangleGeometry(new Rect(new Size(Size, Size)))
-            };
+            this.myGeometry = new RectangleGeometry(new Rect(-Size / 2, -Size / 2, Size, Size));
+
+            this.RenderTransformOrigin = new Point(1, 1);
 
             this.UpdateTransform(null);
+
             this.OnBaseMesh = OnBaseMesh;
 
             this.Point = Point;
             this.Point.PropertyChanged += Point_PropertyChanged;
 
-            this.Translate.X = Point.MX - Size / 2;
-            this.Translate.Y = Point.MY - Size / 2;
-
-            this.Removed += CadDot_Removed;
+            this.Translate.X = Point.MX;
+            this.Translate.Y = Point.MY;
 
             this.size = Size;
 
-            this.Focusable = true;
 
             Canvas.SetZIndex(this, 999);
 
@@ -75,16 +70,14 @@ namespace MonchaCadViewer.CanvasObj
             this.Fixed += CadDot_Fixed;
             this.Point.Selected += Point_Selected;
             this.PropertyChanged += CadDot_PropertyChanged;
-            this.Fill = Brushes.Black;
-
         }
 
         private void Point_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
             Dispatcher.Invoke(() => 
             { 
-                this.Translate.X = this.Point.MX - this.size / 2;
-                this.Translate.Y = this.Point.MY - this.size / 2;
+                this.Translate.X = this.Point.MX;
+                this.Translate.Y = this.Point.MY;
             });
         }
 
@@ -106,6 +99,9 @@ namespace MonchaCadViewer.CanvasObj
             {
                 this.Point.MY = this.Y;
             }
+
+            this.InvalidateVisual();
+            Updated?.Invoke(this, null);
         }
 
         private void Point_Selected(object sender, bool e)
@@ -118,11 +114,6 @@ namespace MonchaCadViewer.CanvasObj
             this.Point.Select = e;
         }
 
-
-        private void CadDot_Removed(object sender, CadObject e)
-        {
-          
-        }
 
         private void CadDot_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {

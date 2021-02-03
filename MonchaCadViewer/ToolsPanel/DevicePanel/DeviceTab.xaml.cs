@@ -16,7 +16,6 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
-using System.Windows.Shapes;
 using Xceed.Wpf.Toolkit;
 
 using AppSt = MonchaCadViewer.Properties.Settings;
@@ -35,7 +34,7 @@ namespace MonchaCadViewer.ToolsPanel
 
         public event EventHandler NeedUpdate;
 
-        public event EventHandler<List<CadObject>> DrawObjects;
+        public event EventHandler<List<FrameworkElement>> DrawObjects;
 
         public DeviceTab()
         {
@@ -222,7 +221,7 @@ namespace MonchaCadViewer.ToolsPanel
             deviceSettingDialog.Show();
         }
 
-        private void DeviceSettingDialog_DrawObjects(object sender, List<CadObject> e)
+        private void DeviceSettingDialog_DrawObjects(object sender, List<FrameworkElement> e)
         {
             DrawObjects?.Invoke(this, e);
         }

@@ -9,7 +9,6 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Threading;
 using MonchaSDK.Object;
-using System.Windows.Shapes;
 using System.ComponentModel;
 using MonchaCadViewer.Interface;
 using System.Runtime.CompilerServices;
@@ -39,9 +38,6 @@ namespace MonchaCadViewer.CanvasObj
         private bool _nofreecursor = true;
         private Point StartMovePoint;
         private Point StartMousePoint;
-
-
-        private Rectangle _selectedRectangle = new Rectangle();
 
         public LPoint3D Size
         {
@@ -109,21 +105,13 @@ namespace MonchaCadViewer.CanvasObj
             this.Background = Brushes.Transparent; //backBrush;
             this.Width = this._size.GetMPoint.X;
             this.Height = this._size.GetMPoint.Y;
-            this.Focusable = false;
-
-            this._selectedRectangle.Fill = Brushes.Transparent;
-            this._selectedRectangle.Stroke = Brushes.DimGray;
-            this._selectedRectangle.StrokeThickness = MonchaHub.GetThinkess / 5;
-            this._selectedRectangle.Visibility = Visibility.Hidden;
-            this.Children.Add(this._selectedRectangle);
-
+     
             this._size.PropertyChanged += _size_ChangePoint;
             this._size.M.PropertyChanged += _size_ChangePoint;
 
-            this.ContextMenuClosing += CadCanvas_ContextMenuClosing;
-
             if (this._maincanvas)
             {
+                this.ContextMenuClosing += CadCanvas_ContextMenuClosing;
                 this.ContextMenu = new ContextMenu();
                 ContextMenuLib.CanvasMenu(this.ContextMenu);
 
@@ -251,7 +239,7 @@ namespace MonchaCadViewer.CanvasObj
         /// <param name="maincanvas">property for main canvas attributes</param>
         /// <param name="add">Add contour for already view</param>
         /// <param name="mousemove">add mouse event</param>
-        public void DrawContour(Shape obj, bool maincanvas, bool mousemove)
+        public void DrawContour(CadObject obj, bool maincanvas, bool mousemove)
         {
             if (obj is CadObject cadObject)
             {
@@ -290,11 +278,6 @@ namespace MonchaCadViewer.CanvasObj
                         {
                             this.ClearSelectedObject(null);
                             LastMouseDownPosition = e.GetPosition(this);
-                            Canvas.SetLeft(this._selectedRectangle, LastMouseDownPosition.X);
-                            Canvas.SetTop(this._selectedRectangle, LastMouseDownPosition.Y);
-                            this._selectedRectangle.Width = 0;
-                            this._selectedRectangle.Height = 0;
-                            this._selectedRectangle.Visibility = Visibility.Visible;
                         }
                         break;
                 }
@@ -346,67 +329,17 @@ namespace MonchaCadViewer.CanvasObj
 
         private void CadCanvas_MouseUp(object sender, MouseButtonEventArgs e)
         {
-            if (this._selectedRectangle.Visibility == Visibility.Visible)
-            {
-                this._selectedRectangle.Visibility = Visibility.Hidden;
-                this.SelectInRectangle(this._selectedRectangle.RenderedGeometry);
-                this.ReleaseMouseCapture();
-            }
-
             this._wasmove = false;
         }
 
         private void SelectInRectangle(Geometry rectangle)
         {
-            foreach (object obj in this.Children)
-            {
-                /*Task.Run(() => { */
-                if (obj is CadObject cadObject)
-                {
-                    if (rectangle.Bounds.Contains(
-                        new Point(/*cadObject.X +*/ cadObject.RenderedGeometry.Bounds.TopLeft.X - Canvas.GetLeft(this._selectedRectangle), 
-                                /*cadObject.Y +*/ cadObject.RenderedGeometry.Bounds.TopLeft.Y - Canvas.GetTop(this._selectedRectangle))) &&
-                        rectangle.Bounds.Contains(
-                            new Point(/*cadObject.X +*/ cadObject.RenderedGeometry.Bounds.BottomRight.X - Canvas.GetLeft(this._selectedRectangle), 
-                                /*cadObject.Y +*/ cadObject.RenderedGeometry.Bounds.BottomRight.Y - Canvas.GetTop(this._selectedRectangle))))
-                    {
-                        cadObject.IsSelected = true;
-                    }
-                    
-                }
-                /*});*/
-            }
              
         }
 
         private void CadCanvas_MouseMove(object sender, MouseEventArgs e)
         {
-            if (this._selectedRectangle.Visibility == Visibility.Visible)
-            {
-                this._wasmove = true;
-                Point RealMousePosition = e.GetPosition(this);
-                if (RealMousePosition.X < LastMouseDownPosition.X)
-                {
-                    Canvas.SetLeft(this._selectedRectangle, RealMousePosition.X);
-                }
-                else
-                {
-                    Canvas.SetLeft(this._selectedRectangle, LastMouseDownPosition.X);
-                }
 
-                if (RealMousePosition.Y < LastMouseDownPosition.Y)
-                {
-                    Canvas.SetTop(this._selectedRectangle, RealMousePosition.Y);
-                }
-                else
-                {
-                    Canvas.SetTop(this._selectedRectangle, LastMouseDownPosition.Y);
-                }
-
-                this._selectedRectangle.Width = Math.Abs(RealMousePosition.X - LastMouseDownPosition.X);
-                this._selectedRectangle.Height = Math.Abs(RealMousePosition.Y - LastMouseDownPosition.Y);
-                this.CaptureMouse();
-            }
         }
 
         public void RemoveSelectObject()
@@ -464,7 +397,7 @@ namespace MonchaCadViewer.CanvasObj
         /// Add object in Children Canvas
         /// </summary>
         /// <param name="obj"></param>
-        public void Add(Shape obj)
+        public void Add(FrameworkElement obj)
         {
             if (this.Children.Equals(obj) == false)
             {
@@ -477,17 +410,16 @@ namespace MonchaCadViewer.CanvasObj
                 }
 
                 this.Children.Add(obj);
-               
             }
         }
 
-        public void Add(List<CadObject> shapes, bool Clear)
+        public void Add(List<FrameworkElement> frameworkElements, bool Clear)
         {
             if (Clear == true) this.Clear();
 
-            foreach (Shape shape in shapes)
+            foreach (FrameworkElement frameworkElement in frameworkElements)
             {
-                this.Add(shape);
+                this.Add(frameworkElement);
             }
             UpdateProjection?.Invoke(this, null);
         }
@@ -517,24 +449,24 @@ namespace MonchaCadViewer.CanvasObj
             SelectedObject?.Invoke(this, (CadObject)sender);
         }
 
-        public static List<CadObject> GetRectangle(LPoint3D point1, LPoint3D point2)
+        public static List<FrameworkElement> GetRectangle(LPoint3D point1, LPoint3D point2)
         {
             CadDot cadDot1 = new CadDot(point1, MonchaHub.GetThinkess * 3, true, true, true);
             cadDot1.Render = false;
             CadDot cadDot2 = new CadDot(point2, MonchaHub.GetThinkess * 3, true, true, true);
             cadDot2.Render = false;
-            return new List<CadObject>()
+            return new List<FrameworkElement>()
             {
                 cadDot1,
                 cadDot2
             };
         }
 
-        public static List<CadObject> GetMesh(MonchaDeviceMesh mesh, MonchaDevice _device, double AnchorSize, bool Render)
+        public static List<FrameworkElement> GetMesh(MonchaDeviceMesh mesh, MonchaDevice _device, double AnchorSize, bool Render)
         {
             if (_device != null)
             {
-                List<CadObject> objects = new List<CadObject>();
+                List<FrameworkElement> objects = new List<FrameworkElement>();
 
                 if (mesh == null)
                 {
@@ -554,7 +486,6 @@ namespace MonchaCadViewer.CanvasObj
                             true, true, false);
 
                         dot.IsFix = false; // !mesh.OnlyEdge;
-                        dot.StrokeThickness = 0;
                         dot.Uid = i.ToString() + ":" + j.ToString();
                         dot.ToolTip = "Позиция: " + i + ":" + j + "\nX: " + mesh[i, j].X + "\n" + "Y: " + mesh[i, j].Y;
                         dot.DataContext = mesh;
@@ -569,7 +500,7 @@ namespace MonchaCadViewer.CanvasObj
         }
 
         #region TransfromObject
-        public TransformGroup Transform { get; set; }
+        public TransformGroup TransformGroup { get; set; }
         public ScaleTransform Scale { get; set; }
         public RotateTransform Rotate { get; set; }
         public TranslateTransform Translate { get; set; }
@@ -595,10 +526,10 @@ namespace MonchaCadViewer.CanvasObj
         {
             if (transformGroup != null)
             {
-                this.RenderTransform = Transform;
-                this.Scale = this.Transform.Children[0] != null ? (ScaleTransform)this.Transform.Children[0] : new ScaleTransform();
-                this.Rotate = this.Transform.Children[1] != null ? (RotateTransform)this.Transform.Children[1] : new RotateTransform();
-                this.Translate = this.Transform.Children[2] != null ? (TranslateTransform)this.Transform.Children[2] : new TranslateTransform();
+                this.RenderTransform = TransformGroup;
+                this.Scale = this.TransformGroup.Children[0] != null ? (ScaleTransform)this.TransformGroup.Children[0] : new ScaleTransform();
+                this.Rotate = this.TransformGroup.Children[1] != null ? (RotateTransform)this.TransformGroup.Children[1] : new RotateTransform();
+                this.Translate = this.TransformGroup.Children[2] != null ? (TranslateTransform)this.TransformGroup.Children[2] : new TranslateTransform();
             }
             else ResetTransform();
 
@@ -608,7 +539,7 @@ namespace MonchaCadViewer.CanvasObj
 
         public void ResetTransform()
         {
-            this.Transform = new TransformGroup()
+            this.TransformGroup = new TransformGroup()
             {
                 Children = new TransformCollection()
                     {
@@ -617,10 +548,10 @@ namespace MonchaCadViewer.CanvasObj
                         new TranslateTransform()
                     }
             };
-            this.Scale = (ScaleTransform)this.Transform.Children[0];
-            this.Rotate = (RotateTransform)this.Transform.Children[1];
-            this.Translate = (TranslateTransform)this.Transform.Children[2];
-            this.RenderTransform = this.Transform;
+            this.Scale = (ScaleTransform)this.TransformGroup.Children[0];
+            this.Rotate = (RotateTransform)this.TransformGroup.Children[1];
+            this.Translate = (TranslateTransform)this.TransformGroup.Children[2];
+            this.RenderTransform = this.TransformGroup;
         }
         #endregion
     }

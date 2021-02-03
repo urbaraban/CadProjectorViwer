@@ -46,7 +46,10 @@ namespace MonchaCadViewer
             this.OldDevices.Clear();
             foreach (MonchaDevice monchaDevice in MonchaHub.Devices)
             {
-                this.OldDevices.Add(new IpSelect() { iPAddress = monchaDevice.iPAddress, IsSelected = true });
+                if (monchaDevice != null)
+                {
+                    this.OldDevices.Add(new IpSelect() { iPAddress = monchaDevice.iPAddress, IsSelected = true });
+                }
             }
 
             if (this.NewDevices.Count > 0)

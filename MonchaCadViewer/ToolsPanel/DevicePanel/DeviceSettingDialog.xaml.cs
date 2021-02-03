@@ -14,7 +14,6 @@ using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 using AppSt = MonchaCadViewer.Properties.Settings;
 
 namespace MonchaCadViewer.ToolsPanel.DevicePanel
@@ -26,7 +25,7 @@ namespace MonchaCadViewer.ToolsPanel.DevicePanel
     {
         private MonchaDevice _device;
 
-        public event EventHandler<List<CadObject>> DrawObjects;
+        public event EventHandler<List<FrameworkElement>> DrawObjects;
 
         public DeviceSettingDialog(MonchaDevice Device)
         {

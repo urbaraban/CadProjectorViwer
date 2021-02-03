@@ -15,7 +15,6 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
-using System.Windows.Shapes;
 using AppSt = MonchaCadViewer.Properties.Settings;
 
 namespace MonchaCadViewer.ToolsPanel.CanvasPanel
@@ -57,7 +56,7 @@ namespace MonchaCadViewer.ToolsPanel.CanvasPanel
 
             if (this.DataContext is CadObjectsGroup objectsGroup)
             {
-                foreach (CadObject cadObject in objectsGroup.Objects)
+                foreach (CadObject cadObject in objectsGroup.cadObjects)
                 {
                     this.Canvas.DrawContour(cadObject, true, true);
                 }

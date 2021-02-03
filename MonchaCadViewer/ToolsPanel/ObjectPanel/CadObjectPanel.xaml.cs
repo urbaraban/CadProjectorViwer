@@ -32,35 +32,35 @@ namespace MonchaCadViewer.ToolsPanel
             YUpDn.SetBinding(NumericUpDown.ValueProperty, "Y");
             YUpDn.DataContext = cadObject;
 
-            MirrorCheck.DataContext = this.DataContext;
+            MirrorCheck.DataContext = cadObject;
             MirrorCheck.IsChecked = cadObject.Mirror;
             MirrorCheck.SetBinding(CheckBox.IsCheckedProperty, "Mirror");
 
             RenderCheck.IsChecked = cadObject.Render;
             RenderCheck.SetBinding(CheckBox.IsCheckedProperty, "Render");
-            RenderCheck.DataContext = this.DataContext;
+            RenderCheck.DataContext = cadObject;
 
             FixCheck.IsChecked = cadObject.IsFix;
             FixCheck.SetBinding(CheckBox.IsCheckedProperty, "IsFix");
-            FixCheck.DataContext = this.DataContext;
+            FixCheck.DataContext = cadObject;
 
             AngleUpDn.Value = cadObject.Angle;
             AngleUpDn.SetBinding(NumericUpDown.ValueProperty, "Angle");
-            AngleUpDn.DataContext = this.DataContext;
+            AngleUpDn.DataContext = cadObject;
 
             WidthUpDn.Value = cadObject.ScaleX;
             WidthUpDn.Interval = MonchaCadViewer.Properties.Settings.Default.stg_scale_percent == true ? 1 : 0.01;
             Binding bindingScaleX = new Binding("ScaleX");
             bindingScaleX.Converter = new ScaleConverter(MonchaCadViewer.Properties.Settings.Default.stg_scale_percent, MonchaCadViewer.Properties.Settings.Default.stg_scale_invert);
             WidthUpDn.SetBinding(NumericUpDown.ValueProperty, bindingScaleX);
-            WidthUpDn.DataContext = this.DataContext;
+            WidthUpDn.DataContext = cadObject;
 
             HeightUpDn.Value = cadObject.ScaleY;
             HeightUpDn.Interval = MonchaCadViewer.Properties.Settings.Default.stg_scale_percent == true ? 1 : 0.01;
             Binding bindingScaleY = new Binding("ScaleY");
             bindingScaleY.Converter = new ScaleConverter(MonchaCadViewer.Properties.Settings.Default.stg_scale_percent, MonchaCadViewer.Properties.Settings.Default.stg_scale_invert);
             HeightUpDn.SetBinding(NumericUpDown.ValueProperty, bindingScaleY);
-            HeightUpDn.DataContext = this.DataContext;
+            HeightUpDn.DataContext = cadObject;
 
         }
 

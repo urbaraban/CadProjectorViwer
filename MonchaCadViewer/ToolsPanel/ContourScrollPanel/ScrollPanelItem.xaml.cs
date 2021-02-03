@@ -13,7 +13,6 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 namespace MonchaCadViewer.ToolsPanel.ContourScrollPanel
 {
@@ -87,8 +86,9 @@ namespace MonchaCadViewer.ToolsPanel.ContourScrollPanel
             MainGrid.Children.Add(_viewbox);
 
             this.objectsGroup = cadObjectsGroup;
-
-            cadCanvas.DrawContour(new CadContour(cadObjectsGroup, false, false), false, true);
+            CadContour cadContour = new CadContour(cadObjectsGroup.myGeometry, false, false);
+            cadContour.TransformGroup = this.objectsGroup.TransformGroup;
+            cadCanvas.DrawContour(cadContour, false, true);
         }
 
         public void Remove()
@@ -106,7 +106,7 @@ namespace MonchaCadViewer.ToolsPanel.ContourScrollPanel
             {
                 if (viewItem.DataContext is CadObjectsGroup CadObj)
                 {
-                    CadObj.UpdateTransform();
+                    CadObj.UpdateTransform(CadObj.TransformGroup);
                 }
             }
         }

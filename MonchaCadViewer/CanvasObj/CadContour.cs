@@ -8,7 +8,6 @@ using System.Windows.Controls;
 using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Shapes;
 
 
 namespace MonchaCadViewer.CanvasObj
@@ -18,27 +17,24 @@ namespace MonchaCadViewer.CanvasObj
         private bool _maincanvas;
         private AdornerContourFrame adornerContour;
 
-        public CadContour(Shape Shapes,  bool maincanvas, bool Capturemouse) : base(Capturemouse, false)
+        public CadContour(Geometry geometryGroup,  bool maincanvas, bool Capturemouse) : base(Capturemouse, false)
         {
-            this.ObjectShape = Shapes;
+            this.myGeometry = geometryGroup;
             this._maincanvas = maincanvas;
 
-            if (this._maincanvas)
-            {
-                ContextMenuLib.ViewContourMenu(this.ContextMenu);
-                this.Cursor = Cursors.Hand;
-
-                this.ContextMenuClosing += ViewContour_ContextMenuClosing;
-                this.MouseWheel += CadContour_MouseWheel;
-            }
-
-            this.Fill = Brushes.Transparent;
-            this.StrokeThickness = (MonchaHub.GetThinkess < 0 ? 1 : MonchaHub.GetThinkess) * 0.5;
+            this.myPen.Thickness = (MonchaHub.GetThinkess < 0 ? 1 : MonchaHub.GetThinkess) * 0.5;
             this.Loaded += CadContour_Loaded;
         }
 
         private void CadContour_Loaded(object sender, RoutedEventArgs e)
         {
+            if (this._maincanvas)
+            {
+                ContextMenuLib.ViewContourMenu(this.ContextMenu);
+                this.Cursor = Cursors.Hand;
+                this.ContextMenuClosing += ViewContour_ContextMenuClosing;
+                this.MouseWheel += CadContour_MouseWheel;
+            }
         }
 
         private void CadContour_MouseWheel(object sender, MouseWheelEventArgs e)

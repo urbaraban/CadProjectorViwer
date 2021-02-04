@@ -88,7 +88,7 @@ namespace MonchaCadViewer.ToolsPanel.ContourScrollPanel
             this.objectsGroup = cadObjectsGroup;
             CadContour cadContour = new CadContour(cadObjectsGroup.myGeometry, false, false);
             cadContour.TransformGroup = this.objectsGroup.TransformGroup;
-            cadCanvas.DrawContour(cadContour, false, true);
+            cadCanvas.DrawContour(cadContour);
         }
 
         public void Remove()

@@ -816,7 +816,7 @@ namespace MonchaCadViewer
             }
         }
 
-        private void RectBtn_Click(object sender, RoutedEventArgs e) => MainCanvas.Canvas.MouseAction = CanvasObj.MouseAction.Rectangle;
+        private void RectBtn_Click(object sender, RoutedEventArgs e) => MainCanvas.Canvas.MouseAction = CanvasObj.MouseAction.Mask;
 
         private void Line_Click(object sender, RoutedEventArgs e) => MainCanvas.Canvas.MouseAction = CanvasObj.MouseAction.Line;
 

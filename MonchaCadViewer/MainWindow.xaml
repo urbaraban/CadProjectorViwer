@@ -127,7 +127,7 @@
                                         <ToolBar Margin="0,0,0,0" Grid.ColumnSpan="2">
                                             <Button x:Name="ClearBtn" Content="Clear"  Click="ClearBtn_Click"/>
                                             <Button x:Name="Line" Content="Line" Click="Line_Click"/>
-                                            <Button x:Name="RectBtn" Content="Rect" Click="RectBtn_Click"/>
+                                            <Button x:Name="RectBtn" Content="Mask" Click="RectBtn_Click"/>
                                         </ToolBar>
                                     </Grid>
                                 </TabItem>

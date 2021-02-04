@@ -39,6 +39,8 @@ namespace MonchaCadViewer.CanvasObj
         private Point StartMovePoint;
         private Point StartMousePoint;
 
+        public List<CadRectangle> Masks = new List<CadRectangle>();
+
         public LPoint3D Size
         {
             get => this._size;
@@ -70,6 +72,7 @@ namespace MonchaCadViewer.CanvasObj
                         break;
                     case MouseAction.Line:
                     case MouseAction.Rectangle:
+                    case MouseAction.Mask:
                         this.Cursor = Cursors.Cross;
                         break;
                 };
@@ -116,7 +119,7 @@ namespace MonchaCadViewer.CanvasObj
                 ContextMenuLib.CanvasMenu(this.ContextMenu);
 
                 this.MouseLeftButtonDown += Canvas_MouseLeftDown;
-                this.MouseMove += CadCanvas_MouseMove;
+                //this.MouseMove += CadCanvas_MouseMove;
                 this.MouseUp += CadCanvas_MouseUp;
                 this.MouseLeftButtonDown += CadCanvas_MouseLeftButtonDown;
                 this.MouseMove += CadCanvas_MouseMove1;
@@ -210,6 +213,12 @@ namespace MonchaCadViewer.CanvasObj
             {
                 this.Add(new CadRectangle(new LPoint3D(e.GetPosition(this)), new LPoint3D(e.GetPosition(this))));
             }
+            else if (this.mouseAction == MouseAction.Mask)
+            {
+                CadRectangle Maskrectangle = new CadRectangle(new LPoint3D(e.GetPosition(this)), new LPoint3D(e.GetPosition(this)));
+                this.Add(Maskrectangle);
+                this.Masks.Add(Maskrectangle);
+            }
         }
 
 
@@ -239,7 +248,7 @@ namespace MonchaCadViewer.CanvasObj
         /// <param name="maincanvas">property for main canvas attributes</param>
         /// <param name="add">Add contour for already view</param>
         /// <param name="mousemove">add mouse event</param>
-        public void DrawContour(CadObject obj, bool maincanvas, bool mousemove)
+        public void DrawContour(CadObject obj)
         {
             if (obj is CadObject cadObject)
             {
@@ -332,15 +341,6 @@ namespace MonchaCadViewer.CanvasObj
             this._wasmove = false;
         }
 
-        private void SelectInRectangle(Geometry rectangle)
-        {
-             
-        }
-
-        private void CadCanvas_MouseMove(object sender, MouseEventArgs e)
-        {
-
-        }
 
         public void RemoveSelectObject()
         {
@@ -380,9 +380,10 @@ namespace MonchaCadViewer.CanvasObj
                     i--;
                 }
             }
+            this.Masks.Clear();
         }
 
-        public void RemoveChildren(UIElement Object)
+        public void RemoveChildren(FrameworkElement Object)
         {
             if (Object is CadObject cadObject)
             {
@@ -391,6 +392,9 @@ namespace MonchaCadViewer.CanvasObj
                 cadObject.Updated -= CadObject_Updated;
             }
             this.Children.Remove(Object);
+            
+            if (Object is CadRectangle cadRectangle) this.Masks.Remove(cadRectangle);
+
         }
 
         /// <summary>
@@ -399,6 +403,7 @@ namespace MonchaCadViewer.CanvasObj
         /// <param name="obj"></param>
         public void Add(FrameworkElement obj)
         {
+            Console.WriteLine("Add object");
             if (this.Children.Equals(obj) == false)
             {
                 if (obj is CadObject cadObject)
@@ -424,20 +429,12 @@ namespace MonchaCadViewer.CanvasObj
             UpdateProjection?.Invoke(this, null);
         }
 
-        private void CadObject_Removed(object sender, CadObject e)
-        {
-            RemoveChildren((UIElement)sender);
-        }
+        private void CadObject_Removed(object sender, CadObject e) => RemoveChildren((FrameworkElement)sender);
 
-        private void CadObject_Updated(object sender, string e)
-        {
-            UpdateProjection?.Invoke(this, null);
-        }
+        private void CadObject_Updated(object sender, string e) => UpdateProjection?.Invoke(this, null);
 
-        private void CadObject_OnObject1(object sender, bool e)
-        {
-            this._nofreecursor = e;
-        }
+        private void CadObject_OnObject1(object sender, bool e) => this._nofreecursor = e;
+
 
         private void CadObject_Selected(object sender, bool e)
         {
@@ -505,17 +502,15 @@ namespace MonchaCadViewer.CanvasObj
         public RotateTransform Rotate { get; set; }
         public TranslateTransform Translate { get; set; }
 
-        public double X { get => this.Translate.X; 
-            set 
-            {
-                this.Translate.X = value;
-            }
+        public double X 
+        { 
+            get => this.Translate.X; 
+            set => this.Translate.X = value;
         }
-        public double Y { get => this.Translate.Y;
-            set
-            {
-                this.Translate.Y = value;
-            }
+        public double Y 
+        { 
+            get => this.Translate.Y;
+            set => this.Translate.Y = value;
         }
         public bool IsFix { get; set; }
         public bool Mirror { get; set; } = false;

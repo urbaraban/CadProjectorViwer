@@ -39,7 +39,15 @@ namespace MonchaCadViewer.ToolsPanel.CanvasPanel
             InitializeComponent();
             this.Canvas.SelectedObject += CadCanvas_SelectedObject;
             this.Canvas.UpdateProjection += Canvas_UpdateProjection;
+
+            this.Canvas.MouseMove += Canvas_MouseMove;
             this.DataContextChanged += CadCanvasPanel_DataContextChanged;
+        }
+
+        private void Canvas_MouseMove(object sender, MouseEventArgs e)
+        {
+            Point tempPoint = e.GetPosition(Canvas);
+            CoordinateLabel.Content = $"X: { Math.Round(tempPoint.X, 2) }; Y:{ Math.Round(tempPoint.Y, 2) }";
         }
 
         private void Canvas_UpdateProjection(object sender, EventArgs e)
@@ -58,7 +66,7 @@ namespace MonchaCadViewer.ToolsPanel.CanvasPanel
             {
                 foreach (CadObject cadObject in objectsGroup.cadObjects)
                 {
-                    this.Canvas.DrawContour(cadObject, true, true);
+                    this.Canvas.DrawContour(cadObject);
                 }
             }
 

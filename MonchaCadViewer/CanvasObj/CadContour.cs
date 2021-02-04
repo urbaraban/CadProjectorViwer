@@ -48,27 +48,7 @@ namespace MonchaCadViewer.CanvasObj
 
         private void ViewContour_ContextMenuClosing(object sender, ContextMenuEventArgs e)
         {
-            if (this.ContextMenu.DataContext is MenuItem menuItem)
-            {
-                switch (menuItem.Header)
-                {
-                    case "Mirror":
-                        this.Mirror = !this.Mirror;
-                        break;
 
-                    case "Fix":
-                        this.IsFix = !this.IsFix;
-                        break;
-
-                    case "Remove":
-                        this.Remove();
-                        break;
-
-                    case "Render":
-                        this.Render = !this.Render;
-                        break;
-                }
-            }
         }
     }
 }

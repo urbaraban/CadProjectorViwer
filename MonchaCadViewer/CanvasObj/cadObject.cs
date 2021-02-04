@@ -302,10 +302,19 @@ namespace MonchaCadViewer.CanvasObj
                 this.ProjectionSetting.PropertyChanged += CadObject_PropertyChanged;
 
                 ContextMenuLib.CadObjMenu(this.ContextMenu);
+                this.ContextMenuClosing += CadObject_ContextMenuClosing;
             }
 
             this.InvalidateVisual();
             this.adornerLayer = AdornerLayer.GetAdornerLayer(this);
+        }
+
+        private void CadObject_ContextMenuClosing(object sender, ContextMenuEventArgs e)
+        {
+            if (this.ContextMenu.DataContext is MenuItem menuItem)
+            {
+                DoItContextMenu(menuItem);
+            }
         }
 
         public void Update()
@@ -356,6 +365,28 @@ namespace MonchaCadViewer.CanvasObj
             this.InvalidateVisual();
         }
 
+        public virtual void DoItContextMenu(MenuItem menuItem)
+        {
+            switch (menuItem.Header)
+            {
+                case "Mirror":
+                    this.Mirror = !this.Mirror;
+                    break;
+
+                case "Fix":
+                    this.IsFix = !this.IsFix;
+                    break;
+
+                case "Remove":
+                    this.Remove();
+                    break;
+
+                case "Render":
+                    this.Render = !this.Render;
+                    break;
+            }
+        }
+
         private void CadObject_PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
             this.InvalidateVisual();
@@ -366,7 +397,7 @@ namespace MonchaCadViewer.CanvasObj
         {
             Canvas canvas = this.Parent as Canvas;
             this.MousePos = e.GetPosition(canvas);
-            this.BasePos = new Point(this.Translate.X, this.Translate.Y);
+            this.BasePos = new Point(this.X, this.Y);
         }
 
         private void CadObject_MouseLeave(object sender, System.Windows.Input.MouseEventArgs e)

@@ -9,14 +9,15 @@
     <Grid Margin="0" Background="LightGray" ClipToBounds="True">
         <Grid.RowDefinitions>
             <RowDefinition Height="40"/>
-            <RowDefinition/>
+            <RowDefinition Height="67*"/>
+            <RowDefinition Height="5*"/>
         </Grid.RowDefinitions>
 
         <StackPanel Margin="0,0,0,0" Orientation="Horizontal" FlowDirection="RightToLeft" Panel.ZIndex="99">
             <Button x:Name="AdornerShowBtn" FontFamily="Segoe MDL2 Assets" Content="&#xE7F0;" Width="30" Height="30" Margin="3" Click="AdornerShowBtn_Click" Panel.ZIndex="999" FontSize="18"/>
             <Button x:Name="ShowDeviceRect" FontFamily="Segoe MDL2 Assets" Content="&#xE9A6;" Width="30" Height="30" Margin="3" Click="AdornerShowBtn_Click" Panel.ZIndex="999" FontSize="20"/>
         </StackPanel>
-        <Viewbox Grid.RowSpan="2" Stretch="Uniform">
+        <Viewbox Grid.RowSpan="3" Stretch="Uniform">
             <Viewbox  Stretch="Uniform" StretchDirection="DownOnly" Grid.RowSpan="2" Panel.ZIndex="0">
                 <canvasobj:CadCanvas x:Name="Canvas" SizeChanged="Canvas_SizeChanged" Focusable="False" Grid.Row="1">
                     <canvasobj:CadCanvas.Background>
@@ -41,5 +42,8 @@
                 </canvasobj:CadCanvas>
             </Viewbox>
         </Viewbox>
+        <StackPanel Orientation="Horizontal" FlowDirection="RightToLeft" Panel.ZIndex="99" Grid.Row="2">
+            <Label x:Name="CoordinateLabel" Content="X: 0; Y: 0"/>
+        </StackPanel>
     </Grid>
 </UserControl>

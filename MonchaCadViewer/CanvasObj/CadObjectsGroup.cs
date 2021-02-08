@@ -30,6 +30,7 @@ namespace MonchaCadViewer.CanvasObj
             {
                 this.cadObjects.Add(new CadContour(tempgeometry, true, true));
                 this.cadObjects.Last().TransformGroup = this.TransformGroup;
+                this.cadObjects.Last().Name = this.Name;
             }
         }
     }

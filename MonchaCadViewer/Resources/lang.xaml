@@ -19,6 +19,7 @@
     <v:String x:Key="obj_Angle">Angle</v:String>
     <v:String x:Key="obj_Width">Width</v:String>
     <v:String x:Key="obj_Height">Height</v:String>
+    <v:String x:Key="obj_Deep">Deep</v:String>
     <v:String x:Key="obj_Step">Step</v:String>
     <v:String x:Key="obj_Type">Type</v:String>
 

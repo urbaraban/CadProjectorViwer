@@ -46,7 +46,7 @@ namespace MonchaCadViewer.ToolsPanel
                 this.cadObject = cadObject;
 
                 OtherSettingSwitch.DataContext = cadObject;
-                OtherSettingSwitch.SetBinding(ToggleSwitch.IsOnProperty, "OtherProjection");
+                OtherSettingSwitch.SetBinding(ToggleSwitch.IsOnProperty, "OwnedSetting");
 
                 BindingCadObject(cadObject.ProjectionSetting);
             }

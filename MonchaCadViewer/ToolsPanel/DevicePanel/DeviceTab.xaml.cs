@@ -16,7 +16,6 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
-using Xceed.Wpf.Toolkit;
 
 using AppSt = MonchaCadViewer.Properties.Settings;
 
@@ -69,19 +68,21 @@ namespace MonchaCadViewer.ToolsPanel
             if (DeviceCombo.SelectedItem is MonchaDevice tempdevice)
             {
                 //LaserMeter
-                if (tempdevice.LMeter != null)
+                if (tempdevice.ProjectionSetting.LMeter != null)
                 {
-                    LaserMetersCombo.SelectedValue = tempdevice.LMeter.HWIdentifier;
+                    LaserMetersCombo.SelectedValue = tempdevice.ProjectionSetting.LMeter.HWIdentifier;
 
-                    LaserMeterToggle.DataContext = tempdevice.LMeter;
+                    LaserMeterToggle.DataContext = tempdevice.ProjectionSetting.LMeter;
                     LaserMeterToggle.SetBinding(ToggleSwitch.IsOnProperty, "IsTurn");
 
-                    DistanceUpDn.DataContext = tempdevice.LMeter;
-                    DistanceUpDn.SetBinding(NumericUpDown.ValueProperty, "Distance");
-
-                    tempdevice.LMeter.ChangeDimention += LMeter_ChangeDimention;
-
+                    tempdevice.ProjectionSetting.LMeter.ChangeDimention += LMeter_ChangeDimention;
                 }
+
+                CommonSettingToggle.DataContext = tempdevice;
+                CommonSettingToggle.SetBinding(ToggleSwitch.IsOnProperty, "OwnedSetting");
+
+                DistanceUpDn.DataContext = tempdevice.ProjectionSetting;
+                DistanceUpDn.SetBinding(NumericUpDown.ValueProperty, "Distance");
 
                 //Device
                 ScanRateRealSlider.Maximum = 40000;
@@ -179,25 +180,12 @@ namespace MonchaCadViewer.ToolsPanel
         {
             if (DeviceCombo.SelectedItem is MonchaDevice monchaDevice)
             {
-                monchaDevice.ReconnectLMeter(LaserMetersCombo.SelectedItem as VLTLaserMeters);
+                monchaDevice.ProjectionSetting.ReconnectLMeter(LaserMetersCombo.SelectedItem as VLTLaserMeters);
 
-                DistanceUpDn.DataContext = monchaDevice.LMeter;
+                DistanceUpDn.DataContext = monchaDevice.ProjectionSetting;
                 DistanceUpDn.SetBinding(NumericUpDown.ValueProperty, "Distance");
 
             }
-        }
-
-        private void SetDistanceBtn_Click(object sender, RoutedEventArgs e)
-        {
-           /* SetDistanceBtn.Invoke(() =>
-            {
-                if (LaserMetersCombo.SelectedItem is VLTLaserMeters laserMeters)
-                {
-                    laserMeters.Distance = laserMeters.RealDistance;
-                    DistanceUpDn.Value = laserMeters.Distance;
-                }
-            });*/
-
         }
 
         private void ClearCalcMeshBtn_Click(object sender, RoutedEventArgs e)

@@ -132,6 +132,9 @@ namespace MonchaCadViewer
             HeightUpD.DataContext = MonchaHub.Size;
             HeightUpD.SetBinding(NumericUpDown.ValueProperty, "Y");
 
+            DeepUpDn.DataContext = MonchaHub.Size;
+            DeepUpDn.SetBinding(NumericUpDown.ValueProperty, "Z");
+
             MashMultiplierUpDn.Value = MonchaHub.Size.M.X;
 
             CalibrationFormCombo.Items.Clear();

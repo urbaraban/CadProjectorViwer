@@ -87,12 +87,34 @@ namespace MonchaCadViewer.CanvasObj
             }
         }
 
-        public LProjectionSetting ProjectionSetting = MonchaHub.ProjectionSetting;
+        public LProjectionSetting ProjectionSetting
+        {
+            get => projectionSetting == null ? MonchaHub.ProjectionSetting : projectionSetting;
+            set
+            {
+                projectionSetting = value;
+            }
+        }
+        private LProjectionSetting projectionSetting;
 
         #region TranformObject
         public TransformGroup TransformGroup 
         {
-            get => transform;
+            get => new TransformGroup()
+            {
+                Children = new TransformCollection()
+                {
+                    new ScaleTransform()
+                    {
+                        ScaleX = this.Scale.ScaleX * ProjectionSetting.GetProportion,
+                        ScaleY = this.Scale.ScaleY * ProjectionSetting.GetProportion,
+                        CenterX = this.Scale.CenterX,
+                        CenterY = this.Scale.CenterY
+                    },
+                    this.Rotate,
+                    this.Translate
+                }
+            };
             set
             {
                 transform = value;
@@ -101,6 +123,7 @@ namespace MonchaCadViewer.CanvasObj
                 this.Translate = (TranslateTransform)value.Children[2];
             }
         }
+
         private TransformGroup transform = new TransformGroup();
         public RotateTransform Rotate { get; set; } = new RotateTransform();
         public TranslateTransform Translate { get; set; } = new TranslateTransform();
@@ -455,15 +478,18 @@ namespace MonchaCadViewer.CanvasObj
 
         protected override void OnRender(DrawingContext drawingContext)
         {
-            drawingContext.PushTransform(new TransformGroup()
+            drawingContext.PushTransform(new ScaleTransform()
             {
-                Children = new TransformCollection()
-                {
-                    this.Scale,
-                    this.Rotate,
-                    this.Translate
-                }
+                ScaleX = this.Scale.ScaleX * ProjectionSetting.GetProportion,
+                ScaleY = this.Scale.ScaleY * ProjectionSetting.GetProportion,
+                CenterX = this.Scale.CenterX,
+                CenterY = this.Scale.CenterY
             });
+            drawingContext.PushTransform(this.Translate);
+            drawingContext.DrawText(new FormattedText($"{this.Name}:{MonchaHub.Size.MZ - ProjectionSetting.Distance}", new System.Globalization.CultureInfo("ru-RU"), FlowDirection.LeftToRight,
+           new Typeface("Segoe UI"), (int)MonchaHub.GetThinkess * 3, Brushes.Gray), new Point(0, 0));
+
+            drawingContext.PushTransform(this.Rotate);
             drawingContext.DrawGeometry(myBack, myPen, myGeometry);
             //drawingContext.DrawRectangle(myBack, myPen, myGeometry.Bounds);
         }

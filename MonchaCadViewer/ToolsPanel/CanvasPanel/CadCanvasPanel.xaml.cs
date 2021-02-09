@@ -64,10 +64,15 @@ namespace MonchaCadViewer.ToolsPanel.CanvasPanel
 
             if (this.DataContext is CadObjectsGroup objectsGroup)
             {
-                foreach (CadObject cadObject in objectsGroup.cadObjects)
+                if (AppSt.Default.object_solid == false)
                 {
-                    this.Canvas.DrawContour(cadObject);
+                    foreach (CadObject cadObject in objectsGroup.cadObjects)
+                    {
+                        cadObject.ShowName = false;
+                        this.Canvas.DrawContour(cadObject);
+                    }
                 }
+                else this.Canvas.DrawContour(objectsGroup);
             }
 
 

@@ -59,7 +59,7 @@ namespace MonchaCadViewer.CanvasObj
             this.Translate.Y = Point.MY;
 
             this.size = Size;
-
+            this.ShowName = false;
 
             Canvas.SetZIndex(this, 999);
 

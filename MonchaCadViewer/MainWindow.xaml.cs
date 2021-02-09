@@ -243,10 +243,10 @@ namespace MonchaCadViewer
             {
                 _actualFrames = DC.Get(filename);
             }
-            else if (filename.Split('.').Last() == "ec")
+            /*else if (filename.Split('.').Last() == "ec")
             {
                 _actualFrames = EC.Get(filename);
-            }
+            }*/
             else if ((filename.Split('.').Last() == "frw") || (filename.Split('.').Last() == "cdw"))
             {
                 if (KmpsAppl.KompasAPI == null)
@@ -528,7 +528,6 @@ namespace MonchaCadViewer
                 if (WorkFolderSlct.SelectedPath != string.Empty)
                 {
                     AppSt.Default.save_work_folder = WorkFolderSlct.SelectedPath;
-                    AppSt.Default.lastDate = date.Month;
                     AppSt.Default.Save();
                 }
             }
@@ -634,6 +633,7 @@ namespace MonchaCadViewer
             AppSt.Default.defailt_tesselate = TesselateCheck.IsChecked.Value;
             AppSt.Default.stg_scale_invert = ScaleInvertCheck.IsChecked.Value;
             AppSt.Default.stg_scale_percent = ScalePercentCheck.IsChecked.Value;
+            AppSt.Default.object_solid = SolidObject.IsChecked.Value;
             AppSt.Default.Save();
         }
 
@@ -669,7 +669,7 @@ namespace MonchaCadViewer
                 foreach (string path in Directory.GetFiles(AppSt.Default.save_work_folder))
                 {
                     string format = path.Split('.').Last();
-                    if (format == "svg" || format == "dxf" || format == "frw" || format == "dc" || format == "ec") {
+                    if (format == "svg" || format == "dxf" || format == "frw" || format == "dc") {
                         paths.Add(path.Split('\\').Last());
                     }
                 }

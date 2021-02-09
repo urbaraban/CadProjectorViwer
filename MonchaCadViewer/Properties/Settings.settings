@@ -32,12 +32,6 @@
     <Setting Name="save_base_folder" Type="System.String" Scope="User">
       <Value Profile="(Default)">base folder</Value>
     </Setting>
-    <Setting Name="lastDate" Type="System.Int32" Scope="User">
-      <Value Profile="(Default)">0</Value>
-    </Setting>
-    <Setting Name="base_distance" Type="System.Double" Scope="User">
-      <Value Profile="(Default)">0</Value>
-    </Setting>
     <Setting Name="default_scale_x" Type="System.Double" Scope="User">
       <Value Profile="(Default)">100</Value>
     </Setting>
@@ -61,6 +55,9 @@
     </Setting>
     <Setting Name="anchor_size" Type="System.Int32" Scope="User">
       <Value Profile="(Default)">2</Value>
+    </Setting>
+    <Setting Name="object_solid" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">True</Value>
     </Setting>
   </Settings>
 </SettingsFile>

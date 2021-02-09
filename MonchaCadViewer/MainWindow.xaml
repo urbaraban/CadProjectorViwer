@@ -213,12 +213,6 @@
                                             <Button x:Name="ILDASaveBtn" Content="{DynamicResource m_Saveas}" HorizontalAlignment="Left" Margin="10,40,0,0" VerticalAlignment="Top" Width="248" Height="29" Click="ILDASaveBtn_Click"/>
                                         </Grid>
                                     </TabItem>
-                                    <TabItem Header="SVG" Controls:HeaderedControlHelper.HeaderFontSize="14">
-                                        <Grid Background="#FFE5E5E5"/>
-                                    </TabItem>
-                                    <TabItem Header="STL" Controls:HeaderedControlHelper.HeaderFontSize="14">
-                                        <Grid Background="#FFE5E5E5"/>
-                                    </TabItem>
                                     <TabItem Header="Setting" Controls:HeaderedControlHelper.HeaderFontSize="14">
                                         <Grid Background="#FFE5E5E5">
                                             <Grid.ColumnDefinitions>
@@ -261,6 +255,11 @@
                                                 </CheckBox.DataContext>
                                             </CheckBox>
                                             <CheckBox x:Name="ScaleInvertCheck" Content="Invert Scale" HorizontalAlignment="Left" Margin="5,208,0,0" VerticalAlignment="Top"  IsChecked="{Binding stg_scale_invert, Mode=TwoWay}" Grid.Column="1" Width="147">
+                                                <CheckBox.DataContext>
+                                                    <Properties:Settings/>
+                                                </CheckBox.DataContext>
+                                            </CheckBox>
+                                            <CheckBox x:Name="SolidObject" Content="Solid Object" HorizontalAlignment="Left" Margin="5,228,0,0" VerticalAlignment="Top"  IsChecked="{Binding object_solid, Mode=TwoWay}" Grid.Column="1" Width="147">
                                                 <CheckBox.DataContext>
                                                     <Properties:Settings/>
                                                 </CheckBox.DataContext>

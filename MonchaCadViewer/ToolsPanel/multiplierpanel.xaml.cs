@@ -74,6 +74,9 @@ namespace MonchaCadViewer.ToolsPanel
             MultiplierSlider.DataContext = projectionSetting;
             MultiplierSlider.SetBinding(Slider.ValueProperty, "StartLineWait");
 
+            DistanceUpDn.DataContext = projectionSetting;
+            DistanceUpDn.SetBinding(NumericUpDown.ValueProperty, "Distance");
+
             RedUpDn.DataContext = projectionSetting;
             RedUpDn.SetBinding(NumericUpDown.ValueProperty, "Red");
 
@@ -124,10 +127,12 @@ namespace MonchaCadViewer.ToolsPanel
             CRSUpDn.DataContext = null;
             RadiusSlider.DataContext = null;
             MultiplierSlider.DataContext = null;
+            DistanceUpDn.DataContext = null;
             BindingOperations.ClearBinding(CRSUpDn, NumericUpDown.ValueProperty);
             BindingOperations.ClearBinding(RadiusSlider, Slider.ValueProperty);
             BindingOperations.ClearBinding(MultiplierSlider, Slider.ValueProperty);
-            BindingCadObject(this.cadObject.OtherProjection == true ? this.cadObject.ProjectionSetting : MonchaHub.ProjectionSetting );
+            BindingOperations.ClearBinding(DistanceUpDn, NumericUpDown.ValueProperty);
+            BindingCadObject(this.cadObject.ProjectionSetting);
         }
 
         private void DeviceLayerCombo_SelectionChanged(object sender, SelectionChangedEventArgs e)

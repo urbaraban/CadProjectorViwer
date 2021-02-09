@@ -40,21 +40,21 @@
             <ColumnDefinition Width="96"/>
             <ColumnDefinition/>
         </Grid.ColumnDefinitions>
-        <Label Content="{DynamicResource dvc_StepPoint}" Padding="2,3,0,0" Margin="29,279,0,0" HorizontalAlignment="Left" Width="57" Height="26" VerticalAlignment="Top"/>
+        <Label Content="{DynamicResource dvc_StepPoint}" Padding="2,3,0,0" Margin="12,279,0,0" HorizontalAlignment="Left" Width="57" Height="26" VerticalAlignment="Top"/>
         <Controls:NumericUpDown x:Name="CRSUpDn" Margin="10,280,16,0" Maximum="999" Minimum="1" Background="White" Height="26" VerticalAlignment="Top" Grid.Column="1" />
         <Label Content="{DynamicResource dvc_Radius}" Padding="2,3,0,0" Margin="10,78,0,0" Height="26" VerticalAlignment="Top" HorizontalAlignment="Left" Width="57"/>
         <Slider x:Name="RadiusSlider" Margin="10,104,10,0" Value="1000" Minimum="1" SmallChange="1" Maximum="9999" Height="22" VerticalAlignment="Top" Grid.ColumnSpan="2"/>
-        <Label x:Name="radiusVal" Content="{Binding Value, ElementName=RadiusSlider}" Padding="2,3,0,0" Margin="10,78,19,0" Height="26" VerticalAlignment="Top" Grid.Column="1" HorizontalContentAlignment="Right"/>
+        <Label x:Name="radiusVal" Content="{Binding Value, ElementName=RadiusSlider}" Padding="2,3,0,0" Margin="19,78,10,0" Height="26" VerticalAlignment="Top" Grid.Column="1" HorizontalContentAlignment="Right"/>
         <Slider x:Name="MultiplierSlider" Margin="10,153,10,0" Value="1" Minimum="0" SmallChange="1" Maximum="20" Height="22" VerticalAlignment="Top" Grid.ColumnSpan="2"/>
         <Label Content="{DynamicResource dvc_WaintPoint}" Padding="2,3,0,0" Margin="10,127,0,0" Height="26" VerticalAlignment="Top" HorizontalAlignment="Left" Width="57"/>
-        <Controls:ToggleSwitch x:Name="OtherSettingSwitch" Margin="10,10,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" Grid.ColumnSpan="2" OffContent="{DynamicResource dvc_ProjectMain}" OnContent="{DynamicResource dvc_ProjectOwn}" Width="165" Height="23" Toggled="OtherSettingSwitch_Toggled"/>
+        <Controls:ToggleSwitch x:Name="OtherSettingSwitch" Margin="10,10,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" OffContent="{DynamicResource dvc_ProjectMain}" OnContent="{DynamicResource dvc_ProjectOwn}" Width="86" Height="23" Toggled="OtherSettingSwitch_Toggled"/>
         <Controls:NumericUpDown x:Name="RedUpDn" Margin="10,185,16,0" Value="255" Maximum="255" Minimum="1" Background="White" Height="26" VerticalAlignment="Top" Grid.Column="1" IsEnabled="{c:Binding !IsChecked, ElementName=QRBtn}" />
-        <Controls:ToggleSwitch x:Name="RedToggle" Background="Red"  Content="{DynamicResource dvc_RED}" HorizontalAlignment="Left" Margin="18,188,0,0" VerticalAlignment="Top" Height="26"  HorizontalContentAlignment="Center" Width="68" />
+        <Controls:ToggleSwitch x:Name="RedToggle" Background="Red"  Content="{DynamicResource dvc_RED}" HorizontalAlignment="Left" Margin="10,188,0,0" VerticalAlignment="Top" Height="26"  HorizontalContentAlignment="Center" Width="68" />
         <Controls:NumericUpDown x:Name="GreenUpDn" Margin="10,216,16,0" Value="255" Maximum="255" Minimum="1" Background="White" Height="26" VerticalAlignment="Top" Grid.Column="1" IsEnabled="{c:Binding !IsChecked, ElementName=QRBtn}" />
-        <Controls:ToggleSwitch x:Name="GreenToggle"  Content="{DynamicResource dvc_GREEN}" HorizontalAlignment="Left" Margin="18,219,0,0" VerticalAlignment="Top" Height="25" HorizontalContentAlignment="Center" Width="81" Grid.ColumnSpan="2"/>
+        <Controls:ToggleSwitch x:Name="GreenToggle"  Content="{DynamicResource dvc_GREEN}" HorizontalAlignment="Left" Margin="10,219,0,0" VerticalAlignment="Top" Height="25" HorizontalContentAlignment="Center" Width="81" Grid.ColumnSpan="2"/>
         <Controls:NumericUpDown x:Name="BlueUpDn" Margin="10,249,16,0" Value="255" Maximum="255" Minimum="1" Background="White" Height="26" VerticalAlignment="Top" Grid.Column="1" IsEnabled="{c:Binding !IsChecked, ElementName=QRBtn}" />
-        <Controls:ToggleSwitch x:Name="BlueToggle"  Content="{DynamicResource dvc_Blue}" HorizontalAlignment="Left" Margin="18,249,0,0" VerticalAlignment="Top" Height="25"  HorizontalContentAlignment="Center" Width="71"/>
-        <ComboBox x:Name="DeviceLayerCombo" Grid.ColumnSpan="2" HorizontalAlignment="Left" Margin="18,46,0,0" VerticalAlignment="Top" Width="166" SelectionChanged="DeviceLayerCombo_SelectionChanged"/>
-
+        <Controls:ToggleSwitch x:Name="BlueToggle"  Content="{DynamicResource dvc_Blue}" HorizontalAlignment="Left" Margin="10,249,0,0" VerticalAlignment="Top" Height="25"  HorizontalContentAlignment="Center" Width="71"/>
+        <ComboBox x:Name="DeviceLayerCombo" Margin="0,11,10,0" VerticalAlignment="Top" SelectionChanged="DeviceLayerCombo_SelectionChanged" Grid.Column="1"/>
+        <Controls:NumericUpDown x:Name="DistanceUpDn" Margin="10,45,10,0" Value="0" Maximum="999999" Minimum="-999999" Background="White" Height="26" VerticalAlignment="Top" IsEnabled="{Binding !IsChecked, ElementName=QRBtn}" Grid.ColumnSpan="2"/>
     </Grid>
 </UserControl>

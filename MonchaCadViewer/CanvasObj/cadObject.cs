@@ -18,7 +18,7 @@ using AppSt = MonchaCadViewer.Properties.Settings;
 
 namespace MonchaCadViewer.CanvasObj
 {
-    public abstract class CadObject : FrameworkElement, INotifyPropertyChanged, TransformObject
+    public abstract class CadObject : FrameworkElement, INotifyPropertyChanged, TransformObject, LSettingObject
     {
         public Geometry myGeometry { get; set; }
         public virtual Pen myPen { 
@@ -68,24 +68,6 @@ namespace MonchaCadViewer.CanvasObj
         }
         #endregion
 
-        private bool _otherprojection = false;
-        public bool OtherProjection
-        {
-            get => this._otherprojection;
-            set
-            {
-                this._otherprojection = value;
-
-                if (value == true)
-                {
-                    this.ProjectionSetting = (LProjectionSetting)MonchaHub.ProjectionSetting.Clone();
-                }
-                else
-                {
-                    this.ProjectionSetting = MonchaHub.ProjectionSetting;
-                }
-            }
-        }
 
         public LProjectionSetting ProjectionSetting
         {
@@ -96,6 +78,18 @@ namespace MonchaCadViewer.CanvasObj
             }
         }
         private LProjectionSetting projectionSetting;
+
+        public bool OwnedSetting 
+        {
+            get => ownedsetting;
+            set
+            {
+                ownedsetting = value;
+                if (ownedsetting == true) projectionSetting = MonchaHub.ProjectionSetting.Clone();
+                else projectionSetting = null;
+            }
+        }
+        private bool ownedsetting = false;
 
         #region TranformObject
         public TransformGroup TransformGroup 
@@ -294,6 +288,8 @@ namespace MonchaCadViewer.CanvasObj
         }
         private bool _render = true;
 
+        public bool ShowName { get; set; } = true;
+
         public bool WasMove { get; set; } = false;
 
         public bool Editing { get; set; } = false;
@@ -478,16 +474,22 @@ namespace MonchaCadViewer.CanvasObj
 
         protected override void OnRender(DrawingContext drawingContext)
         {
+            drawingContext.PushTransform(this.Translate);
+
+            if (ShowName == true)
+            {
+                drawingContext.DrawText(new FormattedText($"{(this.Name != string.Empty ? this.Name.Substring(0, 4) : string.Empty)}:{ProjectionSetting.Distance}", new System.Globalization.CultureInfo("ru-RU"), FlowDirection.LeftToRight,
+                new Typeface("Segoe UI"), (int)MonchaHub.GetThinkess * 3, Brushes.Gray), myGeometry.Bounds.TopLeft);
+            }
+
             drawingContext.PushTransform(new ScaleTransform()
             {
-                ScaleX = this.Scale.ScaleX * ProjectionSetting.GetProportion,
-                ScaleY = this.Scale.ScaleY * ProjectionSetting.GetProportion,
+                ScaleX = this.Scale.ScaleX * this.ProjectionSetting.GetProportion,
+                ScaleY = this.Scale.ScaleY * this.ProjectionSetting.GetProportion,
                 CenterX = this.Scale.CenterX,
                 CenterY = this.Scale.CenterY
             });
-            drawingContext.PushTransform(this.Translate);
-            drawingContext.DrawText(new FormattedText($"{this.Name}:{MonchaHub.Size.MZ - ProjectionSetting.Distance}", new System.Globalization.CultureInfo("ru-RU"), FlowDirection.LeftToRight,
-           new Typeface("Segoe UI"), (int)MonchaHub.GetThinkess * 3, Brushes.Gray), new Point(0, 0));
+            
 
             drawingContext.PushTransform(this.Rotate);
             drawingContext.DrawGeometry(myBack, myPen, myGeometry);

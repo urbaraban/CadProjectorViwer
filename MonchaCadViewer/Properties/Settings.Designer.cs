@@ -145,30 +145,6 @@ namespace MonchaCadViewer.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("0")]
-        public int lastDate {
-            get {
-                return ((int)(this["lastDate"]));
-            }
-            set {
-                this["lastDate"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("0")]
-        public double base_distance {
-            get {
-                return ((double)(this["base_distance"]));
-            }
-            set {
-                this["base_distance"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("100")]
         public double default_scale_x {
             get {
@@ -260,6 +236,18 @@ namespace MonchaCadViewer.Properties {
             }
             set {
                 this["anchor_size"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool object_solid {
+            get {
+                return ((bool)(this["object_solid"]));
+            }
+            set {
+                this["object_solid"] = value;
             }
         }
     }

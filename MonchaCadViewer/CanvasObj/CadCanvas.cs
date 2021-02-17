@@ -32,7 +32,7 @@ namespace MonchaCadViewer.CanvasObj
 
         private object MouseOnObject = null;
         private bool _wasmove = false;
-        private List<CadDot> anchors = new List<CadDot>();
+        private List<CadAnchor> anchors = new List<CadAnchor>();
         private int _status = 0;
         private bool _maincanvas;
         private bool _nofreecursor = true;
@@ -211,13 +211,16 @@ namespace MonchaCadViewer.CanvasObj
             }
             else if (this.MouseAction == MouseAction.Rectangle)
             {
-                this.Add(new CadRectangle(new LPoint3D(e.GetPosition(this)), new LPoint3D(e.GetPosition(this))));
+                CadRectangle cadRectangle = new CadRectangle(new LPoint3D(e.GetPosition(this)), new LPoint3D(e.GetPosition(this)), true);
+                this.Add(cadRectangle);
+
             }
             else if (this.mouseAction == MouseAction.Mask)
             {
-                CadRectangle Maskrectangle = new CadRectangle(new LPoint3D(e.GetPosition(this)), new LPoint3D(e.GetPosition(this)));
+                CadRectangle Maskrectangle = new CadRectangle(new LPoint3D(e.GetPosition(this)), new LPoint3D(e.GetPosition(this)), true);
                 this.Add(Maskrectangle);
                 this.Masks.Add(Maskrectangle);
+
             }
         }
 
@@ -356,13 +359,13 @@ namespace MonchaCadViewer.CanvasObj
             UpdateProjection?.Invoke(this, null);
         }
 
-        public CadDot[,] GetMeshDot(int Height, int Width)
+        public CadAnchor[,] GetMeshDot(int Height, int Width)
         {
-            CadDot[,] mesh = new CadDot[Height, Width];
+            CadAnchor[,] mesh = new CadAnchor[Height, Width];
             for (int i = 0; i < Height; i++)
                 for (int j = 0; j < Width; j++)
                 {
-                    mesh[i, j] = this.Children[i * Width + j] as CadDot;
+                    mesh[i, j] = this.Children[i * Width + j] as CadAnchor;
                 }
             return mesh;
         }
@@ -446,29 +449,13 @@ namespace MonchaCadViewer.CanvasObj
             SelectedObject?.Invoke(this, (CadObject)sender);
         }
 
-        public static List<FrameworkElement> GetRectangle(LPoint3D point1, LPoint3D point2)
-        {
-            CadDot cadDot1 = new CadDot(point1, MonchaHub.GetThinkess * 3, true, true, true);
-            cadDot1.Render = false;
-            CadDot cadDot2 = new CadDot(point2, MonchaHub.GetThinkess * 3, true, true, true);
-            cadDot2.Render = false;
-            return new List<FrameworkElement>()
-            {
-                cadDot1,
-                cadDot2
-            };
-        }
-
         public static List<FrameworkElement> GetMesh(MonchaDeviceMesh mesh, MonchaDevice _device, double AnchorSize, bool Render)
         {
             if (_device != null)
             {
                 List<FrameworkElement> objects = new List<FrameworkElement>();
 
-                if (mesh == null)
-                {
-                    mesh = _device.CalculateMesh;
-                }
+                if (mesh == null) mesh = _device.CalculateMesh;
 
                 for (int i = 0; i < mesh.GetLength(0); i++)
                 {
@@ -476,19 +463,15 @@ namespace MonchaCadViewer.CanvasObj
                     {
                         mesh[i, j].M = MonchaHub.Size;
 
-                        CadDot dot = new CadDot(
-                             mesh[i, j],
-                            AnchorSize,
-                            //calibration flag
-                            true, true, false);
-
-                        dot.IsFix = false; // !mesh.OnlyEdge;
-                        dot.Uid = i.ToString() + ":" + j.ToString();
-                        dot.ToolTip = "Позиция: " + i + ":" + j + "\nX: " + mesh[i, j].X + "\n" + "Y: " + mesh[i, j].Y;
-                        dot.DataContext = mesh;
-                        dot.OnBaseMesh = !mesh.Affine;
-                        dot.Render = Render;
-                        objects.Add(dot);
+                        objects.Add(new CadAnchor(mesh[i, j], AnchorSize, true)
+                        {
+                            IsFix = false,// !mesh.OnlyEdge;
+                            Uid = i.ToString() + ":" + j.ToString(),
+                            ToolTip = "Позиция: " + i + ":" + j + "\nX: " + mesh[i, j].X + "\n" + "Y: " + mesh[i, j].Y,
+                            DataContext = mesh,
+                            OnBaseMesh = !mesh.Affine,
+                            Render = Render,
+                        });
                     }
                 }
                 return objects;
@@ -517,7 +500,7 @@ namespace MonchaCadViewer.CanvasObj
 
         public bool WasMove { get; set; } = false;
 
-        public void UpdateTransform(TransformGroup transformGroup)
+        public void UpdateTransform(TransformGroup transformGroup, bool ResetPosition)
         {
             if (transformGroup != null)
             {

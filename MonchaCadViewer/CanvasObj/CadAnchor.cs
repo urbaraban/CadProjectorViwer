@@ -9,7 +9,7 @@ using MonchaSDK.Object;
 
 namespace MonchaCadViewer.CanvasObj
 {
-    public class CadDot : CadObject
+    public class CadAnchor : CadObject
     {
         private double size;
         private RectangleGeometry rectangle;
@@ -25,6 +25,7 @@ namespace MonchaCadViewer.CanvasObj
             set
             {
                 this.Translate.X = value;
+                this.PointX.MX = value;
                 OnPropertyChanged("X");
             }
         }
@@ -35,69 +36,77 @@ namespace MonchaCadViewer.CanvasObj
             set
             {
                 this.Translate.Y = value;
+                this.PointY.MY = value;
                 OnPropertyChanged("Y");
             }
         }
 
-        public LPoint3D Point { get; set; }
+        private LPoint3D PointX { get; set; }
+        private LPoint3D PointY { get; set; }
+
+        public LPoint3D GetPoint => PointX != PointY ? new LPoint3D(PointX.MX, PointY.MY, PointX.M) : PointX;
 
 
-        public CadDot(LPoint3D Point, double Size, bool OnBaseMesh, bool capturemouse, bool move) : base(capturemouse, move )
+        public CadAnchor(LPoint3D Point, double AnchorSize, bool OnBaseMesh)
         {
-            this.myGeometry = new RectangleGeometry(new Rect(-Size / 2, -Size / 2, Size, Size));
+            this.PointX = Point;
+            this.PointX.PropertyChanged += Point_PropertyChanged;
+            this.PointY = Point;
 
+            this.PointX.Selected += Point_Selected;
+            this.PropertyChanged += CadDot_PropertyChanged;
+
+            CommonSetting(AnchorSize);
+        }
+
+        public CadAnchor(LPoint3D PointX, LPoint3D PointY, double AnchorSize, bool OnBaseMesh)
+        {
+            this.PointX = PointX;
+            this.PointX.PropertyChanged += Point_PropertyChanged;
+            this.PointY = PointY;
+            this.PointY.PropertyChanged += Point_PropertyChanged;
+            CommonSetting(AnchorSize);
+        }
+
+        private void CommonSetting(double AnchorSize)
+        {
+
+            this.size = AnchorSize;
+            this.myGeometry = new RectangleGeometry(new Rect(-AnchorSize / 2, -AnchorSize / 2, AnchorSize, AnchorSize));
+            this.ShowName = false;
+            ContextMenuLib.DotContextMenu(this.ContextMenu);
+            Canvas.SetZIndex(this, 999);
             this.RenderTransformOrigin = new Point(1, 1);
 
-            this.UpdateTransform(null);
+            this.UpdateTransform(null, false);
+            this.Translate.X = this.PointX.MX;
+            this.Translate.Y = this.PointY.MY;
 
             this.OnBaseMesh = OnBaseMesh;
-
-            this.Point = Point;
-            this.Point.PropertyChanged += Point_PropertyChanged;
-
-            this.Translate.X = Point.MX;
-            this.Translate.Y = Point.MY;
-
-            this.size = Size;
-            this.ShowName = false;
-
-            Canvas.SetZIndex(this, 999);
-
-            ContextMenuLib.DotContextMenu(this.ContextMenu);
 
             this.ContextMenuClosing += DotShape_ContextMenuClosing;
             this.MouseLeftButtonDown += CadDot_MouseLeftButtonDown;
             this.Fixed += CadDot_Fixed;
-            this.Point.Selected += Point_Selected;
-            this.PropertyChanged += CadDot_PropertyChanged;
         }
 
         private void Point_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
             Dispatcher.Invoke(() => 
             { 
-                this.Translate.X = this.Point.MX;
-                this.Translate.Y = this.Point.MY;
+                this.Translate.X = this.PointX.MX;
+                this.Translate.Y = this.PointY.MY;
             });
         }
 
         private void CadDot_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
-            if (e.PropertyName == "IsSelected" && this.Point.Select == false)
+            if (e.PropertyName == "IsSelected" && this.PointX.Select == false)
             {
-                this.Point.Select = true;
+                PointX.Select = true;
             }
-            else if (e.PropertyName == "Leave" && this.Point.Select == true)
+            else if (e.PropertyName == "Leave" && this.PointX.Select == true)
             {
-                this.Point.Select = false;
-            }
-            else if (e.PropertyName == "X")
-            {
-                this.Point.MX = this.X;
-            }
-            else if (e.PropertyName == "Y")
-            {
-                this.Point.MY = this.Y;
+                PointX.Select = false;
             }
 
             this.InvalidateVisual();
@@ -111,7 +120,7 @@ namespace MonchaCadViewer.CanvasObj
 
         private void CadDot_Selected(object sender, bool e)
         {
-            this.Point.Select = e;
+            this.PointX.Select = e;
         }
 
 
@@ -122,7 +131,7 @@ namespace MonchaCadViewer.CanvasObj
 
         private void CadDot_Fixed(object sender, bool e)
         {
-            this.Point.IsFix = e;
+            this.PointX.IsFix = e;
         }
 
         private void DotShape_ContextMenuClosing(object sender, ContextMenuEventArgs e)
@@ -138,7 +147,7 @@ namespace MonchaCadViewer.CanvasObj
                         this.Remove();
                         break;
                     case "Edit":
-                        DotEdit dotEdit = new DotEdit(this.Point);
+                        DotEdit dotEdit = new DotEdit(this.PointX);
                         dotEdit.Show();
                         break;
                 }

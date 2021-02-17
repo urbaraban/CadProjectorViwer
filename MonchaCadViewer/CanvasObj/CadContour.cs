@@ -17,7 +17,7 @@ namespace MonchaCadViewer.CanvasObj
         private bool _maincanvas;
         private AdornerContourFrame adornerContour;
 
-        public CadContour(Geometry geometryGroup,  bool maincanvas, bool Capturemouse) : base(Capturemouse, false)
+        public CadContour(Geometry geometryGroup,  bool maincanvas) 
         {
             this.myGeometry = geometryGroup;
             this._maincanvas = maincanvas;
@@ -33,17 +33,10 @@ namespace MonchaCadViewer.CanvasObj
                 ContextMenuLib.ViewContourMenu(this.ContextMenu);
                 this.Cursor = Cursors.Hand;
                 this.ContextMenuClosing += ViewContour_ContextMenuClosing;
-                this.MouseWheel += CadContour_MouseWheel;
+                
             }
         }
 
-        private void CadContour_MouseWheel(object sender, MouseWheelEventArgs e)
-        {
-            if ((e.Delta != 0) && (Keyboard.Modifiers != ModifierKeys.Control))
-            {
-                this.Angle += Math.Abs(e.Delta) / e.Delta * (Keyboard.Modifiers == ModifierKeys.Shift ? 1 : 5);
-            }
-        }
 
 
         private void ViewContour_ContextMenuClosing(object sender, ContextMenuEventArgs e)

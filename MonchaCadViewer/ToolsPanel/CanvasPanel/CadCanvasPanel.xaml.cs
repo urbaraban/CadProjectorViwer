@@ -86,8 +86,6 @@ namespace MonchaCadViewer.ToolsPanel.CanvasPanel
             SelectedObject?.Invoke(this, null);
         }
 
-
-
         private void CadCanvas_SelectedObject(object sender, CadObject e)
         {
             SelectedObject?.Invoke(this, e);

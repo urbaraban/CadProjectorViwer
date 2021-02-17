@@ -20,15 +20,15 @@ namespace MonchaCadViewer.CanvasObj
 
         private bool Opened = false;
 
-        public CadObjectsGroup(GeometryGroup geometry, string Name) : base(false, false)
+        public CadObjectsGroup(GeometryGroup geometry, string Name)
         {
             this.Name = Name;
             this.myGeometry = geometry;
-            this.UpdateTransform(null);
+            this.UpdateTransform(null, true);
 
             foreach (Geometry tempgeometry in geometry.Children)
             {
-                this.cadObjects.Add(new CadContour(tempgeometry, true, true));
+                this.cadObjects.Add(new CadContour(tempgeometry, true));
                 this.cadObjects.Last().TransformGroup = this.TransformGroup;
                 this.cadObjects.Last().Name = this.Name;
             }

@@ -15,6 +15,7 @@ using System.Windows.Controls.Primitives;
 using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
+using System.Windows.Shapes;
 
 namespace MonchaCadViewer.CanvasObj
 {
@@ -30,22 +31,21 @@ namespace MonchaCadViewer.CanvasObj
         #endregion
 
         public override event EventHandler<string> Updated;
-
-        protected CadRectangleAdorner adorner;
+        public override event EventHandler<CadObject> Removed;
 
         public LPoint3D Point1;
         public LPoint3D Point2;
 
         public override double X
         {
-            get => Math.Min(Point1.X, Point2.X);
+            get => Math.Min(Point1.MX, Point2.MX);
             set
             {
                 if (this.IsFix == false)
                 {
-                    double delta = value - Math.Min(Point1.X, Point2.X);
-                    Point1.X += delta;
-                    Point2.X += delta;
+                    double delta = value - Math.Min(Point1.MX, Point2.MX);
+                    Point1.MX += delta;
+                    Point2.MX += delta;
                     Updated?.Invoke(this, "X");
                     OnPropertyChanged("X");
                 }
@@ -53,23 +53,25 @@ namespace MonchaCadViewer.CanvasObj
         }
         public override double Y
         {
-            get => Math.Min(Point1.Y, Point2.Y);
+            get => Math.Min(Point1.MY, Point2.MY);
             set
             {
                 if (this.IsFix == false)
                 {
-                    double delta = value - Math.Min(Point1.Y, Point2.Y);
-                    Point1.Y += delta;
-                    Point2.Y += delta;
+                    double delta = value - Math.Min(Point1.MY, Point2.MY);
+                    Point1.MY += delta;
+                    Point2.MY += delta;
                     Updated?.Invoke(this, "Y");
                     OnPropertyChanged("Y");
                 }
             }
         }
 
-        public override Rect Bounds => new Rect(Point1.GetMPoint, Point2.GetPoint);
+        private List<CadAnchor> anchors;
 
-        public CadRectangle(LPoint3D Point1, LPoint3D Point2) : base (true, true)
+        public override Rect Bounds => new Rect(Point1.GetMPoint, Point2.GetMPoint);
+
+        public CadRectangle(LPoint3D Point1, LPoint3D Point2, bool MouseSet)
         {
             this.Render = false;
             this.TransformGroup = new TransformGroup()
@@ -85,7 +87,23 @@ namespace MonchaCadViewer.CanvasObj
             this.Point1 = Point1;
             this.Point2 = Point2;
 
-            this.Loaded += CadRectangle_Loaded;
+            this.Point1.PropertyChanged += Point1_PropertyChanged;
+            this.Point2.PropertyChanged += Point1_PropertyChanged;
+
+            if (MouseSet == true)
+            {
+                this.Loaded += CadRectangle_Loaded;
+            }
+            else
+            {
+                this.Loaded += CadRectangleSet_Loaded;
+            }
+        }
+
+
+        private void Point1_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            this.InvalidateVisual();
         }
 
         /// <summary>
@@ -95,20 +113,21 @@ namespace MonchaCadViewer.CanvasObj
         /// <param name="e"></param>
         private void CadRectangle_Loaded(object sender, RoutedEventArgs e)
         {
-            this.adorner = new CadRectangleAdorner(this);
-            this.adorner.Visibility = Visibility.Visible;
-
+            //this.adornerLayer.Add(new CadRectangleAdorner(this));
             //this.adornerLayer.Visibility = Visibility.Visible;
 
             if (this.Parent is CadCanvas canvas)
             {
-                AdornerLayer adornerLayer = AdornerLayer.GetAdornerLayer(this);
-                adornerLayer.Visibility = Visibility.Visible;
-                adornerLayer.Add(new CadRectangleAdorner(this));
                 canvas.MouseLeftButtonUp += canvas_MouseLeftButtonUP;
                 canvas.MouseMove += Canvas_MouseMove;
                 canvas.CaptureMouse();
             }
+            adornerLayer.InvalidateArrange();
+        }
+
+        private void CadRectangleSet_Loaded(object sender, RoutedEventArgs e)
+        {
+            AddAnchors();
         }
 
         private void Canvas_MouseMove(object sender, MouseEventArgs e)
@@ -122,15 +141,42 @@ namespace MonchaCadViewer.CanvasObj
 
         private void canvas_MouseLeftButtonUP(object sender, MouseButtonEventArgs e)
         {
-            if (sender is CadCanvas inputElement)
+            if (sender is CadCanvas cadCanvas)
             {
-                this.Point2.Set(e.GetPosition(inputElement));
-                inputElement.MouseLeftButtonUp -= canvas_MouseLeftButtonUP;
-                inputElement.MouseMove -= Canvas_MouseMove;
-                this.InvalidateVisual();
+                this.Point2.Set(e.GetPosition(cadCanvas));
+                cadCanvas.MouseLeftButtonUp -= canvas_MouseLeftButtonUP;
+                cadCanvas.MouseMove -= Canvas_MouseMove;
+                /*
+                this.ObjAdorner = new CadRectangleAdorner(this);
+                this.ObjAdorner.Visibility = Visibility.Visible;
+                
+                adornerLayer.Visibility = Visibility.Visible;
+                adornerLayer.Add(new CadRectangleAdorner(this));*/
             }
 
             this.ReleaseMouseCapture();
+
+            AddAnchors();
+        }
+
+        private void AddAnchors()
+        {
+            this.InvalidateVisual();
+            if (this.Parent is CadCanvas cadCanvas)
+            {
+                anchors = new List<CadAnchor>()
+                {
+                    new CadAnchor(this.Point1, this.Point1, MonchaHub.GetThinkess * 3, false){ Render = false },
+                    new CadAnchor(this.Point1, this.Point2, MonchaHub.GetThinkess * 3, false){ Render = false },
+                    new CadAnchor(this.Point2, this.Point2, MonchaHub.GetThinkess * 3, false){ Render = false },
+                    new CadAnchor(this.Point2, this.Point1, MonchaHub.GetThinkess * 3, false){ Render = false }
+                };
+
+                foreach (CadAnchor cadAnchor in anchors)
+                {
+                    cadCanvas.Add(cadAnchor);
+                }
+            }
         }
 
 
@@ -140,16 +186,25 @@ namespace MonchaCadViewer.CanvasObj
             TransparentBrush.Color = Colors.Transparent;
 
             Pen myPen = new Pen(Brushes.Blue, MonchaHub.GetThinkess / 2);
-            drawingContext.DrawRectangle(TransparentBrush, myPen, new Rect(X, Y, Math.Abs(Point1.X - Point2.X), Math.Abs(Point1.Y - Point2.Y)));
+            drawingContext.DrawRectangle(TransparentBrush, myPen, new Rect(X, Y, Math.Abs(Point1.MX - Point2.MX), Math.Abs(Point1.MY - Point2.MY)));
         }
 
-        public bool CheckInDot(LPoint3D checkpoint)
+        public bool CheckInDot(LPoint3D checkpoint) => 
+            checkpoint.MX < this.X + Math.Abs(Point1.MX - Point2.MX) &&
+            checkpoint.MX > this.X &&
+            checkpoint.MY < this.Y + Math.Abs(Point1.MY - Point2.MY) &&
+            checkpoint.MY > this.Y;
+
+        public override void Remove()
         {
-            return checkpoint.GetMPoint.X < this.X + Math.Abs(Point1.X - Point2.X) &&
-            checkpoint.GetMPoint.X > this.X &&
-            checkpoint.GetMPoint.Y < this.Y + Math.Abs(Point1.Y - Point2.Y) &&
-            checkpoint.GetMPoint.Y > this.Y;
+            Removed?.Invoke(this, this);
+
+            foreach (CadAnchor cadAnchor in anchors)
+            {
+                cadAnchor.Remove();
+            }
         }
+
     }
 }
 
@@ -163,9 +218,19 @@ public class CadRectangleAdorner : Adorner
 
     public CadRectangleAdorner(CadRectangle element) : base(element)
     {
-        this.RenderTransform = element.RenderTransform;
+        CadRectangle Parent = element;
+        this.RenderTransform = element.TransformGroup;
 
         visualChilderns = new VisualCollection(this);
+
+        visualChilderns.Add(new Rectangle()
+        {
+            Width = 100,
+            Height = 100,
+            Fill = Brushes.Red,
+        });
+
+        element.MouseMove += Element_MouseMove;
 
         //adding thumbs for drawing adorner rectangle and setting cursor
         BuildAdornerCorners(ref topLeft, Cursors.SizeNWSE);
@@ -180,15 +245,23 @@ public class CadRectangleAdorner : Adorner
         bottomRight.DragDelta += BottomRight_DragDelta;
     }
 
+    private void Element_MouseMove(object sender, MouseEventArgs e)
+    {
+        this.InvalidateVisual();
+    }
+
     public void BuildAdornerCorners(ref Thumb cornerThumb, Cursor customizedCursors)
     {
         //adding new thumbs for adorner to visual childern collection
-        if (cornerThumb != null) return;
-        cornerThumb = new Thumb() { Cursor = customizedCursors, Height = MonchaHub.GetThinkess * 3, Width = MonchaHub.GetThinkess * 3, Opacity = 0.5, Background = new SolidColorBrush(Colors.DarkGreen) };
-        cornerThumb.RenderTransform
-                    = new TranslateTransform(1000, 1000);
-        cornerThumb.RenderTransformOrigin = new Point(0.5, 0.5);
-        visualChilderns.Add(cornerThumb);
+        if (cornerThumb != null) 
+            return;
+
+        cornerThumb = new Thumb() { 
+            Cursor = customizedCursors, 
+            Height = 200,
+            Width = 200, Opacity = 1, 
+            Background = new SolidColorBrush(Colors.Red) 
+        };
     }
 
     private void BottomRight_DragDelta(object sender, DragDeltaEventArgs e)
@@ -285,13 +358,53 @@ public class CadRectangleAdorner : Adorner
         }
     }
 
-    protected override void OnRender(DrawingContext drawingContext)
-    {
-        SolidColorBrush TransparentBrush = new SolidColorBrush();
-        TransparentBrush.Color = Colors.Transparent;
 
-        Pen myPen = new Pen(Brushes.Blue, MonchaHub.GetThinkess / 2);
-        drawingContext.PushTransform(this.RenderTransform);
+    /*protected override void OnRender(DrawingContext drawingContext)
+    {
+        Rect adornedElementRect = new Rect(this.AdornedElement.DesiredSize);
+        SolidColorBrush renderBrush = new SolidColorBrush(Colors.Black);
+        renderBrush.Opacity = 0.3;
+        Pen renderPen = new Pen(new SolidColorBrush(Colors.Black), 1.5);
+        double radius = MonchaHub.GetThinkess;
+        drawingContext.DrawEllipse(renderBrush, renderPen, Parent.Bounds.TopLeft, radius, radius);
+        drawingContext.DrawEllipse(renderBrush, renderPen, Parent.Bounds.TopRight, radius, radius);
+        drawingContext.DrawEllipse(renderBrush, renderPen, Parent.Bounds.BottomLeft, radius, radius);
+        drawingContext.DrawEllipse(renderBrush, renderPen, Parent.Bounds.BottomRight, radius, radius);
+    }*/
+
+    // Arrange the Adorners.
+
+    protected override Size ArrangeOverride(Size finalSize)
+    {
+        // desiredWidth and desiredHeight are the width and height of the element that's being adorned.
+
+        // These will be used to place the ResizingAdorner at the corners of the adorned element.
+
+        double desiredWidth = AdornedElement.DesiredSize.Width;
+
+        double desiredHeight = AdornedElement.DesiredSize.Height;
+
+        // adornerWidth & adornerHeight are used for placement as well.
+
+        double adornerWidth = 200;
+
+        double adornerHeight = 200;
+
+        topLeft.Arrange(new Rect(200, 200, adornerWidth, adornerHeight));
+
+        topRight.Arrange(new Rect(desiredWidth - adornerWidth / 2, -adornerHeight / 2, adornerWidth, adornerHeight));
+
+        bottomLeft.Arrange(new Rect(-adornerWidth / 2, desiredHeight - adornerHeight / 2, adornerWidth, adornerHeight));
+
+        bottomRight.Arrange(new Rect(desiredWidth - adornerWidth / 2, desiredHeight - adornerHeight / 2, adornerWidth, adornerHeight));
+
+        // Return the final size.
+
+        return finalSize;
     }
+
+
+    protected override int VisualChildrenCount => visualChilderns.Count;
+    protected override Visual GetVisualChild(int index) => visualChilderns[index];
 }
 

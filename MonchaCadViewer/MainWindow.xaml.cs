@@ -74,7 +74,7 @@ namespace MonchaCadViewer
 
         private void DeviceTree_DrawObjects(object sender, List<FrameworkElement> e)
         {
-            MainCanvas.Canvas.Add(e, true);
+            MainCanvas.Canvas.Add(e, Keyboard.Modifiers != ModifierKeys.Shift);
         }
 
         private void DeviceTree_NeedRefresh(object sender, bool e)

@@ -30,7 +30,7 @@ namespace MonchaCadViewer.CanvasObj
                 {
                     if (cadObject.Render)
                     {
-                        dotList.AddRange(GetPoint(cadObject));
+                        dotList.AddRange(GetPoint(cadObject, false));
                     }
                 }
             }
@@ -58,20 +58,20 @@ namespace MonchaCadViewer.CanvasObj
         /// </summary>
         /// <param name="cadObject">inner object</param>
         /// <returns>Object collection</returns>
-        public static LObjectList GetPoint(CadObject cadObject)
+        public static LObjectList GetPoint(CadObject cadObject, bool InGroup)
         {
             LObjectList lObjectList = new LObjectList();
 
             switch (cadObject)
             {
-                case CadDot cadDot:
+                case CadAnchor cadDot:
                     if (cadObject.DataContext is MonchaDeviceMesh deviceMesh)
                     {
-                        if (MonchaDeviceMesh.ClbrForm == CalibrationForm.cl_Dot) lObjectList.Add(new LObject() { cadDot.Point.GetMLpoint3D });
-                        if (MonchaDeviceMesh.ClbrForm == CalibrationForm.cl_Rect) lObjectList.AddRange(CalibrationRect(deviceMesh, cadDot.Point));
-                        if (MonchaDeviceMesh.ClbrForm == CalibrationForm.cl_Cross) lObjectList.AddRange(CalibrationCross(deviceMesh, cadDot.Point));
-                        if (MonchaDeviceMesh.ClbrForm == CalibrationForm.cl_HLine) lObjectList.AddRange(CalibrationLineH(deviceMesh, cadDot.Point));
-                        if (MonchaDeviceMesh.ClbrForm == CalibrationForm.cl_WLine) lObjectList.AddRange(CalibrationLineW(deviceMesh, cadDot.Point));
+                        if (MonchaDeviceMesh.ClbrForm == CalibrationForm.cl_Dot) lObjectList.Add(new LObject() { cadDot.GetPoint.GetMLpoint3D });
+                        if (MonchaDeviceMesh.ClbrForm == CalibrationForm.cl_Rect) lObjectList.AddRange(CalibrationRect(deviceMesh, cadDot.GetPoint));
+                        if (MonchaDeviceMesh.ClbrForm == CalibrationForm.cl_Cross) lObjectList.AddRange(CalibrationCross(deviceMesh, cadDot.GetPoint));
+                        if (MonchaDeviceMesh.ClbrForm == CalibrationForm.cl_HLine) lObjectList.AddRange(CalibrationLineH(deviceMesh, cadDot.GetPoint));
+                        if (MonchaDeviceMesh.ClbrForm == CalibrationForm.cl_WLine) lObjectList.AddRange(CalibrationLineW(deviceMesh, cadDot.GetPoint));
 
                         lObjectList.NoMesh = true;
                     }
@@ -79,24 +79,27 @@ namespace MonchaCadViewer.CanvasObj
                     {
                         lObjectList.Add(new LObject()
                         {
-                            cadDot.Point.GetMLpoint3D
+                            cadDot.GetPoint.GetMLpoint3D
                         });
                     }
 
                     break;
                 case CadContour cadContour:
                     lObjectList.AddRange(CalcContour(cadContour));
+                    if (InGroup == false) lObjectList.Transform(cadObject.TransformGroup);
+                    break;
+                case CadObjectsGroup cadObjectsGroup:
+                    foreach (CadObject obj in cadObjectsGroup.cadObjects)
+                    {
+                        lObjectList.AddRange(GetPoint(obj, true));
+                    }
+                    lObjectList.Transform(cadObjectsGroup.TransformGroup);
                     break;
 
             }
-            if (lObjectList.NoMesh == true)
-            {
-                return lObjectList;
-            }
-            else
-            {
-                return lObjectList.Transform(cadObject.TransformGroup);
-            }
+
+            return lObjectList;
+            
 
             LObjectList CalibrationCross(MonchaDeviceMesh monchaDeviceMesh, LPoint3D lPoint3D)
             {

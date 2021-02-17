@@ -150,7 +150,9 @@ namespace MonchaCadViewer.ToolsPanel.DevicePanel
                             break;
 
                         case "%CanvasRectangle%":
-                            DrawObjects?.Invoke(this, CadCanvas.GetRectangle(device.BOP, device.TOP));
+                            DrawObjects?.Invoke(this, new List<FrameworkElement>() {
+                                new CadRectangle(device.BOP, device.TOP, false){Render = false}
+                            });
                             break;
                         case "%PolyMeshUsed%":
                             device.PolyMeshUsed = !device.PolyMeshUsed;

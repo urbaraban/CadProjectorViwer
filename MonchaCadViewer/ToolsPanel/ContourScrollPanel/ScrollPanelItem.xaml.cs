@@ -86,7 +86,7 @@ namespace MonchaCadViewer.ToolsPanel.ContourScrollPanel
             MainGrid.Children.Add(_viewbox);
 
             this.objectsGroup = cadObjectsGroup;
-            CadContour cadContour = new CadContour(cadObjectsGroup.myGeometry, false, false);
+            CadContour cadContour = new CadContour(cadObjectsGroup.myGeometry, false);
             cadContour.TransformGroup = this.objectsGroup.TransformGroup;
             cadCanvas.DrawContour(cadContour);
         }
@@ -106,7 +106,7 @@ namespace MonchaCadViewer.ToolsPanel.ContourScrollPanel
             {
                 if (viewItem.DataContext is CadObjectsGroup CadObj)
                 {
-                    CadObj.UpdateTransform(CadObj.TransformGroup);
+                    CadObj.UpdateTransform(CadObj.TransformGroup, true);
                 }
             }
         }

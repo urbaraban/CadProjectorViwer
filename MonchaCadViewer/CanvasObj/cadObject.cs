@@ -251,6 +251,7 @@ namespace MonchaCadViewer.CanvasObj
                 if (this._isselected != value)
                 {
                     this._isselected = value;
+                    //this.ObjAdorner.Visibility = value == true ? Visibility.Visible : Visibility.Hidden;
                     Selected?.Invoke(this, this._isselected);
                     OnPropertyChanged("IsSelected");
                 }
@@ -300,22 +301,25 @@ namespace MonchaCadViewer.CanvasObj
 
         #endregion
 
-        public CadObject(bool mouseevent, bool move)
+        public CadObject()
         {
-
-            if (this.ContextMenu == null) this.ContextMenu = new System.Windows.Controls.ContextMenu();
-
+            if (this.ContextMenu == null) 
+                this.ContextMenu = new System.Windows.Controls.ContextMenu();
             this.Loaded += CadObject_Loaded;
         }
 
         private void CadObject_Loaded(object sender, RoutedEventArgs e)
         {
+            if (this.Parent is CadCanvas canvas)
+                adornerLayer = AdornerLayer.GetAdornerLayer(canvas);
+
             if (true)
             {
                 this.MouseLeave += CadObject_MouseLeave;
                 this.MouseLeftButtonUp += CadObject_MouseLeftButtonUp;
                 this.MouseMove += CadObject_MouseMove;
                 this.MouseEnter += CadObject_MouseEnter;
+                this.MouseWheel += CadContour_MouseWheel;
                 this.MouseLeftButtonDown += CadObject_MouseLeftButtonDown;
                 this.PropertyChanged += CadObject_PropertyChanged;
                 this.ProjectionSetting.PropertyChanged += CadObject_PropertyChanged;
@@ -325,8 +329,16 @@ namespace MonchaCadViewer.CanvasObj
             }
 
             this.InvalidateVisual();
-            this.adornerLayer = AdornerLayer.GetAdornerLayer(this);
         }
+
+        private void CadContour_MouseWheel(object sender, MouseWheelEventArgs e)
+        {
+            if ((e.Delta != 0) && (Keyboard.Modifiers != ModifierKeys.Control))
+            {
+                this.Angle += Math.Abs(e.Delta) / e.Delta * (Keyboard.Modifiers == ModifierKeys.Shift ? 1 : 5);
+            }
+        }
+
 
         private void CadObject_ContextMenuClosing(object sender, ContextMenuEventArgs e)
         {
@@ -351,7 +363,7 @@ namespace MonchaCadViewer.CanvasObj
         }
 
 
-        public void UpdateTransform(TransformGroup transformGroup)
+        public void UpdateTransform(TransformGroup transformGroup, bool resetPosition)
         {
             if (transformGroup == null)
             {
@@ -370,17 +382,20 @@ namespace MonchaCadViewer.CanvasObj
                 this.TransformGroup = transformGroup;
             }
 
-            this.X = -(this.Bounds.X + this.Bounds.Width / 2) + MonchaHub.Size.MX / 2;
-            this.Y = -(this.Bounds.Y + this.Bounds.Height / 2) + MonchaHub.Size.MY / 2;
-            this._mirror = AppSt.Default.default_mirror;
-            Scale.ScaleX = AppSt.Default.default_scale_x / 100 * (AppSt.Default.default_mirror == true ? -1 : 1);
-            if (this.ScaleX < 0) this.Mirror = true;
-            Scale.ScaleY = AppSt.Default.default_scale_y / 100;
-            Scale.CenterX = this.Bounds.X + this.Bounds.Width / 2;
-            Scale.CenterY = this.Bounds.Y + this.Bounds.Height / 2;
-            Rotate.CenterX = Scale.CenterX;
-            Rotate.CenterY = Scale.CenterY;
-            Rotate.Angle = AppSt.Default.default_angle;
+            if (resetPosition == true)
+            {
+                this.X = -(this.Bounds.X + this.Bounds.Width / 2) + MonchaHub.Size.MX / 2;
+                this.Y = -(this.Bounds.Y + this.Bounds.Height / 2) + MonchaHub.Size.MY / 2;
+                this._mirror = AppSt.Default.default_mirror;
+                Scale.ScaleX = AppSt.Default.default_scale_x / 100 * (AppSt.Default.default_mirror == true ? -1 : 1);
+                if (this.ScaleX < 0) this.Mirror = true;
+                Scale.ScaleY = AppSt.Default.default_scale_y / 100;
+                Scale.CenterX = this.Bounds.X + this.Bounds.Width / 2;
+                Scale.CenterY = this.Bounds.Y + this.Bounds.Height / 2;
+                Rotate.CenterX = Scale.CenterX;
+                Rotate.CenterY = Scale.CenterY;
+                Rotate.Angle = AppSt.Default.default_angle;
+            }
             this.InvalidateVisual();
         }
 
@@ -440,7 +455,7 @@ namespace MonchaCadViewer.CanvasObj
             }
         }
 
-        public void Remove()
+        public virtual void Remove()
         {
             Removed?.Invoke(this, this);
         }

@@ -47,6 +47,26 @@ namespace MonchaCadViewer
         public MainWindow()
         {
             InitializeComponent();
+
+            #region Language
+            App.LanguageChanged += LanguageChanged;
+
+            CultureInfo currLang = App.Language;
+            //Заполняем меню смены языка:
+            menuLanguage.Items.Clear();
+            foreach (var lang in App.Languages)
+            {
+                MenuItem menuLang = new MenuItem();
+                menuLang.Header = lang.DisplayName;
+                menuLang.Tag = lang;
+                menuLang.IsChecked = lang.Equals(currLang);
+                menuLang.Click += ChangeLanguageClick;
+                menuLanguage.Items.Add(menuLang);
+            }
+
+            App.Language = AppSt.Default.DefaultLanguage;
+            #endregion
+
             MonchaHub.Loging += MonchaHub_Loging;
             MonchaHub.RefreshedDevice += MonchaHub_RefreshDevice;
 
@@ -72,6 +92,32 @@ namespace MonchaCadViewer
             ContourScrollPanel.SelectedFrame += ContourScrollPanel_SelectedFrame;
         }
 
+        private void LanguageChanged(Object sender, EventArgs e)
+        {
+            CultureInfo currLang = App.Language;
+
+            //Отмечаем нужный пункт смены языка как выбранный язык
+            foreach (MenuItem i in menuLanguage.Items)
+            {
+                CultureInfo ci = i.Tag as CultureInfo;
+                i.IsChecked = ci != null && ci.Equals(currLang);
+            }
+        }
+
+        private void ChangeLanguageClick(Object sender, EventArgs e)
+        {
+            MenuItem mi = sender as MenuItem;
+            if (mi != null)
+            {
+                CultureInfo lang = mi.Tag as CultureInfo;
+                if (lang != null)
+                {
+                    App.Language = lang;
+                }
+            }
+
+        }
+
         private void DeviceTree_DrawObjects(object sender, List<FrameworkElement> e)
         {
             MainCanvas.Canvas.Add(e, Keyboard.Modifiers != ModifierKeys.Shift);
@@ -88,12 +134,15 @@ namespace MonchaCadViewer
             ObjectPanel.DataContext = e;
         }
 
-        private void ContourScrollPanel_SelectedFrame(object sender, CadObjectsGroup e)
+        private void ContourScrollPanel_SelectedFrame(object sender, bool e)
         {
-            if (e != null)
+            if (e == true)
             {
-                this.MainCanvas.DataContext = null;
-                this.MainCanvas.DataContext = e;
+                this.MainCanvas.Add(sender);
+            }
+            else
+            {
+                this.MainCanvas.Remove(sender);
             }
         }
 
@@ -630,7 +679,6 @@ namespace MonchaCadViewer
             AppSt.Default.default_scale_y = ScaleYBox.Value.Value;
             AppSt.Default.default_angle = AngleBox.Value.Value;
             AppSt.Default.default_mirror = MirrorBox.IsChecked.Value;
-            AppSt.Default.defailt_tesselate = TesselateCheck.IsChecked.Value;
             AppSt.Default.stg_scale_invert = ScaleInvertCheck.IsChecked.Value;
             AppSt.Default.stg_scale_percent = ScalePercentCheck.IsChecked.Value;
             AppSt.Default.object_solid = SolidObject.IsChecked.Value;

@@ -12,7 +12,6 @@
     <Window.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-
                 <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Fonts.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Themes/Light.Blue.xaml" />
             </ResourceDictionary.MergedDictionaries>
@@ -63,7 +62,7 @@
                                     <Separator/>
                                     <MenuItem Header="Close" Click="CloseBtn_Click"/>
                                 </MenuItem>
-                                <MenuItem Header="Language">
+                                <MenuItem x:Name="menuLanguage" Header="Language">
                                 </MenuItem>
                             </MenuItem>
                         </Menu>
@@ -186,13 +185,13 @@
                 </DockPanel>
                 <DockPanel Grid.Column="2" Grid.Row="2" Margin="5,5,5,5">
                     <TabControl x:Name="tabControl" DockPanel.Dock="Right" Grid.Column="2" Grid.Row="2" Grid.RowSpan="3">
-                        <TabItem x:Name="ContourSettingTab" Header="Device" Controls:HeaderedControlHelper.HeaderFontSize="18">
+                        <TabItem x:Name="ContourSettingTab" Header="{DynamicResource dvc_Device}" Controls:HeaderedControlHelper.HeaderFontSize="18">
                             <Grid>
                                 <ur:DeviceTab x:Name="DevicePanel"/>
                             </Grid>
 
                         </TabItem>
-                        <TabItem Header="Format" Controls:HeaderedControlHelper.HeaderFontSize="18">
+                        <TabItem Header="{DynamicResource common_Format}" Controls:HeaderedControlHelper.HeaderFontSize="18">
                             <Grid Background="#FFE5E5E5">
                                 <TabControl x:Name="TabItem">
                                     <TabItem Header="Компас" Controls:HeaderedControlHelper.HeaderFontSize="14">
@@ -225,13 +224,13 @@
                                                     <Properties:Settings/>
                                                 </Controls:NumericUpDown.DataContext>
                                             </Controls:NumericUpDown>
-                                            <Label x:Name="label2_Copy" Content="X scale" HorizontalAlignment="Left" Margin="10,37,0,0" VerticalAlignment="Top" Height="26" Width="86"/>
+                                            <Label x:Name="label2_Copy" Content="{DynamicResource setting_xscale}" HorizontalAlignment="Left" Margin="10,37,0,0" VerticalAlignment="Top" Height="26" Width="86"/>
                                             <Controls:NumericUpDown x:Name="ScaleYBox" Margin="5,69,10,0" Maximum="999" Minimum="1" Background="White"  Value="{Binding default_scale_y, Mode=TwoWay}" Height="26" VerticalAlignment="Top" Grid.Column="1" >
                                                 <Controls:NumericUpDown.DataContext>
                                                     <Properties:Settings/>
                                                 </Controls:NumericUpDown.DataContext>
                                             </Controls:NumericUpDown>
-                                            <Label x:Name="label2_Copy1" Content="Y scale" HorizontalAlignment="Left" Margin="10,68,0,0" VerticalAlignment="Top" Height="26" Width="86"/>
+                                            <Label x:Name="label2_Copy1" Content="{DynamicResource setting_yscale}" HorizontalAlignment="Left" Margin="10,68,0,0" VerticalAlignment="Top" Height="26" Width="86"/>
                                             <Controls:NumericUpDown x:Name="AngleBox" Margin="5,100,10,0" Maximum="360" Minimum="0" Background="White"  Value="{Binding default_angle, Mode=TwoWay}" Height="26" VerticalAlignment="Top" Grid.Column="1" >
                                                 <Controls:NumericUpDown.DataContext>
                                                     <Properties:Settings/>
@@ -243,18 +242,18 @@
                                                     <Properties:Settings/>
                                                 </CheckBox.DataContext>
                                             </CheckBox>
-                                            <Button x:Name="SaveObjStgBtn" Content="Save" HorizontalAlignment="Left" Margin="10,266,0,0" VerticalAlignment="Top" Width="248" Grid.ColumnSpan="2" Height="31" Click="SaveObjStgBtn_Click"/>
-                                            <CheckBox x:Name="ScalePercentCheck" Content="Percent" HorizontalAlignment="Left" Margin="5,186,0,0" VerticalAlignment="Top"  IsChecked="{Binding stg_scale_percent, Mode=TwoWay}" Grid.Column="1" Width="147">
+                                            <Button x:Name="SaveObjStgBtn" Content="{DynamicResource m_Save}" HorizontalAlignment="Left" Margin="10,266,0,0" VerticalAlignment="Top" Width="248" Grid.ColumnSpan="2" Height="31" Click="SaveObjStgBtn_Click"/>
+                                            <CheckBox x:Name="ScalePercentCheck" Content="{DynamicResource setting_percent}" HorizontalAlignment="Left" Margin="5,186,0,0" VerticalAlignment="Top"  IsChecked="{Binding stg_scale_percent, Mode=TwoWay}" Grid.Column="1" Width="147">
                                                 <CheckBox.DataContext>
                                                     <Properties:Settings/>
                                                 </CheckBox.DataContext>
                                             </CheckBox>
-                                            <CheckBox x:Name="ScaleInvertCheck" Content="Invert Scale" HorizontalAlignment="Left" Margin="5,208,0,0" VerticalAlignment="Top"  IsChecked="{Binding stg_scale_invert, Mode=TwoWay}" Grid.Column="1" Width="147">
+                                            <CheckBox x:Name="ScaleInvertCheck" Content="{DynamicResource setting_invertscale}" HorizontalAlignment="Left" Margin="5,208,0,0" VerticalAlignment="Top"  IsChecked="{Binding stg_scale_invert, Mode=TwoWay}" Grid.Column="1" Width="147">
                                                 <CheckBox.DataContext>
                                                     <Properties:Settings/>
                                                 </CheckBox.DataContext>
                                             </CheckBox>
-                                            <CheckBox x:Name="SolidObject" Content="Solid Object" HorizontalAlignment="Left" Margin="5,228,0,0" VerticalAlignment="Top"  IsChecked="{Binding object_solid, Mode=TwoWay}" Grid.Column="1" Width="147">
+                                            <CheckBox x:Name="SolidObject" Content="{DynamicResource setting_solidobject}" HorizontalAlignment="Left" Margin="5,228,0,0" VerticalAlignment="Top"  IsChecked="{Binding object_solid, Mode=TwoWay}" Grid.Column="1" Width="147">
                                                 <CheckBox.DataContext>
                                                     <Properties:Settings/>
                                                 </CheckBox.DataContext>
@@ -274,8 +273,8 @@
                                                     <Properties:Settings/>
                                                 </TextBox.DataContext>
                                             </TextBox>
-                                            <Button x:Name="BaseFolderSelect" Content="Browse..." HorizontalAlignment="Left" Margin="124,12,0,0" VerticalAlignment="Top" Width="94" Height="26" Click="BaseFolderSelect_Click"/>
-                                            <Button x:Name="WorkFolderSelect" Content="Browse..." HorizontalAlignment="Left" Margin="124,43,0,0" VerticalAlignment="Top" Width="94" Height="26" Click="WorkFolderSelect_Click"/>
+                                            <Button x:Name="BaseFolderSelect" Content="{DynamicResource m_Browse}" HorizontalAlignment="Left" Margin="124,12,0,0" VerticalAlignment="Top" Width="94" Height="26" Click="BaseFolderSelect_Click"/>
+                                            <Button x:Name="WorkFolderSelect" Content="{DynamicResource m_Browse}" HorizontalAlignment="Left" Margin="124,43,0,0" VerticalAlignment="Top" Width="94" Height="26" Click="WorkFolderSelect_Click"/>
                                         </Grid>
                                     </TabItem>
 
@@ -283,7 +282,7 @@
 
                             </Grid>
                         </TabItem>
-                        <TabItem x:Name="Calibration" Header="Configuration" Controls:HeaderedControlHelper.HeaderFontSize="18">
+                        <TabItem x:Name="Calibration" Header="{DynamicResource common_Configuration}" Controls:HeaderedControlHelper.HeaderFontSize="18">
                             <Grid Background="#FFE5E5E5">
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="33*"/>
@@ -293,7 +292,7 @@
                                     <ColumnDefinition Width="73*"/>
                                 </Grid.ColumnDefinitions>
 
-                                <Button x:Name="BrowseMonchaBtn" Content="Browse..." Margin="17,8,10,0" VerticalAlignment="Top" Click="BrowseMonchaBtn_Click" Height="23" Grid.Column="3" Grid.ColumnSpan="2"/>
+                                <Button x:Name="BrowseMonchaBtn" Content="{DynamicResource m_Browse}" Margin="17,8,10,0" VerticalAlignment="Top" Click="BrowseMonchaBtn_Click" Height="23" Grid.Column="3" Grid.ColumnSpan="2"/>
                                 <Button Content="Edit device" Grid.ColumnSpan="5" Margin="10,38,45,479"/>
                                 <Button FontFamily="Segoe MDL2 Assets" Content="&#xEDAB;" Margin="35,38,10,479" Grid.Column="4" Click="Button_Click"/>
                                 <Label x:Name="label" Content="Open Moncha" Margin="10,7,0,0" VerticalAlignment="Top" Grid.ColumnSpan="3" Height="26" HorizontalContentAlignment="Left"/>
@@ -326,7 +325,7 @@
                                     <ComboBoxItem Content="{DynamicResource clb_WLine}"/>
                                 </ComboBox>
                                 <Label x:Name="CalibrationFormLabel" Content="{DynamicResource obj_Type}" Margin="10,258,10,0" VerticalAlignment="Top" Height="26" Grid.ColumnSpan="2"/>
-                                <Button x:Name="Save" Grid.ColumnSpan="5" Content="Save" HorizontalAlignment="Left" Margin="10,378,0,0" VerticalAlignment="Top" Width="254" Height="34" Click="Save_Click"/>
+                                <Button x:Name="Save" Grid.ColumnSpan="5" Content="{DynamicResource m_Save}" HorizontalAlignment="Left" Margin="10,378,0,0" VerticalAlignment="Top" Width="254" Height="34" Click="Save_Click"/>
                                 <CheckBox Content="{DynamicResource clb_SetEdgePoint}" Margin="10,342,10,203" Grid.ColumnSpan="5" Checked="CheckBox_Checked" Unchecked="CheckBox_Checked"/>
                                 <Controls:NumericUpDown x:Name="PointStepUpDn_Copy" Margin="0,289,10,0"  Background="White" Height="26" VerticalAlignment="Top" NumericInputMode="Decimal" Maximum="10" Minimum="1" Interval="1"  Value="{Binding anchor_size, Mode=TwoWay, UpdateSourceTrigger=Default}" Grid.Column="3" Grid.ColumnSpan="2" IsTabStop="False" AllowDrop="False"/>
                                 <Label x:Name="label_Copy5" Content="{DynamicResource clb_Sizeanchor}" Margin="10,289,10,0" VerticalAlignment="Top" Height="26" Grid.ColumnSpan="2"/>
@@ -334,7 +333,7 @@
                                 <Controls:NumericUpDown x:Name="DeepUpDn" Margin="0,140,10,0"  Background="White" Height="26" VerticalAlignment="Top" Grid.Column="2" Grid.ColumnSpan="3" />
                             </Grid>
                         </TabItem>
-                        <TabItem Header="WorkFolder">
+                        <TabItem Header="{DynamicResource common_Workfolder}">
                             <Grid>
                                 <Grid.RowDefinitions>
                                     <RowDefinition Height="36*"/>

@@ -89,7 +89,7 @@ namespace MonchaCadViewer.CanvasObj
                     if (InGroup == false) lObjectList.Transform(cadObject.TransformGroup);
                     break;
                 case CadObjectsGroup cadObjectsGroup:
-                    foreach (CadObject obj in cadObjectsGroup.cadObjects)
+                    foreach (CadObject obj in cadObjectsGroup)
                     {
                         lObjectList.AddRange(GetPoint(obj, true));
                     }

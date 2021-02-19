@@ -47,7 +47,7 @@ namespace MonchaCadViewer.CanvasObj
                         (ProjectionSetting.RedOn == true ? ProjectionSetting.Red : (byte)0),
                         (ProjectionSetting.GreenOn == true ? ProjectionSetting.Green : (byte)0),
                         (ProjectionSetting.BlueOn == true ? ProjectionSetting.Blue : (byte)0))), 
-                        MonchaHub.GetThinkess);
+                        MonchaHub.GetThinkess / 2);
                 }
 
                 return null;
@@ -303,29 +303,32 @@ namespace MonchaCadViewer.CanvasObj
 
         public CadObject()
         {
-            if (this.ContextMenu == null) 
+            if (this.ContextMenu == null)
+            {
                 this.ContextMenu = new System.Windows.Controls.ContextMenu();
+                ContextMenuLib.CadObjMenu(this.ContextMenu);
+            }
             this.Loaded += CadObject_Loaded;
         }
 
         private void CadObject_Loaded(object sender, RoutedEventArgs e)
         {
             if (this.Parent is CadCanvas canvas)
+            {
                 adornerLayer = AdornerLayer.GetAdornerLayer(canvas);
 
-            if (true)
-            {
-                this.MouseLeave += CadObject_MouseLeave;
-                this.MouseLeftButtonUp += CadObject_MouseLeftButtonUp;
-                this.MouseMove += CadObject_MouseMove;
-                this.MouseEnter += CadObject_MouseEnter;
-                this.MouseWheel += CadContour_MouseWheel;
-                this.MouseLeftButtonDown += CadObject_MouseLeftButtonDown;
-                this.PropertyChanged += CadObject_PropertyChanged;
-                this.ProjectionSetting.PropertyChanged += CadObject_PropertyChanged;
-
-                ContextMenuLib.CadObjMenu(this.ContextMenu);
-                this.ContextMenuClosing += CadObject_ContextMenuClosing;
+                if (canvas.MainCanvas == true)
+                {
+                    this.ContextMenuClosing += CadObject_ContextMenuClosing;
+                    this.MouseLeave += CadObject_MouseLeave;
+                    this.MouseLeftButtonUp += CadObject_MouseLeftButtonUp;
+                    this.MouseMove += CadObject_MouseMove;
+                    this.MouseEnter += CadObject_MouseEnter;
+                    this.MouseWheel += CadContour_MouseWheel;
+                    this.MouseLeftButtonDown += CadObject_MouseLeftButtonDown;
+                    this.PropertyChanged += CadObject_PropertyChanged;
+                    this.ProjectionSetting.PropertyChanged += CadObject_PropertyChanged;
+                }
             }
 
             this.InvalidateVisual();
@@ -401,21 +404,21 @@ namespace MonchaCadViewer.CanvasObj
 
         public virtual void DoItContextMenu(MenuItem menuItem)
         {
-            switch (menuItem.Header)
+            switch (menuItem.Tag)
             {
-                case "Mirror":
+                case "obj_Mirror":
                     this.Mirror = !this.Mirror;
                     break;
 
-                case "Fix":
+                case "obj_Fix":
                     this.IsFix = !this.IsFix;
                     break;
 
-                case "Remove":
+                case "common_Remove":
                     this.Remove();
                     break;
 
-                case "Render":
+                case "obj_Render":
                     this.Render = !this.Render;
                     break;
             }
@@ -457,6 +460,17 @@ namespace MonchaCadViewer.CanvasObj
 
         public virtual void Remove()
         {
+            if (this.Parent is CadCanvas canvas)
+            {
+                this.MouseLeave -= CadObject_MouseLeave;
+                this.MouseLeftButtonUp -= CadObject_MouseLeftButtonUp;
+                this.MouseMove -= CadObject_MouseMove;
+                this.MouseEnter -= CadObject_MouseEnter;
+                this.MouseWheel -= CadContour_MouseWheel;
+                this.MouseLeftButtonDown -= CadObject_MouseLeftButtonDown;
+                this.PropertyChanged -= CadObject_PropertyChanged;
+                this.ProjectionSetting.PropertyChanged -= CadObject_PropertyChanged;
+            }
             Removed?.Invoke(this, this);
         }
 

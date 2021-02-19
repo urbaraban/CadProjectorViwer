@@ -20,7 +20,7 @@ namespace MonchaCadViewer.ToolsPanel.ContourScrollPanel
     /// </summary>
     public partial class ScrollPanel : UserControl
     {
-        public event EventHandler<CadObjectsGroup> SelectedFrame;
+        public event EventHandler<bool> SelectedFrame;
 
         public ScrollPanel()
         {
@@ -50,7 +50,7 @@ namespace MonchaCadViewer.ToolsPanel.ContourScrollPanel
         {
             if (sender is ScrollPanelItem scrollPanelItem)
             {
-                foreach (CadObject cadObject in scrollPanelItem.objectsGroup.cadObjects)
+                foreach (CadObject cadObject in scrollPanelItem.objectsGroup)
                 {
                     cadObject.Remove();
                 }
@@ -65,8 +65,6 @@ namespace MonchaCadViewer.ToolsPanel.ContourScrollPanel
             {
                 if (e == true)
                 {
-                    SelectedFrame?.Invoke(this, scrollPanelItem.objectsGroup);
-
                     if (Keyboard.Modifiers != ModifierKeys.Shift)
                     {
                         foreach (UIElement uIElement in this.FrameStack.Children)
@@ -78,14 +76,8 @@ namespace MonchaCadViewer.ToolsPanel.ContourScrollPanel
                         }
                     }
                 }
-                else
-                {
-                    foreach (CadObject cadObject in scrollPanelItem.objectsGroup.cadObjects)
-                    {
-                        cadObject.Remove();
-                    }
-                    SelectedFrame?.Invoke(this, null);
-                }
+
+                SelectedFrame?.Invoke(scrollPanelItem.objectsGroup, e);
             }
         }
 

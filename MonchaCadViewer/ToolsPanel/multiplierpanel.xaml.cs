@@ -63,7 +63,7 @@ namespace MonchaCadViewer.ToolsPanel
         {
             CRSUpDn.DataContext = projectionSetting.PointStep;
             CRSUpDn.SetBinding(NumericUpDown.ValueProperty, "MX");
-            projectionSetting.PointStep.M.PropertyChanged += M_ChangePoint;
+            projectionSetting.PointStep.PropertyChanged += M_ChangePoint;
 
             RadiusSlider.Value = projectionSetting.RadiusEdge;
             RadiusSlider.DataContext = projectionSetting;

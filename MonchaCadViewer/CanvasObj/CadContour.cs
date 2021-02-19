@@ -32,16 +32,7 @@ namespace MonchaCadViewer.CanvasObj
             {
                 ContextMenuLib.ViewContourMenu(this.ContextMenu);
                 this.Cursor = Cursors.Hand;
-                this.ContextMenuClosing += ViewContour_ContextMenuClosing;
-                
             }
-        }
-
-
-
-        private void ViewContour_ContextMenuClosing(object sender, ContextMenuEventArgs e)
-        {
-
         }
     }
 }

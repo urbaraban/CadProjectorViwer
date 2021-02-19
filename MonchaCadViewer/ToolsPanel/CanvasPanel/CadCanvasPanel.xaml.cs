@@ -66,7 +66,7 @@ namespace MonchaCadViewer.ToolsPanel.CanvasPanel
             {
                 if (AppSt.Default.object_solid == false)
                 {
-                    foreach (CadObject cadObject in objectsGroup.cadObjects)
+                    foreach (CadObject cadObject in objectsGroup)
                     {
                         cadObject.ShowName = false;
                         this.Canvas.DrawContour(cadObject);
@@ -158,7 +158,15 @@ namespace MonchaCadViewer.ToolsPanel.CanvasPanel
 
         }
 
-        
+        internal void Remove(object sender)
+        {
+            if (sender is CadObject cadObject) 
+                cadObject.Remove();
+            else
+                this.Canvas.RemoveChildren((FrameworkElement)sender);
+        }
+
+        internal void Add(object sender) => this.Canvas.Add((FrameworkElement)sender);
 
         private void Canvas_SizeChanged(object sender, SizeChangedEventArgs e)
         {

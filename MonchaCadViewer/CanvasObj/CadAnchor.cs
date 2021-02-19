@@ -138,15 +138,15 @@ namespace MonchaCadViewer.CanvasObj
         {
             if (this.ContextMenu.DataContext is MenuItem cmindex)
             {
-                switch (cmindex.Header)
+                switch (cmindex.Tag)
                 {
-                    case "Fix":
+                    case "obj_Fix":
                         this.IsFix = !this.IsFix;
                         break;
-                    case "Remove":
+                    case "common_Remove":
                         this.Remove();
                         break;
-                    case "Edit":
+                    case "common_Edit":
                         DotEdit dotEdit = new DotEdit(this.PointX);
                         dotEdit.Show();
                         break;

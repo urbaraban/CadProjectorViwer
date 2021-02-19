@@ -34,12 +34,14 @@ namespace MonchaCadViewer.CanvasObj
         private bool _wasmove = false;
         private List<CadAnchor> anchors = new List<CadAnchor>();
         private int _status = 0;
-        private bool _maincanvas;
+        
         private bool _nofreecursor = true;
         private Point StartMovePoint;
         private Point StartMousePoint;
 
         public List<CadRectangle> Masks = new List<CadRectangle>();
+
+        public bool MainCanvas { get; }
 
         public LPoint3D Size
         {
@@ -84,14 +86,14 @@ namespace MonchaCadViewer.CanvasObj
         public CadCanvas()
         {
             this._size = MonchaHub.Size;
-            this._maincanvas = true;
+            this.MainCanvas = true;
             LoadSetting();
         }
 
         public CadCanvas(LPoint3D Size, bool MainCanvas)
         {
             this._size = Size;
-            this._maincanvas = MainCanvas;
+            this.MainCanvas = MainCanvas;
             LoadSetting();
             this.Loaded += CadCanvas_Loaded;
         }
@@ -112,7 +114,7 @@ namespace MonchaCadViewer.CanvasObj
             this._size.PropertyChanged += _size_ChangePoint;
             this._size.M.PropertyChanged += _size_ChangePoint;
 
-            if (this._maincanvas)
+            if (this.MainCanvas == true)
             {
                 this.ContextMenuClosing += CadCanvas_ContextMenuClosing;
                 this.ContextMenu = new ContextMenu();
@@ -302,9 +304,9 @@ namespace MonchaCadViewer.CanvasObj
             {
                 if (canvas.ContextMenu.DataContext is MenuItem cmindex)
                 {
-                    switch (cmindex.Header)
+                    switch (cmindex.Tag)
                     {
-                        case "Freeze All":
+                        case "canvas_freezall":
                             foreach (object obj in canvas.Children)
                             {
                                 if (obj is CadObject cadObject)
@@ -313,7 +315,7 @@ namespace MonchaCadViewer.CanvasObj
                                 }
                             }
                             break;
-                        case "Unselect All":
+                        case "canvas_unselectall":
                             ClearSelectedObject(null);
                             break;
                     }
@@ -379,7 +381,7 @@ namespace MonchaCadViewer.CanvasObj
             {
                 if (this.Children[i] is CadObject cadObject)
                 {
-                    RemoveChildren(cadObject);
+                    cadObject.Remove();
                     i--;
                 }
             }
@@ -397,7 +399,6 @@ namespace MonchaCadViewer.CanvasObj
             this.Children.Remove(Object);
             
             if (Object is CadRectangle cadRectangle) this.Masks.Remove(cadRectangle);
-
         }
 
         /// <summary>

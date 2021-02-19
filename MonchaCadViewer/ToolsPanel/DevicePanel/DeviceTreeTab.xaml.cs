@@ -143,18 +143,18 @@ namespace MonchaCadViewer.ToolsPanel.DevicePanel
                 if (viewItem.ContextMenu.DataContext is MenuItem cmindex && sender is TreeViewItem treeView &&
                             treeView.DataContext is MonchaDevice device)
 
-                    switch (cmindex.Header)
+                    switch (cmindex.Tag)
                     {
-                        case "%ZoneRectangle%":
+                        case "dvc_showrect":
                             device.DrawZone();
                             break;
 
-                        case "%CanvasRectangle%":
+                        case "dvc_showzone":
                             DrawObjects?.Invoke(this, new List<FrameworkElement>() {
                                 new CadRectangle(device.BOP, device.TOP, false){Render = false}
                             });
                             break;
-                        case "%PolyMeshUsed%":
+                        case "dvc_polymesh":
                             device.PolyMeshUsed = !device.PolyMeshUsed;
                             MonchaHub.RefreshDevice();
                             break;
@@ -189,9 +189,9 @@ namespace MonchaCadViewer.ToolsPanel.DevicePanel
             {
                 if (viewItem.ContextMenu.DataContext is MenuItem cmindex && sender is TreeViewItem treeView)
 
-                    switch (cmindex.Header)
+                    switch (cmindex.Tag)
                     {
-                        case "Add":
+                        case "common_ADD":
                             MonchaCadViewer.DeviceManager.LaserMeterWindows laserMeterWindows = new MonchaCadViewer.DeviceManager.LaserMeterWindows(new VLTLaserMeters());
                             laserMeterWindows.ShowDialog();
                             MonchaHub.RefreshDevice();
@@ -208,25 +208,25 @@ namespace MonchaCadViewer.ToolsPanel.DevicePanel
                 {
                     if (sender is TreeViewItem meshTree && meshTree.Parent is TreeViewItem DeviceTree && DeviceTree.DataContext is MonchaDevice device && meshTree.DataContext is MonchaDeviceMesh deviceMesh)
                     {
-                        switch (cmindex.Header)
+                        switch (cmindex.Tag)
                         {
-                            case "Create":
+                            case "common_Create":
                                 CreateGridWindow createGridWindow = new CreateGridWindow(DeviceTree.DataContext as MonchaDevice, meshTree.DataContext as MonchaDeviceMesh);
                                 createGridWindow.ShowDialog();
                                 break;
-                            case "Refresh":
+                            case "m_Refresh":
                                 deviceMesh = MonchaHub.MWS.GetMeshDot(device.HWIdentifier, deviceMesh.Name, deviceMesh.Affine);
                                 break;
-                            case "Inverse":
+                            case "mesh_Inverse":
                                 deviceMesh.InverseYPosition();
                                 break;
-                            case "ReturnPoint":
+                            case "mesh_Returnpoint":
                                 deviceMesh.ReturnPoint();
                                 break;
-                            case "Morph":
+                            case "mesh_Morph":
                                 deviceMesh.Morph = !deviceMesh.Morph;
                                 break;
-                            case "Affine":
+                            case "mesh_Affine":
                                 deviceMesh.Affine = !deviceMesh.Affine;
                                 break;
                         }

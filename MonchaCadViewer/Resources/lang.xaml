@@ -40,6 +40,9 @@
     <v:String x:Key="dvc_WaintPointBlank">WaintPointBlank</v:String>
     <v:String x:Key="dvc_WaintPointEndBlank">WaintPointEndBlank</v:String>
     <v:String x:Key="dvc_Radius">Radius</v:String>
+    <v:String x:Key="dvc_showrect">Show rect</v:String>
+    <v:String x:Key="dvc_showzone">Show zone</v:String>
+    <v:String x:Key="dvc_polymesh">Poly mesh</v:String>
     
 
     <v:String x:Key="dvc_ProjectMain">Main</v:String>
@@ -59,12 +62,31 @@
     <v:String x:Key="edit_Mask">Mask</v:String>
 
     <v:String x:Key="common_Select">Select</v:String>
+    <v:String x:Key="common_Edit">Edit</v:String>
     <v:String x:Key="common_ADDIN">Add in...</v:String>
+    <v:String x:Key="common_ADD">Add</v:String>
     <v:String x:Key="common_Connect">Connect</v:String>
     <v:String x:Key="common_Empty">Empty</v:String>
+    <v:String x:Key="common_Remove">Remove</v:String>
+    <v:String x:Key="common_Create">Create</v:String>
+    <v:String x:Key="common_Configuration">Configuration</v:String>
+    <v:String x:Key="common_Format">Format</v:String>
+    <v:String x:Key="common_Workfolder">Work folder</v:String>
 
     <v:String x:Key="setting_mainlabel">Default object setting</v:String>
+    <v:String x:Key="setting_xscale">X scale</v:String>
+    <v:String x:Key="setting_yscale">Y scale</v:String>
+    <v:String x:Key="setting_percent">Percent</v:String>
+    <v:String x:Key="setting_invertscale">Invert scale</v:String>
+    <v:String x:Key="setting_solidobject">Solid object</v:String>
 
+    <v:String x:Key="mesh_Affine">Affine</v:String>
+    <v:String x:Key="mesh_Morph">Morph</v:String>
+    <v:String x:Key="mesh_Inverse">Inverse</v:String>
+    <v:String x:Key="mesh_Returnpoint">Return point</v:String>
+
+    <v:String x:Key="canvas_freezall">Freez all</v:String>
+    <v:String x:Key="canvas_unselectall">Unselect all</v:String>
 
 
 </ResourceDictionary>

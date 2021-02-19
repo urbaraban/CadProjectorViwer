@@ -18,7 +18,7 @@ namespace MonchaCadViewer.CanvasObj
         {
             if (contextMenu.Items.Count > 0)
                 contextMenu.Items.Add(new Separator());
-            AddItem("Edit", contextMenu);
+            AddItem("common_Edit", contextMenu);
 
         }
 
@@ -30,55 +30,56 @@ namespace MonchaCadViewer.CanvasObj
                     contextMenu.Items.Add(new Separator());
             }
 
-            AddItem("Mirror", contextMenu);
+            AddItem("obj_Mirror", contextMenu);
         }
 
         public static void CadObjMenu(ContextMenu contextMenu)
         {
-            AddItem("Fix", contextMenu);
-            AddItem("Remove", contextMenu);
-            AddItem("Render", contextMenu);
-            AddItem("Open", contextMenu);
+            AddItem("obj_Fix", contextMenu);
+            AddItem("common_Remove", contextMenu);
+            AddItem("obj_Render", contextMenu);
+            AddItem("m_Open", contextMenu);
         }
 
 
         public static void MeshMenu(ContextMenu contextMenu)
         {
-            AddItem("Create", contextMenu);
-            AddItem("Refresh", contextMenu);
-            AddItem("Inverse", contextMenu);
-            AddItem("ReturnPoint", contextMenu);
-            AddItem("Morph", contextMenu);
-            AddItem("Affine", contextMenu);
+            AddItem("common_Create", contextMenu);
+            AddItem("m_Refresh", contextMenu);
+            AddItem("mesh_Inverse", contextMenu);
+            AddItem("mesh_Returnpoint", contextMenu);
+            AddItem("mesh_Morph", contextMenu);
+            AddItem("mesh_Affine", contextMenu);
         }
 
         public static void CanvasMenu(ContextMenu contextMenu)
         {
-            AddItem("Freeze All", contextMenu);
-            AddItem("Unselect All", contextMenu);
+            AddItem("canvas_freezall", contextMenu);
+            AddItem("canvas_unselectall", contextMenu);
         }
 
         public static void DeviceTreeMenu(ContextMenu contextMenu)
         {
-            AddItem("%CanvasRectangle%", contextMenu);
-            AddItem("%ZoneRectangle%", contextMenu);
-            AddItem("%PolyMeshUsed%", contextMenu);
+            AddItem("dvc_showrect", contextMenu);
+            AddItem("dvc_showzone", contextMenu);
+            AddItem("dvc_polymesh", contextMenu);
         }
 
         public static void LaserMeterHeadTreeMenu(ContextMenu contextMenu)
         {
-            AddItem("Add", contextMenu);
+            AddItem("common_ADD", contextMenu);
         }
         public static void LaserMeterDeviceTreeMenu(ContextMenu contextMenu)
         {
-            AddItem("Edit", contextMenu);
-            AddItem("Remove", contextMenu);
+            AddItem("common_Edit", contextMenu);
+            AddItem("common_Remove", contextMenu);
         }
 
         private static void AddItem(string Name, ContextMenu menu)
         {
             MenuItem menuItem = new MenuItem();
-            menuItem.Header = Name;
+            menuItem.SetResourceReference(MenuItem.HeaderProperty, Name);
+            menuItem.Tag = Name;
             menuItem.Click += MenuItem_Click;
 
             menu.Items.Add(menuItem);

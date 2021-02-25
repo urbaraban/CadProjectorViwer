@@ -47,6 +47,8 @@ namespace MonchaCadViewer.ToolsPanel.ContourScrollPanel
         }
         private bool _issolved = false;
 
+        
+
         public CadObjectsGroup objectsGroup;
 
         private CadCanvas cadCanvas;

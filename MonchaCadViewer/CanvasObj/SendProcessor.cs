@@ -8,6 +8,8 @@ using System;
 using ToGeometryConverter.Object;
 using MonchaSDK.Setting;
 using System.Collections.Generic;
+using System.Threading.Tasks;
+using System.Windows.Threading;
 
 namespace MonchaCadViewer.CanvasObj
 {
@@ -24,6 +26,9 @@ namespace MonchaCadViewer.CanvasObj
         {
             Processing = true;
             LObjectList dotList = new LObjectList();
+
+            
+
             foreach (object obj in canvas.Children)
             {
                 if (obj is CadObject cadObject)
@@ -34,23 +39,20 @@ namespace MonchaCadViewer.CanvasObj
                     }
                 }
             }
-
             LObjectList outList = new LObjectList();
             if (canvas.Masks.Count > 0)
             {
-                foreach (CadRectangle cadRectangle in canvas.Masks)
+                foreach (LRect lRect in canvas.Masks)
                 {
-                    outList.AddRange(CutByMask(dotList, cadRectangle));
+                   outList.AddRange(lRect.CutByRect(dotList));
                 }
             }
             else outList = dotList;
 
             Processing = false;
-            if (outList.Count > 0)
-            {
-                MonchaHub.MainFrame = outList;
-                MonchaHub.RefreshFrame();
-            }
+
+            MonchaHub.MainFrame = outList;
+            MonchaHub.RefreshFrame();
         }
 
         /// <summary>
@@ -91,6 +93,7 @@ namespace MonchaCadViewer.CanvasObj
                 case CadObjectsGroup cadObjectsGroup:
                     foreach (CadObject obj in cadObjectsGroup)
                     {
+                        obj.ProjectionSetting = cadObjectsGroup.ProjectionSetting != MonchaHub.ProjectionSetting ? cadObjectsGroup.ProjectionSetting : null;
                         lObjectList.AddRange(GetPoint(obj, true));
                     }
                     lObjectList.Transform(cadObjectsGroup.TransformGroup);
@@ -260,6 +263,46 @@ namespace MonchaCadViewer.CanvasObj
                     {
                         PathList.AddRange(pathfigurecalc(pathGeometry, cadObject.ProjectionSetting));
                     }
+                    else if (cadContour.myGeometry is EllipseGeometry ellipseGeometry)
+                    {
+                        LObject ellipseObj = new LObject()
+                        {
+                            ProjectionSetting = cadObject.ProjectionSetting
+                        };
+
+                        double C_x = ellipseGeometry.Center.X, C_y = ellipseGeometry.Center.Y, w = ellipseGeometry.RadiusX, h = ellipseGeometry.RadiusY;
+
+                        double step = (Math.PI * 2) / ((Math.PI * (w + h)) / cadObject.ProjectionSetting.PointStep.MX);
+
+                        for (double t = 0; t <= 2 * Math.PI; t += step)
+                        {
+                            ellipseObj.Add(new LPoint3D()
+                            {
+                                X = C_x + (w / 2) * Math.Cos(t),
+                                Y = C_y + (h / 2) * Math.Sin(t)
+                        });
+                        }
+                        PathList.Add(ellipseObj);
+                    }
+                    else if (cadContour.myGeometry is LineGeometry lineGeometry)
+                    {
+                        PathList.Add(new LObject()
+                        {
+                            Points = new List<LPoint3D>()
+                            { 
+                                new LPoint3D(lineGeometry.StartPoint),
+                                new LPoint3D(lineGeometry.EndPoint) 
+                            },
+                            ProjectionSetting = cadContour.ProjectionSetting
+                        });
+                    }
+                    else
+                    {
+                        Console.WriteLine($"Unknow type: {cadObject.myGeometry.GetType().Name}");
+                    }
+                    break;
+                default:
+                    
                     break;
             }
 
@@ -268,6 +311,7 @@ namespace MonchaCadViewer.CanvasObj
 
             LObjectList pathfigurecalc(PathGeometry pathGeometry, LProjectionSetting projectionSetting)
             {
+
                 LObjectList PathObjectList = new LObjectList();
 
                 foreach (PathFigure figure in pathGeometry.Figures)
@@ -349,6 +393,9 @@ namespace MonchaCadViewer.CanvasObj
                                     }
                                     LastPoint = arcSegment.Point;
                                     break;
+                                default:
+                                    Console.WriteLine($"Unkom type segment: {segment.GetType().Name}");
+                                break;
                             }
                         }
                     }
@@ -497,156 +544,6 @@ namespace MonchaCadViewer.CanvasObj
                     x3 + (Clockwise ? d1 : -d1),
                     y3 + (Clockwise ? d2 : -d2)
                     );
-            }
-        }
-
-
-        public static LObjectList CutByMask(LObjectList Contour, CadRectangle Mask)
-        {
-            LObjectList CutObjects = new LObjectList();
-
-            CutObjects.NoMesh = Contour.NoMesh;
-
-            for (int j = 0; j < Contour.Count; j++)
-            {
-
-                CutObjects.Add(new LObject());
-                CutObjects.Last().Closed = Contour[j].Closed;
-
-                if (Contour[j].Count > 1)
-                {
-                    for (int i = 0; i < Contour[j].Count - 1; i++)
-                    {
-                        CheckLine(Contour[j][i], Contour[j][i + 1], Contour[j][i + 1] == Contour[j].Last(), CutObjects);
-                    }
-
-                    if (Contour[j].Closed && !CutObjects.Last().Closed)
-                        CheckLine(Contour[j].Last(), Contour[j].First(), true, CutObjects);
-
-                    if (CutObjects.Last().Count < 1)
-                        CutObjects.Remove(CutObjects.Last());
-                }
-                else
-                {
-                    if (Contour[j].Count > 0)
-                    {
-                        if (Mask.CheckInDot(Contour[j][0]))
-                        {
-                            CutObjects.Last().Add(Contour[j][0]);
-                        }
-                        else
-                            CutObjects.Remove(CutObjects.Last());
-                    }
-                }
-
-                if (CutObjects.Count > 0)
-                    if (CutObjects.Last().Count < 1) CutObjects.Remove(CutObjects.Last());
-
-            } 
-            return CutObjects;
-
-            void CheckLine(LPoint3D point1, LPoint3D point2, bool last, LObjectList objectList)
-            {
-                List<LPoint3D> CrossPoint = new List<LPoint3D>();
-                //Если point1 внутри
-                if (Mask.CheckInDot(point1))
-                {
-                    CrossPoint.Add(point1);
-                }
-                else
-                {
-                    if (objectList.Last().Count > 0)
-                    {
-                        objectList.Last().Closed = false;
-                        objectList.Add(new LObject());
-                        objectList.Last().Closed = false;
-                    }
-                    else if (objectList.Last().Count > 0)
-                    {
-                        objectList.Last().Closed = false;
-                    }
-                }
-
-                //Если какая то из точек выходит > TOP || < BOP
-                if (!Mask.CheckInDot(point1) || !Mask.CheckInDot(point2))
-                {
-                    //Ищем пересечения
-                    CrossPoint.AddRange(PointCross(point1, point2));
-                }
-
-                //если point2 внутри
-                if (Mask.CheckInDot(point2) && last)
-                {
-                    //Если point2 внутри
-                    CrossPoint.Add(point2);
-                }
-                else if (!Mask.CheckInDot(point2))
-                {
-                    objectList.Last().Closed = false;
-                }
-
-                if (CrossPoint.Count > 0)
-                {
-                    objectList.Last().AddRange(CrossPoint);
-                }
-            }
-
-            List<LPoint3D> PointCross(LPoint3D point1, LPoint3D point2)
-            {
-                List<LPoint3D> ListIntersection = new List<LPoint3D>();
-
-                Point[] edgeList = new Point[4]
-                {
-                    Mask.Bounds.TopLeft,
-                    Mask.Bounds.TopRight,
-                    Mask.Bounds.BottomRight,
-                    Mask.Bounds.BottomLeft
-                };
-
-                for (int k = 0; k < edgeList.Length; k++)
-                {
-                    LPoint3D intersection;
-
-                    if (FindIntersection(point1.GetMPoint, point2.GetMPoint, edgeList[k], edgeList[(k + 1) % edgeList.Length], out intersection))
-                        ListIntersection.Add(intersection);
-                }
-                return ListIntersection;
-            }
-
-            bool FindIntersection(
-            System.Windows.Point p1, System.Windows.Point p2, System.Windows.Point p3, System.Windows.Point p4,
-            out LPoint3D intersection)
-            {
-                // Get the segments' parameters.
-                double dx12 = p2.X - p1.X;
-                double dy12 = p2.Y - p1.Y;
-                double dx34 = p4.X - p3.X;
-                double dy34 = p4.Y - p3.Y;
-
-                // Solve for t1 and t2
-                double denominator = (dy12 * dx34 - dx12 * dy34);
-
-                double t1 =
-                    ((p1.X - p3.X) * dy34 + (p3.Y - p1.Y) * dx34)
-                        / denominator;
-                if (double.IsInfinity(t1))
-                {
-                    // The lines are parallel (or close enough to it).
-                    intersection = new LPoint3D(double.NaN, double.NaN);
-                    return false;
-                }
-
-                double t2 =
-                    ((p3.X - p1.X) * dy12 + (p1.Y - p3.Y) * dx12)
-                        / -denominator;
-
-                // Find the point of intersection.
-                intersection = new LPoint3D(p1.X + dx12 * t1, p1.Y + dy12 * t1);
-
-                // The segments intersect if t1 and t2 are between 0 and 1.
-                return ((t1 >= 0) && (t1 <= 1) &&
-                     (t2 >= 0) && (t2 <= 1));
-
             }
         }
     }

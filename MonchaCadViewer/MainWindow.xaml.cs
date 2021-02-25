@@ -28,6 +28,7 @@ using StclLibrary.Laser;
 using Microsoft.WindowsAPICodePack.Dialogs;
 using System.ComponentModel;
 using System.Windows.Data;
+using MonchaCadViewer.ToolsPanel.ContourScrollPanel;
 
 namespace MonchaCadViewer
 {
@@ -660,6 +661,15 @@ namespace MonchaCadViewer
         {
             SaveFileDialog saveFileDialog = new SaveFileDialog();
             saveFileDialog.Filter = "(*.ild)|*.ild| All Files (*.*)|*.*";
+
+            foreach(ScrollPanelItem item in ContourScrollPanel.FrameStack.Children)
+            {
+                if (item.IsSelected == true)
+                {
+                    saveFileDialog.FileName += $"{(saveFileDialog.FileName != string.Empty ? " " : string.Empty)}{item.objectsGroup.Name}";
+                }
+            }
+
             saveFileDialog.ShowDialog();
             IldaWriter ildaWriter = new IldaWriter();
 
@@ -667,7 +677,7 @@ namespace MonchaCadViewer
             {
                 for (int i = 0; i < MonchaHub.Devices.Count; i++)
                 {
-                    ildaWriter.Write(($"{saveFileDialog.FileName.Replace(".ild", string.Empty)}_{i}.ild"), new List<LFrame>(){await MonchaHub.Devices[i].GetReadyFrame.GetLFrame(MonchaHub.Devices[i], MonchaHub.MainFrame, UsedMeshToggle.IsOn)}, 5);
+                    ildaWriter.Write(($"{saveFileDialog.FileName.Replace(".ild", string.Empty)}_{i}.ild"), new List<LFrame>(){MonchaHub.Devices[i].GetReadyFrame.GetLFrame(MonchaHub.Devices[i], MonchaHub.MainFrame, UsedMeshToggle.IsOn)}, 5);
                 }
             }
         }

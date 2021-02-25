@@ -33,19 +33,18 @@ namespace MonchaCadViewer.CanvasObj
         public override event EventHandler<string> Updated;
         public override event EventHandler<CadObject> Removed;
 
-        public LPoint3D Point1;
-        public LPoint3D Point2;
+        public LRect LRect;
 
         public override double X
         {
-            get => Math.Min(Point1.MX, Point2.MX);
+            get => Math.Min(LRect.P1.MX, LRect.P2.MX);
             set
             {
                 if (this.IsFix == false)
                 {
-                    double delta = value - Math.Min(Point1.MX, Point2.MX);
-                    Point1.MX += delta;
-                    Point2.MX += delta;
+                    double delta = value - Math.Min(LRect.P1.MX, LRect.P2.MX);
+                    LRect.P1.MX += delta;
+                    LRect.P2.MX += delta;
                     Updated?.Invoke(this, "X");
                     OnPropertyChanged("X");
                 }
@@ -53,14 +52,14 @@ namespace MonchaCadViewer.CanvasObj
         }
         public override double Y
         {
-            get => Math.Min(Point1.MY, Point2.MY);
+            get => Math.Min(LRect.P1.MY, LRect.P2.MY);
             set
             {
                 if (this.IsFix == false)
                 {
-                    double delta = value - Math.Min(Point1.MY, Point2.MY);
-                    Point1.MY += delta;
-                    Point2.MY += delta;
+                    double delta = value - Math.Min(LRect.P1.MY, LRect.P2.MY);
+                    LRect.P1.MY += delta;
+                    LRect.P2.MY += delta;
                     Updated?.Invoke(this, "Y");
                     OnPropertyChanged("Y");
                 }
@@ -69,9 +68,9 @@ namespace MonchaCadViewer.CanvasObj
 
         private List<CadAnchor> anchors;
 
-        public override Rect Bounds => new Rect(Point1.GetMPoint, Point2.GetMPoint);
+        public override Rect Bounds => new Rect(LRect.P1.GetMPoint, LRect.P2.GetMPoint);
 
-        public CadRectangle(LPoint3D Point1, LPoint3D Point2, bool MouseSet)
+        public CadRectangle(LPoint3D P1, LPoint3D P2, bool MouseSet)
         {
             this.Render = false;
             this.TransformGroup = new TransformGroup()
@@ -84,11 +83,33 @@ namespace MonchaCadViewer.CanvasObj
                     }
             };
 
-            this.Point1 = Point1;
-            this.Point2 = Point2;
+            this.LRect = new LRect(P1, P2);
 
-            this.Point1.PropertyChanged += Point1_PropertyChanged;
-            this.Point2.PropertyChanged += Point1_PropertyChanged;
+            if (MouseSet == true)
+            {
+                this.Loaded += CadRectangle_Loaded;
+            }
+            else
+            {
+                this.Loaded += CadRectangleSet_Loaded;
+            }
+        }
+
+        public CadRectangle(LRect lRect, bool MouseSet)
+        {
+            this.Render = false;
+            this.TransformGroup = new TransformGroup()
+            {
+                Children = new TransformCollection()
+                    {
+                        new ScaleTransform(),
+                        new RotateTransform(),
+                        new TranslateTransform()
+                    }
+            };
+
+            LRect = lRect;
+            LRect.PropertyChanged += Point1_PropertyChanged;
 
             if (MouseSet == true)
             {
@@ -134,7 +155,7 @@ namespace MonchaCadViewer.CanvasObj
         {
             Dispatcher.Invoke(() =>
             {
-                this.Point2.Set(e.GetPosition(this));
+                this.LRect.P2.Set(e.GetPosition(this));
                 this.InvalidateVisual();
             });
         }
@@ -143,7 +164,7 @@ namespace MonchaCadViewer.CanvasObj
         {
             if (sender is CadCanvas cadCanvas)
             {
-                this.Point2.Set(e.GetPosition(cadCanvas));
+                this.LRect.P2.Set(e.GetPosition(cadCanvas));
                 cadCanvas.MouseLeftButtonUp -= canvas_MouseLeftButtonUP;
                 cadCanvas.MouseMove -= Canvas_MouseMove;
                 /*
@@ -166,10 +187,10 @@ namespace MonchaCadViewer.CanvasObj
             {
                 anchors = new List<CadAnchor>()
                 {
-                    new CadAnchor(this.Point1, this.Point1, MonchaHub.GetThinkess * 3, false){ Render = false },
-                    new CadAnchor(this.Point1, this.Point2, MonchaHub.GetThinkess * 3, false){ Render = false },
-                    new CadAnchor(this.Point2, this.Point2, MonchaHub.GetThinkess * 3, false){ Render = false },
-                    new CadAnchor(this.Point2, this.Point1, MonchaHub.GetThinkess * 3, false){ Render = false }
+                    new CadAnchor(this.LRect.P1, this.LRect.P1, MonchaHub.GetThinkess * 3, false){ Render = false },
+                    new CadAnchor(this.LRect.P1, this.LRect.P2, MonchaHub.GetThinkess * 3, false){ Render = false },
+                    new CadAnchor(this.LRect.P2, this.LRect.P2, MonchaHub.GetThinkess * 3, false){ Render = false },
+                    new CadAnchor(this.LRect.P2, this.LRect.P1, MonchaHub.GetThinkess * 3, false){ Render = false }
                 };
 
                 foreach (CadAnchor cadAnchor in anchors)
@@ -186,14 +207,8 @@ namespace MonchaCadViewer.CanvasObj
             TransparentBrush.Color = Colors.Transparent;
 
             Pen myPen = new Pen(Brushes.Blue, MonchaHub.GetThinkess / 2);
-            drawingContext.DrawRectangle(TransparentBrush, myPen, new Rect(X, Y, Math.Abs(Point1.MX - Point2.MX), Math.Abs(Point1.MY - Point2.MY)));
+            drawingContext.DrawRectangle(TransparentBrush, myPen, new Rect(X, Y, Math.Abs(LRect.P1.MX - LRect.P2.MX), Math.Abs(LRect.P1.MY - LRect.P2.MY)));
         }
-
-        public bool CheckInDot(LPoint3D checkpoint) => 
-            checkpoint.MX < this.X + Math.Abs(Point1.MX - Point2.MX) &&
-            checkpoint.MX > this.X &&
-            checkpoint.MY < this.Y + Math.Abs(Point1.MY - Point2.MY) &&
-            checkpoint.MY > this.Y;
 
         public override void Remove()
         {

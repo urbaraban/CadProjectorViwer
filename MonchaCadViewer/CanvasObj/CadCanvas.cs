@@ -39,7 +39,7 @@ namespace MonchaCadViewer.CanvasObj
         private Point StartMovePoint;
         private Point StartMousePoint;
 
-        public List<CadRectangle> Masks = new List<CadRectangle>();
+        public List<LRect> Masks = new List<LRect>();
 
         public bool MainCanvas { get; }
 
@@ -219,9 +219,10 @@ namespace MonchaCadViewer.CanvasObj
             }
             else if (this.mouseAction == MouseAction.Mask)
             {
-                CadRectangle Maskrectangle = new CadRectangle(new LPoint3D(e.GetPosition(this)), new LPoint3D(e.GetPosition(this)), true);
+                LRect lRect = new LRect(new LPoint3D(e.GetPosition(this)), new LPoint3D(e.GetPosition(this)));
+                CadRectangle Maskrectangle = new CadRectangle(lRect, true);
                 this.Add(Maskrectangle);
-                this.Masks.Add(Maskrectangle);
+                this.Masks.Add(lRect);
 
             }
         }
@@ -398,7 +399,7 @@ namespace MonchaCadViewer.CanvasObj
             }
             this.Children.Remove(Object);
             
-            if (Object is CadRectangle cadRectangle) this.Masks.Remove(cadRectangle);
+            if (Object is CadRectangle cadRectangle) this.Masks.Remove(cadRectangle.LRect);
         }
 
         /// <summary>

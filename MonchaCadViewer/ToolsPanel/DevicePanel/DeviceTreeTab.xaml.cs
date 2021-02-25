@@ -151,7 +151,7 @@ namespace MonchaCadViewer.ToolsPanel.DevicePanel
 
                         case "dvc_showzone":
                             DrawObjects?.Invoke(this, new List<FrameworkElement>() {
-                                new CadRectangle(device.BOP, device.TOP, false){Render = false}
+                                new CadRectangle(device.DeviceZone.P1, device.DeviceZone.P2, false){Render = false}
                             });
                             break;
                         case "dvc_polymesh":

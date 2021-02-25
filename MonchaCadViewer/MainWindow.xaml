@@ -103,7 +103,7 @@
                             <ToolBarPanel Orientation="Horizontal" Width="219" Margin="0,0,0,0">
                                 <ToolBar Grid.ColumnSpan="2" Width="218">
                                     <ToolBarPanel Orientation="Vertical" Width="100">
-                                        <Button x:Name="OpenBtn" AllowDrop="True" Content="Open" DragEnter="OpenBtn_DragEnter" DragOver="OpenBtn_DragOver" DragLeave="OpenBtn_DragLeave" Drop="OpenBtn_DragDrop" Click="OpenBtn_Click" Grid.ColumnSpan="2" Background="{x:Null}" BorderBrush="{x:Null}" Height="86" />
+                                        <Button x:Name="OpenBtn" AllowDrop="True" Content="{DynamicResource m_Open}" DragEnter="OpenBtn_DragEnter" DragOver="OpenBtn_DragOver" DragLeave="OpenBtn_DragLeave" Drop="OpenBtn_DragDrop" Click="OpenBtn_Click" Grid.ColumnSpan="2" Background="{x:Null}" BorderBrush="{x:Null}" Height="86" />
 
                                     </ToolBarPanel>
                                     <Separator></Separator>

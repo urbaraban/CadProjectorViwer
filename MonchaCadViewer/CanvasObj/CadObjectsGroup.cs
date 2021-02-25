@@ -28,9 +28,11 @@ namespace MonchaCadViewer.CanvasObj
 
             foreach (Geometry tempgeometry in geometry.Children)
             {
-                this.cadObjects.Add(new CadContour(tempgeometry, true));
-                this.cadObjects.Last().TransformGroup = this.TransformGroup;
-                this.cadObjects.Last().Name = this.Name;
+                this.cadObjects.Add(new CadContour(tempgeometry, true)
+                {
+                    TransformGroup = this.TransformGroup,
+                    Name = this.Name,
+                });
             }
         }
 

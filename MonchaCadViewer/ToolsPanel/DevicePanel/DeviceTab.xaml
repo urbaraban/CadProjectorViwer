@@ -110,7 +110,7 @@
         <Label x:Name="StartWaitLabel_Copy5" Margin="0,0,0,112" Content="{DynamicResource dvc_FadePoint}" FontSize="8" Grid.Column="1" HorizontalContentAlignment="Center" Grid.ColumnSpan="4" Height="21" VerticalAlignment="Bottom" Grid.Row="2"/>
         <Label x:Name="StartWaitLabel_Copy6" Content="{Binding Value, ElementName=ColorShiftSlider}" Margin="0,0,0,95" Height="26" VerticalAlignment="Bottom" HorizontalContentAlignment="Center" Grid.Row="2"/>
         <Label x:Name="label_Copy7" Content="{DynamicResource dvc_Device}" HorizontalAlignment="Left" VerticalAlignment="Top" Width="74" Height="26" Grid.Column="1" Margin="4,0,0,0"/>
-        <Controls:ToggleSwitch x:Name="CommonSettingToggle"  Content="" HorizontalAlignment="Right" Margin="0,27,8,0" VerticalAlignment="Top" IsOn="False" RenderTransformOrigin="0.5,0.5" HorizontalContentAlignment="Center" Height="25" Grid.Column="4" Width="46">
+        <Controls:ToggleSwitch x:Name="CommonSettingToggle"  Content="" HorizontalAlignment="Right" Margin="0,27,8,0" VerticalAlignment="Top" IsOn="False" RenderTransformOrigin="0.5,0.5" HorizontalContentAlignment="Center" Height="25" Grid.Column="4" Width="46" AutomationProperties.HelpText="Common setting toggle" Toggled="CommonSettingToggle_Toggled">
             <Controls:ToggleSwitch.DataContext>
                 <Properties:Settings/>
             </Controls:ToggleSwitch.DataContext>

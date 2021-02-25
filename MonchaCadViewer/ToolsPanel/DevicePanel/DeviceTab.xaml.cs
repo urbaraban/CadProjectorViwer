@@ -67,83 +67,86 @@ namespace MonchaCadViewer.ToolsPanel
         {
             if (DeviceCombo.SelectedItem is MonchaDevice tempdevice)
             {
-                //LaserMeter
-                if (tempdevice.ProjectionSetting.LMeter != null)
-                {
-                    LaserMetersCombo.SelectedValue = tempdevice.ProjectionSetting.LMeter.HWIdentifier;
-
-                    LaserMeterToggle.DataContext = tempdevice.ProjectionSetting.LMeter;
-                    LaserMeterToggle.SetBinding(ToggleSwitch.IsOnProperty, "IsTurn");
-
-                    tempdevice.ProjectionSetting.LMeter.ChangeDimention += LMeter_ChangeDimention;
-                }
-
-                CommonSettingToggle.DataContext = tempdevice;
-                CommonSettingToggle.SetBinding(ToggleSwitch.IsOnProperty, "OwnedSetting");
-
-                DistanceUpDn.DataContext = tempdevice.ProjectionSetting;
-                DistanceUpDn.SetBinding(NumericUpDown.ValueProperty, "Distance");
-
-                //Device
-                ScanRateRealSlider.Maximum = 40000;
-                ScanRateRealSlider.Minimum = 500;
-                ScanRateRealSlider.DataContext = tempdevice;
-                ScanRateRealSlider.SetBinding(Slider.ValueProperty, "ScanRateReal");
-
-                ScanRateCalc.Maximum = 40000;
-                ScanRateCalc.Minimum = 500;
-                ScanRateCalc.DataContext = tempdevice;
-                ScanRateCalc.SetBinding(Slider.ValueProperty, "ScanRateCalc");
-
-                FPSUpDn.DataContext = tempdevice;
-                FPSUpDn.SetBinding(NumericUpDown.ValueProperty, "FPS");
-
-                InvertXtoggle.DataContext = tempdevice;
-                InvertXtoggle.SetBinding(ToggleSwitch.IsOnProperty, "InvertedX");
-
-                InvertYtoggle.DataContext = tempdevice;
-                InvertYtoggle.SetBinding(ToggleSwitch.IsOnProperty, "InvertedY");
-
-                AlphaSlider.DataContext = tempdevice;
-                AlphaSlider.SetBinding(Slider.ValueProperty, "Alpha");
-
-                //ObjectReadySetting
-                RedUpDn.DataContext = tempdevice.ProjectionSetting;
-                RedUpDn.SetBinding(NumericUpDown.ValueProperty, "Red");
-
-                RedToggle.DataContext = tempdevice.ProjectionSetting;
-                RedToggle.SetBinding(ToggleSwitch.IsOnProperty, "RedOn");
-
-                GreenUpDn.DataContext = tempdevice.ProjectionSetting;
-                GreenUpDn.SetBinding(NumericUpDown.ValueProperty, "Green");
-
-                GreenToggle.DataContext = tempdevice.ProjectionSetting;
-                GreenToggle.SetBinding(ToggleSwitch.IsOnProperty, "GreenOn");
-
-                BlueUpDn.DataContext = tempdevice.ProjectionSetting;
-                BlueUpDn.SetBinding(NumericUpDown.ValueProperty, "Blue");
-
-                BlueToggle.DataContext = tempdevice.ProjectionSetting;
-                BlueToggle.SetBinding(ToggleSwitch.IsOnProperty, "BlueOn");
-
-
-
-                AngleWaitSlider.DataContext = tempdevice.ProjectionSetting;
-                AngleWaitSlider.SetBinding(Slider.ValueProperty, "StartLineWait");
-
-                EndBlankSlider.DataContext = tempdevice.ProjectionSetting;
-                EndBlankSlider.SetBinding(Slider.ValueProperty, "EndBlanckWait");
-
-                StartBlankSlider.DataContext = tempdevice.ProjectionSetting;
-                StartBlankSlider.SetBinding(Slider.ValueProperty, "StartBlankWait");
-
-                CRSUpDn.DataContext = tempdevice.ProjectionSetting.PointStep;
-                CRSUpDn.SetBinding(NumericUpDown.ValueProperty, "MX");
-
-                tempdevice.PropertyChanged += ProjectionSetting_PropertyChanged;
-                tempdevice.ProjectionSetting.PropertyChanged += ProjectionSetting_PropertyChanged;
-                tempdevice.ProjectionSetting.PointStep.PropertyChanged += ProjectionSetting_PropertyChanged;
+                BindingDeviceSetting(tempdevice);
             }
+        }
+
+        private void BindingDeviceSetting(MonchaDevice monchaDevice)
+        {
+            //LaserMeter
+            if (monchaDevice.ProjectionSetting.LMeter != null)
+            {
+                LaserMetersCombo.SelectedValue = monchaDevice.ProjectionSetting.LMeter.HWIdentifier;
+
+                LaserMeterToggle.DataContext = monchaDevice.ProjectionSetting.LMeter;
+                LaserMeterToggle.SetBinding(ToggleSwitch.IsOnProperty, "IsTurn");
+
+                monchaDevice.ProjectionSetting.LMeter.ChangeDimention += LMeter_ChangeDimention;
+            }
+
+            CommonSettingToggle.DataContext = monchaDevice;
+            CommonSettingToggle.SetBinding(ToggleSwitch.IsOnProperty, "OwnedSetting");
+
+            DistanceUpDn.DataContext = monchaDevice.ProjectionSetting;
+            DistanceUpDn.SetBinding(NumericUpDown.ValueProperty, "Distance");
+
+            //Device
+            ScanRateRealSlider.Maximum = 40000;
+            ScanRateRealSlider.Minimum = 500;
+            ScanRateRealSlider.DataContext = monchaDevice;
+            ScanRateRealSlider.SetBinding(Slider.ValueProperty, "ScanRateReal");
+
+            ScanRateCalc.Maximum = 40000;
+            ScanRateCalc.Minimum = 500;
+            ScanRateCalc.DataContext = monchaDevice;
+            ScanRateCalc.SetBinding(Slider.ValueProperty, "ScanRateCalc");
+
+            FPSUpDn.DataContext = monchaDevice;
+            FPSUpDn.SetBinding(NumericUpDown.ValueProperty, "FPS");
+
+            InvertXtoggle.DataContext = monchaDevice;
+            InvertXtoggle.SetBinding(ToggleSwitch.IsOnProperty, "InvertedX");
+
+            InvertYtoggle.DataContext = monchaDevice;
+            InvertYtoggle.SetBinding(ToggleSwitch.IsOnProperty, "InvertedY");
+
+            AlphaSlider.DataContext = monchaDevice;
+            AlphaSlider.SetBinding(Slider.ValueProperty, "Alpha");
+
+            //ObjectReadySetting
+            RedUpDn.DataContext = monchaDevice.ProjectionSetting;
+            RedUpDn.SetBinding(NumericUpDown.ValueProperty, "Red");
+
+            RedToggle.DataContext = monchaDevice.ProjectionSetting;
+            RedToggle.SetBinding(ToggleSwitch.IsOnProperty, "RedOn");
+
+            GreenUpDn.DataContext = monchaDevice.ProjectionSetting;
+            GreenUpDn.SetBinding(NumericUpDown.ValueProperty, "Green");
+
+            GreenToggle.DataContext = monchaDevice.ProjectionSetting;
+            GreenToggle.SetBinding(ToggleSwitch.IsOnProperty, "GreenOn");
+
+            BlueUpDn.DataContext = monchaDevice.ProjectionSetting;
+            BlueUpDn.SetBinding(NumericUpDown.ValueProperty, "Blue");
+
+            BlueToggle.DataContext = monchaDevice.ProjectionSetting;
+            BlueToggle.SetBinding(ToggleSwitch.IsOnProperty, "BlueOn");
+
+            AngleWaitSlider.DataContext = monchaDevice.ProjectionSetting;
+            AngleWaitSlider.SetBinding(Slider.ValueProperty, "StartLineWait");
+
+            EndBlankSlider.DataContext = monchaDevice.ProjectionSetting;
+            EndBlankSlider.SetBinding(Slider.ValueProperty, "EndBlanckWait");
+
+            StartBlankSlider.DataContext = monchaDevice.ProjectionSetting;
+            StartBlankSlider.SetBinding(Slider.ValueProperty, "StartBlankWait");
+
+            CRSUpDn.DataContext = monchaDevice.ProjectionSetting.PointStep;
+            CRSUpDn.SetBinding(NumericUpDown.ValueProperty, "MX");
+
+            monchaDevice.PropertyChanged += ProjectionSetting_PropertyChanged;
+            monchaDevice.ProjectionSetting.PropertyChanged += ProjectionSetting_PropertyChanged;
+            monchaDevice.ProjectionSetting.PointStep.PropertyChanged += ProjectionSetting_PropertyChanged;
         }
 
         private void ProjectionSetting_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
@@ -212,6 +215,11 @@ namespace MonchaCadViewer.ToolsPanel
         private void DeviceSettingDialog_DrawObjects(object sender, List<FrameworkElement> e)
         {
             DrawObjects?.Invoke(this, e);
+        }
+
+        private void CommonSettingToggle_Toggled(object sender, RoutedEventArgs e)
+        {
+            BindingDeviceSetting(this.Device);
         }
     }
 }

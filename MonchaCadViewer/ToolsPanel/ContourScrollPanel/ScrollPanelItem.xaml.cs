@@ -90,7 +90,7 @@ namespace MonchaCadViewer.ToolsPanel.ContourScrollPanel
             this.objectsGroup = cadObjectsGroup;
             CadContour cadContour = new CadContour(cadObjectsGroup.myGeometry, false);
             cadContour.TransformGroup = this.objectsGroup.TransformGroup;
-            cadCanvas.DrawContour(cadContour);
+            cadCanvas.DrawContour(cadContour, Keyboard.Modifiers != ModifierKeys.Shift);
         }
 
         public void Remove()

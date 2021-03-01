@@ -121,7 +121,7 @@ namespace MonchaCadViewer
 
         private void DeviceTree_DrawObjects(object sender, List<FrameworkElement> e)
         {
-            MainCanvas.Canvas.Add(e, Keyboard.Modifiers != ModifierKeys.Shift);
+            MainCanvas.Canvas.AddRange(e, Keyboard.Modifiers != ModifierKeys.Shift);
         }
 
         private void DeviceTree_NeedRefresh(object sender, bool e)
@@ -677,7 +677,7 @@ namespace MonchaCadViewer
             {
                 for (int i = 0; i < MonchaHub.Devices.Count; i++)
                 {
-                    ildaWriter.Write(($"{saveFileDialog.FileName.Replace(".ild", string.Empty)}_{i}.ild"), new List<LFrame>(){MonchaHub.Devices[i].GetReadyFrame.GetLFrame(MonchaHub.Devices[i], MonchaHub.MainFrame, UsedMeshToggle.IsOn)}, 5);
+                    ildaWriter.Write(($"{saveFileDialog.FileName.Replace(".ild", string.Empty)}_{i}.ild"), new List<LFrame>(){ MonchaHub.Devices[i].GetReadyFrame.GetLFrame(MonchaHub.Devices[i], MonchaHub.MainFrame)}, 5);
                 }
             }
         }
@@ -700,7 +700,6 @@ namespace MonchaCadViewer
             if (CalibrationFormCombo.SelectedValue != null)
             {
                 MonchaDeviceMesh.ClbrForm = (CalibrationForm)CalibrationFormCombo.SelectedValue;
-                this.MainCanvas.UpdateProjection(true);
             }
         }
 
@@ -714,7 +713,6 @@ namespace MonchaCadViewer
         {
             if (sender is CheckBox checkBox)
                 ReadyFrame.SetEndgePoint = checkBox.IsChecked.Value;
-            MonchaHub.RefreshFrame();
         }
 
         private void WorkFolderRefreshBtn_Click(object sender, RoutedEventArgs e) => RefreshWorkFolderList();

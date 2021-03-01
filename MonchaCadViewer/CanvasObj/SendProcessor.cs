@@ -52,7 +52,6 @@ namespace MonchaCadViewer.CanvasObj
             Processing = false;
 
             MonchaHub.MainFrame = outList;
-            MonchaHub.RefreshFrame();
         }
 
         /// <summary>

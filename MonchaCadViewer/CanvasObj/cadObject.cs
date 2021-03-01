@@ -26,19 +26,19 @@ namespace MonchaCadViewer.CanvasObj
             {
                 if (this.IsMouseOver == true)
                 {
-                    return new Pen(Brushes.Orange, MonchaHub.GetThinkess / 3);
+                    return new Pen(Brushes.Orange, MonchaHub.GetThinkess / 3 / this.Scale.ScaleX);
                 }
                 else if (this._isselected == true)
                 {
-                    return new Pen(Brushes.Black, MonchaHub.GetThinkess / 3);
+                    return new Pen(Brushes.Black, MonchaHub.GetThinkess / 3 / this.Scale.ScaleX);
                 }
                 else if (this._render == false)
                 {
-                    return new Pen(Brushes.DarkGray, MonchaHub.GetThinkess / 3);
+                    return new Pen(Brushes.DarkGray, MonchaHub.GetThinkess / 3 / this.Scale.ScaleX);
                 }
                 else if (this._isfix == true)
                 {
-                    return new Pen(Brushes.LightBlue, MonchaHub.GetThinkess / 3);
+                    return new Pen(Brushes.LightBlue, MonchaHub.GetThinkess / 3 / this.Scale.ScaleX);
                 }
                 else
                 {
@@ -47,7 +47,7 @@ namespace MonchaCadViewer.CanvasObj
                         (ProjectionSetting.RedOn == true ? ProjectionSetting.Red : (byte)0),
                         (ProjectionSetting.GreenOn == true ? ProjectionSetting.Green : (byte)0),
                         (ProjectionSetting.BlueOn == true ? ProjectionSetting.Blue : (byte)0))), 
-                        MonchaHub.GetThinkess / 3);
+                        MonchaHub.GetThinkess / 3 / this.Scale.ScaleX);
                 }
 
                 return null;

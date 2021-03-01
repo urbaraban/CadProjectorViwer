@@ -84,6 +84,7 @@ namespace MonchaCadViewer.CanvasObj
             };
 
             this.LRect = new LRect(P1, P2);
+            LRect.PropertyChanged += Point1_PropertyChanged;
 
             if (MouseSet == true)
             {
@@ -125,6 +126,7 @@ namespace MonchaCadViewer.CanvasObj
         private void Point1_PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
             this.InvalidateVisual();
+            Updated?.Invoke(this, "Rect");
         }
 
         /// <summary>

@@ -57,11 +57,6 @@ namespace MonchaCadViewer.ToolsPanel.CanvasPanel
 
         private void CadCanvasPanel_DataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
         {
-            if (Keyboard.Modifiers != ModifierKeys.Shift)
-            {
-                this.Canvas.Clear();
-            }
-
             if (this.DataContext is CadObjectsGroup objectsGroup)
             {
                 if (AppSt.Default.object_solid == false)
@@ -69,10 +64,10 @@ namespace MonchaCadViewer.ToolsPanel.CanvasPanel
                     foreach (CadObject cadObject in objectsGroup)
                     {
                         cadObject.ShowName = false;
-                        this.Canvas.DrawContour(cadObject);
+                        this.Canvas.DrawContour(cadObject, Keyboard.Modifiers != ModifierKeys.Shift);
                     }
                 }
-                else this.Canvas.DrawContour(objectsGroup);
+                else this.Canvas.DrawContour(objectsGroup, Keyboard.Modifiers != ModifierKeys.Shift);
             }
 
 
@@ -166,7 +161,7 @@ namespace MonchaCadViewer.ToolsPanel.CanvasPanel
                 this.Canvas.RemoveChildren((FrameworkElement)sender);
         }
 
-        internal void Add(object sender) => this.Canvas.Add((FrameworkElement)sender);
+        internal void Add(object sender) => this.Canvas.DrawContour((CadObject)sender, Keyboard.Modifiers != ModifierKeys.Shift);
 
         private void Canvas_SizeChanged(object sender, SizeChangedEventArgs e)
         {

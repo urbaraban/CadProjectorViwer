@@ -132,6 +132,15 @@ namespace MonchaCadViewer.ToolsPanel
             BindingOperations.ClearBinding(RadiusSlider, Slider.ValueProperty);
             BindingOperations.ClearBinding(MultiplierSlider, Slider.ValueProperty);
             BindingOperations.ClearBinding(DistanceUpDn, NumericUpDown.ValueProperty);
+
+            if (OtherSettingSwitch.IsOn == true)
+            {
+                this.cadObject.ProjectionSetting = MonchaHub.ProjectionSetting.Clone();
+            }
+            else
+            {
+                this.cadObject.ProjectionSetting = null;
+            }
             BindingCadObject(this.cadObject.ProjectionSetting);
         }
 

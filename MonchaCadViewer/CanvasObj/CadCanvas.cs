@@ -43,14 +43,6 @@ namespace MonchaCadViewer.CanvasObj
 
         public bool MainCanvas { get; }
 
-        public LPoint3D Size
-        {
-            get => this._size;
-            set
-            {
-                this._size = value;
-            }
-        }
         private LPoint3D _size;
 
         public bool HorizontalMesh { get; set; } = false;
@@ -100,7 +92,6 @@ namespace MonchaCadViewer.CanvasObj
 
         private void CadCanvas_Loaded(object sender, RoutedEventArgs e)
         {
-
             this.Loaded -= CadCanvas_Loaded;
         }
 
@@ -254,8 +245,10 @@ namespace MonchaCadViewer.CanvasObj
         /// <param name="maincanvas">property for main canvas attributes</param>
         /// <param name="add">Add contour for already view</param>
         /// <param name="mousemove">add mouse event</param>
-        public void DrawContour(CadObject obj)
+        public void DrawContour(CadObject obj, bool Clear)
         {
+            if (Clear == true) this.Clear();
+
             if (obj is CadObject cadObject)
             {
                 cadObject.MouseMove += CadObject_MouseMove;
@@ -400,6 +393,7 @@ namespace MonchaCadViewer.CanvasObj
             this.Children.Remove(Object);
             
             if (Object is CadRectangle cadRectangle) this.Masks.Remove(cadRectangle.LRect);
+            UpdateProjection?.Invoke(this, null);
         }
 
         /// <summary>
@@ -421,9 +415,10 @@ namespace MonchaCadViewer.CanvasObj
 
                 this.Children.Add(obj);
             }
+            UpdateProjection?.Invoke(this, null);
         }
 
-        public void Add(List<FrameworkElement> frameworkElements, bool Clear)
+        public void AddRange(List<FrameworkElement> frameworkElements, bool Clear)
         {
             if (Clear == true) this.Clear();
 
@@ -431,7 +426,6 @@ namespace MonchaCadViewer.CanvasObj
             {
                 this.Add(frameworkElement);
             }
-            UpdateProjection?.Invoke(this, null);
         }
 
         private void CadObject_Removed(object sender, CadObject e) => RemoveChildren((FrameworkElement)sender);

@@ -89,6 +89,29 @@ namespace MonchaCadViewer.CanvasObj
                     lObjectList.AddRange(CalcContour(cadContour));
                     if (InGroup == false) lObjectList.Transform(cadObject.TransformGroup);
                     break;
+                case CadLine cadLine:
+                    lObjectList.Add(new LObject()
+                    {
+                        Points = new List<LPoint3D>() {
+                        cadLine.P1,
+                        cadLine.P2
+                        },
+                        ProjectionSetting = cadLine.ProjectionSetting
+                    });
+                    break;
+                case CadRectangle cadRectangle:
+                    lObjectList.Add(new LObject()
+                    {
+                        Points = new List<LPoint3D>() {
+                        cadRectangle.LRect.P1,
+                        new LPoint3D(cadRectangle.LRect.P2.MX, cadRectangle.LRect.P1.MY),
+                        cadRectangle.LRect.P2,
+                        new LPoint3D(cadRectangle.LRect.P1.MX, cadRectangle.LRect.P2.MY),
+                        },
+                        ProjectionSetting = cadRectangle.ProjectionSetting,
+                        Closed = true
+                    });
+                    break;
                 case CadObjectsGroup cadObjectsGroup:
                     foreach (CadObject obj in cadObjectsGroup)
                     {

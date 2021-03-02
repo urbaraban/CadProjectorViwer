@@ -72,6 +72,7 @@
     <v:String x:Key="common_Configuration">Configuration</v:String>
     <v:String x:Key="common_Format">Format</v:String>
     <v:String x:Key="common_Workfolder">Work folder</v:String>
+    <v:String x:Key="common_Setting">Setting</v:String>
 
     <v:String x:Key="setting_mainlabel">Default object setting</v:String>
     <v:String x:Key="setting_xscale">X scale</v:String>

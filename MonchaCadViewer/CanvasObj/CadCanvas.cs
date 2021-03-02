@@ -32,12 +32,13 @@ namespace MonchaCadViewer.CanvasObj
 
         private object MouseOnObject = null;
         private bool _wasmove = false;
-        private List<CadAnchor> anchors = new List<CadAnchor>();
         private int _status = 0;
         
         private bool _nofreecursor = true;
         private Point StartMovePoint;
         private Point StartMousePoint;
+
+        public CadAnchor UnderAnchor;
 
         public List<LRect> Masks = new List<LRect>();
 
@@ -214,7 +215,11 @@ namespace MonchaCadViewer.CanvasObj
                 CadRectangle Maskrectangle = new CadRectangle(lRect, true);
                 this.Add(Maskrectangle);
                 this.Masks.Add(lRect);
-
+            }
+            else if (this.mouseAction == MouseAction.Line)
+            {
+                CadLine line = new CadLine(new LPoint3D(e.GetPosition(this)), new LPoint3D(e.GetPosition(this)), true);
+                this.Add(line);
             }
         }
 
@@ -432,7 +437,14 @@ namespace MonchaCadViewer.CanvasObj
 
         private void CadObject_Updated(object sender, string e) => UpdateProjection?.Invoke(this, null);
 
-        private void CadObject_OnObject1(object sender, bool e) => this._nofreecursor = e;
+        private void CadObject_OnObject1(object sender, bool e)
+        {
+            if (sender is CadAnchor cadAnchor)
+            {
+                this.UnderAnchor = e == true ? cadAnchor : (this.UnderAnchor == cadAnchor ? null : this.UnderAnchor);
+            }
+            this._nofreecursor = e;
+        }
 
 
         private void CadObject_Selected(object sender, bool e)

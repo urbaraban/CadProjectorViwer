@@ -1,5 +1,6 @@
 ﻿using MonchaCadViewer.CanvasObj;
 using MonchaCadViewer.Interface;
+using MonchaCadViewer.ToolsPanel.ObjectPanel;
 using MonchaSDK;
 using MonchaSDK.Object;
 using System;
@@ -66,37 +67,25 @@ namespace MonchaCadViewer.CanvasObj
             }
         }
 
+
         private List<CadAnchor> anchors;
 
         public override Rect Bounds => new Rect(LRect.P1.GetMPoint, LRect.P2.GetMPoint);
 
         public CadRectangle(LPoint3D P1, LPoint3D P2, bool MouseSet)
         {
-            this.Render = false;
-            this.TransformGroup = new TransformGroup()
-            {
-                Children = new TransformCollection()
-                    {
-                        new ScaleTransform(),
-                        new RotateTransform(),
-                        new TranslateTransform()
-                    }
-            };
-
             this.LRect = new LRect(P1, P2);
-            LRect.PropertyChanged += Point1_PropertyChanged;
-
-            if (MouseSet == true)
-            {
-                this.Loaded += CadRectangle_Loaded;
-            }
-            else
-            {
-                this.Loaded += CadRectangleSet_Loaded;
-            }
+            LoadSetting(MouseSet);
         }
 
         public CadRectangle(LRect lRect, bool MouseSet)
+        {
+            LRect = lRect;
+            LoadSetting(MouseSet);
+        }
+
+
+        private void LoadSetting(bool MouseSet)
         {
             this.Render = false;
             this.TransformGroup = new TransformGroup()
@@ -109,8 +98,10 @@ namespace MonchaCadViewer.CanvasObj
                     }
             };
 
-            LRect = lRect;
             LRect.PropertyChanged += Point1_PropertyChanged;
+
+            ContextMenuLib.CadRectMenu(this.ContextMenu);
+            this.ContextMenuClosing += ContextMenu_ContextMenuClosing;
 
             if (MouseSet == true)
             {
@@ -122,6 +113,20 @@ namespace MonchaCadViewer.CanvasObj
             }
         }
 
+        private void ContextMenu_ContextMenuClosing(object sender, ContextMenuEventArgs e)
+        {
+            if (this.ContextMenu.DataContext is MenuItem menuItem)
+            {
+                switch (menuItem.Tag)
+                {
+                    case "common_Setting":
+                        CadRectangleSizePanel cadRectangleSizePanel = new CadRectangleSizePanel(this);
+                        cadRectangleSizePanel.Show();
+                        break;
+
+                }
+            }
+        }
 
         private void Point1_PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
@@ -166,7 +171,11 @@ namespace MonchaCadViewer.CanvasObj
         {
             if (sender is CadCanvas cadCanvas)
             {
-                this.LRect.P2.Set(e.GetPosition(cadCanvas));
+                if (cadCanvas.UnderAnchor != null) this.LRect.P2 = cadCanvas.UnderAnchor.GetPoint;
+                else
+                {
+                    this.LRect.P2.Set(e.GetPosition(cadCanvas));
+                }
                 cadCanvas.MouseLeftButtonUp -= canvas_MouseLeftButtonUP;
                 cadCanvas.MouseMove -= Canvas_MouseMove;
                 /*
@@ -208,8 +217,7 @@ namespace MonchaCadViewer.CanvasObj
             SolidColorBrush TransparentBrush = new SolidColorBrush();
             TransparentBrush.Color = Colors.Transparent;
 
-            Pen myPen = new Pen(Brushes.Blue, MonchaHub.GetThinkess / 2);
-            drawingContext.DrawRectangle(TransparentBrush, myPen, new Rect(X, Y, Math.Abs(LRect.P1.MX - LRect.P2.MX), Math.Abs(LRect.P1.MY - LRect.P2.MY)));
+            drawingContext.DrawRectangle(null, myPen, new Rect(X, Y, Math.Abs(LRect.P1.MX - LRect.P2.MX), Math.Abs(LRect.P1.MY - LRect.P2.MY)));
         }
 
         public override void Remove()

@@ -41,6 +41,12 @@ namespace MonchaCadViewer.CanvasObj
             AddItem("m_Open", contextMenu);
         }
 
+        public static void CadRectMenu(ContextMenu contextMenu)
+        {
+            contextMenu.Items.Add(new Separator());
+            AddItem("common_Setting", contextMenu);
+        }
+
 
         public static void MeshMenu(ContextMenu contextMenu)
         {

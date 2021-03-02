@@ -35,7 +35,7 @@
     <SuiteName>Viwer</SuiteName>
     <WebPage>publish.htm</WebPage>
     <OpenBrowserOnPublish>false</OpenBrowserOnPublish>
-    <ApplicationRevision>43</ApplicationRevision>
+    <ApplicationRevision>44</ApplicationRevision>
     <ApplicationVersion>0.8.1.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <CreateDesktopShortcut>true</CreateDesktopShortcut>
@@ -219,6 +219,7 @@
     </Compile>
     <Compile Include="Calibration\MeshTool.cs" />
     <Compile Include="CanvasObj\CadObjectsGroup.cs" />
+    <Compile Include="CanvasObj\CadLine.cs" />
     <Compile Include="CanvasObj\CadRectangle.cs" />
     <Compile Include="CanvasObj\DimObj\AdornerContourFrame.cs" />
     <Compile Include="CanvasObj\CadObject.cs" />
@@ -248,6 +249,9 @@
     </Compile>
     <Compile Include="ToolsPanel\ObjectPanel\CadObjectPanel.xaml.cs">
       <DependentUpon>CadObjectPanel.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ToolsPanel\ObjectPanel\CadRectangleSizePanel.xaml.cs">
+      <DependentUpon>CadRectangleSizePanel.xaml</DependentUpon>
     </Compile>
     <Compile Include="ToolsPanel\ObjectPanel\ScaleConverter.cs" />
     <Compile Include="ToolsPanel\ContourScrollPanel\ScrollPanel.xaml.cs">
@@ -334,6 +338,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="ToolsPanel\multiplierpanel.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="ToolsPanel\ObjectPanel\CadRectangleSizePanel.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

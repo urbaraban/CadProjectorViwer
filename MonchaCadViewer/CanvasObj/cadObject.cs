@@ -26,7 +26,7 @@ namespace MonchaCadViewer.CanvasObj
             {
                 if (this.IsMouseOver == true)
                 {
-                    return new Pen(Brushes.Orange, MonchaHub.GetThinkess / 3 / this.Scale.ScaleX);
+                    return new Pen(Brushes.Orange, MonchaHub.GetThinkess / this.Scale.ScaleX);
                 }
                 else if (this._isselected == true)
                 {
@@ -508,8 +508,9 @@ namespace MonchaCadViewer.CanvasObj
             if (ShowName == true)
             {
                 drawingContext.DrawText(new FormattedText($"{(this.Name != string.Empty ? this.Name.Substring(0, 4) : string.Empty)}:{ProjectionSetting.Distance}", new System.Globalization.CultureInfo("ru-RU"), FlowDirection.LeftToRight,
-                new Typeface("Segoe UI"), (int)MonchaHub.GetThinkess * 3, Brushes.Gray), myGeometry.Bounds.TopLeft);
+                new Typeface("Segoe UI"), (int)MonchaHub.GetThinkess * 3, Brushes.Gray), new Point(myGeometry.Bounds.X + myGeometry.Bounds.Width / 2, myGeometry.Bounds.Y + myGeometry.Bounds.Height / 2));
             }
+            drawingContext.PushTransform(this.Rotate);
 
             drawingContext.PushTransform(new ScaleTransform()
             {
@@ -519,8 +520,6 @@ namespace MonchaCadViewer.CanvasObj
                 CenterY = this.Scale.CenterY
             });
             
-
-            drawingContext.PushTransform(this.Rotate);
             drawingContext.DrawGeometry(myBack, myPen, myGeometry);
             //drawingContext.DrawRectangle(myBack, myPen, myGeometry.Bounds);
         }

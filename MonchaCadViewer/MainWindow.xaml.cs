@@ -190,6 +190,7 @@ namespace MonchaCadViewer
             CalibrationFormCombo.Items.Clear();
             CalibrationFormCombo.Items.Add(CalibrationForm.cl_Dot);
             CalibrationFormCombo.Items.Add(CalibrationForm.cl_Rect);
+            CalibrationFormCombo.Items.Add(CalibrationForm.cl_miniRect);
             CalibrationFormCombo.Items.Add(CalibrationForm.cl_Cross);
             CalibrationFormCombo.Items.Add(CalibrationForm.cl_HLine);
             CalibrationFormCombo.Items.Add(CalibrationForm.cl_WLine);

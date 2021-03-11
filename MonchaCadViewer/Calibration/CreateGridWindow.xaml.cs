@@ -33,7 +33,7 @@ namespace MonchaCadViewer
             {
                 Canvas.Canvas.AddRange(
                     CadCanvas.GetMesh(
-                    new MonchaDeviceMesh(MonchaDeviceMesh.MakeMeshPoint((int)HeightUpDn.Value.Value, (int)WidthUpDn.Value.Value), string.Empty, false), 
+                    new MonchaDeviceMesh(MonchaDeviceMesh.MakeMeshPoint((int)HeightUpDn.Value.Value, (int)WidthUpDn.Value.Value), string.Empty, this._mesh.MeshType), 
                     this._device,
                     MonchaHub.GetThinkess * AppSt.Default.anchor_size, false
                     ), true);
@@ -93,7 +93,7 @@ namespace MonchaCadViewer
 
             Canvas.Canvas.AddRange(
                      CadCanvas.GetMesh(
-                     new MonchaDeviceMesh(MonchaDeviceMesh.MakeMeshPoint((int)HeightUpDn.Value.Value, (int)WidthUpDn.Value.Value), string.Empty, false),
+                     new MonchaDeviceMesh(MonchaDeviceMesh.MakeMeshPoint((int)HeightUpDn.Value.Value, (int)WidthUpDn.Value.Value), string.Empty, this._mesh.MeshType),
                      this._device,
                      MonchaHub.GetThinkess * AppSt.Default.anchor_size, false
                      ), true);

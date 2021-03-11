@@ -215,7 +215,7 @@ namespace MonchaCadViewer.ToolsPanel.DevicePanel
                                 createGridWindow.ShowDialog();
                                 break;
                             case "m_Refresh":
-                                deviceMesh = MonchaHub.MWS.GetMeshDot(device.HWIdentifier, deviceMesh.Name, deviceMesh.Affine);
+                                deviceMesh = MonchaHub.MWS.GetMeshDot(device.HWIdentifier, deviceMesh.Name, deviceMesh.MeshType);
                                 break;
                             case "mesh_Inverse":
                                 deviceMesh.InverseYPosition();

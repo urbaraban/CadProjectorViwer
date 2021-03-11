@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -70,6 +71,8 @@ namespace MonchaCadViewer.CanvasObj
 
         private void CommonSetting(double AnchorSize)
         {
+            this.AllowDrop = true;
+            this.Drop += CadAnchor_Drop;
 
             this.size = AnchorSize;
             this.myGeometry = new RectangleGeometry(new Rect(-AnchorSize / 2, -AnchorSize / 2, AnchorSize, AnchorSize));
@@ -82,10 +85,7 @@ namespace MonchaCadViewer.CanvasObj
             this.Translate.X = this.PointX.MX;
             this.Translate.Y = this.PointY.MY;
 
-            this.OnBaseMesh = OnBaseMesh;
-
             this.ContextMenuClosing += DotShape_ContextMenuClosing;
-            this.MouseLeftButtonDown += CadDot_MouseLeftButtonDown;
             this.Fixed += CadDot_Fixed;
         }
 
@@ -124,9 +124,13 @@ namespace MonchaCadViewer.CanvasObj
         }
 
 
-        private void CadDot_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        private void CadAnchor_Drop(object sender, DragEventArgs e)
         {
-            //this.Point.Select = true;
+            if (e.Data is Tuple<LPoint3D, LPoint3D> points)
+            {
+                this.PointX = points.Item1;
+                this.PointY = points.Item2;
+            }
         }
 
         private void CadDot_Fixed(object sender, bool e)
@@ -153,5 +157,6 @@ namespace MonchaCadViewer.CanvasObj
                 }
             }
         }
+       
     }
 }

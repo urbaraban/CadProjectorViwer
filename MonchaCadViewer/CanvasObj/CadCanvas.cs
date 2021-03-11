@@ -477,8 +477,8 @@ namespace MonchaCadViewer.CanvasObj
                             Uid = i.ToString() + ":" + j.ToString(),
                             ToolTip = "Позиция: " + i + ":" + j + "\nX: " + mesh[i, j].X + "\n" + "Y: " + mesh[i, j].Y,
                             DataContext = mesh,
-                            OnBaseMesh = !mesh.Affine,
                             Render = Render,
+                            MeshType = mesh.MeshType == MeshType.VirtualMesh ? MeshType.BasedMesh : MeshType.NONE
                         });
                     }
                 }

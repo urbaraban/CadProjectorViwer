@@ -15,6 +15,7 @@ using System.Threading;
 using MonchaCadViewer.Interface;
 using MonchaCadViewer.CanvasObj.DimObj;
 using AppSt = MonchaCadViewer.Properties.Settings;
+using MonchaSDK.Device;
 
 namespace MonchaCadViewer.CanvasObj
 {
@@ -121,6 +122,7 @@ namespace MonchaCadViewer.CanvasObj
         private TransformGroup transform = new TransformGroup();
         public RotateTransform Rotate { get; set; } = new RotateTransform();
         public TranslateTransform Translate { get; set; } = new TranslateTransform();
+
         public ScaleTransform Scale { get; set; } = new ScaleTransform();
 
         public bool Mirror
@@ -179,10 +181,8 @@ namespace MonchaCadViewer.CanvasObj
             {
                 this.Rotate.Angle = value;
                 OnPropertyChanged("Angle");
-                if (this.Render == true)
-                {
-                    Updated?.Invoke(this, "Angle");
-                }
+                Updated?.Invoke(this, "Angle");
+                
             }
         }
         public virtual double ScaleX
@@ -192,9 +192,7 @@ namespace MonchaCadViewer.CanvasObj
             {
                 this.Scale.ScaleX = (this.Mirror == true ? -1 * Math.Abs(value) : Math.Abs(value));
                 if (this.Render == true)
-                {
-                    Updated?.Invoke(this, "ScaleX");
-                }
+                Updated?.Invoke(this, "ScaleX");
                 OnPropertyChanged("ScaleX");
             }
         }
@@ -204,10 +202,7 @@ namespace MonchaCadViewer.CanvasObj
             set
             {
                 this.Scale.ScaleY = value;
-                if (this.Render == true)
-                {
-                    Updated?.Invoke(this, "ScaleY");
-                }
+                Updated?.Invoke(this, "ScaleY");
                 OnPropertyChanged("ScaleY");
             }
         }
@@ -289,13 +284,13 @@ namespace MonchaCadViewer.CanvasObj
         }
         private bool _render = true;
 
+        public MeshType MeshType { get; set; } = MeshType.CalculateMesh;
+
         public bool ShowName { get; set; } = true;
 
         public bool WasMove { get; set; } = false;
 
         public bool Editing { get; set; } = false;
-
-        public bool OnBaseMesh { get; set; } = false;
 
         public virtual Adorner ObjAdorner { get; set; }
 
@@ -336,7 +331,7 @@ namespace MonchaCadViewer.CanvasObj
 
         private void CadContour_MouseWheel(object sender, MouseWheelEventArgs e)
         {
-            if ((e.Delta != 0) && (Keyboard.Modifiers != ModifierKeys.Control))
+             if ((e.Delta != 0) && (Keyboard.Modifiers != ModifierKeys.Control))
             {
                 this.Angle += Math.Abs(e.Delta) / e.Delta * (Keyboard.Modifiers == ModifierKeys.Shift ? 1 : 5);
             }
@@ -499,6 +494,7 @@ namespace MonchaCadViewer.CanvasObj
                 }
             }
             OnPropertyChanged();
+            
         }
 
         protected override void OnRender(DrawingContext drawingContext)

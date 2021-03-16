@@ -21,7 +21,6 @@ using MonchaSDK.Device;
 using MonchaSDK.Object;
 using KompasLib.KompasTool;
 using ToGeometryConverter.Format;
-using HelixToolkit.Wpf;
 using System.Windows.Media.Media3D;
 using MonchaSDK.ILDA;
 using StclLibrary.Laser;
@@ -292,7 +291,7 @@ namespace MonchaCadViewer
             }
             else if (filename.Split('.').Last() == "dc")
             {
-                _actualFrames = DC.Get(filename);
+                _actualFrames = DCeiling.Get(filename);
             }
             /*else if (filename.Split('.').Last() == "ec")
             {

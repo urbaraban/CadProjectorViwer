@@ -407,7 +407,6 @@ namespace MonchaCadViewer.CanvasObj
         /// <param name="obj"></param>
         public void Add(FrameworkElement obj)
         {
-            Console.WriteLine("Add object");
             if (this.Children.Equals(obj) == false)
             {
                 if (obj is CadObject cadObject)

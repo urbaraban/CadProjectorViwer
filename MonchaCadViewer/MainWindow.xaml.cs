@@ -28,6 +28,7 @@ using Microsoft.WindowsAPICodePack.Dialogs;
 using System.ComponentModel;
 using System.Windows.Data;
 using MonchaCadViewer.ToolsPanel.ContourScrollPanel;
+using ToGeometryConverter;
 
 namespace MonchaCadViewer
 {
@@ -254,8 +255,7 @@ namespace MonchaCadViewer
         private void OpenBtn_Click(object sender, EventArgs e)
         {
             WinForms.OpenFileDialog openFile = new WinForms.OpenFileDialog();
-            openFile.Filter = "(*.frw; *.cdw; *.svg; *.dxf; *.stp; *.ild; *.ec)|*.frw; *.cdw; *.svg; *.dxf, *.stp, *.ild, *.ec| All Files (*.*)|*.*";
-
+            openFile.Filter = ToGC.Filter;
             if (AppSt.Default.save_work_folder == string.Empty)
             {
                 WinForms.FolderBrowserDialog folderDialog = new WinForms.FolderBrowserDialog();
@@ -277,27 +277,7 @@ namespace MonchaCadViewer
         {
             GeometryGroup _actualFrames = new GeometryGroup();
 
-            if (filename.Split('.').Last() == "svg")
-            {
-                _actualFrames = SVG.Get(filename, AppSt.Default.defailt_tesselate);
-            }
-            else if (filename.Split('.').Last() == "dxf")
-            {
-                _actualFrames = DXF.Get(filename, MonchaHub.ProjectionSetting.PointStep.MX);
-            }
-            else if (filename.Split('.').Last() == "ild")
-            {
-              //  _actualFrames = IldaReader.ReadFile(filename);
-            }
-            else if (filename.Split('.').Last() == "dc")
-            {
-                _actualFrames = DCeiling.Get(filename);
-            }
-            /*else if (filename.Split('.').Last() == "ec")
-            {
-                _actualFrames = EC.Get(filename);
-            }*/
-            else if ((filename.Split('.').Last() == "frw") || (filename.Split('.').Last() == "cdw"))
+            if ((filename.Split('.').Last() == "frw") || (filename.Split('.').Last() == "cdw"))
             {
                 if (KmpsAppl.KompasAPI == null)
                 {
@@ -307,6 +287,10 @@ namespace MonchaCadViewer
                 {
                     this.kmpsAppl.OpenFile(filename);
                 }
+            }
+            else
+            {
+                _actualFrames = ToGC.Get(filename, MonchaHub.ProjectionSetting.PointStep.MX);
             }
 
             if (_actualFrames == null)

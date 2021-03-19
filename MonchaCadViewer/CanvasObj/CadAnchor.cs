@@ -4,6 +4,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
+using System.Windows.Media.Media3D;
 using MonchaCadViewer.Calibration;
 using MonchaSDK.Device;
 using MonchaSDK.Object;
@@ -22,10 +23,10 @@ namespace MonchaCadViewer.CanvasObj
 
         public override double X 
         { 
-            get => this.Translate.X;
+            get => this.Translate.OffsetX;
             set
             {
-                this.Translate.X = value;
+                this.Translate.OffsetX = value;
                 this.PointX.MX = value;
                 OnPropertyChanged("X");
             }
@@ -33,10 +34,10 @@ namespace MonchaCadViewer.CanvasObj
 
         public override double Y
         {
-            get => this.Translate.Y;
+            get => this.Translate.OffsetY;
             set
             {
-                this.Translate.Y = value;
+                this.Translate.OffsetY = value;
                 this.PointY.MY = value;
                 OnPropertyChanged("Y");
             }
@@ -82,8 +83,8 @@ namespace MonchaCadViewer.CanvasObj
             this.RenderTransformOrigin = new Point(1, 1);
 
             this.UpdateTransform(null, false);
-            this.Translate.X = this.PointX.MX;
-            this.Translate.Y = this.PointY.MY;
+            this.Translate.OffsetX = this.PointX.MX;
+            this.Translate.OffsetY = this.PointY.MY;
 
             this.ContextMenuClosing += DotShape_ContextMenuClosing;
             this.Fixed += CadDot_Fixed;
@@ -93,8 +94,9 @@ namespace MonchaCadViewer.CanvasObj
         {
             Dispatcher.Invoke(() => 
             { 
-                this.Translate.X = this.PointX.MX;
-                this.Translate.Y = this.PointY.MY;
+                this.Translate.OffsetX = this.PointX.MX;
+                this.Translate.OffsetY = this.PointY.MY;
+                this.InvalidateVisual();
             });
         }
 
@@ -157,6 +159,18 @@ namespace MonchaCadViewer.CanvasObj
                 }
             }
         }
-       
+
+        public override void UpdateRenderPoint()
+        {
+            if (this.Render == true)
+                this.RenderPoint = SendProcessor.GetPoint(this, false);
+        }
+
+        protected override void OnRender(DrawingContext drawingContext)
+        {
+            drawingContext.PushTransform(new TranslateTransform(X, Y));
+            drawingContext.DrawGeometry(myBack, myPen, myGeometry);
+        }
+
     }
 }

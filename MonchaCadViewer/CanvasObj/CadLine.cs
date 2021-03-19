@@ -16,6 +16,7 @@ using System.Windows.Controls.Primitives;
 using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
+using System.Windows.Media.Media3D;
 using System.Windows.Shapes;
 
 namespace MonchaCadViewer.CanvasObj
@@ -37,7 +38,7 @@ namespace MonchaCadViewer.CanvasObj
         public LPoint3D P1;
         public LPoint3D P2;
 
-        public double Lenth => LPoint3D.Lenth(P1, P2);
+        public double Lenth => LPoint3D.Lenth3D(P1, P2);
 
         public override double X
         {
@@ -88,13 +89,13 @@ namespace MonchaCadViewer.CanvasObj
             this.P2.PropertyChanged += P1_PropertyChanged;
 
             this.Render = true;
-            this.TransformGroup = new TransformGroup()
+            this.TransformGroup = new Transform3DGroup()
             {
-                Children = new TransformCollection()
+                Children = new Transform3DCollection()
                     {
-                        new ScaleTransform(),
-                        new RotateTransform(),
-                        new TranslateTransform()
+                        new ScaleTransform3D(),
+                        new RotateTransform3D(),
+                        new TranslateTransform3D()
                     }
             };
 
@@ -193,6 +194,8 @@ namespace MonchaCadViewer.CanvasObj
 
             drawingContext.DrawLine(myPen, P1.GetMPoint, P2.GetMPoint);
         }
+
+
 
         public override void Remove()
         {

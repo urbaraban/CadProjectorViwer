@@ -44,8 +44,8 @@ namespace MonchaCadViewer.ToolsPanel
             FixCheck.SetBinding(CheckBox.IsCheckedProperty, "IsFix");
             FixCheck.DataContext = cadObject;
 
-            AngleUpDn.Value = cadObject.Angle;
-            AngleUpDn.SetBinding(NumericUpDown.ValueProperty, "Angle");
+            AngleUpDn.Value = cadObject.AngleZ;
+            AngleUpDn.SetBinding(NumericUpDown.ValueProperty, "AngleZ");
             AngleUpDn.DataContext = cadObject;
 
             WidthUpDn.Value = cadObject.ScaleX;

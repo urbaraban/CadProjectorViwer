@@ -7,9 +7,9 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MonchaCadViewer", "MonchaCa
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KompasLib", "..\KompasLib\KompasLib\KompasLib\KompasLib.csproj", "{25CE4066-36A4-40BD-A38F-EC08E7AA509F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ToGeometryConverter", "..\ToGeometryConverter\ToGeometryConverter\ToGeometryConverter.csproj", "{1EDBFBC8-4A81-4530-9BC6-B4C475E53E3C}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MonchaSDK", "..\MonchaSDK\MonchaSDK\MonchaSDK.csproj", "{BE456A82-4E1A-45F9-89DB-74E4924FC4B6}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ToGeometryConverter", "..\ToGeometryConverter\ToGeometryConverter\ToGeometryConverter.csproj", "{1EDBFBC8-4A81-4530-9BC6-B4C475E53E3C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -45,18 +45,6 @@ Global
 		{25CE4066-36A4-40BD-A38F-EC08E7AA509F}.Release|x64.Build.0 = Release|x64
 		{25CE4066-36A4-40BD-A38F-EC08E7AA509F}.Release|x86.ActiveCfg = Release|x86
 		{25CE4066-36A4-40BD-A38F-EC08E7AA509F}.Release|x86.Build.0 = Release|x86
-		{1EDBFBC8-4A81-4530-9BC6-B4C475E53E3C}.Debug|Any CPU.ActiveCfg = Debug|x86
-		{1EDBFBC8-4A81-4530-9BC6-B4C475E53E3C}.Debug|Any CPU.Build.0 = Debug|x86
-		{1EDBFBC8-4A81-4530-9BC6-B4C475E53E3C}.Debug|x64.ActiveCfg = Debug|Any CPU
-		{1EDBFBC8-4A81-4530-9BC6-B4C475E53E3C}.Debug|x64.Build.0 = Debug|Any CPU
-		{1EDBFBC8-4A81-4530-9BC6-B4C475E53E3C}.Debug|x86.ActiveCfg = Debug|x86
-		{1EDBFBC8-4A81-4530-9BC6-B4C475E53E3C}.Debug|x86.Build.0 = Debug|x86
-		{1EDBFBC8-4A81-4530-9BC6-B4C475E53E3C}.Release|Any CPU.ActiveCfg = Release|x86
-		{1EDBFBC8-4A81-4530-9BC6-B4C475E53E3C}.Release|Any CPU.Build.0 = Release|x86
-		{1EDBFBC8-4A81-4530-9BC6-B4C475E53E3C}.Release|x64.ActiveCfg = Release|Any CPU
-		{1EDBFBC8-4A81-4530-9BC6-B4C475E53E3C}.Release|x64.Build.0 = Release|Any CPU
-		{1EDBFBC8-4A81-4530-9BC6-B4C475E53E3C}.Release|x86.ActiveCfg = Release|Any CPU
-		{1EDBFBC8-4A81-4530-9BC6-B4C475E53E3C}.Release|x86.Build.0 = Release|Any CPU
 		{BE456A82-4E1A-45F9-89DB-74E4924FC4B6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{BE456A82-4E1A-45F9-89DB-74E4924FC4B6}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BE456A82-4E1A-45F9-89DB-74E4924FC4B6}.Debug|x64.ActiveCfg = Debug|Any CPU
@@ -69,6 +57,18 @@ Global
 		{BE456A82-4E1A-45F9-89DB-74E4924FC4B6}.Release|x64.Build.0 = Release|Any CPU
 		{BE456A82-4E1A-45F9-89DB-74E4924FC4B6}.Release|x86.ActiveCfg = Release|x86
 		{BE456A82-4E1A-45F9-89DB-74E4924FC4B6}.Release|x86.Build.0 = Release|x86
+		{1EDBFBC8-4A81-4530-9BC6-B4C475E53E3C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1EDBFBC8-4A81-4530-9BC6-B4C475E53E3C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1EDBFBC8-4A81-4530-9BC6-B4C475E53E3C}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{1EDBFBC8-4A81-4530-9BC6-B4C475E53E3C}.Debug|x64.Build.0 = Debug|Any CPU
+		{1EDBFBC8-4A81-4530-9BC6-B4C475E53E3C}.Debug|x86.ActiveCfg = Debug|x86
+		{1EDBFBC8-4A81-4530-9BC6-B4C475E53E3C}.Debug|x86.Build.0 = Debug|x86
+		{1EDBFBC8-4A81-4530-9BC6-B4C475E53E3C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1EDBFBC8-4A81-4530-9BC6-B4C475E53E3C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1EDBFBC8-4A81-4530-9BC6-B4C475E53E3C}.Release|x64.ActiveCfg = Release|Any CPU
+		{1EDBFBC8-4A81-4530-9BC6-B4C475E53E3C}.Release|x64.Build.0 = Release|Any CPU
+		{1EDBFBC8-4A81-4530-9BC6-B4C475E53E3C}.Release|x86.ActiveCfg = Release|x86
+		{1EDBFBC8-4A81-4530-9BC6-B4C475E53E3C}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

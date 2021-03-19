@@ -16,7 +16,7 @@ using System.Windows.Documents;
 
 namespace MonchaCadViewer.CanvasObj
 {
-    public class CadCanvas : Canvas, TransformObject, INotifyPropertyChanged
+    public class CadCanvas : Canvas, INotifyPropertyChanged
     {
         #region INotifyPropertyChanged
         public event PropertyChangedEventHandler PropertyChanged;
@@ -40,7 +40,7 @@ namespace MonchaCadViewer.CanvasObj
 
         public CadAnchor UnderAnchor;
 
-        public List<LRect> Masks = new List<LRect>();
+        public List<LQube> Masks = new List<LQube>();
 
         public bool MainCanvas { get; }
 
@@ -211,7 +211,7 @@ namespace MonchaCadViewer.CanvasObj
             }
             else if (this.mouseAction == MouseAction.Mask)
             {
-                LRect lRect = new LRect(new LPoint3D(e.GetPosition(this)), new LPoint3D(e.GetPosition(this)));
+                LQube lRect = new LQube(new LPoint3D(e.GetPosition(this)), new LPoint3D(e.GetPosition(this)));
                 CadRectangle Maskrectangle = new CadRectangle(lRect, true);
                 this.Add(Maskrectangle);
                 this.Masks.Add(lRect);

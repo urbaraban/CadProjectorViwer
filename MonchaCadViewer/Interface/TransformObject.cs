@@ -24,6 +24,6 @@ namespace MonchaCadViewer.Interface
         bool WasMove { get; }
         bool Mirror { get; set; }
 
-        void UpdateTransform(Transform3DGroup transformGroup, bool ResetPosition);
+        void UpdateTransform(Transform3DGroup transformGroup, bool ResetPosition, Rect Bounds);
     }
 }

@@ -76,13 +76,12 @@ namespace MonchaCadViewer.CanvasObj
             this.Drop += CadAnchor_Drop;
 
             this.size = AnchorSize;
-            this.myGeometry = new RectangleGeometry(new Rect(-AnchorSize / 2, -AnchorSize / 2, AnchorSize, AnchorSize));
             this.ShowName = false;
             ContextMenuLib.DotContextMenu(this.ContextMenu);
             Canvas.SetZIndex(this, 999);
             this.RenderTransformOrigin = new Point(1, 1);
 
-            this.UpdateTransform(null, false);
+            this.UpdateTransform(null, false, new Rect(-this.size / 2, -this.size / 2, this.size, this.size));
             this.Translate.OffsetX = this.PointX.MX;
             this.Translate.OffsetY = this.PointY.MY;
 
@@ -160,16 +159,10 @@ namespace MonchaCadViewer.CanvasObj
             }
         }
 
-        public override void UpdateRenderPoint()
-        {
-            if (this.Render == true)
-                this.RenderPoint = SendProcessor.GetPoint(this, false);
-        }
-
         protected override void OnRender(DrawingContext drawingContext)
         {
             drawingContext.PushTransform(new TranslateTransform(X, Y));
-            drawingContext.DrawGeometry(myBack, myPen, myGeometry);
+            drawingContext.DrawGeometry(myBack, myPen, new RectangleGeometry(new Rect(-this.size / 2, -this.size / 2, this.size, this.size)));
         }
 
     }

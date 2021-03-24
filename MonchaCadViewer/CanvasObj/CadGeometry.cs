@@ -8,18 +8,20 @@ using System.Windows.Controls;
 using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
-
+using ToGeometryConverter.Object;
 
 namespace MonchaCadViewer.CanvasObj
 {
-    public class CadContour : CadObject
+    public class CadGeometry : CadObject
     {
+        public override Geometry GetGeometry { get => GetLGeometry(true); }
+
         private bool _maincanvas;
         private AdornerContourFrame adornerContour;
 
-        public CadContour(Geometry geometryGroup,  bool maincanvas) 
+        public CadGeometry(IGCObject gCObject,  bool maincanvas) 
         {
-            this.myGeometry = geometryGroup;
+            this.GCObject = gCObject;
             this._maincanvas = maincanvas;
 
             this.myPen.Thickness = (MonchaHub.GetThinkess < 0 ? 1 : MonchaHub.GetThinkess) * 0.5;
@@ -34,6 +36,8 @@ namespace MonchaCadViewer.CanvasObj
                 this.Cursor = Cursors.Hand;
             }
         }
+
+       
     }
 }
 

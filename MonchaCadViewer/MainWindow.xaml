@@ -326,7 +326,6 @@
                                 </ComboBox>
                                 <Label x:Name="CalibrationFormLabel" Content="{DynamicResource obj_Type}" Margin="10,258,10,0" VerticalAlignment="Top" Height="26" Grid.ColumnSpan="2"/>
                                 <Button x:Name="Save" Grid.ColumnSpan="5" Content="{DynamicResource m_Save}" HorizontalAlignment="Left" Margin="10,378,0,0" VerticalAlignment="Top" Width="254" Height="34" Click="Save_Click"/>
-                                <CheckBox Content="{DynamicResource clb_SetEdgePoint}" Margin="10,342,10,203" Grid.ColumnSpan="5" Checked="CheckBox_Checked" Unchecked="CheckBox_Checked"/>
                                 <Controls:NumericUpDown x:Name="PointStepUpDn_Copy" Margin="0,289,10,0"  Background="White" Height="26" VerticalAlignment="Top" NumericInputMode="Decimal" Maximum="10" Minimum="1" Interval="1"  Value="{Binding anchor_size, Mode=TwoWay, UpdateSourceTrigger=Default}" Grid.Column="3" Grid.ColumnSpan="2" IsTabStop="False" AllowDrop="False"/>
                                 <Label x:Name="label_Copy5" Content="{DynamicResource clb_Sizeanchor}" Margin="10,289,10,0" VerticalAlignment="Top" Height="26" Grid.ColumnSpan="2"/>
                                 <Label x:Name="label_Copy2" Content="{DynamicResource obj_Deep}" HorizontalAlignment="Left" Margin="6,137,0,0" VerticalAlignment="Top" Width="74" Height="26" Grid.ColumnSpan="2"/>

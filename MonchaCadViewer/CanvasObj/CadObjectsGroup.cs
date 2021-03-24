@@ -9,6 +9,7 @@ using System.Windows;
 using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
+using ToGeometryConverter.Object;
 using AppSt = MonchaCadViewer.Properties.Settings;
 
 namespace MonchaCadViewer.CanvasObj
@@ -19,22 +20,39 @@ namespace MonchaCadViewer.CanvasObj
 
         private bool Opened = false;
 
-        public CadObjectsGroup(GeometryGroup geometry, string Name)
+        public CadObjectsGroup(GCCollection gcCollection, string Name)
         {
             this.Name = Name;
-            this.myGeometry = geometry;
-            this.UpdateTransform(null, true);
+            this.GCObject = gcCollection;
 
-            foreach (Geometry tempgeometry in geometry.Children)
+            this.UpdateTransform(null, true, gcCollection.Bounds);
+
+            foreach (IGCObject gC in gcCollection)
             {
-                this.cadObjects.Add(new CadContour(tempgeometry, true)
+                this.cadObjects.Add(new CadGeometry(gC, true)
                 {
                     TransformGroup = this.TransformGroup,
                     Name = this.Name,
                 });
             }
+
+            
         }
 
+        public override Geometry GetGeometry
+        {
+            get
+            {
+                GeometryGroup geometryGroup = new GeometryGroup();
+                foreach (CadObject cadObject in cadObjects)
+                {
+                    geometryGroup.Children.Add(cadObject.GetGeometry);
+                }
+                return geometryGroup;
+            }
+        }
+
+        #region IList<CadObject>
         public CadObject this[int index] { get => ((IList<CadObject>)cadObjects)[index]; set => ((IList<CadObject>)cadObjects)[index] = value; }
 
         public int Count => ((ICollection<CadObject>)cadObjects).Count;
@@ -90,5 +108,6 @@ namespace MonchaCadViewer.CanvasObj
         {
             return ((IEnumerable)cadObjects).GetEnumerator();
         }
+        #endregion
     }
 }

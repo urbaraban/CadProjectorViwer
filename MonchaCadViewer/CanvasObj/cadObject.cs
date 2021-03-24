@@ -16,19 +16,20 @@ using MonchaCadViewer.CanvasObj.DimObj;
 using AppSt = MonchaCadViewer.Properties.Settings;
 using MonchaSDK.Device;
 using MonchaSDK.Object;
+using ToGeometryConverter.Object;
+using ToGeometryConverter;
 
 namespace MonchaCadViewer.CanvasObj
 {
     public abstract class CadObject : FrameworkElement, INotifyPropertyChanged, TransformObject, LSettingObject
     {
-        public Geometry myGeometry { get; set; }
-
-        public virtual LObjectList RenderPoint 
-        {
-            get => _renderpoint != null ? _renderpoint : SendProcessor.GetPoint(this, false);
-            set => _renderpoint = value; 
-        }
         private LObjectList _renderpoint;
+
+        public IGCObject GCObject { get; set; }
+
+        public virtual Rect Bounds => this.GetGeometry.Bounds;
+
+        public virtual Geometry GetGeometry => GetLGeometry(true);
 
         public virtual Pen myPen { 
             get
@@ -319,7 +320,6 @@ namespace MonchaCadViewer.CanvasObj
 
         #region Variable
 
-        public virtual Rect Bounds => myGeometry.Bounds;
 
         //protected override Geometry DefiningGeometry => GmtrObj;
 
@@ -379,7 +379,6 @@ namespace MonchaCadViewer.CanvasObj
                     this.ProjectionSetting.PropertyChanged += CadObject_PropertyChanged;
                 }
             }
-            UpdateRenderPoint();
             this.InvalidateVisual();
         }
 
@@ -417,7 +416,7 @@ namespace MonchaCadViewer.CanvasObj
         }
 
 
-        public void UpdateTransform(Transform3DGroup transformGroup, bool resetPosition)
+        public void UpdateTransform(Transform3DGroup transformGroup, bool resetPosition, Rect Bounds)
         {
             if (transformGroup == null)
             {
@@ -440,14 +439,14 @@ namespace MonchaCadViewer.CanvasObj
 
             if (resetPosition == true)
             {
-                this.X = -(this.Bounds.X + this.Bounds.Width / 2) + MonchaHub.Size.MX / 2;
-                this.Y = -(this.Bounds.Y + this.Bounds.Height / 2) + MonchaHub.Size.MY / 2;
+                this.X = -(Bounds.X + Bounds.Width / 2) + MonchaHub.Size.MX / 2;
+                this.Y = -(Bounds.Y + Bounds.Height / 2) + MonchaHub.Size.MY / 2;
                 this._mirror = AppSt.Default.default_mirror;
                 Scale.ScaleX = AppSt.Default.default_scale_x / 100 * (AppSt.Default.default_mirror == true ? -1 : 1);
                 if (this.ScaleX < 0) this.Mirror = true;
                 Scale.ScaleY = AppSt.Default.default_scale_y / 100;
-                Scale.CenterX = this.Bounds.X + this.Bounds.Width / 2;
-                Scale.CenterY = this.Bounds.Y + this.Bounds.Height / 2;
+                Scale.CenterX = Bounds.X + Bounds.Width / 2;
+                Scale.CenterY = Bounds.Y + Bounds.Height / 2;
                 RotateZ.CenterX = Scale.CenterX;
                 RotateZ.CenterY = Scale.CenterY;
                 AngleZ = 0;
@@ -486,7 +485,6 @@ namespace MonchaCadViewer.CanvasObj
 
         private void CadObject_PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            UpdateRenderPoint();
             this.InvalidateVisual();
             Updated?.Invoke(this, e.PropertyName);
         }
@@ -564,38 +562,59 @@ namespace MonchaCadViewer.CanvasObj
             
         }
 
-        public virtual void UpdateRenderPoint()
+        public virtual LObjectList GetTransformPoint(bool ShowChar)
         {
-            this.RenderPoint = SendProcessor.GetPoint(this, false);
+            List<PointsElement> Points = this.GCObject.GetPointCollection(ShowChar, this.ProjectionSetting.PointStep.MX, this.ProjectionSetting.RadiusEdge);
 
-            foreach (LObject lObject in this.RenderPoint)
+            LObjectList lObjectList = new LObjectList();
+
+            foreach (PointsElement points in Points)
             {
-                foreach(LPoint3D lPoint in lObject)
+                LObject lObj = new LObject()
                 {
-                    this.transform.TryTransform(lPoint.GetMPoint3D, out Point3D point);
-                    lPoint.Set(point);
+                    ProjectionSetting = this.ProjectionSetting,
+                    Closed = points.IsClosed
+                };
+                foreach (Point3D point in points)
+                {
+                    this.TransformGroup.TryTransform(point, out Point3D point3D);
+                    lObj.Add(new LPoint3D(point3D));
                 }
+                if (lObj.Count > 0) lObjectList.Add(lObj);
+
             }
+            return lObjectList;
         }
+
+        public GeometryGroup GetLGeometry(bool ShowChar)
+        {
+            GeometryGroup geometries = new GeometryGroup();
+
+            foreach (LObject obj in GetTransformPoint(true))
+            {
+                PathFigure pathFigure = new PathFigure()
+                {
+                    StartPoint = obj[0].GetMPoint,
+                    IsClosed = obj.Closed
+                };
+                for (int i = 1; i < obj.Count; i++)
+                {
+                    pathFigure.Segments.Add(new LineSegment(obj[i].GetMPoint, true));
+                }
+
+                geometries.Children.Add(new PathGeometry()
+                {
+                    Figures = new PathFigureCollection() { pathFigure }
+                });
+            }
+
+            return geometries;
+        }
+
 
         protected override void OnRender(DrawingContext drawingContext)
         {
-            if (RenderPoint != null)
-            {
-                for (int i = 0; i < RenderPoint.Count; i += 1)
-                {
-                    for (int k = 1; k < RenderPoint[i].Count; k += 1)
-                    {
-                        drawingContext.DrawLine(myPen, RenderPoint[i][k - 1].GetMPoint, RenderPoint[i][k].GetMPoint);
-                    }
-
-                    if (RenderPoint[i].Closed == true)
-                    {
-                        drawingContext.DrawLine(myPen, RenderPoint[i][RenderPoint[i].Count - 1].GetMPoint, RenderPoint[i][0].GetMPoint);
-                    }
-                }
-            }
-
+            drawingContext.DrawGeometry(myBack, myPen, GetGeometry);
         }
 
        /* protected override void OnRender(DrawingContext drawingContext)

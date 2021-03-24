@@ -9,7 +9,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KompasLib", "..\KompasLib\K
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MonchaSDK", "..\MonchaSDK\MonchaSDK\MonchaSDK.csproj", "{BE456A82-4E1A-45F9-89DB-74E4924FC4B6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ToGeometryConverter", "..\ToGeometryConverter\ToGeometryConverter\ToGeometryConverter.csproj", "{1EDBFBC8-4A81-4530-9BC6-B4C475E53E3C}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GeometryConverter", "..\ToGeometryConverter\ToGeometryConverter\GeometryConverter.csproj", "{1EDBFBC8-4A81-4530-9BC6-B4C475E53E3C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

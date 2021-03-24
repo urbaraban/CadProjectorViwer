@@ -89,7 +89,7 @@ namespace MonchaCadViewer.CanvasObj
         private void LoadSetting(bool MouseSet)
         {
             this.Render = false;
-            UpdateTransform(null, false);
+            UpdateTransform(null, false, new Rect(X, Y, Math.Abs(LRect.P1.MX - LRect.P2.MX), Math.Abs(LRect.P1.MY - LRect.P2.MY)));
 
             LRect.PropertyChanged += Point1_PropertyChanged;
 

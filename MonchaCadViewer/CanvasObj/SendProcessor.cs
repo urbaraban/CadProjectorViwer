@@ -33,7 +33,7 @@ namespace MonchaCadViewer.CanvasObj
                 {
                     if (cadObject.Render == true)
                     {
-                        dotList.AddRange(cadObject.RenderPoint);
+                        dotList.AddRange(cadObject.GetTransformPoint(false));
                     }
                 }
             }
@@ -51,6 +51,7 @@ namespace MonchaCadViewer.CanvasObj
 
             MonchaHub.MainFrame = outList;
         }
+
 
         /// <summary>
         /// Get point from inner object
@@ -92,7 +93,7 @@ namespace MonchaCadViewer.CanvasObj
                     }
 
                     break;
-                case CadContour cadContour:
+                case CadGeometry cadContour:
                     lObjectList.AddRange(CalcContour(cadContour));
                     break;
                 case CadLine cadLine:
@@ -325,45 +326,13 @@ namespace MonchaCadViewer.CanvasObj
                     PathList.Add(NurbsObject);
                     break;
 
-                case CadContour cadContour:
-                    if (cadContour.myGeometry is PathGeometry pathGeometry)
-                    {
-                        PathList.AddRange(pathfigurecalc(pathGeometry, cadObject.ProjectionSetting));
-                    }
-                    else if (cadContour.myGeometry is EllipseGeometry ellipseGeometry)
-                    {
-                        LObject ellipseObj = new LObject()
-                        {
-                            ProjectionSetting = cadObject.ProjectionSetting,
-                            MeshType = cadContour.MeshType
-                        };
+                case CadGeometry cadContour:
 
-                        double C_x = ellipseGeometry.Center.X, C_y = ellipseGeometry.Center.Y, w = ellipseGeometry.RadiusX, h = ellipseGeometry.RadiusY;
-
-                        double step = (Math.PI * 2) / ((Math.PI * (w + h)) / cadObject.ProjectionSetting.PointStep.MX);
-
-                        for (double t = 0; t <= 2 * Math.PI; t += step)
-                        {
-                            ellipseObj.Add(new LPoint3D()
-                            {
-                                X = C_x + (w / 2) * Math.Cos(t),
-                                Y = C_y + (h / 2) * Math.Sin(t)
-                        });
-                        }
-                        PathList.Add(ellipseObj);
-                    }
-                    else if (cadContour.myGeometry is LineGeometry lineGeometry)
+                    foreach(PointsElement pntobj in cadContour.GCObject.GetPointCollection(false, cadObject.ProjectionSetting.PointStep.MX, cadObject.ProjectionSetting.RadiusEdge))
                     {
-                        PathList.Add(new LObject()
-                        {
-                            Points = new List<LPoint3D>()
-                            { 
-                                new LPoint3D(lineGeometry.StartPoint),
-                                new LPoint3D(lineGeometry.EndPoint) 
-                            },
-                            ProjectionSetting = cadContour.ProjectionSetting
-                        });
+                        PathList.Add(new LObject(pntobj.Points));
                     }
+
                     break;
                 default:
                     
@@ -371,105 +340,6 @@ namespace MonchaCadViewer.CanvasObj
             }
 
             return PathList;
-
-
-            LObjectList pathfigurecalc(PathGeometry pathGeometry, LProjectionSetting projectionSetting)
-            {
-                LObjectList PathObjectList = new LObjectList();
-
-                foreach (PathFigure figure in pathGeometry.Figures)
-                {
-                    LObject lObject = new LObject()
-                    {
-                        MeshType = cadObject.MeshType
-                    };
-                    lObject.ProjectionSetting = cadObject.ProjectionSetting;
-                    lObject.Closed = figure.IsClosed;
-
-                    lObject.Add(
-                        new LPoint3D(
-                            figure.StartPoint));
-
-                    Point LastPoint = figure.StartPoint;
-
-                    if (figure.Segments.Count > 0)
-                    {
-                        foreach (PathSegment segment in figure.Segments)
-                        {
-                            switch (segment)
-                            {
-                                case BezierSegment bezierSegment:
-                                    lObject.AddRange(
-                                        BezieByStep(
-                                            LastPoint, bezierSegment.Point1, bezierSegment.Point2, bezierSegment.Point3, projectionSetting.PointStep.MX));
-                                    LastPoint = bezierSegment.Point3;
-                                    break;
-
-                                case PolyBezierSegment polyBezierSegment:
-                                    for (int i = 0; i < polyBezierSegment.Points.Count - 2; i += 3)
-                                    {
-                                        lObject.AddRange(
-                                            BezieByStep(
-                                                LastPoint, polyBezierSegment.Points[i], polyBezierSegment.Points[i + 2], polyBezierSegment.Points[i + 1], projectionSetting.PointStep.MX));
-                                        LastPoint = polyBezierSegment.Points[i + 1];
-                                    }
-                                    break;
-
-                                case LineSegment lineSegment:
-                                    lObject.Add(new LPoint3D(lineSegment.Point));
-                                    LastPoint = lineSegment.Point;
-                                    break;
-
-                                case PolyLineSegment polyLineSegment:
-                                    for (int i = 0; i < polyLineSegment.Points.Count; i++)
-                                    {
-                                        lObject.Add(new LPoint3D(polyLineSegment.Points[i]));
-                                        LastPoint = polyLineSegment.Points.Last();
-                                    }
-                                    break;
-
-                                case PolyQuadraticBezierSegment polyQuadraticBezier:
-                                    for (int i = 0; i < polyQuadraticBezier.Points.Count - 1; i += 2)
-                                    {
-                                        lObject.AddRange(
-                                            QBezierByStep(
-                                                LastPoint, polyQuadraticBezier.Points[i], polyQuadraticBezier.Points[i + 1], projectionSetting.PointStep.MX));
-                                        LastPoint = polyQuadraticBezier.Points[i + 1];
-                                    }
-                                    break;
-
-                                case QuadraticBezierSegment quadraticBezierSegment:
-                                    lObject.AddRange(
-                                        QBezierByStep(
-                                            LastPoint, quadraticBezierSegment.Point1, quadraticBezierSegment.Point2, projectionSetting.PointStep.MX));
-                                    LastPoint = quadraticBezierSegment.Point2;
-                                    break;
-
-                                case ArcSegment arcSegment:
-                                    SweepDirection sweepDirection = arcSegment.SweepDirection;
-                                    if (cadObject.Mirror)
-                                    {
-                                        sweepDirection = arcSegment.SweepDirection == SweepDirection.Clockwise ? SweepDirection.Counterclockwise : SweepDirection.Clockwise;
-                                    }
-
-                                    foreach (Point lPoint3D in CircleByStep(
-                                            LastPoint, arcSegment.Point, arcSegment.Size.Width, projectionSetting.RadiusEdge, sweepDirection, projectionSetting.PointStep.MX, arcSegment.RotationAngle))
-                                    {
-                                        lObject.Add(new LPoint3D(lPoint3D));
-                                    }
-                                    LastPoint = arcSegment.Point;
-                                    break;
-                                default:
-                                    Console.WriteLine($"Unkom type segment: {segment.GetType().Name}");
-                                break;
-                            }
-                        }
-                    }
-                    if (lObject.Count > 0)
-                        PathObjectList.Add(lObject);
-                }
-                return PathObjectList;
-            }
         }
 
 

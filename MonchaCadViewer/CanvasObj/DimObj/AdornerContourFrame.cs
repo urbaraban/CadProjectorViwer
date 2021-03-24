@@ -11,13 +11,13 @@ namespace MonchaCadViewer.CanvasObj.DimObj
 {
     class AdornerContourFrame : Adorner
     {
-        private CadContour Contour;
+        private CadGeometry Contour;
 
         public AdornerContourFrame(UIElement adornedElement, Visibility visibility)
             : base(adornedElement)
         {
             this.RenderTransform = adornedElement.RenderTransform;
-            this.Contour = (CadContour)adornedElement;
+            this.Contour = (CadGeometry)adornedElement;
             this.Visibility = visibility;
         }
 

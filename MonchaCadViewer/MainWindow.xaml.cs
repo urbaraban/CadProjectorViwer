@@ -29,6 +29,7 @@ using System.ComponentModel;
 using System.Windows.Data;
 using MonchaCadViewer.ToolsPanel.ContourScrollPanel;
 using ToGeometryConverter;
+using ToGeometryConverter.Object;
 
 namespace MonchaCadViewer
 {
@@ -275,7 +276,7 @@ namespace MonchaCadViewer
 
         private void OpenFile(string filename)
         {
-            GeometryGroup _actualFrames = new GeometryGroup();
+            
 
             if ((filename.Split('.').Last() == "frw") || (filename.Split('.').Last() == "cdw"))
             {
@@ -290,20 +291,22 @@ namespace MonchaCadViewer
             }
             else
             {
-                _actualFrames = ToGC.Get(filename, MonchaHub.ProjectionSetting.PointStep.MX);
+                GCCollection _actualFrames = ToGC.Get(filename, MonchaHub.ProjectionSetting.PointStep.MX);
+
+                if (_actualFrames == null)
+                {
+                    return;
+                }
+                else
+                {
+                    AppSt.Default.stg_last_file_path = filename;
+                    AppSt.Default.Save();
+                }
+                   
+                ContourScrollPanel.Add(false, _actualFrames, filename.Split('\\').Last());
             }
 
-            if (_actualFrames == null)
-            {
-                return;
-            }
-            if (_actualFrames.Children.Count > 0)
-                AppSt.Default.stg_last_file_path = filename;
-            else return;
-
-            AppSt.Default.Save();
-
-            ContourScrollPanel.Add(false, _actualFrames, filename.Split('\\').Last());
+           
         }
        
 
@@ -421,16 +424,25 @@ namespace MonchaCadViewer
         {
             if (KmpsAppl.KompasAPI != null)
             {
-                ContourScrollPanel.Add(false, ContourCalc.GetGeometry(this.kmpsAppl.Doc, MonchaHub.ProjectionSetting.PointStep.MX, false, true), this.kmpsAppl.Doc.D7.Name);
+                ContourScrollPanel.Add(false,
+                    new GCCollection() {
+                        new GeometryElement(
+                    ContourCalc.GetGeometry(this.kmpsAppl.Doc, MonchaHub.ProjectionSetting.PointStep.MX, false, true))
+                    },
+                    this.kmpsAppl.Doc.D7.Name);
             }
-
         }
 
         private void kmpsAddBtn_Click(object sender, RoutedEventArgs e)
         {
             if (KmpsAppl.KompasAPI != null)
             {
-                ContourScrollPanel.Add(false, ContourCalc.GetGeometry(this.kmpsAppl.Doc, MonchaHub.ProjectionSetting.PointStep.MX, true, true), this.kmpsAppl.Doc.D7.Name);
+                ContourScrollPanel.Add(
+                    false,
+                    new GCCollection() {
+                    new GeometryElement(ContourCalc.GetGeometry(this.kmpsAppl.Doc, MonchaHub.ProjectionSetting.PointStep.MX, true, true)),
+                    },
+                    this.kmpsAppl.Doc.D7.Name);
             }
         }
 
@@ -650,7 +662,7 @@ namespace MonchaCadViewer
             {
                 if (item.IsSelected == true)
                 {
-                    saveFileDialog.FileName += $"{(saveFileDialog.FileName != string.Empty ? " " : string.Empty)}{item.objectsGroup.Name}";
+                    saveFileDialog.FileName += $"{(saveFileDialog.FileName != string.Empty ? " " : string.Empty)}{item.cadObject.Name}";
                 }
             }
 
@@ -691,12 +703,6 @@ namespace MonchaCadViewer
         {
             MonchaHub.Save(AppSt.Default.cl_moncha_path);
             AppSt.Default.Save();
-        }
-
-        private void CheckBox_Checked(object sender, RoutedEventArgs e)
-        {
-            if (sender is CheckBox checkBox)
-                ReadyFrame.SetEndgePoint = checkBox.IsChecked.Value;
         }
 
         private void WorkFolderRefreshBtn_Click(object sender, RoutedEventArgs e) => RefreshWorkFolderList();

@@ -12,6 +12,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
+using ToGeometryConverter.Object;
 
 namespace MonchaCadViewer.ToolsPanel.ContourScrollPanel
 {
@@ -27,14 +28,22 @@ namespace MonchaCadViewer.ToolsPanel.ContourScrollPanel
             InitializeComponent();
         }
 
-        public void Add(bool Clear, GeometryGroup geometry, string Name, bool show = true)
+        public void Add(bool Clear, GCCollection Objects, string Name, bool show = true)
         {
             if (Clear)
             {
                 FrameStack.Children.Clear();
             }
-            CadObjectsGroup cadObjectsGroup = new CadObjectsGroup(geometry, Name);
+            CadObjectsGroup cadObjectsGroup = new CadObjectsGroup(Objects, Name);
  
+            foreach(ScrollPanelItem panelItem in this.FrameStack.Children)
+            {
+                if (panelItem.Name == Name)
+                {
+                    panelItem.DataContext = cadObjectsGroup;
+                }
+            }
+
             ScrollPanelItem scrollPanelItem = new ScrollPanelItem(cadObjectsGroup);
             scrollPanelItem.Selected += ScrollPanelItem_Selected;
             scrollPanelItem.Removed += ScrollPanelItem_Removed;
@@ -50,10 +59,7 @@ namespace MonchaCadViewer.ToolsPanel.ContourScrollPanel
         {
             if (sender is ScrollPanelItem scrollPanelItem)
             {
-                foreach (CadObject cadObject in scrollPanelItem.objectsGroup)
-                {
-                    cadObject.Remove();
-                }
+                scrollPanelItem.cadObject.Remove();
 
                 FrameStack.Children.Remove(scrollPanelItem);
             }
@@ -77,7 +83,7 @@ namespace MonchaCadViewer.ToolsPanel.ContourScrollPanel
                     }
                 }
 
-                SelectedFrame?.Invoke(scrollPanelItem.objectsGroup, e);
+                SelectedFrame?.Invoke(scrollPanelItem.cadObject, e);
             }
         }
 

@@ -223,7 +223,7 @@
     <Compile Include="CanvasObj\CadAnchor.cs" />
     <Compile Include="CanvasObj\CadCanvas.cs" />
     <Compile Include="CanvasObj\SendProcessor.cs" />
-    <Compile Include="CanvasObj\CadContour.cs" />
+    <Compile Include="CanvasObj\CadGeometry.cs" />
     <Compile Include="Calibration\CreateGridWindow.xaml.cs">
       <DependentUpon>CreateGridWindow.xaml</DependentUpon>
     </Compile>
@@ -379,9 +379,9 @@
       <Project>{BE456A82-4E1A-45F9-89DB-74E4924FC4B6}</Project>
       <Name>MonchaSDK</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\ToGeometryConverter\ToGeometryConverter\ToGeometryConverter.csproj">
+    <ProjectReference Include="..\..\ToGeometryConverter\ToGeometryConverter\GeometryConverter.csproj">
       <Project>{1EDBFBC8-4A81-4530-9BC6-B4C475E53E3C}</Project>
-      <Name>ToGeometryConverter</Name>
+      <Name>GeometryConverter</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
@@ -405,9 +405,7 @@
   <ItemGroup>
     <Resource Include="logo.jpg" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Converters\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>

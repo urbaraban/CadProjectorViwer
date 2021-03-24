@@ -49,22 +49,24 @@ namespace MonchaCadViewer.ToolsPanel.ContourScrollPanel
 
         
 
-        public CadObjectsGroup objectsGroup;
+        public CadObject cadObject;
 
         private CadCanvas cadCanvas;
 
-        public ScrollPanelItem(CadObjectsGroup cadObjectsGroup)
+        public ScrollPanelItem(CadObject cadObject)
         {
             InitializeComponent();
 
+            this.DataContextChanged += ScrollPanelItem_DataContextChanged;
+
             this.Width = this.Height;
-            this.NameLabel.Content = cadObjectsGroup.Name;
+            this.NameLabel.Content = cadObject.Name;
 
             Viewbox _viewbox = new Viewbox();
             _viewbox.Stretch = Stretch.Uniform;
             _viewbox.StretchDirection = StretchDirection.DownOnly;
             _viewbox.Margin = new Thickness(0);
-            _viewbox.DataContext = cadObjectsGroup;
+            _viewbox.DataContext = cadObject;
             _viewbox.ClipToBounds = true;
             _viewbox.Cursor = Cursors.Hand;
             _viewbox.MouseLeftButtonUp += _viewbox_MouseLeftButtonUp; ;
@@ -87,10 +89,23 @@ namespace MonchaCadViewer.ToolsPanel.ContourScrollPanel
 
             MainGrid.Children.Add(_viewbox);
 
-            this.objectsGroup = cadObjectsGroup;
-            CadContour cadContour = new CadContour(cadObjectsGroup.myGeometry, false);
-            cadContour.TransformGroup = this.objectsGroup.TransformGroup;
-            cadCanvas.DrawContour(cadContour, Keyboard.Modifiers != ModifierKeys.Shift);
+            this.DataContext = cadObject;
+        }
+
+        private void ScrollPanelItem_DataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
+        {
+            if (this.DataContext is CadObject cadObject)
+            {
+                this.cadObject = cadObject;
+
+                cadCanvas.Clear();
+
+                cadCanvas.DrawContour(new CadGeometry(this.cadObject.GCObject, false)
+                {
+                    ProjectionSetting = this.cadObject.ProjectionSetting,
+                    TransformGroup = this.cadObject.TransformGroup
+                }, true);
+            }
         }
 
         public void Remove()
@@ -108,7 +123,7 @@ namespace MonchaCadViewer.ToolsPanel.ContourScrollPanel
             {
                 if (viewItem.DataContext is CadObjectsGroup CadObj)
                 {
-                    CadObj.UpdateTransform(CadObj.TransformGroup, true);
+                    CadObj.UpdateTransform(CadObj.TransformGroup, true, CadObj.Bounds);
                 }
             }
         }

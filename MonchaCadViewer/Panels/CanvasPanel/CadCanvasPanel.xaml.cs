@@ -17,7 +17,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using AppSt = MonchaCadViewer.Properties.Settings;
 
-namespace MonchaCadViewer.ToolsPanel.CanvasPanel
+namespace MonchaCadViewer.Panels.CanvasPanel
 {
     /// <summary>
     /// Логика взаимодействия для CadCanvasPanel.xaml

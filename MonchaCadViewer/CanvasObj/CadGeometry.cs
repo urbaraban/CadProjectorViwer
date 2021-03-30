@@ -5,16 +5,19 @@ using System;
 using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
+using System.Windows.Media.Media3D;
 using ToGeometryConverter.Object;
+using ToGeometryConverter.Object.Elements;
 
 namespace MonchaCadViewer.CanvasObj
 {
     public class CadGeometry : CadObject
     {
-        public override Geometry GetGeometry { get => GetLGeometry(true); }
+        public IGCObject GCObject { get; set; }
+
+        public override Geometry GetGeometry { get => this.GCObject.GetGeometry(this.TransformGroup, this.ProjectionSetting.PointStep.MX, this.ProjectionSetting.RadiusEdge); }
 
         private bool _maincanvas;
         private AdornerContourFrame adornerContour;
@@ -23,8 +26,6 @@ namespace MonchaCadViewer.CanvasObj
         {
             this.GCObject = gCObject;
             this._maincanvas = maincanvas;
-
-            this.myPen.Thickness = (MonchaHub.GetThinkess < 0 ? 1 : MonchaHub.GetThinkess) * 0.5;
             this.Loaded += CadContour_Loaded;
         }
 
@@ -37,7 +38,24 @@ namespace MonchaCadViewer.CanvasObj
             }
         }
 
-       
+        public LObjectList GetTransformPoint()
+        {
+            LObjectList lObjectList = new LObjectList();
+            Transform3DGroup transform3DGroup = this.TransformGroup;
+            List<PointsElement> Points = this.GCObject.GetPointCollection(transform3DGroup, this.ProjectionSetting.PointStep.MX, this.ProjectionSetting.RadiusEdge);
+
+            foreach (PointsElement points in Points)
+            {
+                lObjectList.Add(new LObject(points.GetPoints3D)
+                {
+                    ProjectionSetting = this.ProjectionSetting,
+                    Closed = points.IsClosed
+                });
+            }
+
+            return lObjectList;
+        }
+
     }
 }
 

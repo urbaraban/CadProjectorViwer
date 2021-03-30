@@ -17,7 +17,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using AppSt = MonchaCadViewer.Properties.Settings;
 
-namespace MonchaCadViewer.ToolsPanel.DevicePanel
+namespace MonchaCadViewer.Panels
 {
     /// <summary>
     /// Логика взаимодействия для DeviceTreeTab.xaml
@@ -157,6 +157,11 @@ namespace MonchaCadViewer.ToolsPanel.DevicePanel
                         case "dvc_polymesh":
                             device.PolyMeshUsed = !device.PolyMeshUsed;
                             MonchaHub.RefreshDevice();
+                            break;
+                        case "dvc_center":
+                            DrawObjects?.Invoke(this, new List<FrameworkElement>() {
+                                new CadAnchor(device.DeviceZone.CenterPoint, false){Render = false}
+                            });
                             break;
 
                     }

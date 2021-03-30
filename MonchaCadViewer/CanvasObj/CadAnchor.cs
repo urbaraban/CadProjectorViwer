@@ -6,6 +6,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Media3D;
 using MonchaCadViewer.Calibration;
+using MonchaSDK;
 using MonchaSDK.Device;
 using MonchaSDK.Object;
 
@@ -49,7 +50,7 @@ namespace MonchaCadViewer.CanvasObj
         public LPoint3D GetPoint => PointX != PointY ? new LPoint3D(PointX.MX, PointY.MY, PointX.M) : PointX;
 
 
-        public CadAnchor(LPoint3D Point, double AnchorSize, bool OnBaseMesh)
+        public CadAnchor(LPoint3D Point, bool OnBaseMesh)
         {
             this.PointX = Point;
             this.PointX.PropertyChanged += Point_PropertyChanged;
@@ -58,24 +59,24 @@ namespace MonchaCadViewer.CanvasObj
             this.PointX.Selected += Point_Selected;
             this.PropertyChanged += CadDot_PropertyChanged;
 
-            CommonSetting(AnchorSize);
+            CommonSetting();
         }
 
-        public CadAnchor(LPoint3D PointX, LPoint3D PointY, double AnchorSize, bool OnBaseMesh)
+        public CadAnchor(LPoint3D PointX, LPoint3D PointY, bool OnBaseMesh)
         {
             this.PointX = PointX;
             this.PointX.PropertyChanged += Point_PropertyChanged;
             this.PointY = PointY;
             this.PointY.PropertyChanged += Point_PropertyChanged;
-            CommonSetting(AnchorSize);
+            CommonSetting();
         }
 
-        private void CommonSetting(double AnchorSize)
+        private void CommonSetting()
         {
             this.AllowDrop = true;
             this.Drop += CadAnchor_Drop;
 
-            this.size = AnchorSize;
+            this.size = MonchaHub.GetThinkess * 3;
             this.ShowName = false;
             ContextMenuLib.DotContextMenu(this.ContextMenu);
             Canvas.SetZIndex(this, 999);

@@ -14,7 +14,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using ToGeometryConverter.Object;
 
-namespace MonchaCadViewer.ToolsPanel.ContourScrollPanel
+namespace MonchaCadViewer.Panels
 {
     /// <summary>
     /// Логика взаимодействия для ScrollPanel.xaml
@@ -38,9 +38,10 @@ namespace MonchaCadViewer.ToolsPanel.ContourScrollPanel
  
             foreach(ScrollPanelItem panelItem in this.FrameStack.Children)
             {
-                if (panelItem.Name == Name)
+                if (panelItem.FileName == Name)
                 {
                     panelItem.DataContext = cadObjectsGroup;
+                    return;
                 }
             }
 

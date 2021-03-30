@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Data;
 
-namespace MonchaCadViewer.ToolsPanel.ObjectPanel
+namespace MonchaCadViewer.Panels
 {
     public class ScaleConverter : IValueConverter
     {

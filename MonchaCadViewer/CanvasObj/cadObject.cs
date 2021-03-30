@@ -25,30 +25,31 @@ namespace MonchaCadViewer.CanvasObj
     {
         private LObjectList _renderpoint;
 
-        public IGCObject GCObject { get; set; }
-
         public virtual Rect Bounds => this.GetGeometry.Bounds;
 
-        public virtual Geometry GetGeometry => GetLGeometry(true);
+        public virtual Geometry GetGeometry { get; set; }
 
         public virtual Pen myPen { 
             get
             {
+                double thinkess = MonchaHub.GetThinkess / 3d / this.Scale.ScaleX;
+                thinkess = thinkess <= 0 ? 1 : thinkess;
+
                 if (this.IsMouseOver == true)
                 {
-                    return new Pen(Brushes.Orange, MonchaHub.GetThinkess / this.Scale.ScaleX);
+                    return new Pen(Brushes.Orange, thinkess * 3);
                 }
                 else if (this._isselected == true)
                 {
-                    return new Pen(Brushes.Black, MonchaHub.GetThinkess / 3 / this.Scale.ScaleX);
+                    return new Pen(Brushes.Black, thinkess);
                 }
                 else if (this._render == false)
                 {
-                    return new Pen(Brushes.DarkGray, MonchaHub.GetThinkess / 3 / this.Scale.ScaleX);
+                    return new Pen(Brushes.DarkGray, thinkess);
                 }
                 else if (this._isfix == true)
                 {
-                    return new Pen(Brushes.LightBlue, MonchaHub.GetThinkess / 3 / this.Scale.ScaleX);
+                    return new Pen(Brushes.LightBlue, thinkess);
                 }
                 else
                 {
@@ -56,8 +57,8 @@ namespace MonchaCadViewer.CanvasObj
                         Color.FromArgb(255,
                         (ProjectionSetting.RedOn == true ? ProjectionSetting.Red : (byte)0),
                         (ProjectionSetting.GreenOn == true ? ProjectionSetting.Green : (byte)0),
-                        (ProjectionSetting.BlueOn == true ? ProjectionSetting.Blue : (byte)0))), 
-                        MonchaHub.GetThinkess / 3 / this.Scale.ScaleX);
+                        (ProjectionSetting.BlueOn == true ? ProjectionSetting.Blue : (byte)0))),
+                        thinkess);
                 }
 
                 return null;
@@ -104,23 +105,7 @@ namespace MonchaCadViewer.CanvasObj
         #region TranformObject
         public Transform3DGroup TransformGroup 
         {
-            get => new Transform3DGroup()
-            {
-                Children = new Transform3DCollection()
-                {
-                    new ScaleTransform3D()
-                    {
-                        ScaleX = this.Scale.ScaleX,
-                        ScaleY = this.Scale.ScaleY,
-                        CenterX = this.Scale.CenterX,
-                        CenterY = this.Scale.CenterY
-                    },
-                    this.RotateX,
-                    this.RotateY,
-                    this.RotateZ,
-                    this.Translate
-                }
-            };
+            get => transform;
             set
             {
                 transform = value;
@@ -247,8 +232,6 @@ namespace MonchaCadViewer.CanvasObj
             set
             {
                 this.Scale.ScaleX = (this.Mirror == true ? -1 * Math.Abs(value) : Math.Abs(value));
-                if (this.Render == true)
-                Updated?.Invoke(this, "ScaleX");
                 OnPropertyChanged("ScaleX");
             }
         }
@@ -562,59 +545,12 @@ namespace MonchaCadViewer.CanvasObj
             
         }
 
-        public virtual LObjectList GetTransformPoint(bool ShowChar)
-        {
-            List<PointsElement> Points = this.GCObject.GetPointCollection(ShowChar, this.ProjectionSetting.PointStep.MX, this.ProjectionSetting.RadiusEdge);
-
-            LObjectList lObjectList = new LObjectList();
-
-            foreach (PointsElement points in Points)
-            {
-                LObject lObj = new LObject()
-                {
-                    ProjectionSetting = this.ProjectionSetting,
-                    Closed = points.IsClosed
-                };
-                foreach (Point3D point in points)
-                {
-                    this.TransformGroup.TryTransform(point, out Point3D point3D);
-                    lObj.Add(new LPoint3D(point3D));
-                }
-                if (lObj.Count > 0) lObjectList.Add(lObj);
-
-            }
-            return lObjectList;
-        }
-
-        public GeometryGroup GetLGeometry(bool ShowChar)
-        {
-            GeometryGroup geometries = new GeometryGroup();
-
-            foreach (LObject obj in GetTransformPoint(true))
-            {
-                PathFigure pathFigure = new PathFigure()
-                {
-                    StartPoint = obj[0].GetMPoint,
-                    IsClosed = obj.Closed
-                };
-                for (int i = 1; i < obj.Count; i++)
-                {
-                    pathFigure.Segments.Add(new LineSegment(obj[i].GetMPoint, true));
-                }
-
-                geometries.Children.Add(new PathGeometry()
-                {
-                    Figures = new PathFigureCollection() { pathFigure }
-                });
-            }
-
-            return geometries;
-        }
-
-
         protected override void OnRender(DrawingContext drawingContext)
         {
-            drawingContext.DrawGeometry(myBack, myPen, GetGeometry);
+            if (GetGeometry != null)
+            {
+                drawingContext.DrawGeometry(myBack, myPen, GetGeometry);
+            }
         }
 
        /* protected override void OnRender(DrawingContext drawingContext)

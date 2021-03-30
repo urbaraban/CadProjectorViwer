@@ -3,10 +3,9 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:ur="clr-namespace:MonchaCadViewer.ToolsPanel"
         xmlns:Controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
         xmlns:Properties="clr-namespace:MonchaCadViewer.Properties" xmlns:controlzex="urn:controlzex"
-        xmlns:contourscrollpanel="clr-namespace:MonchaCadViewer.ToolsPanel.ContourScrollPanel" xmlns:canvaspanel="clr-namespace:MonchaCadViewer.ToolsPanel.CanvasPanel" xmlns:devicepanel="clr-namespace:MonchaCadViewer.ToolsPanel.DevicePanel" x:Name="MainWindow1" x:Class="MonchaCadViewer.MainWindow"
+        xmlns:canvaspanel="clr-namespace:MonchaCadViewer.Panels.CanvasPanel" xmlns:devicepanel="clr-namespace:MonchaCadViewer.Panels.DevicePanel" xmlns:panels="clr-namespace:MonchaCadViewer.Panels" x:Name="MainWindow1" x:Class="MonchaCadViewer.MainWindow"
         mc:Ignorable="d"
         Title="CUT" KeyboardNavigation.TabNavigation="None"  AllowDrop="True" Height="766.898" Width="999" Closing="Window_Closing" Closed="Window_Closed" WindowStartupLocation="CenterScreen" Icon="logo.png" KeyUp="MainWindow1_KeyUp" WindowStyle="None" ResizeMode="CanResizeWithGrip" BorderBrush="#FFE01414" VerticalAlignment="Top">
     <Window.Resources>
@@ -103,11 +102,11 @@
                             <ToolBarPanel Orientation="Horizontal" Width="219" Margin="0,0,0,0">
                                 <ToolBar Grid.ColumnSpan="2" Width="218">
                                     <ToolBarPanel Orientation="Vertical" Width="100">
-                                        <Button x:Name="OpenBtn" AllowDrop="True" Content="{DynamicResource m_Open}" DragEnter="OpenBtn_DragEnter" DragOver="OpenBtn_DragOver" DragLeave="OpenBtn_DragLeave" Drop="OpenBtn_DragDrop" Click="OpenBtn_Click" Grid.ColumnSpan="2" Background="{x:Null}" BorderBrush="{x:Null}" Height="86" />
+                                        <Button x:Name="OpenBtn" AllowDrop="True" Content="{DynamicResource m_Open}" DragEnter="OpenBtn_DragEnter" DragOver="OpenBtn_DragOver" DragLeave="OpenBtn_DragLeave" Drop="OpenBtn_DragDropAsync" Click="OpenBtn_ClickAsync" Grid.ColumnSpan="2" Background="{x:Null}" BorderBrush="{x:Null}" Height="86" />
 
                                     </ToolBarPanel>
                                     <Separator></Separator>
-                                    <Button x:Name="ReloadBtn" Content="{DynamicResource m_Refresh}"  Margin="0,5" HorizontalAlignment="Right"  Click="ReloadBtn_Click" Grid.Column="1" VerticalAlignment="Stretch" Width="80"/>
+                                    <Button x:Name="ReloadBtn" Content="{DynamicResource m_Refresh}"  Margin="0,5" HorizontalAlignment="Right"  Click="ReloadBtn_ClickAsync" Grid.Column="1" VerticalAlignment="Stretch" Width="80"/>
                                 </ToolBar>
 
 
@@ -115,7 +114,7 @@
                             <TabControl x:Name="tabControl1">
 
                                 <TabItem Header="Transform">
-                                    <ur:CadObjectPanel x:Name="ObjectPanel"></ur:CadObjectPanel>
+                                    <panels:CadObjectPanel x:Name="ObjectPanel"></panels:CadObjectPanel>
                                 </TabItem>
                                 <TabItem Header="Draw">
                                     <Grid Background="#FFE5E5E5">
@@ -152,11 +151,11 @@
                             <RowDefinition Height="60*"/>
                         </Grid.RowDefinitions>
                         <DockPanel Margin="0,0,0,5">
-                            <devicepanel:DeviceTreeTab x:Name="DeviceTree" Focusable="False"/>
+                            <panels:DeviceTreeTab x:Name="DeviceTree" Focusable="False"/>
                         </DockPanel>
                         <DockPanel Margin="5,2,2,5" Grid.Row="1">
                             <Border  Grid.Row="3" Style="{StaticResource Border}" Grid.RowSpan="2">
-                                <ur:multiplierpanel x:Name="MultPanel"></ur:multiplierpanel>
+                                <panels:multiplierpanel x:Name="MultPanel"></panels:multiplierpanel>
                             </Border>
                         </DockPanel>
                     </Grid>
@@ -179,7 +178,7 @@
 
                         </DockPanel>
                         <DockPanel DockPanel.Dock="Bottom" Grid.Row="1" Margin="2,5">
-                            <contourscrollpanel:ScrollPanel x:Name="ContourScrollPanel"/>
+                            <panels:ScrollPanel x:Name="ContourScrollPanel"/>
                         </DockPanel>
                     </Grid>
                 </DockPanel>
@@ -187,7 +186,7 @@
                     <TabControl x:Name="tabControl" DockPanel.Dock="Right" Grid.Column="2" Grid.Row="2" Grid.RowSpan="3">
                         <TabItem x:Name="ContourSettingTab" Header="{DynamicResource dvc_Device}" Controls:HeaderedControlHelper.HeaderFontSize="18">
                             <Grid>
-                                <ur:DeviceTab x:Name="DevicePanel"/>
+                                <panels:DeviceTab x:Name="DevicePanel"/>
                             </Grid>
 
                         </TabItem>
@@ -349,7 +348,7 @@
                                 <ListView x:Name="WorkFolderListBox" Margin="5,5,5,5" Grid.Row="2" >
                                     <ListBox.ItemTemplate>
                                         <DataTemplate>
-                                            <TextBlock Text="{Binding}" MouseDown="TextBlock_MouseDown">
+                                            <TextBlock Text="{Binding}" MouseDown="TextBlock_MouseDownAsync">
 
                                             </TextBlock>
                                         </DataTemplate>
@@ -376,7 +375,7 @@
                             <ColumnDefinition Width="287*"/>
                         </Grid.ColumnDefinitions>
                         <StatusBar/>
-                        <ProgressBar x:Name="pBar" Margin="3" Grid.Column="2"/>
+                        <panels:ProgressPanel Grid.Column="2"/>
                         <Label x:Name="pBarLabel" Visibility="Hidden" Content="Label" Grid.Column="2" HorizontalContentAlignment="Center" VerticalAlignment="Center" HorizontalAlignment="Center"/>
                     </Grid>
 

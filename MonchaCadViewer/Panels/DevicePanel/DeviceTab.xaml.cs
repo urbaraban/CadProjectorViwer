@@ -1,6 +1,6 @@
 ﻿using MahApps.Metro.Controls;
 using MonchaCadViewer.CanvasObj;
-using MonchaCadViewer.ToolsPanel.DevicePanel;
+using MonchaCadViewer.Panels.DevicePanel;
 using MonchaSDK;
 using MonchaSDK.Device;
 using System;
@@ -19,7 +19,7 @@ using System.Windows.Navigation;
 
 using AppSt = MonchaCadViewer.Properties.Settings;
 
-namespace MonchaCadViewer.ToolsPanel
+namespace MonchaCadViewer.Panels
 {
     /// <summary>
     /// Логика взаимодействия для DeviceTab.xaml

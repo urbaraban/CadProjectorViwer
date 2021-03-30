@@ -19,7 +19,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 
-namespace MonchaCadViewer.ToolsPanel
+namespace MonchaCadViewer.Panels
 {
     /// <summary>
     /// Логика взаимодействия для multiplierpanel.xaml

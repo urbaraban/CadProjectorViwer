@@ -1,12 +1,11 @@
 ﻿using MahApps.Metro.Controls;
 using MonchaCadViewer.CanvasObj;
-using MonchaCadViewer.ToolsPanel.ObjectPanel;
 using System;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 
-namespace MonchaCadViewer.ToolsPanel
+namespace MonchaCadViewer.Panels
 {
     /// <summary>
     /// Логика взаимодействия для CadObjectPanel.xaml
@@ -105,11 +104,5 @@ namespace MonchaCadViewer.ToolsPanel
                 DisconnectBinding();
             }
         }
-
-        private void XUpDn_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double?> e)
-        {
-
-        }
-
     }
 }

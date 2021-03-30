@@ -20,16 +20,17 @@ using MonchaSDK;
 using MonchaSDK.Device;
 using MonchaSDK.Object;
 using KompasLib.KompasTool;
-using ToGeometryConverter.Format;
 using System.Windows.Media.Media3D;
-using MonchaSDK.ILDA;
 using StclLibrary.Laser;
 using Microsoft.WindowsAPICodePack.Dialogs;
 using System.ComponentModel;
 using System.Windows.Data;
-using MonchaCadViewer.ToolsPanel.ContourScrollPanel;
+using MonchaCadViewer.Panels;
 using ToGeometryConverter;
 using ToGeometryConverter.Object;
+using System.Threading.Tasks;
+using ToGeometryConverter.Object.Elements;
+using ToGeometryConverter.Format.ILDA;
 
 namespace MonchaCadViewer
 {
@@ -69,6 +70,9 @@ namespace MonchaCadViewer
             App.Language = AppSt.Default.DefaultLanguage;
             #endregion
 
+            ProgressPanel.Label = "Hello world!";
+            ToGC.Progressed += ToGC_Progressed;
+
             MonchaHub.Loging += MonchaHub_Loging;
             MonchaHub.RefreshedDevice += MonchaHub_RefreshDevice;
 
@@ -92,6 +96,11 @@ namespace MonchaCadViewer
             this.MainCanvas.SelectedObject += MainCanvas_SelectedObject;
 
             ContourScrollPanel.SelectedFrame += ContourScrollPanel_SelectedFrame;
+        }
+
+        private void ToGC_Progressed(object sender, Tuple<int, int> e)
+        {
+            ProgressPanel.SetProgressBar(e.Item1, e.Item2, string.Empty);
         }
 
         private void LanguageChanged(Object sender, EventArgs e)
@@ -253,7 +262,7 @@ namespace MonchaCadViewer
 
         }
 
-        private void OpenBtn_Click(object sender, EventArgs e)
+        private async void OpenBtn_ClickAsync(object sender, EventArgs e)
         {
             WinForms.OpenFileDialog openFile = new WinForms.OpenFileDialog();
             openFile.Filter = ToGC.Filter;
@@ -271,13 +280,13 @@ namespace MonchaCadViewer
             openFile.InitialDirectory = AppSt.Default.save_work_folder;
             openFile.FileName = null;
             if (openFile.ShowDialog() == WinForms.DialogResult.OK)
-                OpenFile(openFile.FileName);
+            {
+                await OpenFile(openFile.FileName);
+            }
         }
 
-        private void OpenFile(string filename)
+        private async Task OpenFile(string filename)
         {
-            
-
             if ((filename.Split('.').Last() == "frw") || (filename.Split('.').Last() == "cdw"))
             {
                 if (KmpsAppl.KompasAPI == null)
@@ -291,7 +300,7 @@ namespace MonchaCadViewer
             }
             else
             {
-                GCCollection _actualFrames = ToGC.Get(filename, MonchaHub.ProjectionSetting.PointStep.MX);
+                GCCollection _actualFrames = await ToGC.AsyncGet(filename, MonchaHub.ProjectionSetting.PointStep.MX);
 
                 if (_actualFrames == null)
                 {
@@ -305,19 +314,17 @@ namespace MonchaCadViewer
                    
                 ContourScrollPanel.Add(false, _actualFrames, filename.Split('\\').Last());
             }
-
-           
         }
        
 
-        private void OpenBtn_DragDrop(object sender, DragEventArgs e)
+        private async void OpenBtn_DragDropAsync(object sender, DragEventArgs e)
         {
             if (e.Data.GetDataPresent(DataFormats.FileDrop))
             {
                 string[] filePaths = (string[])(e.Data.GetData(DataFormats.FileDrop));
                 foreach (string fileLoc in filePaths)
                     if (File.Exists(fileLoc))
-                        OpenFile(fileLoc);
+                        await OpenFile(fileLoc);
             }
             OpenBtn.Background = Brushes.Gainsboro;
         }
@@ -343,11 +350,11 @@ namespace MonchaCadViewer
             OpenBtn.Background = Brushes.Gainsboro;
         }
 
-        private void ReloadBtn_Click(object sender, RoutedEventArgs e)
+        private async void ReloadBtn_ClickAsync(object sender, RoutedEventArgs e)
         {
             if (AppSt.Default.stg_last_file_path != string.Empty)
                 if (File.Exists(AppSt.Default.stg_last_file_path))
-                    OpenFile(AppSt.Default.stg_last_file_path);
+                    await OpenFile(AppSt.Default.stg_last_file_path);
         }
 
         private void MashMultiplierUpDn_ValueIncremented(object sender, NumericUpDownChangedRoutedEventArgs args)
@@ -592,14 +599,14 @@ namespace MonchaCadViewer
                         OpenBtn.Content = "Открыть " + fileLoc.Split('\\').Last();
         }
 
-        private void MainViewBox_Drop(object sender, DragEventArgs e)
+        private async void MainViewBox_DropAsync(object sender, DragEventArgs e)
         {
             if (e.Data.GetDataPresent(DataFormats.FileDrop))
             {
                 string[] filePaths = (string[])(e.Data.GetData(DataFormats.FileDrop));
                 foreach (string fileLoc in filePaths)
                     if (File.Exists(fileLoc))
-                        OpenFile(fileLoc);
+                        await OpenFile(fileLoc);
             }
             OpenBtn.Background = Brushes.Gainsboro;
         }
@@ -715,7 +722,9 @@ namespace MonchaCadViewer
                 foreach (string path in Directory.GetFiles(AppSt.Default.save_work_folder))
                 {
                     string format = path.Split('.').Last();
-                    if (format == "svg" || format == "dxf" || format == "frw" || format == "dc") {
+
+                    if (ToGC.Filter.Contains($"*.{format};") == true) 
+                    {
                         paths.Add(path.Split('\\').Last());
                     }
                 }
@@ -786,16 +795,16 @@ namespace MonchaCadViewer
                         saveFileDialog.Filter = "Moncha File (*.mws)|*.mws";
                         if (saveFileDialog.ShowDialog() == true)
                         {
-                            pBarStart("Save Moncha", 1, 2);
+                            ProgressPanel.SetProgressBar(1, 2, "Save Moncha");
                             MonchaHub.Save(saveFileDialog.FileName);
                             if (File.Exists(saveFileDialog.FileName) == false)
                             {
-                                pBarUpdate("Not Save", 2);
+                                ProgressPanel.SetProgressBar(2, 2,"Not Save");
                                 SaveConfiguration(true);
                             }
                             else
                             {
-                                pBarUpdate("Saved", 2);
+                                ProgressPanel.SetProgressBar(2, 2, "Saved");
                                 AppSt.Default.cl_moncha_path = saveFileDialog.FileName;
                             }                          
                         }
@@ -806,62 +815,36 @@ namespace MonchaCadViewer
                     }
                     MonchaPathBox.Content = AppSt.Default.cl_moncha_path;
                     AppSt.Default.Save();
-                    pBarEnd();
+                    ProgressPanel.End();
                     return false;
                     break;
                 case MessageBoxResult.No:
-                    pBarEnd();
+                    ProgressPanel.End();
                     return false;
                     break;
                 case MessageBoxResult.Cancel:
-                    pBarEnd();
+                    ProgressPanel.End();
                     return true;
                     break;
 
             }
-            pBarUpdate("Save Setting", 2);
-            
-            
-            pBarEnd();
+            ProgressPanel.SetProgressBar(2, 2, "Save Setting");
+
+            ProgressPanel.End();
             return false;
         }
 
-        private void pBarStart(string LabelText, int startValue, int endValue)
-        {
-            pBarLabel.Visibility = Visibility.Visible;
-            pBarLabel.Content = LabelText;
-            pBar.Value = startValue;
-            pBar.Maximum = endValue;
-        }
-
-        /// <summary>
-        /// Update value progressbar
-        /// </summary>
-        /// <param name="LabelText">Status text</param>
-        /// <param name="value">now value</param>
-        private void pBarUpdate(string LabelText, int value)
-        {
-            if (pBarLabel.Visibility == Visibility.Hidden) pBarLabel.Visibility = Visibility.Visible;
-            pBarLabel.Content = LabelText;
-            pBar.Value = value;
-        }
-
-        private void pBarEnd()
-        {
-            //pBarLabel.Visibility = Visibility.Hidden;
-            pBar.Value = 0;
-        }
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
             LoadMoncha();
         }
 
-        private void TextBlock_MouseDown(object sender, MouseButtonEventArgs e)
+        private async void TextBlock_MouseDownAsync(object sender, MouseButtonEventArgs e)
         {
             if (e.ClickCount >= 2)
             {
-                OpenFile($"{AppSt.Default.save_work_folder}\\{WorkFolderListBox.SelectedItem.ToString()}");
+                await OpenFile($"{AppSt.Default.save_work_folder}\\{WorkFolderListBox.SelectedItem.ToString()}");
             }
         }
 

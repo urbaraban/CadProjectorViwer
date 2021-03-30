@@ -69,6 +69,7 @@ namespace MonchaCadViewer.CanvasObj
             AddItem("dvc_showrect", contextMenu);
             AddItem("dvc_showzone", contextMenu);
             AddItem("dvc_polymesh", contextMenu);
+            AddItem("dvc_center", contextMenu);
         }
 
         public static void LaserMeterHeadTreeMenu(ContextMenu contextMenu)

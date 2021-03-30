@@ -16,7 +16,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using AppSt = MonchaCadViewer.Properties.Settings;
 
-namespace MonchaCadViewer.ToolsPanel.DevicePanel
+namespace MonchaCadViewer.Panels.DevicePanel
 {
     /// <summary>
     /// Логика взаимодействия для DeviceSettingDialog.xaml

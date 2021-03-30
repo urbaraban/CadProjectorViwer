@@ -14,7 +14,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 
-namespace MonchaCadViewer.ToolsPanel.ContourScrollPanel
+namespace MonchaCadViewer.Panels
 {
     /// <summary>
     /// Логика взаимодействия для ScrollPanelItem.xaml
@@ -47,17 +47,15 @@ namespace MonchaCadViewer.ToolsPanel.ContourScrollPanel
         }
         private bool _issolved = false;
 
-        
-
-        public CadObject cadObject;
+        public CadObject cadObject=> (CadObject)this.DataContext;
 
         private CadCanvas cadCanvas;
+
+        public string FileName => cadObject.Name;
 
         public ScrollPanelItem(CadObject cadObject)
         {
             InitializeComponent();
-
-            this.DataContextChanged += ScrollPanelItem_DataContextChanged;
 
             this.Width = this.Height;
             this.NameLabel.Content = cadObject.Name;
@@ -66,7 +64,7 @@ namespace MonchaCadViewer.ToolsPanel.ContourScrollPanel
             _viewbox.Stretch = Stretch.Uniform;
             _viewbox.StretchDirection = StretchDirection.DownOnly;
             _viewbox.Margin = new Thickness(0);
-            _viewbox.DataContext = cadObject;
+
             _viewbox.ClipToBounds = true;
             _viewbox.Cursor = Cursors.Hand;
             _viewbox.MouseLeftButtonUp += _viewbox_MouseLeftButtonUp; ;
@@ -89,22 +87,23 @@ namespace MonchaCadViewer.ToolsPanel.ContourScrollPanel
 
             MainGrid.Children.Add(_viewbox);
 
+            this.DataContextChanged += ScrollPanelItem_DataContextChanged;
             this.DataContext = cadObject;
         }
 
         private void ScrollPanelItem_DataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
         {
-            if (this.DataContext is CadObject cadObject)
+            if (this.DataContext is CadObjectsGroup cadGeometries)
             {
-                this.cadObject = cadObject;
-
                 cadCanvas.Clear();
-
-                cadCanvas.DrawContour(new CadGeometry(this.cadObject.GCObject, false)
+                foreach (CadGeometry cadGeometry in cadGeometries)
                 {
-                    ProjectionSetting = this.cadObject.ProjectionSetting,
-                    TransformGroup = this.cadObject.TransformGroup
-                }, true);
+                    cadCanvas.DrawContour(new CadGeometry(cadGeometry.GCObject, false)
+                    {
+                        ProjectionSetting = this.cadObject.ProjectionSetting,
+                        TransformGroup = this.cadObject.TransformGroup
+                    }, true);
+                }
             }
         }
 

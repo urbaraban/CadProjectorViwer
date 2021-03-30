@@ -10,6 +10,7 @@ using MonchaSDK.Setting;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Windows.Threading;
+using ToGeometryConverter.Object.Elements;
 
 namespace MonchaCadViewer.CanvasObj
 {
@@ -29,12 +30,10 @@ namespace MonchaCadViewer.CanvasObj
 
             foreach (object obj in canvas.Children)
             {
-                if (obj is CadObject cadObject)
+                if (obj is CadObject cadObject && cadObject.Render == true)
                 {
-                    if (cadObject.Render == true)
-                    {
-                        dotList.AddRange(cadObject.GetTransformPoint(false));
-                    }
+                    dotList.AddRange(SendProcessor.GetPoint(cadObject, false));
+                    //dotList.AddRange(cadObject.GetTransformPoint(false));
                 }
             }
             LObjectList outList = new LObjectList();
@@ -93,8 +92,8 @@ namespace MonchaCadViewer.CanvasObj
                     }
 
                     break;
-                case CadGeometry cadContour:
-                    lObjectList.AddRange(CalcContour(cadContour));
+                case CadGeometry cadGeometry:
+                    lObjectList.AddRange(cadGeometry.GetTransformPoint());
                     break;
                 case CadLine cadLine:
                     lObjectList.Add(new LObject()
@@ -328,9 +327,9 @@ namespace MonchaCadViewer.CanvasObj
 
                 case CadGeometry cadContour:
 
-                    foreach(PointsElement pntobj in cadContour.GCObject.GetPointCollection(false, cadObject.ProjectionSetting.PointStep.MX, cadObject.ProjectionSetting.RadiusEdge))
+                    foreach(PointsElement pntobj in cadContour.GCObject.GetPointCollection(cadContour.TransformGroup, cadObject.ProjectionSetting.PointStep.MX, cadObject.ProjectionSetting.RadiusEdge))
                     {
-                        PathList.Add(new LObject(pntobj.Points));
+                        PathList.Add(new LObject(pntobj.GetPoints3D));
                     }
 
                     break;

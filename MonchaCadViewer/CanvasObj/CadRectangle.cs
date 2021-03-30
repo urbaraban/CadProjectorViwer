@@ -1,6 +1,6 @@
 ﻿using MonchaCadViewer.CanvasObj;
 using MonchaCadViewer.Interface;
-using MonchaCadViewer.ToolsPanel.ObjectPanel;
+using MonchaCadViewer.Panels.ObjectPanel;
 using MonchaSDK;
 using MonchaSDK.Object;
 using System;
@@ -191,10 +191,10 @@ namespace MonchaCadViewer.CanvasObj
             {
                 anchors = new List<CadAnchor>()
                 {
-                    new CadAnchor(this.LRect.P1, this.LRect.P1, MonchaHub.GetThinkess * 3, false){ Render = false },
-                    new CadAnchor(this.LRect.P1, this.LRect.P2, MonchaHub.GetThinkess * 3, false){ Render = false },
-                    new CadAnchor(this.LRect.P2, this.LRect.P2, MonchaHub.GetThinkess * 3, false){ Render = false },
-                    new CadAnchor(this.LRect.P2, this.LRect.P1, MonchaHub.GetThinkess * 3, false){ Render = false }
+                    new CadAnchor(this.LRect.P1, this.LRect.P1, false){ Render = false },
+                    new CadAnchor(this.LRect.P1, this.LRect.P2, false){ Render = false },
+                    new CadAnchor(this.LRect.P2, this.LRect.P2, false){ Render = false },
+                    new CadAnchor(this.LRect.P2, this.LRect.P1, false){ Render = false }
                 };
 
                 foreach (CadAnchor cadAnchor in anchors)

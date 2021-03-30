@@ -205,7 +205,8 @@ namespace MonchaCadViewer.CanvasObj
             }
             else if (this.MouseAction == MouseAction.Rectangle)
             {
-                CadRectangle cadRectangle = new CadRectangle(new LPoint3D(e.GetPosition(this)), new LPoint3D(e.GetPosition(this)), true);
+                Point point = e.GetPosition(this);
+                CadRectangle cadRectangle = new CadRectangle(new LPoint3D(point), new LPoint3D(point), true);
                 this.Add(cadRectangle);
 
             }
@@ -470,7 +471,7 @@ namespace MonchaCadViewer.CanvasObj
                     {
                         mesh[i, j].M = MonchaHub.Size;
 
-                        objects.Add(new CadAnchor(mesh[i, j], AnchorSize, true)
+                        objects.Add(new CadAnchor(mesh[i, j], true)
                         {
                             IsFix = false,// !mesh.OnlyEdge;
                             Uid = i.ToString() + ":" + j.ToString(),

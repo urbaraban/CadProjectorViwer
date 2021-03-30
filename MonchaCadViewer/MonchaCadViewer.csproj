@@ -232,32 +232,32 @@
     </Compile>
     <Compile Include="Interface\SelectableObject.cs" />
     <Compile Include="Interface\TransformObject.cs" />
-    <Compile Include="ToolsPanel\CanvasPanel\CadCanvasPanel.xaml.cs">
+    <Compile Include="Panels\CanvasPanel\CadCanvasPanel.xaml.cs">
       <DependentUpon>CadCanvasPanel.xaml</DependentUpon>
     </Compile>
-    <Compile Include="ToolsPanel\DevicePanel\DeviceSettingDialog.xaml.cs">
+    <Compile Include="Panels\DevicePanel\DeviceSettingDialog.xaml.cs">
       <DependentUpon>DeviceSettingDialog.xaml</DependentUpon>
     </Compile>
-    <Compile Include="ToolsPanel\DevicePanel\DeviceTreeTab.xaml.cs">
+    <Compile Include="Panels\DevicePanel\DeviceTreeTab.xaml.cs">
       <DependentUpon>DeviceTreeTab.xaml</DependentUpon>
     </Compile>
-    <Compile Include="ToolsPanel\ObjectPanel\CadObjectPanel.xaml.cs">
+    <Compile Include="Panels\ObjectPanel\CadObjectPanel.xaml.cs">
       <DependentUpon>CadObjectPanel.xaml</DependentUpon>
     </Compile>
-    <Compile Include="ToolsPanel\ObjectPanel\CadRectangleSizePanel.xaml.cs">
+    <Compile Include="Panels\ObjectPanel\CadRectangleSizePanel.xaml.cs">
       <DependentUpon>CadRectangleSizePanel.xaml</DependentUpon>
     </Compile>
-    <Compile Include="ToolsPanel\ObjectPanel\ScaleConverter.cs" />
-    <Compile Include="ToolsPanel\ContourScrollPanel\ScrollPanel.xaml.cs">
+    <Compile Include="Panels\ObjectPanel\ScaleConverter.cs" />
+    <Compile Include="Panels\ContourScrollPanel\ScrollPanel.xaml.cs">
       <DependentUpon>ScrollPanel.xaml</DependentUpon>
     </Compile>
-    <Compile Include="ToolsPanel\ContourScrollPanel\ScrollPanelItem.xaml.cs">
+    <Compile Include="Panels\ContourScrollPanel\ScrollPanelItem.xaml.cs">
       <DependentUpon>ScrollPanelItem.xaml</DependentUpon>
     </Compile>
-    <Compile Include="ToolsPanel\DevicePanel\DeviceTab.xaml.cs">
+    <Compile Include="Panels\DevicePanel\DeviceTab.xaml.cs">
       <DependentUpon>DeviceTab.xaml</DependentUpon>
     </Compile>
-    <Compile Include="ToolsPanel\multiplierpanel.xaml.cs">
+    <Compile Include="Panels\multiplierpanel.xaml.cs">
       <DependentUpon>multiplierpanel.xaml</DependentUpon>
     </Compile>
     <Page Include="Calibration\CreateGridWindow.xaml">
@@ -291,6 +291,10 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Page Include="Panels\ProgressPanel.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Resources\lang.ru-RU.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -303,44 +307,47 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="ToolsPanel\CanvasPanel\CadCanvasPanel.xaml">
+    <Page Include="Panels\CanvasPanel\CadCanvasPanel.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="ToolsPanel\DevicePanel\DeviceSettingDialog.xaml">
+    <Page Include="Panels\DevicePanel\DeviceSettingDialog.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="ToolsPanel\DevicePanel\DeviceTreeTab.xaml">
+    <Page Include="Panels\DevicePanel\DeviceTreeTab.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="ToolsPanel\ObjectPanel\CadObjectPanel.xaml">
+    <Page Include="Panels\ObjectPanel\CadObjectPanel.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="ToolsPanel\ContourScrollPanel\ScrollPanel.xaml">
+    <Page Include="Panels\ContourScrollPanel\ScrollPanel.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="ToolsPanel\ContourScrollPanel\ScrollPanelItem.xaml">
+    <Page Include="Panels\ContourScrollPanel\ScrollPanelItem.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="ToolsPanel\DevicePanel\DeviceTab.xaml">
+    <Page Include="Panels\DevicePanel\DeviceTab.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="ToolsPanel\multiplierpanel.xaml">
+    <Page Include="Panels\multiplierpanel.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="ToolsPanel\ObjectPanel\CadRectangleSizePanel.xaml">
+    <Page Include="Panels\ObjectPanel\CadRectangleSizePanel.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Panels\ProgressPanel.xaml.cs">
+      <DependentUpon>ProgressPanel.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>

@@ -71,7 +71,7 @@ namespace MonchaCadViewer
             #endregion
 
             ProgressPanel.Label = "Hello world!";
-            ToGC.Progressed += ToGC_Progressed;
+            ToGCLogger.Progressed += ToGC_Progressed;
 
             MonchaHub.Loging += MonchaHub_Loging;
             MonchaHub.RefreshedDevice += MonchaHub_RefreshDevice;
@@ -98,9 +98,9 @@ namespace MonchaCadViewer
             ContourScrollPanel.SelectedFrame += ContourScrollPanel_SelectedFrame;
         }
 
-        private void ToGC_Progressed(object sender, Tuple<int, int> e)
+        private void ToGC_Progressed(object sender, ProgBarMessage e)
         {
-            ProgressPanel.SetProgressBar(e.Item1, e.Item2, string.Empty);
+            Dispatcher.Invoke(() => ProgressPanel.SetProgressBar(e.v, e.m, e.t));
         }
 
         private void LanguageChanged(Object sender, EventArgs e)
@@ -287,6 +287,7 @@ namespace MonchaCadViewer
 
         private async Task OpenFile(string filename)
         {
+
             if ((filename.Split('.').Last() == "frw") || (filename.Split('.').Last() == "cdw"))
             {
                 if (KmpsAppl.KompasAPI == null)
@@ -300,20 +301,24 @@ namespace MonchaCadViewer
             }
             else
             {
-                GCCollection _actualFrames = await ToGC.AsyncGet(filename, MonchaHub.ProjectionSetting.PointStep.MX);
+                await Task.Run(() =>
+               {
+                   GCCollection _actualFrames = ToGC.Get(filename, MonchaHub.ProjectionSetting.PointStep.MX);
 
-                if (_actualFrames == null)
-                {
-                    return;
-                }
-                else
-                {
-                    AppSt.Default.stg_last_file_path = filename;
-                    AppSt.Default.Save();
-                }
-                   
-                ContourScrollPanel.Add(false, _actualFrames, filename.Split('\\').Last());
+                   if (_actualFrames == null)
+                   {
+                       return;
+                   }
+                   else
+                   {
+                       AppSt.Default.stg_last_file_path = filename;
+                       AppSt.Default.Save();
+                   }
+
+                   ContourScrollPanel.Add(false, _actualFrames, filename.Split('\\').Last());
+               });
             }
+          
         }
        
 

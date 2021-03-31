@@ -37,7 +37,7 @@ namespace MonchaCadViewer.CanvasObj
 
                 if (this.IsMouseOver == true)
                 {
-                    return new Pen(Brushes.Orange, thinkess * 3);
+                    return new Pen(Brushes.Orange, thinkess * 2);
                 }
                 else if (this._isselected == true)
                 {
@@ -378,7 +378,6 @@ namespace MonchaCadViewer.CanvasObj
 
             void RotateAxis(AxisAngleRotation3D axisAngleRotation3D)
             {
-                Console.WriteLine($"Angle Object {axisAngleRotation3D.Axis.ToString()}");
                 axisAngleRotation3D.Angle += Math.Abs(e.Delta) / e.Delta * (Keyboard.Modifiers == ModifierKeys.Shift ? 1 : 5);
             }
         }

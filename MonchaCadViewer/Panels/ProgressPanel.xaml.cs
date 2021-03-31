@@ -60,22 +60,23 @@ namespace MonchaCadViewer.Panels
 
         private void ProgressPanel_ChangeStatus(object sender, int e)
         {
-            this.BarLine.Value = e;
+            this.Dispatcher.Invoke(() => this.BarLine.Value = e);
+            
         }
 
         private void ProgressPanel_ChangeMaximum(object sender, int e)
         {
-            this.BarLine.Maximum = e;
+            this.Dispatcher.Invoke(() => this.BarLine.Maximum = e);
         }
 
         private void ProgressPanel_ChangeLabel(object sender, string e)
         {
-            this.BarLabel.Content = e;
+            this.Dispatcher.Invoke(() => this.BarLabel.Content = e);
         }
 
         public static void SetProgressBar(int Value, int MaxValue, string Text)
         {
-            ProgressPanel.Label = (Text != string.Empty ? Text : ($"{Value}/{MaxValue}"));
+            ProgressPanel.Label = Text;
             ProgressPanel.MaxValue = MaxValue;
             ProgressPanel.StatValue = Value;
         }

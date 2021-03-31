@@ -375,7 +375,7 @@
                             <ColumnDefinition Width="287*"/>
                         </Grid.ColumnDefinitions>
                         <StatusBar/>
-                        <panels:ProgressPanel Grid.Column="2"/>
+                        <panels:ProgressPanel Grid.Column="2" Margin="1,2,5,5"/>
                         <Label x:Name="pBarLabel" Visibility="Hidden" Content="Label" Grid.Column="2" HorizontalContentAlignment="Center" VerticalAlignment="Center" HorizontalAlignment="Center"/>
                     </Grid>
 

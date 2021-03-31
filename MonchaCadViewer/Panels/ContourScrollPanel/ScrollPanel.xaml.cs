@@ -30,30 +30,33 @@ namespace MonchaCadViewer.Panels
 
         public void Add(bool Clear, GCCollection Objects, string Name, bool show = true)
         {
-            if (Clear)
+            Dispatcher.Invoke(() =>
             {
-                FrameStack.Children.Clear();
-            }
-            CadObjectsGroup cadObjectsGroup = new CadObjectsGroup(Objects, Name);
- 
-            foreach(ScrollPanelItem panelItem in this.FrameStack.Children)
-            {
-                if (panelItem.FileName == Name)
+                if (Clear)
                 {
-                    panelItem.DataContext = cadObjectsGroup;
-                    return;
+                    FrameStack.Children.Clear();
                 }
-            }
+                CadObjectsGroup cadObjectsGroup = new CadObjectsGroup(Objects, Name);
 
-            ScrollPanelItem scrollPanelItem = new ScrollPanelItem(cadObjectsGroup);
-            scrollPanelItem.Selected += ScrollPanelItem_Selected;
-            scrollPanelItem.Removed += ScrollPanelItem_Removed;
-            this.FrameStack.Children.Add(scrollPanelItem);
+                foreach (ScrollPanelItem panelItem in this.FrameStack.Children)
+                {
+                    if (panelItem.FileName == Name)
+                    {
+                        panelItem.DataContext = cadObjectsGroup;
+                        return;
+                    }
+                }
 
-            if (show == true)
-            {
-                scrollPanelItem.IsSelected = true;
-            }
+                ScrollPanelItem scrollPanelItem = new ScrollPanelItem(cadObjectsGroup);
+                scrollPanelItem.Selected += ScrollPanelItem_Selected;
+                scrollPanelItem.Removed += ScrollPanelItem_Removed;
+                this.FrameStack.Children.Add(scrollPanelItem);
+
+                if (show == true)
+                {
+                    scrollPanelItem.IsSelected = true;
+                }
+            });
         }
 
         private void ScrollPanelItem_Removed(object sender, EventArgs e)

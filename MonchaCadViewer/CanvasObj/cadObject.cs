@@ -37,7 +37,7 @@ namespace MonchaCadViewer.CanvasObj
 
                 if (this.IsMouseOver == true)
                 {
-                    return new Pen(Brushes.Orange, thinkess * 2);
+                    return new Pen(Brushes.Orange, thinkess * 1.5);
                 }
                 else if (this._isselected == true)
                 {
@@ -362,6 +362,13 @@ namespace MonchaCadViewer.CanvasObj
                     this.ProjectionSetting.PropertyChanged += CadObject_PropertyChanged;
                 }
             }
+
+            transform.Changed += Transform_Changed;
+            this.InvalidateVisual();
+        }
+
+        private void Transform_Changed(object sender, EventArgs e)
+        {
             this.InvalidateVisual();
         }
 

@@ -23,7 +23,7 @@ namespace MonchaCadViewer.CanvasObj
         /// </summary>
         /// <param name="canvas">Отправляемое рабочее поле</param>
         /// <returns>N_{i,degree}(step)</returns>
-        public static void Worker(CadCanvas canvas)
+        public async static void Worker(CadCanvas canvas)
         {
             Processing = true;
             LObjectList dotList = new LObjectList();
@@ -306,7 +306,7 @@ namespace MonchaCadViewer.CanvasObj
         /// <summary>
         /// Convert inner object in LPoint3D's
         /// </summary>
-        public static LObjectList CalcContour(CadObject cadObject)
+        public async static  Task<LObjectList> CalcContour(CadObject cadObject)
         {
             LObjectList PathList = new LObjectList();
 

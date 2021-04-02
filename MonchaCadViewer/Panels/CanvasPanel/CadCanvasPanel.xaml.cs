@@ -161,7 +161,7 @@ namespace MonchaCadViewer.Panels.CanvasPanel
                 this.Canvas.RemoveChildren((FrameworkElement)sender);
         }
 
-        internal void Add(object sender) => this.Canvas.DrawContour((CadObject)sender, Keyboard.Modifiers != ModifierKeys.Shift);
+        internal void Add(object sender, bool Clear) => this.Canvas.DrawContour((CadObject)sender, Clear);
 
         private void Canvas_SizeChanged(object sender, SizeChangedEventArgs e)
         {

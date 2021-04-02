@@ -3,6 +3,7 @@ using MonchaSDK;
 using MonchaSDK.Object;
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -17,8 +18,8 @@ namespace MonchaCadViewer.CanvasObj
     {
         public IGCObject GCObject { get; set; }
 
-        public override Geometry GetGeometry { get => this.GCObject.GetGeometry(this.TransformGroup, this.ProjectionSetting.PointStep.MX, this.ProjectionSetting.RadiusEdge); }
-
+        public override  Geometry GetGeometry => this.GCObject.GetGeometry(this.TransformGroup, this.ProjectionSetting.PointStep.MX, this.ProjectionSetting.RadiusEdge);
+    
         private bool _maincanvas;
         private AdornerContourFrame adornerContour;
 
@@ -42,7 +43,11 @@ namespace MonchaCadViewer.CanvasObj
         {
             LObjectList lObjectList = new LObjectList();
             Transform3DGroup transform3DGroup = this.TransformGroup;
-            List<PointsElement> Points = this.GCObject.GetPointCollection(transform3DGroup, this.ProjectionSetting.PointStep.MX, this.ProjectionSetting.RadiusEdge);
+
+
+            List<PointsElement> Points = this.Dispatcher.Invoke<List<PointsElement>>(() => { 
+            return this.GCObject.GetPointCollection(transform3DGroup, this.ProjectionSetting.PointStep.MX, this.ProjectionSetting.RadiusEdge);
+            });
 
             foreach (PointsElement points in Points)
             {

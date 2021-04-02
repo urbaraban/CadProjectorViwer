@@ -149,7 +149,19 @@ namespace MonchaCadViewer
         {
             if (e == true)
             {
-                this.MainCanvas.Add(sender);
+                if (sender is CadObjectsGroup cadGeometries)
+                {
+                    if (Keyboard.Modifiers != ModifierKeys.Shift) this.MainCanvas.Clear();
+
+                    foreach (CadGeometry cadGeometry in cadGeometries)
+                    {
+                        this.MainCanvas.Add(cadGeometry, false);
+                    }
+                }
+                else
+                {
+                    this.MainCanvas.Add(sender, Keyboard.Modifiers != ModifierKeys.Shift);
+                }
             }
             else
             {
@@ -301,8 +313,7 @@ namespace MonchaCadViewer
             }
             else
             {
-                await Task.Run(() =>
-               {
+
                    GCCollection _actualFrames = ToGC.Get(filename, MonchaHub.ProjectionSetting.PointStep.MX);
 
                    if (_actualFrames == null)
@@ -316,7 +327,7 @@ namespace MonchaCadViewer
                    }
 
                    ContourScrollPanel.Add(false, _actualFrames, filename.Split('\\').Last());
-               });
+
             }
           
         }

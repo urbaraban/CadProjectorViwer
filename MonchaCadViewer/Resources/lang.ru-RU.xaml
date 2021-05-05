@@ -76,6 +76,7 @@
     <v:String x:Key="setting_xscale">X размер</v:String>
     <v:String x:Key="setting_yscale">Y размер</v:String>
     <v:String x:Key="setting_percent">Процент</v:String>
+    <v:String x:Key="setting_showname">Показать имя</v:String>
     <v:String x:Key="setting_invertscale">Инверсия размера</v:String>
     <v:String x:Key="setting_solidobject">Цельный объект</v:String>
 

@@ -447,12 +447,11 @@ namespace MonchaCadViewer
         {
             if (KmpsAppl.KompasAPI != null)
             {
-                ContourScrollPanel.Add(false,
-                    new GCCollection() {
-                        new GeometryElement(
-                    ContourCalc.GetGeometry(this.kmpsAppl.Doc, MonchaHub.ProjectionSetting.PointStep.MX, false, true))
-                    },
-                    this.kmpsAppl.Doc.D7.Name);
+                GCCollection gCElements = new GCCollection();
+                gCElements.AddRange(
+                    ContourCalc.GetGeometry(this.kmpsAppl.Doc, MonchaHub.ProjectionSetting.PointStep.MX, false, true));
+
+                ContourScrollPanel.Add(false, gCElements, this.kmpsAppl.Doc.D7.Name);
             }
         }
 
@@ -711,6 +710,7 @@ namespace MonchaCadViewer
             AppSt.Default.stg_scale_invert = ScaleInvertCheck.IsChecked.Value;
             AppSt.Default.stg_scale_percent = ScalePercentCheck.IsChecked.Value;
             AppSt.Default.object_solid = SolidObject.IsChecked.Value;
+            AppSt.Default.stg_show_name = ShowNameCheck.IsChecked.Value;
             AppSt.Default.Save();
         }
 

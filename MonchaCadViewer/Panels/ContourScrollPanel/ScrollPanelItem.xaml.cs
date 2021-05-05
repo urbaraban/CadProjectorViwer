@@ -91,19 +91,22 @@ namespace MonchaCadViewer.Panels
             this.DataContext = cadObject;
         }
 
-        private void ScrollPanelItem_DataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
+        private async void ScrollPanelItem_DataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
         {
             if (this.DataContext is CadObjectsGroup cadGeometries)
             {
                 cadCanvas.Clear();
-                foreach (CadGeometry cadGeometry in cadGeometries)
+                ProgressPanel.SetProgressBar(0, cadGeometries.Count, "Добавляем");
+                for (int i = 0; i < cadGeometries.Count; i += 1)
                 {
-                    cadCanvas.DrawContour(new CadGeometry(cadGeometry.GCObject, false)
-                    {
-                        ProjectionSetting = this.cadObject.ProjectionSetting,
-                        TransformGroup = this.cadObject.TransformGroup
-                    }, true);
+                        cadCanvas.DrawContour(new CadGeometry(cadGeometries[i].GCObject, false)
+                        {
+                            ProjectionSetting = this.cadObject.ProjectionSetting,
+                            TransformGroup = this.cadObject.TransformGroup
+                        }, true);
+                        ProgressPanel.SetProgressBar(i, cadGeometries.Count, $"{i}/{cadGeometries.Count}");
                 }
+                ProgressPanel.End();
             }
         }
 

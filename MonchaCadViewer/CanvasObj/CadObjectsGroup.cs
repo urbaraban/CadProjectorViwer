@@ -54,10 +54,20 @@ namespace MonchaCadViewer.CanvasObj
                     TransformGroup = transform3DGroup,
                     Name = this.Name,
                 });
-            } 
+            }
+
+            if (AppSt.Default.stg_show_name == true)
+            {
+                this.cadObjects.Add(new CadGeometry(
+                    new ToGeometryConverter.Object.Elements.TextElement(Name, MonchaHub.GetThinkess,
+                    new Point3D(0, 0, 0)),
+                    true)
+                {
+                    TransformGroup = transform3DGroup,
+                    Name = this.Name,
+                });
+            }
         }
-
-
 
         #region IList<CadGeometry>
         public CadGeometry this[int index] { get => ((IList<CadGeometry>)cadObjects)[index]; set => ((IList<CadGeometry>)cadObjects)[index] = value; }

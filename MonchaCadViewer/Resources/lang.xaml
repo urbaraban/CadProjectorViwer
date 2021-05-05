@@ -78,6 +78,7 @@
     <v:String x:Key="setting_xscale">X scale</v:String>
     <v:String x:Key="setting_yscale">Y scale</v:String>
     <v:String x:Key="setting_percent">Percent</v:String>
+    <v:String x:Key="setting_showname">Show name</v:String>
     <v:String x:Key="setting_invertscale">Invert scale</v:String>
     <v:String x:Key="setting_solidobject">Solid object</v:String>
 

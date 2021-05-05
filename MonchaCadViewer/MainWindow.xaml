@@ -44,8 +44,8 @@
                 </Grid.ColumnDefinitions>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="30"/>
-                    <RowDefinition Height="90"/>
-                    <RowDefinition Height="602*"/>
+                    <RowDefinition Height="115"/>
+                    <RowDefinition Height="577*"/>
                     <RowDefinition Height="37*"/>
                 </Grid.RowDefinitions>
                 <DockPanel x:Name="TopBar" Grid.ColumnSpan="3" Margin="0,0,0,0" Background="{DynamicResource {x:Static SystemColors.MenuBrushKey}}" MouseLeftButtonDown="TopBar_MouseLeftButtonDown" VerticalAlignment="Top" LastChildFill="False" Height="29">
@@ -102,7 +102,7 @@
                             <ToolBarPanel Orientation="Horizontal" Width="219" Margin="0,0,0,0">
                                 <ToolBar Grid.ColumnSpan="2" Width="218">
                                     <ToolBarPanel Orientation="Vertical" Width="100">
-                                        <Button x:Name="OpenBtn" AllowDrop="True" Content="{DynamicResource m_Open}" DragEnter="OpenBtn_DragEnter" DragOver="OpenBtn_DragOver" DragLeave="OpenBtn_DragLeave" Drop="OpenBtn_DragDropAsync" Click="OpenBtn_ClickAsync" Grid.ColumnSpan="2" Background="{x:Null}" BorderBrush="{x:Null}" Height="86" />
+                                        <Button x:Name="OpenBtn" AllowDrop="True" Content="{DynamicResource m_Open}" DragEnter="OpenBtn_DragEnter" DragOver="OpenBtn_DragOver" DragLeave="OpenBtn_DragLeave" Drop="OpenBtn_DragDropAsync" Click="OpenBtn_ClickAsync" Grid.ColumnSpan="2" Background="{x:Null}" BorderBrush="{x:Null}" Height="110" />
 
                                     </ToolBarPanel>
                                     <Separator></Separator>
@@ -253,6 +253,11 @@
                                                 </CheckBox.DataContext>
                                             </CheckBox>
                                             <CheckBox x:Name="SolidObject" Content="{DynamicResource setting_solidobject}" HorizontalAlignment="Left" Margin="5,228,0,0" VerticalAlignment="Top"  IsChecked="{Binding object_solid, Mode=TwoWay}" Grid.Column="1" Width="147">
+                                                <CheckBox.DataContext>
+                                                    <Properties:Settings/>
+                                                </CheckBox.DataContext>
+                                            </CheckBox>
+                                            <CheckBox x:Name="ShowNameCheck" Content="{DynamicResource setting_showname}" HorizontalAlignment="Left" Margin="5,246,0,0" VerticalAlignment="Top"  IsChecked="{Binding stg_show_name, Mode=TwoWay}" Grid.Column="1" Width="146">
                                                 <CheckBox.DataContext>
                                                     <Properties:Settings/>
                                                 </CheckBox.DataContext>

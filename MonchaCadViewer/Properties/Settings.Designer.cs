@@ -262,5 +262,17 @@ namespace MonchaCadViewer.Properties {
                 this["DefaultLanguage"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool stg_show_name {
+            get {
+                return ((bool)(this["stg_show_name"]));
+            }
+            set {
+                this["stg_show_name"] = value;
+            }
+        }
     }
 }

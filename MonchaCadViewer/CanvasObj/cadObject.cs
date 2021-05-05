@@ -32,7 +32,7 @@ namespace MonchaCadViewer.CanvasObj
         public virtual Pen myPen { 
             get
             {
-                double thinkess = MonchaHub.GetThinkess / 3d / this.Scale.ScaleX;
+                double thinkess = MonchaHub.GetThinkess / 3d / this.Scale.ScaleX * Math.Max(this.ScaleX, this.ScaleY);
                 thinkess = thinkess <= 0 ? 1 : thinkess;
 
                 if (this.IsMouseOver == true)
@@ -75,6 +75,7 @@ namespace MonchaCadViewer.CanvasObj
 
         public void OnPropertyChanged([CallerMemberName] string prop = "")
         {
+            //Console.WriteLine(prop);
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(prop));
         }
         #endregion
@@ -125,11 +126,14 @@ namespace MonchaCadViewer.CanvasObj
         private AxisAngleRotation3D AxisAngleX = new AxisAngleRotation3D(new Vector3D(1, 0, 0), 0);
         public virtual double AngleX
         {
-            get => this.AxisAngleX.Angle;
+            get => this.AxisAngleX.Angle % 360;
             set
             {
-                this.AxisAngleX.Angle = value;
-                OnPropertyChanged("AngleX");
+                if (this.IsFix == false)
+                {
+                    this.AxisAngleX.Angle = value % 360;
+                    OnPropertyChanged("AngleX");
+                }
             }
         }
         public RotateTransform3D RotateX { get; set; } = new RotateTransform3D();
@@ -137,11 +141,14 @@ namespace MonchaCadViewer.CanvasObj
         private AxisAngleRotation3D AxisAngleY = new AxisAngleRotation3D(new Vector3D(0, 1, 0), 0);
         public virtual double AngleY
         {
-            get => this.AxisAngleY.Angle;
+            get => this.AxisAngleY.Angle % 360;
             set
             {
-                this.AxisAngleY.Angle = value;
-                OnPropertyChanged("AngleY");
+                if (this.IsFix == false)
+                {
+                    this.AxisAngleY.Angle = value % 360;
+                    OnPropertyChanged("AngleY");
+                }
             }
         }
         public RotateTransform3D RotateY { get; set; } = new RotateTransform3D();
@@ -150,11 +157,14 @@ namespace MonchaCadViewer.CanvasObj
 
         public virtual double AngleZ
         {
-            get => this.AxisAngleZ.Angle;
+            get => this.AxisAngleZ.Angle % 360;
             set
             {
-                this.AxisAngleZ.Angle = value;
-                OnPropertyChanged("AngleZ");
+                if (this.IsFix == false)
+                {
+                    this.AxisAngleZ.Angle = value % 360;
+                    OnPropertyChanged("AngleZ");
+                }
             }
         }
         public RotateTransform3D RotateZ { get; set; } = new RotateTransform3D();
@@ -184,11 +194,8 @@ namespace MonchaCadViewer.CanvasObj
             {
                 if (this.IsFix == false)
                 {
-                    if (this.Translate.OffsetX != value)
-                    {
-                        this.Translate.OffsetX = value;
-                        OnPropertyChanged("X");
-                    }
+                    this.Translate.OffsetX = value;
+                    OnPropertyChanged("X");
                 }
             }
         }
@@ -244,6 +251,16 @@ namespace MonchaCadViewer.CanvasObj
                 OnPropertyChanged("ScaleY");
             }
         }
+        public virtual double ScaleZ
+        {
+            get => this.Scale.ScaleZ;
+            set
+            {
+                this.Scale.ScaleZ = value;
+                OnPropertyChanged("ScaleZ");
+            }
+        }
+
         public virtual double CenterX
         {
             get => this.Scale.CenterX;
@@ -260,6 +277,15 @@ namespace MonchaCadViewer.CanvasObj
             {
                 this.Scale.CenterY = value;
                 OnPropertyChanged("CenterY");
+            }
+        }
+        public virtual double CenterZ
+        {
+            get => this.Scale.CenterZ;
+            set
+            {
+                this.Scale.CenterZ = value;
+                OnPropertyChanged("CenterZ");
             }
         }
 
@@ -376,16 +402,17 @@ namespace MonchaCadViewer.CanvasObj
         {
              if ((e.Delta != 0) && (Keyboard.Modifiers != ModifierKeys.Control))
             {
-                if (Keyboard.Modifiers == ModifierKeys.Alt) RotateAxis(AxisAngleY);
-                else if (Keyboard.Modifiers == (ModifierKeys.Alt | ModifierKeys.Shift)) RotateAxis(AxisAngleX);
-                else if (Keyboard.Modifiers == ModifierKeys.None) RotateAxis(AxisAngleZ);
+                if (Keyboard.Modifiers == ModifierKeys.Alt) RotateAxis(AxisAngleY, "AngleY");
+                else if (Keyboard.Modifiers == (ModifierKeys.Alt | ModifierKeys.Shift)) RotateAxis(AxisAngleX, "AngleX");
+                else if (Keyboard.Modifiers == ModifierKeys.None) RotateAxis(AxisAngleZ, "AngleZ");
             }
 
             OnPropertyChanged();
 
-            void RotateAxis(AxisAngleRotation3D axisAngleRotation3D)
+            void RotateAxis(AxisAngleRotation3D axisAngleRotation3D, string OnPropertyString)
             {
                 axisAngleRotation3D.Angle += Math.Abs(e.Delta) / e.Delta * (Keyboard.Modifiers == ModifierKeys.Shift ? 1 : 5);
+                OnPropertyChanged(OnPropertyString);
             }
         }
 
@@ -555,6 +582,12 @@ namespace MonchaCadViewer.CanvasObj
         {
             if (GetGeometry != null)
             {
+                /*if (AppSt.Default.stg_show_name == true)
+                {
+                    drawingContext.DrawText(new FormattedText($"{this.Name}", new System.Globalization.CultureInfo("ru-RU"), FlowDirection.LeftToRight,
+                    new Typeface("Segoe UI"), (int)MonchaHub.GetThinkess * 3, Brushes.Gray), new Point(GetGeometry.Bounds.X + GetGeometry.Bounds.Width / 2, GetGeometry.Bounds.Y + GetGeometry.Bounds.Height / 2));
+                }*/
+
                 drawingContext.DrawGeometry(myBack, myPen, GetGeometry);
             }
         }

@@ -91,10 +91,6 @@ namespace MonchaCadViewer.Panels
             DistanceUpDn.SetBinding(NumericUpDown.ValueProperty, "Deep");
 
             //Device
-            ScanRateRealSlider.Maximum = 40000;
-            ScanRateRealSlider.Minimum = 500;
-            ScanRateRealSlider.DataContext = monchaDevice;
-            ScanRateRealSlider.SetBinding(Slider.ValueProperty, "ScanRateReal");
 
             ScanRateCalc.Maximum = 40000;
             ScanRateCalc.Minimum = 500;
@@ -159,11 +155,6 @@ namespace MonchaCadViewer.Panels
            /* DistanceLabel.Invoke(() => {
                 DistanceLabel.Content = e;
             });*/
-        }
-
-        private void ScanRateAnchor_Click(object sender, RoutedEventArgs e)
-        {
-            AppSt.Default.int_scananchor = ScanRateAnchor.IsChecked.Value;
         }
 
         private void LaserMeterToggle_Toggled(object sender, RoutedEventArgs e)

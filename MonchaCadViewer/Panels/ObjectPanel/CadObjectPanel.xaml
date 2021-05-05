@@ -4,21 +4,26 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:MonchaCadViewer.Panels" xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls"
-             mc:Ignorable="d" >
+             mc:Ignorable="d" Height="89.485" >
     <Grid>
-        <Label x:Name="label" Content="X:" HorizontalAlignment="Left" Margin="5,5,0,0" VerticalAlignment="Top"/>
-        <Label x:Name="label_Copy" Content="Y:" HorizontalAlignment="Left" Margin="5,30,0,0" VerticalAlignment="Top"/>
-        <mah:NumericUpDown x:Name="XUpDn" HorizontalAlignment="Left" Height="22" Margin="24,6,0,0"  VerticalAlignment="Top" Width="102" Culture="ru-RU"/>
-        <mah:NumericUpDown x:Name="YUpDn" HorizontalAlignment="Left" Height="22" Margin="24,32,0,0"  VerticalAlignment="Top" Width="102"/>
-        <CheckBox x:Name="MirrorCheck" Content="{DynamicResource obj_Mirror}" HorizontalAlignment="Left" Margin="131,6,0,0" VerticalAlignment="Top" />
-        <CheckBox x:Name="RenderCheck" Content="{DynamicResource obj_Render}" HorizontalAlignment="Left" Margin="131,24,0,0" VerticalAlignment="Top"/>
-        <CheckBox x:Name="FixCheck" Content="{DynamicResource obj_Fix}" HorizontalAlignment="Left" Margin="131,43,0,0" VerticalAlignment="Top"/>
-        <mah:NumericUpDown x:Name="AngleUpDn" HorizontalAlignment="Left" Height="22" Margin="196,31,0,0"  VerticalAlignment="Top" Width="104" Culture="ru-RU" />
-        <Label x:Name="label1" Content="{DynamicResource obj_Angle}" HorizontalAlignment="Left" Margin="258,1,0,0" VerticalAlignment="Top"/>
+        <CheckBox x:Name="MirrorCheck" Content="{DynamicResource obj_Mirror}" HorizontalAlignment="Left" Margin="5,10,0,0" VerticalAlignment="Top" />
+        <CheckBox x:Name="RenderCheck" Content="{DynamicResource obj_Render}" HorizontalAlignment="Left" Margin="5,36,0,0" VerticalAlignment="Top"/>
+        <Label x:Name="label" Content="X:" HorizontalAlignment="Left" Margin="72,5,0,0" VerticalAlignment="Top"/>
+        <Label x:Name="label_Copy" Content="Y:" HorizontalAlignment="Left" Margin="72,30,0,0" VerticalAlignment="Top"/>
+        <mah:NumericUpDown x:Name="XUpDn" HorizontalAlignment="Left" Height="22" Margin="91,6,0,0"  VerticalAlignment="Top" Width="102" Culture="ru-RU"/>
+        <mah:NumericUpDown x:Name="YUpDn" HorizontalAlignment="Left" Height="22" Margin="91,32,0,0"  VerticalAlignment="Top" Width="102"/>
+        <CheckBox x:Name="FixCheck" Content="{DynamicResource obj_Fix}" HorizontalAlignment="Left" Margin="5,62,0,0" VerticalAlignment="Top"/>
+        <mah:NumericUpDown x:Name="AngleYUpDn" HorizontalAlignment="Left" Height="22" Margin="196,31,0,0"  VerticalAlignment="Top" Width="104" Culture="ru-RU" />
         <Label x:Name="WidthLbl" Content="{DynamicResource obj_Width}" HorizontalAlignment="Left" Margin="304,5,0,0" VerticalAlignment="Top"/>
         <Label x:Name="HeightLbl" Content="{DynamicResource obj_Height}" HorizontalAlignment="Left" Margin="305,30,0,0" VerticalAlignment="Top"/>
         <mah:NumericUpDown x:Name="WidthUpDn" HorizontalAlignment="Left" Height="22" Margin="356,6,0,0"  VerticalAlignment="Top" Width="102" Culture="ru-RU" DecimalPointCorrection="Number" mah:TextBoxHelper.WatermarkTrimming="CharacterEllipsis"/>
         <mah:NumericUpDown x:Name="HeightUpDn" HorizontalAlignment="Left" Height="22" Margin="356,32,0,0"  VerticalAlignment="Top" Width="102" DecimalPointCorrection="Number" />
+        <Label x:Name="label_Copy1" Content="Z:" HorizontalAlignment="Left" Margin="72,56,0,0" VerticalAlignment="Top"/>
+        <mah:NumericUpDown x:Name="ZUpDn" HorizontalAlignment="Left" Height="22" Margin="91,58,0,0"  VerticalAlignment="Top" Width="102"/>
+        <Label x:Name="HeightLbl_Copy" Content="{DynamicResource obj_Deep}" HorizontalAlignment="Left" Margin="305,56,0,0" VerticalAlignment="Top"/>
+        <mah:NumericUpDown x:Name="DeepUpDn" HorizontalAlignment="Left" Height="22" Margin="356,58,0,0"  VerticalAlignment="Top" Width="102" DecimalPointCorrection="Number" />
+        <mah:NumericUpDown x:Name="AngleZUpDn" HorizontalAlignment="Left" Height="22" Margin="196,57,0,0"  VerticalAlignment="Top" Width="104" Culture="ru-RU" />
+        <mah:NumericUpDown x:Name="AngleXUpDn" HorizontalAlignment="Left" Height="22" Margin="196,6,0,0"  VerticalAlignment="Top" Width="104" Culture="ru-RU" />
 
     </Grid>
 </UserControl>

@@ -13,6 +13,7 @@ using System.ComponentModel;
 using MonchaCadViewer.Interface;
 using System.Runtime.CompilerServices;
 using System.Windows.Documents;
+using MonchaCadViewer.Panels;
 
 namespace MonchaCadViewer.CanvasObj
 {
@@ -206,13 +207,13 @@ namespace MonchaCadViewer.CanvasObj
             else if (this.MouseAction == MouseAction.Rectangle)
             {
                 Point point = e.GetPosition(this);
-                CadRectangle cadRectangle = new CadRectangle(new LPoint3D(point), new LPoint3D(point), true);
+                CadRectangle cadRectangle = new CadRectangle(new LPoint3D(point, MonchaHub.Size), new LPoint3D(point, MonchaHub.Size), true);
                 this.Add(cadRectangle);
 
             }
             else if (this.mouseAction == MouseAction.Mask)
             {
-                LQube lRect = new LQube(new LPoint3D(e.GetPosition(this)), new LPoint3D(e.GetPosition(this)));
+                LQube lRect = new LQube(new LPoint3D(e.GetPosition(this), MonchaHub.Size), new LPoint3D(e.GetPosition(this), MonchaHub.Size));
                 CadRectangle Maskrectangle = new CadRectangle(lRect, true);
                 this.Add(Maskrectangle);
                 this.Masks.Add(lRect);
@@ -253,15 +254,17 @@ namespace MonchaCadViewer.CanvasObj
         /// <param name="mousemove">add mouse event</param>
         public void DrawContour(CadObject obj, bool Clear)
         {
-            if (Clear == true) this.Clear();
+            this.Dispatcher.BeginInvoke(new Action(() => { 
+                if (Clear == true) this.Clear();
 
-            if (obj is CadObject cadObject)
-            {
-                cadObject.MouseMove += CadObject_MouseMove;
-                cadObject.MouseLeave += CadObject_MouseLeave;
-            }
+                if (obj is CadObject cadObject)
+                {
+                    cadObject.MouseMove += CadObject_MouseMove;
+                    cadObject.MouseLeave += CadObject_MouseLeave;
+                }
 
-            this.Add(obj);
+                this.Add(obj);
+            }));
         }
 
         private void CadObject_MouseLeave(object sender, MouseEventArgs e)
@@ -408,29 +411,37 @@ namespace MonchaCadViewer.CanvasObj
         /// <param name="obj"></param>
         public void Add(FrameworkElement obj)
         {
-            if (this.Children.Equals(obj) == false)
+            this.Dispatcher.BeginInvoke(new Action(() =>
             {
-                if (obj is CadObject cadObject)
+                if (this.Children.Equals(obj) == false)
                 {
-                    cadObject.Selected += CadObject_Selected;
-                    cadObject.OnObject += CadObject_OnObject1;
-                    cadObject.Updated += CadObject_Updated;
-                    cadObject.Removed += CadObject_Removed;
-                }
+                    if (obj is CadObject cadObject)
+                    {
+                        cadObject.Selected += CadObject_Selected;
+                        cadObject.OnObject += CadObject_OnObject1;
+                        cadObject.Updated += CadObject_Updated;
+                        cadObject.Removed += CadObject_Removed;
+                    }
 
-                this.Children.Add(obj);
-            }
-            UpdateProjection?.Invoke(this, null);
+                    this.Children.Add(obj);
+                }
+                UpdateProjection?.Invoke(this, null);
+            }));
         }
 
-        public void AddRange(List<FrameworkElement> frameworkElements, bool Clear)
+        public async void AddRange(List<FrameworkElement> frameworkElements, bool Clear)
         {
+            this.Dispatcher.BeginInvoke(new Action(()=> { 
             if (Clear == true) this.Clear();
 
-            foreach (FrameworkElement frameworkElement in frameworkElements)
+            ProgressPanel.SetProgressBar(0, frameworkElements.Count, "Добавляем");
+            for (int i = 0; i < frameworkElements.Count; i += 1)
             {
-                this.Add(frameworkElement);
+                this.Add(frameworkElements[i]);
+                ProgressPanel.SetProgressBar(i, frameworkElements.Count, $"{i}/{frameworkElements.Count}");
             }
+            ProgressPanel.End();
+            }));
         }
 
         private void CadObject_Removed(object sender, CadObject e) => RemoveChildren((FrameworkElement)sender);

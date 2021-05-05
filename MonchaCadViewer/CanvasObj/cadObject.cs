@@ -32,7 +32,7 @@ namespace MonchaCadViewer.CanvasObj
         public virtual Pen myPen { 
             get
             {
-                double thinkess = MonchaHub.GetThinkess / 3d / this.Scale.ScaleX * Math.Max(this.ScaleX, this.ScaleY);
+                double thinkess = MonchaHub.GetThinkess / 3d / Math.Abs(this.Scale.ScaleX * Math.Max(this.ScaleX, this.ScaleY));
                 thinkess = thinkess <= 0 ? 1 : thinkess;
 
                 if (this.IsMouseOver == true)
@@ -404,7 +404,8 @@ namespace MonchaCadViewer.CanvasObj
             {
                 if (Keyboard.Modifiers == ModifierKeys.Alt) RotateAxis(AxisAngleY, "AngleY");
                 else if (Keyboard.Modifiers == (ModifierKeys.Alt | ModifierKeys.Shift)) RotateAxis(AxisAngleX, "AngleX");
-                else if (Keyboard.Modifiers == ModifierKeys.None) RotateAxis(AxisAngleZ, "AngleZ");
+                else if (Keyboard.Modifiers == ModifierKeys.None ||
+                    Keyboard.Modifiers == ModifierKeys.Shift) RotateAxis(AxisAngleZ, "AngleZ");
             }
 
             OnPropertyChanged();

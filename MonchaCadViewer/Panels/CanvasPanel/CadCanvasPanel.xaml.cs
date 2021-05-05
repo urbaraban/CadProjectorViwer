@@ -155,8 +155,14 @@ namespace MonchaCadViewer.Panels.CanvasPanel
 
         internal void Remove(object sender)
         {
-            if (sender is CadObject cadObject) 
-                cadObject.Remove();
+            if (sender is CadObjectsGroup cadGeometries)
+            {
+                foreach (CadObject cadObject in cadGeometries)
+                {
+                    cadObject.Remove();
+                }
+            } 
+                
             else
                 this.Canvas.RemoveChildren((FrameworkElement)sender);
         }

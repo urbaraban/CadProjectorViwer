@@ -12,7 +12,10 @@ using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using System.Windows.Media.Media3D;
 using System.Windows.Navigation;
+using ToGeometryConverter;
+using AppSt = MonchaCadViewer.Properties.Settings;
 
 namespace MonchaCadViewer.Panels
 {
@@ -51,14 +54,17 @@ namespace MonchaCadViewer.Panels
 
         private CadCanvas cadCanvas;
 
+        private string filepath = string.Empty;
+
         public string FileName => cadObject.Name;
 
-        public ScrollPanelItem(CadObject cadObject)
+        public ScrollPanelItem(CadObject cadObject, string Filepath)
         {
             InitializeComponent();
 
             this.Width = this.Height;
             this.NameLabel.Content = cadObject.Name;
+            this.filepath = Filepath;
 
             Viewbox _viewbox = new Viewbox();
             _viewbox.Stretch = Stretch.Uniform;
@@ -107,6 +113,7 @@ namespace MonchaCadViewer.Panels
                         ProgressPanel.SetProgressBar(i, cadGeometries.Count, $"{i}/{cadGeometries.Count}");
                 }
                 ProgressPanel.End();
+                Selected?.Invoke(this, this.IsSelected);
             }
         }
 
@@ -167,6 +174,22 @@ namespace MonchaCadViewer.Panels
         private void SolvedToggle_Checked(object sender, RoutedEventArgs e)
         {
             this.IsSolved = SolvedToggle.IsChecked.Value;
+        }
+
+        private void RefreshBtn_Click(object sender, RoutedEventArgs e) => Refresh();
+
+        public async void Refresh()
+        {
+            if (this.cadObject is CadObjectsGroup geometries)
+            {
+                geometries.gCElements = await ToGC.Get(this.filepath, MonchaHub.ProjectionSetting.PointStep.MX);
+            }
+            else
+            {
+                this.DataContext =
+                    new CadObjectsGroup(
+                        await ToGC.Get(this.filepath, MonchaHub.ProjectionSetting.PointStep.MX), this.Name);
+            }
         }
     }
 }

@@ -590,31 +590,47 @@ namespace MonchaCadViewer.CanvasObj
                 }*/
 
                 drawingContext.DrawGeometry(myBack, myPen, GetGeometry);
+                if (this.IsSelected == true) 
+                {
+                    //Left
+                    DrawSize(drawingContext, 
+                        new Point(0, GetGeometry.Bounds.Y + GetGeometry.Bounds.Height / 2), 
+                        new Point(GetGeometry.Bounds.X, GetGeometry.Bounds.Y + GetGeometry.Bounds.Height / 2));
+                    //Right
+                    DrawSize(drawingContext,
+                        new Point(MonchaHub.Size.MX, GetGeometry.Bounds.Y + GetGeometry.Bounds.Height / 2),
+                        new Point(GetGeometry.Bounds.X + GetGeometry.Bounds.Width, GetGeometry.Bounds.Y + GetGeometry.Bounds.Height / 2));
+                    //Top
+                    DrawSize(drawingContext,
+                        new Point(GetGeometry.Bounds.X + GetGeometry.Bounds.Width / 2, 0),
+                        new Point(GetGeometry.Bounds.X + GetGeometry.Bounds.Width / 2, GetGeometry.Bounds.Y));
+                    //Down
+                    DrawSize(drawingContext,
+                        new Point(GetGeometry.Bounds.X + GetGeometry.Bounds.Width / 2, MonchaHub.Size.MY),
+                        new Point(GetGeometry.Bounds.X + GetGeometry.Bounds.Width / 2, GetGeometry.Bounds.Y + GetGeometry.Bounds.Height));
+                }
             }
         }
 
-       /* protected override void OnRender(DrawingContext drawingContext)
+        protected void DrawSize(DrawingContext drawingContext, Point point1, Point point2)
         {
-            drawingContext.PushTransform(this.Translate);
+            double thinkess = MonchaHub.GetThinkess / 3d / Math.Abs(this.Scale.ScaleX * Math.Max(this.ScaleX, this.ScaleY));
+            thinkess = thinkess <= 0 ? 1 : thinkess;
 
-            if (ShowName == true)
-            {
-                drawingContext.DrawText(new FormattedText($"{(this.Name != string.Empty ? this.Name.Substring(0, 4) : string.Empty)}:{ProjectionSetting.Distance}", new System.Globalization.CultureInfo("ru-RU"), FlowDirection.LeftToRight,
-                new Typeface("Segoe UI"), (int)MonchaHub.GetThinkess * 3, Brushes.Gray), new Point(myGeometry.Bounds.X + myGeometry.Bounds.Width / 2, myGeometry.Bounds.Y + myGeometry.Bounds.Height / 2));
-            }
-            drawingContext.PushTransform(this.Rotate);
+            drawingContext.DrawLine(new Pen(Brushes.DarkGray, thinkess), point1, point2);
 
-            drawingContext.PushTransform(new ScaleTransform()
-            {
-                ScaleX = this.Scale.ScaleX * this.ProjectionSetting.GetProportion,
-                ScaleY = this.Scale.ScaleY * this.ProjectionSetting.GetProportion,
-                CenterX = this.Scale.CenterX,
-                CenterY = this.Scale.CenterY
-            });
-            
-            drawingContext.DrawGeometry(myBack, myPen, myGeometry);
-            //drawingContext.DrawRectangle(myBack, myPen, myGeometry.Bounds);
+            Vector vector = point1 - point2;
+
+            drawingContext.DrawText(
+                new FormattedText(Math.Round(vector.Length, 1).ToString(),
+                new System.Globalization.CultureInfo("ru-RU"), 
+                FlowDirection.LeftToRight,
+                    new Typeface("Segoe UI"), 
+                    (int)MonchaHub.GetThinkess * 3,
+                    Brushes.Gray), 
+                new Point((point1.X + point2.X)/2, (point1.Y + point2.Y) / 2));
+
         }
-       */
+
     }
 }

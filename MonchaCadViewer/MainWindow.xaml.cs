@@ -31,6 +31,10 @@ using ToGeometryConverter.Object;
 using System.Threading.Tasks;
 using ToGeometryConverter.Object.Elements;
 using ToGeometryConverter.Format.ILDA;
+using System.Text;
+using System.Net.Sockets;
+using System.Net;
+using MonchaCadViewer.Listeners;
 
 namespace MonchaCadViewer
 {
@@ -40,12 +44,11 @@ namespace MonchaCadViewer
     public partial class MainWindow : Window
     {
         private static Dispatcher dispatcher = System.Windows.Application.Current.Dispatcher;
-
         private string qrpath = string.Empty;
 
         private KmpsAppl kmpsAppl;
         private bool inverseToggle = true;
-        //private DotShape[,] BaseMeshRectangles;
+        private UdpLaserListener udpLaserListener;
 
         public MainWindow()
         {
@@ -314,22 +317,20 @@ namespace MonchaCadViewer
             else
             {
 
-                   GCCollection _actualFrames = ToGC.Get(filename, MonchaHub.ProjectionSetting.PointStep.MX);
+                GCCollection _actualFrames = await ToGC.Get(filename, MonchaHub.ProjectionSetting.PointStep.MX);
 
-                   if (_actualFrames == null)
-                   {
-                       return;
-                   }
-                   else
-                   {
-                       AppSt.Default.stg_last_file_path = filename;
-                       AppSt.Default.Save();
-                   }
-
-                   ContourScrollPanel.Add(false, _actualFrames, filename.Split('\\').Last());
-
+                if (_actualFrames == null)
+                {
+                    return;
+                }
+                else
+                {
+                    AppSt.Default.stg_last_file_path = filename;
+                    AppSt.Default.Save();
+                }
+                ContourScrollPanel.Add(false, _actualFrames, filename);
             }
-          
+
         }
        
 
@@ -368,9 +369,7 @@ namespace MonchaCadViewer
 
         private async void ReloadBtn_ClickAsync(object sender, RoutedEventArgs e)
         {
-            if (AppSt.Default.stg_last_file_path != string.Empty)
-                if (File.Exists(AppSt.Default.stg_last_file_path))
-                    await OpenFile(AppSt.Default.stg_last_file_path);
+            ContourScrollPanel.Refresh();
         }
 
         private void MashMultiplierUpDn_ValueIncremented(object sender, NumericUpDownChangedRoutedEventArgs args)
@@ -868,6 +867,61 @@ namespace MonchaCadViewer
 
         private void Line_Click(object sender, RoutedEventArgs e) => MainCanvas.Canvas.MouseAction = CanvasObj.MouseAction.Line;
 
+        private void TcpListenBtn_Click(object sender, RoutedEventArgs e)
+        {
+            if (UdpLaserListener.Status == false)
+            {
+                if (this.udpLaserListener == null)
+                {
+                    this.udpLaserListener = new UdpLaserListener(11000);
+                    this.udpLaserListener.IncomingData += UdpLaserListener_IncomingData;
+                }
+                udpLaserListener.Run();
+            }
+            else UdpLaserListener.Status = false;
+        }
+
+        private void UdpLaserListener_IncomingData(object sender, byte[] e)
+        {
+            int position = 0;
+
+            if (e != null)
+            {
+                GCCollection gCElements = new GCCollection();
+
+                FileParser fileParser = new FileParser(e);
+
+                string hdr = fileParser.parseString(4);
+                if (hdr.Equals("2CUT") == false)
+                {
+                    return;
+                }
+
+                //Bytes 4-6: Reserved
+                fileParser.Skip(3);
+
+                int PathCount = fileParser.parseShort();
+
+                for (int p = 0; p < PathCount; p++)
+                {
+                    PointsElement points = new PointsElement();
+                    points.IsClosed = fileParser.parseByte() == 0 ? false : true;
+
+                    int pointsCount = fileParser.parseShort();
+
+                    for (int i = 0; i < pointsCount; i++)
+                    {
+                        points.Add(new GCPoint3D(fileParser.parseShort(), -fileParser.parseShort(), 0));
+                    }
+                    if (points.Points.Count > 0)
+                    {
+                        gCElements.Add(points);
+                    }
+                }
+
+                ContourScrollPanel.Add(false, gCElements, "Ethernet");
+            }
+        }
     }
 
 }

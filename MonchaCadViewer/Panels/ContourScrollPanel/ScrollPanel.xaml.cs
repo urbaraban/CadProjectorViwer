@@ -28,35 +28,42 @@ namespace MonchaCadViewer.Panels
             InitializeComponent();
         }
 
-        public void Add(bool Clear, GCCollection Objects, string Name, bool show = true)
+        public void Add(bool Clear, GCCollection Objects, string Filepath, bool show = true)
         {
-            Dispatcher.Invoke(() =>
+            if (Clear)
             {
-                if (Clear)
+                Dispatcher.Invoke(() =>
                 {
                     FrameStack.Children.Clear();
-                }
-                CadObjectsGroup cadObjectsGroup = new CadObjectsGroup(Objects, Name);
+                });
+            }
+            CadObjectsGroup cadObjectsGroup = new CadObjectsGroup(Objects, Filepath.Split('\\').Last()) ;
 
-                foreach (ScrollPanelItem panelItem in this.FrameStack.Children)
+            foreach (ScrollPanelItem panelItem in this.FrameStack.Children)
+            {
+                if (panelItem.FileName == Filepath.Split('\\').Last())
                 {
-                    if (panelItem.FileName == Name)
+                    panelItem.DataContext = cadObjectsGroup;
+                    if (panelItem.IsSelected == true)
                     {
-                        panelItem.DataContext = cadObjectsGroup;
-                        return;
+                        SelectedFrame?.Invoke(panelItem.cadObject, true);
                     }
+                    return;
                 }
+            }
 
-                ScrollPanelItem scrollPanelItem = new ScrollPanelItem(cadObjectsGroup);
-                scrollPanelItem.Selected += ScrollPanelItem_Selected;
-                scrollPanelItem.Removed += ScrollPanelItem_Removed;
+            ScrollPanelItem scrollPanelItem = new ScrollPanelItem(cadObjectsGroup, Filepath);
+            scrollPanelItem.Selected += ScrollPanelItem_Selected;
+            scrollPanelItem.Removed += ScrollPanelItem_Removed;
+            Dispatcher.Invoke(() =>
+            {
                 this.FrameStack.Children.Add(scrollPanelItem);
-
                 if (show == true)
                 {
                     scrollPanelItem.IsSelected = true;
                 }
             });
+
         }
 
         private void ScrollPanelItem_Removed(object sender, EventArgs e)
@@ -107,6 +114,14 @@ namespace MonchaCadViewer.Panels
             foreach (ScrollPanelItem scrollPanel in FrameStack.Children)
             {
                 scrollPanel.IsSolved = true;
+            }
+        }
+
+        public void Refresh()
+        {
+            foreach (ScrollPanelItem scrollPanel in FrameStack.Children)
+            {
+                scrollPanel.Refresh();
             }
         }
     }

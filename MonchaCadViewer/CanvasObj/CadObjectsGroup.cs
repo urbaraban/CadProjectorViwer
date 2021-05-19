@@ -21,8 +21,37 @@ namespace MonchaCadViewer.CanvasObj
 
         private bool Opened = false;
 
-        private GCCollection gCElements;
+        public GCCollection gCElements 
+        {
+            get => elements;
+            set
+            {
+                this.cadObjects.Clear();
+                elements = value;
 
+                foreach (IGCObject gC in elements)
+                {
+                    this.cadObjects.Add(new CadGeometry(gC, true)
+                    {
+                        TransformGroup = this.TransformGroup,
+                        Name = this.Name,
+                    });
+                }
+
+                if (AppSt.Default.stg_show_name == true)
+                    {
+                        this.cadObjects.Add(new CadGeometry(
+                            new ToGeometryConverter.Object.Elements.TextElement(Name, MonchaHub.GetThinkess,
+                            new Point3D(0, 0, 0)),
+                            true)
+                        {
+                            TransformGroup = this.TransformGroup,
+                            Name = this.Name,
+                        });
+                    }
+            }
+        }
+        private GCCollection elements;
         public override Geometry GetGeometry
         {
             get
@@ -41,32 +70,8 @@ namespace MonchaCadViewer.CanvasObj
         public CadObjectsGroup(GCCollection gcCollection, string Name)
         {
             this.Name = Name;
-            this.gCElements = gcCollection;
-
             this.UpdateTransform(null, true, gcCollection.Bounds);
-
-            Transform3DGroup transform3DGroup = this.TransformGroup;
-
-            foreach (IGCObject gC in gcCollection)
-            {
-                this.cadObjects.Add(new CadGeometry(gC, true)
-                {
-                    TransformGroup = transform3DGroup,
-                    Name = this.Name,
-                });
-            }
-
-            if (AppSt.Default.stg_show_name == true)
-            {
-                this.cadObjects.Add(new CadGeometry(
-                    new ToGeometryConverter.Object.Elements.TextElement(Name, MonchaHub.GetThinkess,
-                    new Point3D(0, 0, 0)),
-                    true)
-                {
-                    TransformGroup = transform3DGroup,
-                    Name = this.Name,
-                });
-            }
+            this.gCElements = gcCollection;
         }
 
         #region IList<CadGeometry>

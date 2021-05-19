@@ -413,7 +413,7 @@ namespace MonchaCadViewer.CanvasObj
         {
             this.Dispatcher.BeginInvoke(new Action(() =>
             {
-                if (this.Children.Equals(obj) == false)
+                if (this.Children.Contains(obj) == false)
                 {
                     if (obj is CadObject cadObject)
                     {

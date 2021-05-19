@@ -281,7 +281,11 @@
                                             <Button x:Name="WorkFolderSelect" Content="{DynamicResource m_Browse}" HorizontalAlignment="Left" Margin="124,43,0,0" VerticalAlignment="Top" Width="94" Height="26" Click="WorkFolderSelect_Click"/>
                                         </Grid>
                                     </TabItem>
-
+                                    <TabItem Header="Ethernet">
+                                        <Grid>
+                                            <Button x:Name="TcpListenBtn" Content="Listen" Height="50" VerticalAlignment="Top" Margin="10,10,10,0" Click="TcpListenBtn_Click"/>
+                                        </Grid>
+                                    </TabItem>
                                 </TabControl>
 
                             </Grid>

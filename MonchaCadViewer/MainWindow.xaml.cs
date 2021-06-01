@@ -888,7 +888,6 @@ namespace MonchaCadViewer
             if (e != null)
             {
                 GCCollection gCElements = new GCCollection();
-
                 FileParser fileParser = new FileParser(e);
 
                 string hdr = fileParser.parseString(4);

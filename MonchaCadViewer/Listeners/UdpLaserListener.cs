@@ -36,7 +36,6 @@ namespace MonchaCadViewer.Listeners
             {
                 this.udpClient = new UdpClient(port);
                 this.groupEP = new IPEndPoint(IPAddress.Loopback.Address, port);
-
                 try
                 {
                     byte[] bytes = await Task<byte[]>.Factory.StartNew(() =>
@@ -49,6 +48,7 @@ namespace MonchaCadViewer.Listeners
                 catch (SocketException er)
                 {
                     Console.WriteLine(er);
+                    UdpLaserListener.Status = false;
                 }
                 finally
                 {

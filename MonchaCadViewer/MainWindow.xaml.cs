@@ -48,7 +48,21 @@ namespace MonchaCadViewer
 
         private KmpsAppl kmpsAppl;
         private bool inverseToggle = true;
-        private UdpLaserListener udpLaserListener;
+        private UdpLaserListener UDPLaserListener
+        {
+            get => this._udpLaserListener;
+            set
+            {
+                if (this._udpLaserListener != null)
+                {
+                    this._udpLaserListener.IncomingData -= UdpLaserListener_IncomingData;
+                    UdpLaserListener.Status = false;
+                }
+                this._udpLaserListener = value;
+                this._udpLaserListener.IncomingData += UdpLaserListener_IncomingData;
+            }
+        }
+        private UdpLaserListener _udpLaserListener;
 
         public MainWindow()
         {
@@ -258,7 +272,7 @@ namespace MonchaCadViewer
         private void PlayBtn_Click(object sender, RoutedEventArgs e)
         {
             MonchaHub.CanPlay = !MonchaHub.CanPlay;
-            if (MonchaHub.CanPlay)
+            if (MonchaHub.CanPlay == true)
             {
                 if (MonchaHub.Devices.Count > 0)
                 {
@@ -274,8 +288,8 @@ namespace MonchaCadViewer
             {
                 PlayBtn.Background = Brushes.Yellow;
             }
-
         }
+
 
         private async void OpenBtn_ClickAsync(object sender, EventArgs e)
         {
@@ -869,56 +883,102 @@ namespace MonchaCadViewer
 
         private void TcpListenBtn_Click(object sender, RoutedEventArgs e)
         {
+            UdpListenerRun();
+        }
+
+        private void UdpListenerRun()
+        {
             if (UdpLaserListener.Status == false)
             {
-                if (this.udpLaserListener == null)
-                {
-                    this.udpLaserListener = new UdpLaserListener(11000);
-                    this.udpLaserListener.IncomingData += UdpLaserListener_IncomingData;
-                }
-                udpLaserListener.Run();
+                UdpLaserListener.Status = false;
+                this.UDPLaserListener = new UdpLaserListener(AppSt.Default.ether_udp_port);
+                UDPLaserListener.Run();
             }
             else UdpLaserListener.Status = false;
+
+            LogBox.Items.Add($"Status Listener: {UdpLaserListener.Status}");
         }
 
         private void UdpLaserListener_IncomingData(object sender, byte[] e)
         {
+            LogBox.Items.Add($"Incomin Data: {string.Join(string.Empty, e)}");
             int position = 0;
 
             if (e != null)
             {
-                GCCollection gCElements = new GCCollection();
-                FileParser fileParser = new FileParser(e);
-
-                string hdr = fileParser.parseString(4);
-                if (hdr.Equals("2CUT") == false)
+                try
                 {
-                    return;
+                    GCCollection gCElements = new GCCollection();
+                    FileParser fileParser = new FileParser(e);
+
+                    string hdr = fileParser.parseString(4);
+                    if (hdr.Equals("2CUT") == false)
+                    {
+                        return;
+                    }
+
+                    //Bytes 4-6: Reserved
+                    fileParser.Skip(3);
+
+                    int PathCount = fileParser.parseShort();
+
+                    for (int p = 0; p < PathCount; p++)
+                    {
+                        PointsElement points = new PointsElement();
+                        points.IsClosed = fileParser.parseByte() == 0 ? false : true;
+
+                        int pointsCount = fileParser.parseShort();
+
+                        for (int i = 0; i < pointsCount; i++)
+                        {
+                            points.Add(new GCPoint3D(fileParser.parseShort(), -fileParser.parseShort(), 0));
+                        }
+                        if (points.Points.Count > 0)
+                        {
+                            gCElements.Add(points);
+                        }
+                    }
+                    
+                    LogBox.Items.Add($"Incomin Data is succeful");
+                    if (gCElements.Count > 0)
+                    {
+                        MonchaHub.Play();
+                        ContourScrollPanel.Add(false, gCElements, "Ethernet");
+                    }
+                    else
+                    {
+                        MonchaHub.CanPlay = false;
+                    }
                 }
-
-                //Bytes 4-6: Reserved
-                fileParser.Skip(3);
-
-                int PathCount = fileParser.parseShort();
-
-                for (int p = 0; p < PathCount; p++)
+                catch
                 {
-                    PointsElement points = new PointsElement();
-                    points.IsClosed = fileParser.parseByte() == 0 ? false : true;
-
-                    int pointsCount = fileParser.parseShort();
-
-                    for (int i = 0; i < pointsCount; i++)
-                    {
-                        points.Add(new GCPoint3D(fileParser.parseShort(), -fileParser.parseShort(), 0));
-                    }
-                    if (points.Points.Count > 0)
-                    {
-                        gCElements.Add(points);
-                    }
+                    LogBox.Items.Add($"Incoming bullshit");
+                    Console.WriteLine("Incoming bullshit");
                 }
+            }
+        }
 
-                ContourScrollPanel.Add(false, gCElements, "Ethernet");
+        private void ethernetToggle_Toggled(object sender, RoutedEventArgs e)
+        {
+            if (sender is ToggleSwitch toggle)
+            {
+                if (toggle.IsOn != UdpLaserListener.Status)
+                    UdpListenerRun();
+            }
+            
+        }
+
+        private void EdgeUpDn_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double?> e)
+        {
+            AppSt.Default.ether_udp_port = (int)EdgeUpDn.Value.Value;
+            AppSt.Default.Save();
+        }
+
+        private void AttachRadioButton_Checked(object sender, RoutedEventArgs e)
+        {
+            if (sender is RadioButton radioButton && radioButton.DataContext != null)
+            {
+                AppSt.Default.stg_default_position = radioButton.DataContext.ToString();
             }
         }
     }

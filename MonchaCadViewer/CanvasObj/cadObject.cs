@@ -456,6 +456,10 @@ namespace MonchaCadViewer.CanvasObj
 
             if (resetPosition == true)
             {
+                if (AppSt.Default.stg_default_position == 1)
+                {
+
+                }
                 this.X = -(Bounds.X + Bounds.Width / 2) + MonchaHub.Size.MX / 2;
                 this.Y = -(Bounds.Y + Bounds.Height / 2) + MonchaHub.Size.MY / 2;
                 this._mirror = AppSt.Default.default_mirror;

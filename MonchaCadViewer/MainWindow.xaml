@@ -48,6 +48,7 @@
                     <RowDefinition Height="577*"/>
                     <RowDefinition Height="37*"/>
                 </Grid.RowDefinitions>
+
                 <DockPanel x:Name="TopBar" Grid.ColumnSpan="3" Margin="0,0,0,0" Background="{DynamicResource {x:Static SystemColors.MenuBrushKey}}" MouseLeftButtonDown="TopBar_MouseLeftButtonDown" VerticalAlignment="Top" LastChildFill="False" Height="29">
                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" DockPanel.Dock="Left">
                         <Menu>
@@ -81,6 +82,8 @@
                         </StackPanel>
                     </StackPanel>
                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" DockPanel.Dock="Right" Margin="5,0">
+                        <Controls:ToggleSwitch x:Name="ethernetToggle" VerticalAlignment="Center"  Grid.Column="2" Controls:HeaderedControlHelper.HeaderHorizontalContentAlignment="Right" Controls:HeaderedControlHelper.HeaderVerticalContentAlignment="Center" ContentDirection="LeftToRight" Width="65" Margin="0,4,0,5" Toggled="ethernetToggle_Toggled"/>
+                        <Label Content="Ethernet" />
                         <Button x:Name="MinimizedBtn" FontFamily="Segoe MDL2 Assets" Content="&#xE921;" Width="25" Height="25" Margin="2" Click="MinimizedBtn_Click">
 
                         </Button>
@@ -91,7 +94,9 @@
 
                         </Button>
                     </StackPanel>
+
                 </DockPanel>
+
                 <DockPanel Grid.ColumnSpan="3" Grid.Row="1">
                     <Grid>
                         <Grid.ColumnDefinitions>
@@ -241,7 +246,7 @@
                                                     <Properties:Settings/>
                                                 </CheckBox.DataContext>
                                             </CheckBox>
-                                            <Button x:Name="SaveObjStgBtn" Content="{DynamicResource m_Save}" HorizontalAlignment="Left" Margin="10,266,0,0" VerticalAlignment="Top" Width="248" Grid.ColumnSpan="2" Height="31" Click="SaveObjStgBtn_Click"/>
+                                            <Button x:Name="SaveObjStgBtn" Content="{DynamicResource m_Save}" HorizontalAlignment="Left" Margin="10,374,0,0" VerticalAlignment="Top" Width="248" Grid.ColumnSpan="2" Height="31" Click="SaveObjStgBtn_Click"/>
                                             <CheckBox x:Name="ScalePercentCheck" Content="{DynamicResource setting_percent}" HorizontalAlignment="Left" Margin="5,186,0,0" VerticalAlignment="Top"  IsChecked="{Binding stg_scale_percent, Mode=TwoWay}" Grid.Column="1" Width="147">
                                                 <CheckBox.DataContext>
                                                     <Properties:Settings/>
@@ -262,6 +267,16 @@
                                                     <Properties:Settings/>
                                                 </CheckBox.DataContext>
                                             </CheckBox>
+                                            <RadioButton Grid.Column="1" HorizontalAlignment="Left" Margin="5,284,0,0" VerticalAlignment="Top" DataContext="Top%Left" Checked="AttachRadioButton_Checked"/>
+                                            <RadioButton Grid.Column="1" HorizontalAlignment="Left" Margin="25,284,0,0" VerticalAlignment="Top" DataContext="Top$Middle" Checked="AttachRadioButton_Checked"/>
+                                            <RadioButton Grid.Column="1" HorizontalAlignment="Left" Margin="45,284,0,0" VerticalAlignment="Top" DataContext="Top%Right" Checked="AttachRadioButton_Checked"/>
+                                            <RadioButton Grid.Column="1" HorizontalAlignment="Left" Margin="45,303,0,0" VerticalAlignment="Top" DataContext="Middle%Right" Checked="AttachRadioButton_Checked"/>
+                                            <RadioButton Grid.Column="1" HorizontalAlignment="Left" Margin="25,303,0,0" VerticalAlignment="Top" DataContext="Middle%Middle" Checked="AttachRadioButton_Checked"/>
+                                            <RadioButton Grid.Column="1" HorizontalAlignment="Left" Margin="5,303,0,0" VerticalAlignment="Top" DataContext="Middle%Left" Checked="AttachRadioButton_Checked"/>
+                                            <RadioButton Grid.Column="1" HorizontalAlignment="Left" Margin="5,322,0,0" VerticalAlignment="Top" IsChecked="True" DataContext="Down%Left" Checked="AttachRadioButton_Checked"/>
+                                            <RadioButton Grid.Column="1" HorizontalAlignment="Left" Margin="25,322,0,0" VerticalAlignment="Top" DataContext="Down%Middle" Checked="AttachRadioButton_Checked"/>
+                                            <RadioButton Grid.Column="1" HorizontalAlignment="Left" Margin="45,322,0,0" VerticalAlignment="Top" DataContext="Down%Right" Checked="AttachRadioButton_Checked"/>
+                                            <Label x:Name="label2_Copy3" Content="{DynamicResource setting_attach}" HorizontalAlignment="Left" Margin="10,298,0,0" VerticalAlignment="Top" Height="26" Width="86"/>
 
                                         </Grid>
                                     </TabItem>
@@ -283,9 +298,24 @@
                                     </TabItem>
                                     <TabItem Header="Ethernet">
                                         <Grid>
-                                            <Button x:Name="TcpListenBtn" Content="Listen" Height="50" VerticalAlignment="Top" Margin="10,10,10,0" Click="TcpListenBtn_Click"/>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="59*"/>
+                                                <ColumnDefinition Width="75*"/>
+                                            </Grid.ColumnDefinitions>
+                                            <Grid.RowDefinitions>
+                                                <RowDefinition Height="42*"/>
+                                                <RowDefinition Height="449*"/>
+                                            </Grid.RowDefinitions>
+                                            <Controls:NumericUpDown x:Name="EdgeUpDn" Margin="5,10,10,6" Value="{Binding ether_udp_port}" Maximum="49151"  Minimum="1024" Background="White" Height="26" Grid.Column="1" ValueChanged="EdgeUpDn_ValueChanged" >
+                                                <Controls:NumericUpDown.DataContext>
+                                                    <Properties:Settings/>
+                                                </Controls:NumericUpDown.DataContext>
+                                            </Controls:NumericUpDown>
+                                            <Label x:Name="label1" Content="UDP Port:" Margin="10,10,0,0" HorizontalAlignment="Left" Width="108"/>
+                                            <Button x:Name="TcpListenBtn" Content="Listen" Height="50" VerticalAlignment="Top" Margin="10,11,10,0" Click="TcpListenBtn_Click" Grid.Row="1" Grid.ColumnSpan="2"/>
                                         </Grid>
                                     </TabItem>
+
                                 </TabControl>
 
                             </Grid>

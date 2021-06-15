@@ -306,7 +306,7 @@
                                                 <RowDefinition Height="42*"/>
                                                 <RowDefinition Height="449*"/>
                                             </Grid.RowDefinitions>
-                                            <Controls:NumericUpDown x:Name="EdgeUpDn" Margin="5,10,10,6" Value="{Binding ether_udp_port}" Maximum="49151"  Minimum="1024" Background="White" Height="26" Grid.Column="1" ValueChanged="EdgeUpDn_ValueChanged" >
+                                            <Controls:NumericUpDown x:Name="PortUpDn" Margin="5,10,10,6" Value="{Binding ether_udp_port}" Maximum="49151"  Minimum="1024" Background="White" Height="26" Grid.Column="1" ValueChanged="PortUpDn_ValueChanged" >
                                                 <Controls:NumericUpDown.DataContext>
                                                     <Properties:Settings/>
                                                 </Controls:NumericUpDown.DataContext>

@@ -44,9 +44,13 @@ namespace MonchaCadViewer.Panels
                 if (panelItem.FileName == Filepath.Split('\\').Last())
                 {
                     panelItem.DataContext = cadObjectsGroup;
-                    if (panelItem.IsSelected == true)
+                    if (panelItem.IsSelected == true && Objects.Count > 0)
                     {
                         SelectedFrame?.Invoke(panelItem.cadObject, true);
+                    }
+                    else
+                    {
+                        panelItem.IsSelected = false;
                     }
                     return;
                 }

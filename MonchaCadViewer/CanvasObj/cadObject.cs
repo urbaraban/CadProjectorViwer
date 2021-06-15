@@ -456,12 +456,17 @@ namespace MonchaCadViewer.CanvasObj
 
             if (resetPosition == true)
             {
-                if (AppSt.Default.stg_default_position == 1)
-                {
+                //Tuple1 - vertical, Tuple2 - horizontal
+                Tuple<string, string> position = new Tuple<string, string>(AppSt.Default.stg_default_position.Split('%')[0], AppSt.Default.stg_default_position.Split('%')[1]);
 
-                }
-                this.X = -(Bounds.X + Bounds.Width / 2) + MonchaHub.Size.MX / 2;
-                this.Y = -(Bounds.Y + Bounds.Height / 2) + MonchaHub.Size.MY / 2;
+                if (position.Item2 == "Left") this.X = -Bounds.X + 30 * MonchaHub.Size.M.X;
+                else if (position.Item2 == "Right") this.X = MonchaHub.Size.MX - (Bounds.X + Bounds.Width) - 30 * MonchaHub.Size.M.X;
+                else this.X = MonchaHub.Size.MX / 2 - (Bounds.X + Bounds.Width / 2);
+
+                if (position.Item1 == "Down") this.Y = MonchaHub.Size.MY - (Bounds.Y + Bounds.Height) - 30 * MonchaHub.Size.M.Y;
+                else if (position.Item1 == "Top") this.Y = -Bounds.Y + 30 * MonchaHub.Size.M.X;
+                else this.Y = MonchaHub.Size.MY / 2 - (Bounds.Y + Bounds.Height / 2);
+
                 this._mirror = AppSt.Default.default_mirror;
                 Scale.ScaleX = AppSt.Default.default_scale_x / 100 * (AppSt.Default.default_mirror == true ? -1 : 1);
                 if (this.ScaleX < 0) this.Mirror = true;

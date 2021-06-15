@@ -182,13 +182,13 @@ namespace MonchaCadViewer.Panels
         {
             if (this.cadObject is CadObjectsGroup geometries)
             {
-                geometries.gCElements = await ToGC.Get(this.filepath, MonchaHub.ProjectionSetting.PointStep.MX);
+                geometries.gCElements = await ToGC.GetAsync(this.filepath, MonchaHub.ProjectionSetting.PointStep.MX);
             }
             else
             {
                 this.DataContext =
                     new CadObjectsGroup(
-                        await ToGC.Get(this.filepath, MonchaHub.ProjectionSetting.PointStep.MX), this.Name);
+                        await ToGC.GetAsync(this.filepath, MonchaHub.ProjectionSetting.PointStep.MX), this.Name);
             }
         }
     }

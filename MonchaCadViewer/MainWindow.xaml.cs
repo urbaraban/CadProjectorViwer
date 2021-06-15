@@ -34,7 +34,7 @@ using ToGeometryConverter.Format.ILDA;
 using System.Text;
 using System.Net.Sockets;
 using System.Net;
-using MonchaCadViewer.Listeners;
+using ToGeometryConverter.Object.UDP;
 
 namespace MonchaCadViewer
 {
@@ -56,7 +56,7 @@ namespace MonchaCadViewer
                 if (this._udpLaserListener != null)
                 {
                     this._udpLaserListener.IncomingData -= UdpLaserListener_IncomingData;
-                    UdpLaserListener.Status = false;
+                    this._udpLaserListener.Stop();
                 }
                 this._udpLaserListener = value;
                 this._udpLaserListener.IncomingData += UdpLaserListener_IncomingData;
@@ -331,7 +331,7 @@ namespace MonchaCadViewer
             else
             {
 
-                GCCollection _actualFrames = await ToGC.Get(filename, MonchaHub.ProjectionSetting.PointStep.MX);
+                GCCollection _actualFrames = await ToGC.GetAsync(filename, MonchaHub.ProjectionSetting.PointStep.MX);
 
                 if (_actualFrames == null)
                 {
@@ -888,18 +888,17 @@ namespace MonchaCadViewer
 
         private void UdpListenerRun()
         {
-            if (UdpLaserListener.Status == false)
-            {
-                UdpLaserListener.Status = false;
                 this.UDPLaserListener = new UdpLaserListener(AppSt.Default.ether_udp_port);
                 UDPLaserListener.Run();
-            }
-            else UdpLaserListener.Status = false;
 
-            LogBox.Items.Add($"Status Listener: {UdpLaserListener.Status}");
+            LogBox.Items.Add($"Status Listener: {this.UDPLaserListener.Status}");
+        }
+        private void UdpListnerStop()
+        {
+            this.UDPLaserListener.Stop();
         }
 
-        private void UdpLaserListener_IncomingData(object sender, byte[] e)
+        private async void UdpLaserListener_IncomingData(object sender, byte[] e)
         {
             LogBox.Items.Add($"Incomin Data: {string.Join(string.Empty, e)}");
             int position = 0;
@@ -908,42 +907,11 @@ namespace MonchaCadViewer
             {
                 try
                 {
-                    GCCollection gCElements = new GCCollection();
-                    FileParser fileParser = new FileParser(e);
-
-                    string hdr = fileParser.parseString(4);
-                    if (hdr.Equals("2CUT") == false)
-                    {
-                        return;
-                    }
-
-                    //Bytes 4-6: Reserved
-                    fileParser.Skip(3);
-
-                    int PathCount = fileParser.parseShort();
-
-                    for (int p = 0; p < PathCount; p++)
-                    {
-                        PointsElement points = new PointsElement();
-                        points.IsClosed = fileParser.parseByte() == 0 ? false : true;
-
-                        int pointsCount = fileParser.parseShort();
-
-                        for (int i = 0; i < pointsCount; i++)
-                        {
-                            points.Add(new GCPoint3D(fileParser.parseShort(), -fileParser.parseShort(), 0));
-                        }
-                        if (points.Points.Count > 0)
-                        {
-                            gCElements.Add(points);
-                        }
-                    }
-                    
-                    LogBox.Items.Add($"Incomin Data is succeful");
-                    if (gCElements.Count > 0)
+                    GCCollection gCElements = await GCByteReader.Read(e);
+                    if (gCElements != null)
                     {
                         MonchaHub.Play();
-                        ContourScrollPanel.Add(false, gCElements, "Ethernet");
+                        ContourScrollPanel.Add(false, gCElements, gCElements.Name);
                     }
                     else
                     {
@@ -962,15 +930,25 @@ namespace MonchaCadViewer
         {
             if (sender is ToggleSwitch toggle)
             {
-                if (toggle.IsOn != UdpLaserListener.Status)
+                if (this.UDPLaserListener == null)
+                {
                     UdpListenerRun();
+                }
+                else
+                {
+                    if (this.UDPLaserListener.Status == false)
+                    {
+                        UdpListenerRun();
+                    }
+                    else UdpListnerStop();
+                }
             }
             
         }
 
-        private void EdgeUpDn_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double?> e)
+        private void PortUpDn_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double?> e)
         {
-            AppSt.Default.ether_udp_port = (int)EdgeUpDn.Value.Value;
+            AppSt.Default.ether_udp_port = (int)PortUpDn.Value.Value;
             AppSt.Default.Save();
         }
 

@@ -468,13 +468,13 @@ namespace MonchaCadViewer.CanvasObj
             SelectedObject?.Invoke(this, (CadObject)sender);
         }
 
-        public static List<FrameworkElement> GetMesh(MonchaDeviceMesh mesh, MonchaDevice _device, double AnchorSize, bool Render)
+        public static List<FrameworkElement> GetMesh(LDeviceMesh mesh, MonchaDevice _device, double AnchorSize, bool Render)
         {
             if (_device != null)
             {
                 List<FrameworkElement> objects = new List<FrameworkElement>();
 
-                if (mesh == null) mesh = _device.CalculateMesh;
+                if (mesh == null) mesh = _device.SelectMesh;
 
                 for (int i = 0; i < mesh.GetLength(0); i++)
                 {
@@ -489,7 +489,6 @@ namespace MonchaCadViewer.CanvasObj
                             ToolTip = "Позиция: " + i + ":" + j + "\nX: " + mesh[i, j].X + "\n" + "Y: " + mesh[i, j].Y,
                             DataContext = mesh,
                             Render = Render,
-                            MeshType = mesh.MeshType == MeshType.VirtualMesh ? MeshType.BasedMesh : MeshType.NONE
                         });
                     }
                 }

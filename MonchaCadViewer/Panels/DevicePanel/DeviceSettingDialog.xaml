@@ -55,13 +55,17 @@
         <TextBox x:Name="IP4" Height="21" Margin="5,5,5,0" Grid.Row="1" TextWrapping="Wrap" Text="0" VerticalAlignment="Top" Grid.Column="3" TextInput="IP_TextInput" LostFocus="IP_LostFocus"/>
         <Button x:Name="CheckBtn" Grid.ColumnSpan="2" Content="Chek" Grid.Column="1" HorizontalAlignment="Left" Margin="5,5,0,5" Width="86" Click="CheckBtn_Click" LostFocus="IP_LostFocus"/>
         <CheckBox x:Name="CheckLabel" Grid.Column="3" Margin="5" IsEnabled="False"/>
-        <Label x:Name="label_Copy" Content="Lens" Margin="5,10,5,0" Grid.Row="3" Padding="3" VerticalContentAlignment="Center" HorizontalContentAlignment="Center"/>
-        <Controls:NumericUpDown x:Name="XMultUpDn" Margin="5,5,5,0" Value="1" Maximum="2" Minimum="0" Interval="0.01" Background="White" Height="26" VerticalAlignment="Top" Grid.ColumnSpan="2" Grid.Row="4"/>
-        <Rectangle Grid.ColumnSpan="4" Fill="#FF515151" HorizontalAlignment="Left" Height="1" Margin="5,0,0,0" Grid.Row="3" VerticalAlignment="Top" Width="182"/>
-        <Controls:NumericUpDown x:Name="YMultUpDn" Margin="5,5,5,0" Value="1" Maximum="2" Interval="0.01"  Minimum="0" Background="White" Height="26" VerticalAlignment="Top" Grid.ColumnSpan="2" Grid.Row="4" Grid.Column="2"/>
-        <Controls:NumericUpDown x:Name="EdgeUpDn" Margin="5,5,5,0" Value="10" Maximum="100"  Minimum="3" Background="White" Height="26" VerticalAlignment="Top" Grid.ColumnSpan="2" Grid.Row="3" Grid.Column="2" Grid.RowSpan="2"/>
         <Button x:Name="SaveBtn" Grid.ColumnSpan="4" Content="Save" Height="36" Margin="10,0,10,10" Grid.Row="4" VerticalAlignment="Bottom" Click="SaveBtn_Click"/>
-        <Label x:Name="CheckStatLabel" Grid.ColumnSpan="4" Content="Статус" Height="25" Margin="5,0" Grid.Row="2" VerticalAlignment="Top"/>
-
+        
+        <ComboBox x:Name="SelectCombo" Grid.Column="1" Grid.Row="2" Grid.ColumnSpan="2" Margin="5,3"/>
+        <ComboBox x:Name="BaseCombo" Grid.Column="1" Grid.Row="3" Grid.ColumnSpan="2" Margin="5,3"/>
+        <ComboBox x:Name="VirtualCombo" Grid.Column="1" Grid.Row="4" Grid.ColumnSpan="2" Margin="5,4,5,0" Height="24" VerticalAlignment="Top"/>
+        
+        <Label x:Name="label_Copy" Content="Select" Margin="5,3,0,3" Grid.Row="2"/>
+        <Label x:Name="label_Copy1" Content="Base" Margin="5,3,0,3" Grid.Row="3"/>
+        <Label x:Name="label_Copy2" Content="Virtual" Margin="5,4,0,71" Grid.Row="4"/>
+        <Button x:Name="AddSelectBtn" Content="+" Grid.Column="3" HorizontalAlignment="Left" Margin="10,6,0,4" Width="21" Grid.Row="2"/>
+        <Button x:Name="AddBaseBtn" Content="+" Grid.Column="3" HorizontalAlignment="Left" Margin="10,6,0,4" Width="21" Grid.Row="3"/>
+        <Button x:Name="CheckBtn_Copy2" Content="+" Grid.Column="3" HorizontalAlignment="Left" Margin="10,6,0,73" Width="21" Grid.Row="4"/>
     </Grid>
 </Window>

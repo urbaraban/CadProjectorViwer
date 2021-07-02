@@ -37,26 +37,28 @@ namespace MonchaCadViewer.Panels
                     FrameStack.Children.Clear();
                 });
             }
-            CadObjectsGroup cadObjectsGroup = new CadObjectsGroup(Objects, Filepath.Split('\\').Last()) ;
 
             foreach (ScrollPanelItem panelItem in this.FrameStack.Children)
             {
                 if (panelItem.FileName == Filepath.Split('\\').Last())
                 {
-                    panelItem.DataContext = cadObjectsGroup;
-                    if (panelItem.IsSelected == true && Objects.Count > 0)
+                    if (panelItem.DataContext is CadObject cadObject)
                     {
-                        SelectedFrame?.Invoke(panelItem.cadObject, true);
+                        panelItem.DataContext = new CadObjectsGroup(Objects, Filepath.Split('\\').Last(), cadObject.TransformGroup);
+                        if (panelItem.IsSelected == true && Objects.Count > 0)
+                        {
+                            SelectedFrame?.Invoke(panelItem.cadObject, true);
+                        }
+                        else
+                        {
+                            panelItem.IsSelected = false;
+                        }
+                        return;
                     }
-                    else
-                    {
-                        panelItem.IsSelected = false;
-                    }
-                    return;
                 }
             }
 
-            ScrollPanelItem scrollPanelItem = new ScrollPanelItem(cadObjectsGroup, Filepath);
+            ScrollPanelItem scrollPanelItem = new ScrollPanelItem(new CadObjectsGroup(Objects, Filepath.Split('\\').Last(), null), Filepath);
             scrollPanelItem.Selected += ScrollPanelItem_Selected;
             scrollPanelItem.Removed += ScrollPanelItem_Removed;
             Dispatcher.Invoke(() =>

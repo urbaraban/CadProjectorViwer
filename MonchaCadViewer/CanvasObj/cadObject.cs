@@ -32,7 +32,7 @@ namespace MonchaCadViewer.CanvasObj
         public virtual Pen myPen { 
             get
             {
-                double thinkess = MonchaHub.GetThinkess / 3d / Math.Abs(this.Scale.ScaleX * Math.Max(this.ScaleX, this.ScaleY));
+                double thinkess = MonchaHub.GetThinkess / 3d;
                 thinkess = thinkess <= 0 ? 1 : thinkess;
 
                 if (this.IsMouseOver == true)
@@ -346,8 +346,6 @@ namespace MonchaCadViewer.CanvasObj
             }
         }
         private bool _render = true;
-
-        public MeshType MeshType { get; set; } = MeshType.CalculateMesh;
 
         public bool ShowName { get; set; } = true;
 

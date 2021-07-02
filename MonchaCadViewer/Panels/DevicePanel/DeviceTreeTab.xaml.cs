@@ -90,7 +90,7 @@ namespace MonchaCadViewer.Panels
                     treeViewCalculationMesh.Header = "CalculateMesh";
                     treeViewCalculationMesh.FontStyle = device.Virtual == true ? FontStyles.Italic : FontStyles.Normal;
                     treeViewCalculationMesh.Foreground = brushes;
-                    treeViewCalculationMesh.DataContext = device.CalculateMesh;
+                    treeViewCalculationMesh.DataContext = device.SelectMesh;
                     treeViewCalculationMesh.MouseDoubleClick += TreeBaseMesh;
 
                     if (treeViewCalculationMesh.ContextMenu == null) treeViewCalculationMesh.ContextMenu = new System.Windows.Controls.ContextMenu();
@@ -172,7 +172,7 @@ namespace MonchaCadViewer.Panels
         {
             if (sender is TreeViewItem BaseMeshItem && BaseMeshItem.Parent is TreeViewItem DeviceTree)
             {
-                if (DeviceTree.DataContext is MonchaDevice device && BaseMeshItem.DataContext is MonchaDeviceMesh mesh)
+                if (DeviceTree.DataContext is MonchaDevice device && BaseMeshItem.DataContext is LDeviceMesh mesh)
                 {
                     DrawObjects?.Invoke(this, CadCanvas.GetMesh(mesh, device, MonchaHub.GetThinkess * AppSt.Default.anchor_size, false));
                 }
@@ -211,16 +211,16 @@ namespace MonchaCadViewer.Panels
             {
                 if (viewItem.ContextMenu.DataContext is MenuItem cmindex)
                 {
-                    if (sender is TreeViewItem meshTree && meshTree.Parent is TreeViewItem DeviceTree && DeviceTree.DataContext is MonchaDevice device && meshTree.DataContext is MonchaDeviceMesh deviceMesh)
+                    if (sender is TreeViewItem meshTree && meshTree.Parent is TreeViewItem DeviceTree && DeviceTree.DataContext is MonchaDevice device && meshTree.DataContext is LDeviceMesh deviceMesh)
                     {
                         switch (cmindex.Tag)
                         {
                             case "common_Create":
-                                CreateGridWindow createGridWindow = new CreateGridWindow(DeviceTree.DataContext as MonchaDevice, meshTree.DataContext as MonchaDeviceMesh);
+                                CreateGridWindow createGridWindow = new CreateGridWindow(DeviceTree.DataContext as MonchaDevice, meshTree.DataContext as LDeviceMesh);
                                 createGridWindow.ShowDialog();
                                 break;
                             case "m_Refresh":
-                                deviceMesh = MonchaHub.MWS.GetMeshDot(device.HWIdentifier, deviceMesh.Name, deviceMesh.MeshType);
+                                device.RefreshMeshPoint(deviceMesh);
                                 break;
                             case "mesh_Inverse":
                                 deviceMesh.InverseYPosition();

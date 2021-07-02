@@ -731,7 +731,7 @@ namespace MonchaCadViewer
         {
             if (CalibrationFormCombo.SelectedValue != null)
             {
-                MonchaDeviceMesh.ClbrForm = (CalibrationForm)CalibrationFormCombo.SelectedValue;
+                LDeviceMesh.ClbrForm = (CalibrationForm)CalibrationFormCombo.SelectedValue;
             }
         }
 

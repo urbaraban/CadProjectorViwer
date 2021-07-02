@@ -23,14 +23,13 @@ namespace MonchaCadViewer.Panels.DevicePanel
     /// </summary>
     public partial class DeviceSettingDialog : Window
     {
-        private MonchaDevice _device;
+        private MonchaDevice _device { get; set; }
 
         public event EventHandler<List<FrameworkElement>> DrawObjects;
 
         public DeviceSettingDialog(MonchaDevice Device)
         {
             InitializeComponent();
-
             this._device = Device;
 
             IP1.Text = this._device.iPAddress.GetAddressBytes()[0].ToString();
@@ -38,22 +37,12 @@ namespace MonchaCadViewer.Panels.DevicePanel
             IP3.Text = this._device.iPAddress.GetAddressBytes()[2].ToString();
             IP4.Text = this._device.iPAddress.GetAddressBytes()[3].ToString();
 
+            SelectCombo.DisplayMemberPath = "Name";
+            SelectCombo.ItemsSource = _device.Meshes;
+            SelectCombo.DataContext = _device.Meshes;
+            SelectCombo.SetBinding(ComboBox.SelectedItemProperty, "SelectMesh");
 
-            XMultUpDn.DataContext = this._device.DeviceLens;
-            XMultUpDn.SetBinding(NumericUpDown.ValueProperty, "MultiplierX");
 
-            YMultUpDn.DataContext = this._device.DeviceLens;
-            YMultUpDn.SetBinding(NumericUpDown.ValueProperty, "MultiplierY");
-
-            EdgeUpDn.DataContext = this._device.DeviceLens;
-            EdgeUpDn.SetBinding(NumericUpDown.ValueProperty, "EdgeCount");
-
-            _device.DeviceLens.PropertyChanged += DeviceLens_PropertyChanged;
-        }
-
-        private void DeviceLens_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
-        {
-            DrawObjects?.Invoke(this, CadCanvas.GetMesh(_device.DeviceLens.MonchaDeviceMesh, _device, MonchaHub.GetThinkess * AppSt.Default.anchor_size, true));
         }
 
         private void SaveBtn_Click(object sender, RoutedEventArgs e)
@@ -78,8 +67,6 @@ namespace MonchaCadViewer.Panels.DevicePanel
                 byte.Parse(IP3.Text),
                 byte.Parse(IP4.Text)
             }));
-
-            CheckStatLabel.Content = CheckLabel.IsChecked == true ? "Нашли. Отвечает" : "Занято, или не отвечает";
         }
 
         private void CheckIsNumeric(TextCompositionEventArgs e)

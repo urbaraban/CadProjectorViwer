@@ -73,16 +73,11 @@ namespace MonchaCadViewer.Panels
 
         private void BindingDeviceSetting(MonchaDevice monchaDevice)
         {
-            //LaserMeter
-            /*if (monchaDevice.ProjectionSetting.LMeter != null)
-            {
-                LaserMetersCombo.SelectedValue = monchaDevice.ProjectionSetting.LMeter.HWIdentifier;
 
-                LaserMeterToggle.DataContext = monchaDevice.ProjectionSetting.LMeter;
-                LaserMeterToggle.SetBinding(ToggleSwitch.IsOnProperty, "IsTurn");
-
-                monchaDevice.ProjectionSetting.LMeter.ChangeDimention += LMeter_ChangeDimention;
-            }*/
+            MeshCombo.DisplayMemberPath = "Name";
+            MeshCombo.ItemsSource = monchaDevice.Meshes;
+            MeshCombo.DataContext = monchaDevice.Meshes;
+            MeshCombo.SelectedItem = monchaDevice.SelectMesh;
 
             CommonSettingToggle.DataContext = monchaDevice;
             CommonSettingToggle.SetBinding(ToggleSwitch.IsOnProperty, "OwnedSetting");
@@ -180,11 +175,6 @@ namespace MonchaCadViewer.Panels
                 DistanceUpDn.SetBinding(NumericUpDown.ValueProperty, "Distance");
 
             }
-        }
-
-        private void ClearCalcMeshBtn_Click(object sender, RoutedEventArgs e)
-        {
-               this._device.CalculateMesh.Points = null;
         }
 
         private void ScanRateRealSlider_PreviewMouseDown(object sender, MouseButtonEventArgs e)

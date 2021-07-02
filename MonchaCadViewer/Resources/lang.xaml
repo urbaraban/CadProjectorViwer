@@ -26,6 +26,7 @@
 
     <v:String x:Key="dvc_Device">Device</v:String>
     <v:String x:Key="dvc_Dimmer">Dimmer</v:String>
+    <v:String x:Key="dvc_Mesh">Place</v:String>
     <v:String x:Key="dvc_SRR">ScanRateReal</v:String>
     <v:String x:Key="dvc_SRC">ScanRateCalc</v:String>
     <v:String x:Key="dvc_FPS">FPS</v:String>

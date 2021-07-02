@@ -67,10 +67,10 @@ namespace MonchaCadViewer.CanvasObj
 
         public override Rect Bounds => gCElements.Bounds; 
 
-        public CadObjectsGroup(GCCollection gcCollection, string Name)
+        public CadObjectsGroup(GCCollection gcCollection, string Name, Transform3DGroup transform3DGroup)
         {
             this.Name = Name;
-            this.UpdateTransform(null, true, gcCollection.Bounds);
+            this.UpdateTransform(transform3DGroup, transform3DGroup == null, gcCollection.Bounds);
             this.gCElements = gcCollection;
         }
 

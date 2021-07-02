@@ -15,9 +15,9 @@ namespace MonchaCadViewer
     public partial class CreateGridWindow : Window
     {
         private MonchaDevice _device;
-        private MonchaDeviceMesh _mesh;
+        private LDeviceMesh _mesh;
         private CadCanvas cadCanvas;
-        public CreateGridWindow(MonchaDevice Device, MonchaDeviceMesh Mesh)
+        public CreateGridWindow(MonchaDevice Device, LDeviceMesh Mesh)
         {
             InitializeComponent();
             this._device = Device;
@@ -33,7 +33,7 @@ namespace MonchaCadViewer
             {
                 Canvas.Canvas.AddRange(
                     CadCanvas.GetMesh(
-                    new MonchaDeviceMesh(MonchaDeviceMesh.MakeMeshPoint((int)HeightUpDn.Value.Value, (int)WidthUpDn.Value.Value), string.Empty, this._mesh.MeshType), 
+                    new LDeviceMesh(LDeviceMesh.MakeMeshPoint((int)HeightUpDn.Value.Value, (int)WidthUpDn.Value.Value), string.Empty), 
                     this._device,
                     MonchaHub.GetThinkess * AppSt.Default.anchor_size, false
                     ), true);
@@ -75,7 +75,7 @@ namespace MonchaCadViewer
             {
                 case MessageBoxResult.Yes:
                     this._mesh.SubscribePoint(false);
-                    this._mesh.Points = MonchaDeviceMesh.MakeMeshPoint((int)HeightUpDn.Value.Value, (int)WidthUpDn.Value.Value);
+                    this._mesh.Points = LDeviceMesh.MakeMeshPoint((int)HeightUpDn.Value.Value, (int)WidthUpDn.Value.Value);
                     this._mesh.SubscribePoint(true);
                     break;
                 case MessageBoxResult.No:
@@ -93,7 +93,7 @@ namespace MonchaCadViewer
 
             Canvas.Canvas.AddRange(
                      CadCanvas.GetMesh(
-                     new MonchaDeviceMesh(MonchaDeviceMesh.MakeMeshPoint((int)HeightUpDn.Value.Value, (int)WidthUpDn.Value.Value), string.Empty, this._mesh.MeshType),
+                     new LDeviceMesh(LDeviceMesh.MakeMeshPoint((int)HeightUpDn.Value.Value, (int)WidthUpDn.Value.Value), string.Empty),
                      this._device,
                      MonchaHub.GetThinkess * AppSt.Default.anchor_size, false
                      ), true);

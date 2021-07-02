@@ -40,25 +40,31 @@
     </UserControl.Resources>
     <Grid Background="{DynamicResource {x:Static SystemColors.MenuBrushKey}}">
         <Grid.RowDefinitions>
-            <RowDefinition Height="55*" />
-            <RowDefinition Height="94*" />
-            <RowDefinition Height="401*" />
+            <RowDefinition Height="54*" />
+            <RowDefinition Height="54*" />
+            <RowDefinition Height="54*"/>
+            <RowDefinition Height="36*"/>
+            <RowDefinition Height="135*" />
+            <RowDefinition Height="33*"/>
+            <RowDefinition Height="30*"/>
+            <RowDefinition Height="38*"/>
+            <RowDefinition Height="127*"/>
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="10*" />
+            <ColumnDefinition Width="6*" />
             <ColumnDefinition Width="100" />
-            <ColumnDefinition Width="35*" />
-            <ColumnDefinition Width="35*" />
-            <ColumnDefinition Width="88*" />
+            <ColumnDefinition Width="42" />
+            <ColumnDefinition Width="21*" />
+            <ColumnDefinition Width="52*" />
             <ColumnDefinition Width="0*" />
         </Grid.ColumnDefinitions>
         <Slider
             x:Name="AngleWaitSlider"
-            Grid.Row="2"
+            Grid.Row="8"
             Grid.Column="1"
-            Grid.ColumnSpan="5"
+            Grid.ColumnSpan="4"
             Height="30"
-            Margin="0,0,-0.333,59"
+            Margin="0,0,0,59"
             VerticalAlignment="Bottom"
             Maximum="30"
             Minimum="1"
@@ -67,74 +73,69 @@
         <ComboBox
             x:Name="DeviceCombo"
             Grid.Column="1"
-            Grid.ColumnSpan="4"
             Height="26"
-            Margin="4,25,104.667,0"
+            Margin="4,25,42,0"
             VerticalAlignment="Top"
             DataContextChanged="DeviceCombo_DataContextChanged"
             IsEnabled="{c:Binding !IsChecked,
                                   ElementName=QRBtn}"
             RenderTransformOrigin="0.5,0.5"
-            SelectionChanged="DeviceCombo_SelectionChanged" />
+            SelectionChanged="DeviceCombo_SelectionChanged" Grid.ColumnSpan="4" />
         <Controls:ToggleSwitch
             x:Name="InvertXtoggle"
-            Grid.Row="2"
+            Grid.Row="5"
             Grid.Column="1"
             Grid.ColumnSpan="2"
-            Width="121"
-            Height="20"
-            Margin="4,149,0,0"
-            HorizontalAlignment="Left"
-            VerticalAlignment="Top"
+            Margin="4,0,3,5"
+            HorizontalAlignment="Stretch"
+            VerticalAlignment="Bottom"
             HorizontalContentAlignment="Right"
             Controls:HeaderedControlHelper.HeaderFontSize="12"
             Content="{DynamicResource dvc_InvX}"
             FlowDirection="RightToLeft"
-            FontSize="12" />
+            FontSize="12" Height="20" />
         <Controls:ToggleSwitch
             x:Name="InvertYtoggle"
-            Grid.Row="2"
-            Grid.Column="2"
-            Grid.ColumnSpan="3"
-            Height="20"
-            Margin="26,149,5.667,0"
+            Grid.Row="5"
+            Grid.Column="3"
+            Grid.ColumnSpan="2"
+            Margin="1,0,6,5"
             HorizontalAlignment="Stretch"
-            VerticalAlignment="Top"
+            VerticalAlignment="Bottom"
             HorizontalContentAlignment="Right"
             Content="{DynamicResource dvc_InvY}"
             FlowDirection="RightToLeft"
-            FontSize="12" />
+            FontSize="12" Height="20" />
         <Label
-            Grid.Row="2"
+            Grid.Row="7"
             Grid.Column="1"
             Grid.ColumnSpan="2"
             Width="107"
             Height="26"
-            Margin="4,0,0,138"
+            Margin="4,0,0,5"
             Padding="2,3,0,0"
             HorizontalAlignment="Left"
             VerticalAlignment="Bottom"
             Content="{DynamicResource dvc_StepPoint}" />
         <Controls:NumericUpDown
             x:Name="CRSUpDn"
+            Grid.Row="7"
+            Grid.Column="2"
+            Grid.ColumnSpan="3"
+            Height="26"
+            Margin="26,0,11,5"
+            VerticalAlignment="Bottom"
+            Background="White"
+            Maximum="999"
+            Minimum="0.0001"/>
+
+        <Controls:NumericUpDown
+            x:Name="DistanceUpDn"
             Grid.Row="2"
             Grid.Column="2"
             Grid.ColumnSpan="3"
             Height="26"
-            Margin="26,0,5.667,138"
-            VerticalAlignment="Bottom"
-            Background="White"
-            Maximum="999"
-            Minimum="0.0001"
-            RenderTransformOrigin="0.288,1.538" />
-
-        <Controls:NumericUpDown
-            x:Name="DistanceUpDn"
-            Grid.Row="1"
-            Grid.Column="2"
-            Grid.ColumnSpan="3"
-            Height="26"
-            Margin="4,22,57.667,0"
+            Margin="0,21,59,0"
             VerticalAlignment="Top"
             Background="White"
             IsEnabled="{c:Binding !IsChecked,
@@ -142,28 +143,26 @@
             Value="{Binding cl_distance, Mode=TwoWay}" />
         <ComboBox
             x:Name="LaserMetersCombo"
-            Grid.Row="1"
             Grid.Column="1"
             Height="26"
-            Margin="4,22,1,0"
+            Margin="4,21,9,0"
             VerticalAlignment="Top"
             IsEnabled="{c:Binding !IsChecked,
                                   ElementName=QRBtn}"
-            SelectionChanged="LaserMetersCombo_SelectionChanged" />
+            SelectionChanged="LaserMetersCombo_SelectionChanged" Grid.Row="2" />
         <Controls:ToggleSwitch
             x:Name="LaserMeterToggle"
-            Grid.Row="1"
             Grid.Column="4"
             Width="48"
             Height="25"
-            Margin="0,24,4.667,0"
+            Margin="0,22,2,0"
             HorizontalAlignment="Right"
             VerticalAlignment="Top"
             HorizontalContentAlignment="Center"
             Content=""
             IsOn="False"
             RenderTransformOrigin="0.5,0.5"
-            Toggled="LaserMeterToggle_Toggled">
+            Toggled="LaserMeterToggle_Toggled" Grid.Row="2">
             <Controls:ToggleSwitch.RenderTransform>
                 <TransformGroup>
                     <ScaleTransform />
@@ -178,17 +177,15 @@
         </Controls:ToggleSwitch>
         <Label
             x:Name="label_Copy6"
-            Grid.Row="1"
             Grid.Column="1"
             Width="74"
             Height="26"
-            Margin="4,0,0,0"
             HorizontalAlignment="Left"
             VerticalAlignment="Top"
-            Content="{DynamicResource dvc_Dimmer}" />
+            Content="{DynamicResource dvc_Dimmer}" Margin="4,0,0,0" Grid.Row="2" />
         <Label
             x:Name="StartWaitLabel"
-            Grid.Row="2"
+            Grid.Row="8"
             Height="26"
             Margin="0,0,0,64"
             VerticalAlignment="Bottom"
@@ -196,22 +193,22 @@
             Content="{Binding Value, ElementName=AngleWaitSlider}" />
         <Label
             x:Name="StartWaitLabel_Copy"
-            Grid.Row="2"
+            Grid.Row="8"
             Grid.Column="1"
-            Grid.ColumnSpan="5"
+            Grid.ColumnSpan="4"
             Height="21"
-            Margin="0,0,-0.333,81"
+            Margin="0,0,0,81"
             VerticalAlignment="Bottom"
             HorizontalContentAlignment="Center"
             Content="{DynamicResource dvc_WaintPoint}"
             FontSize="8" />
         <Slider
             x:Name="ScanRateCalc"
-            Grid.Row="1"
+            Grid.Row="3"
             Grid.Column="1"
             Grid.ColumnSpan="4"
             Height="25"
-            Margin="0,63,9.667,0"
+            Margin="0,7,59,0"
             VerticalAlignment="Top"
             AllowDrop="False"
             Maximum="40000"
@@ -221,21 +218,21 @@
             Value="20000" />
         <Label
             x:Name="ScanRateLabel"
-            Grid.Row="1"
+            Grid.Row="3"
             Grid.Column="1"
             Height="21"
-            Margin="0,47,0,0"
+            Margin="4,0,0,0"
             VerticalAlignment="Top"
             Content="{DynamicResource dvc_SRC}"
             FontSize="8"
             RenderTransformOrigin="0.439,0.556" />
         <Controls:NumericUpDown
             x:Name="RedUpDn"
-            Grid.Row="2"
+            Grid.Row="4"
             Grid.Column="2"
             Grid.ColumnSpan="3"
             Height="26"
-            Margin="26,41,5.667,0"
+            Margin="26,41,6,0"
             VerticalAlignment="Top"
             Background="White"
             IsEnabled="{c:Binding !IsChecked,
@@ -245,7 +242,7 @@
             Value="255" />
         <Controls:ToggleSwitch
             x:Name="RedToggle"
-            Grid.Row="2"
+            Grid.Row="4"
             Grid.Column="1"
             Grid.ColumnSpan="2"
             Width="111"
@@ -258,11 +255,11 @@
             Content="{DynamicResource dvc_RED}" />
         <Controls:NumericUpDown
             x:Name="GreenUpDn"
-            Grid.Row="2"
+            Grid.Row="4"
             Grid.Column="2"
             Grid.ColumnSpan="3"
             Height="26"
-            Margin="26,72,5.667,0"
+            Margin="26,72,6,0"
             VerticalAlignment="Top"
             Background="White"
             IsEnabled="{c:Binding !IsChecked,
@@ -272,7 +269,7 @@
             Value="255" />
         <Controls:ToggleSwitch
             x:Name="GreenToggle"
-            Grid.Row="2"
+            Grid.Row="4"
             Grid.Column="1"
             Grid.ColumnSpan="2"
             Width="111"
@@ -284,11 +281,11 @@
             Content="{DynamicResource dvc_GREEN}" />
         <Controls:NumericUpDown
             x:Name="BlueUpDn"
-            Grid.Row="2"
+            Grid.Row="4"
             Grid.Column="2"
             Grid.ColumnSpan="3"
             Height="26"
-            Margin="26,105,5.667,0"
+            Margin="26,105,6,0"
             VerticalAlignment="Top"
             Background="White"
             IsEnabled="{c:Binding !IsChecked,
@@ -298,7 +295,7 @@
             Value="255" />
         <Controls:ToggleSwitch
             x:Name="BlueToggle"
-            Grid.Row="2"
+            Grid.Row="4"
             Grid.Column="1"
             Grid.ColumnSpan="2"
             Width="111"
@@ -310,33 +307,30 @@
             Content="{DynamicResource dvc_Blue}" />
         <Slider
             x:Name="AlphaSlider"
-            Grid.Row="2"
+            Grid.Row="6"
             Grid.Column="1"
             Grid.ColumnSpan="4"
             Height="22"
-            Margin="0,188,5.667,0"
+            Margin="0,8,6,0"
             VerticalAlignment="Top"
             Maximum="255"
             Minimum="1"
             Value="255" />
         <Label
             x:Name="ScanRateLabel_Copy"
-            Grid.Row="2"
-            Grid.Column="1"
-            Grid.ColumnSpan="5"
-            Height="22"
-            Margin="0,174,-0.333,0"
-            VerticalAlignment="Top"
+            Grid.Row="6"
+            Grid.ColumnSpan="2"
+            Margin="0,0,0,10"
             HorizontalContentAlignment="Center"
             Content="{DynamicResource dvc_Brightness}"
-            FontSize="8" />
+            FontSize="8" Height="20" VerticalAlignment="Bottom" Grid.Column="2" />
         <Controls:NumericUpDown
             x:Name="FPSUpDn"
-            Grid.Row="2"
+            Grid.Row="4"
             Grid.Column="2"
             Grid.ColumnSpan="3"
             Height="26"
-            Margin="26,10,5.667,0"
+            Margin="26,10,6,0"
             VerticalAlignment="Top"
             Background="White"
             IsEnabled="{c:Binding !IsChecked,
@@ -346,7 +340,7 @@
             Value="30" />
         <Label
             x:Name="FPSLabel"
-            Grid.Row="2"
+            Grid.Row="4"
             Grid.Column="1"
             Height="26"
             Margin="2,9,11,0"
@@ -366,11 +360,11 @@
         </Label>
         <Slider
             x:Name="StartBlankSlider"
-            Grid.Row="2"
+            Grid.Row="8"
             Grid.Column="1"
-            Grid.ColumnSpan="5"
+            Grid.ColumnSpan="4"
             Height="21"
-            Margin="0,0,-0.333,36"
+            Margin="0,0,0,36"
             VerticalAlignment="Bottom"
             Maximum="29"
             Minimum="1"
@@ -378,7 +372,7 @@
             Value="1" />
         <Label
             x:Name="StartWaitLabel_Copy1"
-            Grid.Row="2"
+            Grid.Row="8"
             Height="23"
             Margin="0,0,0,35"
             VerticalAlignment="Bottom"
@@ -387,11 +381,11 @@
             Content="{Binding Value, ElementName=StartBlankSlider}" />
         <Slider
             x:Name="EndBlankSlider"
-            Grid.Row="2"
+            Grid.Row="8"
             Grid.Column="1"
-            Grid.ColumnSpan="5"
+            Grid.ColumnSpan="4"
             Height="22"
-            Margin="0,0,-0.333,9"
+            Margin="0,0,0,9"
             VerticalAlignment="Bottom"
             Maximum="30"
             Minimum="1"
@@ -399,7 +393,7 @@
             Value="1" />
         <Label
             x:Name="StartWaitLabel_Copy2"
-            Grid.Row="2"
+            Grid.Row="8"
             Height="26"
             Margin="0,0,0,7"
             VerticalAlignment="Bottom"
@@ -407,33 +401,33 @@
             Content="{Binding Value, ElementName=EndBlankSlider}" />
         <Label
             x:Name="StartWaitLabel_Copy3"
-            Grid.Row="2"
+            Grid.Row="8"
             Grid.Column="1"
-            Grid.ColumnSpan="5"
+            Grid.ColumnSpan="4"
             Height="21"
-            Margin="0,0,-0.333,48"
+            Margin="0,0,0,48"
             VerticalAlignment="Bottom"
             HorizontalContentAlignment="Center"
             Content="{DynamicResource dvc_WaintPointBlank}"
             FontSize="8" />
         <Label
             x:Name="StartWaitLabel_Copy4"
-            Grid.Row="2"
+            Grid.Row="8"
             Grid.Column="1"
-            Grid.ColumnSpan="5"
+            Grid.ColumnSpan="4"
             Height="21"
-            Margin="0,0,-0.333,22"
+            Margin="0,0,0,22"
             VerticalAlignment="Bottom"
             HorizontalContentAlignment="Center"
             Content="{DynamicResource dvc_WaintPointEndBlank}"
             FontSize="8" />
         <Slider
             x:Name="ColorShiftSlider"
-            Grid.Row="2"
+            Grid.Row="8"
             Grid.Column="1"
-            Grid.ColumnSpan="5"
+            Grid.ColumnSpan="4"
             Height="30"
-            Margin="0,0,-0.333,89"
+            Margin="0,0,0,89"
             VerticalAlignment="Bottom"
             Maximum="30"
             Minimum="1"
@@ -441,18 +435,18 @@
             Value="1" />
         <Label
             x:Name="StartWaitLabel_Copy5"
-            Grid.Row="2"
+            Grid.Row="7"
             Grid.Column="1"
-            Grid.ColumnSpan="5"
+            Grid.ColumnSpan="4"
             Height="21"
-            Margin="0,0,-0.333,112"
+            Margin="0,0,0,112"
             VerticalAlignment="Bottom"
             HorizontalContentAlignment="Center"
             Content="{DynamicResource dvc_FadePoint}"
-            FontSize="8" />
+            FontSize="8" Grid.RowSpan="2" />
         <Label
             x:Name="StartWaitLabel_Copy6"
-            Grid.Row="2"
+            Grid.Row="8"
             Height="26"
             Margin="0,0,0,95"
             VerticalAlignment="Bottom"
@@ -462,17 +456,15 @@
             x:Name="label_Copy7"
             Grid.Column="1"
             Width="74"
-            Height="26"
             Margin="4,0,0,0"
             HorizontalAlignment="Left"
-            VerticalAlignment="Top"
-            Content="{DynamicResource dvc_Device}" />
+            Content="{DynamicResource dvc_Device}" Height="25" VerticalAlignment="Top" />
         <Controls:ToggleSwitch
             x:Name="CommonSettingToggle"
             Grid.Column="4"
             Width="46"
             Height="25"
-            Margin="0,27,7.667,0"
+            Margin="0,7,4,0"
             HorizontalAlignment="Right"
             VerticalAlignment="Top"
             HorizontalContentAlignment="Center"
@@ -480,7 +472,7 @@
             Content=""
             IsOn="False"
             RenderTransformOrigin="0.5,0.5"
-            Toggled="CommonSettingToggle_Toggled">
+            Toggled="CommonSettingToggle_Toggled" Grid.Row="3">
             <Controls:ToggleSwitch.DataContext>
                 <Properties:Settings />
             </Controls:ToggleSwitch.DataContext>
@@ -488,14 +480,60 @@
         <Button
             x:Name="DeviceSettingBtn"
             Grid.Column="4"
-            Width="26"
             Height="26"
-            Margin="6.333,25,0,0"
-            HorizontalAlignment="Left"
+            Margin="67,25,0,0"
             VerticalAlignment="Top"
             Click="DeviceSettingBtn_Click"
             Content="&#xE713;"
             FontFamily="Segoe MDL2 Assets"
-            FontSize="14" />
+            FontSize="14" HorizontalAlignment="Left" Width="26" />
+        <ComboBox
+            x:Name="MeshCombo"
+            Grid.Column="1"
+            Height="26"
+            Margin="3,17,0,0"
+            VerticalAlignment="Top"
+            DataContextChanged="DeviceCombo_DataContextChanged"
+            IsEnabled="{Binding !IsChecked, ElementName=QRBtn}"
+            RenderTransformOrigin="0.5,0.5"
+            SelectionChanged="DeviceCombo_SelectionChanged" Grid.Row="1" Grid.ColumnSpan="3" />
+        <Label
+            x:Name="label_Copy"
+            Grid.Column="1"
+            Width="74"
+            Height="26"
+            HorizontalAlignment="Left"
+            VerticalAlignment="Top"
+            Content="{DynamicResource dvc_Mesh}" Margin="4,51,0,0" Grid.RowSpan="2" />
+        <Button
+            x:Name="DeviceSettingBtn_Copy"
+            Grid.Column="4"
+            Height="26"
+            Margin="67,17,0,0"
+            VerticalAlignment="Top"
+            Click="DeviceSettingBtn_Click"
+            Content="&#xE713;"
+            FontFamily="Segoe MDL2 Assets"
+            FontSize="14" HorizontalAlignment="Left" Width="26" Grid.Row="1" />
+        <Button
+            x:Name="DeviceSettingBtn_Copy1"
+            Grid.Column="4"
+            Height="26"
+            Margin="5,17,0,0"
+            VerticalAlignment="Top"
+            Click="DeviceSettingBtn_Click"
+            Content="&#xE713;"
+            FontFamily="Segoe MDL2 Assets"
+            FontSize="14" HorizontalAlignment="Left" Width="26" Grid.Row="1" />
+        <Button
+            x:Name="DeviceSettingBtn_Copy2"
+            Grid.Column="4"
+            Height="26"
+            Margin="36,17,0,0"
+            VerticalAlignment="Top"
+            Click="DeviceSettingBtn_Click"
+            Content="&#xE713;"
+            FontFamily="Segoe MDL2 Assets"
+            FontSize="14" HorizontalAlignment="Left" Width="26" Grid.Row="1" />
     </Grid>
 </UserControl>

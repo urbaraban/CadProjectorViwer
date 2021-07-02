@@ -97,6 +97,8 @@ namespace MonchaCadViewer.Panels
             this.DataContext = cadObject;
         }
 
+        
+
         private async void ScrollPanelItem_DataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
         {
             if (this.DataContext is CadObjectsGroup cadGeometries)
@@ -188,7 +190,7 @@ namespace MonchaCadViewer.Panels
             {
                 this.DataContext =
                     new CadObjectsGroup(
-                        await ToGC.GetAsync(this.filepath, MonchaHub.ProjectionSetting.PointStep.MX), this.Name);
+                        await ToGC.GetAsync(this.filepath, MonchaHub.ProjectionSetting.PointStep.MX), this.Name, null);
             }
         }
     }

@@ -56,6 +56,7 @@ namespace MonchaCadViewer.CanvasObj
             AddItem("mesh_Returnpoint", contextMenu);
             AddItem("mesh_Morph", contextMenu);
             AddItem("mesh_Affine", contextMenu);
+            AddItem("mesh_ShowRect", contextMenu);
         }
 
         public static void CanvasMenu(ContextMenu contextMenu)

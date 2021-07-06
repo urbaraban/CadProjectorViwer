@@ -391,14 +391,14 @@ namespace MonchaCadViewer
             if (MashMultiplierUpDn.Value == null) MashMultiplierUpDn.Value = 1;
             args.Interval = 0;
             MashMultiplierUpDn.Value = MashMultiplierUpDn.Value.Value * 10;
-            MonchaHub.Size.M.Set(MashMultiplierUpDn.Value.Value, true);
+            MonchaHub.Size.M.Set(MashMultiplierUpDn.Value.Value);
         }
 
         private void MashMultiplierUpDn_ValueDecremented(object sender, NumericUpDownChangedRoutedEventArgs args)
         {
             args.Interval = 0;
             MashMultiplierUpDn.Value = MashMultiplierUpDn.Value.Value / 10;
-            MonchaHub.Size.M.Set(MashMultiplierUpDn.Value.Value, true);
+            MonchaHub.Size.M.Set(MashMultiplierUpDn.Value.Value);
         }
 
 
@@ -708,7 +708,7 @@ namespace MonchaCadViewer
             {
                 for (int i = 0; i < MonchaHub.Devices.Count; i++)
                 {
-                    ildaWriter.Write(($"{saveFileDialog.FileName.Replace(".ild", string.Empty)}_{i}.ild"), new List<LFrame>(){ MonchaHub.Devices[i].GetReadyFrame.GetLFrame(MonchaHub.Devices[i], MonchaHub.MainFrame)}, 5);
+                    ildaWriter.Write(($"{saveFileDialog.FileName.Replace(".ild", string.Empty)}_{i}.ild"), new List<LFrame>(){ await MonchaHub.Devices[i].GetReadyFrame.GetLFrame(MonchaHub.Devices[i], MonchaHub.MainFrame)}, 5);
                 }
             }
         }

@@ -68,30 +68,19 @@ namespace MonchaCadViewer.Panels
                         treeViewBaseMesh.DataContext = device.BaseMesh;
                         treeViewBaseMesh.MouseDoubleClick += TreeBaseMesh;
 
-                        TreeViewItem treeViewVirtualMesh = new TreeViewItem();
-                        treeViewVirtualMesh.Header = "VirtualMesh";
-                        treeViewVirtualMesh.DataContext = device.VirtualMesh;
-                        treeViewVirtualMesh.MouseDoubleClick += TreeBaseMesh;
-
-
                         if (treeViewBaseMesh.ContextMenu == null) treeViewBaseMesh.ContextMenu = new System.Windows.Controls.ContextMenu();
                         ContextMenuLib.MeshMenu(treeViewBaseMesh.ContextMenu);
                         treeViewBaseMesh.ContextMenuClosing += TreeViewBaseMesh_ContextMenuClosing;
 
-                        if (treeViewVirtualMesh.ContextMenu == null) treeViewVirtualMesh.ContextMenu = new System.Windows.Controls.ContextMenu();
-                        ContextMenuLib.MeshMenu(treeViewVirtualMesh.ContextMenu);
-                        treeViewVirtualMesh.ContextMenuClosing += TreeViewBaseMesh_ContextMenuClosing;
-
                         treeViewDevice.Items.Add(treeViewBaseMesh);
-                        treeViewDevice.Items.Add(treeViewVirtualMesh);
                     }
 
                     TreeViewItem treeViewCalculationMesh = new TreeViewItem();
-                    treeViewCalculationMesh.Header = "CalculateMesh";
+                    treeViewCalculationMesh.Header = "SelectMesh";
                     treeViewCalculationMesh.FontStyle = device.Virtual == true ? FontStyles.Italic : FontStyles.Normal;
                     treeViewCalculationMesh.Foreground = brushes;
-                    treeViewCalculationMesh.DataContext = device.SelectMesh;
-                    treeViewCalculationMesh.MouseDoubleClick += TreeBaseMesh;
+                    treeViewCalculationMesh.DataContext = device;
+                    treeViewCalculationMesh.MouseDoubleClick += TreeViewCalculationMesh_MouseDoubleClick; ;
 
                     if (treeViewCalculationMesh.ContextMenu == null) treeViewCalculationMesh.ContextMenu = new System.Windows.Controls.ContextMenu();
                     ContextMenuLib.MeshMenu(treeViewCalculationMesh.ContextMenu);
@@ -127,6 +116,17 @@ namespace MonchaCadViewer.Panels
             }
         }
 
+        private void TreeViewCalculationMesh_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+        {
+            if (sender is TreeViewItem BaseMeshItem && BaseMeshItem.Parent is TreeViewItem DeviceTree)
+            {
+                if (DeviceTree.DataContext is MonchaDevice device)
+                {
+                    DrawObjects?.Invoke(this, CadCanvas.GetMesh(device.SelectMesh, MonchaHub.GetThinkess * AppSt.Default.anchor_size, false));
+                }
+            }
+        }
+
         private void LoadDeviceSetting(object sender, MouseButtonEventArgs e)
         {
             if (sender is TreeViewItem treeViewItem)
@@ -146,12 +146,12 @@ namespace MonchaCadViewer.Panels
                     switch (cmindex.Tag)
                     {
                         case "dvc_showrect":
-                            device.DrawZone();
+                            //device.Frame = device.CutZone.DrawCutZone();
                             break;
 
                         case "dvc_showzone":
                             DrawObjects?.Invoke(this, new List<FrameworkElement>() {
-                                new CadRectangle(device.DeviceZone.P1, device.DeviceZone.P2, false){Render = false}
+                                new CadRectangle(device.Size.P1, device.Size.P2, false){Render = false}
                             });
                             break;
                         case "dvc_polymesh":
@@ -160,7 +160,7 @@ namespace MonchaCadViewer.Panels
                             break;
                         case "dvc_center":
                             DrawObjects?.Invoke(this, new List<FrameworkElement>() {
-                                new CadAnchor(device.DeviceZone.CenterPoint, false){Render = false}
+                                new CadAnchor(device.Size.Center, false){Render = false}
                             });
                             break;
 
@@ -174,7 +174,7 @@ namespace MonchaCadViewer.Panels
             {
                 if (DeviceTree.DataContext is MonchaDevice device && BaseMeshItem.DataContext is LDeviceMesh mesh)
                 {
-                    DrawObjects?.Invoke(this, CadCanvas.GetMesh(mesh, device, MonchaHub.GetThinkess * AppSt.Default.anchor_size, false));
+                    DrawObjects?.Invoke(this, CadCanvas.GetMesh(mesh, MonchaHub.GetThinkess * AppSt.Default.anchor_size, false));
                 }
             }
         }
@@ -211,28 +211,31 @@ namespace MonchaCadViewer.Panels
             {
                 if (viewItem.ContextMenu.DataContext is MenuItem cmindex)
                 {
-                    if (sender is TreeViewItem meshTree && meshTree.Parent is TreeViewItem DeviceTree && DeviceTree.DataContext is MonchaDevice device && meshTree.DataContext is LDeviceMesh deviceMesh)
+                    if (sender is TreeViewItem meshTree && meshTree.Parent is TreeViewItem DeviceTree && DeviceTree.DataContext is MonchaDevice device)
                     {
                         switch (cmindex.Tag)
                         {
                             case "common_Create":
-                                CreateGridWindow createGridWindow = new CreateGridWindow(DeviceTree.DataContext as MonchaDevice, meshTree.DataContext as LDeviceMesh);
+                                CreateGridWindow createGridWindow = new CreateGridWindow(device, device.SelectMesh);
                                 createGridWindow.ShowDialog();
                                 break;
                             case "m_Refresh":
-                                device.RefreshMeshPoint(deviceMesh);
+                                device.RefreshMeshPoint(device.SelectMesh);
                                 break;
                             case "mesh_Inverse":
-                                deviceMesh.InverseYPosition();
+                                device.SelectMesh.InverseYPosition();
                                 break;
                             case "mesh_Returnpoint":
-                                deviceMesh.ReturnPoint();
+                                device.SelectMesh.ReturnPoint();
                                 break;
                             case "mesh_Morph":
-                                deviceMesh.Morph = !deviceMesh.Morph;
+                                device.SelectMesh.Morph = !device.SelectMesh.Morph;
                                 break;
                             case "mesh_Affine":
-                                deviceMesh.Affine = !deviceMesh.Affine;
+                                device.SelectMesh.Affine = !device.SelectMesh.Affine;
+                                break;
+                            case "mesh_ShowRect":
+                                DrawObjects?.Invoke(this, new List<FrameworkElement>() { new CadRectangle(device.SelectMesh.Size, false) });
                                 break;
                         }
                     }

@@ -35,7 +35,7 @@ namespace MonchaCadViewer.CanvasObj
         public override event EventHandler<string> Updated;
         public override event EventHandler<CadObject> Removed;
 
-        public LQube LRect;
+        public LSize3D LRect;
 
         public override double X
         {
@@ -75,11 +75,11 @@ namespace MonchaCadViewer.CanvasObj
 
         public CadRectangle(LPoint3D P1, LPoint3D P2, bool MouseSet)
         {
-            this.LRect = new LQube(P1, P2);
+            this.LRect = new LSize3D(P1, P2);
             LoadSetting(MouseSet);
         }
 
-        public CadRectangle(LQube lRect, bool MouseSet)
+        public CadRectangle(LSize3D lRect, bool MouseSet)
         {
             LRect = lRect;
             LoadSetting(MouseSet);
@@ -164,7 +164,7 @@ namespace MonchaCadViewer.CanvasObj
         {
             if (sender is CadCanvas cadCanvas)
             {
-                if (cadCanvas.UnderAnchor != null) this.LRect.P2 = cadCanvas.UnderAnchor.GetPoint;
+                if (cadCanvas.UnderAnchor != null) this.LRect.P2 = cadCanvas.UnderAnchor.GetLPoint;
                 else
                 {
                     this.LRect.P2.Set(e.GetPosition(cadCanvas));

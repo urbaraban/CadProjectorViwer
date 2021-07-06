@@ -114,7 +114,7 @@ namespace MonchaCadViewer.Panels
 
         private void Size_ChangePoint(object sender, PropertyChangedEventArgs e)
         {
-            RadiusSlider.Maximum = Math.Max(MonchaHub.Size.MX, MonchaHub.Size.MY);
+            RadiusSlider.Maximum = Math.Max(MonchaHub.Size.X, MonchaHub.Size.Y);
         }
 
         private void M_ChangePoint(object sender, PropertyChangedEventArgs e)

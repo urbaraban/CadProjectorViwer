@@ -22,8 +22,10 @@ namespace MonchaCadViewer
             InitializeComponent();
             this._device = Device;
             this._mesh = Mesh;
-            WidthLabel.Content = this._device.DeviceZone.Width;
-            HeightLabel.Content = this._device.DeviceZone.Height;
+            WidthLabel.Content = this._device.Size.X;
+            HeightLabel.Content = this._device.Size.Y;
+            NameBox.DataContext = Mesh;
+            NameBox.SetBinding(TextBox.TextProperty, "Name");
         }
 
 
@@ -33,8 +35,7 @@ namespace MonchaCadViewer
             {
                 Canvas.Canvas.AddRange(
                     CadCanvas.GetMesh(
-                    new LDeviceMesh(LDeviceMesh.MakeMeshPoint((int)HeightUpDn.Value.Value, (int)WidthUpDn.Value.Value), string.Empty), 
-                    this._device,
+                    new LDeviceMesh(LDeviceMesh.MakeMeshPoint((int)HeightUpDn.Value.Value, (int)WidthUpDn.Value.Value), string.Empty),
                     MonchaHub.GetThinkess * AppSt.Default.anchor_size, false
                     ), true);
             }
@@ -44,10 +45,10 @@ namespace MonchaCadViewer
         {
             if (this.IsLoaded)
             {
-                int Width = (int)(this._device.DeviceZone.Width / StepUpDn.Value.Value) + 1;
-                int Height = (int)(this._device.DeviceZone.Height / StepUpDn.Value.Value) + 1;
-                WidthStepLabel.Content = "(" + Math.Round(this._device.DeviceZone.Width / Width, 1) + ")";
-                HeightStepLabel.Content = "(" + Math.Round(this._device.DeviceZone.Height / Height, 1) + ")";
+                int Width = (int)(this._device.Size.X / StepUpDn.Value.Value) + 1;
+                int Height = (int)(this._device.Size.Y / StepUpDn.Value.Value) + 1;
+                WidthStepLabel.Content = "(" + Math.Round(this._device.Size.X / Width, 1) + ")";
+                HeightStepLabel.Content = "(" + Math.Round(this._device.Size.Y / Height, 1) + ")";
 
                 WidthUpDn.Value = Width;
                 HeightUpDn.Value = Height;
@@ -94,7 +95,6 @@ namespace MonchaCadViewer
             Canvas.Canvas.AddRange(
                      CadCanvas.GetMesh(
                      new LDeviceMesh(LDeviceMesh.MakeMeshPoint((int)HeightUpDn.Value.Value, (int)WidthUpDn.Value.Value), string.Empty),
-                     this._device,
                      MonchaHub.GetThinkess * AppSt.Default.anchor_size, false
                      ), true);
         }

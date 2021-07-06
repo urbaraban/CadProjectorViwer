@@ -39,10 +39,15 @@ namespace MonchaCadViewer.Panels.DevicePanel
 
             SelectCombo.DisplayMemberPath = "Name";
             SelectCombo.ItemsSource = _device.Meshes;
-            SelectCombo.DataContext = _device.Meshes;
+            SelectCombo.DataContext = _device;
+            SelectCombo.SelectedItem = _device.SelectMesh;
             SelectCombo.SetBinding(ComboBox.SelectedItemProperty, "SelectMesh");
 
-
+            BaseCombo.DisplayMemberPath = "Name";
+            BaseCombo.ItemsSource = _device.Meshes;
+            BaseCombo.DataContext = _device;
+            BaseCombo.SelectedItem = _device.BaseMesh;
+            BaseCombo.SetBinding(ComboBox.SelectedItemProperty, "BaseMesh");
         }
 
         private void SaveBtn_Click(object sender, RoutedEventArgs e)

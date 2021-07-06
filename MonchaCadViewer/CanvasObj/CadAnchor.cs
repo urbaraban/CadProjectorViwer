@@ -47,7 +47,7 @@ namespace MonchaCadViewer.CanvasObj
         private LPoint3D PointX { get; set; }
         private LPoint3D PointY { get; set; }
 
-        public LPoint3D GetPoint => PointX != PointY ? new LPoint3D(PointX.MX, PointY.MY, PointX.M) : PointX;
+        public LPoint3D GetLPoint => PointX != PointY ? new LPoint3D(PointX.MX, PointY.MY, PointX.M) : PointX;
 
 
         public CadAnchor(LPoint3D Point, bool OnBaseMesh)

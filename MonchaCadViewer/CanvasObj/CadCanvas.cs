@@ -14,6 +14,7 @@ using MonchaCadViewer.Interface;
 using System.Runtime.CompilerServices;
 using System.Windows.Documents;
 using MonchaCadViewer.Panels;
+using System.Windows.Data;
 
 namespace MonchaCadViewer.CanvasObj
 {
@@ -41,11 +42,9 @@ namespace MonchaCadViewer.CanvasObj
 
         public CadAnchor UnderAnchor;
 
-        public List<LQube> Masks = new List<LQube>();
+        public List<LSize3D> Masks = new List<LSize3D>();
 
         public bool MainCanvas { get; }
-
-        private LPoint3D _size;
 
         public bool HorizontalMesh { get; set; } = false;
 
@@ -79,14 +78,12 @@ namespace MonchaCadViewer.CanvasObj
 
         public CadCanvas()
         {
-            this._size = MonchaHub.Size;
             this.MainCanvas = true;
             LoadSetting();
         }
 
-        public CadCanvas(LPoint3D Size, bool MainCanvas)
+        public CadCanvas(LSize3D Size, bool MainCanvas)
         {
-            this._size = Size;
             this.MainCanvas = MainCanvas;
             LoadSetting();
             this.Loaded += CadCanvas_Loaded;
@@ -101,12 +98,12 @@ namespace MonchaCadViewer.CanvasObj
         {
             this.Name = "CCanvas";
             this.Background = Brushes.Transparent; //backBrush;
-            this.Width = this._size.GetMPoint.X;
-            this.Height = this._size.GetMPoint.Y;
-     
-            this._size.PropertyChanged += _size_ChangePoint;
-            this._size.M.PropertyChanged += _size_ChangePoint;
 
+            this.DataContext = MonchaHub.Size;
+
+            this.SetBinding(Canvas.WidthProperty, "X");
+            this.SetBinding(Canvas.HeightProperty, "Y");
+     
             if (this.MainCanvas == true)
             {
                 this.ContextMenuClosing += CadCanvas_ContextMenuClosing;
@@ -126,11 +123,6 @@ namespace MonchaCadViewer.CanvasObj
             ResetTransform();
         }
 
-        private void CadCanvas_MouseLeave(object sender, MouseEventArgs e)
-        {
-            if (e.LeftButton != MouseButtonState.Pressed) this.ReleaseMouseCapture();
-        }
-
         private void CadCanvas_KeyUp(object sender, KeyEventArgs e)
         {
             if (this.MouseAction == MouseAction.MoveCanvas) this.MouseAction = MouseAction.NoAction;
@@ -147,6 +139,7 @@ namespace MonchaCadViewer.CanvasObj
             }
         }
 
+        #region MouseAction
         private void CadCanvas_MouseWheel(object sender, MouseWheelEventArgs e)
         {
             if (Keyboard.Modifiers == ModifierKeys.Control)
@@ -213,7 +206,7 @@ namespace MonchaCadViewer.CanvasObj
             }
             else if (this.mouseAction == MouseAction.Mask)
             {
-                LQube lRect = new LQube(new LPoint3D(e.GetPosition(this), MonchaHub.Size), new LPoint3D(e.GetPosition(this), MonchaHub.Size));
+                LSize3D lRect = new LSize3D(new LPoint3D(e.GetPosition(this), MonchaHub.Size, true), new LPoint3D(e.GetPosition(this), MonchaHub.Size, true));
                 CadRectangle Maskrectangle = new CadRectangle(lRect, true);
                 this.Add(Maskrectangle);
                 this.Masks.Add(lRect);
@@ -225,25 +218,12 @@ namespace MonchaCadViewer.CanvasObj
             }
         }
 
-
-        private void _size_ChangePoint(object sender, PropertyChangedEventArgs e)
+        private void CadCanvas_MouseLeave(object sender, MouseEventArgs e)
         {
-            ResizeCanvas();
+            if (e.LeftButton != MouseButtonState.Pressed) this.ReleaseMouseCapture();
         }
+        #endregion
 
-        public void ResizeCanvas()
-        {
-            if (this._size.X != 0 && this._size.Y != 0 && this._size.Z != 0 && this._size.M.X != 0)
-            {
-                if (this.Parent is Viewbox viewbox)
-                {
-                    viewbox.Width = this._size.GetMPoint.X;
-                    viewbox.Height = this._size.GetMPoint.Y;
-                }
-                this.Width = this._size.GetMPoint.X;
-                this.Height = this._size.GetMPoint.Y;
-            }
-        }
 
         /// <summary>
         /// Draw object on canvas.
@@ -468,32 +448,28 @@ namespace MonchaCadViewer.CanvasObj
             SelectedObject?.Invoke(this, (CadObject)sender);
         }
 
-        public static List<FrameworkElement> GetMesh(LDeviceMesh mesh, MonchaDevice _device, double AnchorSize, bool Render)
+        public static List<FrameworkElement> GetMesh(LDeviceMesh mesh, double AnchorSize, bool Render)
         {
-            if (_device != null)
+            List<FrameworkElement> objects = new List<FrameworkElement>();
+
+            for (int i = 0; i < mesh.GetLength(0); i++)
             {
-                List<FrameworkElement> objects = new List<FrameworkElement>();
-
-                if (mesh == null) mesh = _device.SelectMesh;
-
-                for (int i = 0; i < mesh.GetLength(0); i++)
+                for (int j = 0; j < mesh.GetLength(1); j++)
                 {
-                    for (int j = 0; j < mesh.GetLength(1); j++)
-                    {
-                        mesh[i, j].M = MonchaHub.Size;
+                    mesh[i, j].M = MonchaHub.Size;
 
-                        objects.Add(new CadAnchor(mesh[i, j], true)
-                        {
-                            IsFix = false,// !mesh.OnlyEdge;
-                            Uid = i.ToString() + ":" + j.ToString(),
-                            ToolTip = "Позиция: " + i + ":" + j + "\nX: " + mesh[i, j].X + "\n" + "Y: " + mesh[i, j].Y,
-                            DataContext = mesh,
-                            Render = Render,
-                        });
-                    }
+                    objects.Add(new CadAnchor(mesh[i, j], true)
+                    {
+                        IsFix = false,// !mesh.OnlyEdge;
+                        Uid = i.ToString() + ":" + j.ToString(),
+                        ToolTip = "Позиция: " + i + ":" + j + "\nX: " + mesh[i, j].X + "\n" + "Y: " + mesh[i, j].Y,
+                        DataContext = mesh,
+                        Render = Render,
+                    });
                 }
-                return objects;
             }
+            return objects;
+
             return null;
         }
 

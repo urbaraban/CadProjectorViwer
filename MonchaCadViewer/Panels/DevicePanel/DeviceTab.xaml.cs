@@ -76,14 +76,14 @@ namespace MonchaCadViewer.Panels
 
             MeshCombo.DisplayMemberPath = "Name";
             MeshCombo.ItemsSource = monchaDevice.Meshes;
-            MeshCombo.DataContext = monchaDevice.Meshes;
-            MeshCombo.SelectedItem = monchaDevice.SelectMesh;
+            MeshCombo.DataContext = monchaDevice;
+            MeshCombo.SetBinding(ComboBox.SelectedItemProperty, "SelectMesh");
 
             CommonSettingToggle.DataContext = monchaDevice;
             CommonSettingToggle.SetBinding(ToggleSwitch.IsOnProperty, "OwnedSetting");
 
-            DistanceUpDn.DataContext = monchaDevice.DeviceZone;
-            DistanceUpDn.SetBinding(NumericUpDown.ValueProperty, "Deep");
+            DistanceUpDn.DataContext = monchaDevice.Size;
+            DistanceUpDn.SetBinding(NumericUpDown.ValueProperty, "Z");
 
             //Device
 

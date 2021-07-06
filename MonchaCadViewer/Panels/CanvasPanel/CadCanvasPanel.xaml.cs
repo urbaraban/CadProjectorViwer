@@ -171,7 +171,7 @@ namespace MonchaCadViewer.Panels.CanvasPanel
 
         private void Canvas_SizeChanged(object sender, SizeChangedEventArgs e)
         {
-            double cell = (int)(Math.Min(MonchaHub.Size.MX, MonchaHub.Size.MY) / 10);
+            double cell = (int)(Math.Min(MonchaHub.Size.X, MonchaHub.Size.Y) / 10);
             CanvasBrush.Viewport = new Rect(0, 0, cell, cell);
         }
 

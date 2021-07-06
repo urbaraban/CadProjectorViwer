@@ -458,12 +458,12 @@ namespace MonchaCadViewer.CanvasObj
                 Tuple<string, string> position = new Tuple<string, string>(AppSt.Default.stg_default_position.Split('%')[0], AppSt.Default.stg_default_position.Split('%')[1]);
 
                 if (position.Item2 == "Left") this.X = -Bounds.X + 30 * MonchaHub.Size.M.X;
-                else if (position.Item2 == "Right") this.X = MonchaHub.Size.MX - (Bounds.X + Bounds.Width) - 30 * MonchaHub.Size.M.X;
-                else this.X = MonchaHub.Size.MX / 2 - (Bounds.X + Bounds.Width / 2);
+                else if (position.Item2 == "Right") this.X = MonchaHub.Size.X - (Bounds.X + Bounds.Width) - 30 * MonchaHub.Size.M.X;
+                else this.X = MonchaHub.Size.X / 2 - (Bounds.X + Bounds.Width / 2);
 
-                if (position.Item1 == "Down") this.Y = MonchaHub.Size.MY - (Bounds.Y + Bounds.Height) - 30 * MonchaHub.Size.M.Y;
+                if (position.Item1 == "Down") this.Y = MonchaHub.Size.Y - (Bounds.Y + Bounds.Height) - 30 * MonchaHub.Size.M.Y;
                 else if (position.Item1 == "Top") this.Y = -Bounds.Y + 30 * MonchaHub.Size.M.X;
-                else this.Y = MonchaHub.Size.MY / 2 - (Bounds.Y + Bounds.Height / 2);
+                else this.Y = MonchaHub.Size.Y / 2 - (Bounds.Y + Bounds.Height / 2);
 
                 this._mirror = AppSt.Default.default_mirror;
                 Scale.ScaleX = AppSt.Default.default_scale_x / 100 * (AppSt.Default.default_mirror == true ? -1 : 1);
@@ -605,7 +605,7 @@ namespace MonchaCadViewer.CanvasObj
                         new Point(GetGeometry.Bounds.X, GetGeometry.Bounds.Y + GetGeometry.Bounds.Height / 2));
                     //Right
                     DrawSize(drawingContext,
-                        new Point(MonchaHub.Size.MX, GetGeometry.Bounds.Y + GetGeometry.Bounds.Height / 2),
+                        new Point(MonchaHub.Size.X, GetGeometry.Bounds.Y + GetGeometry.Bounds.Height / 2),
                         new Point(GetGeometry.Bounds.X + GetGeometry.Bounds.Width, GetGeometry.Bounds.Y + GetGeometry.Bounds.Height / 2));
                     //Top
                     DrawSize(drawingContext,
@@ -613,7 +613,7 @@ namespace MonchaCadViewer.CanvasObj
                         new Point(GetGeometry.Bounds.X + GetGeometry.Bounds.Width / 2, GetGeometry.Bounds.Y));
                     //Down
                     DrawSize(drawingContext,
-                        new Point(GetGeometry.Bounds.X + GetGeometry.Bounds.Width / 2, MonchaHub.Size.MY),
+                        new Point(GetGeometry.Bounds.X + GetGeometry.Bounds.Width / 2, MonchaHub.Size.Y),
                         new Point(GetGeometry.Bounds.X + GetGeometry.Bounds.Width / 2, GetGeometry.Bounds.Y + GetGeometry.Bounds.Height));
                 }
             }

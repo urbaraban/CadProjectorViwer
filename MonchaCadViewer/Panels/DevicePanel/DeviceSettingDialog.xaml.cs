@@ -38,7 +38,7 @@ namespace MonchaCadViewer.Panels.DevicePanel
             IP4.Text = this._device.iPAddress.GetAddressBytes()[3].ToString();
 
             SelectCombo.DisplayMemberPath = "Name";
-            SelectCombo.ItemsSource = _device.Meshes;
+            SelectCombo.ItemsSource = _device.SelectedMeshes;
             SelectCombo.DataContext = _device;
             SelectCombo.SelectedItem = _device.SelectMesh;
             SelectCombo.SetBinding(ComboBox.SelectedItemProperty, "SelectMesh");

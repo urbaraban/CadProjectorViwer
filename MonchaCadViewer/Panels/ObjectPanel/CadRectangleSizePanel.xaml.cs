@@ -21,13 +21,14 @@ namespace MonchaCadViewer.Panels.ObjectPanel
     /// </summary>
     public partial class CadRectangleSizePanel : Window
     {
-        public CadRectangleSizePanel(CadRectangle  cadRectangle)
+        public CadRectangleSizePanel(CadRectangle cadRectangle)
         {
             InitializeComponent();
+            this.Title = cadRectangle.Label;
             WidthUpDn.DataContext = cadRectangle.LRect;
-            WidthUpDn.SetBinding(NumericUpDown.ValueProperty, "Width");
+            WidthUpDn.SetBinding(NumericUpDown.ValueProperty, "X");
             HeightUpDn.DataContext = cadRectangle.LRect;
-            HeightUpDn.SetBinding(NumericUpDown.ValueProperty, "Height");
+            HeightUpDn.SetBinding(NumericUpDown.ValueProperty, "Y");
         }
 
     }

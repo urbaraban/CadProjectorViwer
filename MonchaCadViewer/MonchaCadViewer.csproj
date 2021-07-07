@@ -256,6 +256,9 @@
     <Compile Include="Panels\DevicePanel\DeviceTreeTab.xaml.cs">
       <DependentUpon>DeviceTreeTab.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Panels\DevicePanel\MeshesDialog.xaml.cs">
+      <DependentUpon>MeshesDialog.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Panels\ObjectPanel\CadObjectPanel.xaml.cs">
       <DependentUpon>CadObjectPanel.xaml</DependentUpon>
     </Compile>
@@ -306,6 +309,10 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Page Include="Panels\DevicePanel\MeshesDialog.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Panels\ProgressPanel.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

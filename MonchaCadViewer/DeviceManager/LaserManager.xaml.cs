@@ -77,8 +77,6 @@ namespace MonchaCadViewer
                     MonchaHub.RemoveDevice(device.iPAddress);
                 }
             }
-
-            MonchaHub.RefreshDevice();
         }
 
         private void OkBtn_Click(object sender, RoutedEventArgs e)

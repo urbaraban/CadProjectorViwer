@@ -59,13 +59,10 @@
         
         <ComboBox x:Name="SelectCombo" Grid.Column="1" Grid.Row="2" Grid.ColumnSpan="2" Margin="5,3"/>
         <ComboBox x:Name="BaseCombo" Grid.Column="1" Grid.Row="3" Grid.ColumnSpan="2" Margin="5,3"/>
-        <ComboBox x:Name="VirtualCombo" Grid.Column="1" Grid.Row="4" Grid.ColumnSpan="2" Margin="5,4,5,0" Height="24" VerticalAlignment="Top"/>
-        
+
         <Label x:Name="label_Copy" Content="Select" Margin="5,3,0,3" Grid.Row="2"/>
         <Label x:Name="label_Copy1" Content="Base" Margin="5,3,0,3" Grid.Row="3"/>
-        <Label x:Name="label_Copy2" Content="Virtual" Margin="5,4,0,71" Grid.Row="4"/>
         <Button x:Name="AddSelectBtn" Content="+" Grid.Column="3" HorizontalAlignment="Left" Margin="10,6,0,4" Width="21" Grid.Row="2"/>
         <Button x:Name="AddBaseBtn" Content="+" Grid.Column="3" HorizontalAlignment="Left" Margin="10,6,0,4" Width="21" Grid.Row="3"/>
-        <Button x:Name="CheckBtn_Copy2" Content="+" Grid.Column="3" HorizontalAlignment="Left" Margin="10,6,0,73" Width="21" Grid.Row="4"/>
     </Grid>
 </Window>

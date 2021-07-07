@@ -200,14 +200,14 @@ namespace MonchaCadViewer.CanvasObj
             else if (this.MouseAction == MouseAction.Rectangle)
             {
                 Point point = e.GetPosition(this);
-                CadRectangle cadRectangle = new CadRectangle(new LPoint3D(point, MonchaHub.Size), new LPoint3D(point, MonchaHub.Size), true);
+                CadRectangle cadRectangle = new CadRectangle(new LPoint3D(point, MonchaHub.Size), new LPoint3D(point, MonchaHub.Size), string.Empty,true);
                 this.Add(cadRectangle);
 
             }
             else if (this.mouseAction == MouseAction.Mask)
             {
                 LSize3D lRect = new LSize3D(new LPoint3D(e.GetPosition(this), MonchaHub.Size, true), new LPoint3D(e.GetPosition(this), MonchaHub.Size, true));
-                CadRectangle Maskrectangle = new CadRectangle(lRect, true);
+                CadRectangle Maskrectangle = new CadRectangle(lRect, $"Mask_{this.Masks.Count}", true);
                 this.Add(Maskrectangle);
                 this.Masks.Add(lRect);
             }

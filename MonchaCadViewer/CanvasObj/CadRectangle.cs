@@ -35,7 +35,35 @@ namespace MonchaCadViewer.CanvasObj
         public override event EventHandler<string> Updated;
         public override event EventHandler<CadObject> Removed;
 
-        public LSize3D LRect;
+        public LSize3D LRect
+        {
+            get => _lrect;
+            set
+            {
+                if (_lrect != null) { }
+                _lrect = value;
+                _lrect.PropertyChanged += _lrect_PropertyChanged;
+            }
+        }
+
+        private void _lrect_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            this.InvalidateVisual();
+            Updated?.Invoke(this, "Rect");
+        }
+
+        private LSize3D _lrect;
+
+        public string Label
+        {
+            get => _label;
+            set
+            {
+                _label = value;
+                OnPropertyChanged("Label");
+            }
+        }
+        private string _label = string.Empty;
 
         public override double X
         {
@@ -73,14 +101,16 @@ namespace MonchaCadViewer.CanvasObj
 
         public override Rect Bounds => new Rect(LRect.P1.GetMPoint, LRect.P2.GetMPoint);
 
-        public CadRectangle(LPoint3D P1, LPoint3D P2, bool MouseSet)
+        public CadRectangle(LPoint3D P1, LPoint3D P2, string Label, bool MouseSet)
         {
+            this.Label = Label;
             this.LRect = new LSize3D(P1, P2);
             LoadSetting(MouseSet);
         }
 
-        public CadRectangle(LSize3D lRect, bool MouseSet)
+        public CadRectangle(LSize3D lRect, string Label, bool MouseSet)
         {
+            this.Label = Label;
             LRect = lRect;
             LoadSetting(MouseSet);
         }
@@ -90,8 +120,6 @@ namespace MonchaCadViewer.CanvasObj
         {
             this.Render = false;
             UpdateTransform(null, false, new Rect(X, Y, Math.Abs(LRect.P1.MX - LRect.P2.MX), Math.Abs(LRect.P1.MY - LRect.P2.MY)));
-
-            LRect.PropertyChanged += Point1_PropertyChanged;
 
             ContextMenuLib.CadRectMenu(this.ContextMenu);
             this.ContextMenuClosing += ContextMenu_ContextMenuClosing;
@@ -121,11 +149,6 @@ namespace MonchaCadViewer.CanvasObj
             }
         }
 
-        private void Point1_PropertyChanged(object sender, PropertyChangedEventArgs e)
-        {
-            this.InvalidateVisual();
-            Updated?.Invoke(this, "Rect");
-        }
 
         /// <summary>
         /// Load Adorner
@@ -207,6 +230,15 @@ namespace MonchaCadViewer.CanvasObj
 
         protected override void OnRender(DrawingContext drawingContext)
         {
+            drawingContext.DrawText(
+                new FormattedText(this.Label,
+                new System.Globalization.CultureInfo("ru-RU"),
+                FlowDirection.LeftToRight,
+                    new Typeface("Segoe UI"),
+                    (int)MonchaHub.GetThinkess * 3,
+                    Brushes.Gray),
+                new Point(LRect.P1.MX, LRect.P1.MY));
+
             SolidColorBrush TransparentBrush = new SolidColorBrush();
             TransparentBrush.Color = Colors.Transparent;
 

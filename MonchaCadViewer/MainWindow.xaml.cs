@@ -91,7 +91,7 @@ namespace MonchaCadViewer
             ToGCLogger.Progressed += ToGC_Progressed;
 
             MonchaHub.Loging += MonchaHub_Loging;
-            MonchaHub.RefreshedDevice += MonchaHub_RefreshDevice;
+            MonchaHub.Devices.CollectionChanged += Devices_CollectionChanged; ;
 
             MultPanel.NeedUpdate += MultPanel_NeedUpdate;
             DevicePanel.NeedUpdate += MultPanel_NeedUpdate;
@@ -113,6 +113,11 @@ namespace MonchaCadViewer
             this.MainCanvas.SelectedObject += MainCanvas_SelectedObject;
 
             ContourScrollPanel.SelectedFrame += ContourScrollPanel_SelectedFrame;
+        }
+
+        private void Devices_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        {
+            DeviceTree.Refresh();
         }
 
         private void ToGC_Progressed(object sender, ProgBarMessage e)
@@ -195,12 +200,6 @@ namespace MonchaCadViewer
             {
                 this.MainCanvas.UpdateProjection(false);
             }
-        }
-
-
-        private void MonchaHub_RefreshDevice(object sender, List<MonchaDevice> e)
-        {
-            DeviceTree.Refresh();
         }
 
         private void LoadMoncha()
@@ -456,7 +455,7 @@ namespace MonchaCadViewer
         }
 
 
-        private void kmpsSelectBtn_Click(object sender, RoutedEventArgs e)
+        private async void kmpsSelectBtn_Click(object sender, RoutedEventArgs e)
         {
             if (KmpsAppl.KompasAPI != null)
             {
@@ -468,7 +467,7 @@ namespace MonchaCadViewer
             }
         }
 
-        private void kmpsAddBtn_Click(object sender, RoutedEventArgs e)
+        private async void kmpsAddBtn_Click(object sender, RoutedEventArgs e)
         {
             if (KmpsAppl.KompasAPI != null)
             {

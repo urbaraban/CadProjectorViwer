@@ -188,5 +188,17 @@ namespace MonchaCadViewer.Panels.CanvasPanel
                 }
             }
         }
+
+        private void ShowDeviceRect_Click(object sender, RoutedEventArgs e)
+        {
+            foreach(MonchaDevice monchaDevice in MonchaHub.Devices)
+            {
+                this.Canvas.DrawContour(new CadRectangle(monchaDevice.Size, monchaDevice.HWIdentifier, false), false);
+                foreach (LDeviceMesh mesh in monchaDevice.SelectedMeshes)
+                {
+                    this.Canvas.DrawContour(new CadRectangle(mesh.Size, mesh.Name, false), false);
+                }
+            }
+        }
     }
 }

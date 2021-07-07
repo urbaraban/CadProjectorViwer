@@ -73,9 +73,8 @@ namespace MonchaCadViewer.Panels
 
         private void BindingDeviceSetting(MonchaDevice monchaDevice)
         {
-
             MeshCombo.DisplayMemberPath = "Name";
-            MeshCombo.ItemsSource = monchaDevice.Meshes;
+            MeshCombo.ItemsSource = monchaDevice.SelectedMeshes;
             MeshCombo.DataContext = monchaDevice;
             MeshCombo.SetBinding(ComboBox.SelectedItemProperty, "SelectMesh");
 
@@ -201,6 +200,18 @@ namespace MonchaCadViewer.Panels
         private void CommonSettingToggle_Toggled(object sender, RoutedEventArgs e)
         {
             BindingDeviceSetting(this.Device);
+        }
+
+        private void MeshSettingBtn_Click(object sender, RoutedEventArgs e)
+        {
+            CreateGridWindow createGridWindow = new CreateGridWindow(Device, Device.SelectMesh);
+            createGridWindow.Show();
+        }
+
+        private void MeshListBtn_Click(object sender, RoutedEventArgs e)
+        {
+            MeshesDialog meshesDialog = new MeshesDialog(Device);
+            meshesDialog.Show();
         }
     }
 }

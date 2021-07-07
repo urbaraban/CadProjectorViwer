@@ -151,12 +151,11 @@ namespace MonchaCadViewer.Panels
 
                         case "dvc_showzone":
                             DrawObjects?.Invoke(this, new List<FrameworkElement>() {
-                                new CadRectangle(device.Size.P1, device.Size.P2, false){Render = false}
+                                new CadRectangle(device.Size, device.HWIdentifier, false){Render = false}
                             });
                             break;
                         case "dvc_polymesh":
                             device.PolyMeshUsed = !device.PolyMeshUsed;
-                            MonchaHub.RefreshDevice();
                             break;
                         case "dvc_center":
                             DrawObjects?.Invoke(this, new List<FrameworkElement>() {
@@ -199,7 +198,6 @@ namespace MonchaCadViewer.Panels
                         case "common_ADD":
                             MonchaCadViewer.DeviceManager.LaserMeterWindows laserMeterWindows = new MonchaCadViewer.DeviceManager.LaserMeterWindows(new VLTLaserMeters());
                             laserMeterWindows.ShowDialog();
-                            MonchaHub.RefreshDevice();
                             break;
                     }
             }
@@ -235,7 +233,7 @@ namespace MonchaCadViewer.Panels
                                 device.SelectMesh.Affine = !device.SelectMesh.Affine;
                                 break;
                             case "mesh_ShowRect":
-                                DrawObjects?.Invoke(this, new List<FrameworkElement>() { new CadRectangle(device.SelectMesh.Size, false) });
+                                DrawObjects?.Invoke(this, new List<FrameworkElement>() { new CadRectangle(device.SelectMesh.Size, device.SelectMesh.Name, false) });
                                 break;
                         }
                     }
@@ -243,7 +241,7 @@ namespace MonchaCadViewer.Panels
             }
         }
 
-        private void RemoveLaser_Click(object sender, RoutedEventArgs e) => MonchaHub.RemoveDevice(selectdevice);
+        private void RemoveLaser_Click(object sender, RoutedEventArgs e) => MonchaHub.Devices.Remove(selectdevice);
 
 
         private void RefreshLaser_Click_1(object sender, RoutedEventArgs e)

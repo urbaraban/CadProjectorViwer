@@ -208,7 +208,7 @@
             Grid.Column="1"
             Grid.ColumnSpan="4"
             Height="25"
-            Margin="0,7,59,0"
+            Margin="31,7,59,0"
             VerticalAlignment="Top"
             AllowDrop="False"
             Maximum="40000"
@@ -221,11 +221,11 @@
             Grid.Row="3"
             Grid.Column="1"
             Height="21"
-            Margin="4,0,0,0"
+            Margin="3,7,0,0"
             VerticalAlignment="Top"
             Content="{DynamicResource dvc_SRC}"
             FontSize="8"
-            RenderTransformOrigin="0.439,0.556" />
+            RenderTransformOrigin="0.439,0.556" HorizontalAlignment="Left" Width="28" />
         <Controls:NumericUpDown
             x:Name="RedUpDn"
             Grid.Row="4"
@@ -481,22 +481,22 @@
             x:Name="DeviceSettingBtn"
             Grid.Column="4"
             Height="26"
-            Margin="67,25,0,0"
+            Margin="0,25,11,0"
             VerticalAlignment="Top"
             Click="DeviceSettingBtn_Click"
             Content="&#xE713;"
             FontFamily="Segoe MDL2 Assets"
-            FontSize="14" HorizontalAlignment="Left" Width="26" />
+            FontSize="14" HorizontalAlignment="Right" Width="26" />
         <ComboBox
             x:Name="MeshCombo"
             Grid.Column="1"
             Height="26"
-            Margin="3,17,0,0"
+            Margin="3,17,73,0"
             VerticalAlignment="Top"
             DataContextChanged="DeviceCombo_DataContextChanged"
             IsEnabled="{Binding !IsChecked, ElementName=QRBtn}"
             RenderTransformOrigin="0.5,0.5"
-            SelectionChanged="DeviceCombo_SelectionChanged" Grid.Row="1" Grid.ColumnSpan="3" />
+            SelectionChanged="DeviceCombo_SelectionChanged" Grid.Row="1" Grid.ColumnSpan="4" />
         <Label
             x:Name="label_Copy"
             Grid.Column="1"
@@ -506,34 +506,22 @@
             VerticalAlignment="Top"
             Content="{DynamicResource dvc_Mesh}" Margin="4,51,0,0" Grid.RowSpan="2" />
         <Button
-            x:Name="DeviceSettingBtn_Copy"
+            x:Name="MeshSettingBtn"
             Grid.Column="4"
             Height="26"
-            Margin="67,17,0,0"
+            Margin="0,17,42,0"
             VerticalAlignment="Top"
-            Click="DeviceSettingBtn_Click"
-            Content="&#xE713;"
+            Content="&#xEB7E;"
             FontFamily="Segoe MDL2 Assets"
-            FontSize="14" HorizontalAlignment="Left" Width="26" Grid.Row="1" />
+            FontSize="14" Grid.Row="1" HorizontalAlignment="Right" Width="26" Click="MeshSettingBtn_Click"  />
         <Button
-            x:Name="DeviceSettingBtn_Copy1"
+            x:Name="MeshListBtn"
             Grid.Column="4"
             Height="26"
-            Margin="5,17,0,0"
+            Margin="0,17,11,0"
             VerticalAlignment="Top"
-            Click="DeviceSettingBtn_Click"
-            Content="&#xE713;"
+            Content="&#xF0B5;"
             FontFamily="Segoe MDL2 Assets"
-            FontSize="14" HorizontalAlignment="Left" Width="26" Grid.Row="1" />
-        <Button
-            x:Name="DeviceSettingBtn_Copy2"
-            Grid.Column="4"
-            Height="26"
-            Margin="36,17,0,0"
-            VerticalAlignment="Top"
-            Click="DeviceSettingBtn_Click"
-            Content="&#xE713;"
-            FontFamily="Segoe MDL2 Assets"
-            FontSize="14" HorizontalAlignment="Left" Width="26" Grid.Row="1" />
+            FontSize="14" Grid.Row="1" HorizontalAlignment="Right" Width="26" Click="MeshListBtn_Click" />
     </Grid>
 </UserControl>

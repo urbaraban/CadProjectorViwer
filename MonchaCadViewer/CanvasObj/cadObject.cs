@@ -68,6 +68,8 @@ namespace MonchaCadViewer.CanvasObj
 
         public string Name { get; set; } = string.Empty;
 
+        public MeshType MeshType { get; set; } = MeshType.SELECT;
+
         public AdornerLayer adornerLayer { get; set; }
 
         #region Property

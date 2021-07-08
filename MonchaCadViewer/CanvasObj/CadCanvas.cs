@@ -448,7 +448,7 @@ namespace MonchaCadViewer.CanvasObj
             SelectedObject?.Invoke(this, (CadObject)sender);
         }
 
-        public static List<FrameworkElement> GetMesh(LDeviceMesh mesh, double AnchorSize, bool Render)
+        public static List<FrameworkElement> GetMesh(LDeviceMesh mesh, double AnchorSize, bool Render, MeshType meshType)
         {
             List<FrameworkElement> objects = new List<FrameworkElement>();
 
@@ -465,6 +465,7 @@ namespace MonchaCadViewer.CanvasObj
                         ToolTip = "Позиция: " + i + ":" + j + "\nX: " + mesh[i, j].X + "\n" + "Y: " + mesh[i, j].Y,
                         DataContext = mesh,
                         Render = Render,
+                        MeshType = meshType
                     });
                 }
             }

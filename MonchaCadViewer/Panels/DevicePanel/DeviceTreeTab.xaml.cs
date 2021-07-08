@@ -122,7 +122,7 @@ namespace MonchaCadViewer.Panels
             {
                 if (DeviceTree.DataContext is MonchaDevice device)
                 {
-                    DrawObjects?.Invoke(this, CadCanvas.GetMesh(device.SelectMesh, MonchaHub.GetThinkess * AppSt.Default.anchor_size, false));
+                    DrawObjects?.Invoke(this, CadCanvas.GetMesh(device.SelectMesh, MonchaHub.GetThinkess * AppSt.Default.anchor_size, false, MeshType.NONE));
                 }
             }
         }
@@ -173,7 +173,7 @@ namespace MonchaCadViewer.Panels
             {
                 if (DeviceTree.DataContext is MonchaDevice device && BaseMeshItem.DataContext is LDeviceMesh mesh)
                 {
-                    DrawObjects?.Invoke(this, CadCanvas.GetMesh(mesh, MonchaHub.GetThinkess * AppSt.Default.anchor_size, false));
+                    DrawObjects?.Invoke(this, CadCanvas.GetMesh(mesh, MonchaHub.GetThinkess * AppSt.Default.anchor_size, false, MeshType.NONE));
                 }
             }
         }
@@ -216,6 +216,9 @@ namespace MonchaCadViewer.Panels
                             case "common_Create":
                                 CreateGridWindow createGridWindow = new CreateGridWindow(device, device.SelectMesh);
                                 createGridWindow.ShowDialog();
+                                break;
+                            case "mesh_ShowVirtual":
+                                DrawObjects?.Invoke(this, CadCanvas.GetMesh(device.SelectMesh.VirtualMesh, MonchaHub.GetThinkess * AppSt.Default.anchor_size, false, MeshType.BASE));
                                 break;
                             case "m_Refresh":
                                 device.RefreshMeshPoint(device.SelectMesh);

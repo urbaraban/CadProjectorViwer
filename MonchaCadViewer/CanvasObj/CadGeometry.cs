@@ -39,7 +39,7 @@ namespace MonchaCadViewer.CanvasObj
             }
         }
 
-        public LObjectList GetTransformPoint()
+        public LObjectList GetTransformPoints()
         {
             LObjectList lObjectList = new LObjectList();
             Transform3DGroup transform3DGroup = this.TransformGroup;

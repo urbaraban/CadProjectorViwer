@@ -84,6 +84,8 @@ namespace MonchaCadViewer.Panels
             DistanceUpDn.DataContext = monchaDevice.Size;
             DistanceUpDn.SetBinding(NumericUpDown.ValueProperty, "Z");
 
+            OnlySelectCheck.SetBinding(CheckBox.IsCheckedProperty, "OnlySelectMesh");
+
             //Device
 
             ScanRateCalc.Maximum = 40000;

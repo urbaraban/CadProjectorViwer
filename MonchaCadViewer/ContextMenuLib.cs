@@ -51,6 +51,7 @@ namespace MonchaCadViewer.CanvasObj
         public static void MeshMenu(ContextMenu contextMenu)
         {
             AddItem("common_Create", contextMenu);
+            AddItem("mesh_ShowVirtual", contextMenu);
             AddItem("m_Refresh", contextMenu);
             AddItem("mesh_Inverse", contextMenu);
             AddItem("mesh_Returnpoint", contextMenu);

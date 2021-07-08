@@ -36,8 +36,8 @@ namespace MonchaCadViewer
                 Canvas.Canvas.AddRange(
                     CadCanvas.GetMesh(
                     new LDeviceMesh(LDeviceMesh.MakeMeshPoint((int)HeightUpDn.Value.Value, (int)WidthUpDn.Value.Value), string.Empty),
-                    MonchaHub.GetThinkess * AppSt.Default.anchor_size, false
-                    ), true);
+                    MonchaHub.GetThinkess * AppSt.Default.anchor_size, false, MeshType.NONE), 
+                    true);
             }
         }
 
@@ -95,8 +95,7 @@ namespace MonchaCadViewer
             Canvas.Canvas.AddRange(
                      CadCanvas.GetMesh(
                      new LDeviceMesh(LDeviceMesh.MakeMeshPoint((int)HeightUpDn.Value.Value, (int)WidthUpDn.Value.Value), string.Empty),
-                     MonchaHub.GetThinkess * AppSt.Default.anchor_size, false
-                     ), true);
+                     MonchaHub.GetThinkess * AppSt.Default.anchor_size, false, MeshType.NONE), true);
         }
     }
 

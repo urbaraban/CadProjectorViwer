@@ -67,7 +67,7 @@ namespace MonchaCadViewer.CanvasObj
                     if (cadObject.DataContext is LDeviceMesh deviceMesh)
                     {
                         if (LDeviceMesh.ClbrForm == CalibrationForm.cl_Dot) 
-                            lObjectList.Add(new LObject() { Points = new List<LPoint3D>() { cadDot.GetLPoint.GetMLpoint3D }, MeshType = MeshType.NONE });
+                            lObjectList.Add(new LObject() { Points = new List<LPoint3D>() { cadDot.GetLPoint.GetMLpoint3D }, MeshType = cadObject.MeshType });
                         if (LDeviceMesh.ClbrForm == CalibrationForm.cl_Rect) 
                             lObjectList.AddRange(CalibrationRect(deviceMesh, cadDot.GetLPoint));
                         if (LDeviceMesh.ClbrForm == CalibrationForm.cl_miniRect) 
@@ -93,7 +93,7 @@ namespace MonchaCadViewer.CanvasObj
 
                     break;
                 case CadGeometry cadGeometry:
-                    lObjectList.AddRange(cadGeometry.GetTransformPoint());
+                    lObjectList.AddRange(cadGeometry.GetTransformPoints());
                     break;
                 case CadLine cadLine:
                     lObjectList.Add(new LObject()
@@ -129,8 +129,8 @@ namespace MonchaCadViewer.CanvasObj
             }
 
             return lObjectList;
-            
 
+            #region GetMeshShape
             LObjectList CalibrationCross(LDeviceMesh monchaDeviceMesh, LPoint3D lPoint3D)
             {
                 Tuple<int, int> tuple = monchaDeviceMesh.CoordinatesOf(lPoint3D);
@@ -191,7 +191,7 @@ namespace MonchaCadViewer.CanvasObj
 
                 LObject GetLine(int xpos, int ypos, bool Vertical)
                 {
-                    LObject Line = new LObject() { MeshType = MeshType.NONE };
+                    LObject Line = new LObject() { MeshType = cadObject.MeshType };
 
                     if (Vertical == true)
                     {
@@ -220,7 +220,6 @@ namespace MonchaCadViewer.CanvasObj
                 }
 
             }
-
             LObjectList CalibrationMiniRect(LDeviceMesh monchaDeviceMesh, LPoint3D lPoint3D)
             {
                 Tuple<int, int> tuple = monchaDeviceMesh.CoordinatesOf(lPoint3D);
@@ -237,7 +236,7 @@ namespace MonchaCadViewer.CanvasObj
                                 monchaDeviceMesh[tuple.Item2 + (tuple.Item2 < height ? 1 : -1), tuple.Item1].GetMLpoint3D
                             },
                             Closed = true,
-                            MeshType = MeshType.NONE
+                            MeshType = cadObject.MeshType
                         }
                 };
 
@@ -250,7 +249,7 @@ namespace MonchaCadViewer.CanvasObj
 
 
                 //Height
-                LObject Line = new LObject() { MeshType = MeshType.NONE };
+                LObject Line = new LObject() { MeshType = cadObject.MeshType };
 
                 for (int i = 0; i <= height; i += 1)
                 {
@@ -270,7 +269,7 @@ namespace MonchaCadViewer.CanvasObj
                 int width = monchaDeviceMesh.GetLength(1) - 1;
 
                 //width
-                LObject Line = new LObject() { MeshType = MeshType.NONE }; ;
+                LObject Line = new LObject() { MeshType = cadObject.MeshType }; ;
 
                 for (int i = 0; i <= width; i += 1)
                 {
@@ -283,6 +282,7 @@ namespace MonchaCadViewer.CanvasObj
                 };
 
             }
+            #endregion
         }
 
         /// <summary>

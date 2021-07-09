@@ -94,9 +94,7 @@ namespace MonchaCadViewer
             MonchaHub.Devices.CollectionChanged += Devices_CollectionChanged; ;
 
             MultPanel.NeedUpdate += MultPanel_NeedUpdate;
-            DevicePanel.NeedUpdate += MultPanel_NeedUpdate;
             DevicePanel.DrawObjects += DeviceTree_DrawObjects;
-            ObjectPanel.NeedUpdate += MultPanel_NeedUpdate;
             DeviceTree.NeedRefresh += DeviceTree_NeedRefresh;
             DeviceTree.DrawObjects += DeviceTree_DrawObjects;
 
@@ -108,7 +106,6 @@ namespace MonchaCadViewer
             {
                 DevicePanel.DataContext = MonchaHub.Devices[0];
             }
-
 
             this.MainCanvas.SelectedObject += MainCanvas_SelectedObject;
 
@@ -461,7 +458,7 @@ namespace MonchaCadViewer
             {
                 GCCollection gCElements = new GCCollection();
                 gCElements.AddRange(
-                    ContourCalc.GetGeometry(this.kmpsAppl.Doc, MonchaHub.ProjectionSetting.PointStep.MX, false, true));
+                    await ContourCalc.GetGeometry(this.kmpsAppl.Doc, MonchaHub.ProjectionSetting.PointStep.MX, false, true));
 
                 ContourScrollPanel.Add(false, gCElements, this.kmpsAppl.Doc.D7.Name);
             }
@@ -474,7 +471,7 @@ namespace MonchaCadViewer
                 ContourScrollPanel.Add(
                     false,
                     new GCCollection() {
-                    new GeometryElement(ContourCalc.GetGeometry(this.kmpsAppl.Doc, MonchaHub.ProjectionSetting.PointStep.MX, true, true)),
+                    new GeometryElement(await ContourCalc.GetGeometry(this.kmpsAppl.Doc, MonchaHub.ProjectionSetting.PointStep.MX, true, true)),
                     },
                     this.kmpsAppl.Doc.D7.Name);
             }

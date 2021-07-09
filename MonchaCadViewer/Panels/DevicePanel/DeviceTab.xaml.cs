@@ -31,8 +31,6 @@ namespace MonchaCadViewer.Panels
 
         public event EventHandler<MonchaDevice> DeviceChange;
 
-        public event EventHandler NeedUpdate;
-
         public event EventHandler<List<FrameworkElement>> DrawObjects;
 
         public DeviceTab()
@@ -135,15 +133,6 @@ namespace MonchaCadViewer.Panels
 
             CRSUpDn.DataContext = monchaDevice.ProjectionSetting.PointStep;
             CRSUpDn.SetBinding(NumericUpDown.ValueProperty, "MX");
-
-            monchaDevice.PropertyChanged += ProjectionSetting_PropertyChanged;
-            monchaDevice.ProjectionSetting.PropertyChanged += ProjectionSetting_PropertyChanged;
-            monchaDevice.ProjectionSetting.PointStep.PropertyChanged += ProjectionSetting_PropertyChanged;
-        }
-
-        private void ProjectionSetting_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
-        {
-            NeedUpdate?.Invoke(this, null);
         }
 
         private void LMeter_ChangeDimention(object sender, double e)

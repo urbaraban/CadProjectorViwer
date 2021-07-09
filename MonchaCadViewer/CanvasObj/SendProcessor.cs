@@ -23,7 +23,7 @@ namespace MonchaCadViewer.CanvasObj
         /// </summary>
         /// <param name="canvas">Отправляемое рабочее поле</param>
         /// <returns>N_{i,degree}(step)</returns>
-        public async static void Worker(CadCanvas canvas)
+        public async static Task Worker(CadCanvas canvas)
         {
             Processing = true;
             LObjectList dotList = new LObjectList();

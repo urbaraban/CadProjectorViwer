@@ -12,8 +12,6 @@ namespace MonchaCadViewer.Panels
     /// </summary>
     public partial class CadObjectPanel : UserControl
     {
-        public event EventHandler NeedUpdate;
-
         public CadObjectPanel()
         {
             InitializeComponent();

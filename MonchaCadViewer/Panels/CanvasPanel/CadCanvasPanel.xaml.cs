@@ -86,9 +86,9 @@ namespace MonchaCadViewer.Panels.CanvasPanel
             SelectedObject?.Invoke(this, e);
         }
 
-        public void UpdateProjection(bool force)
+        public async void UpdateProjection(bool force)
         {
-            SendProcessor.Worker(Canvas);
+           await SendProcessor.Worker(Canvas);
         }
 
         public void MoveCanvasSet(double left, double top)

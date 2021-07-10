@@ -17,7 +17,7 @@
             <Button x:Name="AdornerShowBtn" FontFamily="Segoe MDL2 Assets" Content="&#xE7F0;" Width="30" Height="30" Margin="3" Click="AdornerShowBtn_Click" Panel.ZIndex="999" FontSize="18"/>
             <Button x:Name="ShowDeviceRect" FontFamily="Segoe MDL2 Assets" Content="&#xE9A6;" Width="30" Height="30" Margin="3" Click="ShowDeviceRect_Click" Panel.ZIndex="999" FontSize="20"/>
         </StackPanel>
-        <Viewbox Grid.RowSpan="3" Stretch="Uniform" StretchDirection="DownOnly">
+        <Viewbox Grid.RowSpan="3" Stretch="Uniform" StretchDirection="Both">
             <canvasobj:CadCanvas x:Name="Canvas" SizeChanged="Canvas_SizeChanged" Focusable="False" Grid.Row="1">
                 <canvasobj:CadCanvas.Background>
                     <DrawingBrush x:Name="CanvasBrush" TileMode="Tile" Viewport="0,0,200,200" 

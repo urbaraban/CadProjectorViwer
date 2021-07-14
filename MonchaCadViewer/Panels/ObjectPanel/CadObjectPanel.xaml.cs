@@ -21,62 +21,65 @@ namespace MonchaCadViewer.Panels
         public void DataContextUpdate(CadObject cadObject)
         {
             this.IsEnabled = true;
-            XUpDn.Value = cadObject.X;
-            XUpDn.SetBinding(NumericUpDown.ValueProperty, "X");
             XUpDn.DataContext = cadObject;
+            XUpDn.SetBinding(NumericUpDown.ValueProperty, "X");
+            
 
-            YUpDn.Value = cadObject.Y;
-            YUpDn.SetBinding(NumericUpDown.ValueProperty, "Y");
             YUpDn.DataContext = cadObject;
+            YUpDn.SetBinding(NumericUpDown.ValueProperty, "Y");
+            
 
-            ZUpDn.Value = cadObject.Z;
-            ZUpDn.SetBinding(NumericUpDown.ValueProperty, "Z");
             ZUpDn.DataContext = cadObject;
+            ZUpDn.SetBinding(NumericUpDown.ValueProperty, "Z");
+            
 
-            MirrorCheck.DataContext = cadObject;
             MirrorCheck.IsChecked = cadObject.Mirror;
             MirrorCheck.SetBinding(CheckBox.IsCheckedProperty, "Mirror");
+            
 
-            RenderCheck.IsChecked = cadObject.Render;
-            RenderCheck.SetBinding(CheckBox.IsCheckedProperty, "Render");
             RenderCheck.DataContext = cadObject;
+            RenderCheck.SetBinding(CheckBox.IsCheckedProperty, "Render");
+            
 
-            FixCheck.IsChecked = cadObject.IsFix;
-            FixCheck.SetBinding(CheckBox.IsCheckedProperty, "IsFix");
             FixCheck.DataContext = cadObject;
+            FixCheck.SetBinding(CheckBox.IsCheckedProperty, "IsFix");
+            
 
-            AngleZUpDn.Value = cadObject.AngleZ;
-            AngleZUpDn.SetBinding(NumericUpDown.ValueProperty, "AngleZ");
             AngleZUpDn.DataContext = cadObject;
+            AngleZUpDn.SetBinding(NumericUpDown.ValueProperty, "AngleZ");
 
-            AngleYUpDn.Value = cadObject.AngleY;
-            AngleYUpDn.SetBinding(NumericUpDown.ValueProperty, "AngleY");
+
             AngleYUpDn.DataContext = cadObject;
+            AngleYUpDn.SetBinding(NumericUpDown.ValueProperty, "AngleY");
 
-            AngleXUpDn.Value = cadObject.AngleX;
-            AngleXUpDn.SetBinding(NumericUpDown.ValueProperty, "AngleX");
+
             AngleXUpDn.DataContext = cadObject;
+            AngleXUpDn.SetBinding(NumericUpDown.ValueProperty, "AngleX");
+            
 
-            WidthUpDn.Value = cadObject.ScaleX;
+            
             WidthUpDn.Interval = MonchaCadViewer.Properties.Settings.Default.stg_scale_percent == true ? 1 : 0.01;
             Binding bindingScaleX = new Binding("ScaleX");
             bindingScaleX.Converter = new ScaleConverter(MonchaCadViewer.Properties.Settings.Default.stg_scale_percent, MonchaCadViewer.Properties.Settings.Default.stg_scale_invert);
             WidthUpDn.SetBinding(NumericUpDown.ValueProperty, bindingScaleX);
             WidthUpDn.DataContext = cadObject;
+            //WidthUpDn.Value = cadObject.ScaleX;
 
-            HeightUpDn.Value = cadObject.ScaleY;
+            HeightUpDn.DataContext = cadObject;
             HeightUpDn.Interval = MonchaCadViewer.Properties.Settings.Default.stg_scale_percent == true ? 1 : 0.01;
             Binding bindingScaleY = new Binding("ScaleY");
             bindingScaleY.Converter = new ScaleConverter(MonchaCadViewer.Properties.Settings.Default.stg_scale_percent, MonchaCadViewer.Properties.Settings.Default.stg_scale_invert);
             HeightUpDn.SetBinding(NumericUpDown.ValueProperty, bindingScaleY);
             HeightUpDn.DataContext = cadObject;
+            //HeightUpDn.Value = cadObject.ScaleY;
 
-            DeepUpDn.Value = cadObject.ScaleZ;
+            DeepUpDn.DataContext = cadObject;
             DeepUpDn.Interval = MonchaCadViewer.Properties.Settings.Default.stg_scale_percent == true ? 1 : 0.01;
             Binding bindingScaleZ = new Binding("ScaleZ");
             bindingScaleZ.Converter = new ScaleConverter(MonchaCadViewer.Properties.Settings.Default.stg_scale_percent, MonchaCadViewer.Properties.Settings.Default.stg_scale_invert);
             DeepUpDn.SetBinding(NumericUpDown.ValueProperty, bindingScaleZ);
-            DeepUpDn.DataContext = cadObject;
+           
+            //DeepUpDn.Value = cadObject.ScaleZ;
 
         }
 

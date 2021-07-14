@@ -298,5 +298,17 @@ namespace MonchaCadViewer.Properties {
                 this["stg_default_position"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool stg_selectable_show {
+            get {
+                return ((bool)(this["stg_selectable_show"]));
+            }
+            set {
+                this["stg_selectable_show"] = value;
+            }
+        }
     }
 }

@@ -720,6 +720,7 @@ namespace MonchaCadViewer
             AppSt.Default.stg_scale_percent = ScalePercentCheck.IsChecked.Value;
             AppSt.Default.object_solid = SolidObject.IsChecked.Value;
             AppSt.Default.stg_show_name = ShowNameCheck.IsChecked.Value;
+            AppSt.Default.stg_selectable_show = SelectableShowCheck.IsChecked.Value;
             AppSt.Default.Save();
         }
 

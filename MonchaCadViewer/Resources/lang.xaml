@@ -84,6 +84,7 @@
     <v:String x:Key="setting_invertscale">Invert scale</v:String>
     <v:String x:Key="setting_solidobject">Solid object</v:String>
     <v:String x:Key="setting_attach">Attach</v:String>
+    <v:String x:Key="setting_selectableshow">Selectable Show</v:String>
 
     <v:String x:Key="mesh_Affine">Affine</v:String>
     <v:String x:Key="mesh_Morph">Morph</v:String>

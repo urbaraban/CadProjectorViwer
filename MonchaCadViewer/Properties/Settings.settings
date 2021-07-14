@@ -71,5 +71,8 @@
     <Setting Name="stg_default_position" Type="System.String" Scope="User">
       <Value Profile="(Default)">Down%Left</Value>
     </Setting>
+    <Setting Name="stg_selectable_show" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">False</Value>
+    </Setting>
   </Settings>
 </SettingsFile>

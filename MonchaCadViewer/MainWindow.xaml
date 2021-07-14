@@ -277,6 +277,11 @@
                                             <RadioButton Grid.Column="1" HorizontalAlignment="Left" Margin="25,322,0,0" VerticalAlignment="Top" DataContext="Down%Middle" Checked="AttachRadioButton_Checked"/>
                                             <RadioButton Grid.Column="1" HorizontalAlignment="Left" Margin="45,322,0,0" VerticalAlignment="Top" DataContext="Down%Right" Checked="AttachRadioButton_Checked"/>
                                             <Label x:Name="label2_Copy3" Content="{DynamicResource setting_attach}" HorizontalAlignment="Left" Margin="10,298,0,0" VerticalAlignment="Top" Height="26" Width="86"/>
+                                            <CheckBox x:Name="SelectableShowCheck" Content="{DynamicResource setting_selectableshow}" HorizontalAlignment="Left" Margin="5,264,0,0" VerticalAlignment="Top"  IsChecked="{Binding stg_selectable_show, Mode=TwoWay}" Grid.Column="1" Width="147">
+                                                <CheckBox.DataContext>
+                                                    <Properties:Settings/>
+                                                </CheckBox.DataContext>
+                                            </CheckBox>
 
                                         </Grid>
                                     </TabItem>

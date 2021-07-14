@@ -39,15 +39,15 @@ namespace MonchaCadViewer.CanvasObj
                 {
                     return new Pen(Brushes.Orange, thinkess * 1.5);
                 }
-                else if (this._isselected == true)
+                else if (this.IsSelected == true)
                 {
                     return new Pen(Brushes.Black, thinkess);
                 }
-                else if (this._render == false)
+                else if (this.Render == false)
                 {
                     return new Pen(Brushes.DarkGray, thinkess);
                 }
-                else if (this._isfix == true)
+                else if (this.IsFix == true)
                 {
                     return new Pen(Brushes.LightBlue, thinkess);
                 }
@@ -336,7 +336,7 @@ namespace MonchaCadViewer.CanvasObj
 
         public bool Render
         {
-            get => this._render;
+            get => this._render && (!AppSt.Default.stg_selectable_show || this.IsSelected);
             set
             {
                 if (value != this.Render)
@@ -626,7 +626,7 @@ namespace MonchaCadViewer.CanvasObj
             double thinkess = MonchaHub.GetThinkess / 3d / Math.Abs(this.Scale.ScaleX * Math.Max(this.ScaleX, this.ScaleY));
             thinkess = thinkess <= 0 ? 1 : thinkess;
 
-            drawingContext.DrawLine(new Pen(Brushes.DarkGray, thinkess), point1, point2);
+            //drawingContext.DrawLine(new Pen(Brushes.DarkGray, thinkess), point1, point2);
 
             Vector vector = point1 - point2;
 

@@ -72,8 +72,8 @@ namespace MonchaCadViewer.Panels
         private void BindingDeviceSetting(MonchaDevice monchaDevice)
         {
             MeshCombo.DisplayMemberPath = "Name";
-            MeshCombo.ItemsSource = monchaDevice.SelectedMeshes;
             MeshCombo.DataContext = monchaDevice;
+            MeshCombo.ItemsSource = monchaDevice.SelectedMeshes;
             MeshCombo.SetBinding(ComboBox.SelectedItemProperty, "SelectMesh");
 
             CommonSettingToggle.DataContext = monchaDevice;

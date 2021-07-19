@@ -175,8 +175,8 @@ namespace MonchaCadViewer.CanvasObj
 
                     Point tPoint = e.GetPosition(this.Parent as System.Windows.IInputElement);
 
-                    this.X = this.StartMovePoint.X + (tPoint.X - this.StartMousePoint.X);
-                    this.Y = this.StartMovePoint.Y + (tPoint.Y - this.StartMousePoint.Y);
+                    this.X = (this.StartMovePoint.X + (tPoint.X - this.StartMousePoint.X)) / this.Scale.ScaleX;
+                    this.Y = (this.StartMovePoint.Y + (tPoint.Y - this.StartMousePoint.Y)) / this.Scale.ScaleY;
 
                     this.CaptureMouse();
                 }

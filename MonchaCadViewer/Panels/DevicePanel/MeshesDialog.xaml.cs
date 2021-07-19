@@ -46,7 +46,7 @@ namespace MonchaCadViewer.Panels.DevicePanel
 
         private void RemoveBtn_Click(object sender, RoutedEventArgs e)
         {
-            Device.RemoveSelectMesh((LDeviceMesh)ReadyMeshesList.SelectedItem);
+            Device.RemoveSelectMesh((LDeviceMesh)SelectMeshesList.SelectedItem);
         }
 
         private void ReadyPlusBtn_Click(object sender, RoutedEventArgs e)

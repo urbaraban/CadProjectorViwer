@@ -704,7 +704,7 @@ namespace MonchaCadViewer
             {
                 for (int i = 0; i < MonchaHub.Devices.Count; i++)
                 {
-                    ildaWriter.Write(($"{saveFileDialog.FileName.Replace(".ild", string.Empty)}_{i}.ild"), new List<LFrame>(){ MonchaHub.Devices[i].GetReadyFrame.GetLFrame(MonchaHub.Devices[i], MonchaHub.MainFrame)}, 5);
+                    ildaWriter.Write(($"{saveFileDialog.FileName.Replace(".ild", string.Empty)}_{i}.ild"), new List<LFrame>(){ await MonchaHub.Devices[i].GetReadyFrame.GetLFrame(MonchaHub.Devices[i], MonchaHub.MainFrame)}, 5);
                 }
             }
         }

@@ -47,7 +47,16 @@ namespace MonchaCadViewer.Panels.CanvasPanel
         private void Canvas_MouseMove(object sender, MouseEventArgs e)
         {
             Point tempPoint = e.GetPosition(Canvas);
-            CoordinateLabel.Content = $"X: { Math.Round(tempPoint.X, 2) }; Y:{ Math.Round(tempPoint.Y, 2) }";
+            CoordinateLabel.Content =
+                $"X: { Math.Round(tempPoint.X, 2) }; Y:{ Math.Round(tempPoint.Y, 2) }";
+
+            foreach (MonchaDevice device in MonchaHub.Devices)
+            {
+                if (device.Frame != null)
+                {
+                    CoordinateLabel.Content += $"\n {device.HWIdentifier}: {device.Frame.ScanratePerc}";
+                }
+            }
         }
 
         private void Canvas_UpdateProjection(object sender, EventArgs e)
@@ -177,26 +186,29 @@ namespace MonchaCadViewer.Panels.CanvasPanel
 
         private void AdornerShowBtn_Click(object sender, RoutedEventArgs e)
         {
-            foreach (UIElement uIElement in this.Canvas.Children)
-            {
-                if (uIElement is CadObject cadObject)
-                {
-                    if (cadObject.ObjAdorner != null)
-                    {
-                        cadObject.ObjAdorner.IsEnabled = true;
-                    }
-                }
-            }
+            CoordinateLabel.Visibility = CoordinateLabel.Visibility == Visibility.Visible ? Visibility.Hidden : Visibility.Visible;
         }
 
         private void ShowDeviceRect_Click(object sender, RoutedEventArgs e)
         {
-            foreach(MonchaDevice monchaDevice in MonchaHub.Devices)
+            Random rnd = new Random();
+            foreach (MonchaDevice monchaDevice in MonchaHub.Devices)
             {
-                this.Canvas.DrawContour(new CadRectangle(monchaDevice.Size, monchaDevice.HWIdentifier, false), false);
+                SolidColorBrush ColorBrush = new SolidColorBrush();
+                ColorBrush.Color = Colors.Azure;
+                this.Canvas.DrawContour(new CadRectangle(monchaDevice.Size, monchaDevice.HWIdentifier, false)
+                { BackColorBrush = new SolidColorBrush()
+                    { Color = Color.FromArgb(100, (byte)rnd.Next(256), (byte)rnd.Next(256), (byte)rnd.Next(256)) }
+                }, 
+                false);
                 foreach (LDeviceMesh mesh in monchaDevice.SelectedMeshes)
                 {
-                    this.Canvas.DrawContour(new CadRectangle(mesh.Size, mesh.Name, false), false);
+                    this.Canvas.DrawContour(
+                        new CadRectangle(mesh.Size, $"{monchaDevice.HWIdentifier} - {mesh.Name}", false)
+                        {
+                            BackColorBrush = new SolidColorBrush()
+                            { Color = Color.FromArgb(100, (byte)rnd.Next(256), (byte)rnd.Next(256), (byte)rnd.Next(256)) }
+                        }, false);
                 }
             }
         }

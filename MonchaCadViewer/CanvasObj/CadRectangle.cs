@@ -46,6 +46,8 @@ namespace MonchaCadViewer.CanvasObj
             }
         }
 
+        public SolidColorBrush BackColorBrush;
+
         private void _lrect_PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
             this.InvalidateVisual();
@@ -54,16 +56,6 @@ namespace MonchaCadViewer.CanvasObj
 
         private LSize3D _lrect;
 
-        public string Label
-        {
-            get => _label;
-            set
-            {
-                _label = value;
-                OnPropertyChanged("Label");
-            }
-        }
-        private string _label = string.Empty;
 
         public override double X
         {
@@ -103,14 +95,14 @@ namespace MonchaCadViewer.CanvasObj
 
         public CadRectangle(LPoint3D P1, LPoint3D P2, string Label, bool MouseSet)
         {
-            this.Label = Label;
+            this.Name = Label;
             this.LRect = new LSize3D(P1, P2);
             LoadSetting(MouseSet);
         }
 
         public CadRectangle(LSize3D lRect, string Label, bool MouseSet)
         {
-            this.Label = Label;
+            this.Name = Label;
             LRect = lRect;
             LoadSetting(MouseSet);
         }
@@ -231,7 +223,7 @@ namespace MonchaCadViewer.CanvasObj
         protected override void OnRender(DrawingContext drawingContext)
         {
             drawingContext.DrawText(
-                new FormattedText(this.Label,
+                new FormattedText(this.Name.ToString(),
                 new System.Globalization.CultureInfo("ru-RU"),
                 FlowDirection.LeftToRight,
                     new Typeface("Segoe UI"),
@@ -239,10 +231,9 @@ namespace MonchaCadViewer.CanvasObj
                     Brushes.Gray),
                 new Point(LRect.P1.MX, LRect.P1.MY));
 
-            SolidColorBrush TransparentBrush = new SolidColorBrush();
-            TransparentBrush.Color = Colors.Transparent;
 
-            drawingContext.DrawRectangle(null, myPen, new Rect(X, Y, Math.Abs(LRect.P1.MX - LRect.P2.MX), Math.Abs(LRect.P1.MY - LRect.P2.MY)));
+
+            drawingContext.DrawRectangle(BackColorBrush, myPen, new Rect(X, Y, Math.Abs(LRect.P1.MX - LRect.P2.MX), Math.Abs(LRect.P1.MY - LRect.P2.MY)));
         }
 
         public override void Remove()

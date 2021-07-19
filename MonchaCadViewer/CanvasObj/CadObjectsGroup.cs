@@ -38,32 +38,29 @@ namespace MonchaCadViewer.CanvasObj
                     });
                 }
 
-                if (AppSt.Default.stg_show_name == true)
-                    {
-                        this.cadObjects.Add(new CadGeometry(
-                            new ToGeometryConverter.Object.Elements.TextElement(Name, MonchaHub.GetThinkess,
-                            new Point3D(0, 0, 0)),
-                            true)
-                        {
-                            TransformGroup = this.TransformGroup,
-                            Name = this.Name,
-                        });
-                    }
-            }
-        }
-        private GCCollection elements;
-        public override Geometry GetGeometry
-        {
-            get
-            {
-                GeometryGroup geometryGroup = new GeometryGroup();
+                geometryGroup.Children.Clear();
                 foreach (CadObject cadObject in cadObjects)
                 {
                     geometryGroup.Children.Add(cadObject.GetGeometry);
                 }
-                return geometryGroup;
+
+                if (AppSt.Default.stg_show_name == true)
+                {
+                    this.cadObjects.Add(new CadGeometry(
+                        new ToGeometryConverter.Object.Elements.TextElement(Name, MonchaHub.GetThinkess,
+                        new Point3D(0, 0, 0)),
+                        true)
+                    {
+                        TransformGroup = this.TransformGroup,
+                        Name = this.Name,
+                    });
+                }
             }
         }
+        private GCCollection elements;
+
+        public override Geometry GetGeometry => geometryGroup;
+        private GeometryGroup geometryGroup = new GeometryGroup();
 
         public override Rect Bounds => gCElements.Bounds; 
 

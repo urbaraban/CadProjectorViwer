@@ -66,7 +66,17 @@ namespace MonchaCadViewer.CanvasObj
         }
         public virtual Brush myBack => Brushes.Transparent;
 
-        public string Name { get; set; } = string.Empty;
+        public string Name
+        {
+            get => name;
+            set
+            {
+                name = value;
+                this.ToolTip = value;
+                OnPropertyChanged("Name");
+            }
+        }
+        private string name = string.Empty;
 
         public MeshType MeshType { get; set; } = MeshType.SELECT;
 
@@ -408,8 +418,6 @@ namespace MonchaCadViewer.CanvasObj
                     Keyboard.Modifiers == ModifierKeys.Shift) RotateAxis(AxisAngleZ, "AngleZ");
             }
 
-            OnPropertyChanged();
-
             void RotateAxis(AxisAngleRotation3D axisAngleRotation3D, string OnPropertyString)
             {
                 axisAngleRotation3D.Angle += Math.Abs(e.Delta) / e.Delta * (Keyboard.Modifiers == ModifierKeys.Shift ? 1 : 5);
@@ -584,13 +592,13 @@ namespace MonchaCadViewer.CanvasObj
                     this.Cursor = Cursors.Hand;
                 }
             }
-            OnPropertyChanged();
-            
         }
 
         protected override void OnRender(DrawingContext drawingContext)
         {
-            if (GetGeometry != null)
+            Console.WriteLine("Render");
+            Geometry geometry = GetGeometry;
+            if (geometry != null)
             {
                 /*if (AppSt.Default.stg_show_name == true)
                 {
@@ -598,25 +606,25 @@ namespace MonchaCadViewer.CanvasObj
                     new Typeface("Segoe UI"), (int)MonchaHub.GetThinkess * 3, Brushes.Gray), new Point(GetGeometry.Bounds.X + GetGeometry.Bounds.Width / 2, GetGeometry.Bounds.Y + GetGeometry.Bounds.Height / 2));
                 }*/
 
-                drawingContext.DrawGeometry(myBack, myPen, GetGeometry);
+                drawingContext.DrawGeometry(myBack, myPen, geometry);
                 if (this.IsSelected == true) 
                 {
                     //Left
                     DrawSize(drawingContext, 
-                        new Point(0, GetGeometry.Bounds.Y + GetGeometry.Bounds.Height / 2), 
-                        new Point(GetGeometry.Bounds.X, GetGeometry.Bounds.Y + GetGeometry.Bounds.Height / 2));
+                        new Point(0, geometry.Bounds.Y + geometry.Bounds.Height / 2), 
+                        new Point(geometry.Bounds.X, geometry.Bounds.Y + geometry.Bounds.Height / 2));
                     //Right
                     DrawSize(drawingContext,
-                        new Point(MonchaHub.Size.X, GetGeometry.Bounds.Y + GetGeometry.Bounds.Height / 2),
-                        new Point(GetGeometry.Bounds.X + GetGeometry.Bounds.Width, GetGeometry.Bounds.Y + GetGeometry.Bounds.Height / 2));
+                        new Point(MonchaHub.Size.X, geometry.Bounds.Y + geometry.Bounds.Height / 2),
+                        new Point(geometry.Bounds.X + geometry.Bounds.Width, geometry.Bounds.Y + geometry.Bounds.Height / 2));
                     //Top
                     DrawSize(drawingContext,
-                        new Point(GetGeometry.Bounds.X + GetGeometry.Bounds.Width / 2, 0),
-                        new Point(GetGeometry.Bounds.X + GetGeometry.Bounds.Width / 2, GetGeometry.Bounds.Y));
+                        new Point(geometry.Bounds.X + geometry.Bounds.Width / 2, 0),
+                        new Point(geometry.Bounds.X + geometry.Bounds.Width / 2, geometry.Bounds.Y));
                     //Down
                     DrawSize(drawingContext,
-                        new Point(GetGeometry.Bounds.X + GetGeometry.Bounds.Width / 2, MonchaHub.Size.Y),
-                        new Point(GetGeometry.Bounds.X + GetGeometry.Bounds.Width / 2, GetGeometry.Bounds.Y + GetGeometry.Bounds.Height));
+                        new Point(geometry.Bounds.X + geometry.Bounds.Width / 2, MonchaHub.Size.Y),
+                        new Point(geometry.Bounds.X + geometry.Bounds.Width / 2, geometry.Bounds.Y + geometry.Bounds.Height));
                 }
             }
         }

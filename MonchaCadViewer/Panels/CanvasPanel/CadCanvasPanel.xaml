@@ -9,8 +9,8 @@
     <Grid Margin="0" Background="LightGray" ClipToBounds="True">
         <Grid.RowDefinitions>
             <RowDefinition Height="40"/>
-            <RowDefinition Height="67*"/>
-            <RowDefinition Height="5*"/>
+            <RowDefinition/>
+            <RowDefinition Height="25"/>
         </Grid.RowDefinitions>
 
         <StackPanel Margin="0,0,0,0" Orientation="Horizontal" FlowDirection="RightToLeft" Panel.ZIndex="99">
@@ -18,30 +18,30 @@
             <Button x:Name="ShowDeviceRect" FontFamily="Segoe MDL2 Assets" Content="&#xE9A6;" Width="30" Height="30" Margin="3" Click="ShowDeviceRect_Click" Panel.ZIndex="999" FontSize="20"/>
         </StackPanel>
         <Viewbox Grid.RowSpan="3" Stretch="Uniform" StretchDirection="Both">
-            <canvasobj:CadCanvas x:Name="Canvas" SizeChanged="Canvas_SizeChanged" Focusable="False" Grid.Row="1">
-                <canvasobj:CadCanvas.Background>
-                    <DrawingBrush x:Name="CanvasBrush" TileMode="Tile" Viewport="0,0,200,200" 
+            <Grid>
+                <Rectangle Fill="White"/>
+                <Canvas x:Name="BackCanvas" IsHitTestVisible="False">
+                </Canvas>
+                <canvasobj:CadCanvas x:Name="Canvas" SizeChanged="Canvas_SizeChanged" Focusable="False" Grid.Row="1">
+                    <canvasobj:CadCanvas.Background>
+                        <DrawingBrush x:Name="CanvasBrush" TileMode="Tile" Viewport="0,0,200,200" 
                                      ViewportUnits="Absolute">
-                        <DrawingBrush.Drawing>
-                            <GeometryDrawing>
-                                <GeometryDrawing.Geometry>
-                                    <RectangleGeometry Rect="0,0,200,200"/>
-                                </GeometryDrawing.Geometry>
-                                <GeometryDrawing.Pen>
-                                    <Pen Brush="LightGray" Thickness="5"/>
-                                </GeometryDrawing.Pen>
-                                <GeometryDrawing.Brush>
-                                    <SolidColorBrush Color="White"/>
-                                </GeometryDrawing.Brush>
-                            </GeometryDrawing>
-                        </DrawingBrush.Drawing>
-                    </DrawingBrush>
+                            <DrawingBrush.Drawing>
+                                <GeometryDrawing>
+                                    <GeometryDrawing.Geometry>
+                                        <RectangleGeometry Rect="0,0,200,200"/>
+                                    </GeometryDrawing.Geometry>
+                                    <GeometryDrawing.Pen>
+                                        <Pen Brush="LightGray" Thickness="5"/>
+                                    </GeometryDrawing.Pen>
+                                </GeometryDrawing>
+                            </DrawingBrush.Drawing>
+                        </DrawingBrush>
+                    </canvasobj:CadCanvas.Background>
+                </canvasobj:CadCanvas>
+            </Grid>
 
-                </canvasobj:CadCanvas.Background>
-            </canvasobj:CadCanvas>
         </Viewbox>
-        <StackPanel Orientation="Horizontal" FlowDirection="RightToLeft" Panel.ZIndex="99" Grid.Row="2">
-            <Label x:Name="CoordinateLabel" Content="X: 0; Y: 0"/>
-        </StackPanel>
+        <Label x:Name="CoordinateLabel" Content="X: 0; Y: 0" Grid.RowSpan="3" VerticalContentAlignment="Bottom" IsEnabled="False" HorizontalAlignment="Right" Width="202" HorizontalContentAlignment="Right" Visibility="Hidden" IsHitTestVisible="False"/>
     </Grid>
 </UserControl>

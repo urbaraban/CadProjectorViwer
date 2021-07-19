@@ -24,7 +24,7 @@ namespace MonchaCadViewer.Panels.ObjectPanel
         public CadRectangleSizePanel(CadRectangle cadRectangle)
         {
             InitializeComponent();
-            this.Title = cadRectangle.Label;
+            this.Title = cadRectangle.ToolTip.ToString();
             WidthUpDn.DataContext = cadRectangle.LRect;
             WidthUpDn.SetBinding(NumericUpDown.ValueProperty, "X");
             HeightUpDn.DataContext = cadRectangle.LRect;

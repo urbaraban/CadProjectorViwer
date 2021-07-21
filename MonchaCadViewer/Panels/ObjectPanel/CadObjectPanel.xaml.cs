@@ -32,8 +32,7 @@ namespace MonchaCadViewer.Panels
             ZUpDn.DataContext = cadObject;
             ZUpDn.SetBinding(NumericUpDown.ValueProperty, "Z");
             
-
-            MirrorCheck.IsChecked = cadObject.Mirror;
+            MirrorCheck.DataContext = cadObject;
             MirrorCheck.SetBinding(CheckBox.IsCheckedProperty, "Mirror");
             
 

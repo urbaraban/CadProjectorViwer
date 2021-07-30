@@ -20,23 +20,11 @@ namespace MonchaCadViewer.Panels.DevicePanel
     /// </summary>
     public partial class MeshesDialog : Window
     {
+        MonchaDevice Device => (MonchaDevice)this.DataContext;
 
-        MonchaDevice Device;
-
-        public MeshesDialog(MonchaDevice device)
+        public MeshesDialog()
         {
             InitializeComponent();
-
-            Device = device;
-
-            SelectMeshesList.SelectedValuePath = "Name";
-            SelectMeshesList.DisplayMemberPath = "Name";
-            SelectMeshesList.ItemsSource = device.SelectedMeshes;
-
-            ReadyMeshesList.SelectedValuePath = "Name";
-            ReadyMeshesList.DisplayMemberPath = "Name";
-            ReadyMeshesList.ItemsSource = device.Meshes;
-            
         }
 
         private void AddBtn_Click(object sender, RoutedEventArgs e)
@@ -59,9 +47,9 @@ namespace MonchaCadViewer.Panels.DevicePanel
 
         private void ReadyMinusBtn_Click(object sender, RoutedEventArgs e)
         {
-            LDeviceMesh mesh = (LDeviceMesh)SelectMeshesList.SelectedItem;
-            Device.Meshes.Remove(mesh);
+            LDeviceMesh mesh = (LDeviceMesh)ReadyMeshesList.SelectedItem;
             Device.RemoveSelectMesh(mesh);
+            Device.Meshes.Remove(mesh);
         }
     }
 }

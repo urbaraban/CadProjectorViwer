@@ -95,14 +95,14 @@ namespace MonchaCadViewer.CanvasObj
 
         public CadRectangle(LPoint3D P1, LPoint3D P2, string Label, bool MouseSet)
         {
-            this.Name = Label;
+            this.NameID = Label;
             this.LRect = new LSize3D(P1, P2);
             LoadSetting(MouseSet);
         }
 
         public CadRectangle(LSize3D lRect, string Label, bool MouseSet)
         {
-            this.Name = Label;
+            this.NameID = Label;
             LRect = lRect;
             LoadSetting(MouseSet);
         }
@@ -158,7 +158,6 @@ namespace MonchaCadViewer.CanvasObj
                 canvas.MouseMove += Canvas_MouseMove;
                 canvas.CaptureMouse();
             }
-            adornerLayer.InvalidateArrange();
         }
 
         private void CadRectangleSet_Loaded(object sender, RoutedEventArgs e)
@@ -186,22 +185,18 @@ namespace MonchaCadViewer.CanvasObj
                 }
                 cadCanvas.MouseLeftButtonUp -= canvas_MouseLeftButtonUP;
                 cadCanvas.MouseMove -= Canvas_MouseMove;
-                /*
-                this.ObjAdorner = new CadRectangleAdorner(this);
-                this.ObjAdorner.Visibility = Visibility.Visible;
-                
-                adornerLayer.Visibility = Visibility.Visible;
-                adornerLayer.Add(new CadRectangleAdorner(this));*/
             }
-
+        Dispatcher.Invoke(() =>
+        {
             this.ReleaseMouseCapture();
+        });
 
             AddAnchors();
         }
 
         private void AddAnchors()
         {
-            this.InvalidateVisual();
+            /*this.InvalidateVisual();
             if (this.Parent is CadCanvas cadCanvas)
             {
                 anchors = new List<CadAnchor>()
@@ -216,22 +211,20 @@ namespace MonchaCadViewer.CanvasObj
                 {
                     cadCanvas.Add(cadAnchor);
                 }
-            }
+            }*/
         }
 
 
         protected override void OnRender(DrawingContext drawingContext)
         {
             drawingContext.DrawText(
-                new FormattedText(this.Name.ToString(),
+                new FormattedText(this.NameID.ToString(),
                 new System.Globalization.CultureInfo("ru-RU"),
                 FlowDirection.LeftToRight,
                     new Typeface("Segoe UI"),
                     (int)MonchaHub.GetThinkess * 3,
                     Brushes.Gray),
                 new Point(LRect.P1.MX, LRect.P1.MY));
-
-
 
             drawingContext.DrawRectangle(BackColorBrush, myPen, new Rect(X, Y, Math.Abs(LRect.P1.MX - LRect.P2.MX), Math.Abs(LRect.P1.MY - LRect.P2.MY)));
         }

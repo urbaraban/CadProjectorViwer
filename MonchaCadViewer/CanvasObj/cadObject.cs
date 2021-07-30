@@ -12,7 +12,6 @@ using System.Collections.Generic;
 using MonchaSDK.Setting;
 using System.Threading;
 using MonchaCadViewer.Interface;
-using MonchaCadViewer.CanvasObj.DimObj;
 using AppSt = MonchaCadViewer.Properties.Settings;
 using MonchaSDK.Device;
 using MonchaSDK.Object;
@@ -66,7 +65,7 @@ namespace MonchaCadViewer.CanvasObj
         }
         public virtual Brush myBack => Brushes.Transparent;
 
-        public string Name
+        public virtual string NameID
         {
             get => name;
             set
@@ -116,7 +115,7 @@ namespace MonchaCadViewer.CanvasObj
         private bool ownedsetting = false;
 
         #region TranformObject
-        public Transform3DGroup TransformGroup 
+        public virtual Transform3DGroup TransformGroup 
         {
             get => transform;
             set
@@ -319,13 +318,9 @@ namespace MonchaCadViewer.CanvasObj
             get => this._isselected;
             set
             {
-                if (this._isselected != value)
-                {
-                    this._isselected = value;
-                    //this.ObjAdorner.Visibility = value == true ? Visibility.Visible : Visibility.Hidden;
-                    Selected?.Invoke(this, this._isselected);
-                    OnPropertyChanged("IsSelected");
-                }
+                this._isselected = value;
+                Selected?.Invoke(this, this._isselected);
+                OnPropertyChanged("IsSelected");
             }
         }
         private bool _isselected = false;
@@ -365,8 +360,6 @@ namespace MonchaCadViewer.CanvasObj
 
         public bool Editing { get; set; } = false;
 
-        public virtual Adorner ObjAdorner { get; set; }
-
         #endregion
 
         public CadObject()
@@ -381,23 +374,15 @@ namespace MonchaCadViewer.CanvasObj
 
         private void CadObject_Loaded(object sender, RoutedEventArgs e)
         {
-            if (this.Parent is CadCanvas canvas)
-            {
-                adornerLayer = AdornerLayer.GetAdornerLayer(canvas);
-
-                if (canvas.MainCanvas == true)
-                {
-                    this.ContextMenuClosing += CadObject_ContextMenuClosing;
-                    this.MouseLeave += CadObject_MouseLeave;
-                    this.MouseLeftButtonUp += CadObject_MouseLeftButtonUp;
-                    this.MouseMove += CadObject_MouseMove;
-                    this.MouseEnter += CadObject_MouseEnter;
-                    this.MouseWheel += CadContour_MouseWheel;
-                    this.MouseLeftButtonDown += CadObject_MouseLeftButtonDown;
-                    this.PropertyChanged += CadObject_PropertyChanged;
-                    this.ProjectionSetting.PropertyChanged += CadObject_PropertyChanged;
-                }
-            }
+            this.ContextMenuClosing += CadObject_ContextMenuClosing;
+            this.MouseLeave += CadObject_MouseLeave;
+            this.MouseLeftButtonUp += CadObject_MouseLeftButtonUp;
+            this.MouseMove += CadObject_MouseMove;
+            this.MouseEnter += CadObject_MouseEnter;
+            this.MouseWheel += CadContour_MouseWheel;
+            this.MouseLeftButtonDown += CadObject_MouseLeftButtonDown;
+            this.PropertyChanged += CadObject_PropertyChanged;
+            this.ProjectionSetting.PropertyChanged += CadObject_PropertyChanged;
 
             transform.Changed += Transform_Changed;
             this.InvalidateVisual();
@@ -524,12 +509,7 @@ namespace MonchaCadViewer.CanvasObj
         }
 
 
-        private void CadObject_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
-        {
-            Canvas canvas = this.Parent as Canvas;
-            this.MousePos = e.GetPosition(canvas);
-            this.BasePos = new Point(this.X, this.Y);
-        }
+
 
         private void CadObject_MouseLeave(object sender, System.Windows.Input.MouseEventArgs e)
         {
@@ -554,18 +534,23 @@ namespace MonchaCadViewer.CanvasObj
 
         public virtual void Remove()
         {
-            if (this.Parent is CadCanvas canvas)
-            {
-                this.MouseLeave -= CadObject_MouseLeave;
-                this.MouseLeftButtonUp -= CadObject_MouseLeftButtonUp;
-                this.MouseMove -= CadObject_MouseMove;
-                this.MouseEnter -= CadObject_MouseEnter;
-                this.MouseWheel -= CadContour_MouseWheel;
-                this.MouseLeftButtonDown -= CadObject_MouseLeftButtonDown;
-                this.PropertyChanged -= CadObject_PropertyChanged;
-                this.ProjectionSetting.PropertyChanged -= CadObject_PropertyChanged;
-            }
+
+            this.MouseLeave -= CadObject_MouseLeave;
+            this.MouseLeftButtonUp -= CadObject_MouseLeftButtonUp;
+            this.MouseMove -= CadObject_MouseMove;
+            this.MouseEnter -= CadObject_MouseEnter;
+            this.MouseWheel -= CadContour_MouseWheel;
+            this.MouseLeftButtonDown -= CadObject_MouseLeftButtonDown;
+            this.PropertyChanged -= CadObject_PropertyChanged;
+            this.ProjectionSetting.PropertyChanged -= CadObject_PropertyChanged;
+
             Removed?.Invoke(this, this);
+        }
+
+        private void CadObject_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            this.MousePos = e.GetPosition(this);
+            this.BasePos = new Point(this.X, this.Y);
         }
 
         private void CadObject_MouseMove(object sender, MouseEventArgs e)
@@ -579,7 +564,7 @@ namespace MonchaCadViewer.CanvasObj
                     this.WasMove = true;
                     this.Editing = true;
 
-                    Point tPoint = e.GetPosition(canvas);
+                    Point tPoint = e.GetPosition(this);
 
                     this.X = this.BasePos.X + (tPoint.X - this.MousePos.X);
                     this.Y = this.BasePos.Y + (tPoint.Y - this.MousePos.Y);
@@ -596,7 +581,7 @@ namespace MonchaCadViewer.CanvasObj
 
         protected override void OnRender(DrawingContext drawingContext)
         {
-            Console.WriteLine("Render");
+            //Console.WriteLine("Render");
             Geometry geometry = GetGeometry;
             if (geometry != null)
             {
@@ -648,6 +633,5 @@ namespace MonchaCadViewer.CanvasObj
                 new Point((point1.X + point2.X)/2, (point1.Y + point2.Y) / 2));
 
         }
-
     }
 }

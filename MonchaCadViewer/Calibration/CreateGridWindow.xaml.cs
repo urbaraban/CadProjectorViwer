@@ -14,6 +14,8 @@ namespace MonchaCadViewer
     /// </summary>
     public partial class CreateGridWindow : Window
     {
+        private ProjectionScene projectionScene = new ProjectionScene();
+
         private MonchaDevice _device;
         private LDeviceMesh _mesh;
         private CadCanvas cadCanvas;
@@ -33,11 +35,10 @@ namespace MonchaCadViewer
         {
             if (this.IsLoaded)
             {
-                Canvas.Canvas.AddRange(
+                projectionScene.AddRange(
                     CadCanvas.GetMesh(
                     new LDeviceMesh(LDeviceMesh.MakeMeshPoint((int)HeightUpDn.Value.Value, (int)WidthUpDn.Value.Value), string.Empty),
-                    MonchaHub.GetThinkess * AppSt.Default.anchor_size, false, MeshType.NONE), 
-                    true);
+                    MonchaHub.GetThinkess * AppSt.Default.anchor_size, false, MeshType.NONE).ToArray());
             }
         }
 
@@ -92,10 +93,10 @@ namespace MonchaCadViewer
             WidthUpDn.Value = this._mesh.GetLength(1);
             HeightUpDn.Value = this._mesh.GetLength(0);
 
-            Canvas.Canvas.AddRange(
+            projectionScene.AddRange(
                      CadCanvas.GetMesh(
                      new LDeviceMesh(LDeviceMesh.MakeMeshPoint((int)HeightUpDn.Value.Value, (int)WidthUpDn.Value.Value), string.Empty),
-                     MonchaHub.GetThinkess * AppSt.Default.anchor_size, false, MeshType.NONE), true);
+                     MonchaHub.GetThinkess * AppSt.Default.anchor_size, false, MeshType.NONE).ToArray());
         }
     }
 

@@ -3,12 +3,12 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:MonchaCadViewer.Panels.DevicePanel"
+        xmlns:local="clr-namespace:MonchaCadViewer.Panels.DevicePanel" xmlns:device="clr-namespace:MonchaSDK.Device;assembly=MonchaSDK" d:DataContext="{d:DesignInstance Type=device:MonchaDevice}"
         mc:Ignorable="d"
         Title="MeshesDialog" Height="450" Width="400">
     <Grid>
-        <ListBox x:Name="ReadyMeshesList" Height="173" Margin="10,32,10,0" VerticalAlignment="Top"/>
-        <ListBox x:Name="SelectMeshesList" Margin="10,0,10,10" Height="173" VerticalAlignment="Bottom"/>
+        <ListBox x:Name="ReadyMeshesList" ItemsSource="{Binding Meshes}" DisplayMemberPath="Name" Height="173" Margin="10,32,10,0" VerticalAlignment="Top"/>
+        <ListBox x:Name="SelectMeshesList" ItemsSource="{Binding SelectedMeshes}" DisplayMemberPath="Name" Margin="10,0,10,10" Height="173" VerticalAlignment="Bottom"/>
         <Label x:Name="label" Content="ReadyMeshes" HorizontalAlignment="Left" Margin="10,6,0,0" VerticalAlignment="Top"/>
         <Label x:Name="label_Copy" Content="SelectMeshes" HorizontalAlignment="Left" Margin="10,210,0,0" VerticalAlignment="Top"/>
         <Button x:Name="AddBtn" Content="🡇" HorizontalAlignment="Left" Margin="164,210,0,0" VerticalAlignment="Top" Width="24" Click="AddBtn_Click"/>

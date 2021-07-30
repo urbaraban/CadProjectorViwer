@@ -3,16 +3,14 @@
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:Controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
-    xmlns:c="http://schemas.microsoft.com/netfx/2009/xaml/presentation"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    d:DesignHeight="350"
-    d:DesignWidth="200"
+    d:DesignHeight="90"
+    d:DesignWidth="490"
     mc:Ignorable="d">
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-
                 <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Fonts.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Themes/Light.Blue.xaml" />
             </ResourceDictionary.MergedDictionaries>
@@ -39,75 +37,45 @@
     <Grid Background="White">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="96" />
-            <ColumnDefinition />
+            <ColumnDefinition Width="84*" />
+            <ColumnDefinition Width="56*"/>
+            <ColumnDefinition Width="57*"/>
         </Grid.ColumnDefinitions>
         <Label
-            Width="57"
             Height="26"
-            Margin="12,279,0,0"
+            Margin="5,59,5,0"
             Padding="2,3,0,0"
-            HorizontalAlignment="Left"
             VerticalAlignment="Top"
             Content="{DynamicResource dvc_StepPoint}" />
         <Controls:NumericUpDown
             x:Name="CRSUpDn"
             Grid.Column="1"
             Height="26"
-            Margin="10,280,16,0"
+            Margin="10,60,5,0"
             VerticalAlignment="Top"
             Background="White"
             Maximum="999"
             Minimum="0.0001" />
-        <Label
-            Width="57"
-            Height="26"
-            Margin="10,78,0,0"
-            Padding="2,3,0,0"
-            HorizontalAlignment="Left"
-            VerticalAlignment="Top"
-            Content="{DynamicResource dvc_Radius}" />
-        <Slider
-            x:Name="RadiusSlider"
-            Grid.ColumnSpan="2"
-            Height="22"
-            Margin="10,104,10,0"
-            VerticalAlignment="Top"
-            Maximum="9999"
-            Minimum="1"
-            SmallChange="1"
-            Value="1000" />
-        <Label
-            x:Name="radiusVal"
-            Grid.Column="1"
-            Height="26"
-            Margin="19,78,10,0"
-            Padding="2,3,0,0"
-            VerticalAlignment="Top"
-            HorizontalContentAlignment="Right"
-            Content="{Binding Value, ElementName=RadiusSlider}" />
         <Slider
             x:Name="MultiplierSlider"
-            Grid.ColumnSpan="2"
             Height="22"
-            Margin="10,153,10,0"
+            Margin="0,33,10,0"
             VerticalAlignment="Top"
             Maximum="20"
             Minimum="0"
             SmallChange="1"
-            Value="1" />
+            Value="1" Grid.Column="1" />
         <Label
-            Width="57"
-            Height="26"
-            Margin="10,127,0,0"
+            Height="21"
+            Margin="5,33,5,0"
             Padding="2,3,0,0"
-            HorizontalAlignment="Left"
             VerticalAlignment="Top"
             Content="{DynamicResource dvc_WaintPoint}" />
         <Controls:ToggleSwitch
             x:Name="OtherSettingSwitch"
             Width="86"
             Height="23"
-            Margin="10,10,0,0"
+            Margin="5,5,0,0"
             HorizontalAlignment="Left"
             VerticalAlignment="Top"
             OffContent="{DynamicResource dvc_ProjectMain}"
@@ -115,85 +83,67 @@
             Toggled="OtherSettingSwitch_Toggled" />
         <Controls:NumericUpDown
             x:Name="RedUpDn"
-            Grid.Column="1"
+            Grid.Column="3"
             Height="26"
-            Margin="10,185,16,0"
+            Margin="0,3,0,0"
             VerticalAlignment="Top"
             Background="White"
-            IsEnabled="{c:Binding !IsChecked,
-                                  ElementName=QRBtn}"
             Maximum="255"
             Minimum="1"
             Value="255" />
         <Controls:ToggleSwitch
             x:Name="RedToggle"
             Width="68"
-            Height="26"
-            Margin="10,188,0,0"
+            Height="25"
+            Margin="3,4,0,0"
             HorizontalAlignment="Left"
             VerticalAlignment="Top"
             HorizontalContentAlignment="Center"
             Background="Red"
-            Content="{DynamicResource dvc_RED}" />
+            Content="{DynamicResource dvc_RED}" Grid.Column="2" />
         <Controls:NumericUpDown
             x:Name="GreenUpDn"
-            Grid.Column="1"
+            Grid.Column="3"
             Height="26"
-            Margin="10,216,16,0"
+            Margin="0,31,0,0"
             VerticalAlignment="Top"
             Background="White"
-            IsEnabled="{c:Binding !IsChecked,
-                                  ElementName=QRBtn}"
             Maximum="255"
             Minimum="1"
             Value="255" />
         <Controls:ToggleSwitch
             x:Name="GreenToggle"
-            Grid.ColumnSpan="2"
             Width="81"
             Height="25"
-            Margin="10,219,0,0"
+            Margin="3,33,0,0"
             HorizontalAlignment="Left"
             VerticalAlignment="Top"
             HorizontalContentAlignment="Center"
-            Content="{DynamicResource dvc_GREEN}" />
+            Content="{DynamicResource dvc_GREEN}" Grid.Column="2" />
         <Controls:NumericUpDown
             x:Name="BlueUpDn"
-            Grid.Column="1"
+            Grid.Column="3"
             Height="26"
-            Margin="10,249,16,0"
+            Margin="0,60,0,0"
             VerticalAlignment="Top"
             Background="White"
-            IsEnabled="{c:Binding !IsChecked,
-                                  ElementName=QRBtn}"
             Maximum="255"
             Minimum="1"
             Value="255" />
         <Controls:ToggleSwitch
             x:Name="BlueToggle"
             Width="71"
-            Height="25"
-            Margin="10,249,0,0"
+            Height="23"
+            Margin="3,62,0,0"
             HorizontalAlignment="Left"
             VerticalAlignment="Top"
             HorizontalContentAlignment="Center"
-            Content="{DynamicResource dvc_Blue}" />
+            Content="{DynamicResource dvc_Blue}" Grid.Column="2" />
         <ComboBox
             x:Name="DeviceLayerCombo"
             Grid.Column="1"
-            Margin="0,11,10,0"
+            Margin="10,5,5,0"
             VerticalAlignment="Top"
-            SelectionChanged="DeviceLayerCombo_SelectionChanged" />
-        <Controls:NumericUpDown
-            x:Name="DistanceUpDn"
-            Grid.ColumnSpan="2"
-            Height="26"
-            Margin="10,45,10,0"
-            VerticalAlignment="Top"
-            Background="White"
-            IsEnabled="{Binding !IsChecked, ElementName=QRBtn}"
-            Maximum="999999"
-            Minimum="-999999"
-            Value="0" />
+            SelectionChanged="DeviceLayerCombo_SelectionChanged" Height="22" />
     </Grid>
 </UserControl>

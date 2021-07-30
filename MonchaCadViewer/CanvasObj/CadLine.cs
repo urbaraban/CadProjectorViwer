@@ -174,10 +174,10 @@ namespace MonchaCadViewer.CanvasObj
                     new CadAnchor(this.P2, this.P2, false){ Render = false }
                 };
 
-                foreach (CadAnchor cadAnchor in anchors)
+               /* foreach (CadAnchor cadAnchor in anchors)
                 {
                     cadCanvas.Add(cadAnchor);
-                }
+                }*/
             }
         }
 

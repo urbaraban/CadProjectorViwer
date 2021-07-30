@@ -1,5 +1,4 @@
-﻿using MonchaCadViewer.CanvasObj.DimObj;
-using MonchaSDK;
+﻿using MonchaSDK;
 using MonchaSDK.Object;
 using System;
 using System.Collections.Generic;
@@ -18,12 +17,13 @@ namespace MonchaCadViewer.CanvasObj
     {
         public IGCObject GCObject { get; set; }
 
+        public override string NameID => GCObject.Name;
+
         public override  Geometry GetGeometry => this.GCObject.GetGeometry(this.TransformGroup, this.ProjectionSetting.PointStep.MX, this.ProjectionSetting.RadiusEdge);
     
         private bool _maincanvas;
-        private AdornerContourFrame adornerContour;
 
-        public CadGeometry(IGCObject gCObject,  bool maincanvas) 
+        public CadGeometry(IGCObject gCObject, bool maincanvas) 
         {
             this.GCObject = gCObject;
             this._maincanvas = maincanvas;

@@ -1,4 +1,5 @@
 ﻿using MonchaCadViewer.CanvasObj;
+using MonchaCadViewer.StaticTools;
 using MonchaSDK;
 using System;
 using System.Collections.Generic;
@@ -50,73 +51,24 @@ namespace MonchaCadViewer.Panels
         }
         private bool _issolved = false;
 
-        public CadObject cadObject=> (CadObject)this.DataContext;
-
-        private CadCanvas cadCanvas;
+        public ProjectionScene Scene => (ProjectionScene)this.DataContext;
 
         private string filepath = string.Empty;
 
-        public string FileName => cadObject.Name;
+        public string FileName => Scene.NameID;
 
-        public ScrollPanelItem(CadObject cadObject, string Filepath)
+        public ScrollPanelItem(string Filepath)
         {
             InitializeComponent();
 
             this.Width = this.Height;
-            this.NameLabel.Content = cadObject.Name;
             this.filepath = Filepath;
-
-            Viewbox _viewbox = new Viewbox();
-            _viewbox.Stretch = Stretch.Uniform;
-            _viewbox.StretchDirection = StretchDirection.DownOnly;
-            _viewbox.Margin = new Thickness(0);
-
-            _viewbox.ClipToBounds = true;
-            _viewbox.Cursor = Cursors.Hand;
-            _viewbox.MouseLeftButtonUp += _viewbox_MouseLeftButtonUp; ;
-            _viewbox.MouseRightButtonUp += _viewbox_MouseRightButtonUp;
-
-
-            Viewbox _canvasviewbox = new Viewbox();
-            _canvasviewbox.Stretch = Stretch.Uniform;
-            _canvasviewbox.StretchDirection = StretchDirection.DownOnly;
-            _canvasviewbox.Margin = new Thickness(0);
-
-            cadCanvas = new CadCanvas(MonchaHub.Size, false);
-            cadCanvas.Background = Brushes.White;
-
-            _canvasviewbox.Child = cadCanvas;
-            _viewbox.Child = _canvasviewbox;
-            Grid.SetColumn(_viewbox, 0);
-            Grid.SetRow(_viewbox, 0);
-            Grid.SetRowSpan(_viewbox, 2);
-
-            MainGrid.Children.Add(_viewbox);
-
-            this.DataContextChanged += ScrollPanelItem_DataContextChanged;
-            this.DataContext = cadObject;
+            this.Loaded += ScrollPanelItem_Loaded;
         }
 
-        
-
-        private async void ScrollPanelItem_DataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
+        private void ScrollPanelItem_Loaded(object sender, RoutedEventArgs e)
         {
-            if (this.DataContext is CadObjectsGroup cadGeometries)
-            {
-                cadCanvas.Clear();
-                ProgressPanel.SetProgressBar(0, cadGeometries.Count, "Добавляем");
-                for (int i = 0; i < cadGeometries.Count; i += 1)
-                {
-                        cadCanvas.DrawContour(new CadGeometry(cadGeometries[i].GCObject, false)
-                        {
-                            ProjectionSetting = this.cadObject.ProjectionSetting,
-                            TransformGroup = this.cadObject.TransformGroup
-                        }, true);
-                        ProgressPanel.SetProgressBar(i, cadGeometries.Count, $"{i}/{cadGeometries.Count}");
-                }
-                ProgressPanel.End();
-                Selected?.Invoke(this, this.IsSelected);
-            }
+          
         }
 
         public void Remove()
@@ -130,11 +82,11 @@ namespace MonchaCadViewer.Panels
 
         private void _viewbox_MouseRightButtonUp(object sender, MouseButtonEventArgs e)
         {
-            if (sender is Viewbox viewItem)
+            if (this.DataContext is ProjectionScene scene)
             {
-                if (viewItem.DataContext is CadObjectsGroup CadObj)
+                foreach (CadObject cadObject in scene.Objects)
                 {
-                    CadObj.UpdateTransform(CadObj.TransformGroup, true, CadObj.Bounds);
+                    cadObject.UpdateTransform(cadObject.TransformGroup, true, cadObject.GetGeometry.Bounds);
                 }
             }
         }
@@ -148,18 +100,18 @@ namespace MonchaCadViewer.Panels
         {
             if (this._isselected == true)
             {
-                cadCanvas.Background = Brushes.GreenYellow;
+                this.Background = Brushes.GreenYellow;
             }
             else if (this._issolved == true)
             {
-                cadCanvas.Background = Brushes.Gray;
+                this.Background = Brushes.Gray;
             }
             else
             {
-                cadCanvas.Background = Brushes.White;
+                this.Background = Brushes.White;
             }
 
-            if (this._issolved == true)
+            /*if (this._issolved == true)
             {
                 NameLabel.Background = Brushes.Gray;
             }
@@ -170,7 +122,7 @@ namespace MonchaCadViewer.Panels
             else
             {
                 NameLabel.Background = Brushes.WhiteSmoke;
-            }
+            }*/
         }
 
         private void SolvedToggle_Checked(object sender, RoutedEventArgs e)
@@ -182,16 +134,10 @@ namespace MonchaCadViewer.Panels
 
         public async void Refresh()
         {
-            if (this.cadObject is CadObjectsGroup geometries)
-            {
-                geometries.gCElements = await ToGC.GetAsync(this.filepath, MonchaHub.ProjectionSetting.PointStep.MX);
-            }
-            else
-            {
-                this.DataContext =
+            this.DataContext =
+                new ProjectionScene(
                     new CadObjectsGroup(
-                        await ToGC.GetAsync(this.filepath, MonchaHub.ProjectionSetting.PointStep.MX), this.Name, null);
-            }
+                        await GetGC.Load(this.filepath)));
         }
     }
 }

@@ -31,7 +31,6 @@ namespace MonchaCadViewer.Panels
 
         public event EventHandler<MonchaDevice> DeviceChange;
 
-        public event EventHandler<List<FrameworkElement>> DrawObjects;
 
         public DeviceTab()
         {
@@ -61,79 +60,13 @@ namespace MonchaCadViewer.Panels
             }
         }
 
-        private void DeviceCombo_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            if (DeviceCombo.SelectedItem is MonchaDevice tempdevice)
-            {
-                BindingDeviceSetting(tempdevice);
-            }
-        }
 
-        private void BindingDeviceSetting(MonchaDevice monchaDevice)
+        /*private void BindingDeviceSetting(MonchaDevice monchaDevice)
         {
-            MeshCombo.DisplayMemberPath = "Name";
-            MeshCombo.DataContext = monchaDevice;
-            MeshCombo.ItemsSource = monchaDevice.SelectedMeshes;
-            MeshCombo.SetBinding(ComboBox.SelectedItemProperty, "SelectMesh");
-
-            CommonSettingToggle.DataContext = monchaDevice;
-            CommonSettingToggle.SetBinding(ToggleSwitch.IsOnProperty, "OwnedSetting");
 
             DistanceUpDn.DataContext = monchaDevice.Size;
             DistanceUpDn.SetBinding(NumericUpDown.ValueProperty, "Z");
-
-            OnlySelectCheck.SetBinding(CheckBox.IsCheckedProperty, "OnlySelectMesh");
-
-            //Device
-
-            ScanRateCalc.Maximum = 40000;
-            ScanRateCalc.Minimum = 500;
-            ScanRateCalc.DataContext = monchaDevice;
-            ScanRateCalc.SetBinding(Slider.ValueProperty, "ScanRateCalc");
-
-            FPSUpDn.DataContext = monchaDevice;
-            FPSUpDn.SetBinding(NumericUpDown.ValueProperty, "FPS");
-
-            InvertXtoggle.DataContext = monchaDevice;
-            InvertXtoggle.SetBinding(ToggleSwitch.IsOnProperty, "InvertedX");
-
-            InvertYtoggle.DataContext = monchaDevice;
-            InvertYtoggle.SetBinding(ToggleSwitch.IsOnProperty, "InvertedY");
-
-            AlphaSlider.DataContext = monchaDevice;
-            AlphaSlider.SetBinding(Slider.ValueProperty, "Alpha");
-
-            //ObjectReadySetting
-            RedUpDn.DataContext = monchaDevice.ProjectionSetting;
-            RedUpDn.SetBinding(NumericUpDown.ValueProperty, "Red");
-
-            RedToggle.DataContext = monchaDevice.ProjectionSetting;
-            RedToggle.SetBinding(ToggleSwitch.IsOnProperty, "RedOn");
-
-            GreenUpDn.DataContext = monchaDevice.ProjectionSetting;
-            GreenUpDn.SetBinding(NumericUpDown.ValueProperty, "Green");
-
-            GreenToggle.DataContext = monchaDevice.ProjectionSetting;
-            GreenToggle.SetBinding(ToggleSwitch.IsOnProperty, "GreenOn");
-
-            BlueUpDn.DataContext = monchaDevice.ProjectionSetting;
-            BlueUpDn.SetBinding(NumericUpDown.ValueProperty, "Blue");
-
-            BlueToggle.DataContext = monchaDevice.ProjectionSetting;
-            BlueToggle.SetBinding(ToggleSwitch.IsOnProperty, "BlueOn");
-
-            AngleWaitSlider.DataContext = monchaDevice.ProjectionSetting;
-            AngleWaitSlider.SetBinding(Slider.ValueProperty, "StartLineWait");
-
-            EndBlankSlider.DataContext = monchaDevice.ProjectionSetting;
-            EndBlankSlider.SetBinding(Slider.ValueProperty, "EndBlanckWait");
-
-            StartBlankSlider.DataContext = monchaDevice.ProjectionSetting;
-            StartBlankSlider.SetBinding(Slider.ValueProperty, "StartBlankWait");
-
-            CRSUpDn.DataContext = monchaDevice.ProjectionSetting.PointStep;
-            CRSUpDn.SetBinding(NumericUpDown.ValueProperty, "MX");
-        }
+        }*/
 
         private void LMeter_ChangeDimention(object sender, double e)
         {
@@ -148,11 +81,6 @@ namespace MonchaCadViewer.Panels
             {
                 laserMeters.Turn(LaserMeterToggle.IsOn);
             }
-        }
-
-        private void DeviceCombo_DataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
-        {
-            if (DeviceCombo.SelectedIndex == -1) DeviceCombo.SelectedIndex = 0;
         }
 
         private void LaserMetersCombo_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -179,19 +107,9 @@ namespace MonchaCadViewer.Panels
         private void DeviceSettingBtn_Click(object sender, RoutedEventArgs e)
         {
             DeviceSettingDialog deviceSettingDialog = new DeviceSettingDialog((MonchaDevice)DeviceCombo.SelectedItem);
-            deviceSettingDialog.DrawObjects += DeviceSettingDialog_DrawObjects;
             deviceSettingDialog.Show();
         }
 
-        private void DeviceSettingDialog_DrawObjects(object sender, List<FrameworkElement> e)
-        {
-            DrawObjects?.Invoke(this, e);
-        }
-
-        private void CommonSettingToggle_Toggled(object sender, RoutedEventArgs e)
-        {
-            BindingDeviceSetting(this.Device);
-        }
 
         private void MeshSettingBtn_Click(object sender, RoutedEventArgs e)
         {
@@ -201,7 +119,7 @@ namespace MonchaCadViewer.Panels
 
         private void MeshListBtn_Click(object sender, RoutedEventArgs e)
         {
-            MeshesDialog meshesDialog = new MeshesDialog(Device);
+            MeshesDialog meshesDialog = new MeshesDialog() { DataContext = Device };
             meshesDialog.Show();
         }
     }

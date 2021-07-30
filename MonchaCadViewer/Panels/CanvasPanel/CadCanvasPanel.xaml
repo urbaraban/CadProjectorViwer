@@ -3,7 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:local="clr-namespace:MonchaCadViewer.Panels.CanvasPanel" xmlns:canvasobj="clr-namespace:MonchaCadViewer.CanvasObj"
+            xmlns:canvasobj="clr-namespace:MonchaCadViewer.CanvasObj" d:DataContext="{d:DesignInstance Type=canvasobj:ProjectionScene}"
              mc:Ignorable="d" 
              d:DesignHeight="400" d:DesignWidth="400">
     <Grid Margin="0" Background="LightGray" ClipToBounds="True">
@@ -17,14 +17,16 @@
             <Button x:Name="AdornerShowBtn" FontFamily="Segoe MDL2 Assets" Content="&#xE7F0;" Width="30" Height="30" Margin="3" Click="AdornerShowBtn_Click" Panel.ZIndex="999" FontSize="18"/>
             <Button x:Name="ShowDeviceRect" FontFamily="Segoe MDL2 Assets" Content="&#xE9A6;" Width="30" Height="30" Margin="3" Click="ShowDeviceRect_Click" Panel.ZIndex="999" FontSize="20"/>
         </StackPanel>
-        <Viewbox Grid.RowSpan="3" Stretch="Uniform" StretchDirection="Both">
-            <Grid>
+        <Viewbox x:Name="CanvasBox" Grid.RowSpan="3" Stretch="Uniform" StretchDirection="Both">
+            <Grid x:Name="CanvasGrid">
                 <Rectangle Fill="White"/>
-                <Canvas x:Name="BackCanvas" IsHitTestVisible="False">
-                </Canvas>
-                <canvasobj:CadCanvas x:Name="Canvas" SizeChanged="Canvas_SizeChanged" Focusable="False" Grid.Row="1">
-                    <canvasobj:CadCanvas.Background>
-                        <DrawingBrush x:Name="CanvasBrush" TileMode="Tile" Viewport="0,0,200,200" 
+                <Canvas 
+                    x:Name="BackCanvas" 
+                    IsHitTestVisible="False"
+                    MouseLeftButtonUp="CanvasGrid_MouseLeftButtonUp" 
+                    MouseLeftButtonDown="CanvasGrid_MouseLeftButtonDown">
+                    <Canvas.Background>
+                        <DrawingBrush TileMode="Tile" Viewport="0,0,200,200" 
                                      ViewportUnits="Absolute">
                             <DrawingBrush.Drawing>
                                 <GeometryDrawing>
@@ -32,16 +34,28 @@
                                         <RectangleGeometry Rect="0,0,200,200"/>
                                     </GeometryDrawing.Geometry>
                                     <GeometryDrawing.Pen>
-                                        <Pen Brush="LightGray" Thickness="5"/>
+                                        <Pen Brush="LightSlateGray" Thickness="5"/>
                                     </GeometryDrawing.Pen>
                                 </GeometryDrawing>
                             </DrawingBrush.Drawing>
                         </DrawingBrush>
-                    </canvasobj:CadCanvas.Background>
-                </canvasobj:CadCanvas>
+                    </Canvas.Background>
+                </Canvas>
+                <ItemsControl ItemsSource="{Binding Objects}">
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <canvasobj:CadCanvas Focusable="False" 
+                                                 IsHitTestVisible="True"
+                                                 SizeChanged="Canvas_SizeChanged">
+                            </canvasobj:CadCanvas>
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                </ItemsControl>
             </Grid>
 
         </Viewbox>
-        <Label x:Name="CoordinateLabel" Content="X: 0; Y: 0" Grid.RowSpan="3" VerticalContentAlignment="Bottom" IsEnabled="False" HorizontalAlignment="Right" Width="202" HorizontalContentAlignment="Right" Visibility="Hidden" IsHitTestVisible="False"/>
+        <Label x:Name="CoordinateLabel" Content="X: 0; Y: 0" Grid.RowSpan="3" 
+               VerticalContentAlignment="Bottom" IsEnabled="False" HorizontalAlignment="Right" 
+               Width="202" HorizontalContentAlignment="Right" Visibility="Hidden" IsHitTestVisible="False"/>
     </Grid>
 </UserControl>

@@ -26,7 +26,8 @@ namespace MonchaCadViewer.Panels
     {
         public event EventHandler<bool> NeedRefresh;
         public event EventHandler<MonchaDevice> DeviceChange;
-        public event EventHandler<List<FrameworkElement>> DrawObjects;
+
+        private ProjectionScene scene => (ProjectionScene)this.DataContext;
 
         private MonchaDevice selectdevice;
 
@@ -38,12 +39,12 @@ namespace MonchaCadViewer.Panels
 
         public void Refresh()
         {
-            DeviceTree.Items.Clear();
+            treeView.Items.Clear();
 
             TreeViewItem LaserScanners = new TreeViewItem();
             LaserScanners.Header = "LaserScanners";
 
-            DeviceTree.Items.Add(LaserScanners);
+            treeView.Items.Add(LaserScanners);
 
             foreach (MonchaDevice device in MonchaHub.Devices)
             {
@@ -98,7 +99,7 @@ namespace MonchaCadViewer.Panels
             LaserMeters.ContextMenu = new ContextMenu();
             ContextMenuLib.LaserMeterHeadTreeMenu(LaserMeters.ContextMenu);
             LaserMeters.ContextMenuClosing += LaserMeters_ContextMenuClosing;
-            DeviceTree.Items.Add(LaserMeters);
+            treeView.Items.Add(LaserMeters);
 
 
             if (MonchaHub.LMeters.Count > 0)
@@ -122,7 +123,8 @@ namespace MonchaCadViewer.Panels
             {
                 if (DeviceTree.DataContext is MonchaDevice device)
                 {
-                    DrawObjects?.Invoke(this, CadCanvas.GetMesh(device.SelectMesh, MonchaHub.GetThinkess * AppSt.Default.anchor_size, false, MeshType.NONE));
+                    scene.Clear();
+                    scene.AddRange(CadCanvas.GetMesh(device.SelectMesh, MonchaHub.GetThinkess * AppSt.Default.anchor_size, false, MeshType.NONE).ToArray());
                 }
             }
         }
@@ -150,17 +152,13 @@ namespace MonchaCadViewer.Panels
                             break;
 
                         case "dvc_showzone":
-                            DrawObjects?.Invoke(this, new List<FrameworkElement>() {
-                                new CadRectangle(device.Size, device.HWIdentifier, false){Render = false}
-                            });
+                            scene.Add(new CadRectangle(device.Size, device.HWIdentifier, false) { Render = false });
                             break;
                         case "dvc_polymesh":
                             device.PolyMeshUsed = !device.PolyMeshUsed;
                             break;
                         case "dvc_center":
-                            DrawObjects?.Invoke(this, new List<FrameworkElement>() {
-                                new CadAnchor(device.Size.Center, false){Render = false}
-                            });
+                            scene.Add(new CadAnchor(device.Size.Center, false){Render = false});
                             break;
 
                     }
@@ -173,7 +171,7 @@ namespace MonchaCadViewer.Panels
             {
                 if (DeviceTree.DataContext is MonchaDevice device && BaseMeshItem.DataContext is LDeviceMesh mesh)
                 {
-                    DrawObjects?.Invoke(this, CadCanvas.GetMesh(mesh, MonchaHub.GetThinkess * AppSt.Default.anchor_size, false, MeshType.NONE));
+                    scene.AddRange(CadCanvas.GetMesh(mesh, MonchaHub.GetThinkess * AppSt.Default.anchor_size, false, MeshType.NONE).ToArray());
                 }
             }
         }
@@ -218,7 +216,7 @@ namespace MonchaCadViewer.Panels
                                 createGridWindow.ShowDialog();
                                 break;
                             case "mesh_ShowVirtual":
-                                DrawObjects?.Invoke(this, CadCanvas.GetMesh(device.SelectMesh.VirtualMesh, MonchaHub.GetThinkess * AppSt.Default.anchor_size, false, MeshType.BASE));
+                                scene.AddRange(CadCanvas.GetMesh(device.SelectMesh.VirtualMesh, MonchaHub.GetThinkess * AppSt.Default.anchor_size, false, MeshType.BASE).ToArray());
                                 break;
                             case "m_Refresh":
                                 device.RefreshMeshPoint(device.SelectMesh);
@@ -236,7 +234,7 @@ namespace MonchaCadViewer.Panels
                                 device.SelectMesh.Affine = !device.SelectMesh.Affine;
                                 break;
                             case "mesh_ShowRect":
-                                DrawObjects?.Invoke(this, new List<FrameworkElement>() { new CadRectangle(device.SelectMesh.Size, device.SelectMesh.Name, false) });
+                                scene.Add(new CadRectangle(device.SelectMesh.Size, device.SelectMesh.Name, false));
                                 break;
                         }
                     }

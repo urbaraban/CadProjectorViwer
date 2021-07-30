@@ -54,7 +54,6 @@ namespace MonchaCadViewer.Panels
             {
                 this.IsEnabled = false;
                 CRSUpDn.DataContext = null;
-                RadiusSlider.DataContext = null;
                 MultiplierSlider.DataContext = null;
             }
         }
@@ -64,18 +63,13 @@ namespace MonchaCadViewer.Panels
             CRSUpDn.DataContext = projectionSetting.PointStep;
             CRSUpDn.SetBinding(NumericUpDown.ValueProperty, "MX");
             projectionSetting.PointStep.PropertyChanged += M_ChangePoint;
-
-            RadiusSlider.Value = projectionSetting.RadiusEdge;
-            RadiusSlider.DataContext = projectionSetting;
-            RadiusSlider.SetBinding(Slider.ValueProperty, "RadiusEdge");
+            
             MonchaHub.Size.PropertyChanged += Size_ChangePoint;
 
             MultiplierSlider.Value = projectionSetting.StartLineWait;
             MultiplierSlider.DataContext = projectionSetting;
             MultiplierSlider.SetBinding(Slider.ValueProperty, "StartLineWait");
 
-            DistanceUpDn.DataContext = projectionSetting;
-            DistanceUpDn.SetBinding(NumericUpDown.ValueProperty, "Distance");
 
             RedUpDn.DataContext = projectionSetting;
             RedUpDn.SetBinding(NumericUpDown.ValueProperty, "Red");
@@ -114,7 +108,7 @@ namespace MonchaCadViewer.Panels
 
         private void Size_ChangePoint(object sender, PropertyChangedEventArgs e)
         {
-            RadiusSlider.Maximum = Math.Max(MonchaHub.Size.X, MonchaHub.Size.Y);
+
         }
 
         private void M_ChangePoint(object sender, PropertyChangedEventArgs e)
@@ -125,13 +119,9 @@ namespace MonchaCadViewer.Panels
         private void OtherSettingSwitch_Toggled(object sender, RoutedEventArgs e)
         {
             CRSUpDn.DataContext = null;
-            RadiusSlider.DataContext = null;
             MultiplierSlider.DataContext = null;
-            DistanceUpDn.DataContext = null;
             BindingOperations.ClearBinding(CRSUpDn, NumericUpDown.ValueProperty);
-            BindingOperations.ClearBinding(RadiusSlider, Slider.ValueProperty);
             BindingOperations.ClearBinding(MultiplierSlider, Slider.ValueProperty);
-            BindingOperations.ClearBinding(DistanceUpDn, NumericUpDown.ValueProperty);
 
             if (OtherSettingSwitch.IsOn == true)
             {

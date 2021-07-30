@@ -35,6 +35,10 @@ using System.Text;
 using System.Net.Sockets;
 using System.Net;
 using ToGeometryConverter.Object.UDP;
+using MonchaCadViewer.Panels.CanvasPanel;
+using System.Management;
+using ToGeometryConverter.Format;
+using MonchaCadViewer.StaticTools;
 
 namespace MonchaCadViewer
 {
@@ -43,8 +47,9 @@ namespace MonchaCadViewer
     /// </summary>
     public partial class MainWindow : Window
     {
-        private static Dispatcher dispatcher = System.Windows.Application.Current.Dispatcher;
-        private string qrpath = string.Empty;
+        public ProjectionScene MainScene { get; } = new ProjectionScene();
+
+        public LSize3D CanvasSize => MonchaHub.Size;
 
         private KmpsAppl kmpsAppl;
         private bool inverseToggle = true;
@@ -93,10 +98,7 @@ namespace MonchaCadViewer
             MonchaHub.Loging += MonchaHub_Loging;
             MonchaHub.Devices.CollectionChanged += Devices_CollectionChanged; ;
 
-            MultPanel.NeedUpdate += MultPanel_NeedUpdate;
-            DevicePanel.DrawObjects += DeviceTree_DrawObjects;
-            DeviceTree.NeedRefresh += DeviceTree_NeedRefresh;
-            DeviceTree.DrawObjects += DeviceTree_DrawObjects;
+            MainScene.UpdateFrame += MainScene_UpdateFrame;
 
             LoadMoncha();
 
@@ -106,10 +108,11 @@ namespace MonchaCadViewer
             {
                 DevicePanel.DataContext = MonchaHub.Devices[0];
             }
+        }
 
-            this.MainCanvas.SelectedObject += MainCanvas_SelectedObject;
-
-            ContourScrollPanel.SelectedFrame += ContourScrollPanel_SelectedFrame;
+        private async void MainScene_UpdateFrame(object sender, EventArgs e)
+        {
+            MonchaHub.MainFrame = await SendProcessor.GetLObject(MainScene);
         }
 
         private void Devices_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
@@ -148,59 +151,13 @@ namespace MonchaCadViewer
 
         }
 
-        private void DeviceTree_DrawObjects(object sender, List<FrameworkElement> e)
-        {
-            MainCanvas.Canvas.AddRange(e, Keyboard.Modifiers != ModifierKeys.Shift);
-        }
-
-        private void DeviceTree_NeedRefresh(object sender, bool e)
-        {
-            LoadMoncha();
-        }
-
-        private void MainCanvas_SelectedObject(object sender, CadObject e)
-        {
-            MultPanel.DataContext = e;
-            ObjectPanel.DataContext = e;
-        }
-
-        private void ContourScrollPanel_SelectedFrame(object sender, bool e)
-        {
-            if (e == true)
-            {
-                if (sender is CadObjectsGroup cadGeometries)
-                {
-                    if (Keyboard.Modifiers != ModifierKeys.Shift) this.MainCanvas.Clear();
-
-                    foreach (CadGeometry cadGeometry in cadGeometries)
-                    {
-                        this.MainCanvas.Add(cadGeometry, false);
-                    }
-                }
-                else
-                {
-                    this.MainCanvas.Add(sender, Keyboard.Modifiers != ModifierKeys.Shift);
-                }
-            }
-            else
-            {
-                this.MainCanvas.Remove(sender);
-            }
-        }
-
         private void MonchaHub_Loging(object sender, string e) => LogBox.Invoke(() => { LogBox.Items.Add(e); });
 
 
-        private void MultPanel_NeedUpdate(object sender, EventArgs e)
-        {
-            if (this.IsLoaded == true)
-            {
-                this.MainCanvas.UpdateProjection(false);
-            }
-        }
-
         private void LoadMoncha()
         {
+            MonchaHub.CanPlay = false;
+
             //check path to setting file
             if (File.Exists(AppSt.Default.cl_moncha_path) == false)
             {
@@ -312,7 +269,6 @@ namespace MonchaCadViewer
 
         private async Task OpenFile(string filename)
         {
-
             if ((filename.Split('.').Last() == "frw") || (filename.Split('.').Last() == "cdw"))
             {
                 if (KmpsAppl.KompasAPI == null)
@@ -327,20 +283,16 @@ namespace MonchaCadViewer
             else
             {
 
-                GCCollection _actualFrames = await ToGC.GetAsync(filename, MonchaHub.ProjectionSetting.PointStep.MX);
-
-                if (_actualFrames == null)
+                GCCollection LoadedFrame = await GetGC.Load(filename);
+                GC.Collect();
+                if (LoadedFrame == null)
                 {
                     return;
                 }
-                else
-                {
-                    AppSt.Default.stg_last_file_path = filename;
-                    AppSt.Default.Save();
-                }
-                ContourScrollPanel.Add(false, _actualFrames, filename);
-            }
 
+
+                ContourScrollPanel.Add(false, new CadObjectsGroup(LoadedFrame), filename);
+            }
         }
        
 
@@ -377,11 +329,7 @@ namespace MonchaCadViewer
             OpenBtn.Background = Brushes.Gainsboro;
         }
 
-        private async void ReloadBtn_ClickAsync(object sender, RoutedEventArgs e)
-        {
-            ContourScrollPanel.Refresh();
-        }
-
+       
         private void MashMultiplierUpDn_ValueIncremented(object sender, NumericUpDownChangedRoutedEventArgs args)
         {
             if (MashMultiplierUpDn.Value == null) MashMultiplierUpDn.Value = 1;
@@ -460,7 +408,9 @@ namespace MonchaCadViewer
                 gCElements.AddRange(
                     await ContourCalc.GetGeometry(this.kmpsAppl.Doc, MonchaHub.ProjectionSetting.PointStep.MX, false, true));
 
-                ContourScrollPanel.Add(false, gCElements, this.kmpsAppl.Doc.D7.Name);
+                CadObjectsGroup cadGeometries = new CadObjectsGroup(gCElements);
+
+                ContourScrollPanel.Add(false, cadGeometries, this.kmpsAppl.Doc.D7.Name);
             }
         }
 
@@ -468,12 +418,14 @@ namespace MonchaCadViewer
         {
             if (KmpsAppl.KompasAPI != null)
             {
-                ContourScrollPanel.Add(
-                    false,
-                    new GCCollection() {
-                    new GeometryElement(await ContourCalc.GetGeometry(this.kmpsAppl.Doc, MonchaHub.ProjectionSetting.PointStep.MX, true, true)),
-                    },
-                    this.kmpsAppl.Doc.D7.Name);
+                GCCollection gCObjects = new GCCollection();
+
+                gCObjects.Add(new GeometryElement(await ContourCalc.GetGeometry(this.kmpsAppl.Doc, MonchaHub.ProjectionSetting.PointStep.MX, true, true)));
+
+                CadObjectsGroup cadGeometries = new CadObjectsGroup(gCObjects);
+
+                ContourScrollPanel.Add(true, cadGeometries, this.kmpsAppl.Doc.D7.Path);
+                   
             }
         }
 
@@ -562,7 +514,7 @@ namespace MonchaCadViewer
                     }
                     break;
                 case Key.Escape:
-                    MainCanvas.Canvas.MouseAction = CanvasObj.MouseAction.NoAction;
+                    MainCanvas.MouseAction = Panels.CanvasPanel.MouseAction.NoAction;
                     break;
 
             }
@@ -575,7 +527,7 @@ namespace MonchaCadViewer
 
         private void ClearBtn_Click(object sender, RoutedEventArgs e)
         {
-            MainCanvas.Clear();
+            MainScene.Clear();
         }
 
         private void BaseFolderSelect_Click(object sender, RoutedEventArgs e)
@@ -693,7 +645,7 @@ namespace MonchaCadViewer
             {
                 if (item.IsSelected == true)
                 {
-                    saveFileDialog.FileName += $"{(saveFileDialog.FileName != string.Empty ? " " : string.Empty)}{item.cadObject.Name}";
+                    saveFileDialog.FileName += $"{(saveFileDialog.FileName != string.Empty ? " " : string.Empty)}{item.Scene.NameID}";
                 }
             }
 
@@ -874,9 +826,9 @@ namespace MonchaCadViewer
             }
         }
 
-        private void RectBtn_Click(object sender, RoutedEventArgs e) => MainCanvas.Canvas.MouseAction = CanvasObj.MouseAction.Mask;
+        private void RectBtn_Click(object sender, RoutedEventArgs e) => MainCanvas.MouseAction = Panels.CanvasPanel.MouseAction.Mask;
 
-        private void Line_Click(object sender, RoutedEventArgs e) => MainCanvas.Canvas.MouseAction = CanvasObj.MouseAction.Line;
+        private void Line_Click(object sender, RoutedEventArgs e) => MainCanvas.MouseAction = Panels.CanvasPanel.MouseAction.Line;
 
         private void TcpListenBtn_Click(object sender, RoutedEventArgs e)
         {
@@ -904,16 +856,10 @@ namespace MonchaCadViewer
             {
                 try
                 {
-                    GCCollection gCElements = await GCByteReader.Read(e);
-                    if (gCElements != null)
-                    {
-                        MonchaHub.Play();
-                        ContourScrollPanel.Add(false, gCElements, gCElements.Name);
-                    }
-                    else
-                    {
-                        MonchaHub.CanPlay = false;
-                    }
+                    CadObjectsGroup geometries = new CadObjectsGroup(await GCByteReader.Read(e));
+
+                    ContourScrollPanel.Add(false, geometries, geometries.Name);
+
                 }
                 catch
                 {
@@ -955,6 +901,40 @@ namespace MonchaCadViewer
             {
                 AppSt.Default.stg_default_position = radioButton.DataContext.ToString();
             }
+        }
+
+        private void LincenseItem_Click(object sender, RoutedEventArgs e)
+        {
+            MessageBox.Show(GetKey());
+        }
+
+        private string GetKey()
+        {
+            Dictionary<string, string> ids =
+            new Dictionary<string, string>();
+
+            ManagementObjectSearcher searcher;
+
+            //UUID
+            searcher = new ManagementObjectSearcher("root\\CIMV2",
+                   "SELECT UUID FROM Win32_ComputerSystemProduct");
+            foreach (ManagementObject queryObj in searcher.Get())
+            {
+                ids.Add($"key_{ids.Count}", queryObj["UUID"].ToString());
+            }
+
+            string key = string.Empty;
+            foreach (var x in ids)
+            {
+                key += x.Key + ": " + x.Value + "\r\n";
+            }
+
+            return key;
+        }
+
+        private void DeviceTree_Loaded(object sender, RoutedEventArgs e)
+        {
+
         }
     }
 

@@ -4,10 +4,17 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:Controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
-        xmlns:Properties="clr-namespace:MonchaCadViewer.Properties" xmlns:controlzex="urn:controlzex"
-        xmlns:canvaspanel="clr-namespace:MonchaCadViewer.Panels.CanvasPanel" xmlns:devicepanel="clr-namespace:MonchaCadViewer.Panels.DevicePanel" xmlns:panels="clr-namespace:MonchaCadViewer.Panels" x:Name="MainWindow1" x:Class="MonchaCadViewer.MainWindow"
+        xmlns:Properties="clr-namespace:MonchaCadViewer.Properties"
+        xmlns:canvaspanel="clr-namespace:MonchaCadViewer.Panels.CanvasPanel"
+        xmlns:panels="clr-namespace:MonchaCadViewer.Panels" 
+        xmlns:convert="clr-namespace:MonchaCadViewer.Converters"
+        xmlns:leftpanels="clr-namespace:MonchaCadViewer.Panels.DevicePanel.LeftPanels"
+        x:Class="MonchaCadViewer.MainWindow"
         mc:Ignorable="d"
-        Title="CUT" KeyboardNavigation.TabNavigation="None"  AllowDrop="True" Height="766.898" Width="999" Closing="Window_Closing" Closed="Window_Closed" WindowStartupLocation="CenterScreen" Icon="logo.png" KeyUp="MainWindow1_KeyUp" WindowStyle="None" ResizeMode="CanResizeWithGrip" BorderBrush="#FFE01414" VerticalAlignment="Top">
+        Title="CUT" KeyboardNavigation.TabNavigation="None"  
+    AllowDrop="True" Drop="MainCanvas_Drop"
+    Height="760" Width="999" Closing="Window_Closing" Closed="Window_Closed" WindowStartupLocation="CenterScreen" Icon="logo.png" KeyUp="MainWindow1_KeyUp" WindowStyle="None" ResizeMode="CanResizeWithGrip" BorderBrush="#FFE01414" VerticalAlignment="Top" 
+    >
     <Window.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -32,400 +39,362 @@
                     </Trigger>
                 </Style.Triggers>
             </Style>
+
         </ResourceDictionary>
     </Window.Resources>
     <Border>
-        <DockPanel Grid.ColumnSpan="3" Grid.RowSpan="5" Grid.Row="1" Margin="0,0,0,0">
-            <Grid>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="215"/>
-                    <ColumnDefinition/>
-                    <ColumnDefinition Width="290"/>
-                </Grid.ColumnDefinitions>
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="30"/>
-                    <RowDefinition Height="115"/>
-                    <RowDefinition Height="577*"/>
-                    <RowDefinition Height="37*"/>
-                </Grid.RowDefinitions>
+        <Border.Resources>
+            <convert:NotNullBool x:Key="NotNullBool"/>
+        </Border.Resources>
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="213"/>
+                <ColumnDefinition/>
+                <ColumnDefinition Width="290"/>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="30"/>
+                <RowDefinition Height="115"/>
+                <RowDefinition Height="480*"/>
+                <RowDefinition Height="97*"/>
+                <RowDefinition Height="30"/>
+            </Grid.RowDefinitions>
 
-                <DockPanel x:Name="TopBar" Grid.ColumnSpan="3" Margin="0,0,0,0" Background="{DynamicResource {x:Static SystemColors.MenuBrushKey}}" MouseLeftButtonDown="TopBar_MouseLeftButtonDown" VerticalAlignment="Top" LastChildFill="False" Height="29">
-                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" DockPanel.Dock="Left">
-                        <Menu>
-                            <Image Width="25" Height="25" Margin="2" Source="logo.png"/>
-                            <MenuItem Header="▼" Focusable="True">
-                                <MenuItem Header="File">
-                                    <MenuItem Header="Browse Moncha" Click="BrowseMonchaBtn_Click"/>
-                                    <Separator/>
-                                    <MenuItem Header="Save Moncha" Click="MenuSaveBtn_Click"/>
-                                    <MenuItem Header="Save Moncha as..." Click="SaveAsItem_Click"/>
-                                    <Separator/>
-                                    <MenuItem Header="Close" Click="CloseBtn_Click"/>
-                                </MenuItem>
-                                <MenuItem x:Name="menuLanguage" Header="Language">
-                                </MenuItem>
+            <DockPanel x:Name="TopBar" Grid.ColumnSpan="3" Margin="0,0,0,0" Background="{DynamicResource {x:Static SystemColors.MenuBrushKey}}" MouseLeftButtonDown="TopBar_MouseLeftButtonDown" VerticalAlignment="Top" LastChildFill="False" Height="29">
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" DockPanel.Dock="Left">
+                    <Menu>
+                        <Image Width="25" Height="25" Margin="2" Source="logo.png"/>
+                        <MenuItem Header="▼" Focusable="True">
+                            <MenuItem Header="File">
+                                <MenuItem Header="Browse Moncha" Click="BrowseMonchaBtn_Click"/>
+                                <Separator/>
+                                <MenuItem Header="Save Moncha" Click="MenuSaveBtn_Click"/>
+                                <MenuItem Header="Save Moncha as..." Click="SaveAsItem_Click"/>
+                                <MenuItem Header="License" Click="LincenseItem_Click"/>
+                                <Separator/>
+                                <MenuItem Header="Close" Click="CloseBtn_Click"/>
                             </MenuItem>
-                        </Menu>
+                            <MenuItem x:Name="menuLanguage" Header="Language">
+                            </MenuItem>
+                        </MenuItem>
+                    </Menu>
 
-                        <Separator/>
-                        <Label Content="CUT — Viwer" Padding="5,2" VerticalContentAlignment="Center"/>
+                    <Separator/>
+                    <Label Content="CUT — Viwer" Padding="5,2" VerticalContentAlignment="Center"/>
 
-                        <StackPanel Margin="10,0,0,0" Orientation="Horizontal" HorizontalAlignment="Right" DockPanel.Dock="Right" UseLayoutRounding="True">
+                    <StackPanel Margin="10,0,0,0" Orientation="Horizontal" HorizontalAlignment="Right" DockPanel.Dock="Right" UseLayoutRounding="True">
 
-                            <Button x:Name="MenuSaveBtn" FontFamily="Segoe MDL2 Assets" Content="&#xE792;" Width="25" Height="25" Margin="2" Padding="0,-1,0,0" FontSize="18" BorderBrush="{x:Null}" Background="{x:Null}" Click="MenuSaveBtn_Click"/>
-                            <Label x:Name="MonchaPathBox"  Margin="3"   Content="{Binding cl_moncha_path}" VerticalAlignment="Top" Grid.ColumnSpan="3" HorizontalContentAlignment="Right" RenderTransformOrigin="0.7,-1.217" FontSize="10">
-                                <Label.DataContext>
-                                    <Properties:Settings/>
-                                </Label.DataContext>
-                            </Label>
+                        <Button x:Name="MenuSaveBtn" FontFamily="Segoe MDL2 Assets" Content="&#xE792;" Width="25" Height="25" Margin="2" Padding="0,-1,0,0" FontSize="18" BorderBrush="{x:Null}" Background="{x:Null}" Click="MenuSaveBtn_Click"/>
+                        <Label x:Name="MonchaPathBox"  Margin="3"   Content="{Binding cl_moncha_path}" VerticalAlignment="Top" Grid.ColumnSpan="3" HorizontalContentAlignment="Right" RenderTransformOrigin="0.7,-1.217" FontSize="10">
+                            <Label.DataContext>
+                                <Properties:Settings/>
+                            </Label.DataContext>
+                        </Label>
 
-                        </StackPanel>
                     </StackPanel>
-                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" DockPanel.Dock="Right" Margin="5,0">
-                        <Controls:ToggleSwitch x:Name="ethernetToggle" VerticalAlignment="Center"  Grid.Column="2" Controls:HeaderedControlHelper.HeaderHorizontalContentAlignment="Right" Controls:HeaderedControlHelper.HeaderVerticalContentAlignment="Center" ContentDirection="LeftToRight" Width="65" Margin="0,4,0,5" Toggled="ethernetToggle_Toggled"/>
-                        <Label Content="Ethernet" />
-                        <Button x:Name="MinimizedBtn" FontFamily="Segoe MDL2 Assets" Content="&#xE921;" Width="25" Height="25" Margin="2" Click="MinimizedBtn_Click">
+                </StackPanel>
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" DockPanel.Dock="Right" Margin="5,0">
+                    <Controls:ToggleSwitch x:Name="ethernetToggle" VerticalAlignment="Center"  Grid.Column="2" Controls:HeaderedControlHelper.HeaderHorizontalContentAlignment="Right" Controls:HeaderedControlHelper.HeaderVerticalContentAlignment="Center" ContentDirection="LeftToRight" Width="65" Margin="0,4,0,5" Toggled="ethernetToggle_Toggled"/>
+                    <Label Content="Ethernet" />
+                    <Button x:Name="MinimizedBtn" FontFamily="Segoe MDL2 Assets" Content="&#xE921;" Width="25" Height="25" Margin="2" Click="MinimizedBtn_Click">
 
-                        </Button>
-                        <Button x:Name="FullSizeBtn" FontFamily="Segoe MDL2 Assets" Content="&#xE922;" Width="25" Height="25" Margin="2" Click="FullSizeBtn_Click">
+                    </Button>
+                    <Button x:Name="FullSizeBtn" FontFamily="Segoe MDL2 Assets" Content="&#xE922;" Width="25" Height="25" Margin="2" Click="FullSizeBtn_Click">
 
-                        </Button>
-                        <Button x:Name="CloseBtn"  FontFamily="Segoe MDL2 Assets" Content="&#xE8BB;" Width="25" Height="25" Margin="2" Click="CloseBtn_Click">
+                    </Button>
+                    <Button x:Name="CloseBtn"  FontFamily="Segoe MDL2 Assets" Content="&#xE8BB;" Width="25" Height="25" Margin="2" Click="CloseBtn_Click">
 
-                        </Button>
-                    </StackPanel>
+                    </Button>
+                </StackPanel>
 
-                </DockPanel>
+            </DockPanel>
 
-                <DockPanel Grid.ColumnSpan="3" Grid.Row="1">
+
+            <DockPanel Margin="5" Grid.Row="1">
+                <ToolBar>
+                    <Button x:Name="OpenBtn" AllowDrop="True" Content="{DynamicResource m_Open}" DragEnter="OpenBtn_DragEnter" DragOver="OpenBtn_DragOver" DragLeave="OpenBtn_DragLeave" Drop="OpenBtn_DragDropAsync" Click="OpenBtn_ClickAsync" Grid.ColumnSpan="2" Background="{x:Null}" BorderBrush="{x:Null}" VerticalContentAlignment="Center" Margin="0,10,0,14" Width="99" VerticalAlignment="Stretch" />
+                </ToolBar>
+                <ToolBarTray Orientation="Vertical">
+                    <ToolBar Margin="0,0,0,0" Width="80" >
+                        <Button x:Name="ClearBtn" Content="{DynamicResource edit_Clear}"  Click="ClearBtn_Click" Height="25"/>
+                        <Button x:Name="Line" Content="{DynamicResource edit_Line}" Click="Line_Click" Height="25"/>
+                        <Button x:Name="RectBtn" Content="{DynamicResource edit_Mask}" Click="RectBtn_Click" Height="25"/>
+                    </ToolBar>
+                </ToolBarTray>
+            </DockPanel>
+            <TabControl x:Name="tabControl1" Margin="0,0,0,0" Grid.Column="1" Grid.Row="1">
+                <TabItem Header="Transform">
+                    <panels:CadObjectPanel x:Name="ObjectPanel" DataContext="{Binding RelativeSource={RelativeSource AncestorType=Window}, Path=MainScene.LastSelectObject}"
+                        IsEnabled="{Binding RelativeSource={RelativeSource Self}, Path=DataContext, Converter={StaticResource NotNullBool}}">
+                    </panels:CadObjectPanel>
+                </TabItem>
+                <TabItem Header="ProjectionSetting">
+                    <panels:multiplierpanel x:Name="MultPanel" Margin="0"></panels:multiplierpanel>
+                </TabItem>
+            </TabControl>
+            <Button x:Name="PlayBtn" Content="{DynamicResource m_Play}" Margin="10,20,10,0" Click="PlayBtn_Click" Background="#FFFFD100" Grid.Column="2" Grid.Row="1"/>
+
+            <TabControl TabStripPlacement="Left" Margin="0,5,5,0" Grid.Row="2" Grid.RowSpan="2">
+                <TabControl.Resources>
+                    <Style TargetType="{x:Type TabItem}">
+                        <Setter Property="HeaderTemplate">
+                            <Setter.Value>
+                                <DataTemplate>
+                                    <ContentPresenter Content="{TemplateBinding Content}">
+                                        <ContentPresenter.LayoutTransform>
+                                            <RotateTransform Angle="270" />
+                                        </ContentPresenter.LayoutTransform>
+                                    </ContentPresenter>
+                                </DataTemplate>
+                            </Setter.Value>
+                        </Setter>
+                        <Setter Property="Padding" Value="2" />
+                    </Style>
+                </TabControl.Resources>
+                <TabItem Header="Device">
+                    <panels:DeviceTreeTab x:Name="DeviceTree" Focusable="False" Margin="0" Grid.ColumnSpan="2" Grid.Row="2" Loaded="DeviceTree_Loaded"
+                                          DataContext="{Binding RelativeSource={RelativeSource AncestorType=Window}, Path=MainScene}"/>
+                </TabItem>
+                <TabItem Header="Frame">
+                    <leftpanels:FrameTree DataContext="{Binding RelativeSource={RelativeSource AncestorType=Window}, Path=MainScene}"/>
+                </TabItem>
+            </TabControl>
+            <TabControl TabStripPlacement="Bottom" Margin="0,5,0,0" Grid.Column="1" Grid.Row="2">
+                <TabItem Header="{DynamicResource m_CanvasTab}">
+                    <canvaspanel:CadCanvasPanel x:Name="MainCanvas" DataContext="{Binding RelativeSource={RelativeSource AncestorType=Window}, Path=MainScene}" AllowDrop="True" Drop="MainCanvas_Drop"/>
+                </TabItem>
+                <TabItem Header="ViewPort3D" Visibility="Collapsed">
+                </TabItem>
+            </TabControl>
+            <panels:ScrollPanel x:Name="ContourScrollPanel" Margin="0,0,0,0" Grid.Column="1" Grid.Row="3" 
+                                DataContext="{Binding RelativeSource={RelativeSource AncestorType=Window}, Path=MainScene}"/>
+
+            <TabControl x:Name="tabControl" DockPanel.Dock="Right" Grid.Column="2" Grid.Row="2" Grid.RowSpan="2" Margin="5,3,5,0">
+                <TabItem x:Name="ContourSettingTab" Header="{DynamicResource dvc_Device}" Controls:HeaderedControlHelper.HeaderFontSize="18">
                     <Grid>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition/>
-                            <ColumnDefinition Width="290"/>
-                        </Grid.ColumnDefinitions>
-                        <DockPanel LastChildFill="False" >
-                            <ToolBarPanel Orientation="Horizontal" Width="219" Margin="0,0,0,0">
-                                <ToolBar Grid.ColumnSpan="2" Width="218">
-                                    <ToolBarPanel Orientation="Vertical" Width="100">
-                                        <Button x:Name="OpenBtn" AllowDrop="True" Content="{DynamicResource m_Open}" DragEnter="OpenBtn_DragEnter" DragOver="OpenBtn_DragOver" DragLeave="OpenBtn_DragLeave" Drop="OpenBtn_DragDropAsync" Click="OpenBtn_ClickAsync" Grid.ColumnSpan="2" Background="{x:Null}" BorderBrush="{x:Null}" Height="110" />
-
-                                    </ToolBarPanel>
-                                    <Separator></Separator>
-                                    <Button x:Name="ReloadBtn" Content="{DynamicResource m_Refresh}"  Margin="0,5" HorizontalAlignment="Right"  Click="ReloadBtn_ClickAsync" Grid.Column="1" VerticalAlignment="Stretch" Width="80"/>
-                                </ToolBar>
-
-
-                            </ToolBarPanel>
-                            <TabControl x:Name="tabControl1">
-
-                                <TabItem Header="Transform">
-                                    <panels:CadObjectPanel x:Name="ObjectPanel"></panels:CadObjectPanel>
-                                </TabItem>
-                                <TabItem Header="Draw">
-                                    <Grid Background="#FFE5E5E5">
-                                        <Grid.ColumnDefinitions>
-                                            <ColumnDefinition Width="23*"/>
-                                            <ColumnDefinition Width="26*"/>
-                                        </Grid.ColumnDefinitions>
-                                        <ToolBar Margin="0,0,0,0" Grid.ColumnSpan="2">
-                                            <Button x:Name="ClearBtn" Content="{DynamicResource edit_Clear}"  Click="ClearBtn_Click"/>
-                                            <Button x:Name="Line" Content="{DynamicResource edit_Line}" Click="Line_Click"/>
-                                            <Button x:Name="RectBtn" Content="{DynamicResource edit_Mask}" Click="RectBtn_Click"/>
-                                        </ToolBar>
-                                    </Grid>
-                                </TabItem>
-                            </TabControl>
-                        </DockPanel>
-                        <DockPanel Grid.Column="1" >
-                            <Grid>
-                                <Grid.RowDefinitions>
-                                </Grid.RowDefinitions>
-
-                                <Button x:Name="PlayBtn" Content="{DynamicResource m_Play}" Margin="3,26,5,5" Click="PlayBtn_Click" Background="#FFFFD100" Grid.Column="1"/>
-                            </Grid>
-
-
-                        </DockPanel>
+                        <panels:DeviceTab x:Name="DevicePanel"/>
                     </Grid>
-                </DockPanel>
 
-                <DockPanel Grid.Row="2">
+                </TabItem>
+                <TabItem Header="{DynamicResource common_Format}" Controls:HeaderedControlHelper.HeaderFontSize="18">
+                    <Grid Background="#FFE5E5E5">
+                        <TabControl x:Name="TabItem">
+                            <TabItem Header="Компас" Controls:HeaderedControlHelper.HeaderFontSize="14">
+                                <Grid Background="#FFE5E5E5">
+                                    <Button x:Name="kmpsSelectBtn" Content="{DynamicResource common_Select}" HorizontalAlignment="Left" Margin="10,86,0,0" VerticalAlignment="Top" Width="125" Height="50" Click="kmpsSelectBtn_Click"/>
+                                    <Button x:Name="kmpsAddBtn" Content="{DynamicResource common_ADDIN}" HorizontalAlignment="Left" Margin="140,86,0,0" VerticalAlignment="Top" Width="78" Height="50" Click="kmpsAddBtn_Click"/>
+                                    <Controls:ToggleSwitch x:Name="kmpsConnectToggle"  Content="{DynamicResource common_Connect}" HorizontalAlignment="Left" Margin="10,26,0,0" VerticalAlignment="Top" RenderTransformOrigin="0.5,0.5" Toggled="kmpsConnectToggle_Toggled" HorizontalContentAlignment="Center" Height="24" Width="201">
+                                        <Controls:ToggleSwitch.DataContext>
+                                            <Properties:Settings/>
+                                        </Controls:ToggleSwitch.DataContext>
+                                    </Controls:ToggleSwitch>
+                                    <Label x:Name="KmpsNameLbl" Content="{DynamicResource common_Empty}" HorizontalAlignment="Left" Margin="10,55,0,0" VerticalAlignment="Top" Width="208"/>
+                                </Grid>
+                            </TabItem>
+                            <TabItem Header="ILDA" Controls:HeaderedControlHelper.HeaderFontSize="14">
+                                <Grid Background="#FFE5E5E5">
+                                    <Controls:ToggleSwitch x:Name="UsedMeshToggle" Margin="10,10,0,0" IsOn="True" Content="Used device mesh" VerticalAlignment="Top"/>
+                                    <Button x:Name="ILDASaveBtn" Content="{DynamicResource m_Saveas}" HorizontalAlignment="Left" Margin="10,40,0,0" VerticalAlignment="Top" Width="248" Height="29" Click="ILDASaveBtn_Click"/>
+                                </Grid>
+                            </TabItem>
+                            <TabItem Header="Setting" Controls:HeaderedControlHelper.HeaderFontSize="14">
+                                <Grid Background="#FFE5E5E5">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="53*"/>
+                                        <ColumnDefinition Width="81*"/>
+                                    </Grid.ColumnDefinitions>
+                                    <Label x:Name="label2" Content="{DynamicResource setting_mainlabel}" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Grid.ColumnSpan="2" Height="26" Width="124"/>
+                                    <Controls:NumericUpDown x:Name="ScaleXBox" Margin="5,38,10,0" Maximum="999" Minimum="1" Background="White" Value="{Binding default_scale_x, Mode=TwoWay}" Height="26" VerticalAlignment="Top" Grid.Column="1" >
+                                        <Controls:NumericUpDown.DataContext>
+                                            <Properties:Settings/>
+                                        </Controls:NumericUpDown.DataContext>
+                                    </Controls:NumericUpDown>
+                                    <Label x:Name="label2_Copy" Content="{DynamicResource setting_xscale}" HorizontalAlignment="Left" Margin="10,37,0,0" VerticalAlignment="Top" Height="26" Width="86"/>
+                                    <Controls:NumericUpDown x:Name="ScaleYBox" Margin="5,69,10,0" Maximum="999" Minimum="1" Background="White"  Value="{Binding default_scale_y, Mode=TwoWay}" Height="26" VerticalAlignment="Top" Grid.Column="1" >
+                                        <Controls:NumericUpDown.DataContext>
+                                            <Properties:Settings/>
+                                        </Controls:NumericUpDown.DataContext>
+                                    </Controls:NumericUpDown>
+                                    <Label x:Name="label2_Copy1" Content="{DynamicResource setting_yscale}" HorizontalAlignment="Left" Margin="10,68,0,0" VerticalAlignment="Top" Height="26" Width="86"/>
+                                    <Controls:NumericUpDown x:Name="AngleBox" Margin="5,100,10,0" Maximum="360" Minimum="0" Background="White"  Value="{Binding default_angle, Mode=TwoWay}" Height="26" VerticalAlignment="Top" Grid.Column="1" >
+                                        <Controls:NumericUpDown.DataContext>
+                                            <Properties:Settings/>
+                                        </Controls:NumericUpDown.DataContext>
+                                    </Controls:NumericUpDown>
+                                    <Label x:Name="label2_Copy2" Content="{DynamicResource obj_Angle}" HorizontalAlignment="Left" Margin="10,99,0,0" VerticalAlignment="Top" Height="26" Width="86"/>
+                                    <CheckBox x:Name="MirrorBox" Content="{DynamicResource obj_Mirror}" HorizontalAlignment="Left" Margin="5,140,0,0" VerticalAlignment="Top"  IsChecked="{Binding default_mirror, Mode=TwoWay}" Grid.Column="1" Width="147">
+                                        <CheckBox.DataContext>
+                                            <Properties:Settings/>
+                                        </CheckBox.DataContext>
+                                    </CheckBox>
+                                    <Button x:Name="SaveObjStgBtn" Content="{DynamicResource m_Save}" HorizontalAlignment="Left" Margin="10,374,0,0" VerticalAlignment="Top" Width="248" Grid.ColumnSpan="2" Height="31" Click="SaveObjStgBtn_Click"/>
+                                    <CheckBox x:Name="ScalePercentCheck" Content="{DynamicResource setting_percent}" HorizontalAlignment="Left" Margin="5,186,0,0" VerticalAlignment="Top"  IsChecked="{Binding stg_scale_percent, Mode=TwoWay}" Grid.Column="1" Width="147">
+                                        <CheckBox.DataContext>
+                                            <Properties:Settings/>
+                                        </CheckBox.DataContext>
+                                    </CheckBox>
+                                    <CheckBox x:Name="ScaleInvertCheck" Content="{DynamicResource setting_invertscale}" HorizontalAlignment="Left" Margin="5,208,0,0" VerticalAlignment="Top"  IsChecked="{Binding stg_scale_invert, Mode=TwoWay}" Grid.Column="1" Width="147">
+                                        <CheckBox.DataContext>
+                                            <Properties:Settings/>
+                                        </CheckBox.DataContext>
+                                    </CheckBox>
+                                    <CheckBox x:Name="SolidObject" Content="{DynamicResource setting_solidobject}" HorizontalAlignment="Left" Margin="5,228,0,0" VerticalAlignment="Top"  IsChecked="{Binding object_solid, Mode=TwoWay}" Grid.Column="1" Width="147">
+                                        <CheckBox.DataContext>
+                                            <Properties:Settings/>
+                                        </CheckBox.DataContext>
+                                    </CheckBox>
+                                    <CheckBox x:Name="ShowNameCheck" Content="{DynamicResource setting_showname}" HorizontalAlignment="Left" Margin="5,246,0,0" VerticalAlignment="Top"  IsChecked="{Binding stg_show_name, Mode=TwoWay}" Grid.Column="1" Width="146">
+                                        <CheckBox.DataContext>
+                                            <Properties:Settings/>
+                                        </CheckBox.DataContext>
+                                    </CheckBox>
+                                    <RadioButton Grid.Column="1" HorizontalAlignment="Left" Margin="5,284,0,0" VerticalAlignment="Top" DataContext="Top%Left" Checked="AttachRadioButton_Checked"/>
+                                    <RadioButton Grid.Column="1" HorizontalAlignment="Left" Margin="25,284,0,0" VerticalAlignment="Top" DataContext="Top$Middle" Checked="AttachRadioButton_Checked"/>
+                                    <RadioButton Grid.Column="1" HorizontalAlignment="Left" Margin="45,284,0,0" VerticalAlignment="Top" DataContext="Top%Right" Checked="AttachRadioButton_Checked"/>
+                                    <RadioButton Grid.Column="1" HorizontalAlignment="Left" Margin="45,303,0,0" VerticalAlignment="Top" DataContext="Middle%Right" Checked="AttachRadioButton_Checked"/>
+                                    <RadioButton Grid.Column="1" HorizontalAlignment="Left" Margin="25,303,0,0" VerticalAlignment="Top" DataContext="Middle%Middle" Checked="AttachRadioButton_Checked"/>
+                                    <RadioButton Grid.Column="1" HorizontalAlignment="Left" Margin="5,303,0,0" VerticalAlignment="Top" DataContext="Middle%Left" Checked="AttachRadioButton_Checked"/>
+                                    <RadioButton Grid.Column="1" HorizontalAlignment="Left" Margin="5,322,0,0" VerticalAlignment="Top" IsChecked="True" DataContext="Down%Left" Checked="AttachRadioButton_Checked"/>
+                                    <RadioButton Grid.Column="1" HorizontalAlignment="Left" Margin="25,322,0,0" VerticalAlignment="Top" DataContext="Down%Middle" Checked="AttachRadioButton_Checked"/>
+                                    <RadioButton Grid.Column="1" HorizontalAlignment="Left" Margin="45,322,0,0" VerticalAlignment="Top" DataContext="Down%Right" Checked="AttachRadioButton_Checked"/>
+                                    <Label x:Name="label2_Copy3" Content="{DynamicResource setting_attach}" HorizontalAlignment="Left" Margin="10,298,0,0" VerticalAlignment="Top" Height="26" Width="86"/>
+                                    <CheckBox x:Name="SelectableShowCheck" Content="{DynamicResource setting_selectableshow}" HorizontalAlignment="Left" Margin="5,264,0,0" VerticalAlignment="Top"  IsChecked="{Binding stg_selectable_show, Mode=TwoWay}" Grid.Column="1" Width="147">
+                                        <CheckBox.DataContext>
+                                            <Properties:Settings/>
+                                        </CheckBox.DataContext>
+                                    </CheckBox>
+
+                                </Grid>
+                            </TabItem>
+                            <TabItem Header="QR" Controls:HeaderedControlHelper.HeaderFontSize="14">
+                                <Grid Background="#FFE5E5E5">
+                                    <TextBox x:Name="BasePathBox" Height="23" TextWrapping="Wrap" Text="{Binding save_base_folder, Mode=TwoWay}" Margin="10,12,109,0" VerticalAlignment="Top">
+                                        <TextBox.DataContext>
+                                            <Properties:Settings/>
+                                        </TextBox.DataContext>
+                                    </TextBox>
+                                    <TextBox x:Name="AlreadyPathBox" Height="23" TextWrapping="Wrap" Text="{Binding save_work_folder, Mode=TwoWay}" Margin="10,43,109,0" VerticalAlignment="Top">
+                                        <TextBox.DataContext>
+                                            <Properties:Settings/>
+                                        </TextBox.DataContext>
+                                    </TextBox>
+                                    <Button x:Name="BaseFolderSelect" Content="{DynamicResource m_Browse}" HorizontalAlignment="Left" Margin="124,12,0,0" VerticalAlignment="Top" Width="94" Height="26" Click="BaseFolderSelect_Click"/>
+                                    <Button x:Name="WorkFolderSelect" Content="{DynamicResource m_Browse}" HorizontalAlignment="Left" Margin="124,43,0,0" VerticalAlignment="Top" Width="94" Height="26" Click="WorkFolderSelect_Click"/>
+                                </Grid>
+                            </TabItem>
+                            <TabItem Header="Ethernet">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="59*"/>
+                                        <ColumnDefinition Width="75*"/>
+                                    </Grid.ColumnDefinitions>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="42*"/>
+                                        <RowDefinition Height="449*"/>
+                                    </Grid.RowDefinitions>
+                                    <Controls:NumericUpDown x:Name="PortUpDn" Margin="5,10,10,6" Value="{Binding ether_udp_port}" Maximum="49151"  Minimum="1024" Background="White" Height="26" Grid.Column="1" ValueChanged="PortUpDn_ValueChanged" >
+                                        <Controls:NumericUpDown.DataContext>
+                                            <Properties:Settings/>
+                                        </Controls:NumericUpDown.DataContext>
+                                    </Controls:NumericUpDown>
+                                    <Label x:Name="label1" Content="UDP Port:" Margin="10,10,0,0" HorizontalAlignment="Left" Width="108"/>
+                                    <Button x:Name="TcpListenBtn" Content="Listen" Height="50" VerticalAlignment="Top" Margin="10,11,10,0" Click="TcpListenBtn_Click" Grid.Row="1" Grid.ColumnSpan="2"/>
+                                </Grid>
+                            </TabItem>
+
+                        </TabControl>
+
+                    </Grid>
+                </TabItem>
+                <TabItem x:Name="Calibration" Header="{DynamicResource common_Configuration}" Controls:HeaderedControlHelper.HeaderFontSize="18">
+                    <Grid Background="#FFE5E5E5">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="33*"/>
+                            <ColumnDefinition Width="53*"/>
+                            <ColumnDefinition Width="54*"/>
+                            <ColumnDefinition Width="49*"/>
+                            <ColumnDefinition Width="73*"/>
+                        </Grid.ColumnDefinitions>
+
+                        <Button x:Name="BrowseMonchaBtn" Content="{DynamicResource m_Browse}" Margin="17,8,10,0" VerticalAlignment="Top" Click="BrowseMonchaBtn_Click" Height="23" Grid.Column="3" Grid.ColumnSpan="2"/>
+                        <Button Content="Edit device" Grid.ColumnSpan="5" Margin="10,38,45,0" Height="27" VerticalAlignment="Top"/>
+                        <Button FontFamily="Segoe MDL2 Assets" Content="&#xEDAB;" Margin="35,38,10,0" Grid.Column="4" Click="Button_Click" Height="27" VerticalAlignment="Top"/>
+                        <Label x:Name="label" Content="Open Moncha" Margin="10,7,0,0" VerticalAlignment="Top" Grid.ColumnSpan="3" Height="26" HorizontalContentAlignment="Left"/>
+                        <Controls:NumericUpDown x:Name="WidthUpDn" Margin="0,70,10,0"  Background="White" Height="26" VerticalAlignment="Top" Grid.Column="2" Grid.ColumnSpan="3" >
+                            <Controls:NumericUpDown.DataContext>
+                                <Properties:Settings/>
+                            </Controls:NumericUpDown.DataContext>
+                        </Controls:NumericUpDown>
+                        <Label x:Name="label_Copy" Content="{DynamicResource obj_Width}" HorizontalAlignment="Left" Margin="6,70,0,0" VerticalAlignment="Top" Width="74" Height="26" Grid.ColumnSpan="2"/>
+                        <Controls:NumericUpDown x:Name="HeightUpD" Margin="0,106,10,0"  Background="White" Height="26" VerticalAlignment="Top" Grid.Column="2" Grid.ColumnSpan="3" />
+                        <Label x:Name="label_Copy1" Content="{DynamicResource obj_Height}" HorizontalAlignment="Left" Margin="6,106,0,0" VerticalAlignment="Top" Width="74" Height="26" Grid.ColumnSpan="2"/>
+                        <Controls:NumericUpDown x:Name="MashMultiplierUpDn" Margin="0,174,10,0"  Background="White" Height="26" Maximum="1" Minimum="0.001" VerticalAlignment="Top" Speedup="False" Controls:ScrollViewerHelper.IsHorizontalScrollWheelEnabled="True" ValueIncremented="MashMultiplierUpDn_ValueIncremented" ValueDecremented="MashMultiplierUpDn_ValueDecremented" Grid.Column="2" Grid.ColumnSpan="3"/>
+                        <Label x:Name="label_Copy3" Content="{DynamicResource clb_Multiplier}" HorizontalAlignment="Left" Margin="6,174,0,0" VerticalAlignment="Top" Height="26" Width="74" Grid.ColumnSpan="2"/>
+                        <Controls:NumericUpDown x:Name="PointStepUpDn" Margin="0,216,10,0"  Background="White" Height="26" VerticalAlignment="Top" NumericInputMode="Decimal" Maximum="10" Minimum="0" Interval="0.1"  Value="1" Grid.Column="2" Grid.ColumnSpan="3" Focusable="False" IsTabStop="False" AllowDrop="False" ValueDecremented="PointStepUpDn_ValueDecremented" ValueIncremented="PointStepUpDn_ValueIncremented">
+                            <Controls:NumericUpDown.DataContext>
+                                <Properties:Settings/>
+                            </Controls:NumericUpDown.DataContext>
+                        </Controls:NumericUpDown>
+                        <Label x:Name="label_Copy4" Content="{DynamicResource obj_Step}" Margin="10,216,10,0" VerticalAlignment="Top" Height="26" Grid.ColumnSpan="2"/>
+                        <ComboBox x:Name="CalibrationFormCombo" Focusable="True" Grid.ColumnSpan="3" Grid.Column="2" HorizontalAlignment="Left" Margin="0,258,0,0" VerticalAlignment="Top" Width="174" SelectionChanged="CalibrationFormCombo_SelectionChanged">
+                            <ComboBox.Resources>
+                                <ResourceDictionary>
+
+                                </ResourceDictionary>
+                            </ComboBox.Resources>
+                            <ComboBoxItem Content="{DynamicResource clb_Dot}"/>
+                            <ComboBoxItem Content="{DynamicResource clb_Rect}"/>
+                            <ComboBoxItem Content="{DynamicResource clb_Cross}"/>
+                            <ComboBoxItem Content="{DynamicResource clb_HLine}"/>
+                            <ComboBoxItem Content="{DynamicResource clb_WLine}"/>
+                        </ComboBox>
+                        <Label x:Name="CalibrationFormLabel" Content="{DynamicResource obj_Type}" Margin="10,258,10,0" VerticalAlignment="Top" Height="26" Grid.ColumnSpan="2"/>
+                        <Button x:Name="Save" Grid.ColumnSpan="5" Content="{DynamicResource m_Save}" HorizontalAlignment="Left" Margin="10,378,0,0" VerticalAlignment="Top" Width="254" Height="34" Click="Save_Click"/>
+                        <Controls:NumericUpDown x:Name="PointStepUpDn_Copy" Margin="0,289,10,0"  Background="White" Height="26" VerticalAlignment="Top" NumericInputMode="Decimal" Maximum="10" Minimum="1" Interval="1"  Value="{Binding anchor_size, Mode=TwoWay, UpdateSourceTrigger=Default}" Grid.Column="3" Grid.ColumnSpan="2" IsTabStop="False" AllowDrop="False"/>
+                        <Label x:Name="label_Copy5" Content="{DynamicResource clb_Sizeanchor}" Margin="10,289,10,0" VerticalAlignment="Top" Height="26" Grid.ColumnSpan="2"/>
+                        <Label x:Name="label_Copy2" Content="{DynamicResource obj_Deep}" HorizontalAlignment="Left" Margin="6,137,0,0" VerticalAlignment="Top" Width="74" Height="26" Grid.ColumnSpan="2"/>
+                        <Controls:NumericUpDown x:Name="DeepUpDn" Margin="0,140,10,0"  Background="White" Height="26" VerticalAlignment="Top" Grid.Column="2" Grid.ColumnSpan="3" />
+                    </Grid>
+                </TabItem>
+                <TabItem Header="{DynamicResource common_Workfolder}">
                     <Grid>
                         <Grid.RowDefinitions>
-                            <RowDefinition Height="47*"/>
-                            <RowDefinition Height="60*"/>
+                            <RowDefinition Height="36*"/>
+                            <RowDefinition Height="25*"/>
+                            <RowDefinition Height="503*"/>
                         </Grid.RowDefinitions>
-                        <DockPanel Margin="0,0,0,5">
-                            <panels:DeviceTreeTab x:Name="DeviceTree" Focusable="False"/>
-                        </DockPanel>
-                        <DockPanel Margin="5,2,2,5" Grid.Row="1">
-                            <Border  Grid.Row="3" Style="{StaticResource Border}" Grid.RowSpan="2">
-                                <panels:multiplierpanel x:Name="MultPanel"></panels:multiplierpanel>
-                            </Border>
-                        </DockPanel>
-                    </Grid>
-                </DockPanel>
 
-                <DockPanel Grid.Column="1" Margin="5,5,0,0" Grid.Row="2">
+                        <Button x:Name="WorkFolderBtn" Content="{DynamicResource m_Browse}" HorizontalAlignment="Left" Margin="32,8,0,8" Width="75" VerticalAlignment="Center" Click="WorkFolderBtn_Click"/>
+                        <Label x:Name="WorkFolderLabel" Content="{Binding save_work_folder, Mode=OneWay}" Margin="116,6,8,4">
+                            <Label.DataContext>
+                                <Properties:Settings/>
+                            </Label.DataContext>
+                        </Label>
+                        <ListView x:Name="WorkFolderListBox" Margin="5,5,5,5" Grid.Row="2" >
+                            <ListBox.ItemTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="{Binding}" MouseDown="TextBlock_MouseDownAsync">
+
+                                    </TextBlock>
+                                </DataTemplate>
+                            </ListBox.ItemTemplate>
+                        </ListView>
+                        <Button x:Name="WorkFolderRefreshBtn"  FontFamily="Segoe MDL2 Assets" Content="&#xEDAB;" HorizontalAlignment="Left" Margin="5,8,0,8" VerticalAlignment="Center" Width="22" Height="20" Click="WorkFolderRefreshBtn_Click"/>
+                        <TextBox x:Name="WorkFolderFilter" HorizontalAlignment="Left" Margin="5,2,0,2" Grid.Row="1" TextWrapping="Wrap" Width="264" VerticalContentAlignment="Center" TextChanged="WorkFolderFilter_TextChanged" Focusable="True" GotFocus="WorkFolderFilter_GotFocus"/>
+
+                    </Grid>
+                </TabItem>
+                <TabItem Header="Log" Controls:HeaderedControlHelper.HeaderFontSize="18">
                     <Grid>
-                        <Grid.RowDefinitions>
-                            <RowDefinition/>
-                            <RowDefinition Height="119"/>
-                        </Grid.RowDefinitions>
-                        <DockPanel DockPanel.Dock="Top" Margin="0,0,0,5">
-                            <TabControl TabStripPlacement="Top">
-                                <TabItem Header="{DynamicResource m_CanvasTab}">
-                                    <canvaspanel:CadCanvasPanel x:Name="MainCanvas" AllowDrop="True" Drop="MainCanvas_Drop"/>
-                                </TabItem>
-                                <TabItem Header="ViewPort3D" Visibility="Collapsed">
-                                </TabItem>
-                            </TabControl>
+                        <ListBox x:Name="LogBox"/>
 
-                        </DockPanel>
-                        <DockPanel DockPanel.Dock="Bottom" Grid.Row="1" Margin="2,5">
-                            <panels:ScrollPanel x:Name="ContourScrollPanel"/>
-                        </DockPanel>
                     </Grid>
-                </DockPanel>
-                <DockPanel Grid.Column="2" Grid.Row="2" Margin="5,5,5,5">
-                    <TabControl x:Name="tabControl" DockPanel.Dock="Right" Grid.Column="2" Grid.Row="2" Grid.RowSpan="3">
-                        <TabItem x:Name="ContourSettingTab" Header="{DynamicResource dvc_Device}" Controls:HeaderedControlHelper.HeaderFontSize="18">
-                            <Grid>
-                                <panels:DeviceTab x:Name="DevicePanel"/>
-                            </Grid>
+                </TabItem>
+            </TabControl>
 
-                        </TabItem>
-                        <TabItem Header="{DynamicResource common_Format}" Controls:HeaderedControlHelper.HeaderFontSize="18">
-                            <Grid Background="#FFE5E5E5">
-                                <TabControl x:Name="TabItem">
-                                    <TabItem Header="Компас" Controls:HeaderedControlHelper.HeaderFontSize="14">
-                                        <Grid Background="#FFE5E5E5">
-                                            <Button x:Name="kmpsSelectBtn" Content="{DynamicResource common_Select}" HorizontalAlignment="Left" Margin="10,86,0,0" VerticalAlignment="Top" Width="125" Height="50" Click="kmpsSelectBtn_Click"/>
-                                            <Button x:Name="kmpsAddBtn" Content="{DynamicResource common_ADDIN}" HorizontalAlignment="Left" Margin="140,86,0,0" VerticalAlignment="Top" Width="78" Height="50" Click="kmpsAddBtn_Click"/>
-                                            <Controls:ToggleSwitch x:Name="kmpsConnectToggle"  Content="{DynamicResource common_Connect}" HorizontalAlignment="Left" Margin="10,26,0,0" VerticalAlignment="Top" RenderTransformOrigin="0.5,0.5" Toggled="kmpsConnectToggle_Toggled" HorizontalContentAlignment="Center" Height="24" Width="201">
-                                                <Controls:ToggleSwitch.DataContext>
-                                                    <Properties:Settings/>
-                                                </Controls:ToggleSwitch.DataContext>
-                                            </Controls:ToggleSwitch>
-                                            <Label x:Name="KmpsNameLbl" Content="{DynamicResource common_Empty}" HorizontalAlignment="Left" Margin="10,55,0,0" VerticalAlignment="Top" Width="208"/>
-                                        </Grid>
-                                    </TabItem>
-                                    <TabItem Header="ILDA" Controls:HeaderedControlHelper.HeaderFontSize="14">
-                                        <Grid Background="#FFE5E5E5">
-                                            <Controls:ToggleSwitch x:Name="UsedMeshToggle" Margin="10,10,0,0" IsOn="True" Content="Used device mesh" VerticalAlignment="Top"/>
-                                            <Button x:Name="ILDASaveBtn" Content="{DynamicResource m_Saveas}" HorizontalAlignment="Left" Margin="10,40,0,0" VerticalAlignment="Top" Width="248" Height="29" Click="ILDASaveBtn_Click"/>
-                                        </Grid>
-                                    </TabItem>
-                                    <TabItem Header="Setting" Controls:HeaderedControlHelper.HeaderFontSize="14">
-                                        <Grid Background="#FFE5E5E5">
-                                            <Grid.ColumnDefinitions>
-                                                <ColumnDefinition Width="53*"/>
-                                                <ColumnDefinition Width="81*"/>
-                                            </Grid.ColumnDefinitions>
-                                            <Label x:Name="label2" Content="{DynamicResource setting_mainlabel}" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Grid.ColumnSpan="2" Height="26" Width="124"/>
-                                            <Controls:NumericUpDown x:Name="ScaleXBox" Margin="5,38,10,0" Maximum="999" Minimum="1" Background="White" Value="{Binding default_scale_x, Mode=TwoWay}" Height="26" VerticalAlignment="Top" Grid.Column="1" >
-                                                <Controls:NumericUpDown.DataContext>
-                                                    <Properties:Settings/>
-                                                </Controls:NumericUpDown.DataContext>
-                                            </Controls:NumericUpDown>
-                                            <Label x:Name="label2_Copy" Content="{DynamicResource setting_xscale}" HorizontalAlignment="Left" Margin="10,37,0,0" VerticalAlignment="Top" Height="26" Width="86"/>
-                                            <Controls:NumericUpDown x:Name="ScaleYBox" Margin="5,69,10,0" Maximum="999" Minimum="1" Background="White"  Value="{Binding default_scale_y, Mode=TwoWay}" Height="26" VerticalAlignment="Top" Grid.Column="1" >
-                                                <Controls:NumericUpDown.DataContext>
-                                                    <Properties:Settings/>
-                                                </Controls:NumericUpDown.DataContext>
-                                            </Controls:NumericUpDown>
-                                            <Label x:Name="label2_Copy1" Content="{DynamicResource setting_yscale}" HorizontalAlignment="Left" Margin="10,68,0,0" VerticalAlignment="Top" Height="26" Width="86"/>
-                                            <Controls:NumericUpDown x:Name="AngleBox" Margin="5,100,10,0" Maximum="360" Minimum="0" Background="White"  Value="{Binding default_angle, Mode=TwoWay}" Height="26" VerticalAlignment="Top" Grid.Column="1" >
-                                                <Controls:NumericUpDown.DataContext>
-                                                    <Properties:Settings/>
-                                                </Controls:NumericUpDown.DataContext>
-                                            </Controls:NumericUpDown>
-                                            <Label x:Name="label2_Copy2" Content="{DynamicResource obj_Angle}" HorizontalAlignment="Left" Margin="10,99,0,0" VerticalAlignment="Top" Height="26" Width="86"/>
-                                            <CheckBox x:Name="MirrorBox" Content="{DynamicResource obj_Mirror}" HorizontalAlignment="Left" Margin="5,140,0,0" VerticalAlignment="Top"  IsChecked="{Binding default_mirror, Mode=TwoWay}" Grid.Column="1" Width="147">
-                                                <CheckBox.DataContext>
-                                                    <Properties:Settings/>
-                                                </CheckBox.DataContext>
-                                            </CheckBox>
-                                            <Button x:Name="SaveObjStgBtn" Content="{DynamicResource m_Save}" HorizontalAlignment="Left" Margin="10,374,0,0" VerticalAlignment="Top" Width="248" Grid.ColumnSpan="2" Height="31" Click="SaveObjStgBtn_Click"/>
-                                            <CheckBox x:Name="ScalePercentCheck" Content="{DynamicResource setting_percent}" HorizontalAlignment="Left" Margin="5,186,0,0" VerticalAlignment="Top"  IsChecked="{Binding stg_scale_percent, Mode=TwoWay}" Grid.Column="1" Width="147">
-                                                <CheckBox.DataContext>
-                                                    <Properties:Settings/>
-                                                </CheckBox.DataContext>
-                                            </CheckBox>
-                                            <CheckBox x:Name="ScaleInvertCheck" Content="{DynamicResource setting_invertscale}" HorizontalAlignment="Left" Margin="5,208,0,0" VerticalAlignment="Top"  IsChecked="{Binding stg_scale_invert, Mode=TwoWay}" Grid.Column="1" Width="147">
-                                                <CheckBox.DataContext>
-                                                    <Properties:Settings/>
-                                                </CheckBox.DataContext>
-                                            </CheckBox>
-                                            <CheckBox x:Name="SolidObject" Content="{DynamicResource setting_solidobject}" HorizontalAlignment="Left" Margin="5,228,0,0" VerticalAlignment="Top"  IsChecked="{Binding object_solid, Mode=TwoWay}" Grid.Column="1" Width="147">
-                                                <CheckBox.DataContext>
-                                                    <Properties:Settings/>
-                                                </CheckBox.DataContext>
-                                            </CheckBox>
-                                            <CheckBox x:Name="ShowNameCheck" Content="{DynamicResource setting_showname}" HorizontalAlignment="Left" Margin="5,246,0,0" VerticalAlignment="Top"  IsChecked="{Binding stg_show_name, Mode=TwoWay}" Grid.Column="1" Width="146">
-                                                <CheckBox.DataContext>
-                                                    <Properties:Settings/>
-                                                </CheckBox.DataContext>
-                                            </CheckBox>
-                                            <RadioButton Grid.Column="1" HorizontalAlignment="Left" Margin="5,284,0,0" VerticalAlignment="Top" DataContext="Top%Left" Checked="AttachRadioButton_Checked"/>
-                                            <RadioButton Grid.Column="1" HorizontalAlignment="Left" Margin="25,284,0,0" VerticalAlignment="Top" DataContext="Top$Middle" Checked="AttachRadioButton_Checked"/>
-                                            <RadioButton Grid.Column="1" HorizontalAlignment="Left" Margin="45,284,0,0" VerticalAlignment="Top" DataContext="Top%Right" Checked="AttachRadioButton_Checked"/>
-                                            <RadioButton Grid.Column="1" HorizontalAlignment="Left" Margin="45,303,0,0" VerticalAlignment="Top" DataContext="Middle%Right" Checked="AttachRadioButton_Checked"/>
-                                            <RadioButton Grid.Column="1" HorizontalAlignment="Left" Margin="25,303,0,0" VerticalAlignment="Top" DataContext="Middle%Middle" Checked="AttachRadioButton_Checked"/>
-                                            <RadioButton Grid.Column="1" HorizontalAlignment="Left" Margin="5,303,0,0" VerticalAlignment="Top" DataContext="Middle%Left" Checked="AttachRadioButton_Checked"/>
-                                            <RadioButton Grid.Column="1" HorizontalAlignment="Left" Margin="5,322,0,0" VerticalAlignment="Top" IsChecked="True" DataContext="Down%Left" Checked="AttachRadioButton_Checked"/>
-                                            <RadioButton Grid.Column="1" HorizontalAlignment="Left" Margin="25,322,0,0" VerticalAlignment="Top" DataContext="Down%Middle" Checked="AttachRadioButton_Checked"/>
-                                            <RadioButton Grid.Column="1" HorizontalAlignment="Left" Margin="45,322,0,0" VerticalAlignment="Top" DataContext="Down%Right" Checked="AttachRadioButton_Checked"/>
-                                            <Label x:Name="label2_Copy3" Content="{DynamicResource setting_attach}" HorizontalAlignment="Left" Margin="10,298,0,0" VerticalAlignment="Top" Height="26" Width="86"/>
-                                            <CheckBox x:Name="SelectableShowCheck" Content="{DynamicResource setting_selectableshow}" HorizontalAlignment="Left" Margin="5,264,0,0" VerticalAlignment="Top"  IsChecked="{Binding stg_selectable_show, Mode=TwoWay}" Grid.Column="1" Width="147">
-                                                <CheckBox.DataContext>
-                                                    <Properties:Settings/>
-                                                </CheckBox.DataContext>
-                                            </CheckBox>
+            <panels:ProgressPanel Grid.Column="2" Margin="5" Grid.Row="4"/>
+            <Label x:Name="pBarLabel" Visibility="Hidden" Content="Label" Grid.Row="1" Grid.Column="2" HorizontalContentAlignment="Center" VerticalAlignment="Center" HorizontalAlignment="Center"/>
 
-                                        </Grid>
-                                    </TabItem>
-                                    <TabItem Header="QR" Controls:HeaderedControlHelper.HeaderFontSize="14">
-                                        <Grid Background="#FFE5E5E5">
-                                            <TextBox x:Name="BasePathBox" Height="23" TextWrapping="Wrap" Text="{Binding save_base_folder, Mode=TwoWay}" Margin="10,12,109,0" VerticalAlignment="Top">
-                                                <TextBox.DataContext>
-                                                    <Properties:Settings/>
-                                                </TextBox.DataContext>
-                                            </TextBox>
-                                            <TextBox x:Name="AlreadyPathBox" Height="23" TextWrapping="Wrap" Text="{Binding save_work_folder, Mode=TwoWay}" Margin="10,43,109,0" VerticalAlignment="Top">
-                                                <TextBox.DataContext>
-                                                    <Properties:Settings/>
-                                                </TextBox.DataContext>
-                                            </TextBox>
-                                            <Button x:Name="BaseFolderSelect" Content="{DynamicResource m_Browse}" HorizontalAlignment="Left" Margin="124,12,0,0" VerticalAlignment="Top" Width="94" Height="26" Click="BaseFolderSelect_Click"/>
-                                            <Button x:Name="WorkFolderSelect" Content="{DynamicResource m_Browse}" HorizontalAlignment="Left" Margin="124,43,0,0" VerticalAlignment="Top" Width="94" Height="26" Click="WorkFolderSelect_Click"/>
-                                        </Grid>
-                                    </TabItem>
-                                    <TabItem Header="Ethernet">
-                                        <Grid>
-                                            <Grid.ColumnDefinitions>
-                                                <ColumnDefinition Width="59*"/>
-                                                <ColumnDefinition Width="75*"/>
-                                            </Grid.ColumnDefinitions>
-                                            <Grid.RowDefinitions>
-                                                <RowDefinition Height="42*"/>
-                                                <RowDefinition Height="449*"/>
-                                            </Grid.RowDefinitions>
-                                            <Controls:NumericUpDown x:Name="PortUpDn" Margin="5,10,10,6" Value="{Binding ether_udp_port}" Maximum="49151"  Minimum="1024" Background="White" Height="26" Grid.Column="1" ValueChanged="PortUpDn_ValueChanged" >
-                                                <Controls:NumericUpDown.DataContext>
-                                                    <Properties:Settings/>
-                                                </Controls:NumericUpDown.DataContext>
-                                            </Controls:NumericUpDown>
-                                            <Label x:Name="label1" Content="UDP Port:" Margin="10,10,0,0" HorizontalAlignment="Left" Width="108"/>
-                                            <Button x:Name="TcpListenBtn" Content="Listen" Height="50" VerticalAlignment="Top" Margin="10,11,10,0" Click="TcpListenBtn_Click" Grid.Row="1" Grid.ColumnSpan="2"/>
-                                        </Grid>
-                                    </TabItem>
-
-                                </TabControl>
-
-                            </Grid>
-                        </TabItem>
-                        <TabItem x:Name="Calibration" Header="{DynamicResource common_Configuration}" Controls:HeaderedControlHelper.HeaderFontSize="18">
-                            <Grid Background="#FFE5E5E5">
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="33*"/>
-                                    <ColumnDefinition Width="53*"/>
-                                    <ColumnDefinition Width="54*"/>
-                                    <ColumnDefinition Width="49*"/>
-                                    <ColumnDefinition Width="73*"/>
-                                </Grid.ColumnDefinitions>
-
-                                <Button x:Name="BrowseMonchaBtn" Content="{DynamicResource m_Browse}" Margin="17,8,10,0" VerticalAlignment="Top" Click="BrowseMonchaBtn_Click" Height="23" Grid.Column="3" Grid.ColumnSpan="2"/>
-                                <Button Content="Edit device" Grid.ColumnSpan="5" Margin="10,38,45,479"/>
-                                <Button FontFamily="Segoe MDL2 Assets" Content="&#xEDAB;" Margin="35,38,10,479" Grid.Column="4" Click="Button_Click"/>
-                                <Label x:Name="label" Content="Open Moncha" Margin="10,7,0,0" VerticalAlignment="Top" Grid.ColumnSpan="3" Height="26" HorizontalContentAlignment="Left"/>
-                                <Controls:NumericUpDown x:Name="WidthUpDn" Margin="0,70,10,0"  Background="White" Height="26" VerticalAlignment="Top" Grid.Column="2" Grid.ColumnSpan="3" >
-                                    <Controls:NumericUpDown.DataContext>
-                                        <Properties:Settings/>
-                                    </Controls:NumericUpDown.DataContext>
-                                </Controls:NumericUpDown>
-                                <Label x:Name="label_Copy" Content="{DynamicResource obj_Width}" HorizontalAlignment="Left" Margin="6,70,0,0" VerticalAlignment="Top" Width="74" Height="26" Grid.ColumnSpan="2"/>
-                                <Controls:NumericUpDown x:Name="HeightUpD" Margin="0,106,10,0"  Background="White" Height="26" VerticalAlignment="Top" Grid.Column="2" Grid.ColumnSpan="3" />
-                                <Label x:Name="label_Copy1" Content="{DynamicResource obj_Height}" HorizontalAlignment="Left" Margin="6,106,0,0" VerticalAlignment="Top" Width="74" Height="26" Grid.ColumnSpan="2"/>
-                                <Controls:NumericUpDown x:Name="MashMultiplierUpDn" Margin="0,174,10,0"  Background="White" Height="26" Maximum="1" Minimum="0.001" VerticalAlignment="Top" Speedup="False" Controls:ScrollViewerHelper.IsHorizontalScrollWheelEnabled="True" ValueIncremented="MashMultiplierUpDn_ValueIncremented" ValueDecremented="MashMultiplierUpDn_ValueDecremented" Grid.Column="2" Grid.ColumnSpan="3"/>
-                                <Label x:Name="label_Copy3" Content="{DynamicResource clb_Multiplier}" HorizontalAlignment="Left" Margin="6,174,0,0" VerticalAlignment="Top" Height="26" Width="74" Grid.ColumnSpan="2"/>
-                                <Controls:NumericUpDown x:Name="PointStepUpDn" Margin="0,216,10,0"  Background="White" Height="26" VerticalAlignment="Top" NumericInputMode="Decimal" Maximum="10" Minimum="0" Interval="0.1"  Value="1" Grid.Column="2" Grid.ColumnSpan="3" Focusable="False" IsTabStop="False" AllowDrop="False" ValueDecremented="PointStepUpDn_ValueDecremented" ValueIncremented="PointStepUpDn_ValueIncremented">
-                                    <Controls:NumericUpDown.DataContext>
-                                        <Properties:Settings/>
-                                    </Controls:NumericUpDown.DataContext>
-                                </Controls:NumericUpDown>
-                                <Label x:Name="label_Copy4" Content="{DynamicResource obj_Step}" Margin="10,216,10,0" VerticalAlignment="Top" Height="26" Grid.ColumnSpan="2"/>
-                                <ComboBox x:Name="CalibrationFormCombo" Focusable="True" Grid.ColumnSpan="3" Grid.Column="2" HorizontalAlignment="Left" Margin="0,258,0,0" VerticalAlignment="Top" Width="174" SelectionChanged="CalibrationFormCombo_SelectionChanged">
-                                    <ComboBox.Resources>
-                                        <ResourceDictionary>
-
-                                        </ResourceDictionary>
-                                    </ComboBox.Resources>
-                                    <ComboBoxItem Content="{DynamicResource clb_Dot}"/>
-                                    <ComboBoxItem Content="{DynamicResource clb_Rect}"/>
-                                    <ComboBoxItem Content="{DynamicResource clb_Cross}"/>
-                                    <ComboBoxItem Content="{DynamicResource clb_HLine}"/>
-                                    <ComboBoxItem Content="{DynamicResource clb_WLine}"/>
-                                </ComboBox>
-                                <Label x:Name="CalibrationFormLabel" Content="{DynamicResource obj_Type}" Margin="10,258,10,0" VerticalAlignment="Top" Height="26" Grid.ColumnSpan="2"/>
-                                <Button x:Name="Save" Grid.ColumnSpan="5" Content="{DynamicResource m_Save}" HorizontalAlignment="Left" Margin="10,378,0,0" VerticalAlignment="Top" Width="254" Height="34" Click="Save_Click"/>
-                                <Controls:NumericUpDown x:Name="PointStepUpDn_Copy" Margin="0,289,10,0"  Background="White" Height="26" VerticalAlignment="Top" NumericInputMode="Decimal" Maximum="10" Minimum="1" Interval="1"  Value="{Binding anchor_size, Mode=TwoWay, UpdateSourceTrigger=Default}" Grid.Column="3" Grid.ColumnSpan="2" IsTabStop="False" AllowDrop="False"/>
-                                <Label x:Name="label_Copy5" Content="{DynamicResource clb_Sizeanchor}" Margin="10,289,10,0" VerticalAlignment="Top" Height="26" Grid.ColumnSpan="2"/>
-                                <Label x:Name="label_Copy2" Content="{DynamicResource obj_Deep}" HorizontalAlignment="Left" Margin="6,137,0,0" VerticalAlignment="Top" Width="74" Height="26" Grid.ColumnSpan="2"/>
-                                <Controls:NumericUpDown x:Name="DeepUpDn" Margin="0,140,10,0"  Background="White" Height="26" VerticalAlignment="Top" Grid.Column="2" Grid.ColumnSpan="3" />
-                            </Grid>
-                        </TabItem>
-                        <TabItem Header="{DynamicResource common_Workfolder}">
-                            <Grid>
-                                <Grid.RowDefinitions>
-                                    <RowDefinition Height="36*"/>
-                                    <RowDefinition Height="25*"/>
-                                    <RowDefinition Height="503*"/>
-                                </Grid.RowDefinitions>
-
-                                <Button x:Name="WorkFolderBtn" Content="{DynamicResource m_Browse}" HorizontalAlignment="Left" Margin="32,8,0,8" Width="75" VerticalAlignment="Center" Click="WorkFolderBtn_Click"/>
-                                <Label x:Name="WorkFolderLabel" Content="{Binding save_work_folder, Mode=OneWay}" Margin="116,6,8,4">
-                                    <Label.DataContext>
-                                        <Properties:Settings/>
-                                    </Label.DataContext>
-                                </Label>
-                                <ListView x:Name="WorkFolderListBox" Margin="5,5,5,5" Grid.Row="2" >
-                                    <ListBox.ItemTemplate>
-                                        <DataTemplate>
-                                            <TextBlock Text="{Binding}" MouseDown="TextBlock_MouseDownAsync">
-
-                                            </TextBlock>
-                                        </DataTemplate>
-                                    </ListBox.ItemTemplate>
-                                </ListView>
-                                <Button x:Name="WorkFolderRefreshBtn"  FontFamily="Segoe MDL2 Assets" Content="&#xEDAB;" HorizontalAlignment="Left" Margin="5,8,0,8" VerticalAlignment="Center" Width="22" Height="20" Click="WorkFolderRefreshBtn_Click"/>
-                                <TextBox x:Name="WorkFolderFilter" HorizontalAlignment="Left" Margin="5,2,0,2" Grid.Row="1" TextWrapping="Wrap" Width="264" VerticalContentAlignment="Center" TextChanged="WorkFolderFilter_TextChanged" Focusable="True" GotFocus="WorkFolderFilter_GotFocus"/>
-
-                            </Grid>
-                        </TabItem>
-                        <TabItem Header="Log" Controls:HeaderedControlHelper.HeaderFontSize="18">
-                            <Grid>
-                                <ListBox x:Name="LogBox"/>
-
-                            </Grid>
-                        </TabItem>
-                    </TabControl>
-                </DockPanel>
-                <DockPanel Grid.ColumnSpan="3" Grid.Row="3">
-                    <Grid Background="{DynamicResource {x:Static SystemColors.MenuBarBrushKey}}">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="216*"/>
-                            <ColumnDefinition Width="488*"/>
-                            <ColumnDefinition Width="287*"/>
-                        </Grid.ColumnDefinitions>
-                        <StatusBar/>
-                        <panels:ProgressPanel Grid.Column="2" Margin="1,2,5,5"/>
-                        <Label x:Name="pBarLabel" Visibility="Hidden" Content="Label" Grid.Column="2" HorizontalContentAlignment="Center" VerticalAlignment="Center" HorizontalAlignment="Center"/>
-                    </Grid>
-
-                </DockPanel>
-
-            </Grid>
-        </DockPanel>
+        </Grid>
     </Border>
 </Window>

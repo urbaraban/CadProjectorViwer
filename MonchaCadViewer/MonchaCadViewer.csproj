@@ -20,7 +20,7 @@
     </NuGetPackageImportStamp>
     <TargetFrameworkProfile />
     <LangVersion>8.0</LangVersion>
-    <PublishUrl>C:\Soft\2Cut\</PublishUrl>
+    <PublishUrl>Z:\soft\LaserCat\</PublishUrl>
     <Install>true</Install>
     <InstallFrom>Disk</InstallFrom>
     <UpdateEnabled>false</UpdateEnabled>
@@ -36,7 +36,7 @@
     <SuiteName>Viwer</SuiteName>
     <WebPage>publish.htm</WebPage>
     <OpenBrowserOnPublish>false</OpenBrowserOnPublish>
-    <ApplicationRevision>56</ApplicationRevision>
+    <ApplicationRevision>59</ApplicationRevision>
     <ApplicationVersion>0.8.1.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <CreateDesktopShortcut>true</CreateDesktopShortcut>
@@ -110,7 +110,7 @@
       <HintPath>..\packages\ControlzEx.5.0.1\lib\net462\ControlzEx.dll</HintPath>
     </Reference>
     <Reference Include="CONVERTLIBINTERFACES">
-      <HintPath>..\..\KompasLib\Lib16.15\CONVERTLIBINTERFACES.dll</HintPath>
+      <HintPath>..\..\KompasLib\KompasLib\Lib16.15\CONVERTLIBINTERFACES.dll</HintPath>
       <EmbedInteropTypes>True</EmbedInteropTypes>
     </Reference>
     <Reference Include="DynamicExpresso.Core, Version=2.8.1.0, Culture=neutral, processorArchitecture=MSIL">
@@ -123,27 +123,27 @@
       <HintPath>..\..\KompasLib\Lib16.15\KGAXLib.dll</HintPath>
     </Reference>
     <Reference Include="Kompas6API2D5COM">
-      <HintPath>..\..\KompasLib\Lib16.15\Kompas6API2D5COM.dll</HintPath>
+      <HintPath>..\..\KompasLib\KompasLib\Lib16.15\Kompas6API2D5COM.dll</HintPath>
       <EmbedInteropTypes>True</EmbedInteropTypes>
     </Reference>
     <Reference Include="Kompas6API3D5COM">
-      <HintPath>..\..\KompasLib\Lib16.15\Kompas6API3D5COM.dll</HintPath>
+      <HintPath>..\..\KompasLib\KompasLib\Lib16.15\Kompas6API3D5COM.dll</HintPath>
       <EmbedInteropTypes>True</EmbedInteropTypes>
     </Reference>
     <Reference Include="Kompas6API5">
-      <HintPath>..\..\KompasLib\Lib16.15\Kompas6API5.dll</HintPath>
+      <HintPath>..\..\KompasLib\KompasLib\Lib16.15\Kompas6API5.dll</HintPath>
       <EmbedInteropTypes>True</EmbedInteropTypes>
     </Reference>
     <Reference Include="Kompas6Constants">
-      <HintPath>..\..\KompasLib\Lib16.15\Kompas6Constants.dll</HintPath>
+      <HintPath>..\..\KompasLib\KompasLib\Lib16.15\Kompas6Constants.dll</HintPath>
       <EmbedInteropTypes>True</EmbedInteropTypes>
     </Reference>
     <Reference Include="Kompas6Constants3D">
-      <HintPath>..\..\KompasLib\Lib16.15\Kompas6Constants3D.dll</HintPath>
+      <HintPath>..\..\KompasLib\KompasLib\Lib16.15\Kompas6Constants3D.dll</HintPath>
       <EmbedInteropTypes>True</EmbedInteropTypes>
     </Reference>
     <Reference Include="KompasAPI7">
-      <HintPath>..\..\KompasLib\Lib16.15\KompasAPI7.dll</HintPath>
+      <HintPath>..\..\KompasLib\KompasLib\Lib16.15\KompasAPI7.dll</HintPath>
       <EmbedInteropTypes>True</EmbedInteropTypes>
     </Reference>
     <Reference Include="MahApps.Metro, Version=2.0.0.0, Culture=neutral, PublicKeyToken=51482d6f650b2b3f, processorArchitecture=MSIL">
@@ -187,6 +187,7 @@
     <Reference Include="System.Drawing.Common, Version=4.0.0.2, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Drawing.Common.5.0.2\lib\net461\System.Drawing.Common.dll</HintPath>
     </Reference>
+    <Reference Include="System.Management" />
     <Reference Include="System.Memory, Version=4.0.1.1, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Memory.4.5.4\lib\net461\System.Memory.dll</HintPath>
     </Reference>
@@ -213,7 +214,7 @@
       <RequiredTargetFramework>4.0</RequiredTargetFramework>
     </Reference>
     <Reference Include="VCHATCHLib">
-      <HintPath>..\..\KompasLib\Lib16.15\VCHATCHLib.dll</HintPath>
+      <HintPath>..\..\KompasLib\KompasLib\Lib16.15\VCHATCHLib.dll</HintPath>
       <EmbedInteropTypes>True</EmbedInteropTypes>
     </Reference>
     <Reference Include="WindowsBase" />
@@ -247,9 +248,9 @@
     <Compile Include="CanvasObj\CadObjectsGroup.cs" />
     <Compile Include="CanvasObj\CadLine.cs" />
     <Compile Include="CanvasObj\CadRectangle.cs" />
-    <Compile Include="CanvasObj\DimObj\AdornerContourFrame.cs" />
     <Compile Include="CanvasObj\CadObject.cs" />
-    <Compile Include="CanvasObj\DimObj\AdornerLineDim.cs" />
+    <Compile Include="CanvasObj\ProjectionScene.cs" />
+    <Compile Include="CommonConverters.cs" />
     <Compile Include="ContextMenuLib.cs" />
     <Compile Include="CanvasObj\CadAnchor.cs" />
     <Compile Include="CanvasObj\CadCanvas.cs" />
@@ -266,22 +267,24 @@
     <Compile Include="Panels\CanvasPanel\CadCanvasPanel.xaml.cs">
       <DependentUpon>CadCanvasPanel.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Panels\DevicePanel\DeviceSettingDialog.xaml.cs">
+    <Compile Include="Panels\DevicePanel\LeftPanels\FrameTree.xaml.cs">
+      <DependentUpon>FrameTree.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Panels\DevicePanel\OtherPanel\DeviceSettingDialog.xaml.cs">
       <DependentUpon>DeviceSettingDialog.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Panels\DevicePanel\DeviceTreeTab.xaml.cs">
+    <Compile Include="Panels\DevicePanel\LeftPanels\DeviceTreeTab.xaml.cs">
       <DependentUpon>DeviceTreeTab.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Panels\DevicePanel\MeshesDialog.xaml.cs">
+    <Compile Include="Panels\DevicePanel\OtherPanel\MeshesDialog.xaml.cs">
       <DependentUpon>MeshesDialog.xaml</DependentUpon>
     </Compile>
     <Compile Include="Panels\ObjectPanel\CadObjectPanel.xaml.cs">
       <DependentUpon>CadObjectPanel.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Panels\ObjectPanel\CadRectangleSizePanel.xaml.cs">
+    <Compile Include="Panels\DevicePanel\OtherPanel\CadRectangleSizePanel.xaml.cs">
       <DependentUpon>CadRectangleSizePanel.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Panels\ObjectPanel\ScaleConverter.cs" />
     <Compile Include="Panels\ContourScrollPanel\ScrollPanel.xaml.cs">
       <DependentUpon>ScrollPanel.xaml</DependentUpon>
     </Compile>
@@ -291,9 +294,10 @@
     <Compile Include="Panels\DevicePanel\DeviceTab.xaml.cs">
       <DependentUpon>DeviceTab.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Panels\multiplierpanel.xaml.cs">
+    <Compile Include="Panels\ObjectPanel\multiplierpanel.xaml.cs">
       <DependentUpon>multiplierpanel.xaml</DependentUpon>
     </Compile>
+    <Compile Include="StaticTools\GetGC.cs" />
     <Page Include="Calibration\CreateGridWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -325,7 +329,11 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Page Include="Panels\DevicePanel\MeshesDialog.xaml">
+    <Page Include="Panels\DevicePanel\LeftPanels\FrameTree.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Panels\DevicePanel\OtherPanel\MeshesDialog.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -349,11 +357,11 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Panels\DevicePanel\DeviceSettingDialog.xaml">
+    <Page Include="Panels\DevicePanel\OtherPanel\DeviceSettingDialog.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Panels\DevicePanel\DeviceTreeTab.xaml">
+    <Page Include="Panels\DevicePanel\LeftPanels\DeviceTreeTab.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -373,11 +381,11 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Panels\multiplierpanel.xaml">
+    <Page Include="Panels\ObjectPanel\multiplierpanel.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Panels\ObjectPanel\CadRectangleSizePanel.xaml">
+    <Page Include="Panels\DevicePanel\OtherPanel\CadRectangleSizePanel.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -416,7 +424,7 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\KompasLib\KompasLib\KompasLib.csproj">
+    <ProjectReference Include="..\..\KompasLib\KompasLib\KompasLib\KompasLib.csproj">
       <Project>{25CE4066-36A4-40BD-A38F-EC08E7AA509F}</Project>
       <Name>KompasLib</Name>
     </ProjectReference>

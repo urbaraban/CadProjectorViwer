@@ -23,12 +23,12 @@ namespace MonchaCadViewer.CanvasObj
         /// </summary>
         /// <param name="canvas">Отправляемое рабочее поле</param>
         /// <returns>N_{i,degree}(step)</returns>
-        public async static Task Worker(CadCanvas canvas)
+        public async static Task<LObjectList> GetLObject (ProjectionScene scene)
         {
             Processing = true;
             LObjectList dotList = new LObjectList();
 
-            foreach (object obj in canvas.Children)
+            foreach (object obj in scene.Objects)
             {
                 if (obj is CadObject cadObject && cadObject.Render == true)
                 {
@@ -37,18 +37,18 @@ namespace MonchaCadViewer.CanvasObj
                 }
             }
             LObjectList outList = new LObjectList();
-            if (canvas.Masks.Count > 0)
+            if (scene.Masks.Count > 0)
             {
-                foreach (LSize3D LSize in canvas.Masks)
+                foreach (CadRectangle rectangle in scene.Masks)
                 {
-                   outList.AddRange(LSize.GetCutObjects(dotList));
+                   outList.AddRange(rectangle.LRect.GetCutObjects(dotList));
                 }
             }
             else outList = dotList;
 
             Processing = false;
 
-            MonchaHub.MainFrame = outList;
+            return outList;
         }
 
 

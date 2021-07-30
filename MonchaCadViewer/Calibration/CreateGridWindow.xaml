@@ -37,7 +37,7 @@
                 <Properties:Settings/>
             </Border.DataContext>
             <Grid>
-                <canvaspanel:CadCanvasPanel x:Name="Canvas"/>
+                <canvaspanel:CadCanvasPanel x:Name="Canvas" DataContext="{Binding RelativeSource={RelativeSource AncestorType=Window}, Path=projectionScene}"/>
             </Grid>
         </Border>
         <Controls:ToggleSwitch x:Name="MonchaToggle"  Content="Moncha" HorizontalAlignment="Left" Margin="15,17,0,0" VerticalAlignment="Top" Width="153" Height="32" Grid.Column="1" IsOn="{Binding main_formoncha, Mode=TwoWay}" Toggled="MonchaToggle_Toggled"/>

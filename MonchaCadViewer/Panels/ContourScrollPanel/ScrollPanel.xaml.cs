@@ -21,14 +21,14 @@ namespace MonchaCadViewer.Panels
     /// </summary>
     public partial class ScrollPanel : UserControl
     {
-        public event EventHandler<bool> SelectedFrame;
+        private ProjectionScene MainScene => (ProjectionScene)this.DataContext;
 
         public ScrollPanel()
         {
             InitializeComponent();
         }
 
-        public void Add(bool Clear, GCCollection Objects, string Filepath, bool show = true)
+        public void Add(bool Clear, CadObject Obj, string Filepath, bool show = true)
         {
             if (Clear)
             {
@@ -38,16 +38,19 @@ namespace MonchaCadViewer.Panels
                 });
             }
 
+            ProjectionScene projectionScene = new ProjectionScene(Obj);
+
             foreach (ScrollPanelItem panelItem in this.FrameStack.Children)
             {
                 if (panelItem.FileName == Filepath.Split('\\').Last())
                 {
-                    if (panelItem.DataContext is CadObject cadObject)
+                    if (panelItem.DataContext is ProjectionScene scene)
                     {
-                        panelItem.DataContext = new CadObjectsGroup(Objects, Filepath.Split('\\').Last(), cadObject.TransformGroup);
-                        if (panelItem.IsSelected == true && Objects.Count > 0)
+                        panelItem.DataContext = projectionScene; // new CadObjectsGroup(Objects, Filepath.Split('\\').Last(), cadObject.TransformGroup);
+
+                        if (panelItem.IsSelected == true)
                         {
-                            SelectedFrame?.Invoke(panelItem.cadObject, true);
+                            panelItem.IsSelected = true;
                         }
                         else
                         {
@@ -58,7 +61,9 @@ namespace MonchaCadViewer.Panels
                 }
             }
 
-            ScrollPanelItem scrollPanelItem = new ScrollPanelItem(new CadObjectsGroup(Objects, Filepath.Split('\\').Last(), null), Filepath);
+            
+
+            ScrollPanelItem scrollPanelItem = new ScrollPanelItem(Filepath) { DataContext = projectionScene };
             scrollPanelItem.Selected += ScrollPanelItem_Selected;
             scrollPanelItem.Removed += ScrollPanelItem_Removed;
             Dispatcher.Invoke(() =>
@@ -76,8 +81,7 @@ namespace MonchaCadViewer.Panels
         {
             if (sender is ScrollPanelItem scrollPanelItem)
             {
-                scrollPanelItem.cadObject.Remove();
-
+                MainScene.Remove(scrollPanelItem.Scene);
                 FrameStack.Children.Remove(scrollPanelItem);
             }
         }
@@ -97,10 +101,17 @@ namespace MonchaCadViewer.Panels
                                 panelItem.IsSelected = false;
                             }
                         }
+
+                        MainScene.Clear();
                     }
+
+                    MainScene.Add(scrollPanelItem.Scene);
+                }
+                else
+                {
+                    MainScene.Remove(scrollPanelItem.Scene);
                 }
 
-                SelectedFrame?.Invoke(scrollPanelItem.cadObject, e);
             }
         }
 

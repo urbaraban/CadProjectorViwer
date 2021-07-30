@@ -11,7 +11,6 @@
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-
                 <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Fonts.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Themes/Light.Blue.xaml" />
             </ResourceDictionary.MergedDictionaries>
@@ -36,22 +35,15 @@
         </ResourceDictionary>
     </UserControl.Resources>
     <Grid>
-        <Border
-            Grid.Row="2"
-            Margin="5,5,2,0"
-            Style="{StaticResource Border}">
-            <TreeView
-                x:Name="treeView"
-                Grid.Row="1"
-                Margin="0,0,0,-1"
-                KeyboardNavigation.DirectionalNavigation="None"
-                KeyboardNavigation.TabNavigation="None">
-                <StackPanel
+        <Grid.RowDefinitions>
+            <RowDefinition Height="30"/>
+            <RowDefinition/>
+        </Grid.RowDefinitions>
+        <StackPanel
                     x:Name="TreeHead"
-                    Margin="-21,0,0,0"
                     HorizontalAlignment="Left"
-                    Orientation="Horizontal">
-                    <Button
+                    Orientation="Horizontal" Width="200" Margin="0,0,0,0">
+            <Button
                         x:Name="RefreshLaser"
                         Width="25"
                         Height="26"
@@ -63,7 +55,7 @@
                         Click="RefreshLaser_Click_1"
                         Content="&#xEDAB;"
                         FontFamily="Segoe MDL2 Assets" />
-                    <Button
+            <Button
                         x:Name="AddLaser"
                         Width="25"
                         Height="26"
@@ -75,7 +67,7 @@
                         Click="AddLaser_Click"
                         Content="&#xE948;"
                         FontFamily="Segoe MDL2 Assets" />
-                    <Button
+            <Button
                         x:Name="RemoveLaser"
                         Width="25"
                         Height="26"
@@ -87,19 +79,11 @@
                         Click="RemoveLaser_Click"
                         Content="&#xE947;"
                         FontFamily="Segoe MDL2 Assets" />
-                </StackPanel>
-                <TreeViewItem
-                    x:Name="DeviceTree"
-                    VerticalContentAlignment="Center"
-                    Header="{DynamicResource m_Devices}">
-                    <TreeViewItem x:Name="MeshTree" Header="{DynamicResource m_Mesh}" />
-                </TreeViewItem>
-                <TreeViewItem
-                    x:Name="FrameTree"
-                    AllowDrop="False"
-                    DisplayMemberPath="Uid"
-                    Header="{DynamicResource m_Frames}" />
-            </TreeView>
-        </Border>
+        </StackPanel>
+        <TreeView
+                x:Name="treeView"
+                Margin="0,0,0,0"
+                KeyboardNavigation.DirectionalNavigation="None"
+                KeyboardNavigation.TabNavigation="None" Grid.Row="1"/>
     </Grid>
 </UserControl>

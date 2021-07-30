@@ -2,6 +2,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -11,116 +12,128 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Media3D;
 using ToGeometryConverter.Object;
+using ToGeometryConverter.Object.Elements;
 using AppSt = MonchaCadViewer.Properties.Settings;
 
 namespace MonchaCadViewer.CanvasObj
 {
-    public class CadObjectsGroup : CadObject, IList<CadGeometry>
+    public class CadObjectsGroup : CadObject, IList<CadObject>
     {
-        private List<CadGeometry> cadObjects = new List<CadGeometry>();
+        public ObservableCollection<CadObject> cadObjects = new ObservableCollection<CadObject>();
 
         private bool Opened = false;
 
-        public GCCollection gCElements 
+        private GCCollection elements;
+
+        private void ParseColletion(GCCollection objects)
         {
-            get => elements;
-            set
+            List<CadObject> geometries = new List<CadObject>();
+
+            foreach (IGCObject gC in objects)
             {
-                this.cadObjects.Clear();
-                elements = value;
-
-                foreach (IGCObject gC in elements)
+                if (gC is GCCollection collection)
                 {
-                    this.cadObjects.Add(new CadGeometry(gC, true)
-                    {
-                        TransformGroup = this.TransformGroup,
-                        Name = this.Name,
-                    });
+                    this.AddRange(new CadObjectsGroup(collection));
                 }
-
-                geometryGroup.Children.Clear();
-                foreach (CadObject cadObject in cadObjects)
+                else
                 {
-                    geometryGroup.Children.Add(cadObject.GetGeometry);
-                }
-
-                if (AppSt.Default.stg_show_name == true)
-                {
-                    this.cadObjects.Add(new CadGeometry(
-                        new ToGeometryConverter.Object.Elements.TextElement(Name, MonchaHub.GetThinkess,
-                        new Point3D(0, 0, 0)),
-                        true)
+                    this.Add(new CadGeometry(gC, true)
                     {
-                        TransformGroup = this.TransformGroup,
-                        Name = this.Name,
+                        NameID = gC.Name
                     });
                 }
             }
-        }
-        private GCCollection elements;
 
-        public override Geometry GetGeometry => geometryGroup;
-        private GeometryGroup geometryGroup = new GeometryGroup();
-
-        public override Rect Bounds => gCElements.Bounds; 
-
-        public CadObjectsGroup(GCCollection gcCollection, string Name, Transform3DGroup transform3DGroup)
-        {
-            this.Name = Name;
-            this.UpdateTransform(transform3DGroup, transform3DGroup == null, gcCollection.Bounds);
-            this.gCElements = gcCollection;
+            if (AppSt.Default.stg_show_name == true)
+            {
+                geometries.Add(new CadGeometry(
+                    new ToGeometryConverter.Object.Elements.TextElement(objects.Name, MonchaHub.GetThinkess,
+                    new Point3D(0, 0, 0)),
+                    true));
+            }
         }
 
-        #region IList<CadGeometry>
-        public CadGeometry this[int index] { get => ((IList<CadGeometry>)cadObjects)[index]; set => ((IList<CadGeometry>)cadObjects)[index] = value; }
-
-        public int Count => ((ICollection<CadGeometry>)cadObjects).Count;
-
-        public bool IsReadOnly => ((ICollection<CadGeometry>)cadObjects).IsReadOnly;
-
-        public void Add(CadGeometry item)
+        public override Geometry GetGeometry 
         {
-            ((ICollection<CadGeometry>)cadObjects).Add(item);
+            get
+            {
+                GeometryGroup geometryGroup = new GeometryGroup();
+                foreach (CadObject element in this.cadObjects)
+                {
+                    geometryGroup.Children.Add(element.GetGeometry);
+                }
+                return geometryGroup;
+            }
+         }
+
+
+        public override Rect Bounds => GetGeometry.Bounds;
+
+
+        public CadObjectsGroup(GCCollection gCCollection)
+        {
+            this.UpdateTransform(null, true, gCCollection.Bounds);
+            ParseColletion(gCCollection);
+            this.NameID = gCCollection.Name;
+        }
+
+
+        #region IList<CadObject>
+        public CadObject this[int index] { get => ((IList<CadObject>)cadObjects)[index]; set => ((IList<CadObject>)cadObjects)[index] = value; }
+
+        public int Count => ((ICollection<CadObject>)cadObjects).Count;
+
+        public bool IsReadOnly => ((ICollection<CadObject>)cadObjects).IsReadOnly;
+
+        public void AddRange(IList<CadObject> cadObjects)
+        {
+            foreach (CadObject cadObject in cadObjects) this.Add(cadObject);
+        }
+
+        public void Add(CadObject item)
+        {
+            item.TransformGroup = this.TransformGroup;
+            ((ICollection<CadObject>)cadObjects).Add(item);
         }
 
         public void Clear()
         {
-            ((ICollection<CadGeometry>)cadObjects).Clear();
+            ((ICollection<CadObject>)cadObjects).Clear();
         }
 
-        public bool Contains(CadGeometry item)
+        public bool Contains(CadObject item)
         {
-            return ((ICollection<CadGeometry>)cadObjects).Contains(item);
+            return ((ICollection<CadObject>)cadObjects).Contains(item);
         }
 
-        public void CopyTo(CadGeometry[] array, int arrayIndex)
+        public void CopyTo(CadObject[] array, int arrayIndex)
         {
-            ((ICollection<CadGeometry>)cadObjects).CopyTo(array, arrayIndex);
+            ((ICollection<CadObject>)cadObjects).CopyTo(array, arrayIndex);
         }
 
-        public IEnumerator<CadGeometry> GetEnumerator()
+        public IEnumerator<CadObject> GetEnumerator()
         {
-            return ((IEnumerable<CadGeometry>)cadObjects).GetEnumerator();
+            return ((IEnumerable<CadObject>)cadObjects).GetEnumerator();
         }
 
-        public int IndexOf(CadGeometry item)
+        public int IndexOf(CadObject item)
         {
-            return ((IList<CadGeometry>)cadObjects).IndexOf(item);
+            return ((IList<CadObject>)cadObjects).IndexOf(item);
         }
 
-        public void Insert(int index, CadGeometry item)
+        public void Insert(int index, CadObject item)
         {
-            ((IList<CadGeometry>)cadObjects).Insert(index, item);
+            ((IList<CadObject>)cadObjects).Insert(index, item);
         }
 
-        public bool Remove(CadGeometry item)
+        public bool Remove(CadObject item)
         {
-            return ((ICollection<CadGeometry>)cadObjects).Remove(item);
+            return ((ICollection<CadObject>)cadObjects).Remove(item);
         }
 
         public void RemoveAt(int index)
         {
-            ((IList<CadGeometry>)cadObjects).RemoveAt(index);
+            ((IList<CadObject>)cadObjects).RemoveAt(index);
         }
 
         IEnumerator IEnumerable.GetEnumerator()

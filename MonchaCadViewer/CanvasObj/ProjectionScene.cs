@@ -1,4 +1,5 @@
-﻿using MonchaSDK.Object;
+﻿using MonchaCadViewer.Interface;
+using MonchaSDK.Object;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -56,12 +57,13 @@ namespace MonchaCadViewer.CanvasObj
         public ObservableCollection<CadObject> Objects { get; } = new ObservableCollection<CadObject>();
         public ObservableCollection<CadRectangle> Masks { get; } = new ObservableCollection<CadRectangle>();
 
+        public IDrawingObject ActiveDrawingObject { get; set; }
+
         public ProjectionScene()
         {
             Objects.CollectionChanged += Objects_CollectionChanged;
             SelectedObject.CollectionChanged += SelectedObject_CollectionChanged;
         }
-
 
         public ProjectionScene(CadObject Obj)
         {
@@ -75,6 +77,7 @@ namespace MonchaCadViewer.CanvasObj
                 foreach (CadObject Obj in e.NewItems)
                 {
                     Obj.Selected += Obj_Selected;
+                    Obj.Removed += Obj_Removed;
                     Obj.PropertyChanged += Obj_PropertyChanged;
                 }
             }
@@ -82,10 +85,16 @@ namespace MonchaCadViewer.CanvasObj
             {
                 foreach (CadObject Obj in e.OldItems)
                 {
-                    Obj.Selected -= Obj_Selected; 
+                    Obj.Selected -= Obj_Selected;
+                    Obj.Removed -= Obj_Removed;
                     Obj.PropertyChanged -= Obj_PropertyChanged;
                 }
             }
+        }
+
+        private void Obj_Removed(object sender, CadObject e)
+        {
+            this.Remove(e);
         }
 
         private void Obj_PropertyChanged(object sender, PropertyChangedEventArgs e) => UpdateFrame?.Invoke(this, null);
@@ -187,18 +196,34 @@ namespace MonchaCadViewer.CanvasObj
         {
             foreach (CadObject cadObject in scene.Objects)
             {
-                this.Remove(cadObject);
+                if (cadObject is CadObjectsGroup cadGeometries)
+                {
+                    foreach (CadObject obj in cadGeometries.cadObjects)
+                    {
+                        this.Remove(obj);
+                    }
+                }
+                else
+                {
+                    this.Remove(cadObject);
+                }
+               
             }
         }
 
         public void Remove(CadObject cadObject)
         {
             Objects.Remove(cadObject);
+            if (cadObject is CadRectangle rectangle)
+            {
+                Masks.Remove(rectangle);
+            }
         }
 
         public void Clear()
         {
             Objects.Clear();
+            Masks.Clear();
         }
     }
 }

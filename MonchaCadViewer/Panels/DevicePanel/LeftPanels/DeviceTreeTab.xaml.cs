@@ -158,7 +158,7 @@ namespace MonchaCadViewer.Panels
                             device.PolyMeshUsed = !device.PolyMeshUsed;
                             break;
                         case "dvc_center":
-                            scene.Add(new CadAnchor(device.Size.Center, false){Render = false});
+                            scene.Add(new CadAnchor(device.Size.Center){Render = false});
                             break;
 
                     }

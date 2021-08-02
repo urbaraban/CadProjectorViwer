@@ -50,7 +50,7 @@ namespace MonchaCadViewer.CanvasObj
         public LPoint3D GetLPoint => PointX != PointY ? new LPoint3D(PointX.MX, PointY.MY, PointX.M) : PointX;
 
 
-        public CadAnchor(LPoint3D Point, bool OnBaseMesh)
+        public CadAnchor(LPoint3D Point)
         {
             this.PointX = Point;
             this.PointX.PropertyChanged += Point_PropertyChanged;
@@ -62,7 +62,7 @@ namespace MonchaCadViewer.CanvasObj
             CommonSetting();
         }
 
-        public CadAnchor(LPoint3D PointX, LPoint3D PointY, bool OnBaseMesh)
+        public CadAnchor(LPoint3D PointX, LPoint3D PointY)
         {
             this.PointX = PointX;
             this.PointX.PropertyChanged += Point_PropertyChanged;
@@ -73,6 +73,7 @@ namespace MonchaCadViewer.CanvasObj
 
         private void CommonSetting()
         {
+            this.Cursor = Cursors.SizeAll;
             this.AllowDrop = true;
             this.Drop += CadAnchor_Drop;
 

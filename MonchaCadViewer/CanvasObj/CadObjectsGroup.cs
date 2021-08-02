@@ -60,7 +60,10 @@ namespace MonchaCadViewer.CanvasObj
                 GeometryGroup geometryGroup = new GeometryGroup();
                 foreach (CadObject element in this.cadObjects)
                 {
-                    geometryGroup.Children.Add(element.GetGeometry);
+                    if (element.Render == true)
+                    {
+                        geometryGroup.Children.Add(element.GetGeometry);
+                    }
                 }
                 return geometryGroup;
             }

@@ -262,6 +262,7 @@
     <Compile Include="DeviceManager\LaserManager.xaml.cs">
       <DependentUpon>LaserManager.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Interface\IDrawingObject.cs" />
     <Compile Include="Interface\SelectableObject.cs" />
     <Compile Include="Interface\TransformObject.cs" />
     <Compile Include="Panels\CanvasPanel\CadCanvasPanel.xaml.cs">

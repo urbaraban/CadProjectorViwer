@@ -45,7 +45,6 @@
                                 </ContextMenu>
                             </StackPanel.ContextMenu>-->
                             <CheckBox IsChecked="{Binding Render}"/>
-                            <Label Content="Element:" VerticalContentAlignment="Center"/>
                             <Label Content="{Binding NameID}" VerticalAlignment="Center" />
                         </StackPanel>
                     </HierarchicalDataTemplate>

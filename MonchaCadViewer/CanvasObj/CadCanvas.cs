@@ -91,7 +91,7 @@ namespace MonchaCadViewer.CanvasObj
                 {
                     mesh[i, j].M = MonchaHub.Size;
 
-                    objects.Add(new CadAnchor(mesh[i, j], true)
+                    objects.Add(new CadAnchor(mesh[i, j])
                     {
                         IsFix = false,// !mesh.OnlyEdge;
                         Uid = i.ToString() + ":" + j.ToString(),

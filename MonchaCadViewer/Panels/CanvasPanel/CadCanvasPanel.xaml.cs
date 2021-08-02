@@ -24,6 +24,8 @@ namespace MonchaCadViewer.Panels.CanvasPanel
     /// </summary>
     public partial class CadCanvasPanel : UserControl
     {
+        public LSize3D Size => MonchaHub.Size;
+
         private Point StartMovePoint;
         private Point StartMousePoint;
         private bool WasMove = false;
@@ -99,8 +101,9 @@ namespace MonchaCadViewer.Panels.CanvasPanel
         {
             this.MouseAction = MouseAction.NoAction;
             if (Keyboard.Modifiers != ModifierKeys.Shift) projectionScene.ClearSelectedObject(null);
-        }
 
+        }
+        
         private void CanvasGrid_MouseWheel(object sender, MouseWheelEventArgs e)
         {
             if (Keyboard.Modifiers == ModifierKeys.Control)
@@ -159,30 +162,36 @@ namespace MonchaCadViewer.Panels.CanvasPanel
 
         private void CanvasGrid_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
-            if (Keyboard.Modifiers == ModifierKeys.Control)
+            if (sender is IInputElement inputElement)
             {
-                this.StartMousePoint = e.GetPosition(CanvasBox);
-                this.StartMovePoint = new Point(this.Translate.X, this.Translate.Y);
-            }
-            else if (this.MouseAction == MouseAction.Rectangle)
-            {
-                Point point = e.GetPosition(CanvasGrid);
-                CadRectangle cadRectangle = new CadRectangle(new LPoint3D(point, MonchaHub.Size), new LPoint3D(point, MonchaHub.Size), string.Empty, true);
-                this.projectionScene.Add(cadRectangle);
-                
-            }
-            else if (this.mouseAction == MouseAction.Mask)
-            {
-                this.MouseAction = MouseAction.NoAction;
-                LSize3D lRect = new LSize3D(new LPoint3D(e.GetPosition(CanvasGrid), MonchaHub.Size, true), new LPoint3D(e.GetPosition(CanvasGrid), MonchaHub.Size, true));
-                CadRectangle Maskrectangle = new CadRectangle(lRect, $"Mask_{this.projectionScene.Masks.Count}", true);
-                this.projectionScene.Add(Maskrectangle);
-                this.projectionScene.Masks.Add(Maskrectangle);
-            }
-            else if (this.mouseAction == MouseAction.Line)
-            {
-                CadLine line = new CadLine(new LPoint3D(e.GetPosition(this)), new LPoint3D(e.GetPosition(this)), true);
-                this.projectionScene.Add(line);
+                if (this.projectionScene.ActiveDrawingObject != null) this.projectionScene.ActiveDrawingObject = null;
+
+                if (Keyboard.Modifiers == ModifierKeys.Control)
+                {
+                    this.StartMousePoint = e.GetPosition(CanvasBox);
+                    this.StartMovePoint = new Point(this.Translate.X, this.Translate.Y);
+                }
+                else if (this.MouseAction == MouseAction.Rectangle)
+                {
+                    Point point = e.GetPosition(CanvasGrid);
+                    CadRectangle cadRectangle = new CadRectangle(new LPoint3D(point, MonchaHub.Size), new LPoint3D(point, MonchaHub.Size), string.Empty, true);
+                    this.projectionScene.Add(cadRectangle);
+                }
+                else if (this.mouseAction == MouseAction.Mask)
+                {
+                    this.MouseAction = MouseAction.NoAction;
+                    LSize3D lRect = new LSize3D(new LPoint3D(e.GetPosition(inputElement), MonchaHub.Size, true), new LPoint3D(e.GetPosition(inputElement), MonchaHub.Size, true));
+                    CadRectangle Maskrectangle = new CadRectangle(lRect, $"Mask_{this.projectionScene.Masks.Count}", true);
+                    this.projectionScene.Add(Maskrectangle);
+                    this.projectionScene.Masks.Add(Maskrectangle);
+                    this.projectionScene.ActiveDrawingObject = Maskrectangle;
+                }
+                else if (this.mouseAction == MouseAction.Line)
+                {
+                    CadLine line = new CadLine(new LPoint3D(e.GetPosition(inputElement)), new LPoint3D(e.GetPosition(inputElement)), true);
+                    this.projectionScene.Add(line);
+                    this.projectionScene.ActiveDrawingObject = line;
+                }
             }
 
         }
@@ -201,6 +210,13 @@ namespace MonchaCadViewer.Panels.CanvasPanel
                 Translate.Y = (this.StartMovePoint.Y + (tPoint.Y - this.StartMousePoint.Y)) * prop;
 
                 this.CaptureMouse();
+            }
+            else
+            {
+                if (projectionScene.ActiveDrawingObject != null)
+                {
+                    projectionScene.ActiveDrawingObject.SetTwoPoint(e.GetPosition(this.CanvasGrid));
+                }
             }
         }
 
@@ -285,9 +301,9 @@ namespace MonchaCadViewer.Panels.CanvasPanel
 
         private void Canvas_SizeChanged(object sender, SizeChangedEventArgs e)
         {
-            if (sender is CadCanvas cadCanvas)
+            if (sender is Canvas canvas)
             {
-                if (cadCanvas.Background is DrawingBrush drawingBrush)
+                if (canvas.Background is DrawingBrush drawingBrush)
                 {
                     double cell = (int)(Math.Min(MonchaHub.Size.X, MonchaHub.Size.Y) / 10);
                     drawingBrush.Viewport = new Rect(0, 0, cell, cell);

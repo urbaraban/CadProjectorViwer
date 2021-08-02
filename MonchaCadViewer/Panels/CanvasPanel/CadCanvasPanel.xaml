@@ -23,8 +23,10 @@
                 <Canvas 
                     x:Name="BackCanvas" 
                     IsHitTestVisible="False"
-                    MouseLeftButtonUp="CanvasGrid_MouseLeftButtonUp" 
-                    MouseLeftButtonDown="CanvasGrid_MouseLeftButtonDown">
+                    SizeChanged="Canvas_SizeChanged"
+                    
+
+                    >
                     <Canvas.Background>
                         <DrawingBrush TileMode="Tile" Viewport="0,0,200,200" 
                                      ViewportUnits="Absolute">
@@ -34,7 +36,7 @@
                                         <RectangleGeometry Rect="0,0,200,200"/>
                                     </GeometryDrawing.Geometry>
                                     <GeometryDrawing.Pen>
-                                        <Pen Brush="LightSlateGray" Thickness="5"/>
+                                        <Pen Brush="LightSlateGray" Thickness="3"/>
                                     </GeometryDrawing.Pen>
                                 </GeometryDrawing>
                             </DrawingBrush.Drawing>
@@ -46,7 +48,9 @@
                         <ItemsPanelTemplate>
                             <canvasobj:CadCanvas Focusable="False" 
                                                  IsHitTestVisible="True"
-                                                 SizeChanged="Canvas_SizeChanged">
+                                                 MouseLeftButtonDown="CanvasGrid_MouseLeftButtonDown"
+                                                 MouseLeftButtonUp="CanvasGrid_MouseLeftButtonUp" 
+                                                 MouseMove="Canvas_MouseMove">
                             </canvasobj:CadCanvas>
                         </ItemsPanelTemplate>
                     </ItemsControl.ItemsPanel>

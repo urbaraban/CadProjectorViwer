@@ -21,7 +21,7 @@ using System.Windows.Shapes;
 
 namespace MonchaCadViewer.CanvasObj
 {
-    public class CadRectangle : CadObject, INotifyPropertyChanged
+    public class CadRectangle : CadObject, INotifyPropertyChanged, IDrawingObject
     {
         #region Property
         public event PropertyChangedEventHandler PropertyChanged;
@@ -56,6 +56,7 @@ namespace MonchaCadViewer.CanvasObj
 
         private LSize3D _lrect;
 
+        private RectangelAdorner adorner;
 
         public override double X
         {
@@ -88,9 +89,6 @@ namespace MonchaCadViewer.CanvasObj
             }
         }
 
-
-        private List<CadAnchor> anchors;
-
         public override Rect Bounds => new Rect(LRect.P1.GetMPoint, LRect.P2.GetMPoint);
 
         public CadRectangle(LPoint3D P1, LPoint3D P2, string Label, bool MouseSet)
@@ -116,14 +114,13 @@ namespace MonchaCadViewer.CanvasObj
             ContextMenuLib.CadRectMenu(this.ContextMenu);
             this.ContextMenuClosing += ContextMenu_ContextMenuClosing;
 
-            if (MouseSet == true)
-            {
-                this.Loaded += CadRectangle_Loaded;
-            }
-            else
-            {
-                this.Loaded += CadRectangleSet_Loaded;
-            }
+            this.Loaded += CadRectangle_Loaded;
+        }
+
+        private void CadRectangle_Loaded(object sender, RoutedEventArgs e)
+        {
+            AdornerLayer adornerLayer = AdornerLayer.GetAdornerLayer(this);
+            adornerLayer.Add(new RectangelAdorner(this));
         }
 
         private void ContextMenu_ContextMenuClosing(object sender, ContextMenuEventArgs e)
@@ -140,80 +137,6 @@ namespace MonchaCadViewer.CanvasObj
                 }
             }
         }
-
-
-        /// <summary>
-        /// Load Adorner
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void CadRectangle_Loaded(object sender, RoutedEventArgs e)
-        {
-            //this.adornerLayer.Add(new CadRectangleAdorner(this));
-            //this.adornerLayer.Visibility = Visibility.Visible;
-
-            if (this.Parent is CadCanvas canvas)
-            {
-                canvas.MouseLeftButtonUp += canvas_MouseLeftButtonUP;
-                canvas.MouseMove += Canvas_MouseMove;
-                canvas.CaptureMouse();
-            }
-        }
-
-        private void CadRectangleSet_Loaded(object sender, RoutedEventArgs e)
-        {
-            AddAnchors();
-        }
-
-        private void Canvas_MouseMove(object sender, MouseEventArgs e)
-        {
-            Dispatcher.Invoke(() =>
-            {
-                this.LRect.P2.Set(e.GetPosition(this));
-                this.InvalidateVisual();
-            });
-        }
-
-        private void canvas_MouseLeftButtonUP(object sender, MouseButtonEventArgs e)
-        {
-            if (sender is CadCanvas cadCanvas)
-            {
-                if (cadCanvas.UnderAnchor != null) this.LRect.P2 = cadCanvas.UnderAnchor.GetLPoint;
-                else
-                {
-                    this.LRect.P2.Set(e.GetPosition(cadCanvas));
-                }
-                cadCanvas.MouseLeftButtonUp -= canvas_MouseLeftButtonUP;
-                cadCanvas.MouseMove -= Canvas_MouseMove;
-            }
-        Dispatcher.Invoke(() =>
-        {
-            this.ReleaseMouseCapture();
-        });
-
-            AddAnchors();
-        }
-
-        private void AddAnchors()
-        {
-            /*this.InvalidateVisual();
-            if (this.Parent is CadCanvas cadCanvas)
-            {
-                anchors = new List<CadAnchor>()
-                {
-                    new CadAnchor(this.LRect.P1, this.LRect.P1, false){ Render = false },
-                    new CadAnchor(this.LRect.P1, this.LRect.P2, false){ Render = false },
-                    new CadAnchor(this.LRect.P2, this.LRect.P2, false){ Render = false },
-                    new CadAnchor(this.LRect.P2, this.LRect.P1, false){ Render = false }
-                };
-
-                foreach (CadAnchor cadAnchor in anchors)
-                {
-                    cadCanvas.Add(cadAnchor);
-                }
-            }*/
-        }
-
 
         protected override void OnRender(DrawingContext drawingContext)
         {
@@ -232,13 +155,70 @@ namespace MonchaCadViewer.CanvasObj
         public override void Remove()
         {
             Removed?.Invoke(this, this);
+        }
 
-            foreach (CadAnchor cadAnchor in anchors)
+        public void SetTwoPoint(Point point)
+        {
+            this.LRect.P2.MX = point.X;
+            this.LRect.P2.MY = point.Y;
+        }
+    }
+
+    public class RectangelAdorner : Adorner
+    {
+        private VisualCollection _Visuals;
+
+        private List<CadAnchor> _Anchors;
+
+        private CadRectangle rectangle;
+        // Be sure to call the base class constructor.
+        public RectangelAdorner(CadRectangle adornedElement): base(adornedElement)
+        {
+            _Visuals = new VisualCollection(this);
+            _Anchors = new List<CadAnchor>();
+
+            this.rectangle = adornedElement;
+            this.rectangle.PropertyChanged += Rectangle_PropertyChanged;
+
+
+            Rect rect = new Rect(0, 0, this.rectangle.Bounds.Width, this.rectangle.Bounds.Height);
+
+            _Anchors.Add(new CadAnchor(adornedElement.LRect.P1));
+            _Anchors.Add(new CadAnchor(adornedElement.LRect.P2, adornedElement.LRect.P1));
+            _Anchors.Add(new CadAnchor(adornedElement.LRect.P1, adornedElement.LRect.P2));
+            _Anchors.Add(new CadAnchor(adornedElement.LRect.P2));
+
+            foreach (CadAnchor anchor in _Anchors)
             {
-                cadAnchor.Remove();
+                _Visuals.Add(anchor);
             }
         }
 
+        private void Rectangle_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            this.InvalidateVisual();
+        }
+
+        protected override Size ArrangeOverride(Size finalSize)
+        {
+            foreach (CadAnchor anchor in _Anchors)
+            {
+                anchor.Arrange(new Rect(finalSize));
+            }
+            return this.rectangle.Bounds.Size;
+        }
+
+        // A common way to implement an adorner's rendering behavior is to override the OnRender
+        // method, which is called by the layout system as part of a rendering pass.
+
+        protected override int VisualChildrenCount { get { return _Visuals.Count; } }
+        protected override Visual GetVisualChild(int index) { return _Visuals[index]; }
+        protected override void OnRender(DrawingContext drawingContext)
+        {
+            base.OnRender(drawingContext);
+        }
     }
+
+
 }
 

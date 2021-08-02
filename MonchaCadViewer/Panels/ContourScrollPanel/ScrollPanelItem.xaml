@@ -95,11 +95,9 @@
                 Content="{Binding NameID}"
                 Grid.Row="2"
                 MaxWidth="{Binding ActualHeight, ElementName=MainGrid, Mode=OneWay}"
-                Margin="0,0,0,0"
                 Padding="0"
                 Panel.ZIndex="99"
                 Background="LightGray"
-
                 FontSize="11"
                 Opacity="0.4" />
         </Grid>

@@ -21,7 +21,7 @@ using System.Windows.Shapes;
 
 namespace MonchaCadViewer.CanvasObj
 {
-    public class CadLine : CadObject, INotifyPropertyChanged
+    public class CadLine : CadObject, INotifyPropertyChanged, IDrawingObject
     {
         #region Property
         public event PropertyChangedEventHandler PropertyChanged;
@@ -87,26 +87,7 @@ namespace MonchaCadViewer.CanvasObj
         {
             this.P1.PropertyChanged += P1_PropertyChanged;
             this.P2.PropertyChanged += P1_PropertyChanged;
-
             this.Render = true;
-            this.TransformGroup = new Transform3DGroup()
-            {
-                Children = new Transform3DCollection()
-                    {
-                        new ScaleTransform3D(),
-                        new RotateTransform3D(),
-                        new TranslateTransform3D()
-                    }
-            };
-
-            if (MouseSet == true)
-            {
-                this.Loaded += CadRectangle_Loaded;
-            }
-            else
-            {
-                this.Loaded += CadRectangleSet_Loaded;
-            }
         }
 
         private void P1_PropertyChanged(object sender, PropertyChangedEventArgs e)
@@ -121,67 +102,6 @@ namespace MonchaCadViewer.CanvasObj
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void CadRectangle_Loaded(object sender, RoutedEventArgs e)
-        {
-            //this.adornerLayer.Add(new CadRectangleAdorner(this));
-            //this.adornerLayer.Visibility = Visibility.Visible;
-
-            if (this.Parent is CadCanvas canvas)
-            {
-                canvas.MouseLeftButtonUp += canvas_MouseLeftButtonUP;
-                canvas.MouseMove += Canvas_MouseMove;
-                canvas.CaptureMouse();
-            }
-            adornerLayer.InvalidateArrange();
-        }
-
-        private void CadRectangleSet_Loaded(object sender, RoutedEventArgs e)
-        {
-            AddAnchors();
-        }
-
-        private void Canvas_MouseMove(object sender, MouseEventArgs e)
-        {
-            Dispatcher.Invoke(() =>
-            {
-                this.P2.Set(e.GetPosition(this));
-                this.InvalidateVisual();
-            });
-        }
-
-        private void canvas_MouseLeftButtonUP(object sender, MouseButtonEventArgs e)
-        {
-            if (sender is CadCanvas cadCanvas)
-            {
-                this.P2.Set(e.GetPosition(cadCanvas));
-                cadCanvas.MouseLeftButtonUp -= canvas_MouseLeftButtonUP;
-                cadCanvas.MouseMove -= Canvas_MouseMove;
-            }
-
-            this.ReleaseMouseCapture();
-
-            AddAnchors();
-        }
-
-        private void AddAnchors()
-        {
-            this.InvalidateVisual();
-            if (this.Parent is CadCanvas cadCanvas)
-            {
-                anchors = new List<CadAnchor>()
-                {
-                    new CadAnchor(this.P1, this.P1, false){ Render = false },
-                    new CadAnchor(this.P2, this.P2, false){ Render = false }
-                };
-
-               /* foreach (CadAnchor cadAnchor in anchors)
-                {
-                    cadCanvas.Add(cadAnchor);
-                }*/
-            }
-        }
-
-
         protected override void OnRender(DrawingContext drawingContext)
         {
             if (this.IsSelected == true)
@@ -195,17 +115,19 @@ namespace MonchaCadViewer.CanvasObj
             drawingContext.DrawLine(myPen, P1.GetMPoint, P2.GetMPoint);
         }
 
-
-
         public override void Remove()
         {
             Removed?.Invoke(this, this);
-
             foreach (CadAnchor cadAnchor in anchors)
             {
                 cadAnchor.Remove();
             }
         }
 
+        public void SetTwoPoint(Point InPoint)
+        {
+            this.P2.MX = InPoint.X;
+            this.P2.MY = InPoint.Y;
+        }
     }
 }

@@ -17,6 +17,8 @@ namespace MonchaCadViewer.CanvasObj
     {
         public IGCObject GCObject { get; set; }
 
+        public override Rect Bounds => GCObject.Bounds;
+
         public override string NameID => GCObject.Name;
 
         public override  Geometry GetGeometry => this.GCObject.GetGeometry(this.TransformGroup, this.ProjectionSetting.PointStep.MX, this.ProjectionSetting.RadiusEdge);
@@ -27,17 +29,10 @@ namespace MonchaCadViewer.CanvasObj
         {
             this.GCObject = gCObject;
             this._maincanvas = maincanvas;
-            this.Loaded += CadContour_Loaded;
+            this.Cursor = Cursors.Hand;
+            ContextMenuLib.ViewContourMenu(this.ContextMenu);
         }
 
-        private void CadContour_Loaded(object sender, RoutedEventArgs e)
-        {
-            if (this._maincanvas)
-            {
-                ContextMenuLib.ViewContourMenu(this.ContextMenu);
-                this.Cursor = Cursors.Hand;
-            }
-        }
 
         public LObjectList GetTransformPoints()
         {

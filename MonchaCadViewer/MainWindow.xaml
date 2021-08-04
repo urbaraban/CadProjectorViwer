@@ -8,12 +8,12 @@
         xmlns:canvaspanel="clr-namespace:MonchaCadViewer.Panels.CanvasPanel"
         xmlns:panels="clr-namespace:MonchaCadViewer.Panels" 
         xmlns:convert="clr-namespace:MonchaCadViewer.Converters"
-        xmlns:leftpanels="clr-namespace:MonchaCadViewer.Panels.DevicePanel.LeftPanels"
-        x:Class="MonchaCadViewer.MainWindow"
+        xmlns:leftpanels="clr-namespace:MonchaCadViewer.Panels.DevicePanel.LeftPanels" xmlns:rightpanel="clr-namespace:MonchaCadViewer.Panels.RightPanel"
+    x:Class="MonchaCadViewer.MainWindow"
         mc:Ignorable="d"
         Title="CUT" KeyboardNavigation.TabNavigation="None"  
     AllowDrop="True" Drop="MainCanvas_Drop"
-    Height="760" Width="999" Closing="Window_Closing" Closed="Window_Closed" WindowStartupLocation="CenterScreen" Icon="logo.png" KeyUp="MainWindow1_KeyUp" WindowStyle="None" ResizeMode="CanResizeWithGrip" BorderBrush="#FFE01414" VerticalAlignment="Top" 
+    Height="760" Width="999" Closing="Window_Closing" Closed="Window_Closed" WindowStartupLocation="CenterScreen" Icon="logo.png" KeyUp="MainWindow1_KeyUp" WindowStyle="None" ResizeMode="CanResizeWithGrip" BorderBrush="#FFE01414" VerticalAlignment="Top" Background="White" 
     >
     <Window.Resources>
         <ResourceDictionary>
@@ -152,7 +152,7 @@
                     </Style>
                 </TabControl.Resources>
                 <TabItem Header="Device">
-                    <panels:DeviceTreeTab x:Name="DeviceTree" Focusable="False" Margin="0" Grid.ColumnSpan="2" Grid.Row="2" Loaded="DeviceTree_Loaded"
+                    <panels:DeviceTreeTab x:Name="DeviceTree" Focusable="False" Margin="0" Grid.ColumnSpan="2" Grid.Row="2"
                                           DataContext="{Binding RelativeSource={RelativeSource AncestorType=Window}, Path=MainScene}"/>
                 </TabItem>
                 <TabItem Header="Frame">
@@ -357,32 +357,7 @@
                     </Grid>
                 </TabItem>
                 <TabItem Header="{DynamicResource common_Workfolder}">
-                    <Grid>
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="36*"/>
-                            <RowDefinition Height="25*"/>
-                            <RowDefinition Height="503*"/>
-                        </Grid.RowDefinitions>
-
-                        <Button x:Name="WorkFolderBtn" Content="{DynamicResource m_Browse}" HorizontalAlignment="Left" Margin="32,8,0,8" Width="75" VerticalAlignment="Center" Click="WorkFolderBtn_Click"/>
-                        <Label x:Name="WorkFolderLabel" Content="{Binding save_work_folder, Mode=OneWay}" Margin="116,6,8,4">
-                            <Label.DataContext>
-                                <Properties:Settings/>
-                            </Label.DataContext>
-                        </Label>
-                        <ListView x:Name="WorkFolderListBox" Margin="5,5,5,5" Grid.Row="2" >
-                            <ListBox.ItemTemplate>
-                                <DataTemplate>
-                                    <TextBlock Text="{Binding}" MouseDown="TextBlock_MouseDownAsync">
-
-                                    </TextBlock>
-                                </DataTemplate>
-                            </ListBox.ItemTemplate>
-                        </ListView>
-                        <Button x:Name="WorkFolderRefreshBtn"  FontFamily="Segoe MDL2 Assets" Content="&#xEDAB;" HorizontalAlignment="Left" Margin="5,8,0,8" VerticalAlignment="Center" Width="22" Height="20" Click="WorkFolderRefreshBtn_Click"/>
-                        <TextBox x:Name="WorkFolderFilter" HorizontalAlignment="Left" Margin="5,2,0,2" Grid.Row="1" TextWrapping="Wrap" Width="264" VerticalContentAlignment="Center" TextChanged="WorkFolderFilter_TextChanged" Focusable="True" GotFocus="WorkFolderFilter_GotFocus"/>
-
-                    </Grid>
+                    <rightpanel:WorkFolderPanel DataContext="{Binding RelativeSource={RelativeSource AncestorType=Window}}"/>
                 </TabItem>
                 <TabItem Header="Log" Controls:HeaderedControlHelper.HeaderFontSize="18">
                     <Grid>

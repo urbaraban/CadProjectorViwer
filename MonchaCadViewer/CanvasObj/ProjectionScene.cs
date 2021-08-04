@@ -44,15 +44,11 @@ namespace MonchaCadViewer.CanvasObj
             {
                 lastselectobject = value;
                 OnPropertyChanged("LastSelectObject");
-                if (Keyboard.Modifiers != ModifierKeys.Shift)
-                {
-                    ClearSelectedObject(lastselectobject);
-                }
             }
         }
         private CadObject lastselectobject;
 
-        public ObservableCollection<CadObject> SelectedObject = new ObservableCollection<CadObject>();
+        public ObservableCollection<CadObject> SelectedObjects = new ObservableCollection<CadObject>();
 
         public ObservableCollection<CadObject> Objects { get; } = new ObservableCollection<CadObject>();
         public ObservableCollection<CadRectangle> Masks { get; } = new ObservableCollection<CadRectangle>();
@@ -62,7 +58,7 @@ namespace MonchaCadViewer.CanvasObj
         public ProjectionScene()
         {
             Objects.CollectionChanged += Objects_CollectionChanged;
-            SelectedObject.CollectionChanged += SelectedObject_CollectionChanged;
+            SelectedObjects.CollectionChanged += SelectedObjects_CollectionChanged;
         }
 
         public ProjectionScene(CadObject Obj)
@@ -107,36 +103,45 @@ namespace MonchaCadViewer.CanvasObj
             {
                 if (e == true)
                 {
-                    SelectedObject.Add(cadObject);
+                    Console.WriteLine("Obj Select");
+                    SelectedObjects.Add(cadObject);
                 }
                 else
                 {
-                    if (SelectedObject.Contains(cadObject))
+                    if (SelectedObjects.Contains(cadObject))
                     {
-                        SelectedObject.Remove(cadObject);
+                        SelectedObjects.Remove(cadObject);
                     }
                 }
             }
         }
 
-        private void SelectedObject_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        private void SelectedObjects_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
         {
             if (e.NewItems != null)
             {
-                foreach (CadObject Obj in e.NewItems)
+                LastSelectObject = (CadObject)e.NewItems[e.NewItems.Count - 1];
+
+                if (Keyboard.Modifiers != ModifierKeys.Shift)
                 {
-                    LastSelectObject = Obj;
+                    for (int i = SelectedObjects.Count - 2; i > -1 ; i -= 1)
+                    {
+                        SelectedObjects[i].IsSelected = false;
+                    }
                 }
+
+                
+
             }
             if (e.OldItems != null)
             {
                 foreach (CadObject Obj in e.OldItems)
                 {
-                    if (LastSelectObject == Obj && SelectedObject.Count > 0)
+                    if (LastSelectObject == Obj && SelectedObjects.Count > 0)
                     {
-                        LastSelectObject = SelectedObject.Last();
+                        LastSelectObject = SelectedObjects.Last();
                     }
-                    else
+                    else if (LastSelectObject == Obj)
                     {
                         LastSelectObject = null;
                     }
@@ -144,19 +149,9 @@ namespace MonchaCadViewer.CanvasObj
             }
         }
 
-        public void ClearSelectedObject(CadObject noclearobj)
-        {
-            foreach (CadObject obj in this.Objects)
-            {
-                if (obj != noclearobj)
-                {
-                    obj.IsSelected = false;
-                }
-            }
-        }
         #endregion
 
-        public void AddRange(CadObject[] cadObjects)
+        public void AddRange(IList<CadObject> cadObjects)
         {
             foreach (CadObject cadObject in cadObjects)
             {
@@ -198,25 +193,45 @@ namespace MonchaCadViewer.CanvasObj
             {
                 if (cadObject is CadObjectsGroup cadGeometries)
                 {
-                    foreach (CadObject obj in cadGeometries.cadObjects)
-                    {
-                        this.Remove(obj);
-                    }
+                    Remove(cadGeometries);
                 }
                 else
                 {
                     this.Remove(cadObject);
                 }
-               
             }
         }
 
-        public void Remove(CadObject cadObject)
+        public void Remove(CadObjectsGroup cadObjectsGroup)
         {
-            Objects.Remove(cadObject);
-            if (cadObject is CadRectangle rectangle)
+            if (this.Objects.Where(i => i.Uid == cadObjectsGroup.Uid).FirstOrDefault() is CadObject remobj)
             {
-                Masks.Remove(rectangle);
+                Remove(remobj);
+            }
+            else
+            {
+                foreach (CadObject cadObject in cadObjectsGroup) 
+                {
+                    if (cadObject is CadObjectsGroup objectsGroup)
+                    {
+                        Remove(objectsGroup);
+                    }
+                    else Remove(cadObject);
+                }
+            }
+        }
+
+        public void Remove(CadObject obj)
+        {
+            if (obj is CadObject cadObject)
+            {
+                if (this.Objects.Remove(this.Objects.Where(i => i.Uid == cadObject.Uid).FirstOrDefault()) == true)
+                {
+                    if (cadObject is CadRectangle rectangle)
+                    {
+                        this.Masks.Remove(this.Masks.Where(i => i.Uid == cadObject.Uid).FirstOrDefault());
+                    }
+                }
             }
         }
 
@@ -224,6 +239,15 @@ namespace MonchaCadViewer.CanvasObj
         {
             Objects.Clear();
             Masks.Clear();
+        }
+
+        public void Cancel()
+        {
+            if (this.ActiveDrawingObject != null)
+            {
+                this.Remove((CadObject)this.ActiveDrawingObject);
+                this.ActiveDrawingObject = null;
+            }
         }
     }
 }

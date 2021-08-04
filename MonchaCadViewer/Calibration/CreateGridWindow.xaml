@@ -7,7 +7,7 @@
         xmlns:Controls="http://metro.mahapps.com/winfx/xaml/controls"
         xmlns:Properties="clr-namespace:MonchaCadViewer.Properties" xmlns:canvaspanel="clr-namespace:MonchaCadViewer.Panels.CanvasPanel" x:Class="MonchaCadViewer.CreateGridWindow"
         mc:Ignorable="d"
-        Title="CreateGridWindow" Height="446.26" Width="606.787" Closing="Window_Closing" Loaded="Window_Loaded">
+        Title="CreateGridWindow" Height="450" Width="600" Loaded="Window_Loaded">
     <Window.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>

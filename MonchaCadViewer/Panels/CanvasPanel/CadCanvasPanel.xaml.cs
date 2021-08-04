@@ -48,6 +48,7 @@ namespace MonchaCadViewer.Panels.CanvasPanel
                         this.Cursor = Cursors.Arrow;
                         this.CaptureMouse();
                         this.ReleaseMouseCapture();
+                        this.projectionScene.Cancel(); 
                         break;
                     case MouseAction.MoveCanvas:
                         this.Cursor = Cursors.SizeAll;
@@ -91,16 +92,14 @@ namespace MonchaCadViewer.Panels.CanvasPanel
         }
 
 
-
-        private void CanvasGrid_MouseLeave(object sender, MouseEventArgs e)
-        {
-            this.MouseAction = MouseAction.NoAction;
-        }
-
         private void CanvasGrid_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
         {
-            this.MouseAction = MouseAction.NoAction;
-            if (Keyboard.Modifiers != ModifierKeys.Shift) projectionScene.ClearSelectedObject(null);
+            if (this.projectionScene.ActiveDrawingObject == null)
+            {
+                this.MouseAction = MouseAction.NoAction;
+
+               // if (Keyboard.Modifiers != ModifierKeys.Shift) projectionScene.ClearSelectedObject(null);
+            }
 
         }
         
@@ -164,7 +163,11 @@ namespace MonchaCadViewer.Panels.CanvasPanel
         {
             if (sender is IInputElement inputElement)
             {
-                if (this.projectionScene.ActiveDrawingObject != null) this.projectionScene.ActiveDrawingObject = null;
+                if (this.projectionScene.ActiveDrawingObject != null)
+                {
+                    this.projectionScene.ActiveDrawingObject.Init();
+                    this.projectionScene.ActiveDrawingObject = null;
+                }
 
                 if (Keyboard.Modifiers == ModifierKeys.Control)
                 {
@@ -211,7 +214,7 @@ namespace MonchaCadViewer.Panels.CanvasPanel
 
                 this.CaptureMouse();
             }
-            else
+            else if (projectionScene != null)
             {
                 if (projectionScene.ActiveDrawingObject != null)
                 {

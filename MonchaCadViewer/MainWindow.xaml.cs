@@ -267,7 +267,7 @@ namespace MonchaCadViewer
             }
         }
 
-        private async Task OpenFile(string filename)
+        public async Task OpenFile(string filename)
         {
             if ((filename.Split('.').Last() == "frw") || (filename.Split('.').Last() == "cdw"))
             {
@@ -404,7 +404,7 @@ namespace MonchaCadViewer
         {
             if (KmpsAppl.KompasAPI != null)
             {
-                GCCollection gCElements = new GCCollection();
+                GCCollection gCElements = new GCCollection(this.kmpsAppl.Doc.D7.Name);
                 gCElements.AddRange(
                     await ContourCalc.GetGeometry(this.kmpsAppl.Doc, MonchaHub.ProjectionSetting.PointStep.MX, false, true));
 
@@ -418,9 +418,9 @@ namespace MonchaCadViewer
         {
             if (KmpsAppl.KompasAPI != null)
             {
-                GCCollection gCObjects = new GCCollection();
+                GCCollection gCObjects = new GCCollection(this.kmpsAppl.Doc.D7.Name);
 
-                gCObjects.Add(new GeometryElement(await ContourCalc.GetGeometry(this.kmpsAppl.Doc, MonchaHub.ProjectionSetting.PointStep.MX, true, true)));
+                gCObjects.Add(new GeometryElement(await ContourCalc.GetGeometry(this.kmpsAppl.Doc, MonchaHub.ProjectionSetting.PointStep.MX, true, true), "Kompas"));
 
                 CadObjectsGroup cadGeometries = new CadObjectsGroup(gCObjects);
 
@@ -690,80 +690,13 @@ namespace MonchaCadViewer
             AppSt.Default.Save();
         }
 
-        private void WorkFolderRefreshBtn_Click(object sender, RoutedEventArgs e) => RefreshWorkFolderList();
-
-        private void RefreshWorkFolderList()
-        {
-            if(Directory.Exists(AppSt.Default.save_work_folder) == true)
-            {
-                List<string> paths = new List<string>();
-                foreach (string path in Directory.GetFiles(AppSt.Default.save_work_folder))
-                {
-                    string format = path.Split('.').Last();
-
-                    if (ToGC.Filter.Contains($"*.{format};") == true) 
-                    {
-                        paths.Add(path.Split('\\').Last());
-                    }
-                }
-                WorkFolderListBox.ItemsSource = paths;
-                CollectionView view = CollectionViewSource.GetDefaultView(WorkFolderListBox.ItemsSource) as CollectionView;
-                WorkFolderListBox.Items.Filter = new Predicate<object>(Contains);
-            }
-        }
-
-        public bool Contains(object pt)
-        {
-            string path = pt as string;
-            //Return members whose Orders have not been filled
-            return path.ToLower().Contains(WorkFolderFilter.Text.ToLower());
-        }
-
-        private void WorkFolderBtn_Click(object sender, RoutedEventArgs e)
-        {
-            var dialog = new CommonOpenFileDialog();
-            dialog.IsFolderPicker = true;
-            CommonFileDialogResult result = dialog.ShowDialog();
-            if (result == CommonFileDialogResult.Ok)
-            {
-                if (Directory.Exists(dialog.FileName) == true)
-                {
-                    AppSt.Default.save_work_folder = dialog.FileName;
-                    AppSt.Default.Save();
-                    RefreshWorkFolderList();
-                }
-            }
-        }
-
-        private void WorkFolderFilter_TextChanged(object sender, TextChangedEventArgs e)
-        {
-            if (WorkFolderListBox.Items.Count < 1)
-            {
-                RefreshWorkFolderList();
-            }
-            CollectionViewSource.GetDefaultView(WorkFolderListBox.ItemsSource).Refresh();
-        }
-
-        private void WorkFolderFilter_GotFocus(object sender, RoutedEventArgs e) => WorkFolderFilter.SelectAll();
-  
-        private void MainCanvas_Drop(object sender, DragEventArgs e)
-        {
-            if (e.Data.GetDataPresent(DataFormats.FileDrop))
-            {
-                string[] filePaths = (string[])(e.Data.GetData(DataFormats.FileDrop));
-                foreach (string fileLoc in filePaths)
-                    if (File.Exists(fileLoc))
-                        OpenFile(fileLoc);
-            }
-            OpenBtn.Background = Brushes.Gainsboro;
-        }
-
+    
         private void SaveAsItem_Click(object sender, RoutedEventArgs e) => SaveConfiguration(true);
 
 
         private bool SaveConfiguration(bool saveas)
         {
-            MessageBoxResult messageBoxResult = MessageBox.Show("Сохранить настройки?", "Внимание", MessageBoxButton.YesNoCancel, MessageBoxImage.Warning);
+               MessageBoxResult messageBoxResult = MessageBox.Show("Сохранить настройки?", "Внимание", MessageBoxButton.YesNoCancel, MessageBoxImage.Warning);
             switch (messageBoxResult)
             {
                 case MessageBoxResult.Yes:
@@ -818,13 +751,19 @@ namespace MonchaCadViewer
             LoadMoncha();
         }
 
-        private async void TextBlock_MouseDownAsync(object sender, MouseButtonEventArgs e)
+        private void MainCanvas_Drop(object sender, DragEventArgs e)
         {
-            if (e.ClickCount >= 2)
+            if (e.Data.GetDataPresent(DataFormats.FileDrop))
             {
-                await OpenFile($"{AppSt.Default.save_work_folder}\\{WorkFolderListBox.SelectedItem.ToString()}");
+                string[] filePaths = (string[])(e.Data.GetData(DataFormats.FileDrop));
+                foreach (string fileLoc in filePaths)
+                    if (File.Exists(fileLoc))
+                        OpenFile(fileLoc);
             }
+            OpenBtn.Background = Brushes.Gainsboro;
         }
+
+
 
         private void RectBtn_Click(object sender, RoutedEventArgs e) => MainCanvas.MouseAction = Panels.CanvasPanel.MouseAction.Mask;
 
@@ -856,7 +795,7 @@ namespace MonchaCadViewer
             {
                 try
                 {
-                    CadObjectsGroup geometries = new CadObjectsGroup(await GCByteReader.Read(e));
+                    CadObjectsGroup geometries = new CadObjectsGroup(await GCByteReader.Read(e, "Ethernet"));
 
                     ContourScrollPanel.Add(false, geometries, geometries.Name);
 
@@ -905,37 +844,11 @@ namespace MonchaCadViewer
 
         private void LincenseItem_Click(object sender, RoutedEventArgs e)
         {
-            MessageBox.Show(GetKey());
+            RequestLicenseCode requestLicenseCode = new RequestLicenseCode();
+            requestLicenseCode.ShowDialog();
         }
 
-        private string GetKey()
-        {
-            Dictionary<string, string> ids =
-            new Dictionary<string, string>();
 
-            ManagementObjectSearcher searcher;
-
-            //UUID
-            searcher = new ManagementObjectSearcher("root\\CIMV2",
-                   "SELECT UUID FROM Win32_ComputerSystemProduct");
-            foreach (ManagementObject queryObj in searcher.Get())
-            {
-                ids.Add($"key_{ids.Count}", queryObj["UUID"].ToString());
-            }
-
-            string key = string.Empty;
-            foreach (var x in ids)
-            {
-                key += x.Key + ": " + x.Value + "\r\n";
-            }
-
-            return key;
-        }
-
-        private void DeviceTree_Loaded(object sender, RoutedEventArgs e)
-        {
-
-        }
     }
 
 }

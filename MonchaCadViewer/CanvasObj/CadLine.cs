@@ -38,6 +38,10 @@ namespace MonchaCadViewer.CanvasObj
         public LPoint3D P1;
         public LPoint3D P2;
 
+        public bool IsInit { get; private set; } = false;
+
+        private RectangelAdorner adorner;
+
         public double Lenth => LPoint3D.Lenth3D(P1, P2);
 
         public override double X
@@ -88,7 +92,9 @@ namespace MonchaCadViewer.CanvasObj
             this.P1.PropertyChanged += P1_PropertyChanged;
             this.P2.PropertyChanged += P1_PropertyChanged;
             this.Render = true;
+            this.NameID = "Line";
         }
+
 
         private void P1_PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
@@ -124,10 +130,70 @@ namespace MonchaCadViewer.CanvasObj
             }
         }
 
+        public void Init()
+        {
+            AdornerLayer adornerLayer = AdornerLayer.GetAdornerLayer(this);
+            adornerLayer.Add(new LineAdorner(this));
+            IsInit = true;
+        }
+
         public void SetTwoPoint(Point InPoint)
         {
             this.P2.MX = InPoint.X;
             this.P2.MY = InPoint.Y;
+        }
+    }
+
+    public class LineAdorner : Adorner
+    {
+        private VisualCollection _Visuals;
+
+        private List<CadAnchor> _Anchors;
+
+        private CadLine rectangle;
+        // Be sure to call the base class constructor.
+        public LineAdorner(CadLine adornedElement) : base(adornedElement)
+        {
+            _Visuals = new VisualCollection(this);
+            _Anchors = new List<CadAnchor>();
+
+            this.rectangle = adornedElement;
+            this.rectangle.PropertyChanged += Rectangle_PropertyChanged;
+
+
+            Rect rect = new Rect(0, 0, this.rectangle.Bounds.Width, this.rectangle.Bounds.Height);
+
+            _Anchors.Add(new CadAnchor(adornedElement.P1));
+            _Anchors.Add(new CadAnchor(adornedElement.P2));
+
+            foreach (CadAnchor anchor in _Anchors)
+            {
+                _Visuals.Add(anchor);
+            }
+        }
+
+        private void Rectangle_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            this.InvalidateVisual();
+        }
+
+        protected override Size ArrangeOverride(Size finalSize)
+        {
+            foreach (CadAnchor anchor in _Anchors)
+            {
+                anchor.Arrange(new Rect(finalSize));
+            }
+            return this.rectangle.Bounds.Size;
+        }
+
+        // A common way to implement an adorner's rendering behavior is to override the OnRender
+        // method, which is called by the layout system as part of a rendering pass.
+
+        protected override int VisualChildrenCount { get { return _Visuals.Count; } }
+        protected override Visual GetVisualChild(int index) { return _Visuals[index]; }
+        protected override void OnRender(DrawingContext drawingContext)
+        {
+            base.OnRender(drawingContext);
         }
     }
 }

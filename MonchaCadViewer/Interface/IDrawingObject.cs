@@ -9,6 +9,10 @@ namespace MonchaCadViewer.Interface
 {
     public interface IDrawingObject
     {
+        bool IsInit { get; }
+
         void SetTwoPoint(System.Windows.Point point);
+
+        void Init();
     }
 }

@@ -56,7 +56,6 @@ namespace MonchaCadViewer.CanvasObj
 
         private LSize3D _lrect;
 
-        private RectangelAdorner adorner;
 
         public override double X
         {
@@ -89,6 +88,8 @@ namespace MonchaCadViewer.CanvasObj
             }
         }
 
+        public bool IsInit { get; private set; } = false;
+
         public override Rect Bounds => new Rect(LRect.P1.GetMPoint, LRect.P2.GetMPoint);
 
         public CadRectangle(LPoint3D P1, LPoint3D P2, string Label, bool MouseSet)
@@ -109,22 +110,14 @@ namespace MonchaCadViewer.CanvasObj
         private void LoadSetting(bool MouseSet)
         {
             this.Render = false;
-            UpdateTransform(null, false, new Rect(X, Y, Math.Abs(LRect.P1.MX - LRect.P2.MX), Math.Abs(LRect.P1.MY - LRect.P2.MY)));
+            UpdateTransform(false);
 
             ContextMenuLib.CadRectMenu(this.ContextMenu);
-            this.ContextMenuClosing += ContextMenu_ContextMenuClosing;
-
-            this.Loaded += CadRectangle_Loaded;
         }
 
-        private void CadRectangle_Loaded(object sender, RoutedEventArgs e)
+        protected override void OnContextMenuClosing(ContextMenuEventArgs e)
         {
-            AdornerLayer adornerLayer = AdornerLayer.GetAdornerLayer(this);
-            adornerLayer.Add(new RectangelAdorner(this));
-        }
-
-        private void ContextMenu_ContextMenuClosing(object sender, ContextMenuEventArgs e)
-        {
+            base.OnContextMenuClosing(e);
             if (this.ContextMenu.DataContext is MenuItem menuItem)
             {
                 switch (menuItem.Tag)
@@ -137,6 +130,7 @@ namespace MonchaCadViewer.CanvasObj
                 }
             }
         }
+
 
         protected override void OnRender(DrawingContext drawingContext)
         {
@@ -155,6 +149,13 @@ namespace MonchaCadViewer.CanvasObj
         public override void Remove()
         {
             Removed?.Invoke(this, this);
+        }
+
+        public void Init()
+        {
+            AdornerLayer adornerLayer = AdornerLayer.GetAdornerLayer(this);
+            adornerLayer.Add(new RectangelAdorner(this));
+            IsInit = true;
         }
 
         public void SetTwoPoint(Point point)

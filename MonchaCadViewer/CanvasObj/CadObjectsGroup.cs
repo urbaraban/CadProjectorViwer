@@ -23,17 +23,17 @@ namespace MonchaCadViewer.CanvasObj
 
         private bool Opened = false;
 
-        private GCCollection elements;
-
         private void ParseColletion(GCCollection objects)
         {
             List<CadObject> geometries = new List<CadObject>();
 
             foreach (IGCObject gC in objects)
             {
+                if (string.IsNullOrEmpty(gC.Name) == true) gC.Name = $"Object_{geometries.Count}";
+
                 if (gC is GCCollection collection)
                 {
-                    this.AddRange(new CadObjectsGroup(collection));
+                    this.Add(new CadObjectsGroup(collection));
                 }
                 else
                 {
@@ -53,7 +53,20 @@ namespace MonchaCadViewer.CanvasObj
             }
         }
 
-        public override Geometry GetGeometry 
+        public override Transform3DGroup TransformGroup
+        {
+            get => base.TransformGroup;
+            set
+            {
+                base.TransformGroup = value;
+                foreach(CadObject cadObject in cadObjects)
+                {
+                    cadObject.TransformGroup = value;
+                }
+            }
+        }
+
+        public override Geometry GetGeometry
         {
             get
             {
@@ -67,15 +80,20 @@ namespace MonchaCadViewer.CanvasObj
                 }
                 return geometryGroup;
             }
-         }
+        }
+        public override Rect Bounds => gCCollection.Bounds;
 
+        private GCCollection gCCollection;
 
-        public override Rect Bounds => GetGeometry.Bounds;
+        public CadObjectsGroup()
+        {
 
+        }
 
         public CadObjectsGroup(GCCollection gCCollection)
         {
-            this.UpdateTransform(null, true, gCCollection.Bounds);
+            this.gCCollection = gCCollection;
+            this.UpdateTransform(true);
             ParseColletion(gCCollection);
             this.NameID = gCCollection.Name;
         }

@@ -268,22 +268,22 @@
     <Compile Include="Panels\CanvasPanel\CadCanvasPanel.xaml.cs">
       <DependentUpon>CadCanvasPanel.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Panels\DevicePanel\LeftPanels\FrameTree.xaml.cs">
+    <Compile Include="Panels\LeftPanels\FrameTree.xaml.cs">
       <DependentUpon>FrameTree.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Panels\DevicePanel\OtherPanel\DeviceSettingDialog.xaml.cs">
+    <Compile Include="Panels\OtherPanel\DeviceSettingDialog.xaml.cs">
       <DependentUpon>DeviceSettingDialog.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Panels\DevicePanel\LeftPanels\DeviceTreeTab.xaml.cs">
+    <Compile Include="Panels\LeftPanels\DeviceTreeTab.xaml.cs">
       <DependentUpon>DeviceTreeTab.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Panels\DevicePanel\OtherPanel\MeshesDialog.xaml.cs">
+    <Compile Include="Panels\OtherPanel\MeshesDialog.xaml.cs">
       <DependentUpon>MeshesDialog.xaml</DependentUpon>
     </Compile>
     <Compile Include="Panels\ObjectPanel\CadObjectPanel.xaml.cs">
       <DependentUpon>CadObjectPanel.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Panels\DevicePanel\OtherPanel\CadRectangleSizePanel.xaml.cs">
+    <Compile Include="Panels\OtherPanel\CadRectangleSizePanel.xaml.cs">
       <DependentUpon>CadRectangleSizePanel.xaml</DependentUpon>
     </Compile>
     <Compile Include="Panels\ContourScrollPanel\ScrollPanel.xaml.cs">
@@ -292,11 +292,17 @@
     <Compile Include="Panels\ContourScrollPanel\ScrollPanelItem.xaml.cs">
       <DependentUpon>ScrollPanelItem.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Panels\DevicePanel\DeviceTab.xaml.cs">
+    <Compile Include="Panels\RightPanel\DevicePanel\DeviceTab.xaml.cs">
       <DependentUpon>DeviceTab.xaml</DependentUpon>
     </Compile>
     <Compile Include="Panels\ObjectPanel\multiplierpanel.xaml.cs">
       <DependentUpon>multiplierpanel.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Panels\RightPanel\WorkFolderPanel.xaml.cs">
+      <DependentUpon>WorkFolderPanel.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="RequestLicenseCode.xaml.cs">
+      <DependentUpon>RequestLicenseCode.xaml</DependentUpon>
     </Compile>
     <Compile Include="StaticTools\GetGC.cs" />
     <Page Include="Calibration\CreateGridWindow.xaml">
@@ -330,15 +336,23 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Page Include="Panels\DevicePanel\LeftPanels\FrameTree.xaml">
+    <Page Include="Panels\LeftPanels\FrameTree.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Panels\DevicePanel\OtherPanel\MeshesDialog.xaml">
+    <Page Include="Panels\OtherPanel\MeshesDialog.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Panels\ProgressPanel.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Panels\RightPanel\WorkFolderPanel.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="RequestLicenseCode.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -358,11 +372,11 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Panels\DevicePanel\OtherPanel\DeviceSettingDialog.xaml">
+    <Page Include="Panels\OtherPanel\DeviceSettingDialog.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Panels\DevicePanel\LeftPanels\DeviceTreeTab.xaml">
+    <Page Include="Panels\LeftPanels\DeviceTreeTab.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -378,7 +392,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Panels\DevicePanel\DeviceTab.xaml">
+    <Page Include="Panels\RightPanel\DevicePanel\DeviceTab.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -386,7 +400,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Panels\DevicePanel\OtherPanel\CadRectangleSizePanel.xaml">
+    <Page Include="Panels\OtherPanel\CadRectangleSizePanel.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

@@ -22,6 +22,8 @@ namespace MonchaCadViewer.CanvasObj
 
         public override event EventHandler<string> Updated;
 
+        public override Rect Bounds => new Rect(-this.size / 2, -this.size / 2, this.size, this.size);
+
         public override double X 
         { 
             get => this.Translate.OffsetX;
@@ -83,7 +85,7 @@ namespace MonchaCadViewer.CanvasObj
             Canvas.SetZIndex(this, 999);
             this.RenderTransformOrigin = new Point(1, 1);
 
-            this.UpdateTransform(null, false, new Rect(-this.size / 2, -this.size / 2, this.size, this.size));
+            this.UpdateTransform(false);
             this.Translate.OffsetX = this.PointX.MX;
             this.Translate.OffsetY = this.PointY.MY;
 

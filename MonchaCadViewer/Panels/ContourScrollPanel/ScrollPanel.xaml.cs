@@ -13,6 +13,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using ToGeometryConverter.Object;
+using AppSt = MonchaCadViewer.Properties.Settings;
 
 namespace MonchaCadViewer.Panels
 {
@@ -105,7 +106,19 @@ namespace MonchaCadViewer.Panels
                         MainScene.Clear();
                     }
 
-                    MainScene.Add(scrollPanelItem.Scene);
+                    foreach(CadObject cadObject in scrollPanelItem.Scene.Objects)
+                    {
+                        if (cadObject is CadObjectsGroup group && AppSt.Default.object_solid == false)
+                        {
+                            MainScene.AddRange(group.cadObjects.ToArray());
+                        }
+                        else
+                        {
+                            MainScene.Add(scrollPanelItem.Scene);
+                        }
+                    }
+
+                   // MainScene.Add(scrollPanelItem.Scene);
                 }
                 else
                 {

@@ -63,13 +63,8 @@ namespace MonchaCadViewer.Panels
 
             this.Width = this.Height;
             this.filepath = Filepath;
-            this.Loaded += ScrollPanelItem_Loaded;
         }
 
-        private void ScrollPanelItem_Loaded(object sender, RoutedEventArgs e)
-        {
-          
-        }
 
         public void Remove()
         {
@@ -86,7 +81,7 @@ namespace MonchaCadViewer.Panels
             {
                 foreach (CadObject cadObject in scene.Objects)
                 {
-                    cadObject.UpdateTransform(cadObject.TransformGroup, true, cadObject.GetGeometry.Bounds);
+                    cadObject.UpdateTransform(true);
                 }
             }
         }
@@ -100,29 +95,16 @@ namespace MonchaCadViewer.Panels
         {
             if (this._isselected == true)
             {
-                this.Background = Brushes.GreenYellow;
+                this.BackCanvas.Background = Brushes.GreenYellow;
             }
             else if (this._issolved == true)
             {
-                this.Background = Brushes.Gray;
+                this.BackCanvas.Background = Brushes.Gray;
             }
             else
             {
-                this.Background = Brushes.White;
+                this.BackCanvas.Background = Brushes.White;
             }
-
-            /*if (this._issolved == true)
-            {
-                NameLabel.Background = Brushes.Gray;
-            }
-            else if(this._isselected == true)
-            {
-                NameLabel.Background = Brushes.GreenYellow;
-            }
-            else
-            {
-                NameLabel.Background = Brushes.WhiteSmoke;
-            }*/
         }
 
         private void SolvedToggle_Checked(object sender, RoutedEventArgs e)

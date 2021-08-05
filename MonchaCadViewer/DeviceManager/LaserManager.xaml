@@ -3,11 +3,13 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:MonchaCadViewer"
+        xmlns:local="clr-namespace:MonchaCadViewer" 
+        xmlns:monchasdk="clr-namespace:MonchaSDK;assembly=MonchaSDK" 
+        d:DataContext="{d:DesignInstance Type=monchasdk:LaserHub}"
         mc:Ignorable="d"
         Title="DeviceManager" Height="430.7" Width="352.848" Closing="DeviceManagerForm_Closing">
     <Grid>
-        <ListView x:Name="FoundDeviceList" Margin="10,10,10,233">
+        <ListView x:Name="FoundDeviceList" Margin="10,10,10,233" ItemsSource="{Binding Devices}">
             <ListView.View>
                 <GridView>
                     <GridViewColumn Header="Name" DisplayMemberBinding="{Binding GetIpString}" />

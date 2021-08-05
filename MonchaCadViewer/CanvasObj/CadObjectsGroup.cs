@@ -47,7 +47,7 @@ namespace MonchaCadViewer.CanvasObj
             if (AppSt.Default.stg_show_name == true)
             {
                 geometries.Add(new CadGeometry(
-                    new ToGeometryConverter.Object.Elements.TextElement(objects.Name, MonchaHub.GetThinkess,
+                    new ToGeometryConverter.Object.Elements.TextElement(objects.Name, LaserHub.GetThinkess,
                     new Point3D(0, 0, 0)),
                     true));
             }

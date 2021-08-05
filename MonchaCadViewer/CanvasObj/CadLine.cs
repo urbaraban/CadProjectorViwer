@@ -114,7 +114,7 @@ namespace MonchaCadViewer.CanvasObj
             {
                 drawingContext.DrawText(new FormattedText(Math.Round(this.Lenth, 2).ToString(), 
                     new System.Globalization.CultureInfo("ru-RU"), FlowDirection.LeftToRight,
-                   new Typeface("Segoe UI"), (int)MonchaHub.GetThinkess * 3, Brushes.Gray), 
+                   new Typeface("Segoe UI"), (int)LaserHub.GetThinkess * 3, Brushes.Gray), 
                    new Point(this.X + Math.Abs(P1.MX - P2.MX) / 2, this.Y + Math.Abs(P1.MY - P2.MY) / 2));
             }
 

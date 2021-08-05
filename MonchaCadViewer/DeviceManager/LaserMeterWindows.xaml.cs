@@ -53,9 +53,9 @@ namespace MonchaCadViewer.DeviceManager
 
         private void OkBtn_Click(object sender, RoutedEventArgs e)
         {
-            if (!MonchaHub.CheckDeviceInHub(this.LMeter.IP))
+          /*   if (!LaserHub.CheckDeviceInHub(this.LMeter.IP))
             {
-                MonchaHub.LMeters.Add(this.LMeter);
+                LaserHub.LMeters.Add(this.LMeter);
                 
             }
             else
@@ -63,7 +63,7 @@ namespace MonchaCadViewer.DeviceManager
 
             }
 
-            this.Close();
+            this.Close();*/
         }
     }
 }

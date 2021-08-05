@@ -4,10 +4,11 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:Controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
     xmlns:Properties="clr-namespace:MonchaCadViewer.Properties"
-    xmlns:c="http://schemas.microsoft.com/netfx/2009/xaml/presentation"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" xmlns:device="clr-namespace:MonchaSDK.Device;assembly=MonchaSDK" d:DataContext="{d:DesignInstance Type=device:MonchaDevice}"
-    DataContext="{Binding ElementName=DeviceCombo, Path=SelectedItem}"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+    xmlns:lhub="clr-namespace:MonchaSDK;assembly=MonchaSDK" 
+    xmlns:dvc="clr-namespace:MonchaSDK.Device;assembly=MonchaSDK" 
+    d:DataContext="{d:DesignInstance Type=dvc:MonchaDevice}"
     Padding="0"
     d:DesignHeight="550"
     d:DesignWidth="300"
@@ -15,7 +16,6 @@
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-
                 <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Fonts.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Themes/Light.Blue.xaml" />
             </ResourceDictionary.MergedDictionaries>
@@ -60,6 +60,7 @@
             <ColumnDefinition Width="0*" />
         </Grid.ColumnDefinitions>
         <Controls:NumericUpDown
+            DataContext="{Binding ElementName=DeviceCombo, Path=SelectedItem}"
             Value="{Binding ProjectionSetting.StartLineWait, Mode=TwoWay}"
             Grid.Row="8"
             Grid.Column="1"
@@ -76,9 +77,13 @@
             Margin="3,20,43,0"
             VerticalAlignment="Top"
             RenderTransformOrigin="0.5,0.5"
-            Grid.ColumnSpan="4" />
-        <Controls:ToggleSwitch
-            IsOn="{Binding InvertedX, Mode=TwoWay}"
+            Grid.ColumnSpan="4" 
+            DisplayMemberPath="HWIdentifier"
+            SelectedValuePath="HWIdentifier"
+            ItemsSource="{Binding Devices}" SelectedIndex="0"/>
+        <Controls:ToggleSwitch    
+            DataContext="{Binding ElementName=DeviceCombo, Path=SelectedItem}"
+            IsOn="{Binding InvertedX}"
             Grid.Row="5"
             Grid.Column="1"
             Grid.ColumnSpan="2"
@@ -91,6 +96,7 @@
             FlowDirection="RightToLeft"
             FontSize="12" Height="20" />
         <Controls:ToggleSwitch
+            DataContext="{Binding ElementName=DeviceCombo, Path=SelectedItem}"
             IsOn="{Binding InvertedY, Mode=TwoWay}"
             Grid.Row="5"
             Grid.Column="3"
@@ -112,6 +118,7 @@
             VerticalAlignment="Bottom"
             Content="{DynamicResource dvc_StepPoint}" HorizontalContentAlignment="Right" />
         <Controls:NumericUpDown
+            DataContext="{Binding ElementName=DeviceCombo, Path=SelectedItem}"
             Value="{Binding ProjectionSetting.PointStep.MX}"
             Grid.Row="7"
             Grid.Column="3"
@@ -139,7 +146,7 @@
             Height="26"
             Margin="4,17,9,0"
             VerticalAlignment="Top"
-            SelectionChanged="LaserMetersCombo_SelectionChanged" Grid.Row="2" />
+            Grid.Row="2" />
         <Controls:ToggleSwitch
             x:Name="LaserMeterToggle"
             Grid.Column="4"
@@ -166,7 +173,6 @@
             </Controls:ToggleSwitch.DataContext>
         </Controls:ToggleSwitch>
         <Label
-            x:Name="label_Copy6"
             Grid.Column="1"
             Width="74"
             Height="16"
@@ -175,7 +181,6 @@
             VerticalAlignment="Top"
             Content="{DynamicResource dvc_Dimmer}" Margin="4,0,0,0" Grid.Row="2" />
         <Label
-            x:Name="StartWaitLabel"
             Grid.Row="7"
             Height="26"
             Margin="0,0,0,4"
@@ -183,7 +188,6 @@
             HorizontalContentAlignment="Center"
             Content="{Binding Value, ElementName=AngleWaitSlider}" />
         <Label
-            x:Name="StartWaitLabel_Copy"
             Grid.Row="8"
             Grid.Column="1"
             Grid.ColumnSpan="2"
@@ -195,6 +199,7 @@
             Content="{DynamicResource dvc_WaintPoint}"
             FontSize="8" />
         <Slider
+            DataContext="{Binding ElementName=DeviceCombo, Path=SelectedItem}"
             Value="{Binding ScanRateCalc, Mode=TwoWay}"
             Grid.Row="3"
             Grid.Column="1"
@@ -218,6 +223,7 @@ PreviewMouseDown="ScanRateRealSlider_PreviewMouseDown"
             FontSize="8"
             RenderTransformOrigin="0.439,0.556" HorizontalAlignment="Left" Width="28" />
         <Controls:NumericUpDown
+            DataContext="{Binding ElementName=DeviceCombo, Path=SelectedItem}"
             Value="{Binding ProjectionSetting.Red, Mode=TwoWay}"
             Grid.Row="4"
             Grid.Column="2"
@@ -229,6 +235,7 @@ PreviewMouseDown="ScanRateRealSlider_PreviewMouseDown"
             Maximum="255"
             Minimum="1"/>
         <Controls:ToggleSwitch
+            DataContext="{Binding ElementName=DeviceCombo, Path=SelectedItem}"
             IsOn="{Binding ProjectionSetting.RedOn, Mode=TwoWay}"
             Grid.Row="4"
             Grid.Column="1"
@@ -242,6 +249,7 @@ PreviewMouseDown="ScanRateRealSlider_PreviewMouseDown"
             Background="Red"
             Content="{DynamicResource dvc_RED}" />
         <Controls:NumericUpDown
+            DataContext="{Binding ElementName=DeviceCombo, Path=SelectedItem}"
             Value="{Binding ProjectionSetting.Green, Mode=TwoWay}"
             Grid.Row="4"
             Grid.Column="2"
@@ -253,6 +261,7 @@ PreviewMouseDown="ScanRateRealSlider_PreviewMouseDown"
             Maximum="255"
             Minimum="1"/>
         <Controls:ToggleSwitch
+            DataContext="{Binding ElementName=DeviceCombo, Path=SelectedItem}"
             IsOn="{Binding ProjectionSetting.GreenOn, Mode=TwoWay}"
             Grid.Row="4"
             Grid.Column="1"
@@ -265,6 +274,7 @@ PreviewMouseDown="ScanRateRealSlider_PreviewMouseDown"
             HorizontalContentAlignment="Center"
             Content="{DynamicResource dvc_GREEN}" />
         <Controls:NumericUpDown
+            DataContext="{Binding ElementName=DeviceCombo, Path=SelectedItem}"
              Value="{Binding ProjectionSetting.Blue, Mode=TwoWay}"
             Grid.Row="4"
             Grid.Column="2"
@@ -276,6 +286,7 @@ PreviewMouseDown="ScanRateRealSlider_PreviewMouseDown"
             Maximum="255"
             Minimum="1" />
         <Controls:ToggleSwitch
+            DataContext="{Binding ElementName=DeviceCombo, Path=SelectedItem}"
             IsOn="{Binding ProjectionSetting.BlueOn, Mode=TwoWay}"
             Grid.Row="4"
             Grid.Column="1"
@@ -288,6 +299,7 @@ PreviewMouseDown="ScanRateRealSlider_PreviewMouseDown"
             HorizontalContentAlignment="Center"
             Content="{DynamicResource dvc_Blue}" />
         <Slider
+            DataContext="{Binding ElementName=DeviceCombo, Path=SelectedItem}"
             Value="{Binding Alpha, Mode=TwoWay}"
             Grid.Row="6"
             Grid.Column="1"
@@ -307,6 +319,7 @@ PreviewMouseDown="ScanRateRealSlider_PreviewMouseDown"
             Content="{DynamicResource dvc_Brightness}"
             FontSize="8" Height="11" VerticalAlignment="Bottom" Grid.Column="2" />
         <Controls:NumericUpDown
+            DataContext="{Binding ElementName=DeviceCombo, Path=SelectedItem}"
             Value="{Binding FPS}"
             Grid.Row="4"
             Grid.Column="2"
@@ -347,6 +360,7 @@ PreviewMouseDown="ScanRateRealSlider_PreviewMouseDown"
             VerticalContentAlignment="Center"
             Content="{Binding Value, ElementName=StartBlankSlider}" />
         <Controls:NumericUpDown
+            DataContext="{Binding ElementName=DeviceCombo, Path=SelectedItem}"
             Value="{Binding ProjectionSetting.EndBlanckWait, Mode=TwoWay}"
             Grid.Row="8"
             Grid.ColumnSpan="2"
@@ -385,6 +399,7 @@ PreviewMouseDown="ScanRateRealSlider_PreviewMouseDown"
             HorizontalAlignment="Left"
             Content="{DynamicResource dvc_Device}" Height="15" VerticalAlignment="Top" />
         <Controls:ToggleSwitch
+            DataContext="{Binding ElementName=DeviceCombo, Path=SelectedItem}"
             IsOn="{Binding OwnedSetting}"
             Grid.Column="4"
             Width="46"
@@ -409,6 +424,7 @@ PreviewMouseDown="ScanRateRealSlider_PreviewMouseDown"
             FontFamily="Segoe MDL2 Assets"
             FontSize="14" HorizontalAlignment="Right" Width="26" />
         <ComboBox
+            DataContext="{Binding ElementName=DeviceCombo, Path=SelectedItem}"
             ItemsSource="{Binding SelectedMeshes}"
             SelectedItem="{Binding SelectMesh, Mode=TwoWay}"
             DisplayMemberPath="Name"
@@ -419,7 +435,6 @@ PreviewMouseDown="ScanRateRealSlider_PreviewMouseDown"
             RenderTransformOrigin="0.5,0.5"
             Grid.Row="1" Grid.ColumnSpan="3" />
         <Label
-            x:Name="label_Copy"
             Grid.Column="1"
             Width="74"
             Height="17"
@@ -435,7 +450,8 @@ PreviewMouseDown="ScanRateRealSlider_PreviewMouseDown"
             VerticalAlignment="Top"
             Content="&#xEB7E;"
             FontFamily="Segoe MDL2 Assets"
-            FontSize="14" Grid.Row="1" HorizontalAlignment="Right" Width="26" Click="MeshSettingBtn_Click"  />
+            FontSize="14" Grid.Row="1" HorizontalAlignment="Right" Width="26"
+            Click="MeshSettingBtn_Click"  />
         <Button
             x:Name="MeshListBtn"
             Grid.Column="4"
@@ -446,6 +462,7 @@ PreviewMouseDown="ScanRateRealSlider_PreviewMouseDown"
             FontFamily="Segoe MDL2 Assets"
             FontSize="14" Grid.Row="1" HorizontalAlignment="Right" Width="26" Click="MeshListBtn_Click" />
         <CheckBox
+            DataContext="{Binding ElementName=DeviceCombo, Path=SelectedItem}"
             IsChecked="{Binding OnlySelectMesh, Mode=TwoWay}"
             Grid.Column="4" Margin="0,23,77,0" Grid.Row="1" VerticalAlignment="Top" HorizontalAlignment="Right" Width="16" Height="15"/>
     </Grid>

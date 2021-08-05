@@ -4,7 +4,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:Controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" xmlns:canvasobj="clr-namespace:MonchaCadViewer.CanvasObj" d:DataContext="{d:DesignInstance Type=canvasobj:CadObject}"
     d:DesignHeight="90"
     d:DesignWidth="490"
     mc:Ignorable="d">
@@ -48,23 +48,23 @@
             VerticalAlignment="Top"
             Content="{DynamicResource dvc_StepPoint}" />
         <Controls:NumericUpDown
-            x:Name="CRSUpDn"
+            Value="{Binding ProjectionSetting.PointStep.MX}"
             Grid.Column="1"
             Height="26"
-            Margin="10,60,5,0"
+            Margin="5,60,5,0"
             VerticalAlignment="Top"
             Background="White"
             Maximum="999"
             Minimum="0.0001" />
         <Slider
-            x:Name="MultiplierSlider"
+            Value="{Binding ProjectionSetting.StartLineWait}"
             Height="22"
-            Margin="0,33,10,0"
+            Margin="5,33,5,0"
             VerticalAlignment="Top"
             Maximum="20"
             Minimum="0"
             SmallChange="1"
-            Value="1" Grid.Column="1" />
+            Grid.Column="1" />
         <Label
             Height="21"
             Margin="5,33,5,0"
@@ -72,17 +72,15 @@
             VerticalAlignment="Top"
             Content="{DynamicResource dvc_WaintPoint}" />
         <Controls:ToggleSwitch
-            x:Name="OtherSettingSwitch"
+            IsOn="{Binding OwnedSetting}"
             Width="86"
             Height="23"
             Margin="5,5,0,0"
             HorizontalAlignment="Left"
             VerticalAlignment="Top"
             OffContent="{DynamicResource dvc_ProjectMain}"
-            OnContent="{DynamicResource dvc_ProjectOwn}"
-            Toggled="OtherSettingSwitch_Toggled" />
+            OnContent="{DynamicResource dvc_ProjectOwn}"/>
         <Controls:NumericUpDown
-            x:Name="RedUpDn"
             Grid.Column="3"
             Height="26"
             Margin="0,3,0,0"
@@ -90,9 +88,9 @@
             Background="White"
             Maximum="255"
             Minimum="1"
-            Value="255" />
+            Value="{Binding ProjectionSetting.Red}" />
         <Controls:ToggleSwitch
-            x:Name="RedToggle"
+            IsOn="{Binding ProjectionSetting.RedOn}"
             Width="68"
             Height="25"
             Margin="3,4,0,0"
@@ -102,7 +100,6 @@
             Background="Red"
             Content="{DynamicResource dvc_RED}" Grid.Column="2" />
         <Controls:NumericUpDown
-            x:Name="GreenUpDn"
             Grid.Column="3"
             Height="26"
             Margin="0,31,0,0"
@@ -110,9 +107,9 @@
             Background="White"
             Maximum="255"
             Minimum="1"
-            Value="255" />
+            Value="{Binding ProjectionSetting.Green}" />
         <Controls:ToggleSwitch
-            x:Name="GreenToggle"
+            IsOn="{Binding ProjectionSetting.GreenOn}"
             Width="81"
             Height="25"
             Margin="3,33,0,0"
@@ -121,7 +118,6 @@
             HorizontalContentAlignment="Center"
             Content="{DynamicResource dvc_GREEN}" Grid.Column="2" />
         <Controls:NumericUpDown
-            x:Name="BlueUpDn"
             Grid.Column="3"
             Height="26"
             Margin="0,60,0,0"
@@ -129,9 +125,9 @@
             Background="White"
             Maximum="255"
             Minimum="1"
-            Value="255" />
+            Value="{Binding ProjectionSetting.Blue}" />
         <Controls:ToggleSwitch
-            x:Name="BlueToggle"
+            IsOn="{Binding ProjectionSetting.BlueOn}"
             Width="71"
             Height="23"
             Margin="3,62,0,0"
@@ -142,7 +138,7 @@
         <ComboBox
             x:Name="DeviceLayerCombo"
             Grid.Column="1"
-            Margin="10,5,5,0"
+            Margin="5,5,5,0"
             VerticalAlignment="Top"
             SelectionChanged="DeviceLayerCombo_SelectionChanged" Height="22" />
     </Grid>

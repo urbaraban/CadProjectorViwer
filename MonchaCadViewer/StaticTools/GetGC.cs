@@ -15,7 +15,7 @@ namespace MonchaCadViewer.StaticTools
         public async static Task<GCCollection> Load(string Filename)
         {
             IFormat format = ToGC.GetConverter(Filename);
-            return await format.GetAsync(Filename, MonchaHub.ProjectionSetting.PointStep.MX);
+            return await format.GetAsync(Filename, LaserHub.ProjectionSetting.PointStep.MX);
         }
     }
 }

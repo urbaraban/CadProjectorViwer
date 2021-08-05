@@ -42,7 +42,7 @@ namespace MonchaCadViewer.CanvasObj
         public virtual Pen myPen { 
             get
             {
-                double thinkess = MonchaHub.GetThinkess / 3d;
+                double thinkess = LaserHub.GetThinkess / 3d;
                 thinkess = thinkess <= 0 ? 1 : thinkess;
 
                 if (this.IsMouseOver == true)
@@ -104,7 +104,7 @@ namespace MonchaCadViewer.CanvasObj
 
         public LProjectionSetting ProjectionSetting
         {
-            get => projectionSetting == null ? MonchaHub.ProjectionSetting : projectionSetting;
+            get => projectionSetting == null ? LaserHub.ProjectionSetting : projectionSetting;
             set
             {
                 projectionSetting = value;
@@ -118,7 +118,7 @@ namespace MonchaCadViewer.CanvasObj
             set
             {
                 ownedsetting = value;
-                if (ownedsetting == true) projectionSetting = MonchaHub.ProjectionSetting.Clone();
+                if (ownedsetting == true) projectionSetting = LaserHub.ProjectionSetting.Clone();
                 else projectionSetting = null;
             }
         }
@@ -499,16 +499,23 @@ namespace MonchaCadViewer.CanvasObj
 
             if (resetPosition == true)
             {
-                //Tuple1 - vertical, Tuple2 - horizontal
-                Tuple<string, string> position = new Tuple<string, string>(AppSt.Default.stg_default_position.Split('%')[0], AppSt.Default.stg_default_position.Split('%')[1]);
+                Tuple<string, string> position = new Tuple<string, string>("Middle", "Middle");
+                try
+                {
+                    position = new Tuple<string, string>(AppSt.Default.stg_default_position.Split('%')[0], AppSt.Default.stg_default_position.Split('%')[1]);
+                }
+                catch
+                {
+
+                }
 
                 if (position.Item2 == "Left") this.X = -bounds.X;
-                else if (position.Item2 == "Right") this.X = MonchaHub.Size.X - (bounds.X + bounds.Width);
-                else this.X = MonchaHub.Size.X / 2 - (bounds.X + bounds.Width / 2);
+                else if (position.Item2 == "Right") this.X = LaserHub.Size.X - (bounds.X + bounds.Width);
+                else this.X = LaserHub.Size.X / 2 - (bounds.X + bounds.Width / 2);
 
-                if (position.Item1 == "Down") this.Y = MonchaHub.Size.Y - (bounds.Y + bounds.Height);
+                if (position.Item1 == "Down") this.Y = LaserHub.Size.Y - (bounds.Y + bounds.Height);
                 else if (position.Item1 == "Top") this.Y = -bounds.Y;
-                else this.Y = MonchaHub.Size.Y / 2 - (bounds.Y + bounds.Height / 2);
+                else this.Y = LaserHub.Size.Y / 2 - (bounds.Y + bounds.Height / 2);
 
                 this._mirror = AppSt.Default.default_mirror;
                 Scale.ScaleX = AppSt.Default.default_scale_x / 100 * (AppSt.Default.default_mirror == true ? -1 : 1);
@@ -567,7 +574,7 @@ namespace MonchaCadViewer.CanvasObj
                 /*if (AppSt.Default.stg_show_name == true)
                 {
                     drawingContext.DrawText(new FormattedText($"{this.Name}", new System.Globalization.CultureInfo("ru-RU"), FlowDirection.LeftToRight,
-                    new Typeface("Segoe UI"), (int)MonchaHub.GetThinkess * 3, Brushes.Gray), new Point(GetGeometry.Bounds.X + GetGeometry.Bounds.Width / 2, GetGeometry.Bounds.Y + GetGeometry.Bounds.Height / 2));
+                    new Typeface("Segoe UI"), (int)LaserHub.GetThinkess * 3, Brushes.Gray), new Point(GetGeometry.Bounds.X + GetGeometry.Bounds.Width / 2, GetGeometry.Bounds.Y + GetGeometry.Bounds.Height / 2));
                 }*/
 
                 drawingContext.DrawGeometry(myBack, myPen, geometry);
@@ -579,7 +586,7 @@ namespace MonchaCadViewer.CanvasObj
                         new Point(geometry.Bounds.X, geometry.Bounds.Y + geometry.Bounds.Height / 2));
                     //Right
                     DrawSize(drawingContext,
-                        new Point(MonchaHub.Size.X, geometry.Bounds.Y + geometry.Bounds.Height / 2),
+                        new Point(LaserHub.Size.X, geometry.Bounds.Y + geometry.Bounds.Height / 2),
                         new Point(geometry.Bounds.X + geometry.Bounds.Width, geometry.Bounds.Y + geometry.Bounds.Height / 2));
                     //Top
                     DrawSize(drawingContext,
@@ -587,7 +594,7 @@ namespace MonchaCadViewer.CanvasObj
                         new Point(geometry.Bounds.X + geometry.Bounds.Width / 2, geometry.Bounds.Y));
                     //Down
                     DrawSize(drawingContext,
-                        new Point(geometry.Bounds.X + geometry.Bounds.Width / 2, MonchaHub.Size.Y),
+                        new Point(geometry.Bounds.X + geometry.Bounds.Width / 2, LaserHub.Size.Y),
                         new Point(geometry.Bounds.X + geometry.Bounds.Width / 2, geometry.Bounds.Y + geometry.Bounds.Height));
                 }
             }
@@ -595,7 +602,7 @@ namespace MonchaCadViewer.CanvasObj
 
         protected void DrawSize(DrawingContext drawingContext, Point point1, Point point2)
         {
-            double thinkess = MonchaHub.GetThinkess / 3d / Math.Abs(this.Scale.ScaleX * Math.Max(this.ScaleX, this.ScaleY));
+            double thinkess = LaserHub.GetThinkess / 3d / Math.Abs(this.Scale.ScaleX * Math.Max(this.ScaleX, this.ScaleY));
             thinkess = thinkess <= 0 ? 1 : thinkess;
 
             //drawingContext.DrawLine(new Pen(Brushes.DarkGray, thinkess), point1, point2);
@@ -607,7 +614,7 @@ namespace MonchaCadViewer.CanvasObj
                 new System.Globalization.CultureInfo("ru-RU"), 
                 FlowDirection.LeftToRight,
                     new Typeface("Segoe UI"), 
-                    (int)MonchaHub.GetThinkess * 3,
+                    (int)LaserHub.GetThinkess * 3,
                     Brushes.Gray), 
                 new Point((point1.X + point2.X)/2, (point1.Y + point2.Y) / 2));
 

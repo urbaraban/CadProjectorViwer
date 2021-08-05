@@ -52,7 +52,7 @@ namespace MonchaCadViewer.Panels.DevicePanel
 
         private void SaveBtn_Click(object sender, RoutedEventArgs e)
         {
-            MonchaHub.CanPlay = false;
+            //LaserHub.CanPlay = false;
 
             this._device.iPAddress = new System.Net.IPAddress(new byte[]
             {
@@ -65,7 +65,7 @@ namespace MonchaCadViewer.Panels.DevicePanel
 
         private void CheckBtn_Click(object sender, RoutedEventArgs e)
         {
-            CheckLabel.IsChecked = MonchaHub.CheckDeviceIP(new System.Net.IPAddress(new byte[]
+            CheckLabel.IsChecked = LaserHub.CheckDeviceIP(new System.Net.IPAddress(new byte[]
             {
                 byte.Parse(IP1.Text),
                 byte.Parse(IP2.Text),

@@ -99,19 +99,16 @@ namespace MonchaCadViewer.CanvasObj
             LoadSetting(MouseSet);
         }
 
-        public CadRectangle(LSize3D lRect, string Label, bool MouseSet)
+        public CadRectangle(LSize3D lRect, string Label)
         {
             this.NameID = Label;
             LRect = lRect;
-            LoadSetting(MouseSet);
         }
 
 
         private void LoadSetting(bool MouseSet)
         {
-            this.Render = false;
             UpdateTransform(false);
-
             ContextMenuLib.CadRectMenu(this.ContextMenu);
         }
 
@@ -139,7 +136,7 @@ namespace MonchaCadViewer.CanvasObj
                 new System.Globalization.CultureInfo("ru-RU"),
                 FlowDirection.LeftToRight,
                     new Typeface("Segoe UI"),
-                    (int)MonchaHub.GetThinkess * 3,
+                    (int)LaserHub.GetThinkess * 3,
                     Brushes.Gray),
                 new Point(LRect.P1.MX, LRect.P1.MY));
 

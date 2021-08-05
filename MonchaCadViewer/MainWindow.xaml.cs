@@ -48,8 +48,9 @@ namespace MonchaCadViewer
     public partial class MainWindow : Window
     {
         public ProjectionScene MainScene { get; } = new ProjectionScene();
+        public LaserHub LaserHub { get; set; } = new LaserHub(AppSt.Default.cl_moncha_path);
 
-        public LSize3D CanvasSize => MonchaHub.Size;
+        public LSize3D CanvasSize => LaserHub.Size;
 
         private KmpsAppl kmpsAppl;
         private bool inverseToggle = true;
@@ -95,30 +96,17 @@ namespace MonchaCadViewer
             ProgressPanel.Label = "Hello world!";
             ToGCLogger.Progressed += ToGC_Progressed;
 
-            MonchaHub.Loging += MonchaHub_Loging;
-            MonchaHub.Devices.CollectionChanged += Devices_CollectionChanged; ;
-
+            LaserHub.Loging += MonchaHub_Loging;
             MainScene.UpdateFrame += MainScene_UpdateFrame;
 
             LoadMoncha();
-
-            MultPanel.DataContext = MonchaHub.ProjectionSetting;
-
-            if (DevicePanel.Device == null && MonchaHub.Devices.Count > 0)
-            {
-                DevicePanel.DataContext = MonchaHub.Devices[0];
-            }
         }
 
         private async void MainScene_UpdateFrame(object sender, EventArgs e)
         {
-            MonchaHub.MainFrame = await SendProcessor.GetLObject(MainScene);
+            LaserHub.MainFrame = await SendProcessor.GetLObject(MainScene);
         }
 
-        private void Devices_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
-        {
-            DeviceTree.Refresh();
-        }
 
         private void ToGC_Progressed(object sender, ProgBarMessage e)
         {
@@ -156,28 +144,28 @@ namespace MonchaCadViewer
 
         private void LoadMoncha()
         {
-            MonchaHub.CanPlay = false;
+            LaserHub.Play = false;
 
             //check path to setting file
             if (File.Exists(AppSt.Default.cl_moncha_path) == false)
             {
                 BrowseMoncha(); //select if not
             }
-            MonchaHub.Disconnect();
+            LaserHub.Disconnect();
 
             //send path to hub class
-            MonchaHub.Load(AppSt.Default.cl_moncha_path);
+            LaserHub.Load(AppSt.Default.cl_moncha_path);
 
-            WidthUpDn.DataContext = MonchaHub.Size;
+            WidthUpDn.DataContext = LaserHub.Size;
             WidthUpDn.SetBinding(NumericUpDown.ValueProperty, "X");
 
-            HeightUpD.DataContext = MonchaHub.Size;
+            HeightUpD.DataContext = LaserHub.Size;
             HeightUpD.SetBinding(NumericUpDown.ValueProperty, "Y");
 
-            DeepUpDn.DataContext = MonchaHub.Size;
+            DeepUpDn.DataContext = LaserHub.Size;
             DeepUpDn.SetBinding(NumericUpDown.ValueProperty, "Z");
 
-            MashMultiplierUpDn.Value = MonchaHub.Size.M.X;
+            MashMultiplierUpDn.Value = LaserHub.Size.M.X;
 
             CalibrationFormCombo.Items.Clear();
             CalibrationFormCombo.Items.Add(CalibrationForm.cl_Dot);
@@ -215,8 +203,8 @@ namespace MonchaCadViewer
 
         private void Window_Closed(object sender, System.EventArgs e)
         {
-            MonchaHub.CanPlay = false;
-            MonchaHub.Disconnect();
+            LaserHub.Play = false;
+            LaserHub.Disconnect();
             GC.Collect();
             GC.WaitForPendingFinalizers();
         }
@@ -224,23 +212,7 @@ namespace MonchaCadViewer
 
         private void PlayBtn_Click(object sender, RoutedEventArgs e)
         {
-            MonchaHub.CanPlay = !MonchaHub.CanPlay;
-            if (MonchaHub.CanPlay == true)
-            {
-                if (MonchaHub.Devices.Count > 0)
-                {
-                    MonchaHub.Play();
-                    PlayBtn.Background = Brushes.YellowGreen;
-                }
-                else
-                {
-                    MessageBox.Show("Не найден проектор. Нажмите 'Обновить'", "Внимание", MessageBoxButton.OK);
-                }
-            }
-            else
-            {
-                PlayBtn.Background = Brushes.Yellow;
-            }
+            LaserHub.Play = !LaserHub.Play;
         }
 
 
@@ -335,14 +307,14 @@ namespace MonchaCadViewer
             if (MashMultiplierUpDn.Value == null) MashMultiplierUpDn.Value = 1;
             args.Interval = 0;
             MashMultiplierUpDn.Value = MashMultiplierUpDn.Value.Value * 10;
-            MonchaHub.Size.M.Set(MashMultiplierUpDn.Value.Value);
+            LaserHub.Size.M.Set(MashMultiplierUpDn.Value.Value);
         }
 
         private void MashMultiplierUpDn_ValueDecremented(object sender, NumericUpDownChangedRoutedEventArgs args)
         {
             args.Interval = 0;
             MashMultiplierUpDn.Value = MashMultiplierUpDn.Value.Value / 10;
-            MonchaHub.Size.M.Set(MashMultiplierUpDn.Value.Value);
+            LaserHub.Size.M.Set(MashMultiplierUpDn.Value.Value);
         }
 
 
@@ -406,7 +378,7 @@ namespace MonchaCadViewer
             {
                 GCCollection gCElements = new GCCollection(this.kmpsAppl.Doc.D7.Name);
                 gCElements.AddRange(
-                    await ContourCalc.GetGeometry(this.kmpsAppl.Doc, MonchaHub.ProjectionSetting.PointStep.MX, false, true));
+                    await ContourCalc.GetGeometry(this.kmpsAppl.Doc, LaserHub.ProjectionSetting.PointStep.MX, false, true));
 
                 CadObjectsGroup cadGeometries = new CadObjectsGroup(gCElements);
 
@@ -420,7 +392,7 @@ namespace MonchaCadViewer
             {
                 GCCollection gCObjects = new GCCollection(this.kmpsAppl.Doc.D7.Name);
 
-                gCObjects.Add(new GeometryElement(await ContourCalc.GetGeometry(this.kmpsAppl.Doc, MonchaHub.ProjectionSetting.PointStep.MX, true, true), "Kompas"));
+                gCObjects.Add(new GeometryElement(await ContourCalc.GetGeometry(this.kmpsAppl.Doc, LaserHub.ProjectionSetting.PointStep.MX, true, true), "Kompas"));
 
                 CadObjectsGroup cadGeometries = new CadObjectsGroup(gCObjects);
 
@@ -462,66 +434,60 @@ namespace MonchaCadViewer
                 case Key.D1:
                     if (Keyboard.Modifiers == ModifierKeys.Control)
                     {
-                        DeviceBright(2);
+                        DevicePanel.DeviceBright(2);
                     }
                     break;
                 case Key.D2:
                     if (Keyboard.Modifiers == ModifierKeys.Control)
                     {
-                        DeviceBright(3);
+                        DevicePanel.DeviceBright(3);
                     }
                     break;
                 case Key.D3:
                     if (Keyboard.Modifiers == ModifierKeys.Control)
                     {
-                        DeviceBright(4);
+                        DevicePanel.DeviceBright(4);
                     }
                     break;
                 case Key.D4:
                     if (Keyboard.Modifiers == ModifierKeys.Control)
                     {
-                        DeviceBright(5);
+                        DevicePanel.DeviceBright(5);
                     }
                     break;
                 case Key.D5:
                     if (Keyboard.Modifiers == ModifierKeys.Control)
                     {
-                        DeviceBright(6);
+                        DevicePanel.DeviceBright(6);
                     }
                     break;
                 case Key.D6:
                     if (Keyboard.Modifiers == ModifierKeys.Control)
                     {
-                        DeviceBright(7);
+                        DevicePanel.DeviceBright(7);
                     }
                     break;
                 case Key.D7:
                     if (Keyboard.Modifiers == ModifierKeys.Control)
                     {
-                        DeviceBright(8);
+                        DevicePanel.DeviceBright(8);
                     }
                     break;
                 case Key.D8:
                     if (Keyboard.Modifiers == ModifierKeys.Control)
                     {
-                        DeviceBright(9);
+                        DevicePanel.DeviceBright(9);
                     }
                     break;
                 case Key.D9:
                     if (Keyboard.Modifiers == ModifierKeys.Control)
                     {
-                        DeviceBright(10);
+                        DevicePanel.DeviceBright(10);
                     }
                     break;
                 case Key.Escape:
                     MainCanvas.MouseAction = Panels.CanvasPanel.MouseAction.NoAction;
                     break;
-
-            }
-
-            void DeviceBright(double TenPercent)
-            {
-                DevicePanel.Device.Alpha = (byte)(255 * TenPercent / 10);
             }
         }
 
@@ -654,9 +620,9 @@ namespace MonchaCadViewer
 
             if (saveFileDialog.FileName != string.Empty)
             {
-                for (int i = 0; i < MonchaHub.Devices.Count; i++)
+                for (int i = 0; i < LaserHub.Devices.Count; i++)
                 {
-                    ildaWriter.Write(($"{saveFileDialog.FileName.Replace(".ild", string.Empty)}_{i}.ild"), new List<LFrame>(){ await MonchaHub.Devices[i].GetReadyFrame.GetLFrame(MonchaHub.Devices[i], MonchaHub.MainFrame)}, 5);
+                    ildaWriter.Write(($"{saveFileDialog.FileName.Replace(".ild", string.Empty)}_{i}.ild"), new List<LFrame>(){ await LaserHub.Devices[i].GetReadyFrame.GetLFrame(LaserHub.Devices[i], LaserHub.MainFrame)}, 5);
                 }
             }
         }
@@ -686,7 +652,7 @@ namespace MonchaCadViewer
 
         private void Save_Click(object sender, RoutedEventArgs e)
         {
-            MonchaHub.Save(AppSt.Default.cl_moncha_path);
+            LaserHub.Save(AppSt.Default.cl_moncha_path);
             AppSt.Default.Save();
         }
 
@@ -707,7 +673,7 @@ namespace MonchaCadViewer
                         if (saveFileDialog.ShowDialog() == true)
                         {
                             ProgressPanel.SetProgressBar(1, 2, "Save Moncha");
-                            MonchaHub.Save(saveFileDialog.FileName);
+                            LaserHub.Save(saveFileDialog.FileName);
                             if (File.Exists(saveFileDialog.FileName) == false)
                             {
                                 ProgressPanel.SetProgressBar(2, 2,"Not Save");
@@ -722,7 +688,7 @@ namespace MonchaCadViewer
                     }
                     else
                     {
-                        MonchaHub.Save(AppSt.Default.cl_moncha_path);
+                        LaserHub.Save(AppSt.Default.cl_moncha_path);
                     }
                     MonchaPathBox.Content = AppSt.Default.cl_moncha_path;
                     AppSt.Default.Save();
@@ -844,11 +810,36 @@ namespace MonchaCadViewer
 
         private void LincenseItem_Click(object sender, RoutedEventArgs e)
         {
-            RequestLicenseCode requestLicenseCode = new RequestLicenseCode();
+            RequestLicenseCode requestLicenseCode = new RequestLicenseCode() { DataContext = LaserHub.lockKey };
             requestLicenseCode.ShowDialog();
         }
 
 
     }
 
+    public class MultiObjectList : IMultiValueConverter
+    {
+        public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
+        {
+           return values;
+        }
+
+        public object[] ConvertBack(object value, Type[] targetTypes, object parameter, CultureInfo culture)
+        {
+            return new object[] { value };
+        }
+    }
+
+    public class PlayBackConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            return (bool)value == true ? Brushes.YellowGreen : Brushes.Yellow;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            return null;
+        }
+    }
 }

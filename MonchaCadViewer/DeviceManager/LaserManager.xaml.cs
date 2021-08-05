@@ -15,6 +15,8 @@ namespace MonchaCadViewer
     /// </summary>
     public partial class LaserManager : Window
     {
+        private LaserHub laserHub => (LaserHub)this.DataContext;
+
         private List<BroadcastReply2> iPs = new List<BroadcastReply2>();
         public List<IpSelect> OldDevices = new List<IpSelect>();
         public List<IpSelect> NewDevices = new List<IpSelect>();
@@ -36,7 +38,7 @@ namespace MonchaCadViewer
                 {
                     IpSelect ipSelect = new IpSelect() { iPAddress = new IPAddress(BitConverter.GetBytes(broadcastReply.ipv4)), IsSelected = false };
                     //if not
-                    if (MonchaHub.CheckDeviceInHub(ipSelect.iPAddress) == false)
+                    if (laserHub.CheckDeviceInHub(ipSelect.iPAddress) == false)
                     {
                         this.NewDevices.Add(ipSelect);
                     }
@@ -44,7 +46,7 @@ namespace MonchaCadViewer
             }
 
             this.OldDevices.Clear();
-            foreach (MonchaDevice monchaDevice in MonchaHub.Devices)
+            foreach (MonchaDevice monchaDevice in laserHub.Devices)
             {
                 if (monchaDevice != null)
                 {
@@ -66,7 +68,7 @@ namespace MonchaCadViewer
             {
                 if (device != null && device.IsSelected == true)
                 {
-                    MonchaHub.Devices.Add(MonchaHub.ConnectDevice(device.iPAddress));
+                    laserHub.Devices.Add(laserHub.ConnectDevice(device.iPAddress));
                 }
             }
 
@@ -74,7 +76,7 @@ namespace MonchaCadViewer
             {
                 if (device != null && device.IsSelected == false)
                 {
-                    MonchaHub.RemoveDevice(device.iPAddress);
+                    laserHub.RemoveDevice(device.iPAddress);
                 }
             }
         }
@@ -86,7 +88,7 @@ namespace MonchaCadViewer
 
         private void AddVirtualBtn_Click(object sender, RoutedEventArgs e)
         {
-            MonchaHub.Devices.Add(new MonchaDevice(new IPAddress(new byte[] { 127, 0, 0, 1 })));
+            laserHub.Devices.Add(new MonchaDevice(new IPAddress(new byte[] { 127, 0, 0, 1 }), LaserHub.UDPPort + laserHub.Devices.Count));
         }
 
         private void SearchBtn_Click(object sender, RoutedEventArgs e)

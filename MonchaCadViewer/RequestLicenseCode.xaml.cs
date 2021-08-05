@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MonchaSDK.Tools;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Management;
@@ -20,51 +21,24 @@ namespace MonchaCadViewer
     /// </summary>
     public partial class RequestLicenseCode : Window
     {
+        LockKey LKey => (LockKey)this.DataContext;
+
         public RequestLicenseCode()
         {
             InitializeComponent();
-            RequestBox.Text = $"{System.Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(GetKey()))}";
         }
 
-        private string GetKey()
+        private void Window_KeyDown(object sender, KeyEventArgs e)
         {
-            Dictionary<string, string> ids =
-            new Dictionary<string, string>();
-
-            ManagementObjectSearcher searcher;
-
-            //UUID
-            searcher = new ManagementObjectSearcher("root\\CIMV2",
-                   "SELECT UUID FROM Win32_ComputerSystemProduct");
-            foreach (ManagementObject queryObj in searcher.Get())
+            if (e.Key == Key.J && Keyboard.Modifiers == ModifierKeys.Control)
             {
-                ids.Add($"key_{ids.Count}", queryObj["UUID"].ToString());
+                if (LKey != null) LKey.SetKey();
             }
-
-            string key = string.Empty;
-            foreach (var x in ids)
-            {
-                key += x.Key + ": " + x.Value + "\r\n";
-            }
-
-            return key;
         }
 
-        private void KeyBox_TextChanged(object sender, TextChangedEventArgs e)
+        private void Button_Click(object sender, RoutedEventArgs e)
         {
-            if (this.IsLoaded == true)
-            {
-                byte[] a = System.Text.Encoding.UTF8.GetBytes(RequestBox.Text);
-                string b = $"{System.Convert.ToBase64String(a)}";
-                if (KeyBox.Text == b)
-                {
-                    SuccefulLbl.Content = "Yes!";
-                }
-                else
-                {
-                    SuccefulLbl.Content = "No =(";
-                }
-            }
+            this.Close();
         }
     }
 }

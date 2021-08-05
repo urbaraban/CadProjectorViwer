@@ -24,7 +24,7 @@ namespace MonchaCadViewer.Panels.CanvasPanel
     /// </summary>
     public partial class CadCanvasPanel : UserControl
     {
-        public LSize3D Size => MonchaHub.Size;
+        public LSize3D Size => LaserHub.Size;
 
         private Point StartMovePoint;
         private Point StartMousePoint;
@@ -88,6 +88,7 @@ namespace MonchaCadViewer.Panels.CanvasPanel
             //this.ObjectCanvas.MouseMove += Canvas_MouseMove;
             this.MouseMove += CanvasGrid_MouseMove;
             this.MouseWheel += CanvasGrid_MouseWheel;
+            this.DataContext = new ProjectionScene();
             UpdateTransform(null, true);
         }
 
@@ -177,14 +178,14 @@ namespace MonchaCadViewer.Panels.CanvasPanel
                 else if (this.MouseAction == MouseAction.Rectangle)
                 {
                     Point point = e.GetPosition(CanvasGrid);
-                    CadRectangle cadRectangle = new CadRectangle(new LPoint3D(point, MonchaHub.Size), new LPoint3D(point, MonchaHub.Size), string.Empty, true);
+                    CadRectangle cadRectangle = new CadRectangle(new LPoint3D(point, LaserHub.Size), new LPoint3D(point, LaserHub.Size), string.Empty, true);
                     this.projectionScene.Add(cadRectangle);
                 }
                 else if (this.mouseAction == MouseAction.Mask)
                 {
                     this.MouseAction = MouseAction.NoAction;
-                    LSize3D lRect = new LSize3D(new LPoint3D(e.GetPosition(inputElement), MonchaHub.Size, true), new LPoint3D(e.GetPosition(inputElement), MonchaHub.Size, true));
-                    CadRectangle Maskrectangle = new CadRectangle(lRect, $"Mask_{this.projectionScene.Masks.Count}", true);
+                    LSize3D lRect = new LSize3D(new LPoint3D(e.GetPosition(inputElement), LaserHub.Size, true), new LPoint3D(e.GetPosition(inputElement), LaserHub.Size, true));
+                    CadRectangle Maskrectangle = new CadRectangle(lRect, $"Mask_{this.projectionScene.Masks.Count}");
                     this.projectionScene.Add(Maskrectangle);
                     this.projectionScene.Masks.Add(Maskrectangle);
                     this.projectionScene.ActiveDrawingObject = Maskrectangle;
@@ -229,13 +230,13 @@ namespace MonchaCadViewer.Panels.CanvasPanel
             CoordinateLabel.Content =
                 $"X: { Math.Round(tempPoint.X, 2) }; Y:{ Math.Round(tempPoint.Y, 2) }";
 
-            foreach (MonchaDevice device in MonchaHub.Devices)
+         /*   foreach (MonchaDevice device in LaserHub.Devices)
             {
                 if (device.Frame != null)
                 {
                     CoordinateLabel.Content += $"\n {device.HWIdentifier}: {device.Frame.ScanratePerc}";
                 }
-            }
+            }*/
         }
 
 
@@ -308,7 +309,7 @@ namespace MonchaCadViewer.Panels.CanvasPanel
             {
                 if (canvas.Background is DrawingBrush drawingBrush)
                 {
-                    double cell = (int)(Math.Min(MonchaHub.Size.X, MonchaHub.Size.Y) / 10);
+                    double cell = (int)(Math.Min(LaserHub.Size.X, LaserHub.Size.Y) / 10);
                     drawingBrush.Viewport = new Rect(0, 0, cell, cell);
                 }
                
@@ -323,7 +324,7 @@ namespace MonchaCadViewer.Panels.CanvasPanel
         private void ShowDeviceRect_Click(object sender, RoutedEventArgs e)
         {
             Random rnd = new Random();
-            foreach (MonchaDevice monchaDevice in MonchaHub.Devices)
+            /*foreach (MonchaDevice monchaDevice in LaserHub.Devices)
             {
                 SolidColorBrush ColorBrush = new SolidColorBrush();
                 ColorBrush.Color = Colors.Azure;
@@ -342,7 +343,7 @@ namespace MonchaCadViewer.Panels.CanvasPanel
                             { Color = Color.FromArgb(100, (byte)rnd.Next(256), (byte)rnd.Next(256), (byte)rnd.Next(256)) }
                         });
                 }
-            }
+            }*/
         }
     }
 

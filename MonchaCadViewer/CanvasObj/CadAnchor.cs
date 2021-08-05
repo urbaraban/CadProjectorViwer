@@ -79,7 +79,7 @@ namespace MonchaCadViewer.CanvasObj
             this.AllowDrop = true;
             this.Drop += CadAnchor_Drop;
 
-            this.size = MonchaHub.GetThinkess * 2;
+            this.size = LaserHub.GetThinkess * 2;
             this.ShowName = false;
             ContextMenuLib.DotContextMenu(this.ContextMenu);
             Canvas.SetZIndex(this, 999);

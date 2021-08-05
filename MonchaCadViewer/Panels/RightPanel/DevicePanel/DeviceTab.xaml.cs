@@ -26,47 +26,12 @@ namespace MonchaCadViewer.Panels
     /// </summary>
     public partial class DeviceTab : UserControl
     {
-        private MonchaDevice _device;
-        public MonchaDevice Device { get => this._device; }
-
-        public event EventHandler<MonchaDevice> DeviceChange;
-
+        private MonchaDevice device => (MonchaDevice)DeviceCombo.SelectedItem;
 
         public DeviceTab()
         {
             InitializeComponent();
-
-            DeviceCombo.DisplayMemberPath = "HWIdentifier";
-            DeviceCombo.SelectedValuePath = "HWIdentifier";
-            DeviceCombo.ItemsSource = MonchaHub.Devices;
-            DeviceCombo.DataContext = MonchaHub.Devices;
-
-            LaserMetersCombo.DisplayMemberPath = "HWIdentifier";
-            LaserMetersCombo.SelectedValuePath = "HWIdentifier";
-            LaserMetersCombo.ItemsSource = MonchaHub.LMeters;
-            LaserMetersCombo.DataContext = MonchaHub.LMeters;
-
-            this.DataContextChanged += DevicePanel_DataContextChanged;
         }
-
-
-        private void DevicePanel_DataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
-        {
-            if (this.DataContext is MonchaDevice device)
-            {
-                this._device = device;
-                DeviceCombo.SelectedItem = device;
-                DeviceChange?.Invoke(this, this._device);
-            }
-        }
-
-
-        /*private void BindingDeviceSetting(MonchaDevice monchaDevice)
-        {
-
-            DistanceUpDn.DataContext = monchaDevice.Size;
-            DistanceUpDn.SetBinding(NumericUpDown.ValueProperty, "Z");
-        }*/
 
         private void LMeter_ChangeDimention(object sender, double e)
         {
@@ -80,18 +45,6 @@ namespace MonchaCadViewer.Panels
             if (LaserMetersCombo.SelectedItem is VLTLaserMeters laserMeters)
             {
                 laserMeters.Turn(LaserMeterToggle.IsOn);
-            }
-        }
-
-        private void LaserMetersCombo_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            if (DeviceCombo.SelectedItem is MonchaDevice monchaDevice)
-            {
-                //monchaDevice.ProjectionSetting.ReconnectLMeter(LaserMetersCombo.SelectedItem as VLTLaserMeters);
-
-                DistanceUpDn.DataContext = monchaDevice.ProjectionSetting;
-                DistanceUpDn.SetBinding(NumericUpDown.ValueProperty, "Distance");
-
             }
         }
 
@@ -113,14 +66,20 @@ namespace MonchaCadViewer.Panels
 
         private void MeshSettingBtn_Click(object sender, RoutedEventArgs e)
         {
-            CreateGridWindow createGridWindow = new CreateGridWindow(Device, Device.SelectMesh);
+            CreateGridWindow createGridWindow = new CreateGridWindow() { DataContext = this.device.SelectMesh };
             createGridWindow.Show();
         }
 
         private void MeshListBtn_Click(object sender, RoutedEventArgs e)
         {
-            MeshesDialog meshesDialog = new MeshesDialog() { DataContext = Device };
+            MeshesDialog meshesDialog = new MeshesDialog() { DataContext = this.device };
             meshesDialog.Show();
         }
+
+        public void DeviceBright(double TenPercent)
+        {
+            this.device.Alpha = (byte)(255 * TenPercent / 10);
+        }
+
     }
 }

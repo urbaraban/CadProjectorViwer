@@ -69,7 +69,7 @@ namespace MonchaCadViewer.CanvasObj
             this.Name = "CCanvas";
             this.Background = Brushes.Transparent; //backBrush;
 
-            this.DataContext = MonchaHub.Size;
+            this.DataContext = LaserHub.Size;
 
             this.SetBinding(Canvas.WidthProperty, "X");
             this.SetBinding(Canvas.HeightProperty, "Y");
@@ -89,7 +89,7 @@ namespace MonchaCadViewer.CanvasObj
             {
                 for (int j = 0; j < mesh.GetLength(1); j++)
                 {
-                    mesh[i, j].M = MonchaHub.Size;
+                    mesh[i, j].M = LaserHub.Size;
 
                     objects.Add(new CadAnchor(mesh[i, j])
                     {

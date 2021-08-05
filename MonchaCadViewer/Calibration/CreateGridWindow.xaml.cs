@@ -15,20 +15,13 @@ namespace MonchaCadViewer
     /// </summary>
     public partial class CreateGridWindow : Window
     {
-        private ProjectionScene projectionScene = new ProjectionScene();
+        public ProjectionScene projectionScene { get; set; } = new ProjectionScene();
 
-        private MonchaDevice _device;
-        private LDeviceMesh _mesh;
-        private CadCanvas cadCanvas;
-        public CreateGridWindow(MonchaDevice Device, LDeviceMesh Mesh)
+        private LDeviceMesh _mesh => (LDeviceMesh)this.DataContext;
+
+        public CreateGridWindow()
         {
             InitializeComponent();
-            this._device = Device;
-            this._mesh = Mesh;
-            WidthLabel.Content = this._device.Size.X;
-            HeightLabel.Content = this._device.Size.Y;
-            NameBox.DataContext = Mesh;
-            NameBox.SetBinding(TextBox.TextProperty, "Name");
         }
 
 
@@ -36,10 +29,11 @@ namespace MonchaCadViewer
         {
             if (this.IsLoaded)
             {
+                projectionScene.Clear();
                 projectionScene.AddRange(
                     CadCanvas.GetMesh(
                     new LDeviceMesh(LDeviceMesh.MakeMeshPoint((int)HeightUpDn.Value.Value, (int)WidthUpDn.Value.Value), string.Empty),
-                    MonchaHub.GetThinkess * AppSt.Default.anchor_size, false, MeshType.NONE).ToArray());
+                    LaserHub.GetThinkess * AppSt.Default.anchor_size, false, MeshType.NONE).ToArray());
             }
         }
 
@@ -47,29 +41,16 @@ namespace MonchaCadViewer
         {
             if (this.IsLoaded)
             {
-                int Width = (int)(this._device.Size.X / StepUpDn.Value.Value) + 1;
-                int Height = (int)(this._device.Size.Y / StepUpDn.Value.Value) + 1;
-                WidthStepLabel.Content = "(" + Math.Round(this._device.Size.X / Width, 1) + ")";
-                HeightStepLabel.Content = "(" + Math.Round(this._device.Size.Y / Height, 1) + ")";
+                int Width = (int)(this._mesh.Size.X / StepUpDn.Value.Value) + 1;
+                int Height = (int)(this._mesh.Size.Y / StepUpDn.Value.Value) + 1;
+                WidthStepLabel.Content = "(" + Math.Round(this._mesh.Size.X / Width, 1) + ")";
+                HeightStepLabel.Content = "(" + Math.Round(this._mesh.Size.Y / Height, 1) + ")";
 
                 WidthUpDn.Value = Width;
                 HeightUpDn.Value = Height;
             }
         }
 
-        private void MonchaToggle_Toggled(object sender, RoutedEventArgs e)
-        {
-            if (MonchaToggle.IsOn)
-            {
-                WidthUpDn.Maximum = 20;
-                HeightUpDn.Maximum = 20;
-            }
-            else
-            {
-                WidthUpDn.Maximum = 50;
-                HeightUpDn.Maximum = 50;
-            }
-        }
 
         protected override void OnClosing(CancelEventArgs e)
         {
@@ -95,10 +76,11 @@ namespace MonchaCadViewer
             WidthUpDn.Value = this._mesh.GetLength(1);
             HeightUpDn.Value = this._mesh.GetLength(0);
 
+            projectionScene.Clear();
             projectionScene.AddRange(
                      CadCanvas.GetMesh(
-                     new LDeviceMesh(LDeviceMesh.MakeMeshPoint((int)HeightUpDn.Value.Value, (int)WidthUpDn.Value.Value), string.Empty),
-                     MonchaHub.GetThinkess * AppSt.Default.anchor_size, false, MeshType.NONE).ToArray());
+                     (LDeviceMesh)this.DataContext,
+                     LaserHub.GetThinkess * AppSt.Default.anchor_size, false, MeshType.NONE).ToArray());
         }
     }
 

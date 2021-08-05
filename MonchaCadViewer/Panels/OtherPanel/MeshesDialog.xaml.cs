@@ -41,7 +41,7 @@ namespace MonchaCadViewer.Panels.DevicePanel
         {
             LDeviceMesh mesh = new LDeviceMesh(LDeviceMesh.MakeMeshPoint(5, 5), $"Mesh_{Device.Meshes.Count}");
             Device.Meshes.Add(mesh);
-            CreateGridWindow createGridWindow = new CreateGridWindow(Device, mesh);
+            CreateGridWindow createGridWindow = new CreateGridWindow() { DataContext = mesh };
             createGridWindow.Show();
         }
 

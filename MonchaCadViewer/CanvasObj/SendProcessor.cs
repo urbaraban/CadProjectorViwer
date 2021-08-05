@@ -121,7 +121,7 @@ namespace MonchaCadViewer.CanvasObj
                 case CadObjectsGroup cadObjectsGroup:
                     foreach (CadObject obj in cadObjectsGroup)
                     {
-                        obj.ProjectionSetting = cadObjectsGroup.ProjectionSetting != MonchaHub.ProjectionSetting ? cadObjectsGroup.ProjectionSetting : null;
+                        obj.ProjectionSetting = cadObjectsGroup.ProjectionSetting != LaserHub.ProjectionSetting ? cadObjectsGroup.ProjectionSetting : null;
                         lObjectList.AddRange(GetPoint(obj, true));
                     }
                     break;

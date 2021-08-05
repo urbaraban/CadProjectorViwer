@@ -33,72 +33,14 @@ namespace MonchaCadViewer.Panels
         public multiplierpanel()
         {
             InitializeComponent();
-
-            this.DataContextChanged += Multiplierpanel_DataContextChanged;
-
         }
 
-        private void Multiplierpanel_DataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
-        {
-            if (this.DataContext is CadObject cadObject)
-            {
-                this.IsEnabled = true;
-                this.cadObject = cadObject;
-
-                OtherSettingSwitch.DataContext = cadObject;
-                OtherSettingSwitch.SetBinding(ToggleSwitch.IsOnProperty, "OwnedSetting");
-
-                BindingCadObject(cadObject.ProjectionSetting);
-            }
-            else
-            {
-                this.IsEnabled = false;
-                CRSUpDn.DataContext = null;
-                MultiplierSlider.DataContext = null;
-            }
-        }
 
         private void BindingCadObject(LProjectionSetting projectionSetting)
-        {
-            CRSUpDn.DataContext = projectionSetting.PointStep;
-            CRSUpDn.SetBinding(NumericUpDown.ValueProperty, "MX");
-            projectionSetting.PointStep.PropertyChanged += M_ChangePoint;
-            
-            MonchaHub.Size.PropertyChanged += Size_ChangePoint;
-
-            MultiplierSlider.Value = projectionSetting.StartLineWait;
-            MultiplierSlider.DataContext = projectionSetting;
-            MultiplierSlider.SetBinding(Slider.ValueProperty, "StartLineWait");
-
-
-            RedUpDn.DataContext = projectionSetting;
-            RedUpDn.SetBinding(NumericUpDown.ValueProperty, "Red");
-
-            RedToggle.DataContext = projectionSetting;
-            RedToggle.SetBinding(ToggleSwitch.IsOnProperty, "RedOn");
-
-            GreenUpDn.DataContext = projectionSetting;
-            GreenUpDn.SetBinding(NumericUpDown.ValueProperty, "Green");
-
-            GreenToggle.DataContext = projectionSetting;
-            GreenToggle.SetBinding(ToggleSwitch.IsOnProperty, "GreenOn");
-
-            BlueUpDn.DataContext = projectionSetting;
-            BlueUpDn.SetBinding(NumericUpDown.ValueProperty, "Blue");
-
-            BlueToggle.DataContext = projectionSetting;
-            BlueToggle.SetBinding(ToggleSwitch.IsOnProperty, "BlueOn");
-
+        {           
             DeviceLayerCombo.Items.Clear();
             DeviceLayerCombo.DisplayMemberPath = "HWIdentifier";
             DeviceLayerCombo.Items.Add(null);
-            foreach(MonchaDevice device in MonchaHub.Devices)
-            {
-                DeviceLayerCombo.Items.Add(device);
-            }
-           
-            projectionSetting.PropertyChanged += ProjectionSetting_PropertyChanged;
-            projectionSetting.PointStep.PropertyChanged += ProjectionSetting_PropertyChanged;
         }
 
         private void ProjectionSetting_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
@@ -106,33 +48,6 @@ namespace MonchaCadViewer.Panels
             this.NeedUpdate?.Invoke(this, null);
         }
 
-        private void Size_ChangePoint(object sender, PropertyChangedEventArgs e)
-        {
-
-        }
-
-        private void M_ChangePoint(object sender, PropertyChangedEventArgs e)
-        {
-            CRSUpDn.SetBinding(NumericUpDown.ValueProperty, "PointStep");
-        }
-
-        private void OtherSettingSwitch_Toggled(object sender, RoutedEventArgs e)
-        {
-            CRSUpDn.DataContext = null;
-            MultiplierSlider.DataContext = null;
-            BindingOperations.ClearBinding(CRSUpDn, NumericUpDown.ValueProperty);
-            BindingOperations.ClearBinding(MultiplierSlider, Slider.ValueProperty);
-
-            if (OtherSettingSwitch.IsOn == true)
-            {
-                this.cadObject.ProjectionSetting = MonchaHub.ProjectionSetting.Clone();
-            }
-            else
-            {
-                this.cadObject.ProjectionSetting = null;
-            }
-            BindingCadObject(this.cadObject.ProjectionSetting);
-        }
 
         private void DeviceLayerCombo_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {

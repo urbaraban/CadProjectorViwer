@@ -27,7 +27,6 @@
             <RowDefinition/>
         </Grid.RowDefinitions>
         <StackPanel
-                    x:Name="TreeHead"
                     HorizontalAlignment="Left"
                     Orientation="Horizontal" Width="130">
             <Button
@@ -58,13 +57,12 @@
                 </Style>
             </TreeView.ItemContainerStyle>
             <TreeViewItem Header="Mask" ItemsSource="{Binding Masks}" 
-                          ItemTemplate="{StaticResource ResourceKey=ObjectTree}">
+                          ItemTemplate="{StaticResource ResourceKey=ObjectTree}"/>
 
-            </TreeViewItem>
             <TreeViewItem Header="Objects" ItemsSource="{Binding Objects}" 
-                          ItemTemplate="{StaticResource ResourceKey=ObjectTree}">
+                          ItemTemplate="{StaticResource ResourceKey=ObjectTree}"/>
 
-            </TreeViewItem>
+
         </TreeView>
     </Grid>
 </UserControl>

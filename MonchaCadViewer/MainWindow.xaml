@@ -8,7 +8,11 @@
         xmlns:canvaspanel="clr-namespace:MonchaCadViewer.Panels.CanvasPanel"
         xmlns:panels="clr-namespace:MonchaCadViewer.Panels" 
         xmlns:convert="clr-namespace:MonchaCadViewer.Converters"
-        xmlns:leftpanels="clr-namespace:MonchaCadViewer.Panels.DevicePanel.LeftPanels" xmlns:rightpanel="clr-namespace:MonchaCadViewer.Panels.RightPanel"
+        xmlns:leftpanels="clr-namespace:MonchaCadViewer.Panels.DevicePanel.LeftPanels" 
+    xmlns:rightpanel="clr-namespace:MonchaCadViewer.Panels.RightPanel" 
+    xmlns:monchasdk="clr-namespace:MonchaSDK;assembly=MonchaSDK" 
+    xmlns:monchacadviewer="clr-namespace:MonchaCadViewer" 
+    DataContext="{Binding RelativeSource={RelativeSource Self}, Path=LaserHub}"
     x:Class="MonchaCadViewer.MainWindow"
         mc:Ignorable="d"
         Title="CUT" KeyboardNavigation.TabNavigation="None"  
@@ -39,7 +43,8 @@
                     </Trigger>
                 </Style.Triggers>
             </Style>
-
+            <monchacadviewer:PlayBackConverter x:Key="PlayBackConverter"/>
+            <monchacadviewer:MultiObjectList x:Key="MultiList"/>
         </ResourceDictionary>
     </Window.Resources>
     <Border>
@@ -124,15 +129,21 @@
             </DockPanel>
             <TabControl x:Name="tabControl1" Margin="0,0,0,0" Grid.Column="1" Grid.Row="1">
                 <TabItem Header="Transform">
-                    <panels:CadObjectPanel x:Name="ObjectPanel" DataContext="{Binding RelativeSource={RelativeSource AncestorType=Window}, Path=MainScene.LastSelectObject}"
+                    <panels:CadObjectPanel DataContext="{Binding RelativeSource={RelativeSource AncestorType=Window}, Path=MainScene.LastSelectObject}"
                         IsEnabled="{Binding RelativeSource={RelativeSource Self}, Path=DataContext, Converter={StaticResource NotNullBool}}">
                     </panels:CadObjectPanel>
                 </TabItem>
                 <TabItem Header="ProjectionSetting">
-                    <panels:multiplierpanel x:Name="MultPanel" Margin="0"></panels:multiplierpanel>
+                    <panels:multiplierpanel DataContext="{Binding RelativeSource={RelativeSource AncestorType=Window}, Path=MainScene.LastSelectObject}"
+                        IsEnabled="{Binding RelativeSource={RelativeSource Self}, Path=DataContext, Converter={StaticResource NotNullBool}}"/>
                 </TabItem>
             </TabControl>
-            <Button x:Name="PlayBtn" Content="{DynamicResource m_Play}" Margin="10,20,10,0" Click="PlayBtn_Click" Background="#FFFFD100" Grid.Column="2" Grid.Row="1"/>
+            <Button x:Name="PlayBtn" Content="{DynamicResource m_Play}" 
+                    Margin="10,20,10,0" 
+                    Click="PlayBtn_Click" 
+                    Background="{Binding Play, Converter={StaticResource PlayBackConverter}}"
+                    Grid.Column="2" 
+                    Grid.Row="1"/>
 
             <TabControl TabStripPlacement="Left" Margin="0,5,5,0" Grid.Row="2" Grid.RowSpan="2">
                 <TabControl.Resources>
@@ -152,8 +163,12 @@
                     </Style>
                 </TabControl.Resources>
                 <TabItem Header="Device">
-                    <panels:DeviceTreeTab x:Name="DeviceTree" Focusable="False" Margin="0" Grid.ColumnSpan="2" Grid.Row="2"
-                                          DataContext="{Binding RelativeSource={RelativeSource AncestorType=Window}, Path=MainScene}"/>
+                    <panels:DeviceTreeTab 
+                        DataContext="{Binding RelativeSource={RelativeSource AncestorType=Window}}"
+                        x:Name="DeviceTree" 
+                        Focusable="False" 
+                        Margin="0" Grid.ColumnSpan="2" Grid.Row="2"/>
+                    
                 </TabItem>
                 <TabItem Header="Frame">
                     <leftpanels:FrameTree DataContext="{Binding RelativeSource={RelativeSource AncestorType=Window}, Path=MainScene}"/>

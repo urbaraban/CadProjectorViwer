@@ -185,7 +185,7 @@ namespace MonchaCadViewer.Panels.CanvasPanel
                 {
                     this.MouseAction = MouseAction.NoAction;
                     LSize3D lRect = new LSize3D(new LPoint3D(e.GetPosition(inputElement), LaserHub.Size, true), new LPoint3D(e.GetPosition(inputElement), LaserHub.Size, true));
-                    CadRectangle Maskrectangle = new CadRectangle(lRect, $"Mask_{this.projectionScene.Masks.Count}");
+                    CadRectangle Maskrectangle = new CadRectangle(lRect, $"Mask_{this.projectionScene.Masks.Count}") { Render = false };
                     this.projectionScene.Add(Maskrectangle);
                     this.projectionScene.Masks.Add(Maskrectangle);
                     this.projectionScene.ActiveDrawingObject = Maskrectangle;

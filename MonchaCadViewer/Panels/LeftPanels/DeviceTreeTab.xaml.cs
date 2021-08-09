@@ -30,36 +30,12 @@ namespace MonchaCadViewer.Panels
         public event EventHandler<bool> NeedRefresh;
         public event EventHandler<MonchaDevice> DeviceChange;
 
- 
-        private MonchaDevice selectdevice;
 
         MainWindow mainWindow => (MainWindow)this.DataContext;
 
         public DeviceTreeTab()
         {
             InitializeComponent();
-            this.DataContextChanged += DeviceTreeTab_DataContextChanged;
-            Refresh();
-        }
-
-        private void DeviceTreeTab_DataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
-        {
-
-        }
-
-        public void Refresh()
-        {
-
-        }
-
-
-        private void LoadDeviceSetting(object sender, MouseButtonEventArgs e)
-        {
-            if (sender is TreeViewItem treeViewItem)
-            {
-                selectdevice = (MonchaDevice)treeViewItem.DataContext;
-                DeviceChange?.Invoke(this, (MonchaDevice)treeViewItem.DataContext);
-            }
         }
 
 
@@ -74,10 +50,6 @@ namespace MonchaCadViewer.Panels
             }
         }
 
-        private void TreeLaserMeterDevice_MouseDoubleClick(object sender, MouseButtonEventArgs e)
-        {
-
-        }
 
         private void LaserMeters_ContextMenuClosing(object sender, ContextMenuEventArgs e)
         {
@@ -98,21 +70,19 @@ namespace MonchaCadViewer.Panels
 
         private void RemoveLaser_Click(object sender, RoutedEventArgs e)
         {
-           // LaserHub.Devices.Remove(selectdevice);
+            mainWindow.LaserHub.Devices.Remove(selectdevice);
         }
 
 
         private void RefreshLaser_Click_1(object sender, RoutedEventArgs e)
         {
-           // LaserHub.CanPlay = false;
-            NeedRefresh?.Invoke(this, true);
-            Refresh();
-            treeView.UpdateLayout();
+            mainWindow.LaserHub.Play = false;
+            mainWindow.LaserHub.Load(AppSt.Default.cl_moncha_path);
         }
 
         private void AddLaser_Click(object sender, RoutedEventArgs e)
         {
-            LaserManager deviceManager = new LaserManager();
+            LaserSearcher deviceManager = new LaserSearcher(mainWindow.LaserHub);
             deviceManager.Show();
         }
 
@@ -170,6 +140,7 @@ namespace MonchaCadViewer.Panels
                                 createGridWindow.ShowDialog();
                                 break;
                             case "mesh_showvirtual":
+                                mainWindow.MainScene.Clear();
                                 mainWindow.MainScene.AddRange(CadCanvas.GetMesh(mesh.VirtualMesh, LaserHub.GetThinkess * AppSt.Default.anchor_size, false, MeshType.BASE).ToArray());
                                 break;
                             case "mesh_inverse":
@@ -216,6 +187,15 @@ namespace MonchaCadViewer.Panels
                         mainWindow.MainScene.AddRange(CadCanvas.GetMesh(mesh, LaserHub.GetThinkess * AppSt.Default.anchor_size, false, MeshType.NONE).ToArray());
                     }
                 }
+            }
+        }
+
+        private MonchaDevice selectdevice;
+        private void treeView_SelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
+        {
+            if (e.NewValue is MonchaDevice device)
+            {
+                selectdevice = device;
             }
         }
     }

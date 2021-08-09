@@ -14,7 +14,7 @@ using ToGeometryConverter.Object.Elements;
 
 namespace MonchaCadViewer.CanvasObj
 {
-    public static class SendProcessor
+    public static class LaserSender
     {
         public static bool Processing = false;
 
@@ -32,7 +32,7 @@ namespace MonchaCadViewer.CanvasObj
             {
                 if (obj is CadObject cadObject && cadObject.Render == true)
                 {
-                    dotList.AddRange(SendProcessor.GetPoint(cadObject, false));
+                    dotList.AddRange(LaserSender.GetPoint(cadObject, false));
                     //dotList.AddRange(cadObject.GetTransformPoint(false));
                 }
             }
@@ -121,8 +121,11 @@ namespace MonchaCadViewer.CanvasObj
                 case CadObjectsGroup cadObjectsGroup:
                     foreach (CadObject obj in cadObjectsGroup)
                     {
-                        obj.ProjectionSetting = cadObjectsGroup.ProjectionSetting != LaserHub.ProjectionSetting ? cadObjectsGroup.ProjectionSetting : null;
-                        lObjectList.AddRange(GetPoint(obj, true));
+                        if (obj.Render == true)
+                        {
+                            obj.ProjectionSetting = cadObjectsGroup.ProjectionSetting != LaserHub.ProjectionSetting ? cadObjectsGroup.ProjectionSetting : null;
+                            lObjectList.AddRange(GetPoint(obj, true));
+                        }
                     }
                     break;
 

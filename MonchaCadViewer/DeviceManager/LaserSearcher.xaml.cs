@@ -13,28 +13,31 @@ namespace MonchaCadViewer
     /// <summary>
     /// Логика взаимодействия для DeviceManager.xaml
     /// </summary>
-    public partial class LaserManager : Window
+    public partial class LaserSearcher : Window
     {
-        private LaserHub laserHub => (LaserHub)this.DataContext;
+        private LaserHub laserHub { get; set; }
 
         private List<BroadcastReply2> iPs = new List<BroadcastReply2>();
         public List<IpSelect> OldDevices = new List<IpSelect>();
         public List<IpSelect> NewDevices = new List<IpSelect>();
 
-        public LaserManager()
+        public LaserSearcher(LaserHub laserHub)
         {
             InitializeComponent();
+            this.laserHub = laserHub;
+            this.DataContext = laserHub;
             RefreshList();
         }
 
         private void RefreshList()
         {
+
             this.iPs = MonchaSearch.FindDevicesOverBroadcast2(MonchaSearch.GetAvailabeBroadcastAddresses());
 
             if (this.iPs.Count > 0)
             {
                 this.NewDevices.Clear();
-                foreach(BroadcastReply2 broadcastReply in iPs)
+                foreach (BroadcastReply2 broadcastReply in iPs)
                 {
                     IpSelect ipSelect = new IpSelect() { iPAddress = new IPAddress(BitConverter.GetBytes(broadcastReply.ipv4)), IsSelected = false };
                     //if not
@@ -59,24 +62,26 @@ namespace MonchaCadViewer
                 FoundDeviceList.ItemsSource = this.NewDevices;
                 MonchaDeviceList.ItemsSource = this.OldDevices;
             }
-
         }
 
         private void DeviceManagerForm_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
-            foreach (IpSelect device in FoundDeviceList.Items)
+            if (laserHub.lockKey.IsLicensed == true)
             {
-                if (device != null && device.IsSelected == true)
+                foreach (IpSelect device in FoundDeviceList.Items)
                 {
-                    laserHub.Devices.Add(laserHub.ConnectDevice(device.iPAddress));
+                    if (device != null && device.IsSelected == true)
+                    {
+                        laserHub.Devices.Add(laserHub.ConnectDevice(device.iPAddress));
+                    }
                 }
-            }
 
-            foreach (IpSelect device in MonchaDeviceList.Items)
-            {
-                if (device != null && device.IsSelected == false)
+                foreach (IpSelect device in MonchaDeviceList.Items)
                 {
-                    laserHub.RemoveDevice(device.iPAddress);
+                    if (device != null && device.IsSelected == false)
+                    {
+                        laserHub.RemoveDevice(device.iPAddress);
+                    }
                 }
             }
         }

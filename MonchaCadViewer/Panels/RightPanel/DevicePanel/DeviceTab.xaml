@@ -80,7 +80,7 @@
             Grid.ColumnSpan="4" 
             DisplayMemberPath="HWIdentifier"
             SelectedValuePath="HWIdentifier"
-            ItemsSource="{Binding Devices}" SelectedIndex="0"/>
+            ItemsSource="{Binding Devices}"/>
         <Controls:ToggleSwitch    
             DataContext="{Binding ElementName=DeviceCombo, Path=SelectedItem}"
             IsOn="{Binding InvertedX}"

@@ -161,12 +161,12 @@ namespace MonchaCadViewer.CanvasObj
 
         public CadObject Add(CadObject cadObject)
         {
-
+            cadObject.PropertyChanged += CadObject_PropertyChanged;
             if (Objects.Contains(cadObject) == false)
             {
                 if (cadObject is CadObjectsGroup cadGeometries)
                 {
-                    foreach (CadObject obj in cadGeometries.cadObjects)
+                    foreach (CadObject obj in cadGeometries.Children)
                     {
                         Objects.Add(obj);
                     }
@@ -177,6 +177,11 @@ namespace MonchaCadViewer.CanvasObj
                 }
             }
             return cadObject;
+        }
+
+        private void CadObject_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            UpdateFrame?.Invoke(this, null);
         }
 
         public void Add(ProjectionScene scene)

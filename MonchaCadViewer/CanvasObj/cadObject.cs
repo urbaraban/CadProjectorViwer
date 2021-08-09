@@ -17,11 +17,13 @@ using MonchaSDK.Device;
 using MonchaSDK.Object;
 using ToGeometryConverter.Object;
 using ToGeometryConverter;
+using System.Collections.ObjectModel;
 
 namespace MonchaCadViewer.CanvasObj
 {
     public abstract class CadObject : FrameworkElement, INotifyPropertyChanged, TransformObject, LSettingObject
     {
+        public ObservableCollection<CadObject> Children { get; } = new ObservableCollection<CadObject>();
 
         //Event
         //public event EventHandler TranslateChanged;
@@ -464,9 +466,10 @@ namespace MonchaCadViewer.CanvasObj
                 this.ContextMenu = new System.Windows.Controls.ContextMenu();
                 ContextMenuLib.CadObjMenu(this.ContextMenu);
             }
-            this.ProjectionSetting.PropertyChanged += ProjectionSetting_PropertyChanged; ;
+            this.ProjectionSetting.PropertyChanged += ProjectionSetting_PropertyChanged;
             this.Uid = Guid.NewGuid().ToString();
         }
+
 
         private void ProjectionSetting_PropertyChanged(object sender, PropertyChangedEventArgs e) => this.Update();
 
@@ -568,35 +571,46 @@ namespace MonchaCadViewer.CanvasObj
         protected override void OnRender(DrawingContext drawingContext)
         {
             //Console.WriteLine("Render");
-            Geometry geometry = GetGeometry;
-            if (geometry != null)
+            if (this is CadObjectsGroup objectsGroup)
             {
-                /*if (AppSt.Default.stg_show_name == true)
+                foreach (CadObject cadObject in objectsGroup)
                 {
-                    drawingContext.DrawText(new FormattedText($"{this.Name}", new System.Globalization.CultureInfo("ru-RU"), FlowDirection.LeftToRight,
-                    new Typeface("Segoe UI"), (int)LaserHub.GetThinkess * 3, Brushes.Gray), new Point(GetGeometry.Bounds.X + GetGeometry.Bounds.Width / 2, GetGeometry.Bounds.Y + GetGeometry.Bounds.Height / 2));
-                }*/
-
-                drawingContext.DrawGeometry(myBack, myPen, geometry);
-                if (this.IsSelected == true) 
-                {
-                    //Left
-                    DrawSize(drawingContext, 
-                        new Point(0, geometry.Bounds.Y + geometry.Bounds.Height / 2), 
-                        new Point(geometry.Bounds.X, geometry.Bounds.Y + geometry.Bounds.Height / 2));
-                    //Right
-                    DrawSize(drawingContext,
-                        new Point(LaserHub.Size.X, geometry.Bounds.Y + geometry.Bounds.Height / 2),
-                        new Point(geometry.Bounds.X + geometry.Bounds.Width, geometry.Bounds.Y + geometry.Bounds.Height / 2));
-                    //Top
-                    DrawSize(drawingContext,
-                        new Point(geometry.Bounds.X + geometry.Bounds.Width / 2, 0),
-                        new Point(geometry.Bounds.X + geometry.Bounds.Width / 2, geometry.Bounds.Y));
-                    //Down
-                    DrawSize(drawingContext,
-                        new Point(geometry.Bounds.X + geometry.Bounds.Width / 2, LaserHub.Size.Y),
-                        new Point(geometry.Bounds.X + geometry.Bounds.Width / 2, geometry.Bounds.Y + geometry.Bounds.Height));
+                    drawingContext.DrawGeometry(
+                        this.Render == false ? this.myBack : cadObject.myBack, 
+                        this.Render == false ? this.myPen : cadObject.myPen, 
+                        cadObject.GetGeometry);
                 }
+                
+            }
+            else
+            {
+                Geometry geometry = GetGeometry;
+                if (geometry != null)
+                {
+                    drawingContext.DrawGeometry(myBack, myPen, geometry);
+                }
+            }
+
+
+            if (this.IsSelected == true)
+            {
+                Geometry geometry = GetGeometry;
+                //Left
+                DrawSize(drawingContext,
+                    new Point(0, geometry.Bounds.Y + geometry.Bounds.Height / 2),
+                    new Point(geometry.Bounds.X, geometry.Bounds.Y + geometry.Bounds.Height / 2));
+                //Right
+                DrawSize(drawingContext,
+                    new Point(LaserHub.Size.X, geometry.Bounds.Y + geometry.Bounds.Height / 2),
+                    new Point(geometry.Bounds.X + geometry.Bounds.Width, geometry.Bounds.Y + geometry.Bounds.Height / 2));
+                //Top
+                DrawSize(drawingContext,
+                    new Point(geometry.Bounds.X + geometry.Bounds.Width / 2, 0),
+                    new Point(geometry.Bounds.X + geometry.Bounds.Width / 2, geometry.Bounds.Y));
+                //Down
+                DrawSize(drawingContext,
+                    new Point(geometry.Bounds.X + geometry.Bounds.Width / 2, LaserHub.Size.Y),
+                    new Point(geometry.Bounds.X + geometry.Bounds.Width / 2, geometry.Bounds.Y + geometry.Bounds.Height));
             }
         }
 

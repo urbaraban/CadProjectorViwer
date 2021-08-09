@@ -19,8 +19,6 @@ namespace MonchaCadViewer.CanvasObj
 {
     public class CadObjectsGroup : CadObject, IList<CadObject>
     {
-        public ObservableCollection<CadObject> cadObjects = new ObservableCollection<CadObject>();
-
         private bool Opened = false;
 
         private void ParseColletion(GCCollection objects)
@@ -59,7 +57,7 @@ namespace MonchaCadViewer.CanvasObj
             set
             {
                 base.TransformGroup = value;
-                foreach(CadObject cadObject in cadObjects)
+                foreach(CadObject cadObject in Children)
                 {
                     cadObject.TransformGroup = value;
                 }
@@ -71,7 +69,7 @@ namespace MonchaCadViewer.CanvasObj
             get
             {
                 GeometryGroup geometryGroup = new GeometryGroup();
-                foreach (CadObject element in this.cadObjects)
+                foreach (CadObject element in this.Children)
                 {
                     if (element.Render == true)
                     {
@@ -100,66 +98,73 @@ namespace MonchaCadViewer.CanvasObj
 
 
         #region IList<CadObject>
-        public CadObject this[int index] { get => ((IList<CadObject>)cadObjects)[index]; set => ((IList<CadObject>)cadObjects)[index] = value; }
+        public CadObject this[int index] { get => ((IList<CadObject>)Children)[index]; set => ((IList<CadObject>)Children)[index] = value; }
 
-        public int Count => ((ICollection<CadObject>)cadObjects).Count;
+        public int Count => ((ICollection<CadObject>)Children).Count;
 
-        public bool IsReadOnly => ((ICollection<CadObject>)cadObjects).IsReadOnly;
+        public bool IsReadOnly => ((ICollection<CadObject>)Children).IsReadOnly;
 
-        public void AddRange(IList<CadObject> cadObjects)
+        public void AddRange(IList<CadObject> Children)
         {
-            foreach (CadObject cadObject in cadObjects) this.Add(cadObject);
+            foreach (CadObject cadObject in Children) this.Add(cadObject);
         }
 
         public void Add(CadObject item)
         {
             item.TransformGroup = this.TransformGroup;
-            ((ICollection<CadObject>)cadObjects).Add(item);
+            item.PropertyChanged += Item_PropertyChanged;
+            ((ICollection<CadObject>)Children).Add(item);
+        }
+
+        private void Item_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            this.InvalidateVisual();
+            OnPropertyChanged();
         }
 
         public void Clear()
         {
-            ((ICollection<CadObject>)cadObjects).Clear();
+            ((ICollection<CadObject>)Children).Clear();
         }
 
         public bool Contains(CadObject item)
         {
-            return ((ICollection<CadObject>)cadObjects).Contains(item);
+            return ((ICollection<CadObject>)Children).Contains(item);
         }
 
         public void CopyTo(CadObject[] array, int arrayIndex)
         {
-            ((ICollection<CadObject>)cadObjects).CopyTo(array, arrayIndex);
+            ((ICollection<CadObject>)Children).CopyTo(array, arrayIndex);
         }
 
         public IEnumerator<CadObject> GetEnumerator()
         {
-            return ((IEnumerable<CadObject>)cadObjects).GetEnumerator();
+            return ((IEnumerable<CadObject>)Children).GetEnumerator();
         }
 
         public int IndexOf(CadObject item)
         {
-            return ((IList<CadObject>)cadObjects).IndexOf(item);
+            return ((IList<CadObject>)Children).IndexOf(item);
         }
 
         public void Insert(int index, CadObject item)
         {
-            ((IList<CadObject>)cadObjects).Insert(index, item);
+            ((IList<CadObject>)Children).Insert(index, item);
         }
 
         public bool Remove(CadObject item)
         {
-            return ((ICollection<CadObject>)cadObjects).Remove(item);
+            return ((ICollection<CadObject>)Children).Remove(item);
         }
 
         public void RemoveAt(int index)
         {
-            ((IList<CadObject>)cadObjects).RemoveAt(index);
+            ((IList<CadObject>)Children).RemoveAt(index);
         }
 
         IEnumerator IEnumerable.GetEnumerator()
         {
-            return ((IEnumerable)cadObjects).GetEnumerator();
+            return ((IEnumerable)Children).GetEnumerator();
         }
         #endregion
     }

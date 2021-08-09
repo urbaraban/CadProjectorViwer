@@ -6,20 +6,30 @@
              mc:Ignorable="d" 
              d:DesignHeight="250" d:DesignWidth="130"
              xmlns:src="clr-namespace:MonchaCadViewer.CanvasObj" 
+             xmlns:Controls="http://metro.mahapps.com/winfx/xaml/controls"
+             xmlns:properties="clr-namespace:MonchaCadViewer.Properties"
              d:DataContext="{d:DesignInstance Type=src:ProjectionScene}">
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Fonts.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Themes/Light.Blue.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </UserControl.Resources>
     <Grid>
         <Grid.Resources>
-            <HierarchicalDataTemplate x:Key="ObjectTree" DataType ="{x:Type src:CadObject}">
-                <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-                    <CheckBox IsChecked="{Binding Render}"/>
-                    <Label Content="{Binding NameID}" VerticalAlignment="Center" MouseDoubleClick="Label_MouseDoubleClick"/>
-                </StackPanel>
-            </HierarchicalDataTemplate>
-            <HierarchicalDataTemplate x:Key="GroupTree" 
-                                      DataType="{x:Type src:CadObjectsGroup}" 
-                                      ItemsSource="{Binding cadObjects}"
-                                      ItemTemplate="{StaticResource ResourceKey=ObjectTree}">
-                <TextBlock Text="{Binding NameID}"/>
+            <HierarchicalDataTemplate 
+                x:Key="ObjectTree" 
+                DataType ="{x:Type src:CadObject}" 
+                ItemsSource="{Binding Children}">
+                <Border ContextMenu="{Binding ContextMenu}">
+                    <StackPanel Orientation="Horizontal"
+                                VerticalAlignment="Center">
+                        <CheckBox IsChecked="{Binding Render}"/>
+                        <Label Content="{Binding NameID}" VerticalAlignment="Center" MouseDoubleClick="Label_MouseDoubleClick"/>
+                    </StackPanel>
+                </Border>
             </HierarchicalDataTemplate>
         </Grid.Resources>
         <Grid.RowDefinitions>
@@ -39,6 +49,9 @@
                         Click="CheckAllBtn_Click"
                         Content="&#xE762;"
                         FontFamily="Segoe MDL2 Assets" />
+            <Controls:ToggleSwitch 
+                IsOn="{Binding Source={x:Static properties:Settings.Default}, Path=object_solid}" 
+                Toggled="ToggleSwitch_Toggled"/>
 
 
         </StackPanel>

@@ -90,6 +90,7 @@
     <v:String x:Key="mesh_Morph">Morph</v:String>
     <v:String x:Key="mesh_Inverse">Inverse</v:String>
     <v:String x:Key="mesh_Returnpoint">Return point</v:String>
+    <v:String x:Key="mesh_ShowVirtual">Virtual</v:String>
 
     <v:String x:Key="canvas_freezall">Freez all</v:String>
     <v:String x:Key="canvas_unselectall">Unselect all</v:String>

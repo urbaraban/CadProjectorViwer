@@ -10,18 +10,17 @@
         xmlns:convert="clr-namespace:MonchaCadViewer.Converters"
         xmlns:leftpanels="clr-namespace:MonchaCadViewer.Panels.DevicePanel.LeftPanels" 
     xmlns:rightpanel="clr-namespace:MonchaCadViewer.Panels.RightPanel" 
-    xmlns:monchasdk="clr-namespace:MonchaSDK;assembly=MonchaSDK" 
-    xmlns:monchacadviewer="clr-namespace:MonchaCadViewer" 
+    xmlns:monchacadviewer="clr-namespace:MonchaCadViewer"
     DataContext="{Binding RelativeSource={RelativeSource Self}, Path=LaserHub}"
     x:Class="MonchaCadViewer.MainWindow"
         mc:Ignorable="d"
         Title="CUT" KeyboardNavigation.TabNavigation="None"  
     AllowDrop="True" Drop="MainCanvas_Drop"
-    Height="760" Width="999" Closing="Window_Closing" Closed="Window_Closed" WindowStartupLocation="CenterScreen" Icon="logo.png" KeyUp="MainWindow1_KeyUp" WindowStyle="None" ResizeMode="CanResizeWithGrip" BorderBrush="#FFE01414" VerticalAlignment="Top" Background="White" 
-    >
+    Height="760" Width="999" Closing="Window_Closing" Closed="Window_Closed" WindowStartupLocation="CenterScreen" Icon="logo.png" KeyUp="MainWindow1_KeyUp" WindowStyle="None" ResizeMode="CanResizeWithGrip" BorderBrush="#FFE01414" VerticalAlignment="Top">
     <Window.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.Dark.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Fonts.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Themes/Light.Blue.xaml" />
             </ResourceDictionary.MergedDictionaries>
@@ -119,11 +118,11 @@
                 <ToolBar>
                     <Button x:Name="OpenBtn" AllowDrop="True" Content="{DynamicResource m_Open}" DragEnter="OpenBtn_DragEnter" DragOver="OpenBtn_DragOver" DragLeave="OpenBtn_DragLeave" Drop="OpenBtn_DragDropAsync" Click="OpenBtn_ClickAsync" Grid.ColumnSpan="2" Background="{x:Null}" BorderBrush="{x:Null}" VerticalContentAlignment="Center" Margin="0,10,0,14" Width="99" VerticalAlignment="Stretch" />
                 </ToolBar>
-                <ToolBarTray Orientation="Vertical">
+                <ToolBarTray Orientation="Vertical" IsLocked="True" Background="White">
                     <ToolBar Margin="0,0,0,0" Width="80" >
-                        <Button x:Name="ClearBtn" Content="{DynamicResource edit_Clear}"  Click="ClearBtn_Click" Height="25"/>
-                        <Button x:Name="Line" Content="{DynamicResource edit_Line}" Click="Line_Click" Height="25"/>
-                        <Button x:Name="RectBtn" Content="{DynamicResource edit_Mask}" Click="RectBtn_Click" Height="25"/>
+                        <Button x:Name="ClearBtn" Content="{DynamicResource edit_Clear}"  Click="ClearBtn_Click" Height="25" HorizontalAlignment="Stretch"/>
+                        <Button x:Name="Line" Content="{DynamicResource edit_Line}" Click="Line_Click" Height="25" HorizontalAlignment="Stretch"/>
+                        <Button x:Name="RectBtn" Content="{DynamicResource edit_Mask}" Click="RectBtn_Click" Height="25" HorizontalAlignment="Stretch"/>
                     </ToolBar>
                 </ToolBarTray>
             </DockPanel>
@@ -143,7 +142,8 @@
                     Click="PlayBtn_Click" 
                     Background="{Binding Play, Converter={StaticResource PlayBackConverter}}"
                     Grid.Column="2" 
-                    Grid.Row="1"/>
+                    Grid.Row="1"
+                    Style="{DynamicResource ResourceKey=b}"/>
 
             <TabControl TabStripPlacement="Left" Margin="0,5,5,0" Grid.Row="2" Grid.RowSpan="2">
                 <TabControl.Resources>

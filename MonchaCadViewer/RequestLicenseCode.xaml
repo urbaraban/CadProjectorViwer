@@ -10,8 +10,8 @@
         Title="RequestLicenseCode" Height="150" Width="400"
         KeyUp="Window_KeyDown">
     <Grid>
-        <TextBox x:Name="RequestBox" Height="31" Margin="10,10,12,0" TextWrapping="Wrap" Text="{Binding RequestKey, Mode=OneWay}" VerticalAlignment="Top" VerticalContentAlignment="Center" MaxLines="1" IsEnabled="False"/>
-        <TextBox x:Name="KeyBox" Height="31" Margin="10,46,12,0" TextWrapping="Wrap" Text="{Binding LicenseKey, Mode=TwoWay}"  VerticalAlignment="Top" VerticalContentAlignment="Center" MaxLines="1"/>
+        <TextBox x:Name="RequestBox" Height="31" Margin="10,10,12,0" Text="{Binding RequestKey, Mode=OneWay}" VerticalAlignment="Top" VerticalContentAlignment="Center" IsReadOnly="True" />
+        <TextBox x:Name="KeyBox" Height="31" Margin="10,46,12,0" Text="{Binding LicenseKey, Mode=TwoWay}"  VerticalAlignment="Top" VerticalContentAlignment="Center" MaxLines="1"/>
         <Button Click="Button_Click" Content="Ok" Margin="0,82,12,0" VerticalAlignment="Top" Height="27" HorizontalAlignment="Right" Width="90"/>
         <Label x:Name="SuccefulLbl" Content="{Binding IsLicensed}" Margin="10,82,107,0" VerticalAlignment="Top"/>
 

@@ -13,6 +13,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using AppSt = MonchaCadViewer.Properties.Settings;
 
 namespace MonchaCadViewer.Panels.DevicePanel.LeftPanels
 {
@@ -47,6 +48,11 @@ namespace MonchaCadViewer.Panels.DevicePanel.LeftPanels
                     cadObject.Render = RenderStat;
                 }
             }
+        }
+
+        private void ToggleSwitch_Toggled(object sender, RoutedEventArgs e)
+        {
+            AppSt.Default.Save();
         }
     }
 }

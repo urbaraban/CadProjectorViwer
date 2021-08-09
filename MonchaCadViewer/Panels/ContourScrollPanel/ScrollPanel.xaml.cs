@@ -110,7 +110,7 @@ namespace MonchaCadViewer.Panels
                     {
                         if (cadObject is CadObjectsGroup group && AppSt.Default.object_solid == false)
                         {
-                            MainScene.AddRange(group.cadObjects.ToArray());
+                            MainScene.AddRange(group.Children.ToArray());
                         }
                         else
                         {

@@ -30,7 +30,7 @@ namespace MonchaCadViewer
 
         private void Window_KeyDown(object sender, KeyEventArgs e)
         {
-            if (e.Key == Key.J && Keyboard.Modifiers == ModifierKeys.Control)
+            if (e.Key == Key.NumPad0 && Keyboard.Modifiers == ModifierKeys.Control)
             {
                 if (LKey != null) LKey.SetKey();
             }

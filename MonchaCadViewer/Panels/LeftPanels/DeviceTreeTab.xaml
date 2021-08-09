@@ -44,13 +44,13 @@
                     MouseLeftButtonDown="MeshBorder_MouseLeftButtonDown">
                     <Border.ContextMenu>
                         <ContextMenu>
-                            <MenuItem Header = "mesh_create" Tag="mesh_create" Click="MenuItem_Click"/>
-                            <MenuItem Header = "mesh_showvirtual" Tag="mesh_showvirtual" Click="MenuItem_Click"/>
-                            <MenuItem Header = "mesh_inverse" Tag="mesh_inverse" Click="MenuItem_Click"/>
-                            <MenuItem Header = "mesh_returnpoint" Tag="mesh_returnpoint" Click="MenuItem_Click"/>
-                            <MenuItem Header = "mesh_morph" Tag="mesh_morph" Click="MenuItem_Click"/>
-                            <MenuItem Header = "mesh_affine" Tag="mesh_affine" Click="MenuItem_Click"/>
-                            <MenuItem Header = "mesh_showrect" Tag="mesh_showrect" Click="MenuItem_Click"/>
+                            <MenuItem Header = "{DynamicResource common_Create}" Tag="mesh_create" Click="MenuItem_Click"/>
+                            <MenuItem Header = "{DynamicResource mesh_ShowVirtual}" Tag="mesh_showvirtual" Click="MenuItem_Click"/>
+                            <MenuItem Header = "{DynamicResource mesh_Inverse}" Tag="mesh_inverse" Click="MenuItem_Click"/>
+                            <MenuItem Header = "{DynamicResource mesh_Returnpoint}" Tag="mesh_returnpoint" Click="MenuItem_Click"/>
+                            <MenuItem Header = "{DynamicResource mesh_Morph}" Tag="mesh_morph" Click="MenuItem_Click"/>
+                            <MenuItem Header = "{DynamicResource mesh_Affine}" Tag="mesh_affine" Click="MenuItem_Click"/>
+                            <MenuItem Header = "{DynamicResource dvc_showrect}" Tag="mesh_showrect" Click="MenuItem_Click"/>
                         </ContextMenu>
                     </Border.ContextMenu>
 
@@ -61,7 +61,7 @@
                             FontFamily="Segoe MDL2 Assets"/>
                         <TextBlock Margin="5,0,0,0" Text="{Binding Name}" VerticalAlignment="Center"/>
                         <TextBlock Margin="5,0,0,0" Text="M:" VerticalAlignment="Center"/>
-                        <TextBlock Margin="0,0,0,0" Text="{Binding Morph}" VerticalAlignment="Center"/>
+                        <Label Margin="0,0,0,0" Content="{Binding Morph}" Padding="0" VerticalAlignment="Center"/>
                     </StackPanel>
                 </Border>
             </HierarchicalDataTemplate>
@@ -75,9 +75,9 @@
                 <Border Margin="5" ContextMenuClosing="DeviceBorder_ContextMenuClosing">
                     <Border.ContextMenu>
                         <ContextMenu>
-                            <MenuItem Header = "dvc_showrect" Tag="dvc_showrect" Click="MenuItem_Click"/>
-                            <MenuItem Header = "dvc_showzone" Tag="dvc_showzone" Click="MenuItem_Click"/>
-                            <MenuItem Header = "dvc_polymesh" Tag="dvc_polymesh" Click="MenuItem_Click"/>
+                            <MenuItem Header = "{DynamicResource dvc_showrect}" Tag="dvc_showrect" Click="MenuItem_Click"/>
+                            <MenuItem Header = "{DynamicResource dvc_showzone}" Tag="dvc_showzone" Click="MenuItem_Click"/>
+                            <MenuItem Header = "{DynamicResource dvc_polymesh}" Tag="dvc_polymesh" Click="MenuItem_Click"/>
                         </ContextMenu>
                     </Border.ContextMenu>
                     <StackPanel Orientation="Horizontal" 
@@ -86,7 +86,7 @@
                             Text="&#xE714;"
                             FontFamily="Segoe MDL2 Assets"/>
                         <TextBlock  Text="{Binding HWIdentifier}" VerticalAlignment="Center" Margin="5,0,0,0"/>
-                        <TextBlock  Text="{Binding Connect}" VerticalAlignment="Center" Margin="5,0,0,0"/>
+                        <TextBlock  Text="{Binding IsConnected}" VerticalAlignment="Center" Margin="5,0,0,0"/>
                     </StackPanel>
                 </Border>
             </HierarchicalDataTemplate>
@@ -143,16 +143,18 @@
                 Margin="0,0,0,0"
                 KeyboardNavigation.DirectionalNavigation="None"
                 KeyboardNavigation.TabNavigation="None" Grid.Row="1"
-             DataContext="{Binding LaserHub}">
+             DataContext="{Binding LaserHub}"
+            SelectedItemChanged="treeView_SelectedItemChanged">
             <TreeView.ItemContainerStyle>
                 <Style TargetType="TreeViewItem">
                     <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
                 </Style>
             </TreeView.ItemContainerStyle>
-            <TreeViewItem Header="LaserDevice" IsExpanded="True"
+            <TreeViewItem x:Name="DeviceTree" Header="LaserDevice" IsExpanded="True"
                           ItemsSource="{Binding Devices}" 
-                          ItemTemplate="{StaticResource ResourceKey=DeviceTree}">
-            </TreeViewItem>
+                          ItemTemplate="{StaticResource ResourceKey=DeviceTree}"
+                          />
+
         </TreeView>
     </Grid>
 </UserControl>

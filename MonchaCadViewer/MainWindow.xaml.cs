@@ -104,7 +104,7 @@ namespace MonchaCadViewer
 
         private async void MainScene_UpdateFrame(object sender, EventArgs e)
         {
-            LaserHub.MainFrame = await SendProcessor.GetLObject(MainScene);
+            LaserHub.MainFrame = await LaserSender.GetLObject(MainScene);
         }
 
 

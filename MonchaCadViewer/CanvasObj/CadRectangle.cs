@@ -32,6 +32,7 @@ namespace MonchaCadViewer.CanvasObj
         }
         #endregion
 
+        public override event EventHandler<bool> Selected;
         public override event EventHandler<string> Updated;
         public override event EventHandler<CadObject> Removed;
 
@@ -96,17 +97,18 @@ namespace MonchaCadViewer.CanvasObj
         {
             this.NameID = Label;
             this.LRect = new LSize3D(P1, P2);
-            LoadSetting(MouseSet);
+            LoadSetting();
         }
 
         public CadRectangle(LSize3D lRect, string Label)
         {
             this.NameID = Label;
             LRect = lRect;
+            LoadSetting();
         }
 
 
-        private void LoadSetting(bool MouseSet)
+        private void LoadSetting()
         {
             UpdateTransform(false);
             ContextMenuLib.CadRectMenu(this.ContextMenu);
@@ -151,8 +153,15 @@ namespace MonchaCadViewer.CanvasObj
         public void Init()
         {
             AdornerLayer adornerLayer = AdornerLayer.GetAdornerLayer(this);
-            adornerLayer.Add(new RectangelAdorner(this));
+            RectangelAdorner rectangelAdorner = new RectangelAdorner(this);
+            adornerLayer.Add(rectangelAdorner);
+            rectangelAdorner.SelectAnchor += RectangelAdorner_SelectAnchor;
             IsInit = true;
+        }
+
+        private void RectangelAdorner_SelectAnchor(object sender, CadAnchor e)
+        {
+            Selected?.Invoke(e, e.IsSelected);
         }
 
         public void SetTwoPoint(Point point)
@@ -164,6 +173,8 @@ namespace MonchaCadViewer.CanvasObj
 
     public class RectangelAdorner : Adorner
     {
+        public event EventHandler<CadAnchor> SelectAnchor;
+
         private VisualCollection _Visuals;
 
         private List<CadAnchor> _Anchors;
@@ -181,15 +192,26 @@ namespace MonchaCadViewer.CanvasObj
 
             Rect rect = new Rect(0, 0, this.rectangle.Bounds.Width, this.rectangle.Bounds.Height);
 
-            _Anchors.Add(new CadAnchor(adornedElement.LRect.P1));
-            _Anchors.Add(new CadAnchor(adornedElement.LRect.P2, adornedElement.LRect.P1));
-            _Anchors.Add(new CadAnchor(adornedElement.LRect.P1, adornedElement.LRect.P2));
-            _Anchors.Add(new CadAnchor(adornedElement.LRect.P2));
+            AddAnchor(new CadAnchor(adornedElement.LRect.P1));
+            AddAnchor(new CadAnchor(adornedElement.LRect.P2, adornedElement.LRect.P1));
+            AddAnchor(new CadAnchor(adornedElement.LRect.P1, adornedElement.LRect.P2));
+            AddAnchor(new CadAnchor(adornedElement.LRect.P2));
 
             foreach (CadAnchor anchor in _Anchors)
             {
                 _Visuals.Add(anchor);
             }
+        }
+
+        private void AddAnchor(CadAnchor anchor)
+        {
+            anchor.Selected += Anchor_Selected;
+            _Anchors.Add(anchor);
+        }
+
+        private void Anchor_Selected(object sender, bool e)
+        {
+            SelectAnchor?.Invoke(this, (CadAnchor)sender);
         }
 
         private void Rectangle_PropertyChanged(object sender, PropertyChangedEventArgs e)

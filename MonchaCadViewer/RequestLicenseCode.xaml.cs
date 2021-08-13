@@ -32,7 +32,7 @@ namespace MonchaCadViewer
         {
             if (e.Key == Key.NumPad0 && Keyboard.Modifiers == ModifierKeys.Control)
             {
-                if (LKey != null) LKey.SetKey();
+                LKey.SetKey();
             }
         }
 

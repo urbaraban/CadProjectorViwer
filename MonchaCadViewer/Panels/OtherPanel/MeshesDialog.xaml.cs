@@ -20,7 +20,7 @@ namespace MonchaCadViewer.Panels.DevicePanel
     /// </summary>
     public partial class MeshesDialog : Window
     {
-        MonchaDevice Device => (MonchaDevice)this.DataContext;
+        LDevice Device => (LDevice)this.DataContext;
 
         public MeshesDialog()
         {

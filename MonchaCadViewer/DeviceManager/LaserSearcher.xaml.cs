@@ -1,6 +1,7 @@
 ﻿using MonchaNETDll.MonchaBroadcast;
 using MonchaSDK;
 using MonchaSDK.Device;
+using MonchaSDK.Device.Controllers;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -31,7 +32,6 @@ namespace MonchaCadViewer
 
         private void RefreshList()
         {
-
             this.iPs = MonchaSearch.FindDevicesOverBroadcast2(MonchaSearch.GetAvailabeBroadcastAddresses());
 
             if (this.iPs.Count > 0)
@@ -40,7 +40,6 @@ namespace MonchaCadViewer
                 foreach (BroadcastReply2 broadcastReply in iPs)
                 {
                     IpSelect ipSelect = new IpSelect() { iPAddress = new IPAddress(BitConverter.GetBytes(broadcastReply.ipv4)), IsSelected = false };
-                    //if not
                     if (laserHub.CheckDeviceInHub(ipSelect.iPAddress) == false)
                     {
                         this.NewDevices.Add(ipSelect);
@@ -49,7 +48,7 @@ namespace MonchaCadViewer
             }
 
             this.OldDevices.Clear();
-            foreach (MonchaDevice monchaDevice in laserHub.Devices)
+            foreach (LDevice monchaDevice in laserHub.Devices)
             {
                 if (monchaDevice != null)
                 {

@@ -84,7 +84,7 @@
                     </Menu>
 
                     <Separator/>
-                    <Label Content="CUT — Viwer" Padding="5,2" VerticalContentAlignment="Center"/>
+                    <Label x:Name="NameLabel" Content="CUT — Viwer" Padding="5,2" VerticalContentAlignment="Center"/>
 
                     <StackPanel Margin="10,0,0,0" Orientation="Horizontal" HorizontalAlignment="Right" DockPanel.Dock="Right" UseLayoutRounding="True">
 
@@ -115,10 +115,10 @@
 
 
             <DockPanel Margin="5" Grid.Row="1">
-                <ToolBar>
+                <ToolBar DockPanel.Dock="Left">
                     <Button x:Name="OpenBtn" AllowDrop="True" Content="{DynamicResource m_Open}" DragEnter="OpenBtn_DragEnter" DragOver="OpenBtn_DragOver" DragLeave="OpenBtn_DragLeave" Drop="OpenBtn_DragDropAsync" Click="OpenBtn_ClickAsync" Grid.ColumnSpan="2" Background="{x:Null}" BorderBrush="{x:Null}" VerticalContentAlignment="Center" Margin="0,10,0,14" Width="99" VerticalAlignment="Stretch" />
                 </ToolBar>
-                <ToolBarTray Orientation="Vertical" IsLocked="True" Background="White">
+                <ToolBarTray DockPanel.Dock="Right" Orientation="Vertical" IsLocked="True" Background="White" HorizontalAlignment="Stretch">
                     <ToolBar Margin="0,0,0,0" Width="80" >
                         <Button x:Name="ClearBtn" Content="{DynamicResource edit_Clear}"  Click="ClearBtn_Click" Height="25" HorizontalAlignment="Stretch"/>
                         <Button x:Name="Line" Content="{DynamicResource edit_Line}" Click="Line_Click" Height="25" HorizontalAlignment="Stretch"/>

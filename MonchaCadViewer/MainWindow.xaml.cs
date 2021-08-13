@@ -39,6 +39,7 @@ using MonchaCadViewer.Panels.CanvasPanel;
 using System.Management;
 using ToGeometryConverter.Format;
 using MonchaCadViewer.StaticTools;
+using System.Reflection;
 
 namespace MonchaCadViewer
 {
@@ -99,6 +100,8 @@ namespace MonchaCadViewer
             LaserHub.Loging += MonchaHub_Loging;
             MainScene.UpdateFrame += MainScene_UpdateFrame;
 
+            NameLabel.Content = $"2CUT Viewer v{Assembly.GetExecutingAssembly().GetName().Version.ToString()}";
+
             LoadMoncha();
         }
 
@@ -142,7 +145,7 @@ namespace MonchaCadViewer
         private void MonchaHub_Loging(object sender, string e) => LogBox.Invoke(() => { LogBox.Items.Add(e); });
 
 
-        private void LoadMoncha()
+        private async void LoadMoncha()
         {
             LaserHub.Play = false;
 
@@ -154,8 +157,14 @@ namespace MonchaCadViewer
             LaserHub.Disconnect();
 
             //send path to hub class
-            LaserHub.Load(AppSt.Default.cl_moncha_path);
-
+            try
+            {
+                await LaserHub.Load(AppSt.Default.cl_moncha_path);
+            }
+            catch
+            {
+                MessageBox.Show("Ошибка конфигурации!");
+            }
             WidthUpDn.DataContext = LaserHub.Size;
             WidthUpDn.SetBinding(NumericUpDown.ValueProperty, "X");
 
@@ -622,7 +631,7 @@ namespace MonchaCadViewer
             {
                 for (int i = 0; i < LaserHub.Devices.Count; i++)
                 {
-                    ildaWriter.Write(($"{saveFileDialog.FileName.Replace(".ild", string.Empty)}_{i}.ild"), new List<LFrame>(){ await LaserHub.Devices[i].GetReadyFrame.GetLFrame(LaserHub.Devices[i], LaserHub.MainFrame)}, 5);
+                    ildaWriter.Write(($"{saveFileDialog.FileName.Replace(".ild", string.Empty)}_{i}.ild"), new List<LFrame>(){ await LaserHub.Devices[i].ReadyFrame.GetLFrame(LaserHub.Devices[i], LaserHub.MainFrame)}, 5);
                 }
             }
         }

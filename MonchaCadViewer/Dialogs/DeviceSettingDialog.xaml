@@ -3,9 +3,10 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:MonchaCadViewer.Panels.DevicePanel" 
         xmlns:Controls="http://metro.mahapps.com/winfx/xaml/controls"
         mc:Ignorable="d"
+        xmlns:dvc="clr-namespace:MonchaSDK.Device;assembly=MonchaSDK" 
+        d:DataContext="{d:DesignInstance Type=dvc:LDevice}"
         Title="DeviceSettingDialog" Height="250" Width="200">
     <Window.Resources>
         <ResourceDictionary>
@@ -56,7 +57,7 @@
         <Button x:Name="CheckBtn" Grid.ColumnSpan="2" Content="Chek" Grid.Column="1" HorizontalAlignment="Left" Margin="5,5,0,5" Width="86" Click="CheckBtn_Click" LostFocus="IP_LostFocus"/>
         <CheckBox x:Name="CheckLabel" Grid.Column="3" Margin="5" IsEnabled="False"/>
         <Button x:Name="SaveBtn" Grid.ColumnSpan="4" Content="Save" Height="36" Margin="10,0,10,10" Grid.Row="4" VerticalAlignment="Bottom" Click="SaveBtn_Click"/>
-        
+
         <ComboBox x:Name="SelectCombo" Grid.Column="1" Grid.Row="2" Grid.ColumnSpan="2" Margin="5,3"/>
         <ComboBox x:Name="BaseCombo" Grid.Column="1" Grid.Row="3" Grid.ColumnSpan="2" Margin="5,3"/>
 
@@ -64,5 +65,15 @@
         <Label x:Name="label_Copy1" Content="Base" Margin="5,3,0,3" Grid.Row="3"/>
         <Button x:Name="AddSelectBtn" Content="+" Grid.Column="3" HorizontalAlignment="Left" Margin="10,6,0,4" Width="21" Grid.Row="2"/>
         <Button x:Name="AddBaseBtn" Content="+" Grid.Column="3" HorizontalAlignment="Left" Margin="10,6,0,4" Width="21" Grid.Row="3"/>
+        <Controls:NumericUpDown
+            Value="{Binding DistKoefX, Mode=TwoWay}"
+            Grid.Row="4"
+            Grid.ColumnSpan="4"
+            Height="30"
+            Margin="10,0,10,59"
+            VerticalAlignment="Bottom"
+            Interval="0.01"
+            Maximum="1"
+            Minimum="-1" NumericInputMode="Decimal"/>
     </Grid>
 </Window>

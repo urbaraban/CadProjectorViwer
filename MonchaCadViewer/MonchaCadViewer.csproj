@@ -36,7 +36,7 @@
     <SuiteName>Viwer</SuiteName>
     <WebPage>publish.htm</WebPage>
     <OpenBrowserOnPublish>false</OpenBrowserOnPublish>
-    <ApplicationRevision>59</ApplicationRevision>
+    <ApplicationRevision>61</ApplicationRevision>
     <ApplicationVersion>0.8.1.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <CreateDesktopShortcut>true</CreateDesktopShortcut>
@@ -250,10 +250,10 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="Calibration\DotEdit.xaml.cs">
+    <Compile Include="Dialogs\DotEdit.xaml.cs">
       <DependentUpon>DotEdit.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Calibration\MeshTool.cs" />
+    <Compile Include="Dialogs\MeshTool.cs" />
     <Compile Include="CanvasObj\CadObjectsGroup.cs" />
     <Compile Include="CanvasObj\CadLine.cs" />
     <Compile Include="CanvasObj\CadRectangle.cs" />
@@ -265,7 +265,7 @@
     <Compile Include="CanvasObj\CadCanvas.cs" />
     <Compile Include="CanvasObj\LaserSender.cs" />
     <Compile Include="CanvasObj\CadGeometry.cs" />
-    <Compile Include="Calibration\CreateGridWindow.xaml.cs">
+    <Compile Include="Dialogs\CreateGridWindow.xaml.cs">
       <DependentUpon>CreateGridWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="DeviceManager\LaserSearcher.xaml.cs">
@@ -280,7 +280,7 @@
     <Compile Include="Panels\LeftPanels\FrameTree.xaml.cs">
       <DependentUpon>FrameTree.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Panels\OtherPanel\DeviceSettingDialog.xaml.cs">
+    <Compile Include="Dialogs\DeviceSettingDialog.xaml.cs">
       <DependentUpon>DeviceSettingDialog.xaml</DependentUpon>
     </Compile>
     <Compile Include="Panels\LeftPanels\DeviceTreeTab.xaml.cs">
@@ -314,11 +314,11 @@
       <DependentUpon>RequestLicenseCode.xaml</DependentUpon>
     </Compile>
     <Compile Include="StaticTools\GetGC.cs" />
-    <Page Include="Calibration\CreateGridWindow.xaml">
+    <Page Include="Dialogs\CreateGridWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Calibration\DotEdit.xaml">
+    <Page Include="Dialogs\DotEdit.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -381,7 +381,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Panels\OtherPanel\DeviceSettingDialog.xaml">
+    <Page Include="Dialogs\DeviceSettingDialog.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

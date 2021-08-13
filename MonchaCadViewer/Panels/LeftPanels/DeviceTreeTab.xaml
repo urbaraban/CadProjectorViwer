@@ -69,7 +69,7 @@
 
             <HierarchicalDataTemplate 
                 x:Key="DeviceTree" 
-                DataType ="{x:Type dvc:MonchaDevice}" 
+                DataType ="{x:Type dvc:LDevice}" 
                 ItemsSource="{Binding SelectedMeshes}"
                 ItemTemplate="{StaticResource MeshTree}">
                 <Border Margin="5" ContextMenuClosing="DeviceBorder_ContextMenuClosing">

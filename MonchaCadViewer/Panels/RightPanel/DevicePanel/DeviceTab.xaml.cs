@@ -26,7 +26,7 @@ namespace MonchaCadViewer.Panels
     /// </summary>
     public partial class DeviceTab : UserControl
     {
-        private MonchaDevice device => (MonchaDevice)DeviceCombo.SelectedItem;
+        private LDevice device => (LDevice)DeviceCombo.SelectedItem;
 
         public DeviceTab()
         {
@@ -59,7 +59,7 @@ namespace MonchaCadViewer.Panels
 
         private void DeviceSettingBtn_Click(object sender, RoutedEventArgs e)
         {
-            DeviceSettingDialog deviceSettingDialog = new DeviceSettingDialog((MonchaDevice)DeviceCombo.SelectedItem);
+            DeviceSettingDialog deviceSettingDialog = new DeviceSettingDialog((LDevice)DeviceCombo.SelectedItem);
             deviceSettingDialog.Show();
         }
 

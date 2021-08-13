@@ -28,7 +28,7 @@ namespace MonchaCadViewer.Panels
     public partial class DeviceTreeTab : UserControl, INotifyPropertyChanged
     {
         public event EventHandler<bool> NeedRefresh;
-        public event EventHandler<MonchaDevice> DeviceChange;
+        public event EventHandler<LDevice> DeviceChange;
 
 
         MainWindow mainWindow => (MainWindow)this.DataContext;
@@ -43,7 +43,7 @@ namespace MonchaCadViewer.Panels
         {
             if (sender is TreeViewItem BaseMeshItem && BaseMeshItem.Parent is TreeViewItem DeviceTree)
             {
-                if (DeviceTree.DataContext is MonchaDevice device && BaseMeshItem.DataContext is LDeviceMesh mesh)
+                if (DeviceTree.DataContext is LDevice device && BaseMeshItem.DataContext is LDeviceMesh mesh)
                 {
                     mainWindow.MainScene.AddRange(CadCanvas.GetMesh(mesh, LaserHub.GetThinkess * AppSt.Default.anchor_size, false, MeshType.NONE).ToArray());
                 }
@@ -103,7 +103,7 @@ namespace MonchaCadViewer.Panels
             if (sender is TreeViewItem viewItem)
             {
                 if (viewItem.ContextMenu.DataContext is MenuItem cmindex && sender is TreeViewItem treeView &&
-                            treeView.DataContext is MonchaDevice device)
+                            treeView.DataContext is LDevice device)
                 {
                     switch (cmindex.Tag)
                     {
@@ -190,10 +190,10 @@ namespace MonchaCadViewer.Panels
             }
         }
 
-        private MonchaDevice selectdevice;
+        private LDevice selectdevice;
         private void treeView_SelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
         {
-            if (e.NewValue is MonchaDevice device)
+            if (e.NewValue is LDevice device)
             {
                 selectdevice = device;
             }

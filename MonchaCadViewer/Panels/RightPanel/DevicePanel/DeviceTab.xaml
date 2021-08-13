@@ -8,7 +8,7 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
     xmlns:lhub="clr-namespace:MonchaSDK;assembly=MonchaSDK" 
     xmlns:dvc="clr-namespace:MonchaSDK.Device;assembly=MonchaSDK" 
-    d:DataContext="{d:DesignInstance Type=dvc:MonchaDevice}"
+    d:DataContext="{d:DesignInstance Type=dvc:LDevice}"
     Padding="0"
     d:DesignHeight="550"
     d:DesignWidth="300"
@@ -200,7 +200,7 @@
             FontSize="8" />
         <Slider
             DataContext="{Binding ElementName=DeviceCombo, Path=SelectedItem}"
-            Value="{Binding ScanRateCalc, Mode=TwoWay}"
+            Value="{Binding ScanRate, Mode=TwoWay}"
             Grid.Row="3"
             Grid.Column="1"
             Grid.ColumnSpan="4"

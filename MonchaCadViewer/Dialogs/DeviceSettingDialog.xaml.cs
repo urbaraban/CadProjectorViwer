@@ -23,14 +23,15 @@ namespace MonchaCadViewer.Panels.DevicePanel
     /// </summary>
     public partial class DeviceSettingDialog : Window
     {
-        private MonchaDevice _device { get; set; }
+        private LDevice _device { get; set; }
 
         public event EventHandler<List<FrameworkElement>> DrawObjects;
 
-        public DeviceSettingDialog(MonchaDevice Device)
+        public DeviceSettingDialog(LDevice Device)
         {
             InitializeComponent();
             this._device = Device;
+            this.DataContext = Device;
 
             IP1.Text = this._device.iPAddress.GetAddressBytes()[0].ToString();
             IP2.Text = this._device.iPAddress.GetAddressBytes()[1].ToString();

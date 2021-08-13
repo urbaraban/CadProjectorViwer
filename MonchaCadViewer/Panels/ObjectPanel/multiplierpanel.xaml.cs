@@ -53,7 +53,7 @@ namespace MonchaCadViewer.Panels
         {
             if (this.DataContext is CadObject cadObject)
             {
-                cadObject.ProjectionSetting.Device = (MonchaDevice)DeviceLayerCombo.SelectedItem;
+                cadObject.ProjectionSetting.Device = (LDevice)DeviceLayerCombo.SelectedItem;
             }
         }
     }

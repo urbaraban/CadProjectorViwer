@@ -350,6 +350,7 @@ namespace MonchaCadViewer.CanvasObj
                 if (value != this.Render)
                 {
                     this._render = value;
+                    if (AppSt.Default.stg_selectable_show == true) this.IsSelected = value;
                     Updated?.Invoke(this, "Render");
                     OnPropertyChanged("Render");
                 }

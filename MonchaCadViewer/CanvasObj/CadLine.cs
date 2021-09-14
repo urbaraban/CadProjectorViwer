@@ -80,7 +80,7 @@ namespace MonchaCadViewer.CanvasObj
 
         public override Rect Bounds => new Rect(P1.GetMPoint, P2.GetMPoint);
 
-        public CadLine(LPoint3D P1, LPoint3D P2, bool MouseSet)
+        public CadLine(LPoint3D P1, LPoint3D P2, bool MouseSet) : base(true)
         {
             this.P1 = P1;
             this.P2 = P2;

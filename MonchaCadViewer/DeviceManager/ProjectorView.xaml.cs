@@ -1,7 +1,12 @@
-﻿using MonchaSDK.Device;
+﻿using MonchaCadViewer.CanvasObj;
+using MonchaSDK.Device;
+using MonchaSDK.Object;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
+using System.Globalization;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -18,12 +23,20 @@ namespace MonchaCadViewer.DeviceManager
     /// <summary>
     /// Логика взаимодействия для ProjectorView.xaml
     /// </summary>
-    public partial class ProjectorView : Window
+    
+    public partial class ProjectorView : Window, INotifyPropertyChanged
     {
-        public ProjectorView(LDevice aLDevice)
+        #region INotifyPropertyChanged
+        public event PropertyChangedEventHandler PropertyChanged;
+        public void OnPropertyChanged([CallerMemberName] string prop = "")
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(prop));
+        }
+        #endregion
+
+        public ProjectorView()
         {
             InitializeComponent();
-            this.DataContext = aLDevice;
         }
 
         private void CloseMenuItem_Click(object sender, RoutedEventArgs e)
@@ -43,4 +56,23 @@ namespace MonchaCadViewer.DeviceManager
             this.WindowState = WindowState.Maximized;
         }
     }
+
+    public class LObjectConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            Console.WriteLine("Update Child Viwer");
+            if (value is LObjectList objectList)
+            {
+                return new List<CadObject>() { new CadGeometry(objectList, false) };
+            }
+            else return null;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            return DependencyProperty.UnsetValue;
+        }
+    }
+
 }

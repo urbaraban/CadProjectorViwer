@@ -93,7 +93,11 @@ namespace MonchaCadViewer.CanvasObj
             this.Remove(e);
         }
 
-        private void Obj_PropertyChanged(object sender, PropertyChangedEventArgs e) => UpdateFrame?.Invoke(this, null);
+        private void Obj_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            Console.WriteLine($"FrameUpdate: {e.PropertyName}");
+            UpdateFrame?.Invoke(this, null);
+        }
 
 
         #region SelectionManager

@@ -3,14 +3,21 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:MonchaCadViewer.DeviceManager" xmlns:canvasobj="clr-namespace:MonchaCadViewer.CanvasObj"
+        xmlns:dvc="clr-namespace:MonchaSDK.Device;assembly=MonchaSDK"
+        xmlns:devicemanager="clr-namespace:MonchaCadViewer.DeviceManager"
+        d:DataContext="{d:DesignInstance Type=dvc:LDevice}"
         mc:Ignorable="d"
         WindowState="Maximized"
         WindowStyle="None"
         Background="Black"
-        Title="ProjectorView" Height="450" Width="800" KeyUp="Window_KeyUp" MouseLeftButtonDown="Window_MouseLeftButtonDown">
+        Title="ProjectorView" Height="450" Width="450"
+        KeyUp="Window_KeyUp"
+        MouseLeftButtonDown="Window_MouseLeftButtonDown">
     <Window.Resources>
-        
+        <ResourceDictionary>
+            <devicemanager:LObjectConverter x:Key="LObjConverter"/>
+        </ResourceDictionary>
+
     </Window.Resources>
     <Window.ContextMenu>
         <ContextMenu>
@@ -19,10 +26,22 @@
     </Window.ContextMenu>
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="30"/>
             <RowDefinition Height="1*"/>
-            <RowDefinition Height="30"/>
+            <RowDefinition Height="10*"/>
+            <RowDefinition Height="1*"/>
         </Grid.RowDefinitions>
-        <canvasobj:CadCanvas Grid.Column="0" Grid.Row="0" Grid.RowSpan="3"/>
+        <ItemsControl 
+            Grid.Row="0" Grid.RowSpan="3"
+            ItemsSource="{Binding DeviceFrame, Converter={StaticResource LObjConverter}, Mode=OneWay}">
+            <ItemsControl.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <Canvas Focusable="False" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
+                                         IsHitTestVisible="True" Grid.RowSpan="3" Background="DarkCyan" Height="Auto" Width="Auto"/>
+
+                </ItemsPanelTemplate>
+            </ItemsControl.ItemsPanel>
+        </ItemsControl>
+        <Label Grid.Row="0" Content="{Binding HWIdentifier}" Foreground="White"/>
+        <Label Grid.Row="2" Content="{Binding ScanRate, Mode=TwoWay}" Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Center"/>
     </Grid>
 </Window>

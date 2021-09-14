@@ -93,14 +93,14 @@ namespace MonchaCadViewer.CanvasObj
 
         public override Rect Bounds => new Rect(LRect.P1.GetMPoint, LRect.P2.GetMPoint);
 
-        public CadRectangle(LPoint3D P1, LPoint3D P2, string Label, bool MouseSet)
+        public CadRectangle(LPoint3D P1, LPoint3D P2, string Label, bool MouseSet) : base(true)
         {
             this.NameID = Label;
             this.LRect = new LSize3D(P1, P2);
             LoadSetting();
         }
 
-        public CadRectangle(LSize3D lRect, string Label)
+        public CadRectangle(LSize3D lRect, string Label) : base(true)
         {
             this.NameID = Label;
             LRect = lRect;

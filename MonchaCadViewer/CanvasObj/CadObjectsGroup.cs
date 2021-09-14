@@ -83,12 +83,12 @@ namespace MonchaCadViewer.CanvasObj
 
         private GCCollection gCCollection;
 
-        public CadObjectsGroup()
+        public CadObjectsGroup() : base(true)
         {
 
         }
 
-        public CadObjectsGroup(GCCollection gCCollection)
+        public CadObjectsGroup(GCCollection gCCollection) : base(true)
         {
             this.gCCollection = gCCollection;
             this.UpdateTransform(true);

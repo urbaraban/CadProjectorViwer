@@ -250,6 +250,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="CanvasObj\CadCanvas.cs" />
     <Compile Include="DeviceManager\ProjectorView.xaml.cs">
       <DependentUpon>ProjectorView.xaml</DependentUpon>
     </Compile>
@@ -265,7 +266,6 @@
     <Compile Include="CommonConverters.cs" />
     <Compile Include="ContextMenuLib.cs" />
     <Compile Include="CanvasObj\CadAnchor.cs" />
-    <Compile Include="CanvasObj\CadCanvas.cs" />
     <Compile Include="CanvasObj\SceneSender.cs" />
     <Compile Include="CanvasObj\CadGeometry.cs" />
     <Compile Include="Dialogs\CreateGridWindow.xaml.cs">

@@ -41,6 +41,8 @@ namespace MonchaCadViewer.CanvasObj
         public virtual Geometry GetGeometry => _Geometry;
         private Geometry _Geometry;
 
+        public bool ActiveObject { get; private set; }
+
         public virtual Pen myPen { 
             get
             {
@@ -370,42 +372,47 @@ namespace MonchaCadViewer.CanvasObj
         protected override void OnMouseLeftButtonUp(System.Windows.Input.MouseButtonEventArgs e)
         {
             base.OnMouseLeftButtonUp(e);
-
-            if (this.WasMove == false)
+            if (ActiveObject == true)
             {
-                this.IsSelected = !this._isselected;
-            }
-            else
-            {
-                this.WasMove = false;
-                this.Editing = false;
-                this.ReleaseMouseCapture();
+                if (this.WasMove == false)
+                {
+                    this.IsSelected = !this._isselected;
+                }
+                else
+                {
+                    this.WasMove = false;
+                    this.Editing = false;
+                    this.ReleaseMouseCapture();
+                }
             }
         }
 
         protected override void OnMouseMove(MouseEventArgs e)
         {
             base.OnMouseMove(e);
-            if (this.IsFix == false)
+            if (ActiveObject == true)
             {
-                CadCanvas canvas = this.Parent as CadCanvas;
-
-                if (e.LeftButton == MouseButtonState.Pressed)
+                if (this.IsFix == false)
                 {
-                    this.WasMove = true;
-                    this.Editing = true;
+                    CadCanvas canvas = this.Parent as CadCanvas;
 
-                    Point tPoint = e.GetPosition(this);
+                    if (e.LeftButton == MouseButtonState.Pressed)
+                    {
+                        this.WasMove = true;
+                        this.Editing = true;
 
-                    this.X = this.BasePos.X + (tPoint.X - this.MousePos.X);
-                    this.Y = this.BasePos.Y + (tPoint.Y - this.MousePos.Y);
+                        Point tPoint = e.GetPosition(this);
 
-                    this.CaptureMouse();
-                    this.Cursor = Cursors.SizeAll;
-                }
-                else
-                {
-                    this.Cursor = Cursors.Hand;
+                        this.X = this.BasePos.X + (tPoint.X - this.MousePos.X);
+                        this.Y = this.BasePos.Y + (tPoint.Y - this.MousePos.Y);
+
+                        this.CaptureMouse();
+                        this.Cursor = Cursors.SizeAll;
+                    }
+                    else
+                    {
+                        this.Cursor = Cursors.Hand;
+                    }
                 }
             }
         }
@@ -413,54 +420,69 @@ namespace MonchaCadViewer.CanvasObj
         protected override void OnMouseLeave(MouseEventArgs e)
         {
             base.OnMouseLeave(e);
-            this.WasMove = false;
-            OnObject?.Invoke(this, this.IsMouseOver);
-            OnPropertyChanged();
+            if (ActiveObject == true)
+            {
+                this.WasMove = false;
+                OnObject?.Invoke(this, this.IsMouseOver);
+                OnPropertyChanged();
+            }
         }
 
         protected override void OnMouseEnter(MouseEventArgs e)
         {
             base.OnMouseEnter(e);
-            OnObject?.Invoke(this, this.IsMouseOver);
-            OnPropertyChanged();
+            if (ActiveObject == true)
+            {
+                OnObject?.Invoke(this, this.IsMouseOver);
+                OnPropertyChanged();
+            }
         }
 
         protected override void OnMouseWheel(MouseWheelEventArgs e)
         {
             base.OnMouseWheel(e);
-            if ((e.Delta != 0) && (Keyboard.Modifiers != ModifierKeys.Control))
+            if (ActiveObject == true)
             {
-                if (Keyboard.Modifiers == ModifierKeys.Alt) RotateAxis(AxisAngleY, "AngleY");
-                else if (Keyboard.Modifiers == (ModifierKeys.Alt | ModifierKeys.Shift)) RotateAxis(AxisAngleX, "AngleX");
-                else if (Keyboard.Modifiers == ModifierKeys.None ||
-                    Keyboard.Modifiers == ModifierKeys.Shift) RotateAxis(AxisAngleZ, "AngleZ");
-            }
+                if ((e.Delta != 0) && (Keyboard.Modifiers != ModifierKeys.Control))
+                {
+                    if (Keyboard.Modifiers == ModifierKeys.Alt) RotateAxis(AxisAngleY, "AngleY");
+                    else if (Keyboard.Modifiers == (ModifierKeys.Alt | ModifierKeys.Shift)) RotateAxis(AxisAngleX, "AngleX");
+                    else if (Keyboard.Modifiers == ModifierKeys.None ||
+                        Keyboard.Modifiers == ModifierKeys.Shift) RotateAxis(AxisAngleZ, "AngleZ");
+                }
 
-            void RotateAxis(AxisAngleRotation3D axisAngleRotation3D, string OnPropertyString)
-            {
-                axisAngleRotation3D.Angle += Math.Abs(e.Delta) / e.Delta * (Keyboard.Modifiers == ModifierKeys.Shift ? 1 : 5);
-                OnPropertyChanged(OnPropertyString);
+                void RotateAxis(AxisAngleRotation3D axisAngleRotation3D, string OnPropertyString)
+                {
+                    axisAngleRotation3D.Angle += Math.Abs(e.Delta) / e.Delta * (Keyboard.Modifiers == ModifierKeys.Shift ? 1 : 5);
+                    OnPropertyChanged(OnPropertyString);
+                }
             }
         }
 
         protected override void OnMouseLeftButtonDown(MouseButtonEventArgs e)
         {
             base.OnMouseLeftButtonDown(e);
-            this.MousePos = e.GetPosition(this);
-            this.BasePos = new Point(this.X, this.Y);
+            if (ActiveObject == true)
+            {
+                this.MousePos = e.GetPosition(this);
+                this.BasePos = new Point(this.X, this.Y);
+            }
         }
 
         protected override void OnContextMenuClosing(ContextMenuEventArgs e)
         {
             base.OnContextMenuClosing(e);
-            if (this.ContextMenu.DataContext is MenuItem menuItem)
+            if (ActiveObject == true)
             {
-                DoItContextMenu(menuItem);
+                if (this.ContextMenu.DataContext is MenuItem menuItem)
+                {
+                    DoItContextMenu(menuItem);
+                }
             }
         }
 
 
-        public CadObject()
+        public CadObject(bool ActiveObject)
         {
             if (this.ContextMenu == null)
             {
@@ -469,6 +491,7 @@ namespace MonchaCadViewer.CanvasObj
             }
             this.ProjectionSetting.PropertyChanged += ProjectionSetting_PropertyChanged;
             this.Uid = Guid.NewGuid().ToString();
+            this.ActiveObject = ActiveObject;
         }
 
 

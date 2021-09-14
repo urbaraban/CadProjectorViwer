@@ -23,12 +23,27 @@ namespace MonchaCadViewer.CanvasObj
 
         public override  Geometry GetGeometry => this.GCObject.GetGeometry(this.TransformGroup, this.ProjectionSetting.PointStep.MX, this.ProjectionSetting.RadiusEdge);
     
-        private bool _maincanvas;
-
-        public CadGeometry(IGCObject gCObject, bool maincanvas) 
+        public CadGeometry(IGCObject gCObject, bool ActiveObject) : base(ActiveObject)
         {
             this.GCObject = gCObject;
-            this._maincanvas = maincanvas;
+            this.Cursor = Cursors.Hand;
+            ContextMenuLib.ViewContourMenu(this.ContextMenu);
+        }
+
+        public CadGeometry(LObjectList ObjectsList, bool ActiveObject) : base(ActiveObject)
+        {
+            GCCollection gCObjects = new GCCollection(ObjectsList.DisplayName);
+            foreach (LObject obj in ObjectsList)
+            {
+                PointsElement Points = new PointsElement();
+                foreach (LPoint3D point in obj)
+                {
+                    Points.Add(new GCPoint3D(point.MX, point.MY, point.MZ));
+                }
+                gCObjects.Add(Points);
+            }
+
+            this.GCObject = gCObjects;
             this.Cursor = Cursors.Hand;
             ContextMenuLib.ViewContourMenu(this.ContextMenu);
         }

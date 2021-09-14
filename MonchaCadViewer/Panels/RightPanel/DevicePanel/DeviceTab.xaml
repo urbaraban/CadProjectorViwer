@@ -465,5 +465,19 @@ PreviewMouseDown="ScanRateRealSlider_PreviewMouseDown"
             DataContext="{Binding ElementName=DeviceCombo, Path=SelectedItem}"
             IsChecked="{Binding OnlySelectMesh, Mode=TwoWay}"
             Grid.Column="4" Margin="0,23,77,0" Grid.Row="1" VerticalAlignment="Top" HorizontalAlignment="Right" Width="16" Height="15"/>
+        <Slider
+            DataContext="{Binding SelectedItem, ElementName=DeviceCombo}"
+            Value="{Binding ScanRate, Mode=TwoWay}"
+            Grid.Row="3"
+            Grid.Column="1"
+            Grid.ColumnSpan="4"
+            Height="25"
+            Margin="31,26,59,0"
+            VerticalAlignment="Top"
+            AllowDrop="False"
+            Maximum="40000"
+            Minimum="500"
+            PreviewMouseDown="ScanRateRealSlider_PreviewMouseDown"
+            SmallChange="1" Grid.RowSpan="2"/>
     </Grid>
 </UserControl>

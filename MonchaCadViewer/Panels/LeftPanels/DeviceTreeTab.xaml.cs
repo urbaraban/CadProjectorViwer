@@ -123,7 +123,7 @@ namespace MonchaCadViewer.Panels
                             mainWindow.MainScene.Add(new CadAnchor(device.Size.Center) { Render = false });
                             break;
                         case "dvc_view":
-                            ProjectorView projectorView = new ProjectorView(device);
+                            ProjectorView projectorView = new ProjectorView() { DataContext = device };
                             projectorView.Show();
                             break;
 

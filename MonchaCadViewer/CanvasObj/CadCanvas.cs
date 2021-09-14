@@ -34,8 +34,7 @@ namespace MonchaCadViewer.CanvasObj
 
         public CadAnchor UnderAnchor;
 
-        public ObservableCollection<FrameworkElement> Objects { get; } = new ObservableCollection<FrameworkElement>();
-        public ObservableCollection<LSize3D> Masks { get; } = new ObservableCollection<LSize3D>();
+
 
         public bool MainCanvas { get; }
 
@@ -66,13 +65,13 @@ namespace MonchaCadViewer.CanvasObj
 
             this.SetBinding(Canvas.WidthProperty, "X");
             this.SetBinding(Canvas.HeightProperty, "Y");
-     
+
             ResetTransform();
         }
 
 
         //Рисуем квадраты в поле согласно схеме
-       
+
 
         public static List<CadAnchor> GetMesh(LDeviceMesh mesh, double AnchorSize, bool Render, MeshType meshType)
         {
@@ -105,13 +104,13 @@ namespace MonchaCadViewer.CanvasObj
         public RotateTransform Rotate { get; set; }
         public TranslateTransform Translate { get; set; }
 
-        public double X 
-        { 
-            get => this.Translate.X; 
+        public double X
+        {
+            get => this.Translate.X;
             set => this.Translate.X = value;
         }
-        public double Y 
-        { 
+        public double Y
+        {
             get => this.Translate.Y;
             set => this.Translate.Y = value;
         }

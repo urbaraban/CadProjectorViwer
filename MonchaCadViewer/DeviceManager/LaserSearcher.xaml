@@ -9,7 +9,7 @@
         mc:Ignorable="d"
         Title="DeviceManager" Height="430.7" Width="352.848" Closing="DeviceManagerForm_Closing">
     <Grid>
-        <ListView x:Name="FoundDeviceList" Margin="10,10,10,233" ItemsSource="{Binding Devices}">
+        <ListView x:Name="FoundDeviceList" Margin="10,10,10,233">
             <ListView.View>
                 <GridView>
                     <GridViewColumn Header="Name" DisplayMemberBinding="{Binding GetIpString}" />

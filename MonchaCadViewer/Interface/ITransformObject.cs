@@ -9,11 +9,10 @@ using System.Windows.Media.Media3D;
 
 namespace MonchaCadViewer.Interface
 {
-    interface TransformObject
+    interface ITransformObject
     {
         Transform3DGroup TransformGroup { get; }
         ScaleTransform3D Scale { get; }
-
         TranslateTransform3D Translate { get; }
 
         double X { get; set; }

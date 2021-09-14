@@ -45,6 +45,10 @@ namespace MonchaCadViewer
                         this.NewDevices.Add(ipSelect);
                     }
                 }
+                if (this.NewDevices.Count > 0)
+                {
+                    FoundDeviceList.ItemsSource = this.NewDevices;
+                }
             }
 
             this.OldDevices.Clear();
@@ -55,12 +59,12 @@ namespace MonchaCadViewer
                     this.OldDevices.Add(new IpSelect() { iPAddress = monchaDevice.iPAddress, IsSelected = true });
                 }
             }
-
-            if (this.NewDevices.Count > 0)
+            if (this.OldDevices.Count > 0)
             {
-                FoundDeviceList.ItemsSource = this.NewDevices;
                 MonchaDeviceList.ItemsSource = this.OldDevices;
             }
+
+
         }
 
         private void DeviceManagerForm_Closing(object sender, System.ComponentModel.CancelEventArgs e)

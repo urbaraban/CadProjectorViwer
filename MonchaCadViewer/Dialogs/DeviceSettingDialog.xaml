@@ -5,9 +5,8 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:Controls="http://metro.mahapps.com/winfx/xaml/controls"
         mc:Ignorable="d"
-        xmlns:dvc="clr-namespace:MonchaSDK.Device;assembly=MonchaSDK" 
-        d:DataContext="{d:DesignInstance Type=dvc:LDevice}"
-        Title="DeviceSettingDialog" Height="250" Width="200">
+        xmlns:dvc="clr-namespace:MonchaSDK.Device;assembly=MonchaSDK" d:DataContext="{d:DesignInstance Type=dvc:LDevice}"
+        Title="DeviceSettingDialog" Height="319.111" Width="200">
     <Window.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -68,12 +67,33 @@
         <Controls:NumericUpDown
             Value="{Binding DistKoefX, Mode=TwoWay}"
             Grid.Row="4"
-            Grid.ColumnSpan="4"
+            Grid.ColumnSpan="3"
             Height="30"
-            Margin="10,0,10,59"
+            Margin="5,0,10,59"
             VerticalAlignment="Bottom"
             Interval="0.01"
             Maximum="1"
-            Minimum="-1" NumericInputMode="Decimal"/>
+            Minimum="-1" NumericInputMode="Decimal" Grid.Column="1"/>
+        <Controls:NumericUpDown
+            Value="{Binding WidthResolutuon, Mode=TwoWay}"
+            Grid.Row="4"
+            Grid.ColumnSpan="3"
+            Height="30"
+            Margin="5,0,10,129"
+            VerticalAlignment="Bottom"
+            Interval="1"
+            Maximum="9999"
+            Minimum="1" NumericInputMode="Decimal" Grid.Column="1"/>
+        <Controls:NumericUpDown
+            Value="{Binding HeightResolution, Mode=TwoWay}"
+            Grid.Row="4"
+            Grid.ColumnSpan="3"
+            Height="30"
+            Margin="5,0,10,94"
+            VerticalAlignment="Bottom"
+            Interval="1"
+            Maximum="9999"
+            Minimum="1" NumericInputMode="Decimal" Grid.Column="1"/>
+        <Label x:Name="label_Copy2" Content="Width" Margin="5,10,0,134" Grid.Row="4"/>
     </Grid>
 </Window>

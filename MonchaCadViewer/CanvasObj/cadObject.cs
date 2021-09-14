@@ -21,7 +21,7 @@ using System.Collections.ObjectModel;
 
 namespace MonchaCadViewer.CanvasObj
 {
-    public abstract class CadObject : FrameworkElement, INotifyPropertyChanged, TransformObject, LSettingObject
+    public abstract class CadObject : FrameworkElement, INotifyPropertyChanged, ITransformObject, LSettingObject
     {
         public ObservableCollection<CadObject> Children { get; } = new ObservableCollection<CadObject>();
 

@@ -1,4 +1,5 @@
 ﻿using MonchaCadViewer.CanvasObj;
+using MonchaCadViewer.DeviceManager;
 using MonchaSDK;
 using MonchaSDK.Device;
 using MonchaSDK.Object;
@@ -100,10 +101,10 @@ namespace MonchaCadViewer.Panels
 
         private void DeviceBorder_ContextMenuClosing(object sender, ContextMenuEventArgs e)
         {
-            if (sender is TreeViewItem viewItem)
+            if (sender is FrameworkElement element)
             {
-                if (viewItem.ContextMenu.DataContext is MenuItem cmindex && sender is TreeViewItem treeView &&
-                            treeView.DataContext is LDevice device)
+                if (element.ContextMenu.DataContext is MenuItem cmindex &&
+                            element.DataContext is LDevice device)
                 {
                     switch (cmindex.Tag)
                     {
@@ -111,13 +112,19 @@ namespace MonchaCadViewer.Panels
                             //device.Frame = device.CutZone.DrawCutZone();
                             break;
                         case "dvc_showzone":
-                            mainWindow.MainScene.Add(new CadRectangle(device.Size, device.HWIdentifier));
+                            CadRectangle cadRectangle = new CadRectangle(device.Size, device.HWIdentifier);
+                            mainWindow.MainScene.Add(cadRectangle);
+                            cadRectangle.Init();
                             break;
                         case "dvc_polymesh":
                             device.PolyMeshUsed = !device.PolyMeshUsed;
                             break;
                         case "dvc_center":
                             mainWindow.MainScene.Add(new CadAnchor(device.Size.Center) { Render = false });
+                            break;
+                        case "dvc_view":
+                            ProjectorView projectorView = new ProjectorView(device);
+                            projectorView.Show();
                             break;
 
                     }
@@ -127,11 +134,11 @@ namespace MonchaCadViewer.Panels
 
         private void MeshBorder_ContextMenuClosing(object sender, ContextMenuEventArgs e)
         {
-            if (sender is Border border)
+            if (sender is FrameworkElement element)
             {
-                if (border.ContextMenu.DataContext is MenuItem cmindex)
+                if (element.ContextMenu.DataContext is MenuItem cmindex)
                 {
-                    if (border.DataContext is LDeviceMesh mesh)
+                    if (element.DataContext is LDeviceMesh mesh)
                     {
                         switch (cmindex.Tag)
                         {

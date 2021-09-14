@@ -14,7 +14,7 @@ using ToGeometryConverter.Object.Elements;
 
 namespace MonchaCadViewer.CanvasObj
 {
-    public static class LaserSender
+    public static class SceneSender
     {
         public static bool Processing = false;
 
@@ -32,7 +32,7 @@ namespace MonchaCadViewer.CanvasObj
             {
                 if (obj is CadObject cadObject && cadObject.Render == true)
                 {
-                    dotList.AddRange(LaserSender.GetPoint(cadObject, false));
+                    dotList.AddRange(SceneSender.GetPoint(cadObject, false));
                     //dotList.AddRange(cadObject.GetTransformPoint(false));
                 }
             }
@@ -41,7 +41,7 @@ namespace MonchaCadViewer.CanvasObj
             {
                 foreach (CadRectangle rectangle in scene.Masks)
                 {
-                   outList.AddRange(rectangle.LRect.GetCutObjects(dotList));
+                   outList.AddRange(await rectangle.LRect.GetCutObjects(dotList));
                 }
             }
             else outList = dotList;

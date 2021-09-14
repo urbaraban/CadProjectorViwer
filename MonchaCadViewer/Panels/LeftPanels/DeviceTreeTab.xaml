@@ -78,10 +78,12 @@
                             <MenuItem Header = "{DynamicResource dvc_showrect}" Tag="dvc_showrect" Click="MenuItem_Click"/>
                             <MenuItem Header = "{DynamicResource dvc_showzone}" Tag="dvc_showzone" Click="MenuItem_Click"/>
                             <MenuItem Header = "{DynamicResource dvc_polymesh}" Tag="dvc_polymesh" Click="MenuItem_Click"/>
+                            <MenuItem Header = "{DynamicResource dvc_view}" Tag="dvc_view" Click="MenuItem_Click"/>
                         </ContextMenu>
                     </Border.ContextMenu>
                     <StackPanel Orientation="Horizontal" 
                                 VerticalAlignment="Center">
+                        <CheckBox IsChecked="{Binding IsOn}" />
                         <TextBlock VerticalAlignment="Center"
                             Text="&#xE714;"
                             FontFamily="Segoe MDL2 Assets"/>
@@ -139,7 +141,6 @@
                         FontFamily="Segoe MDL2 Assets" />
         </StackPanel>
         <TreeView
-                x:Name="treeView"
                 Margin="0,0,0,0"
                 KeyboardNavigation.DirectionalNavigation="None"
                 KeyboardNavigation.TabNavigation="None" Grid.Row="1"

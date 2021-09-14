@@ -32,11 +32,6 @@ namespace MonchaCadViewer.CanvasObj
         public event EventHandler<CadObject> SelectedObject;
         public event EventHandler UpdateProjection;
 
-        //public event EventHandler<string> ErrorMessageEvent;
-
-        private int _status = 0;
-        private bool _nofreecursor = true;
-
         public CadAnchor UnderAnchor;
 
         public ObservableCollection<FrameworkElement> Objects { get; } = new ObservableCollection<FrameworkElement>();
@@ -66,9 +61,7 @@ namespace MonchaCadViewer.CanvasObj
 
         private void LoadSetting()
         {
-            this.Name = "CCanvas";
             this.Background = Brushes.Transparent; //backBrush;
-
             this.DataContext = LaserHub.Size;
 
             this.SetBinding(Canvas.WidthProperty, "X");
@@ -90,7 +83,6 @@ namespace MonchaCadViewer.CanvasObj
                 for (int j = 0; j < mesh.GetLength(1); j++)
                 {
                     mesh[i, j].M = LaserHub.Size;
-
                     objects.Add(new CadAnchor(mesh[i, j])
                     {
                         IsFix = false,// !mesh.OnlyEdge;

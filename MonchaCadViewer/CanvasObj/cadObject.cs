@@ -21,7 +21,7 @@ using System.Collections.ObjectModel;
 
 namespace MonchaCadViewer.CanvasObj
 {
-    public abstract class CadObject : FrameworkElement, INotifyPropertyChanged, ITransformObject, LSettingObject
+    public abstract class CadObject : FrameworkElement, INotifyPropertyChanged, ITransformObject, ISettingObject
     {
         public ObservableCollection<CadObject> Children { get; } = new ObservableCollection<CadObject>();
 
@@ -424,7 +424,6 @@ namespace MonchaCadViewer.CanvasObj
             {
                 this.WasMove = false;
                 OnObject?.Invoke(this, this.IsMouseOver);
-                OnPropertyChanged();
             }
         }
 
@@ -434,7 +433,6 @@ namespace MonchaCadViewer.CanvasObj
             if (ActiveObject == true)
             {
                 OnObject?.Invoke(this, this.IsMouseOver);
-                OnPropertyChanged();
             }
         }
 

@@ -96,7 +96,7 @@ namespace MonchaCadViewer
 
         private void AddVirtualBtn_Click(object sender, RoutedEventArgs e)
         {
-            laserHub.Devices.Add(new MonchaDevice(new IPAddress(new byte[] { 127, 0, 0, 1 }), LaserHub.UDPPort + laserHub.Devices.Count));
+            laserHub.Devices.Add(new VirtualProjector());
         }
 
         private void SearchBtn_Click(object sender, RoutedEventArgs e)

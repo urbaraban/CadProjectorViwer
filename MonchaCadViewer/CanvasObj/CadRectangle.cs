@@ -47,6 +47,8 @@ namespace MonchaCadViewer.CanvasObj
             }
         }
 
+        private LSize3D _lrect;
+
         public SolidColorBrush BackColorBrush;
 
         private void _lrect_PropertyChanged(object sender, PropertyChangedEventArgs e)
@@ -55,7 +57,6 @@ namespace MonchaCadViewer.CanvasObj
             Updated?.Invoke(this, "Rect");
         }
 
-        private LSize3D _lrect;
 
 
         public override double X

@@ -40,6 +40,7 @@ using System.Management;
 using ToGeometryConverter.Format;
 using MonchaCadViewer.StaticTools;
 using System.Reflection;
+using MonchaSDK.Tools;
 
 namespace MonchaCadViewer
 {
@@ -49,7 +50,7 @@ namespace MonchaCadViewer
     public partial class MainWindow : Window
     {
         public ProjectionScene MainScene { get; } = new ProjectionScene();
-        public LaserHub LaserHub { get; set; } = new LaserHub(AppSt.Default.cl_moncha_path);
+        public LaserHub LaserHub { get; set; } = new LaserHub();
 
         public LSize3D CanvasSize => LaserHub.Size;
 
@@ -97,7 +98,7 @@ namespace MonchaCadViewer
             ProgressPanel.Label = "Hello world!";
             ToGCLogger.Progressed += ToGC_Progressed;
 
-            LaserHub.Loging += MonchaHub_Loging;
+            LLog.LogMsg += MonchaHub_Loging;
             MainScene.UpdateFrame += MainScene_UpdateFrame;
 
             NameLabel.Content = $"2CUT Viewer v{Assembly.GetExecutingAssembly().GetName().Version.ToString()}";

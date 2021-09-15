@@ -82,7 +82,6 @@
             Margin="5,0,10,129"
             VerticalAlignment="Bottom"
             Interval="1"
-            Maximum="9999"
             Minimum="1" NumericInputMode="Decimal" Grid.Column="1"/>
         <Controls:NumericUpDown
             Value="{Binding HeightResolution, Mode=TwoWay}"
@@ -92,7 +91,6 @@
             Margin="5,0,10,94"
             VerticalAlignment="Bottom"
             Interval="1"
-            Maximum="9999"
             Minimum="1" NumericInputMode="Decimal" Grid.Column="1"/>
         <Label x:Name="label_Copy2" Content="Width" Margin="5,10,0,134" Grid.Row="4"/>
     </Grid>

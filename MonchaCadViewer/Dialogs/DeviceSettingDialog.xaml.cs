@@ -33,10 +33,13 @@ namespace MonchaCadViewer.Panels.DevicePanel
             this._device = Device;
             this.DataContext = Device;
 
-            IP1.Text = this._device.iPAddress.GetAddressBytes()[0].ToString();
-            IP2.Text = this._device.iPAddress.GetAddressBytes()[1].ToString();
-            IP3.Text = this._device.iPAddress.GetAddressBytes()[2].ToString();
-            IP4.Text = this._device.iPAddress.GetAddressBytes()[3].ToString();
+            if (this._device != null)
+            {
+                IP1.Text = this._device.iPAddress.GetAddressBytes()[0].ToString();
+                IP2.Text = this._device.iPAddress.GetAddressBytes()[1].ToString();
+                IP3.Text = this._device.iPAddress.GetAddressBytes()[2].ToString();
+                IP4.Text = this._device.iPAddress.GetAddressBytes()[3].ToString();
+            }
 
             SelectCombo.DisplayMemberPath = "Name";
             SelectCombo.ItemsSource = _device.SelectedMeshes;

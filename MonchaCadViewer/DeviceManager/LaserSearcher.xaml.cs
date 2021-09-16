@@ -75,7 +75,7 @@ namespace MonchaCadViewer
                 {
                     if (device != null && device.IsSelected == true)
                     {
-                        laserHub.Devices.Add(laserHub.ConnectDevice(device.iPAddress));
+                        laserHub.Devices.Add(DevicesMg.GetDevice(device.iPAddress, DeviceType.MonchaNET, laserHub.Devices.Count));
                     }
                 }
 

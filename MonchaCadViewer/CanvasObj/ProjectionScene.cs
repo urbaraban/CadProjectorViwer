@@ -76,6 +76,7 @@ namespace MonchaCadViewer.CanvasObj
                     Obj.Removed += Obj_Removed;
                     Obj.PropertyChanged += Obj_PropertyChanged;
                 }
+                UpdateFrame?.Invoke(this, null);
             }
             if (e.OldItems != null)
             {
@@ -85,6 +86,7 @@ namespace MonchaCadViewer.CanvasObj
                     Obj.Removed -= Obj_Removed;
                     Obj.PropertyChanged -= Obj_PropertyChanged;
                 }
+                UpdateFrame?.Invoke(this, null);
             }
         }
 
@@ -93,10 +95,15 @@ namespace MonchaCadViewer.CanvasObj
             this.Remove(e);
         }
 
+        private string[] IgnoreUpdate = new string[]{ "IsMouseOver" };
+
         private void Obj_PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            Console.WriteLine($"FrameUpdate: {e.PropertyName}");
-            UpdateFrame?.Invoke(this, null);
+            if (IgnoreUpdate.Contains(e.PropertyName) == false)
+            {
+                Console.WriteLine($"FrameUpdate: {e.PropertyName}");
+                UpdateFrame?.Invoke(this, null);
+            }
         }
 
 

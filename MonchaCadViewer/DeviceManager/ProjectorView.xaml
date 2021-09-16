@@ -32,11 +32,11 @@
         </Grid.RowDefinitions>
         <ItemsControl 
             Grid.Row="0" Grid.RowSpan="3"
-            ItemsSource="{Binding DeviceFrame, Converter={StaticResource LObjConverter}, Mode=OneWay}">
+            ItemsSource="{Binding MeshedScene, Converter={StaticResource LObjConverter}, Mode=OneWay}">
             <ItemsControl.ItemsPanel>
                 <ItemsPanelTemplate>
                     <Canvas Focusable="False" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
-                                         IsHitTestVisible="True" Grid.RowSpan="3" Background="DarkCyan" Height="Auto" Width="Auto"/>
+                                         IsHitTestVisible="True" Grid.RowSpan="3" Background="Black" Height="Auto" Width="Auto"/>
 
                 </ItemsPanelTemplate>
             </ItemsControl.ItemsPanel>

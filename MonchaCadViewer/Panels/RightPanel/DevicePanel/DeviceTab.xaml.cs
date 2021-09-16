@@ -59,8 +59,11 @@ namespace MonchaCadViewer.Panels
 
         private void DeviceSettingBtn_Click(object sender, RoutedEventArgs e)
         {
-            DeviceSettingDialog deviceSettingDialog = new DeviceSettingDialog((LDevice)DeviceCombo.SelectedItem);
-            deviceSettingDialog.Show();
+            if (DeviceCombo.SelectedItem != null)
+            {
+                DeviceSettingDialog deviceSettingDialog = new DeviceSettingDialog((LDevice)DeviceCombo.SelectedItem);
+                deviceSettingDialog.Show();
+            }
         }
 
 

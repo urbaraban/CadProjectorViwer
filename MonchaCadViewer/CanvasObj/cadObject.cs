@@ -112,6 +112,7 @@ namespace MonchaCadViewer.CanvasObj
             set
             {
                 projectionSetting = value;
+                OnPropertyChanged("ProjectionSetting");
             }
         }
         private LProjectionSetting projectionSetting;
@@ -124,6 +125,7 @@ namespace MonchaCadViewer.CanvasObj
                 ownedsetting = value;
                 if (ownedsetting == true) projectionSetting = LaserHub.ProjectionSetting.Clone();
                 else projectionSetting = null;
+                OnPropertyChanged("OwnedSetting");
             }
         }
         private bool ownedsetting = false;
@@ -390,6 +392,7 @@ namespace MonchaCadViewer.CanvasObj
         protected override void OnMouseMove(MouseEventArgs e)
         {
             base.OnMouseMove(e);
+            OnPropertyChanged("IsMouseOver");
             if (ActiveObject == true)
             {
                 if (this.IsFix == false)
@@ -415,6 +418,7 @@ namespace MonchaCadViewer.CanvasObj
                     }
                 }
             }
+
         }
 
         protected override void OnMouseLeave(MouseEventArgs e)
@@ -425,6 +429,7 @@ namespace MonchaCadViewer.CanvasObj
                 this.WasMove = false;
                 OnObject?.Invoke(this, this.IsMouseOver);
             }
+            OnPropertyChanged("IsMouseOver");
         }
 
         protected override void OnMouseEnter(MouseEventArgs e)

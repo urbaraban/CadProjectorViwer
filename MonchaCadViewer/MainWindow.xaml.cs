@@ -632,7 +632,7 @@ namespace MonchaCadViewer
             {
                 for (int i = 0; i < LaserHub.Devices.Count; i++)
                 {
-                    ildaWriter.Write(($"{saveFileDialog.FileName.Replace(".ild", string.Empty)}_{i}.ild"), new List<LFrame>(){ await LaserHub.Devices[i].ReadyFrame.GetLFrame(LaserHub.Devices[i], LaserHub.MainFrame)}, 5);
+                    //ildaWriter.Write(($"{saveFileDialog.FileName.Replace(".ild", string.Empty)}_{i}.ild"), new List<LFrame>(){ await LaserHub.Devices[i].ReadyFrame.GetLFrame(LaserHub.Devices[i], LaserHub.MainFrame)}, 5);
                 }
             }
         }

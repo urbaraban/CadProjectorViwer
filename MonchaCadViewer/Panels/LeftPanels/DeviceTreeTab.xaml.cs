@@ -71,7 +71,7 @@ namespace MonchaCadViewer.Panels
 
         private void RemoveLaser_Click(object sender, RoutedEventArgs e)
         {
-            mainWindow.LaserHub.Devices.Remove(selectdevice);
+            mainWindow.LaserHub.RemoveDevice(selectdevice.iPAddress);
         }
 
 

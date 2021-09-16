@@ -29,12 +29,7 @@ namespace MonchaCadViewer.CanvasObj
         }
         #endregion
 
-        public event EventHandler<CadObject> SelectedObject;
-        public event EventHandler UpdateProjection;
-
         public CadAnchor UnderAnchor;
-
-
 
         public bool MainCanvas { get; }
 

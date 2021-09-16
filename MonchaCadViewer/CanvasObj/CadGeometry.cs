@@ -35,10 +35,10 @@ namespace MonchaCadViewer.CanvasObj
             GCCollection gCObjects = new GCCollection(ObjectsList.DisplayName);
             foreach (LObject obj in ObjectsList)
             {
-                PointsElement Points = new PointsElement();
+                PointsElement Points = new PointsElement() { IsClosed = obj.Closed } ;
                 foreach (LPoint3D point in obj)
                 {
-                    Points.Add(new GCPoint3D(point.MX, point.MY, point.MZ));
+                    Points.Add(new GCPoint3D(point.X, point.Y, point.Z));
                 }
                 gCObjects.Add(Points);
             }

@@ -1,11 +1,11 @@
 ﻿<UserControl
-    x:Class="MonchaCadViewer.Panels.CadObjectPanel"
+    x:Class="CadProjectorViewer.Panels.CadObjectPanel"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-    xmlns:canvasobj="clr-namespace:MonchaCadViewer.CanvasObj" xmlns:panels="clr-namespace:MonchaCadViewer.Panels"
+    xmlns:canvasobj="clr-namespace:CadProjectorViewer.CanvasObj" xmlns:panels="clr-namespace:CadProjectorViewer.Panels"
     d:DataContext="{d:DesignInstance Type=canvasobj:CadObject}"
     d:DesignHeight="90"
     d:DesignWidth="490"

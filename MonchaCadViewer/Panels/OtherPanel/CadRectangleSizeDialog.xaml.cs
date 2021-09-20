@@ -1,5 +1,5 @@
 ﻿using MahApps.Metro.Controls;
-using MonchaCadViewer.CanvasObj;
+using CadProjectorViewer.CanvasObj;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,7 +14,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 
-namespace MonchaCadViewer.Panels.ObjectPanel
+namespace CadProjectorViewer.Panels.ObjectPanel
 {
     /// <summary>
     /// Логика взаимодействия для CadRectangleSizePanel.xaml

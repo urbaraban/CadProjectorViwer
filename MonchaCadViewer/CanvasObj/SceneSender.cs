@@ -1,18 +1,18 @@
-﻿using MonchaSDK;
-using MonchaSDK.Device;
-using MonchaSDK.Object;
+﻿using CadProjectorSDK;
+using CadProjectorSDK.Device;
+using CadProjectorSDK.Object;
 using System.Linq;
 using System.Windows;
 using System.Windows.Media;
 using System;
 using ToGeometryConverter.Object;
-using MonchaSDK.Setting;
+using CadProjectorSDK.Setting;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Windows.Threading;
 using ToGeometryConverter.Object.Elements;
 
-namespace MonchaCadViewer.CanvasObj
+namespace CadProjectorViewer.CanvasObj
 {
     public static class SceneSender
     {
@@ -123,7 +123,7 @@ namespace MonchaCadViewer.CanvasObj
                     {
                         if (obj.Render == true)
                         {
-                            obj.ProjectionSetting = cadObjectsGroup.ProjectionSetting != LaserHub.ProjectionSetting ? cadObjectsGroup.ProjectionSetting : null;
+                            obj.ProjectionSetting = cadObjectsGroup.ProjectionSetting != ProjectorHub.ProjectionSetting ? cadObjectsGroup.ProjectionSetting : null;
                             lObjectList.AddRange(GetPoint(obj, true));
                         }
                     }

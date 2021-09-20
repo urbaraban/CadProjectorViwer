@@ -1,6 +1,6 @@
-﻿using MonchaCadViewer.CanvasObj;
-using MonchaSDK.Device;
-using MonchaSDK.Object;
+﻿using CadProjectorViewer.CanvasObj;
+using CadProjectorSDK.Device;
+using CadProjectorSDK.Object;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -18,7 +18,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 
-namespace MonchaCadViewer.DeviceManager
+namespace CadProjectorViewer.DeviceManager
 {
     /// <summary>
     /// Логика взаимодействия для ProjectorView.xaml

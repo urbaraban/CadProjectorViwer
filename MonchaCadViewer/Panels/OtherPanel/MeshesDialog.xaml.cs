@@ -1,4 +1,4 @@
-﻿using MonchaSDK.Device;
+﻿using CadProjectorSDK.Device;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,7 +13,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 
-namespace MonchaCadViewer.Panels.DevicePanel
+namespace CadProjectorViewer.Panels.DevicePanel
 {
     /// <summary>
     /// Логика взаимодействия для MeshesDialog.xaml

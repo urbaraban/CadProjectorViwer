@@ -5,12 +5,12 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Media3D;
-using MonchaCadViewer.Calibration;
-using MonchaSDK;
-using MonchaSDK.Device;
-using MonchaSDK.Object;
+using CadProjectorViewer.Calibration;
+using CadProjectorSDK;
+using CadProjectorSDK.Device;
+using CadProjectorSDK.Object;
 
-namespace MonchaCadViewer.CanvasObj
+namespace CadProjectorViewer.CanvasObj
 {
     public class CadAnchor : CadObject
     {
@@ -79,7 +79,7 @@ namespace MonchaCadViewer.CanvasObj
             this.AllowDrop = true;
             this.Drop += CadAnchor_Drop;
 
-            this.size = LaserHub.GetThinkess * 2;
+            this.size = ProjectorHub.GetThinkess * 2;
             this.ShowName = false;
             ContextMenuLib.DotContextMenu(this.ContextMenu);
             Canvas.SetZIndex(this, 999);

@@ -1,13 +1,13 @@
 ﻿using MahApps.Metro.Controls;
-using MonchaSDK;
-using MonchaSDK.Device;
-using MonchaSDK.Setting;
+using CadProjectorSDK;
+using CadProjectorSDK.Device;
+using CadProjectorSDK.Setting;
 using System.Net;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 
-namespace MonchaCadViewer.DeviceManager
+namespace CadProjectorViewer.DeviceManager
 {
     /// <summary>
     /// Логика взаимодействия для LaserMeter.xaml
@@ -53,9 +53,9 @@ namespace MonchaCadViewer.DeviceManager
 
         private void OkBtn_Click(object sender, RoutedEventArgs e)
         {
-          /*   if (!LaserHub.CheckDeviceInHub(this.LMeter.IP))
+          /*   if (!ProjectorHub.CheckDeviceInHub(this.LMeter.IP))
             {
-                LaserHub.LMeters.Add(this.LMeter);
+                ProjectorHub.LMeters.Add(this.LMeter);
                 
             }
             else

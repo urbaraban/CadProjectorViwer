@@ -1,4 +1,4 @@
-﻿using MonchaSDK;
+﻿using CadProjectorSDK;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,14 +8,14 @@ using ToGeometryConverter;
 using ToGeometryConverter.Format;
 using ToGeometryConverter.Object;
 
-namespace MonchaCadViewer.StaticTools
+namespace CadProjectorViewer.StaticTools
 {
     public static class GetGC
     {
         public async static Task<GCCollection> Load(string Filename)
         {
             IFormat format = ToGC.GetConverter(Filename);
-            return await format.GetAsync(Filename, LaserHub.ProjectionSetting.PointStep.MX);
+            return await format.GetAsync(Filename, ProjectorHub.ProjectionSetting.PointStep.MX);
         }
     }
 }

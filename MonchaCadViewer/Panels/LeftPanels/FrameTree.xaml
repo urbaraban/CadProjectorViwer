@@ -1,13 +1,13 @@
-﻿<UserControl x:Class="MonchaCadViewer.Panels.DevicePanel.LeftPanels.FrameTree"
+﻿<UserControl x:Class="CadProjectorViewer.Panels.DevicePanel.LeftPanels.FrameTree"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              mc:Ignorable="d" 
              d:DesignHeight="250" d:DesignWidth="130"
-             xmlns:src="clr-namespace:MonchaCadViewer.CanvasObj" 
+             xmlns:src="clr-namespace:CadProjectorViewer.CanvasObj" 
              xmlns:Controls="http://metro.mahapps.com/winfx/xaml/controls"
-             xmlns:properties="clr-namespace:MonchaCadViewer.Properties"
+             xmlns:properties="clr-namespace:CadProjectorViewer.Properties"
              d:DataContext="{d:DesignInstance Type=src:ProjectionScene}">
     <UserControl.Resources>
         <ResourceDictionary>

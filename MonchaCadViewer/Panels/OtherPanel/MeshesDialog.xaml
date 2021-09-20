@@ -1,9 +1,9 @@
-﻿<Window x:Class="MonchaCadViewer.Panels.DevicePanel.MeshesDialog"
+﻿<Window x:Class="CadProjectorViewer.Panels.DevicePanel.MeshesDialog"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:MonchaCadViewer.Panels.DevicePanel" xmlns:device="clr-namespace:MonchaSDK.Device;assembly=MonchaSDK" d:DataContext="{d:DesignInstance Type=device:MonchaDevice}"
+        xmlns:local="clr-namespace:CadProjectorViewer.Panels.DevicePanel" xmlns:device="clr-namespace:CadProjectorSDK.Device;assembly=CadProjectorSDK" d:DataContext="{d:DesignInstance Type=device:MonchaDevice}"
         mc:Ignorable="d"
         Title="MeshesDialog" Height="450" Width="400">
     <Grid>

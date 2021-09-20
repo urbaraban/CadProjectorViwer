@@ -1,4 +1,4 @@
-﻿using MonchaSDK;
+﻿using CadProjectorSDK;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -13,9 +13,9 @@ using System.Windows.Media;
 using System.Windows.Media.Media3D;
 using ToGeometryConverter.Object;
 using ToGeometryConverter.Object.Elements;
-using AppSt = MonchaCadViewer.Properties.Settings;
+using AppSt = CadProjectorViewer.Properties.Settings;
 
-namespace MonchaCadViewer.CanvasObj
+namespace CadProjectorViewer.CanvasObj
 {
     public class CadObjectsGroup : CadObject, IList<CadObject>
     {
@@ -45,7 +45,7 @@ namespace MonchaCadViewer.CanvasObj
             if (AppSt.Default.stg_show_name == true)
             {
                 geometries.Add(new CadGeometry(
-                    new ToGeometryConverter.Object.Elements.TextElement(objects.Name, LaserHub.GetThinkess,
+                    new ToGeometryConverter.Object.Elements.TextElement(objects.Name, ProjectorHub.GetThinkess,
                     new Point3D(0, 0, 0)),
                     true));
             }

@@ -1,12 +1,11 @@
 ﻿<UserControl
-    x:Class="MonchaCadViewer.Panels.DeviceTreeTab"
+    x:Class="CadProjectorViewer.Panels.DeviceTreeTab"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-    xmlns:monchasdk="clr-namespace:MonchaSDK;assembly=MonchaSDK" 
-    xmlns:dvc="clr-namespace:MonchaSDK.Device;assembly=MonchaSDK"
-    xmlns:mwd="clr-namespace:MonchaCadViewer"
+    xmlns:mwd="clr-namespace:CadProjectorViewer" 
+    xmlns:device="clr-namespace:CadProjectorSDK.Device;assembly=CadProjectorSDK"
     d:DataContext="{d:DesignInstance Type=mwd:MainWindow}"
     d:DesignHeight="450"
     d:DesignWidth="200"
@@ -37,9 +36,8 @@
             </Style>
 
             <HierarchicalDataTemplate 
-                x:Key="MeshTree" 
-                DataType ="{x:Type dvc:LDeviceMesh}">
-                <Border 
+                x:Key="MeshTree">
+            <Border 
                     ContextMenuClosing="MeshBorder_ContextMenuClosing"
                     MouseLeftButtonDown="MeshBorder_MouseLeftButtonDown">
                     <Border.ContextMenu>
@@ -69,7 +67,7 @@
 
             <HierarchicalDataTemplate 
                 x:Key="DeviceTree" 
-                DataType ="{x:Type dvc:LDevice}" 
+                DataType ="{x:Type device:LDeviceMesh}" 
                 ItemsSource="{Binding SelectedMeshes}"
                 ItemTemplate="{StaticResource MeshTree}">
                 <Border Margin="5" ContextMenuClosing="DeviceBorder_ContextMenuClosing">
@@ -144,7 +142,7 @@
                 Margin="0,0,0,0"
                 KeyboardNavigation.DirectionalNavigation="None"
                 KeyboardNavigation.TabNavigation="None" Grid.Row="1"
-             DataContext="{Binding LaserHub}"
+             DataContext="{Binding ProjectorHub}"
             SelectedItemChanged="treeView_SelectedItemChanged">
             <TreeView.ItemContainerStyle>
                 <Style TargetType="TreeViewItem">

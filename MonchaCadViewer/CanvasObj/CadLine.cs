@@ -1,8 +1,8 @@
-﻿using MonchaCadViewer.CanvasObj;
-using MonchaCadViewer.Interface;
-using MonchaCadViewer.Panels.ObjectPanel;
-using MonchaSDK;
-using MonchaSDK.Object;
+﻿using CadProjectorViewer.CanvasObj;
+using CadProjectorViewer.Interface;
+using CadProjectorViewer.Panels.ObjectPanel;
+using CadProjectorSDK;
+using CadProjectorSDK.Object;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -19,7 +19,7 @@ using System.Windows.Media;
 using System.Windows.Media.Media3D;
 using System.Windows.Shapes;
 
-namespace MonchaCadViewer.CanvasObj
+namespace CadProjectorViewer.CanvasObj
 {
     public class CadLine : CadObject, INotifyPropertyChanged, IDrawingObject
     {
@@ -114,7 +114,7 @@ namespace MonchaCadViewer.CanvasObj
             {
                 drawingContext.DrawText(new FormattedText(Math.Round(this.Lenth, 2).ToString(), 
                     new System.Globalization.CultureInfo("ru-RU"), FlowDirection.LeftToRight,
-                   new Typeface("Segoe UI"), (int)LaserHub.GetThinkess * 3, Brushes.Gray), 
+                   new Typeface("Segoe UI"), (int)ProjectorHub.GetThinkess * 3, Brushes.Gray), 
                    new Point(this.X + Math.Abs(P1.MX - P2.MX) / 2, this.Y + Math.Abs(P1.MY - P2.MY) / 2));
             }
 

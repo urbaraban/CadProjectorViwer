@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Windows;
-using AppSt = MonchaCadViewer.Properties.Settings;
+using AppSt = CadProjectorViewer.Properties.Settings;
 
-namespace MonchaCadViewer
+namespace CadProjectorViewer
 {
     /// <summary>
     /// Логика взаимодействия для App.xaml

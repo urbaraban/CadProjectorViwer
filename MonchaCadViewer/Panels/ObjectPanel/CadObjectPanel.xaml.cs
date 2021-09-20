@@ -1,13 +1,13 @@
 ﻿using MahApps.Metro.Controls;
-using MonchaCadViewer.CanvasObj;
+using CadProjectorViewer.CanvasObj;
 using System;
 using System.Globalization;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
-using AppSt = MonchaCadViewer.Properties.Settings;
+using AppSt = CadProjectorViewer.Properties.Settings;
 
-namespace MonchaCadViewer.Panels
+namespace CadProjectorViewer.Panels
 {
     /// <summary>
     /// Логика взаимодействия для CadObjectPanel.xaml

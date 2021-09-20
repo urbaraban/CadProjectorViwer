@@ -4,15 +4,15 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:Controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
-        xmlns:Properties="clr-namespace:MonchaCadViewer.Properties"
-        xmlns:canvaspanel="clr-namespace:MonchaCadViewer.Panels.CanvasPanel"
-        xmlns:panels="clr-namespace:MonchaCadViewer.Panels" 
-        xmlns:convert="clr-namespace:MonchaCadViewer.Converters"
-        xmlns:leftpanels="clr-namespace:MonchaCadViewer.Panels.DevicePanel.LeftPanels" 
-    xmlns:rightpanel="clr-namespace:MonchaCadViewer.Panels.RightPanel" 
-    xmlns:monchacadviewer="clr-namespace:MonchaCadViewer"
-    DataContext="{Binding RelativeSource={RelativeSource Self}, Path=LaserHub}"
-    x:Class="MonchaCadViewer.MainWindow"
+        xmlns:Properties="clr-namespace:CadProjectorViewer.Properties"
+        xmlns:canvaspanel="clr-namespace:CadProjectorViewer.Panels.CanvasPanel"
+        xmlns:panels="clr-namespace:CadProjectorViewer.Panels" 
+        xmlns:convert="clr-namespace:CadProjectorViewer.Converters"
+        xmlns:leftpanels="clr-namespace:CadProjectorViewer.Panels.DevicePanel.LeftPanels" 
+    xmlns:rightpanel="clr-namespace:CadProjectorViewer.Panels.RightPanel" 
+    xmlns:CadProjectorViewer="clr-namespace:CadProjectorViewer"
+    DataContext="{Binding RelativeSource={RelativeSource Self}, Path=ProjectorHub}"
+    x:Class="CadProjectorViewer.MainWindow"
         mc:Ignorable="d"
         Title="CUT" KeyboardNavigation.TabNavigation="None"  
     AllowDrop="True" Drop="MainCanvas_Drop"
@@ -42,8 +42,8 @@
                     </Trigger>
                 </Style.Triggers>
             </Style>
-            <monchacadviewer:PlayBackConverter x:Key="PlayBackConverter"/>
-            <monchacadviewer:MultiObjectList x:Key="MultiList"/>
+            <CadProjectorViewer:PlayBackConverter x:Key="PlayBackConverter"/>
+            <CadProjectorViewer:MultiObjectList x:Key="MultiList"/>
         </ResourceDictionary>
     </Window.Resources>
     <Border>

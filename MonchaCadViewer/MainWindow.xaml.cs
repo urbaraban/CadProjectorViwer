@@ -1,6 +1,6 @@
 ﻿using MahApps.Metro.Controls;
 using Microsoft.Win32;
-using MonchaCadViewer.Calibration;
+using CadProjectorViewer.Calibration;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -10,22 +10,22 @@ using WinForms = System.Windows.Forms;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Threading;
-using AppSt = MonchaCadViewer.Properties.Settings;
+using AppSt = CadProjectorViewer.Properties.Settings;
 using System.Linq;
 using System.Diagnostics;
 using KompasLib.Tools;
-using MonchaCadViewer.CanvasObj;
+using CadProjectorViewer.CanvasObj;
 using System.Globalization;
-using MonchaSDK;
-using MonchaSDK.Device;
-using MonchaSDK.Object;
+using CadProjectorSDK;
+using CadProjectorSDK.Device;
+using CadProjectorSDK.Object;
 using KompasLib.KompasTool;
 using System.Windows.Media.Media3D;
 using StclLibrary.Laser;
 using Microsoft.WindowsAPICodePack.Dialogs;
 using System.ComponentModel;
 using System.Windows.Data;
-using MonchaCadViewer.Panels;
+using CadProjectorViewer.Panels;
 using ToGeometryConverter;
 using ToGeometryConverter.Object;
 using System.Threading.Tasks;
@@ -35,14 +35,14 @@ using System.Text;
 using System.Net.Sockets;
 using System.Net;
 using ToGeometryConverter.Object.UDP;
-using MonchaCadViewer.Panels.CanvasPanel;
+using CadProjectorViewer.Panels.CanvasPanel;
 using System.Management;
 using ToGeometryConverter.Format;
-using MonchaCadViewer.StaticTools;
+using CadProjectorViewer.StaticTools;
 using System.Reflection;
-using MonchaSDK.Tools;
+using CadProjectorSDK.Tools;
 
-namespace MonchaCadViewer
+namespace CadProjectorViewer
 {
     /// <summary>
     /// Логика взаимодействия для MainWindow.xaml
@@ -50,9 +50,9 @@ namespace MonchaCadViewer
     public partial class MainWindow : Window
     {
         public ProjectionScene MainScene { get; } = new ProjectionScene();
-        public LaserHub LaserHub { get; set; } = new LaserHub();
+        public ProjectorHub ProjectorHub { get; set; } = new ProjectorHub();
 
-        public LSize3D CanvasSize => LaserHub.Size;
+        public LSize3D CanvasSize => ProjectorHub.Size;
 
         private KmpsAppl kmpsAppl;
         private bool inverseToggle = true;
@@ -108,7 +108,7 @@ namespace MonchaCadViewer
 
         private async void MainScene_UpdateFrame(object sender, EventArgs e)
         {
-            LaserHub.MainFrame = await SceneSender.GetLObject(MainScene);
+            ProjectorHub.MainFrame = await SceneSender.GetLObject(MainScene);
         }
 
 
@@ -148,34 +148,34 @@ namespace MonchaCadViewer
 
         private async void LoadMoncha()
         {
-            LaserHub.Play = false;
+            ProjectorHub.Play = false;
 
             //check path to setting file
             if (File.Exists(AppSt.Default.cl_moncha_path) == false)
             {
                 BrowseMoncha(); //select if not
             }
-            LaserHub.Disconnect();
+            ProjectorHub.Disconnect();
 
             //send path to hub class
             try
             {
-                await LaserHub.Load(AppSt.Default.cl_moncha_path);
+                await ProjectorHub.Load(AppSt.Default.cl_moncha_path);
             }
             catch
             {
                 MessageBox.Show("Ошибка конфигурации!");
             }
-            WidthUpDn.DataContext = LaserHub.Size;
+            WidthUpDn.DataContext = ProjectorHub.Size;
             WidthUpDn.SetBinding(NumericUpDown.ValueProperty, "X");
 
-            HeightUpD.DataContext = LaserHub.Size;
+            HeightUpD.DataContext = ProjectorHub.Size;
             HeightUpD.SetBinding(NumericUpDown.ValueProperty, "Y");
 
-            DeepUpDn.DataContext = LaserHub.Size;
+            DeepUpDn.DataContext = ProjectorHub.Size;
             DeepUpDn.SetBinding(NumericUpDown.ValueProperty, "Z");
 
-            MashMultiplierUpDn.Value = LaserHub.Size.M.X;
+            MashMultiplierUpDn.Value = ProjectorHub.Size.M.X;
 
             CalibrationFormCombo.Items.Clear();
             CalibrationFormCombo.Items.Add(CalibrationForm.cl_Dot);
@@ -213,8 +213,8 @@ namespace MonchaCadViewer
 
         private void Window_Closed(object sender, System.EventArgs e)
         {
-            LaserHub.Play = false;
-            LaserHub.Disconnect();
+            ProjectorHub.Play = false;
+            ProjectorHub.Disconnect();
             GC.Collect();
             GC.WaitForPendingFinalizers();
         }
@@ -222,7 +222,7 @@ namespace MonchaCadViewer
 
         private void PlayBtn_Click(object sender, RoutedEventArgs e)
         {
-            LaserHub.Play = !LaserHub.Play;
+            ProjectorHub.Play = !ProjectorHub.Play;
         }
 
 
@@ -317,14 +317,14 @@ namespace MonchaCadViewer
             if (MashMultiplierUpDn.Value == null) MashMultiplierUpDn.Value = 1;
             args.Interval = 0;
             MashMultiplierUpDn.Value = MashMultiplierUpDn.Value.Value * 10;
-            LaserHub.Size.M.Set(MashMultiplierUpDn.Value.Value);
+            ProjectorHub.Size.M.Set(MashMultiplierUpDn.Value.Value);
         }
 
         private void MashMultiplierUpDn_ValueDecremented(object sender, NumericUpDownChangedRoutedEventArgs args)
         {
             args.Interval = 0;
             MashMultiplierUpDn.Value = MashMultiplierUpDn.Value.Value / 10;
-            LaserHub.Size.M.Set(MashMultiplierUpDn.Value.Value);
+            ProjectorHub.Size.M.Set(MashMultiplierUpDn.Value.Value);
         }
 
 
@@ -388,7 +388,7 @@ namespace MonchaCadViewer
             {
                 GCCollection gCElements = new GCCollection(this.kmpsAppl.Doc.D7.Name);
                 gCElements.AddRange(
-                    await ContourCalc.GetGeometry(this.kmpsAppl.Doc, LaserHub.ProjectionSetting.PointStep.MX, false, true));
+                    await ContourCalc.GetGeometry(this.kmpsAppl.Doc, ProjectorHub.ProjectionSetting.PointStep.MX, false, true));
 
                 CadObjectsGroup cadGeometries = new CadObjectsGroup(gCElements);
 
@@ -402,7 +402,7 @@ namespace MonchaCadViewer
             {
                 GCCollection gCObjects = new GCCollection(this.kmpsAppl.Doc.D7.Name);
 
-                gCObjects.Add(new GeometryElement(await ContourCalc.GetGeometry(this.kmpsAppl.Doc, LaserHub.ProjectionSetting.PointStep.MX, true, true), "Kompas"));
+                gCObjects.Add(new GeometryElement(await ContourCalc.GetGeometry(this.kmpsAppl.Doc, ProjectorHub.ProjectionSetting.PointStep.MX, true, true), "Kompas"));
 
                 CadObjectsGroup cadGeometries = new CadObjectsGroup(gCObjects);
 
@@ -630,9 +630,9 @@ namespace MonchaCadViewer
 
             if (saveFileDialog.FileName != string.Empty)
             {
-                for (int i = 0; i < LaserHub.Devices.Count; i++)
+                for (int i = 0; i < ProjectorHub.Devices.Count; i++)
                 {
-                    //ildaWriter.Write(($"{saveFileDialog.FileName.Replace(".ild", string.Empty)}_{i}.ild"), new List<LFrame>(){ await LaserHub.Devices[i].ReadyFrame.GetLFrame(LaserHub.Devices[i], LaserHub.MainFrame)}, 5);
+                    //ildaWriter.Write(($"{saveFileDialog.FileName.Replace(".ild", string.Empty)}_{i}.ild"), new List<LFrame>(){ await ProjectorHub.Devices[i].ReadyFrame.GetLFrame(ProjectorHub.Devices[i], ProjectorHub.MainFrame)}, 5);
                 }
             }
         }
@@ -662,7 +662,7 @@ namespace MonchaCadViewer
 
         private void Save_Click(object sender, RoutedEventArgs e)
         {
-            LaserHub.Save(AppSt.Default.cl_moncha_path);
+            ProjectorHub.Save(AppSt.Default.cl_moncha_path);
             AppSt.Default.Save();
         }
 
@@ -683,7 +683,7 @@ namespace MonchaCadViewer
                         if (saveFileDialog.ShowDialog() == true)
                         {
                             ProgressPanel.SetProgressBar(1, 2, "Save Moncha");
-                            LaserHub.Save(saveFileDialog.FileName);
+                            ProjectorHub.Save(saveFileDialog.FileName);
                             if (File.Exists(saveFileDialog.FileName) == false)
                             {
                                 ProgressPanel.SetProgressBar(2, 2,"Not Save");
@@ -698,7 +698,7 @@ namespace MonchaCadViewer
                     }
                     else
                     {
-                        LaserHub.Save(AppSt.Default.cl_moncha_path);
+                        ProjectorHub.Save(AppSt.Default.cl_moncha_path);
                     }
                     MonchaPathBox.Content = AppSt.Default.cl_moncha_path;
                     AppSt.Default.Save();
@@ -820,7 +820,7 @@ namespace MonchaCadViewer
 
         private void LincenseItem_Click(object sender, RoutedEventArgs e)
         {
-            RequestLicenseCode requestLicenseCode = new RequestLicenseCode() { DataContext = LaserHub.lockKey };
+            RequestLicenseCode requestLicenseCode = new RequestLicenseCode() { DataContext = ProjectorHub.lockKey };
             requestLicenseCode.ShowDialog();
         }
 

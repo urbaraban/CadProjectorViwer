@@ -3,7 +3,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 
-namespace MonchaCadViewer.CanvasObj
+namespace CadProjectorViewer.CanvasObj
 {
     public static class ContextMenuLib
     {

@@ -15,9 +15,9 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using ToGeometryConverter;
-using AppSt = MonchaCadViewer.Properties.Settings;
+using AppSt = CadProjectorViewer.Properties.Settings;
 
-namespace MonchaCadViewer.Panels.RightPanel
+namespace CadProjectorViewer.Panels.RightPanel
 {
     /// <summary>
     /// Логика взаимодействия для WorkFolderPanel.xaml

@@ -3,9 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.29728.190
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MonchaCadViewer", "MonchaCadViewer\MonchaCadViewer.csproj", "{CC54CC3C-EF08-49D2-B5F6-50CB3E585185}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CadProjectorViewer", "MonchaCadViewer\CadProjectorViewer.csproj", "{CC54CC3C-EF08-49D2-B5F6-50CB3E585185}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MonchaSDK", "..\MonchaSDK\MonchaSDK\MonchaSDK.csproj", "{BE456A82-4E1A-45F9-89DB-74E4924FC4B6}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CadProjectorSDK", "..\MonchaSDK\MonchaSDK\CadProjectorSDK.csproj", "{BE456A82-4E1A-45F9-89DB-74E4924FC4B6}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GeometryConverter", "..\ToGeometryConverter\GeometryConverter.csproj", "{5A574092-3854-4F62-BFC4-A1336C16B564}"
 EndProject

@@ -1,8 +1,8 @@
 ﻿using MahApps.Metro.Controls;
-using MonchaCadViewer.CanvasObj;
-using MonchaCadViewer.Panels.DevicePanel;
-using MonchaSDK;
-using MonchaSDK.Device;
+using CadProjectorViewer.CanvasObj;
+using CadProjectorViewer.Panels.DevicePanel;
+using CadProjectorSDK;
+using CadProjectorSDK.Device;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,9 +17,9 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 
-using AppSt = MonchaCadViewer.Properties.Settings;
+using AppSt = CadProjectorViewer.Properties.Settings;
 
-namespace MonchaCadViewer.Panels
+namespace CadProjectorViewer.Panels
 {
     /// <summary>
     /// Логика взаимодействия для DeviceTab.xaml

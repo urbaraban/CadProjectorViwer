@@ -1,8 +1,8 @@
 ﻿using MahApps.Metro.Controls;
-using MonchaSDK.Object;
+using CadProjectorSDK.Object;
 using System.Windows;
 
-namespace MonchaCadViewer.Calibration
+namespace CadProjectorViewer.Calibration
 {
     /// <summary>
     /// Логика взаимодействия для DotEdit.xaml

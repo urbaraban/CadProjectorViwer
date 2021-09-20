@@ -1,5 +1,5 @@
-﻿using MonchaCadViewer.Interface;
-using MonchaSDK.Object;
+﻿using CadProjectorViewer.Interface;
+using CadProjectorSDK.Object;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -12,7 +12,7 @@ using System.Windows;
 using System.Windows.Input;
 using ToGeometryConverter.Object;
 
-namespace MonchaCadViewer.CanvasObj
+namespace CadProjectorViewer.CanvasObj
 {
     public class ProjectionScene : INotifyPropertyChanged
     {

@@ -1,8 +1,8 @@
-﻿using MonchaCadViewer.CanvasObj;
-using MonchaCadViewer.Interface;
-using MonchaCadViewer.Panels.ObjectPanel;
-using MonchaSDK;
-using MonchaSDK.Object;
+﻿using CadProjectorViewer.CanvasObj;
+using CadProjectorViewer.Interface;
+using CadProjectorViewer.Panels.ObjectPanel;
+using CadProjectorSDK;
+using CadProjectorSDK.Object;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -19,7 +19,7 @@ using System.Windows.Media;
 using System.Windows.Media.Media3D;
 using System.Windows.Shapes;
 
-namespace MonchaCadViewer.CanvasObj
+namespace CadProjectorViewer.CanvasObj
 {
     public class CadRectangle : CadObject, INotifyPropertyChanged, IDrawingObject
     {
@@ -139,7 +139,7 @@ namespace MonchaCadViewer.CanvasObj
                 new System.Globalization.CultureInfo("ru-RU"),
                 FlowDirection.LeftToRight,
                     new Typeface("Segoe UI"),
-                    (int)LaserHub.GetThinkess * 3,
+                    (int)ProjectorHub.GetThinkess * 3,
                     Brushes.Gray),
                 new Point(LRect.P1.MX, LRect.P1.MY));
 

@@ -1,10 +1,10 @@
-﻿using MonchaCadViewer.CanvasObj;
-using MonchaSDK.Device;
-using MonchaSDK.Object;
+﻿using CadProjectorViewer.CanvasObj;
+using CadProjectorSDK.Device;
+using CadProjectorSDK.Object;
 using System;
 
 
-namespace MonchaCadViewer.Calibration
+namespace CadProjectorViewer.Calibration
 {
     public static class MeshTool
     {

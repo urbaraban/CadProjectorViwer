@@ -1,11 +1,11 @@
-﻿<Window x:Class="MonchaCadViewer.Panels.DevicePanel.DeviceSettingDialog"
+﻿<Window x:Class="CadProjectorViewer.Panels.DevicePanel.DeviceSettingDialog"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:Controls="http://metro.mahapps.com/winfx/xaml/controls"
         mc:Ignorable="d"
-        xmlns:dvc="clr-namespace:MonchaSDK.Device;assembly=MonchaSDK" d:DataContext="{d:DesignInstance Type=dvc:LDevice}"
+        xmlns:dvc="clr-namespace:CadProjectorSDK.Device;assembly=CadProjectorSDK" d:DataContext="{d:DesignInstance Type=dvc:LDevice}"
         Title="DeviceSettingDialog" Height="319.111" Width="200">
     <Window.Resources>
         <ResourceDictionary>

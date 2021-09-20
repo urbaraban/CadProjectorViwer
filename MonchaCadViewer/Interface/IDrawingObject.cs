@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MonchaCadViewer.Interface
+namespace CadProjectorViewer.Interface
 {
     public interface IDrawingObject
     {

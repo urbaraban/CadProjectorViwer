@@ -1,6 +1,6 @@
-﻿using MonchaCadViewer.CanvasObj;
-using MonchaCadViewer.StaticTools;
-using MonchaSDK;
+﻿using CadProjectorViewer.CanvasObj;
+using CadProjectorViewer.StaticTools;
+using CadProjectorSDK;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,9 +16,9 @@ using System.Windows.Media.Imaging;
 using System.Windows.Media.Media3D;
 using System.Windows.Navigation;
 using ToGeometryConverter;
-using AppSt = MonchaCadViewer.Properties.Settings;
+using AppSt = CadProjectorViewer.Properties.Settings;
 
-namespace MonchaCadViewer.Panels
+namespace CadProjectorViewer.Panels
 {
     /// <summary>
     /// Логика взаимодействия для ScrollPanelItem.xaml

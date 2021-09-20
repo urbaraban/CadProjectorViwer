@@ -1,8 +1,8 @@
-﻿using MonchaCadViewer.CanvasObj;
-using MonchaCadViewer.DeviceManager;
-using MonchaSDK;
-using MonchaSDK.Device;
-using MonchaSDK.Object;
+﻿using CadProjectorViewer.CanvasObj;
+using CadProjectorViewer.DeviceManager;
+using CadProjectorSDK;
+using CadProjectorSDK.Device;
+using CadProjectorSDK.Object;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -19,9 +19,9 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
-using AppSt = MonchaCadViewer.Properties.Settings;
+using AppSt = CadProjectorViewer.Properties.Settings;
 
-namespace MonchaCadViewer.Panels
+namespace CadProjectorViewer.Panels
 {
     /// <summary>
     /// Логика взаимодействия для DeviceTreeTab.xaml
@@ -46,7 +46,7 @@ namespace MonchaCadViewer.Panels
             {
                 if (DeviceTree.DataContext is LDevice device && BaseMeshItem.DataContext is LDeviceMesh mesh)
                 {
-                    mainWindow.MainScene.AddRange(CadCanvas.GetMesh(mesh, LaserHub.GetThinkess * AppSt.Default.anchor_size, false, MeshType.NONE).ToArray());
+                    mainWindow.MainScene.AddRange(CadCanvas.GetMesh(mesh, ProjectorHub.GetThinkess * AppSt.Default.anchor_size, false, MeshType.NONE).ToArray());
                 }
             }
         }
@@ -61,7 +61,7 @@ namespace MonchaCadViewer.Panels
                     switch (cmindex.Tag)
                     {
                         case "common_ADD":
-                            MonchaCadViewer.DeviceManager.LaserMeterWindows laserMeterWindows = new MonchaCadViewer.DeviceManager.LaserMeterWindows(new VLTLaserMeters());
+                            CadProjectorViewer.DeviceManager.LaserMeterWindows laserMeterWindows = new CadProjectorViewer.DeviceManager.LaserMeterWindows(new VLTLaserMeters());
                             laserMeterWindows.ShowDialog();
                             break;
                     }
@@ -71,19 +71,19 @@ namespace MonchaCadViewer.Panels
 
         private void RemoveLaser_Click(object sender, RoutedEventArgs e)
         {
-            mainWindow.LaserHub.RemoveDevice(selectdevice.iPAddress);
+            mainWindow.ProjectorHub.RemoveDevice(selectdevice.iPAddress);
         }
 
 
         private void RefreshLaser_Click_1(object sender, RoutedEventArgs e)
         {
-            mainWindow.LaserHub.Play = false;
-            mainWindow.LaserHub.Load(AppSt.Default.cl_moncha_path);
+            mainWindow.ProjectorHub.Play = false;
+            mainWindow.ProjectorHub.Load(AppSt.Default.cl_moncha_path);
         }
 
         private void AddLaser_Click(object sender, RoutedEventArgs e)
         {
-            LaserSearcher deviceManager = new LaserSearcher(mainWindow.LaserHub);
+            LaserSearcher deviceManager = new LaserSearcher(mainWindow.ProjectorHub);
             deviceManager.Show();
         }
 
@@ -148,7 +148,7 @@ namespace MonchaCadViewer.Panels
                                 break;
                             case "mesh_showvirtual":
                                 mainWindow.MainScene.Clear();
-                                mainWindow.MainScene.AddRange(CadCanvas.GetMesh(mesh.VirtualMesh, LaserHub.GetThinkess * AppSt.Default.anchor_size, false, MeshType.BASE).ToArray());
+                                mainWindow.MainScene.AddRange(CadCanvas.GetMesh(mesh.VirtualMesh, ProjectorHub.GetThinkess * AppSt.Default.anchor_size, false, MeshType.BASE).ToArray());
                                 break;
                             case "mesh_inverse":
                                 mesh.InverseYPosition();
@@ -191,7 +191,7 @@ namespace MonchaCadViewer.Panels
                     if (frameworkElement.DataContext is LDeviceMesh mesh)
                     {
                         mainWindow.MainScene.Clear();
-                        mainWindow.MainScene.AddRange(CadCanvas.GetMesh(mesh, LaserHub.GetThinkess * AppSt.Default.anchor_size, false, MeshType.NONE).ToArray());
+                        mainWindow.MainScene.AddRange(CadCanvas.GetMesh(mesh, ProjectorHub.GetThinkess * AppSt.Default.anchor_size, false, MeshType.NONE).ToArray());
                     }
                 }
             }

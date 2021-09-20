@@ -7,7 +7,7 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{CC54CC3C-EF08-49D2-B5F6-50CB3E585185}</ProjectGuid>
     <OutputType>WinExe</OutputType>
-    <RootNamespace>MonchaCadViewer</RootNamespace>
+    <RootNamespace>CadProjectorViewer</RootNamespace>
     <AssemblyName>2CUT – Viwer</AssemblyName>
     <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
@@ -79,7 +79,7 @@
     <SignManifests>false</SignManifests>
   </PropertyGroup>
   <PropertyGroup>
-    <StartupObject>MonchaCadViewer.App</StartupObject>
+    <StartupObject>CadProjectorViewer.App</StartupObject>
   </PropertyGroup>
   <PropertyGroup>
     <ApplicationIcon>logo.ico</ApplicationIcon>
@@ -459,9 +459,9 @@
       <Project>{25CE4066-36A4-40BD-A38F-EC08E7AA509F}</Project>
       <Name>KompasLib</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\MonchaSDK\MonchaSDK\MonchaSDK.csproj">
+    <ProjectReference Include="..\..\MonchaSDK\MonchaSDK\CadProjectorSDK.csproj">
       <Project>{BE456A82-4E1A-45F9-89DB-74E4924FC4B6}</Project>
-      <Name>MonchaSDK</Name>
+      <Name>CadProjectorSDK</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\ToGeometryConverter\GeometryConverter.csproj">
       <Project>{5A574092-3854-4F62-BFC4-A1336C16B564}</Project>

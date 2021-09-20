@@ -1,4 +1,4 @@
-﻿using MonchaCadViewer.CanvasObj;
+﻿using CadProjectorViewer.CanvasObj;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,9 +13,9 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
-using AppSt = MonchaCadViewer.Properties.Settings;
+using AppSt = CadProjectorViewer.Properties.Settings;
 
-namespace MonchaCadViewer.Panels.DevicePanel.LeftPanels
+namespace CadProjectorViewer.Panels.DevicePanel.LeftPanels
 {
     /// <summary>
     /// Логика взаимодействия для FrameTree.xaml

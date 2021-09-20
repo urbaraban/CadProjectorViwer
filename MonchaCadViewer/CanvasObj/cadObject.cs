@@ -7,19 +7,19 @@ using System.Windows.Documents;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Windows.Media.Media3D;
-using MonchaSDK;
+using CadProjectorSDK;
 using System.Collections.Generic;
-using MonchaSDK.Setting;
+using CadProjectorSDK.Setting;
 using System.Threading;
-using MonchaCadViewer.Interface;
-using AppSt = MonchaCadViewer.Properties.Settings;
-using MonchaSDK.Device;
-using MonchaSDK.Object;
+using CadProjectorViewer.Interface;
+using AppSt = CadProjectorViewer.Properties.Settings;
+using CadProjectorSDK.Device;
+using CadProjectorSDK.Object;
 using ToGeometryConverter.Object;
 using ToGeometryConverter;
 using System.Collections.ObjectModel;
 
-namespace MonchaCadViewer.CanvasObj
+namespace CadProjectorViewer.CanvasObj
 {
     public abstract class CadObject : FrameworkElement, INotifyPropertyChanged, ITransformObject, ISettingObject
     {
@@ -43,10 +43,21 @@ namespace MonchaCadViewer.CanvasObj
 
         public bool ActiveObject { get; private set; }
 
+        public double StrokeThinkess
+        {
+            get => strokethinkess <= 0 ? ProjectorHub.GetThinkess / 3d : strokethinkess;
+            set
+            {
+                strokethinkess = value;
+                OnPropertyChanged("StrokeThinkess");
+            }
+        }
+        private double strokethinkess = 0;
+
         public virtual Pen myPen { 
             get
             {
-                double thinkess = LaserHub.GetThinkess / 3d;
+                double thinkess = StrokeThinkess;
                 thinkess = thinkess <= 0 ? 1 : thinkess;
 
                 if (this.IsMouseOver == true)
@@ -108,7 +119,7 @@ namespace MonchaCadViewer.CanvasObj
 
         public LProjectionSetting ProjectionSetting
         {
-            get => projectionSetting == null ? LaserHub.ProjectionSetting : projectionSetting;
+            get => projectionSetting == null ? ProjectorHub.ProjectionSetting : projectionSetting;
             set
             {
                 projectionSetting = value;
@@ -123,7 +134,7 @@ namespace MonchaCadViewer.CanvasObj
             set
             {
                 ownedsetting = value;
-                if (ownedsetting == true) projectionSetting = LaserHub.ProjectionSetting.Clone();
+                if (ownedsetting == true) projectionSetting = ProjectorHub.ProjectionSetting.Clone();
                 else projectionSetting = null;
                 OnPropertyChanged("OwnedSetting");
             }
@@ -540,12 +551,12 @@ namespace MonchaCadViewer.CanvasObj
                 }
 
                 if (position.Item2 == "Left") this.X = -bounds.X;
-                else if (position.Item2 == "Right") this.X = LaserHub.Size.X - (bounds.X + bounds.Width);
-                else this.X = LaserHub.Size.X / 2 - (bounds.X + bounds.Width / 2);
+                else if (position.Item2 == "Right") this.X = ProjectorHub.Size.X - (bounds.X + bounds.Width);
+                else this.X = ProjectorHub.Size.X / 2 - (bounds.X + bounds.Width / 2);
 
-                if (position.Item1 == "Down") this.Y = LaserHub.Size.Y - (bounds.Y + bounds.Height);
+                if (position.Item1 == "Down") this.Y = ProjectorHub.Size.Y - (bounds.Y + bounds.Height);
                 else if (position.Item1 == "Top") this.Y = -bounds.Y;
-                else this.Y = LaserHub.Size.Y / 2 - (bounds.Y + bounds.Height / 2);
+                else this.Y = ProjectorHub.Size.Y / 2 - (bounds.Y + bounds.Height / 2);
 
                 this._mirror = AppSt.Default.default_mirror;
                 Scale.ScaleX = AppSt.Default.default_scale_x / 100 * (AppSt.Default.default_mirror == true ? -1 : 1);
@@ -628,7 +639,7 @@ namespace MonchaCadViewer.CanvasObj
                     new Point(geometry.Bounds.X, geometry.Bounds.Y + geometry.Bounds.Height / 2));
                 //Right
                 DrawSize(drawingContext,
-                    new Point(LaserHub.Size.X, geometry.Bounds.Y + geometry.Bounds.Height / 2),
+                    new Point(ProjectorHub.Size.X, geometry.Bounds.Y + geometry.Bounds.Height / 2),
                     new Point(geometry.Bounds.X + geometry.Bounds.Width, geometry.Bounds.Y + geometry.Bounds.Height / 2));
                 //Top
                 DrawSize(drawingContext,
@@ -636,14 +647,14 @@ namespace MonchaCadViewer.CanvasObj
                     new Point(geometry.Bounds.X + geometry.Bounds.Width / 2, geometry.Bounds.Y));
                 //Down
                 DrawSize(drawingContext,
-                    new Point(geometry.Bounds.X + geometry.Bounds.Width / 2, LaserHub.Size.Y),
+                    new Point(geometry.Bounds.X + geometry.Bounds.Width / 2, ProjectorHub.Size.Y),
                     new Point(geometry.Bounds.X + geometry.Bounds.Width / 2, geometry.Bounds.Y + geometry.Bounds.Height));
             }
         }
 
         protected void DrawSize(DrawingContext drawingContext, Point point1, Point point2)
         {
-            double thinkess = LaserHub.GetThinkess / 3d / Math.Abs(this.Scale.ScaleX * Math.Max(this.ScaleX, this.ScaleY));
+            double thinkess = ProjectorHub.GetThinkess / 3d / Math.Abs(this.Scale.ScaleX * Math.Max(this.ScaleX, this.ScaleY));
             thinkess = thinkess <= 0 ? 1 : thinkess;
 
             //drawingContext.DrawLine(new Pen(Brushes.DarkGray, thinkess), point1, point2);
@@ -655,7 +666,7 @@ namespace MonchaCadViewer.CanvasObj
                 new System.Globalization.CultureInfo("ru-RU"), 
                 FlowDirection.LeftToRight,
                     new Typeface("Segoe UI"), 
-                    (int)LaserHub.GetThinkess * 3,
+                    (int)ProjectorHub.GetThinkess * 3,
                     Brushes.Gray), 
                 new Point((point1.X + point2.X)/2, (point1.Y + point2.Y) / 2));
 

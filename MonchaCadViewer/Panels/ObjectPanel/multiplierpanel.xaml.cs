@@ -1,9 +1,9 @@
 ﻿using MahApps.Metro.Controls;
-using MonchaCadViewer.CanvasObj;
-using MonchaSDK;
-using MonchaSDK.Device;
-using MonchaSDK.Object;
-using MonchaSDK.Setting;
+using CadProjectorViewer.CanvasObj;
+using CadProjectorSDK;
+using CadProjectorSDK.Device;
+using CadProjectorSDK.Object;
+using CadProjectorSDK.Setting;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -19,7 +19,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 
-namespace MonchaCadViewer.Panels
+namespace CadProjectorViewer.Panels
 {
     /// <summary>
     /// Логика взаимодействия для multiplierpanel.xaml

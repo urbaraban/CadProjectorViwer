@@ -1,5 +1,5 @@
-﻿using MonchaSDK;
-using MonchaSDK.Device;
+﻿using CadProjectorSDK;
+using CadProjectorSDK.Device;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -8,16 +8,16 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Threading;
-using MonchaSDK.Object;
+using CadProjectorSDK.Object;
 using System.ComponentModel;
-using MonchaCadViewer.Interface;
+using CadProjectorViewer.Interface;
 using System.Runtime.CompilerServices;
 using System.Windows.Documents;
-using MonchaCadViewer.Panels;
+using CadProjectorViewer.Panels;
 using System.Windows.Data;
 using System.Collections.ObjectModel;
 
-namespace MonchaCadViewer.CanvasObj
+namespace CadProjectorViewer.CanvasObj
 {
     public class CadCanvas : Canvas, INotifyPropertyChanged
     {
@@ -56,7 +56,7 @@ namespace MonchaCadViewer.CanvasObj
         private void LoadSetting()
         {
             this.Background = Brushes.Transparent; //backBrush;
-            this.DataContext = LaserHub.Size;
+            this.DataContext = ProjectorHub.Size;
 
             this.SetBinding(Canvas.WidthProperty, "X");
             this.SetBinding(Canvas.HeightProperty, "Y");
@@ -76,7 +76,7 @@ namespace MonchaCadViewer.CanvasObj
             {
                 for (int j = 0; j < mesh.GetLength(1); j++)
                 {
-                    mesh[i, j].M = LaserHub.Size;
+                    mesh[i, j].M = ProjectorHub.Size;
                     objects.Add(new CadAnchor(mesh[i, j])
                     {
                         IsFix = false,// !mesh.OnlyEdge;

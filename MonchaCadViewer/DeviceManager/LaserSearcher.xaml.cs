@@ -1,7 +1,7 @@
 ﻿using MonchaNETDll.MonchaBroadcast;
-using MonchaSDK;
-using MonchaSDK.Device;
-using MonchaSDK.Device.Controllers;
+using CadProjectorSDK;
+using CadProjectorSDK.Device;
+using CadProjectorSDK.Device.Controllers;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -9,24 +9,24 @@ using System.Net;
 using System.Windows;
 
 
-namespace MonchaCadViewer
+namespace CadProjectorViewer
 {
     /// <summary>
     /// Логика взаимодействия для DeviceManager.xaml
     /// </summary>
     public partial class LaserSearcher : Window
     {
-        private LaserHub laserHub { get; set; }
+        private ProjectorHub ProjectorHub { get; set; }
 
         private List<BroadcastReply2> iPs = new List<BroadcastReply2>();
         public List<IpSelect> OldDevices = new List<IpSelect>();
         public List<IpSelect> NewDevices = new List<IpSelect>();
 
-        public LaserSearcher(LaserHub laserHub)
+        public LaserSearcher(ProjectorHub ProjectorHub)
         {
             InitializeComponent();
-            this.laserHub = laserHub;
-            this.DataContext = laserHub;
+            this.ProjectorHub = ProjectorHub;
+            this.DataContext = ProjectorHub;
             RefreshList();
         }
 
@@ -40,7 +40,7 @@ namespace MonchaCadViewer
                 foreach (BroadcastReply2 broadcastReply in iPs)
                 {
                     IpSelect ipSelect = new IpSelect() { iPAddress = new IPAddress(BitConverter.GetBytes(broadcastReply.ipv4)), IsSelected = false };
-                    if (laserHub.CheckDeviceInHub(ipSelect.iPAddress) == false)
+                    if (ProjectorHub.CheckDeviceInHub(ipSelect.iPAddress) == false)
                     {
                         this.NewDevices.Add(ipSelect);
                     }
@@ -52,7 +52,7 @@ namespace MonchaCadViewer
             }
 
             this.OldDevices.Clear();
-            foreach (LDevice monchaDevice in laserHub.Devices)
+            foreach (LDevice monchaDevice in ProjectorHub.Devices)
             {
                 if (monchaDevice != null)
                 {
@@ -69,13 +69,13 @@ namespace MonchaCadViewer
 
         private void DeviceManagerForm_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
-            if (laserHub.lockKey.IsLicensed == true)
+            if (ProjectorHub.lockKey.IsLicensed == true)
             {
                 foreach (IpSelect device in FoundDeviceList.Items)
                 {
                     if (device != null && device.IsSelected == true)
                     {
-                        laserHub.Devices.Add(DevicesMg.GetDevice(device.iPAddress, DeviceType.MonchaNET, laserHub.Devices.Count));
+                        ProjectorHub.Devices.Add(DevicesMg.GetDevice(device.iPAddress, DeviceType.MonchaNET, ProjectorHub.Devices.Count));
                     }
                 }
 
@@ -83,7 +83,7 @@ namespace MonchaCadViewer
                 {
                     if (device != null && device.IsSelected == false)
                     {
-                        laserHub.RemoveDevice(device.iPAddress);
+                        ProjectorHub.RemoveDevice(device.iPAddress);
                     }
                 }
             }
@@ -96,7 +96,7 @@ namespace MonchaCadViewer
 
         private void AddVirtualBtn_Click(object sender, RoutedEventArgs e)
         {
-            laserHub.Devices.Add(new VirtualProjector());
+            ProjectorHub.Devices.Add(new VirtualProjector());
         }
 
         private void SearchBtn_Click(object sender, RoutedEventArgs e)

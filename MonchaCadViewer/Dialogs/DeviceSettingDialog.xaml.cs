@@ -1,7 +1,7 @@
 ﻿using MahApps.Metro.Controls;
-using MonchaCadViewer.CanvasObj;
-using MonchaSDK;
-using MonchaSDK.Device;
+using CadProjectorViewer.CanvasObj;
+using CadProjectorSDK;
+using CadProjectorSDK.Device;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,9 +14,9 @@ using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using AppSt = MonchaCadViewer.Properties.Settings;
+using AppSt = CadProjectorViewer.Properties.Settings;
 
-namespace MonchaCadViewer.Panels.DevicePanel
+namespace CadProjectorViewer.Panels.DevicePanel
 {
     /// <summary>
     /// Логика взаимодействия для DeviceSettingDialog.xaml
@@ -56,7 +56,7 @@ namespace MonchaCadViewer.Panels.DevicePanel
 
         private void SaveBtn_Click(object sender, RoutedEventArgs e)
         {
-            //LaserHub.CanPlay = false;
+            //ProjectorHub.CanPlay = false;
 
             this._device.iPAddress = new System.Net.IPAddress(new byte[]
             {
@@ -69,7 +69,7 @@ namespace MonchaCadViewer.Panels.DevicePanel
 
         private void CheckBtn_Click(object sender, RoutedEventArgs e)
         {
-            CheckLabel.IsChecked = LaserHub.CheckDeviceIP(new System.Net.IPAddress(new byte[]
+            CheckLabel.IsChecked = ProjectorHub.CheckDeviceIP(new System.Net.IPAddress(new byte[]
             {
                 byte.Parse(IP1.Text),
                 byte.Parse(IP2.Text),

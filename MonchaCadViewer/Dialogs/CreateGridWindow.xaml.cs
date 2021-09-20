@@ -1,14 +1,14 @@
-﻿using MonchaCadViewer.CanvasObj;
-using MonchaSDK;
-using MonchaSDK.Device;
+﻿using CadProjectorViewer.CanvasObj;
+using CadProjectorSDK;
+using CadProjectorSDK.Device;
 using System;
 using System.ComponentModel;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
-using AppSt = MonchaCadViewer.Properties.Settings;
+using AppSt = CadProjectorViewer.Properties.Settings;
 
-namespace MonchaCadViewer
+namespace CadProjectorViewer
 {
     /// <summary>
     /// Логика взаимодействия для CreateGridWindow.xaml
@@ -33,7 +33,7 @@ namespace MonchaCadViewer
                 projectionScene.AddRange(
                     CadCanvas.GetMesh(
                     new LDeviceMesh(LDeviceMesh.MakeMeshPoint((int)HeightUpDn.Value.Value, (int)WidthUpDn.Value.Value), string.Empty),
-                    LaserHub.GetThinkess * AppSt.Default.anchor_size, false, MeshType.NONE).ToArray());
+                    ProjectorHub.GetThinkess * AppSt.Default.anchor_size, false, MeshType.NONE).ToArray());
             }
         }
 
@@ -80,7 +80,7 @@ namespace MonchaCadViewer
             projectionScene.AddRange(
                      CadCanvas.GetMesh(
                      (LDeviceMesh)this.DataContext,
-                     LaserHub.GetThinkess * AppSt.Default.anchor_size, false, MeshType.NONE).ToArray());
+                     ProjectorHub.GetThinkess * AppSt.Default.anchor_size, false, MeshType.NONE).ToArray());
         }
     }
 

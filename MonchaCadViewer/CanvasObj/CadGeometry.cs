@@ -1,5 +1,5 @@
-﻿using MonchaSDK;
-using MonchaSDK.Object;
+﻿using CadProjectorSDK;
+using CadProjectorSDK.Object;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -11,7 +11,7 @@ using System.Windows.Media.Media3D;
 using ToGeometryConverter.Object;
 using ToGeometryConverter.Object.Elements;
 
-namespace MonchaCadViewer.CanvasObj
+namespace CadProjectorViewer.CanvasObj
 {
     public class CadGeometry : CadObject
     {

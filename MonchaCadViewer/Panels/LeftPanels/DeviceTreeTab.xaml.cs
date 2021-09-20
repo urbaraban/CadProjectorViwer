@@ -112,7 +112,7 @@ namespace CadProjectorViewer.Panels
                             //device.Frame = device.CutZone.DrawCutZone();
                             break;
                         case "dvc_showzone":
-                            CadRectangle cadRectangle = new CadRectangle(device.Size, device.HWIdentifier);
+                            CanvasObj.CadRectangle cadRectangle = new CanvasObj.CadRectangle(device.Size, device.HWIdentifier);
                             mainWindow.MainScene.Add(cadRectangle);
                             cadRectangle.Init();
                             break;
@@ -163,7 +163,7 @@ namespace CadProjectorViewer.Panels
                                 mesh.Affine = !mesh.Affine;
                                 break;
                             case "mesh_showrect":
-                                CadRectangle rectangle = new CadRectangle(mesh.Size, mesh.Name);
+                                CanvasObj.CadRectangle rectangle = new CanvasObj.CadRectangle(mesh.Size, mesh.Name);
                                 mainWindow.MainScene.Add(rectangle);
                                 rectangle.Init();
                                 break;

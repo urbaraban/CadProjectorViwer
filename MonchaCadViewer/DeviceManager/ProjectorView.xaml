@@ -22,6 +22,7 @@
     </Window.Resources>
     <Window.ContextMenu>
         <ContextMenu>
+            <MenuItem Header="Set this screen" Click="MenuItem_Click" />
             <MenuItem Header="Close" Click="CloseMenuItem_Click" />
         </ContextMenu>
     </Window.ContextMenu>

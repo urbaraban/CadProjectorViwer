@@ -6,7 +6,6 @@ using System.Windows.Media;
 using System.Windows.Documents;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
-using System.Windows.Media.Media3D;
 using CadProjectorSDK;
 using System.Collections.Generic;
 using CadProjectorSDK.Setting;
@@ -18,6 +17,8 @@ using CadProjectorSDK.Object;
 using ToGeometryConverter.Object;
 using ToGeometryConverter;
 using System.Collections.ObjectModel;
+using System.Windows.Media.Media3D;
+using CadProjectorSDK.Object.LObjects;
 
 namespace CadProjectorViewer.CanvasObj
 {
@@ -210,7 +211,6 @@ namespace CadProjectorViewer.CanvasObj
         }
         public RotateTransform3D RotateZ { get; set; } = new RotateTransform3D();
         public TranslateTransform3D Translate { get; set; } = new TranslateTransform3D();
-
         public ScaleTransform3D Scale { get; set; } = new ScaleTransform3D();
 
         public bool Mirror
@@ -362,13 +362,11 @@ namespace CadProjectorViewer.CanvasObj
             get => this._render && (!AppSt.Default.stg_selectable_show || this.IsSelected);
             set
             {
-                if (value != this.Render)
-                {
-                    this._render = value;
-                    if (AppSt.Default.stg_selectable_show == true) this.IsSelected = value;
-                    Updated?.Invoke(this, "Render");
-                    OnPropertyChanged("Render");
-                }
+
+                this._render = value;
+                if (AppSt.Default.stg_selectable_show == true) this.IsSelected = value;
+                Updated?.Invoke(this, "Render");
+                OnPropertyChanged("Render");
             }
         }
         private bool _render = true;

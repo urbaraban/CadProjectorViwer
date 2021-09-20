@@ -11,6 +11,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Windows.Threading;
 using ToGeometryConverter.Object.Elements;
+using CadProjectorSDK.Object.LObjects;
 
 namespace CadProjectorViewer.CanvasObj
 {

@@ -21,7 +21,7 @@ using System.Windows.Shapes;
 
 namespace CadProjectorViewer.CanvasObj
 {
-    public class CadRectangle : CadObject, INotifyPropertyChanged, IDrawingObject
+    public class CadRectangle : CadObject, IDrawingObject
     {
         #region Property
         public event PropertyChangedEventHandler PropertyChanged;

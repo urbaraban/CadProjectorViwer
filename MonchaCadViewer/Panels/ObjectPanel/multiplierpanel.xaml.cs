@@ -28,7 +28,7 @@ namespace CadProjectorViewer.Panels
     {
         public event EventHandler NeedUpdate;
 
-        private CadObject cadObject;
+        private CanvasObj.CadObject cadObject;
 
         public multiplierpanel()
         {
@@ -51,7 +51,7 @@ namespace CadProjectorViewer.Panels
 
         private void DeviceLayerCombo_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            if (this.DataContext is CadObject cadObject)
+            if (this.DataContext is CanvasObj.CadObject cadObject)
             {
                 cadObject.ProjectionSetting.Device = (LDevice)DeviceLayerCombo.SelectedItem;
             }

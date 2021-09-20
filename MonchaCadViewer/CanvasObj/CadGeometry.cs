@@ -1,5 +1,6 @@
 ﻿using CadProjectorSDK;
 using CadProjectorSDK.Object;
+using CadProjectorSDK.Object.LObjects;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;

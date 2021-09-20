@@ -49,7 +49,7 @@ namespace CadProjectorViewer
     /// </summary>
     public partial class MainWindow : Window
     {
-        public ProjectionScene MainScene { get; } = new ProjectionScene();
+        public CanvasObj.ProjectionScene MainScene { get; } = new CanvasObj.ProjectionScene();
         public ProjectorHub ProjectorHub { get; set; } = new ProjectorHub();
 
         public LSize3D CanvasSize => ProjectorHub.Size;
@@ -106,10 +106,7 @@ namespace CadProjectorViewer
             LoadMoncha();
         }
 
-        private async void MainScene_UpdateFrame(object sender, EventArgs e)
-        {
-            ProjectorHub.MainFrame = await SceneSender.GetLObject(MainScene);
-        }
+        private async void MainScene_UpdateFrame(object sender, EventArgs e) => ProjectorHub.MainFrame = await SceneSender.GetLObject(MainScene);
 
 
         private void ToGC_Progressed(object sender, ProgBarMessage e)

@@ -21,17 +21,8 @@ using System.Windows.Shapes;
 
 namespace CadProjectorViewer.CanvasObj
 {
-    public class CadLine : CadObject, INotifyPropertyChanged, IDrawingObject
+    public class CadLine : CadObject, IDrawingObject
     {
-        #region Property
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        public void OnPropertyChanged([CallerMemberName] string prop = "")
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(prop));
-        }
-        #endregion
-
         public override event EventHandler<string> Updated;
         public override event EventHandler<CadObject> Removed;
 

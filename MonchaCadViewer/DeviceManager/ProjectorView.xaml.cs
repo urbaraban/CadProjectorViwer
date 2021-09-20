@@ -17,6 +17,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
+using CadProjectorSDK.Object.LObjects;
 
 namespace CadProjectorViewer.DeviceManager
 {
@@ -55,6 +56,11 @@ namespace CadProjectorViewer.DeviceManager
             this.DragMove();
             this.WindowState = WindowState.Maximized;
         }
+
+        private void MenuItem_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
     }
 
     public class LObjectConverter : IValueConverter
@@ -64,7 +70,7 @@ namespace CadProjectorViewer.DeviceManager
             Console.WriteLine("Update Child Viwer");
             if (value is LObjectList objectList)
             {
-                return new List<CadObject>() { new CadGeometry(objectList, false) };
+                return new List<CanvasObj.CadObject>() { new CanvasObj.CadGeometry(objectList, false) };
             }
             else return null;
         }

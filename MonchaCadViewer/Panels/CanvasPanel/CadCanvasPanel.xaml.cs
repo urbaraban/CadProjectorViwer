@@ -32,7 +32,7 @@ namespace CadProjectorViewer.Panels.CanvasPanel
 
         private Visibility _showadorner = Visibility.Hidden;
 
-        private ProjectionScene projectionScene => (ProjectionScene)this.DataContext;
+        private CanvasObj.ProjectionScene projectionScene => (CanvasObj.ProjectionScene)this.DataContext;
 
 
         public MouseAction MouseAction
@@ -88,7 +88,7 @@ namespace CadProjectorViewer.Panels.CanvasPanel
             //this.ObjectCanvas.MouseMove += Canvas_MouseMove;
             this.MouseMove += CanvasGrid_MouseMove;
             this.MouseWheel += CanvasGrid_MouseWheel;
-            this.DataContext = new ProjectionScene();
+            this.DataContext = new CanvasObj.ProjectionScene();
             UpdateTransform(null, true);
         }
 
@@ -178,14 +178,14 @@ namespace CadProjectorViewer.Panels.CanvasPanel
                 else if (this.MouseAction == MouseAction.Rectangle)
                 {
                     Point point = e.GetPosition(CanvasGrid);
-                    CadRectangle cadRectangle = new CadRectangle(new LPoint3D(point, ProjectorHub.Size), new LPoint3D(point, ProjectorHub.Size), string.Empty, true);
+                    CanvasObj.CadRectangle cadRectangle = new CanvasObj.CadRectangle(new LPoint3D(point, ProjectorHub.Size), new LPoint3D(point, ProjectorHub.Size), string.Empty, true);
                     this.projectionScene.Add(cadRectangle);
                 }
                 else if (this.mouseAction == MouseAction.Mask)
                 {
                     this.MouseAction = MouseAction.NoAction;
                     LSize3D lRect = new LSize3D(new LPoint3D(e.GetPosition(inputElement), ProjectorHub.Size, true), new LPoint3D(e.GetPosition(inputElement), ProjectorHub.Size, true));
-                    CadRectangle Maskrectangle = new CadRectangle(lRect, $"Mask_{this.projectionScene.Masks.Count}") { Render = false };
+                    CanvasObj.CadRectangle Maskrectangle = new CanvasObj.CadRectangle(lRect, $"Mask_{this.projectionScene.Masks.Count}") { Render = false };
                     this.projectionScene.Add(Maskrectangle);
                     this.projectionScene.Masks.Add(Maskrectangle);
                     this.projectionScene.ActiveDrawingObject = Maskrectangle;
@@ -244,7 +244,7 @@ namespace CadProjectorViewer.Panels.CanvasPanel
         {
             for (int i = 0; i < this.projectionScene.Objects.Count; i++)
             {
-                if (this.projectionScene.Objects[i] is CadObject cadObject)
+                if (this.projectionScene.Objects[i] is CanvasObj.CadObject cadObject)
                 {
                     if (cadObject.IsSelected == true && cadObject.IsFix == false)
                     {
@@ -259,7 +259,7 @@ namespace CadProjectorViewer.Panels.CanvasPanel
         {
             for (int i = 0; i < projectionScene.Objects.Count; i++)
             {
-                if (projectionScene.Objects[i] is CadObject cadObject1)
+                if (projectionScene.Objects[i] is CanvasObj.CadObject cadObject1)
                 {
                     if (cadObject1.IsSelected)
                     {
@@ -274,7 +274,7 @@ namespace CadProjectorViewer.Panels.CanvasPanel
         {
             for (int i = 0; i < projectionScene.Objects.Count; i++)
             {
-                if (projectionScene.Objects[i] is CadObject cadObject)
+                if (projectionScene.Objects[i] is CanvasObj.CadObject cadObject)
                 {
                     if (cadObject.IsSelected)
                     {
@@ -283,7 +283,7 @@ namespace CadProjectorViewer.Panels.CanvasPanel
 
                         try
                         {
-                            if (projectionScene.Objects[i + (InverseSelectFlag ? -1 : +1)] is CadObject cadObject2)
+                            if (projectionScene.Objects[i + (InverseSelectFlag ? -1 : +1)] is CanvasObj.CadObject cadObject2)
                             {
                                 cadObject2.IsSelected = true;
                                 cadObject2.IsFix = false;

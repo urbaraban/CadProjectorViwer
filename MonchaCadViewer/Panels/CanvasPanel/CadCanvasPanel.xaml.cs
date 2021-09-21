@@ -192,7 +192,7 @@ namespace CadProjectorViewer.Panels.CanvasPanel
                 }
                 else if (this.mouseAction == MouseAction.Line)
                 {
-                    CadLine line = new CadLine(new LPoint3D(e.GetPosition(inputElement)), new LPoint3D(e.GetPosition(inputElement)), true);
+                    CanvasObj.CadLine line = new CanvasObj.CadLine(new LPoint3D(e.GetPosition(inputElement)), new LPoint3D(e.GetPosition(inputElement)), true);
                     this.projectionScene.Add(line);
                     this.projectionScene.ActiveDrawingObject = line;
                 }

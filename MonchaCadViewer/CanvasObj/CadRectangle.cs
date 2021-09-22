@@ -2,7 +2,7 @@
 using CadProjectorViewer.Interface;
 using CadProjectorViewer.Panels.ObjectPanel;
 using CadProjectorSDK;
-using CadProjectorSDK.Object;
+using CadProjectorSDK.CadObjects;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -36,7 +36,7 @@ namespace CadProjectorViewer.CanvasObj
         public override event EventHandler<string> Updated;
         public override event EventHandler<CadObject> Removed;
 
-        public LSize3D LRect
+        public CadSize3D LRect
         {
             get => _lrect;
             set
@@ -47,7 +47,7 @@ namespace CadProjectorViewer.CanvasObj
             }
         }
 
-        private LSize3D _lrect;
+        private CadSize3D _lrect;
 
         public SolidColorBrush BackColorBrush;
 
@@ -94,14 +94,14 @@ namespace CadProjectorViewer.CanvasObj
 
         public override Rect Bounds => new Rect(LRect.P1.GetMPoint, LRect.P2.GetMPoint);
 
-        public CadRectangle(LPoint3D P1, LPoint3D P2, string Label, bool MouseSet) : base(true)
+        public CadRectangle(CadPoint3D P1, CadPoint3D P2, string Label, bool MouseSet) : base(true)
         {
             this.NameID = Label;
-            this.LRect = new LSize3D(P1, P2);
+            this.LRect = new CadSize3D(P1, P2);
             LoadSetting();
         }
 
-        public CadRectangle(LSize3D lRect, string Label) : base(true)
+        public CadRectangle(CadSize3D lRect, string Label) : base(true)
         {
             this.NameID = Label;
             LRect = lRect;

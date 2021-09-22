@@ -18,7 +18,7 @@ using CadProjectorViewer.CanvasObj;
 using System.Globalization;
 using CadProjectorSDK;
 using CadProjectorSDK.Device;
-using CadProjectorSDK.Object;
+using CadProjectorSDK.CadObjects;
 using KompasLib.KompasTool;
 using System.Windows.Media.Media3D;
 using StclLibrary.Laser;
@@ -52,7 +52,7 @@ namespace CadProjectorViewer
         public CanvasObj.ProjectionScene MainScene { get; } = new CanvasObj.ProjectionScene();
         public ProjectorHub ProjectorHub { get; set; } = new ProjectorHub();
 
-        public LSize3D CanvasSize => ProjectorHub.Size;
+        public CadSize3D CanvasSize => ProjectorHub.Size;
 
         private KmpsAppl kmpsAppl;
         private bool inverseToggle = true;
@@ -106,7 +106,7 @@ namespace CadProjectorViewer
             LoadMoncha();
         }
 
-        private async void MainScene_UpdateFrame(object sender, EventArgs e) => ProjectorHub.MainFrame = await SceneSender.GetLObject(MainScene);
+        private async void MainScene_UpdateFrame(object sender, EventArgs e) => ProjectorHub.MainFrame = await CanvasObj.SceneSender.GetLObject(MainScene);
 
 
         private void ToGC_Progressed(object sender, ProgBarMessage e)

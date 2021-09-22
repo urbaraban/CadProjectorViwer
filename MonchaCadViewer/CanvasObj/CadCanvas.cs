@@ -8,7 +8,7 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Threading;
-using CadProjectorSDK.Object;
+using CadProjectorSDK.CadObjects;
 using System.ComponentModel;
 using CadProjectorViewer.Interface;
 using System.Runtime.CompilerServices;
@@ -41,16 +41,10 @@ namespace CadProjectorViewer.CanvasObj
             LoadSetting();
         }
 
-        public CadCanvas(LSize3D Size, bool MainCanvas)
+        public CadCanvas(CadSize3D Size, bool MainCanvas)
         {
             this.MainCanvas = MainCanvas;
             LoadSetting();
-            this.Loaded += CadCanvas_Loaded;
-        }
-
-        private void CadCanvas_Loaded(object sender, RoutedEventArgs e)
-        {
-            this.Loaded -= CadCanvas_Loaded;
         }
 
         private void LoadSetting()

@@ -1,5 +1,5 @@
 ﻿using CadProjectorViewer.Interface;
-using CadProjectorSDK.Object;
+using CadProjectorSDK.CadObjects;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -11,6 +11,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
 using ToGeometryConverter.Object;
+using CadProjectorSDK;
 
 namespace CadProjectorViewer.CanvasObj
 {
@@ -55,6 +56,8 @@ namespace CadProjectorViewer.CanvasObj
 
         public IDrawingObject ActiveDrawingObject { get; set; }
 
+        public CadPoint3D MousePosition { get; } = new CadPoint3D(0,0,0);
+
         public ProjectionScene()
         {
             Objects.CollectionChanged += Objects_CollectionChanged;
@@ -76,7 +79,7 @@ namespace CadProjectorViewer.CanvasObj
                     Obj.Removed += Obj_Removed;
                     Obj.PropertyChanged += Obj_PropertyChanged;
                 }
-                UpdateFrame?.Invoke(this, null);
+                //UpdateFrame?.Invoke(this, null);
             }
             if (e.OldItems != null)
             {
@@ -86,7 +89,7 @@ namespace CadProjectorViewer.CanvasObj
                     Obj.Removed -= Obj_Removed;
                     Obj.PropertyChanged -= Obj_PropertyChanged;
                 }
-                UpdateFrame?.Invoke(this, null);
+                //UpdateFrame?.Invoke(this, null);
             }
         }
 
@@ -168,6 +171,7 @@ namespace CadProjectorViewer.CanvasObj
             {
                 this.Add(cadObject);
             }
+            UpdateFrame?.Invoke(this, null);
         }
 
         public CadObject Add(CadObject cadObject)

@@ -1,6 +1,6 @@
 ﻿using CadProjectorViewer.CanvasObj;
 using CadProjectorSDK.Device;
-using CadProjectorSDK.Object;
+using CadProjectorSDK.CadObjects;
 using System;
 
 

@@ -1,6 +1,6 @@
 ﻿using CadProjectorSDK;
 using CadProjectorSDK.Device;
-using CadProjectorSDK.Object;
+using CadProjectorSDK.CadObjects;
 using System.Linq;
 using System.Windows;
 using System.Windows.Media;
@@ -11,7 +11,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Windows.Threading;
 using ToGeometryConverter.Object.Elements;
-using CadProjectorSDK.Object.LObjects;
+using CadProjectorSDK.CadObjects.LObjects;
 
 namespace CadProjectorViewer.CanvasObj
 {
@@ -24,10 +24,10 @@ namespace CadProjectorViewer.CanvasObj
         /// </summary>
         /// <param name="canvas">Отправляемое рабочее поле</param>
         /// <returns>N_{i,degree}(step)</returns>
-        public async static Task<LObjectList> GetLObject (ProjectionScene scene)
+        public async static Task<PointsObjectList> GetLObject (ProjectionScene scene)
         {
             Processing = true;
-            LObjectList dotList = new LObjectList();
+            PointsObjectList dotList = new PointsObjectList();
 
             foreach (object obj in scene.Objects)
             {
@@ -37,7 +37,7 @@ namespace CadProjectorViewer.CanvasObj
                     //dotList.AddRange(cadObject.GetTransformPoint(false));
                 }
             }
-            LObjectList outList = new LObjectList();
+            PointsObjectList outList = new PointsObjectList();
             if (scene.Masks.Count > 0)
             {
                 foreach (CadRectangle rectangle in scene.Masks)
@@ -49,6 +49,11 @@ namespace CadProjectorViewer.CanvasObj
 
             Processing = false;
 
+            if (true)
+            {
+                outList.Add(new PointsObject() { new CadPoint3D(scene.MousePosition.MX, scene.MousePosition.MY) });
+            }
+
             return outList;
         }
 
@@ -58,9 +63,9 @@ namespace CadProjectorViewer.CanvasObj
         /// </summary>
         /// <param name="cadObject">inner object</param>
         /// <returns>Object collection</returns>
-        public static LObjectList GetPoint(CadObject cadObject, bool InGroup)
+        public static PointsObjectList GetPoint(CadObject cadObject, bool InGroup)
         {
-            LObjectList lObjectList = new LObjectList();
+            PointsObjectList lObjectList = new PointsObjectList();
 
             switch (cadObject)
             {
@@ -68,7 +73,7 @@ namespace CadProjectorViewer.CanvasObj
                     if (cadObject.DataContext is LDeviceMesh deviceMesh)
                     {
                         if (LDeviceMesh.ClbrForm == CalibrationForm.cl_Dot) 
-                            lObjectList.Add(new LObject() { Points = new List<LPoint3D>() { cadDot.GetLPoint.GetMLpoint3D }, MeshType = cadObject.MeshType });
+                            lObjectList.Add(new PointsObject() { Points = new List<CadPoint3D>() { cadDot.GetLPoint.GetMLpoint3D }, MeshType = cadObject.MeshType });
                         if (LDeviceMesh.ClbrForm == CalibrationForm.cl_Rect) 
                             lObjectList.AddRange(CalibrationRect(deviceMesh, cadDot.GetLPoint));
                         if (LDeviceMesh.ClbrForm == CalibrationForm.cl_miniRect) 
@@ -82,9 +87,9 @@ namespace CadProjectorViewer.CanvasObj
                     }
                     else
                     {
-                        lObjectList.Add(new LObject()
+                        lObjectList.Add(new PointsObject()
                         {
-                            Points = new List<LPoint3D>()
+                            Points = new List<CadPoint3D>()
                             {
                                 cadDot.GetLPoint.GetMLpoint3D
                             },
@@ -97,9 +102,9 @@ namespace CadProjectorViewer.CanvasObj
                     lObjectList.AddRange(cadGeometry.GetTransformPoints());
                     break;
                 case CadLine cadLine:
-                    lObjectList.Add(new LObject()
+                    lObjectList.Add(new PointsObject()
                     {
-                        Points = new List<LPoint3D>() {
+                        Points = new List<CadPoint3D>() {
                         cadLine.P1,
                         cadLine.P2
                         },
@@ -107,16 +112,16 @@ namespace CadProjectorViewer.CanvasObj
                     });
                     break;
                 case CadRectangle cadRectangle:
-                    lObjectList.Add(new LObject()
+                    lObjectList.Add(new PointsObject()
                     {
-                        Points = new List<LPoint3D>() {
+                        Points = new List<CadPoint3D>() {
                         cadRectangle.LRect.P1,
-                        new LPoint3D(cadRectangle.LRect.P2.MX, cadRectangle.LRect.P1.MY),
+                        new CadPoint3D(cadRectangle.LRect.P2.MX, cadRectangle.LRect.P1.MY),
                         cadRectangle.LRect.P2,
-                        new LPoint3D(cadRectangle.LRect.P1.MX, cadRectangle.LRect.P2.MY),
+                        new CadPoint3D(cadRectangle.LRect.P1.MX, cadRectangle.LRect.P2.MY),
                         },
                         ProjectionSetting = cadRectangle.ProjectionSetting,
-                        Closed = true
+                        IsClosed = true
                     });
                     break;
                 case CadObjectsGroup cadObjectsGroup:
@@ -135,7 +140,7 @@ namespace CadProjectorViewer.CanvasObj
             return lObjectList;
 
             #region GetMeshShape
-            LObjectList CalibrationCross(LDeviceMesh monchaDeviceMesh, LPoint3D lPoint3D)
+            PointsObjectList CalibrationCross(LDeviceMesh monchaDeviceMesh, CadPoint3D lPoint3D)
             {
                 Tuple<int, int> tuple = monchaDeviceMesh.CoordinatesOf(lPoint3D);
                 int height = monchaDeviceMesh.GetLength(0) - 1;
@@ -143,7 +148,7 @@ namespace CadProjectorViewer.CanvasObj
 
 
                 //Vertical
-                LObject Line1 = new LObject();
+                PointsObject Line1 = new PointsObject();
 
                 for (int i = 0; i <= width; i += 1)
                 {
@@ -153,14 +158,14 @@ namespace CadProjectorViewer.CanvasObj
                 //Vertical
 
                 //Horizontal
-                LObject Line2 = new LObject();
+                PointsObject Line2 = new PointsObject();
 
                 for (int i = 0; i <= height; i += 1)
                 {
                     Line2.Add(monchaDeviceMesh[i, tuple.Item1].GetMLpoint3D);
                 }
 
-                return new LObjectList()
+                return new PointsObjectList()
             {
                 Line2,
                 Line1
@@ -168,23 +173,23 @@ namespace CadProjectorViewer.CanvasObj
             };
 
             }
-            LObjectList CalibrationRect(LDeviceMesh monchaDeviceMesh, LPoint3D lPoint3D)
+            PointsObjectList CalibrationRect(LDeviceMesh monchaDeviceMesh, CadPoint3D lPoint3D)
             {
                 Tuple<int, int> tuple = monchaDeviceMesh.CoordinatesOf(lPoint3D);
                 int height = monchaDeviceMesh.GetLength(0) - 1;
                 int width = monchaDeviceMesh.GetLength(1) - 1;
 
                 //Vertical
-                LObject Line1H = GetLine(tuple.Item1, tuple.Item2, true);
+                PointsObject Line1H = GetLine(tuple.Item1, tuple.Item2, true);
                 //Horizontal
-                LObject Line1W = GetLine(tuple.Item1, height - tuple.Item2, false);
+                PointsObject Line1W = GetLine(tuple.Item1, height - tuple.Item2, false);
                 //Vertical
-                LObject Line2H = GetLine(width - tuple.Item1, height - tuple.Item2, true);
+                PointsObject Line2H = GetLine(width - tuple.Item1, height - tuple.Item2, true);
                 //Horizontal
-                LObject Line2W = GetLine(width - tuple.Item1, tuple.Item2, false);
+                PointsObject Line2W = GetLine(width - tuple.Item1, tuple.Item2, false);
 
 
-                return new LObjectList()
+                return new PointsObjectList()
                 {
                     Line1H,
                     Line1W,
@@ -193,9 +198,9 @@ namespace CadProjectorViewer.CanvasObj
                 };
 
 
-                LObject GetLine(int xpos, int ypos, bool Vertical)
+                PointsObject GetLine(int xpos, int ypos, bool Vertical)
                 {
-                    LObject Line = new LObject() { MeshType = cadObject.MeshType };
+                    PointsObject Line = new PointsObject() { MeshType = cadObject.MeshType };
 
                     if (Vertical == true)
                     {
@@ -224,28 +229,28 @@ namespace CadProjectorViewer.CanvasObj
                 }
 
             }
-            LObjectList CalibrationMiniRect(LDeviceMesh monchaDeviceMesh, LPoint3D lPoint3D)
+            PointsObjectList CalibrationMiniRect(LDeviceMesh monchaDeviceMesh, CadPoint3D lPoint3D)
             {
                 Tuple<int, int> tuple = monchaDeviceMesh.CoordinatesOf(lPoint3D);
                 int height = monchaDeviceMesh.GetLength(0) - 1;
                 int width = monchaDeviceMesh.GetLength(1) - 1;
 
-                return new LObjectList()
+                return new PointsObjectList()
                 {
-                        new LObject(){
-                            Points = new List<LPoint3D>(){
+                        new PointsObject(){
+                            Points = new List<CadPoint3D>(){
                                 monchaDeviceMesh[tuple.Item2, tuple.Item1].GetMLpoint3D,
                                 monchaDeviceMesh[tuple.Item2, tuple.Item1 + (tuple.Item1 < width ? 1 : -1)].GetMLpoint3D,
                                 monchaDeviceMesh[tuple.Item2 + (tuple.Item2 < height ? 1 : -1), tuple.Item1 + (tuple.Item1 < width ? 1 : -1)].GetMLpoint3D,
                                 monchaDeviceMesh[tuple.Item2 + (tuple.Item2 < height ? 1 : -1), tuple.Item1].GetMLpoint3D
                             },
-                            Closed = true,
+                            IsClosed = true,
                             MeshType = cadObject.MeshType
                         }
                 };
 
             }
-            LObjectList CalibrationLineH(LDeviceMesh monchaDeviceMesh, LPoint3D lPoint3D)
+            PointsObjectList CalibrationLineH(LDeviceMesh monchaDeviceMesh, CadPoint3D lPoint3D)
             {
                 Tuple<int, int> tuple = monchaDeviceMesh.CoordinatesOf(lPoint3D);
                 int height = monchaDeviceMesh.GetLength(0) - 1;
@@ -253,34 +258,34 @@ namespace CadProjectorViewer.CanvasObj
 
 
                 //Height
-                LObject Line = new LObject() { MeshType = cadObject.MeshType };
+                PointsObject Line = new PointsObject() { MeshType = cadObject.MeshType };
 
                 for (int i = 0; i <= height; i += 1)
                 {
                     Line.Add(monchaDeviceMesh[i, tuple.Item1].GetMLpoint3D);
                 }
 
-                return new LObjectList()
+                return new PointsObjectList()
                 {
                     Line,
                 };
 
             }
-            LObjectList CalibrationLineW(LDeviceMesh monchaDeviceMesh, LPoint3D lPoint3D)
+            PointsObjectList CalibrationLineW(LDeviceMesh monchaDeviceMesh, CadPoint3D lPoint3D)
             {
                 Tuple<int, int> tuple = monchaDeviceMesh.CoordinatesOf(lPoint3D);
                 int height = monchaDeviceMesh.GetLength(0) - 1;
                 int width = monchaDeviceMesh.GetLength(1) - 1;
 
                 //width
-                LObject Line = new LObject() { MeshType = cadObject.MeshType }; ;
+                PointsObject Line = new PointsObject() { MeshType = cadObject.MeshType }; ;
 
                 for (int i = 0; i <= width; i += 1)
                 {
                     Line.Add(monchaDeviceMesh[tuple.Item2, i].GetMLpoint3D);
                 }
 
-                return new LObjectList()
+                return new PointsObjectList()
                 {
                     Line
                 };
@@ -292,17 +297,17 @@ namespace CadProjectorViewer.CanvasObj
         /// <summary>
         /// Convert inner object in LPoint3D's
         /// </summary>
-        public async static  Task<LObjectList> CalcContour(CadObject cadObject)
+        public async static  Task<PointsObjectList> CalcContour(CadObject cadObject)
         {
-            LObjectList PathList = new LObjectList();
+            PointsObjectList PathList = new PointsObjectList();
 
             switch ((object)cadObject)
             {
                 case NurbsShape nurbsShape:
-                    LObject NurbsObject = new LObject();
+                    PointsObject NurbsObject = new PointsObject();
                     foreach (Point nurbsPoint in nurbsShape.BSplinePoints(cadObject.ProjectionSetting.PointStep.MX))
                     {
-                        NurbsObject.Add(new LPoint3D(nurbsPoint));
+                        NurbsObject.Add(new CadPoint3D(nurbsPoint));
                     }
                     NurbsObject.ProjectionSetting = cadObject.ProjectionSetting;
                     PathList.Add(NurbsObject);
@@ -312,7 +317,7 @@ namespace CadProjectorViewer.CanvasObj
 
                     foreach(PointsElement pntobj in cadContour.GCObject.GetPointCollection(cadContour.TransformGroup, cadObject.ProjectionSetting.PointStep.MX, cadObject.ProjectionSetting.RadiusEdge))
                     {
-                        PathList.Add(new LObject(pntobj.GetPoints3D));
+                        PathList.Add(new PointsObject(pntobj.GetPoints3D));
                     }
 
                     break;
@@ -329,20 +334,20 @@ namespace CadProjectorViewer.CanvasObj
         /// <summary>
         /// interpolation Qbezier
         /// </summary>
-        public static LObject QBezierByStep(Point StartPoint, Point ControlPoint, Point EndPoint, double CRS)
+        public static PointsObject QBezierByStep(Point StartPoint, Point ControlPoint, Point EndPoint, double CRS)
         {
-            LPoint3D LastPoint = new LPoint3D(StartPoint);
+            CadPoint3D LastPoint = new CadPoint3D(StartPoint);
             double Lenth = 0;
             for (int t = 1; t < 100; t++)
             {
-                LPoint3D tempPoint = GetPoint((double)t / 99);
-                Lenth += LPoint3D.Lenth2D(LastPoint, tempPoint);
+                CadPoint3D tempPoint = GetPoint((double)t / 99);
+                Lenth += CadPoint3D.Lenth2D(LastPoint, tempPoint);
                 LastPoint = tempPoint;
             }
 
             int CountStep = (int)(Lenth / (CRS)) >= 2 ? (int)(Lenth / CRS) : 2;
 
-            LObject tempObj = new LObject();
+            PointsObject tempObj = new PointsObject();
 
             for (int t = 0; t < CountStep; t++)
             {
@@ -351,9 +356,9 @@ namespace CadProjectorViewer.CanvasObj
 
             return tempObj;
 
-            LPoint3D GetPoint(double t)
+            CadPoint3D GetPoint(double t)
             {
-                return new LPoint3D(
+                return new CadPoint3D(
                     (1 - t) * (1 - t) * StartPoint.X + 2 * (1 - t) * t * ControlPoint.X + t * t * EndPoint.X,
                    (1 - t) * (1 - t) * StartPoint.Y + 2 * (1 - t) * t * ControlPoint.Y + t * t * EndPoint.Y);
             }
@@ -362,19 +367,19 @@ namespace CadProjectorViewer.CanvasObj
         /// <summary>
         /// interpolation bezier
         /// </summary>
-        public static LObject BezieByStep(Point point0, Point point1, Point point2, Point point3, double CRS)
+        public static PointsObject BezieByStep(Point point0, Point point1, Point point2, Point point3, double CRS)
         {
             double Lenth = 0;
-            LPoint3D LastPoint = new LPoint3D(point1);
+            CadPoint3D LastPoint = new CadPoint3D(point1);
 
             for (int t = 0; t < 100; t++)
             {
-                LPoint3D tempPoint = GetPoint((double)t / 99);
-                Lenth += LPoint3D.Lenth2D(LastPoint, tempPoint);
+                CadPoint3D tempPoint = GetPoint((double)t / 99);
+                Lenth += CadPoint3D.Lenth2D(LastPoint, tempPoint);
                 LastPoint = tempPoint;
             }
 
-            LObject tempObj = new LObject();
+            PointsObject tempObj = new PointsObject();
 
             int CountStep = (int)(Lenth / CRS) >= 2 ? (int)(Lenth / CRS) : 2;
 
@@ -385,9 +390,9 @@ namespace CadProjectorViewer.CanvasObj
 
             return tempObj;
 
-            LPoint3D GetPoint(double t)
+            CadPoint3D GetPoint(double t)
             {
-                return new LPoint3D(
+                return new CadPoint3D(
                     ((1 - t) * (1 - t) * (1 - t)) * point0.X
                            + 3 * ((1 - t) * (1 - t)) * t * point1.X
                            + 3 * (1 - t) * (t * t) * point2.X

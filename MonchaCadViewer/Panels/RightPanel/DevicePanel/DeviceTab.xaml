@@ -181,13 +181,6 @@
             VerticalAlignment="Top"
             Content="{DynamicResource dvc_Dimmer}" Margin="4,0,0,0" Grid.Row="2" />
         <Label
-            Grid.Row="7"
-            Height="26"
-            Margin="0,0,0,4"
-            VerticalAlignment="Bottom"
-            HorizontalContentAlignment="Center"
-            Content="{Binding Value, ElementName=AngleWaitSlider}" />
-        <Label
             Grid.Row="8"
             Grid.Column="1"
             Grid.ColumnSpan="2"
@@ -350,15 +343,6 @@ PreviewMouseDown="ScanRateRealSlider_PreviewMouseDown"
                 </TransformGroup>
             </Label.RenderTransform>
         </Label>
-        <Label
-            x:Name="StartWaitLabel_Copy1"
-            Grid.Row="8"
-            Height="23"
-            Margin="0,0,0,35"
-            VerticalAlignment="Bottom"
-            HorizontalContentAlignment="Center"
-            VerticalContentAlignment="Center"
-            Content="{Binding Value, ElementName=StartBlankSlider}" />
         <Controls:NumericUpDown
             DataContext="{Binding ElementName=DeviceCombo, Path=SelectedItem}"
             Value="{Binding ProjectionSetting.EndBlanckWait, Mode=TwoWay}"
@@ -382,14 +366,6 @@ PreviewMouseDown="ScanRateRealSlider_PreviewMouseDown"
             HorizontalContentAlignment="Center"
             Content="{DynamicResource dvc_WaintPointEndBlank}"
             FontSize="8" />
-        <Label
-            x:Name="StartWaitLabel_Copy6"
-            Grid.Row="7"
-            Height="26"
-            Margin="0,0,0,1"
-            VerticalAlignment="Bottom"
-            HorizontalContentAlignment="Center"
-            Content="{Binding Value, ElementName=ColorShiftSlider}" />
         <Label
             x:Name="label_Copy7"
             Grid.Column="1"

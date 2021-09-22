@@ -1,6 +1,6 @@
 ﻿using CadProjectorViewer.CanvasObj;
 using CadProjectorSDK.Device;
-using CadProjectorSDK.Object;
+using CadProjectorSDK.CadObjects;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -17,7 +17,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
-using CadProjectorSDK.Object.LObjects;
+using CadProjectorSDK.CadObjects.LObjects;
 
 namespace CadProjectorViewer.DeviceManager
 {
@@ -68,7 +68,7 @@ namespace CadProjectorViewer.DeviceManager
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
             Console.WriteLine("Update Child Viwer");
-            if (value is LObjectList objectList)
+            if (value is PointsObjectList objectList)
             {
                 return new List<CanvasObj.CadObject>() { new CanvasObj.CadGeometry(objectList, false) };
             }

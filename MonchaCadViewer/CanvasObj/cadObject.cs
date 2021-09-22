@@ -13,12 +13,12 @@ using System.Threading;
 using CadProjectorViewer.Interface;
 using AppSt = CadProjectorViewer.Properties.Settings;
 using CadProjectorSDK.Device;
-using CadProjectorSDK.Object;
+using CadProjectorSDK.CadObjects;
 using ToGeometryConverter.Object;
 using ToGeometryConverter;
 using System.Collections.ObjectModel;
 using System.Windows.Media.Media3D;
-using CadProjectorSDK.Object.LObjects;
+using CadProjectorSDK.CadObjects.LObjects;
 
 namespace CadProjectorViewer.CanvasObj
 {
@@ -35,7 +35,7 @@ namespace CadProjectorViewer.CanvasObj
         public virtual event EventHandler<CadObject> Removed;
         public virtual event EventHandler<CadObject> Opening;
 
-        private LObjectList _renderpoint;
+        private PointsObjectList _renderpoint;
 
         public virtual Rect Bounds => this.GetGeometry.Bounds;
 

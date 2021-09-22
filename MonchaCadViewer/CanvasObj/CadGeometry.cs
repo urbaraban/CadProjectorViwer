@@ -1,6 +1,6 @@
 ﻿using CadProjectorSDK;
-using CadProjectorSDK.Object;
-using CadProjectorSDK.Object.LObjects;
+using CadProjectorSDK.CadObjects;
+using CadProjectorSDK.CadObjects.LObjects;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -31,13 +31,13 @@ namespace CadProjectorViewer.CanvasObj
             ContextMenuLib.ViewContourMenu(this.ContextMenu);
         }
 
-        public CadGeometry(LObjectList ObjectsList, bool ActiveObject) : base(ActiveObject)
+        public CadGeometry(PointsObjectList ObjectsList, bool ActiveObject) : base(ActiveObject)
         {
             GCCollection gCObjects = new GCCollection(ObjectsList.DisplayName);
-            foreach (LObject obj in ObjectsList)
+            foreach (PointsObject obj in ObjectsList)
             {
-                PointsElement Points = new PointsElement() { IsClosed = obj.Closed } ;
-                foreach (LPoint3D point in obj)
+                PointsElement Points = new PointsElement() { IsClosed = obj.IsClosed } ;
+                foreach (CadPoint3D point in obj)
                 {
                     Points.Add(new GCPoint3D(point.X, point.Y, point.Z));
                 }
@@ -50,9 +50,9 @@ namespace CadProjectorViewer.CanvasObj
         }
 
 
-        public LObjectList GetTransformPoints()
+        public PointsObjectList GetTransformPoints()
         {
-            LObjectList lObjectList = new LObjectList();
+            PointsObjectList lObjectList = new PointsObjectList();
             Transform3DGroup transform3DGroup = this.TransformGroup;
 
 
@@ -62,10 +62,10 @@ namespace CadProjectorViewer.CanvasObj
 
             foreach (PointsElement points in Points)
             {
-                lObjectList.Add(new LObject(points.GetPoints3D)
+                lObjectList.Add(new PointsObject(points.GetPoints3D)
                 {
                     ProjectionSetting = this.ProjectionSetting,
-                    Closed = points.IsClosed
+                    IsClosed = points.IsClosed
                 });
             }
 

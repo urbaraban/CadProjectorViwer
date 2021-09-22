@@ -2,7 +2,7 @@
 using CadProjectorViewer.CanvasObj;
 using CadProjectorSDK;
 using CadProjectorSDK.Device;
-using CadProjectorSDK.Object;
+using CadProjectorSDK.CadObjects;
 using CadProjectorSDK.Setting;
 using System;
 using System.Collections.Generic;

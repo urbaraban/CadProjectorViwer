@@ -1,5 +1,5 @@
 ﻿using MahApps.Metro.Controls;
-using CadProjectorSDK.Object;
+using CadProjectorSDK.CadObjects;
 using System.Windows;
 
 namespace CadProjectorViewer.Calibration
@@ -9,9 +9,9 @@ namespace CadProjectorViewer.Calibration
     /// </summary>
     public partial class DotEdit : Window
     {
-        private LPoint3D _point;
+        private CadPoint3D _point;
 
-        public DotEdit(LPoint3D point)
+        public DotEdit(CadPoint3D point)
         {
             _point = point;
 

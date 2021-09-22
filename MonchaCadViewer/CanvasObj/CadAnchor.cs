@@ -8,7 +8,7 @@ using System.Windows.Media.Media3D;
 using CadProjectorViewer.Calibration;
 using CadProjectorSDK;
 using CadProjectorSDK.Device;
-using CadProjectorSDK.Object;
+using CadProjectorSDK.CadObjects;
 
 namespace CadProjectorViewer.CanvasObj
 {
@@ -46,13 +46,13 @@ namespace CadProjectorViewer.CanvasObj
             }
         }
 
-        private LPoint3D PointX { get; set; }
-        private LPoint3D PointY { get; set; }
+        private CadPoint3D PointX { get; set; }
+        private CadPoint3D PointY { get; set; }
 
-        public LPoint3D GetLPoint => PointX != PointY ? new LPoint3D(PointX.MX, PointY.MY, PointX.M) : PointX;
+        public CadPoint3D GetLPoint => PointX != PointY ? new CadPoint3D(PointX.MX, PointY.MY, PointX.M) : PointX;
 
 
-        public CadAnchor(LPoint3D Point) : base(true)
+        public CadAnchor(CadPoint3D Point) : base(true)
         {
             this.PointX = Point;
             this.PointX.PropertyChanged += Point_PropertyChanged;
@@ -64,7 +64,7 @@ namespace CadProjectorViewer.CanvasObj
             CommonSetting();
         }
 
-        public CadAnchor(LPoint3D PointX, LPoint3D PointY) : base(true)
+        public CadAnchor(CadPoint3D PointX, CadPoint3D PointY) : base(true)
         {
             this.PointX = PointX;
             this.PointX.PropertyChanged += Point_PropertyChanged;
@@ -105,13 +105,13 @@ namespace CadProjectorViewer.CanvasObj
 
         private void CadDot_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
-            if (e.PropertyName == "IsSelected" && this.PointX.Select == false)
+            if (e.PropertyName == "IsSelected" && this.PointX.IsSelected == false)
             {
-                PointX.Select = true;
+                PointX.IsSelected = true;
             }
-            else if (e.PropertyName == "Leave" && this.PointX.Select == true)
+            else if (e.PropertyName == "Leave" && this.PointX.IsSelected == true)
             {
-                PointX.Select = false;
+                PointX.IsSelected = false;
             }
 
             this.InvalidateVisual();
@@ -125,13 +125,13 @@ namespace CadProjectorViewer.CanvasObj
 
         private void CadDot_Selected(object sender, bool e)
         {
-            this.PointX.Select = e;
+            this.PointX.IsSelected = e;
         }
 
 
         private void CadAnchor_Drop(object sender, DragEventArgs e)
         {
-            if (e.Data is Tuple<LPoint3D, LPoint3D> points)
+            if (e.Data is Tuple<CadPoint3D, CadPoint3D> points)
             {
                 this.PointX = points.Item1;
                 this.PointY = points.Item2;

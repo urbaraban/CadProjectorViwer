@@ -2,7 +2,7 @@
 using CadProjectorViewer.Interface;
 using CadProjectorViewer.Panels.ObjectPanel;
 using CadProjectorSDK;
-using CadProjectorSDK.Object;
+using CadProjectorSDK.CadObjects;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -26,14 +26,14 @@ namespace CadProjectorViewer.CanvasObj
         public override event EventHandler<string> Updated;
         public override event EventHandler<CadObject> Removed;
 
-        public LPoint3D P1;
-        public LPoint3D P2;
+        public CadPoint3D P1;
+        public CadPoint3D P2;
 
         public bool IsInit { get; private set; } = false;
 
         private RectangelAdorner adorner;
 
-        public double Lenth => LPoint3D.Lenth3D(P1, P2);
+        public double Lenth => CadPoint3D.Lenth3D(P1, P2);
 
         public override double X
         {
@@ -71,7 +71,7 @@ namespace CadProjectorViewer.CanvasObj
 
         public override Rect Bounds => new Rect(P1.GetMPoint, P2.GetMPoint);
 
-        public CadLine(LPoint3D P1, LPoint3D P2, bool MouseSet) : base(true)
+        public CadLine(CadPoint3D P1, CadPoint3D P2, bool MouseSet) : base(true)
         {
             this.P1 = P1;
             this.P2 = P2;

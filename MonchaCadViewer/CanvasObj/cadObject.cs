@@ -627,7 +627,6 @@ namespace CadProjectorViewer.CanvasObj
                 }
             }
 
-
             if (this.IsSelected == true)
             {
                 Geometry geometry = GetGeometry;

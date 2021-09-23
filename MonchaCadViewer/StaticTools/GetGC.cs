@@ -12,10 +12,53 @@ namespace CadProjectorViewer.StaticTools
 {
     public static class GetGC
     {
-        public async static Task<GCCollection> Load(string Filename)
+        private static GCFormat[] gCFormats = new GCFormat[]
         {
-            IFormat format = ToGC.GetConverter(Filename);
-            return await format.GetAsync(Filename, ProjectorHub.ProjectionSetting.PointStep.MX);
+            new GCFormat("Компас 3D", new string[2] { "frw" , "cdw"}),
+            new GCFormat("JPG Image", new string[2] { "jpg" , "jpeg"})
+        };
+
+        public static string GetFilter()
+        {
+            string _filter = string.Empty;
+            string _allformat = string.Empty;
+
+            List<GCFormat> Formats = new List<GCFormat>(ToGC.Formats);
+            Formats.AddRange(gCFormats);
+
+            foreach (GCFormat format in Formats)
+            {
+                foreach (string frm in format.ShortName)
+                {
+                    _allformat += $"*.{frm};";
+                }
+            }
+
+            _filter += $"All Format ({_allformat}) | {_allformat}";
+
+            foreach (GCFormat format in Formats)
+            {
+                _allformat = string.Empty;
+                foreach (string frm in format.ShortName)
+                {
+                    _allformat += $"*.{frm};";
+                }
+                _filter += $" | {format.Name}({_allformat}) | {_allformat}";
+            }
+
+            _filter += " | All Files (*.*)|*.*";
+
+            return _filter;
+        }
+
+        public async static Task<GCCollection> GCLoad(string Filename)
+        {
+            GCFormat gCFormat = ToGC.GetConverter(Filename);
+            if (gCFormat is IReadWrite format)
+            {
+                return await format.GetAsync(Filename, ProjectorHub.ProjectionSetting.PointStep.MX);
+            }
+            return new GCCollection(string.Empty);
         }
     }
 }

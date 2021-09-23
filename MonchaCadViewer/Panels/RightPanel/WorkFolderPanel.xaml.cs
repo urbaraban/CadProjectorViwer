@@ -1,4 +1,5 @@
-﻿using Microsoft.WindowsAPICodePack.Dialogs;
+﻿using CadProjectorViewer.StaticTools;
+using Microsoft.WindowsAPICodePack.Dialogs;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -42,7 +43,7 @@ namespace CadProjectorViewer.Panels.RightPanel
                 {
                     string format = path.Split('.').Last();
 
-                    if (ToGC.Filter.Contains($"*.{format};") == true)
+                    if (GetGC.GetFilter().Contains($"*.{format};") == true)
                     {
                         paths.Add(path.Split('\\').Last());
                     }

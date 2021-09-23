@@ -226,7 +226,8 @@ namespace CadProjectorViewer
         private async void OpenBtn_ClickAsync(object sender, EventArgs e)
         {
             WinForms.OpenFileDialog openFile = new WinForms.OpenFileDialog();
-            openFile.Filter = ToGC.Filter;
+            string filter = GetGC.GetFilter();
+            openFile.Filter = filter;
             if (AppSt.Default.save_work_folder == string.Empty)
             {
                 WinForms.FolderBrowserDialog folderDialog = new WinForms.FolderBrowserDialog();

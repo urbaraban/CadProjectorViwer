@@ -21,7 +21,7 @@ using System.Windows.Shapes;
 
 namespace CadProjectorViewer.CanvasObj
 {
-    public class CadRectangle : CadObject, IDrawingObject
+    public class CanvasRectangle : CanvasObject, IDrawingObject
     {
         #region Property
         public event PropertyChangedEventHandler PropertyChanged;
@@ -34,7 +34,7 @@ namespace CadProjectorViewer.CanvasObj
 
         public override event EventHandler<bool> Selected;
         public override event EventHandler<string> Updated;
-        public override event EventHandler<CadObject> Removed;
+        public override event EventHandler<CanvasObject> Removed;
 
         public CadSize3D LRect
         {
@@ -94,14 +94,14 @@ namespace CadProjectorViewer.CanvasObj
 
         public override Rect Bounds => new Rect(LRect.P1.GetMPoint, LRect.P2.GetMPoint);
 
-        public CadRectangle(CadPoint3D P1, CadPoint3D P2, string Label, bool MouseSet) : base(true)
+        public CanvasRectangle(CadPoint3D P1, CadPoint3D P2, string Label, bool MouseSet) : base(true)
         {
             this.NameID = Label;
             this.LRect = new CadSize3D(P1, P2);
             LoadSetting();
         }
 
-        public CadRectangle(CadSize3D lRect, string Label) : base(true)
+        public CanvasRectangle(CadSize3D lRect, string Label) : base(true)
         {
             this.NameID = Label;
             LRect = lRect;
@@ -160,7 +160,7 @@ namespace CadProjectorViewer.CanvasObj
             IsInit = true;
         }
 
-        private void RectangelAdorner_SelectAnchor(object sender, CadAnchor e)
+        private void RectangelAdorner_SelectAnchor(object sender, CanvasAnchor e)
         {
             Selected?.Invoke(e, e.IsSelected);
         }
@@ -174,18 +174,18 @@ namespace CadProjectorViewer.CanvasObj
 
     public class RectangelAdorner : Adorner
     {
-        public event EventHandler<CadAnchor> SelectAnchor;
+        public event EventHandler<CanvasAnchor> SelectAnchor;
 
         private VisualCollection _Visuals;
 
-        private List<CadAnchor> _Anchors;
+        private List<CanvasAnchor> _Anchors;
 
-        private CadRectangle rectangle;
+        private CanvasRectangle rectangle;
         // Be sure to call the base class constructor.
-        public RectangelAdorner(CadRectangle adornedElement): base(adornedElement)
+        public RectangelAdorner(CanvasRectangle adornedElement): base(adornedElement)
         {
             _Visuals = new VisualCollection(this);
-            _Anchors = new List<CadAnchor>();
+            _Anchors = new List<CanvasAnchor>();
 
             this.rectangle = adornedElement;
             this.rectangle.PropertyChanged += Rectangle_PropertyChanged;
@@ -193,18 +193,18 @@ namespace CadProjectorViewer.CanvasObj
 
             Rect rect = new Rect(0, 0, this.rectangle.Bounds.Width, this.rectangle.Bounds.Height);
 
-            AddAnchor(new CadAnchor(adornedElement.LRect.P1));
-            AddAnchor(new CadAnchor(adornedElement.LRect.P2, adornedElement.LRect.P1));
-            AddAnchor(new CadAnchor(adornedElement.LRect.P1, adornedElement.LRect.P2));
-            AddAnchor(new CadAnchor(adornedElement.LRect.P2));
+            AddAnchor(new CanvasAnchor(adornedElement.LRect.P1));
+            AddAnchor(new CanvasAnchor(adornedElement.LRect.P2, adornedElement.LRect.P1));
+            AddAnchor(new CanvasAnchor(adornedElement.LRect.P1, adornedElement.LRect.P2));
+            AddAnchor(new CanvasAnchor(adornedElement.LRect.P2));
 
-            foreach (CadAnchor anchor in _Anchors)
+            foreach (CanvasAnchor anchor in _Anchors)
             {
                 _Visuals.Add(anchor);
             }
         }
 
-        private void AddAnchor(CadAnchor anchor)
+        private void AddAnchor(CanvasAnchor anchor)
         {
             anchor.Selected += Anchor_Selected;
             _Anchors.Add(anchor);
@@ -212,7 +212,7 @@ namespace CadProjectorViewer.CanvasObj
 
         private void Anchor_Selected(object sender, bool e)
         {
-            SelectAnchor?.Invoke(this, (CadAnchor)sender);
+            SelectAnchor?.Invoke(this, (CanvasAnchor)sender);
         }
 
         private void Rectangle_PropertyChanged(object sender, PropertyChangedEventArgs e)
@@ -222,7 +222,7 @@ namespace CadProjectorViewer.CanvasObj
 
         protected override Size ArrangeOverride(Size finalSize)
         {
-            foreach (CadAnchor anchor in _Anchors)
+            foreach (CanvasAnchor anchor in _Anchors)
             {
                 anchor.Arrange(new Rect(finalSize));
             }

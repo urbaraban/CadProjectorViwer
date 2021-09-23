@@ -14,7 +14,7 @@ using ToGeometryConverter.Object.Elements;
 
 namespace CadProjectorViewer.CanvasObj
 {
-    public class CadGeometry : CadObject
+    public class CadGeometry : CanvasObject
     {
         public IGCObject GCObject { get; set; }
 
@@ -27,24 +27,6 @@ namespace CadProjectorViewer.CanvasObj
         public CadGeometry(IGCObject gCObject, bool ActiveObject) : base(ActiveObject)
         {
             this.GCObject = gCObject;
-            this.Cursor = Cursors.Hand;
-            ContextMenuLib.ViewContourMenu(this.ContextMenu);
-        }
-
-        public CadGeometry(PointsObjectList ObjectsList, bool ActiveObject) : base(ActiveObject)
-        {
-            GCCollection gCObjects = new GCCollection(ObjectsList.DisplayName);
-            foreach (PointsObject obj in ObjectsList)
-            {
-                PointsElement Points = new PointsElement() { IsClosed = obj.IsClosed } ;
-                foreach (CadPoint3D point in obj)
-                {
-                    Points.Add(new GCPoint3D(point.X, point.Y, point.Z));
-                }
-                gCObjects.Add(Points);
-            }
-
-            this.GCObject = gCObjects;
             this.Cursor = Cursors.Hand;
             ContextMenuLib.ViewContourMenu(this.ContextMenu);
         }

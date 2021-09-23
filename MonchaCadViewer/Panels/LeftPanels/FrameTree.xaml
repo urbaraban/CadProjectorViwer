@@ -21,7 +21,7 @@
         <Grid.Resources>
             <HierarchicalDataTemplate 
                 x:Key="ObjectTree" 
-                DataType ="{x:Type src:CadObject}" 
+                DataType ="{x:Type src:CanvasObject}" 
                 ItemsSource="{Binding Children}">
                 <Border ContextMenu="{Binding ContextMenu}">
                     <StackPanel Orientation="Horizontal"

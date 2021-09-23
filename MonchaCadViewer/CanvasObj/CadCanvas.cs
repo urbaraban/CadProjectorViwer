@@ -29,7 +29,7 @@ namespace CadProjectorViewer.CanvasObj
         }
         #endregion
 
-        public CadAnchor UnderAnchor;
+        public CanvasAnchor UnderAnchor;
 
         public bool MainCanvas { get; }
 
@@ -62,16 +62,16 @@ namespace CadProjectorViewer.CanvasObj
         //Рисуем квадраты в поле согласно схеме
 
 
-        public static List<CadAnchor> GetMesh(LDeviceMesh mesh, double AnchorSize, bool Render, MeshType meshType)
+        public static List<CanvasAnchor> GetMesh(LDeviceMesh mesh, double AnchorSize, bool Render, MeshType meshType)
         {
-            List<CadAnchor> objects = new List<CadAnchor>();
+            List<CanvasAnchor> objects = new List<CanvasAnchor>();
 
             for (int i = 0; i < mesh.GetLength(0); i++)
             {
                 for (int j = 0; j < mesh.GetLength(1); j++)
                 {
                     mesh[i, j].M = ProjectorHub.Size;
-                    objects.Add(new CadAnchor(mesh[i, j])
+                    objects.Add(new CanvasAnchor(mesh[i, j])
                     {
                         IsFix = false,// !mesh.OnlyEdge;
                         Uid = i.ToString() + ":" + j.ToString(),

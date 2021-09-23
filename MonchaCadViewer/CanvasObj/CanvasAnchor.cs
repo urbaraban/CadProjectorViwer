@@ -12,7 +12,7 @@ using CadProjectorSDK.CadObjects;
 
 namespace CadProjectorViewer.CanvasObj
 {
-    public class CadAnchor : CadObject
+    public class CanvasAnchor : CanvasObject
     {
         private double size;
         private RectangleGeometry rectangle;
@@ -52,7 +52,7 @@ namespace CadProjectorViewer.CanvasObj
         public CadPoint3D GetLPoint => PointX != PointY ? new CadPoint3D(PointX.MX, PointY.MY, PointX.M) : PointX;
 
 
-        public CadAnchor(CadPoint3D Point) : base(true)
+        public CanvasAnchor(CadPoint3D Point) : base(true)
         {
             this.PointX = Point;
             this.PointX.PropertyChanged += Point_PropertyChanged;
@@ -64,7 +64,7 @@ namespace CadProjectorViewer.CanvasObj
             CommonSetting();
         }
 
-        public CadAnchor(CadPoint3D PointX, CadPoint3D PointY) : base(true)
+        public CanvasAnchor(CadPoint3D PointX, CadPoint3D PointY) : base(true)
         {
             this.PointX = PointX;
             this.PointX.PropertyChanged += Point_PropertyChanged;

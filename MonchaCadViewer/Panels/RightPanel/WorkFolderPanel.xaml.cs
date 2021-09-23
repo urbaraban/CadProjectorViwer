@@ -30,6 +30,10 @@ namespace CadProjectorViewer.Panels.RightPanel
         public WorkFolderPanel()
         {
             InitializeComponent();
+            List<GCFormat> formats = FileLoad.GetFormatList();
+            ComboFilter.ItemsSource = formats;
+            ComboFilter.SelectedItem = formats.Last();
+            RefreshWorkFolderList();
         }
 
         private void WorkFolderRefreshBtn_Click(object sender, RoutedEventArgs e) => RefreshWorkFolderList();
@@ -38,17 +42,17 @@ namespace CadProjectorViewer.Panels.RightPanel
         {
             if (Directory.Exists(AppSt.Default.save_work_folder) == true)
             {
-                List<string> paths = new List<string>();
+                List<FileInfo> infos = new List<FileInfo>();
                 foreach (string path in Directory.GetFiles(AppSt.Default.save_work_folder))
                 {
                     string format = path.Split('.').Last();
 
-                    if (GetGC.GetFilter().Contains($"*.{format};") == true)
+                    if (FileLoad.GetFilter().Contains($"*.{format};") == true)
                     {
-                        paths.Add(path.Split('\\').Last());
+                        infos.Add(new FileInfo(path));
                     }
                 }
-                WorkFolderListBox.ItemsSource = paths;
+                WorkFolderListBox.ItemsSource = infos;
                 CollectionView view = CollectionViewSource.GetDefaultView(WorkFolderListBox.ItemsSource) as CollectionView;
                 WorkFolderListBox.Items.Filter = new Predicate<object>(Contains);
             }
@@ -56,9 +60,15 @@ namespace CadProjectorViewer.Panels.RightPanel
 
         public bool Contains(object pt)
         {
-            string path = pt as string;
-            //Return members whose Orders have not been filled
-            return path.ToLower().Contains(WorkFolderFilter.Text.ToLower());
+            string FormatString = FileLoad.GetFilter();
+
+            if (ComboFilter.SelectedItem is GCFormat format) FormatString = string.Join(" ", format.ShortName);
+
+            if (pt is FileInfo fileInfo)
+            {
+                return (fileInfo.Filename.ToLower().Contains(WorkFolderFilter.Text.ToLower()) && (FormatString.Contains(fileInfo.Fileformat)));
+            }
+            return false;
         }
 
         private void WorkFolderBtn_Click(object sender, RoutedEventArgs e)
@@ -90,22 +100,21 @@ namespace CadProjectorViewer.Panels.RightPanel
 
         private async void TextBlock_MouseDownAsync(object sender, MouseButtonEventArgs e)
         {
-            if (e.ClickCount >= 2)
-            {
-                await mainWindow.OpenFile($"{AppSt.Default.save_work_folder}\\{WorkFolderListBox.SelectedItem.ToString()}");
-            }
+            if (WorkFolderListBox.SelectedItem is FileInfo fileInfo)
+                await mainWindow.OpenFile(fileInfo.Filepath);
+
         }
 
         private void Border_ContextMenuClosing(object sender, ContextMenuEventArgs e)
         {
-            if (sender is Border border)
+            if (sender is ListViewItem item && item.DataContext is FileInfo fileInfo)
             {
-                if (border.ContextMenu.DataContext is MenuItem cmindex)
+                if (item.ContextMenu.DataContext is MenuItem cmindex)
                 {
                     switch (cmindex.Tag)
                     {
                         case "OpenEditor":
-                            System.Diagnostics.Process.Start($"{AppSt.Default.save_work_folder}\\{WorkFolderListBox.SelectedItem.ToString()}");
+                            System.Diagnostics.Process.Start(fileInfo.Filepath);
                             break;
                         case "OpenFolder":
                             System.Diagnostics.Process.Start(AppSt.Default.save_work_folder);
@@ -114,7 +123,6 @@ namespace CadProjectorViewer.Panels.RightPanel
                 }
             }
         }
-
 
         private void MenuItem_Click(object sender, RoutedEventArgs e)
         {
@@ -125,6 +133,27 @@ namespace CadProjectorViewer.Panels.RightPanel
                 obj = VisualTreeHelper.GetParent(obj);
             }
             (obj as ContextMenu).DataContext = sender;
+        }
+
+        private void ComboFilter_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            RefreshWorkFolderList();
+        }
+    }
+
+    internal struct FileInfo
+    {
+        public string Filepath { get; }
+        public string Filename { get; }
+        public string Fileformat { get; }
+        public int Filesize { get; }
+        
+        public FileInfo(string Filepath)
+        {
+            this.Filepath = Filepath;
+            this.Filename = Filepath.Split('\\').Last().Split('.').First();
+            this.Fileformat = Filepath.Split('.').Last();
+            this.Filesize = 0;
         }
     }
 }

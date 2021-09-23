@@ -33,7 +33,7 @@ namespace CadProjectorViewer.Panels.DevicePanel.LeftPanels
         {
             if (sender is Label label)
             {
-                if (label.DataContext is CadObject cadObject) cadObject.IsSelected = true;
+                if (label.DataContext is CanvasObject cadObject) cadObject.IsSelected = true;
             }
         }
 
@@ -43,7 +43,7 @@ namespace CadProjectorViewer.Panels.DevicePanel.LeftPanels
 
             if (DataContext is ProjectionScene projectionScene)
             {
-                foreach (CadObject cadObject in projectionScene.Objects)
+                foreach (CanvasObject cadObject in projectionScene.Objects)
                 {
                     cadObject.Render = RenderStat;
                 }

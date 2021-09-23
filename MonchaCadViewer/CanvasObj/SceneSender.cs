@@ -31,7 +31,7 @@ namespace CadProjectorViewer.CanvasObj
 
             foreach (object obj in scene.Objects)
             {
-                if (obj is CadObject cadObject && cadObject.Render == true)
+                if (obj is CanvasObject cadObject && cadObject.Render == true)
                 {
                     dotList.AddRange(SceneSender.GetPoint(cadObject, false));
                     //dotList.AddRange(cadObject.GetTransformPoint(false));
@@ -40,7 +40,7 @@ namespace CadProjectorViewer.CanvasObj
             PointsObjectList outList = new PointsObjectList();
             if (scene.Masks.Count > 0)
             {
-                foreach (CadRectangle rectangle in scene.Masks)
+                foreach (CanvasRectangle rectangle in scene.Masks)
                 {
                    outList.AddRange(await rectangle.LRect.GetCutObjects(dotList));
                 }
@@ -63,13 +63,13 @@ namespace CadProjectorViewer.CanvasObj
         /// </summary>
         /// <param name="cadObject">inner object</param>
         /// <returns>Object collection</returns>
-        public static PointsObjectList GetPoint(CadObject cadObject, bool InGroup)
+        public static PointsObjectList GetPoint(CanvasObject cadObject, bool InGroup)
         {
             PointsObjectList lObjectList = new PointsObjectList();
 
             switch (cadObject)
             {
-                case CadAnchor cadDot:
+                case CanvasAnchor cadDot:
                     if (cadObject.DataContext is LDeviceMesh deviceMesh)
                     {
                         if (LDeviceMesh.ClbrForm == CalibrationForm.cl_Dot) 
@@ -101,7 +101,7 @@ namespace CadProjectorViewer.CanvasObj
                 case CadGeometry cadGeometry:
                     lObjectList.AddRange(cadGeometry.GetTransformPoints());
                     break;
-                case CadLine cadLine:
+                case CanvasLine cadLine:
                     lObjectList.Add(new PointsObject()
                     {
                         Points = new List<CadPoint3D>() {
@@ -111,7 +111,7 @@ namespace CadProjectorViewer.CanvasObj
                         ProjectionSetting = cadLine.ProjectionSetting
                     });
                     break;
-                case CadRectangle cadRectangle:
+                case CanvasRectangle cadRectangle:
                     lObjectList.Add(new PointsObject()
                     {
                         Points = new List<CadPoint3D>() {
@@ -125,7 +125,7 @@ namespace CadProjectorViewer.CanvasObj
                     });
                     break;
                 case CadObjectsGroup cadObjectsGroup:
-                    foreach (CadObject obj in cadObjectsGroup)
+                    foreach (CanvasObject obj in cadObjectsGroup)
                     {
                         if (obj.Render == true)
                         {
@@ -297,7 +297,7 @@ namespace CadProjectorViewer.CanvasObj
         /// <summary>
         /// Convert inner object in LPoint3D's
         /// </summary>
-        public async static  Task<PointsObjectList> CalcContour(CadObject cadObject)
+        public async static  Task<PointsObjectList> CalcContour(CanvasObject cadObject)
         {
             PointsObjectList PathList = new PointsObjectList();
 

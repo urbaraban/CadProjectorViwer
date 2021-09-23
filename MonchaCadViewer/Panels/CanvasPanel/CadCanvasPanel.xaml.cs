@@ -172,21 +172,21 @@ namespace CadProjectorViewer.Panels.CanvasPanel
                 else if (this.MouseAction == MouseAction.Rectangle)
                 {
                     Point point = e.GetPosition(CanvasGrid);
-                    CanvasObj.CadRectangle cadRectangle = new CanvasObj.CadRectangle(new CadPoint3D(point, ProjectorHub.Size), new CadPoint3D(point, ProjectorHub.Size), string.Empty, true);
+                    CanvasObj.CanvasRectangle cadRectangle = new CanvasObj.CanvasRectangle(new CadPoint3D(point, ProjectorHub.Size), new CadPoint3D(point, ProjectorHub.Size), string.Empty, true);
                     this.projectionScene.Add(cadRectangle);
                 }
                 else if (this.mouseAction == MouseAction.Mask)
                 {
                     this.MouseAction = MouseAction.NoAction;
                     CadSize3D lRect = new CadSize3D(new CadPoint3D(e.GetPosition(inputElement), ProjectorHub.Size, true), new CadPoint3D(e.GetPosition(inputElement), ProjectorHub.Size, true));
-                    CanvasObj.CadRectangle Maskrectangle = new CanvasObj.CadRectangle(lRect, $"Mask_{this.projectionScene.Masks.Count}") { Render = false };
+                    CanvasObj.CanvasRectangle Maskrectangle = new CanvasObj.CanvasRectangle(lRect, $"Mask_{this.projectionScene.Masks.Count}") { Render = false };
                     this.projectionScene.Add(Maskrectangle);
                     this.projectionScene.Masks.Add(Maskrectangle);
                     this.projectionScene.ActiveDrawingObject = Maskrectangle;
                 }
                 else if (this.mouseAction == MouseAction.Line)
                 {
-                    CanvasObj.CadLine line = new CanvasObj.CadLine(new CadPoint3D(e.GetPosition(inputElement)), new CadPoint3D(e.GetPosition(inputElement)), true);
+                    CanvasObj.CanvasLine line = new CanvasObj.CanvasLine(new CadPoint3D(e.GetPosition(inputElement)), new CadPoint3D(e.GetPosition(inputElement)), true);
                     this.projectionScene.Add(line);
                     this.projectionScene.ActiveDrawingObject = line;
                 }
@@ -235,7 +235,7 @@ namespace CadProjectorViewer.Panels.CanvasPanel
         {
             for (int i = 0; i < this.projectionScene.Objects.Count; i++)
             {
-                if (this.projectionScene.Objects[i] is CanvasObj.CadObject cadObject)
+                if (this.projectionScene.Objects[i] is CanvasObj.CanvasObject cadObject)
                 {
                     if (cadObject.IsSelected == true && cadObject.IsFix == false)
                     {
@@ -250,7 +250,7 @@ namespace CadProjectorViewer.Panels.CanvasPanel
         {
             for (int i = 0; i < projectionScene.Objects.Count; i++)
             {
-                if (projectionScene.Objects[i] is CanvasObj.CadObject cadObject1)
+                if (projectionScene.Objects[i] is CanvasObj.CanvasObject cadObject1)
                 {
                     if (cadObject1.IsSelected)
                     {
@@ -265,7 +265,7 @@ namespace CadProjectorViewer.Panels.CanvasPanel
         {
             for (int i = 0; i < projectionScene.Objects.Count; i++)
             {
-                if (projectionScene.Objects[i] is CanvasObj.CadObject cadObject)
+                if (projectionScene.Objects[i] is CanvasObj.CanvasObject cadObject)
                 {
                     if (cadObject.IsSelected)
                     {
@@ -274,7 +274,7 @@ namespace CadProjectorViewer.Panels.CanvasPanel
 
                         try
                         {
-                            if (projectionScene.Objects[i + (InverseSelectFlag ? -1 : +1)] is CanvasObj.CadObject cadObject2)
+                            if (projectionScene.Objects[i + (InverseSelectFlag ? -1 : +1)] is CanvasObj.CanvasObject cadObject2)
                             {
                                 cadObject2.IsSelected = true;
                                 cadObject2.IsFix = false;

@@ -6,7 +6,7 @@
     xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
     xmlns:canvasobj="clr-namespace:CadProjectorViewer.CanvasObj" xmlns:panels="clr-namespace:CadProjectorViewer.Panels"
-    d:DataContext="{d:DesignInstance Type=canvasobj:CadObject}"
+    d:DataContext="{d:DesignInstance Type=canvasobj:CanvasObject}"
     d:DesignHeight="90"
     d:DesignWidth="490"
     mc:Ignorable="d">

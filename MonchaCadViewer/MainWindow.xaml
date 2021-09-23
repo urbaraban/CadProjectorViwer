@@ -10,7 +10,7 @@
         xmlns:convert="clr-namespace:CadProjectorViewer.Converters"
         xmlns:leftpanels="clr-namespace:CadProjectorViewer.Panels.DevicePanel.LeftPanels" 
     xmlns:rightpanel="clr-namespace:CadProjectorViewer.Panels.RightPanel" 
-    xmlns:CadProjectorViewer="clr-namespace:CadProjectorViewer"
+    xmlns:CadProjectorViewer="clr-namespace:CadProjectorViewer" xmlns:canvasobj="clr-namespace:CadProjectorViewer.CanvasObj"
     DataContext="{Binding RelativeSource={RelativeSource Self}, Path=ProjectorHub}"
     x:Class="CadProjectorViewer.MainWindow"
         mc:Ignorable="d"
@@ -44,6 +44,8 @@
             </Style>
             <CadProjectorViewer:PlayBackConverter x:Key="PlayBackConverter"/>
             <CadProjectorViewer:MultiObjectList x:Key="MultiList"/>
+            <CadProjectorViewer:CadObjectConverter x:Key="CadObjectConverter"/>
+            <CadProjectorViewer:LicenceColor x:Key="LicenceKey"/>
         </ResourceDictionary>
     </Window.Resources>
     <Border>
@@ -89,6 +91,8 @@
                     <StackPanel Margin="10,0,0,0" Orientation="Horizontal" HorizontalAlignment="Right" DockPanel.Dock="Right" UseLayoutRounding="True">
 
                         <Button x:Name="MenuSaveBtn" FontFamily="Segoe MDL2 Assets" Content="&#xE792;" Width="25" Height="25" Margin="2" Padding="0,-1,0,0" FontSize="18" BorderBrush="{x:Null}" Background="{x:Null}" Click="MenuSaveBtn_Click"/>
+                        <Ellipse Width="15" Height="15"
+                                 Fill="{Binding lockKey.IsLicensed, Converter={StaticResource LicenceKey}}" ToolTip="It is licence status"/>
                         <Label x:Name="MonchaPathBox"  Margin="3"   Content="{Binding cl_moncha_path}" VerticalAlignment="Top" Grid.ColumnSpan="3" HorizontalContentAlignment="Right" RenderTransformOrigin="0.7,-1.217" FontSize="10">
                             <Label.DataContext>
                                 <Properties:Settings/>
@@ -179,6 +183,22 @@
                     <canvaspanel:CadCanvasPanel x:Name="MainCanvas" DataContext="{Binding RelativeSource={RelativeSource AncestorType=Window}, Path=MainScene}" AllowDrop="True" Drop="MainCanvas_Drop"/>
                 </TabItem>
                 <TabItem Header="ViewPort3D" Visibility="Collapsed">
+                </TabItem>
+                <TabItem Header="Test">
+                    <Viewbox Grid.RowSpan="3" Stretch="Uniform" StretchDirection="Both">
+                        <Grid Height="1000" Width="1000">
+                            <ItemsControl ItemsSource="{Binding Scene.Objects}">
+                                <ItemsControl.ItemsPanel>
+                                    <ItemsPanelTemplate>
+                                        <Canvas/>
+                                    </ItemsPanelTemplate>
+                                </ItemsControl.ItemsPanel>
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate/>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                        </Grid>
+                    </Viewbox>
                 </TabItem>
             </TabControl>
             <panels:ScrollPanel x:Name="ContourScrollPanel" Margin="0,5,0,0" Grid.Column="1" Grid.Row="3" 

@@ -1,4 +1,6 @@
 ﻿using CadProjectorSDK;
+using CadProjectorSDK.CadObjects;
+using CadProjectorSDK.CadObjects.LObjects;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -17,13 +19,13 @@ using AppSt = CadProjectorViewer.Properties.Settings;
 
 namespace CadProjectorViewer.CanvasObj
 {
-    public class CadObjectsGroup : CadObject, IList<CadObject>
+    public class CadObjectsGroup : CanvasObject, IList<CanvasObject>
     {
         private bool Opened = false;
 
         private void ParseColletion(GCCollection objects)
         {
-            List<CadObject> geometries = new List<CadObject>();
+            List<CanvasObject> geometries = new List<CanvasObject>();
 
             foreach (IGCObject gC in objects)
             {
@@ -57,7 +59,7 @@ namespace CadProjectorViewer.CanvasObj
             set
             {
                 base.TransformGroup = value;
-                foreach(CadObject cadObject in Children)
+                foreach(CanvasObject cadObject in Children)
                 {
                     cadObject.TransformGroup = value;
                 }
@@ -69,7 +71,7 @@ namespace CadProjectorViewer.CanvasObj
             get
             {
                 GeometryGroup geometryGroup = new GeometryGroup();
-                foreach (CadObject element in this.Children)
+                foreach (CanvasObject element in this.Children)
                 {
                     if (element.Render == true)
                     {
@@ -96,24 +98,41 @@ namespace CadProjectorViewer.CanvasObj
             this.NameID = gCCollection.Name;
         }
 
-
-        #region IList<CadObject>
-        public CadObject this[int index] { get => ((IList<CadObject>)Children)[index]; set => ((IList<CadObject>)Children)[index] = value; }
-
-        public int Count => ((ICollection<CadObject>)Children).Count;
-
-        public bool IsReadOnly => ((ICollection<CadObject>)Children).IsReadOnly;
-
-        public void AddRange(IList<CadObject> Children)
+        public CadObjectsGroup(PointsObjectList ObjectsList, bool ActiveObject) : base(ActiveObject)
         {
-            foreach (CadObject cadObject in Children) this.Add(cadObject);
+            foreach (PointsObject obj in ObjectsList)
+            {
+                PointsElement Points = new PointsElement() { IsClosed = obj.IsClosed };
+                foreach (CadPoint3D point in obj)
+                {
+                    Points.Add(new GCPoint3D(point.X, point.Y, point.Z));
+                }
+                this.Add(new CadGeometry(Points, true));
+            }
+
+
+            this.Cursor = Cursors.Hand;
+            ContextMenuLib.ViewContourMenu(this.ContextMenu);
         }
 
-        public void Add(CadObject item)
+
+        #region IList<CadObject>
+        public CanvasObject this[int index] { get => ((IList<CanvasObject>)Children)[index]; set => ((IList<CanvasObject>)Children)[index] = value; }
+
+        public int Count => ((ICollection<CanvasObject>)Children).Count;
+
+        public bool IsReadOnly => ((ICollection<CanvasObject>)Children).IsReadOnly;
+
+        public void AddRange(IList<CanvasObject> Children)
+        {
+            foreach (CanvasObject cadObject in Children) this.Add(cadObject);
+        }
+
+        public void Add(CanvasObject item)
         {
             item.TransformGroup = this.TransformGroup;
             item.PropertyChanged += Item_PropertyChanged;
-            ((ICollection<CadObject>)Children).Add(item);
+            ((ICollection<CanvasObject>)Children).Add(item);
         }
 
         private void Item_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
@@ -124,42 +143,42 @@ namespace CadProjectorViewer.CanvasObj
 
         public void Clear()
         {
-            ((ICollection<CadObject>)Children).Clear();
+            ((ICollection<CanvasObject>)Children).Clear();
         }
 
-        public bool Contains(CadObject item)
+        public bool Contains(CanvasObject item)
         {
-            return ((ICollection<CadObject>)Children).Contains(item);
+            return ((ICollection<CanvasObject>)Children).Contains(item);
         }
 
-        public void CopyTo(CadObject[] array, int arrayIndex)
+        public void CopyTo(CanvasObject[] array, int arrayIndex)
         {
-            ((ICollection<CadObject>)Children).CopyTo(array, arrayIndex);
+            ((ICollection<CanvasObject>)Children).CopyTo(array, arrayIndex);
         }
 
-        public IEnumerator<CadObject> GetEnumerator()
+        public IEnumerator<CanvasObject> GetEnumerator()
         {
-            return ((IEnumerable<CadObject>)Children).GetEnumerator();
+            return ((IEnumerable<CanvasObject>)Children).GetEnumerator();
         }
 
-        public int IndexOf(CadObject item)
+        public int IndexOf(CanvasObject item)
         {
-            return ((IList<CadObject>)Children).IndexOf(item);
+            return ((IList<CanvasObject>)Children).IndexOf(item);
         }
 
-        public void Insert(int index, CadObject item)
+        public void Insert(int index, CanvasObject item)
         {
-            ((IList<CadObject>)Children).Insert(index, item);
+            ((IList<CanvasObject>)Children).Insert(index, item);
         }
 
-        public bool Remove(CadObject item)
+        public bool Remove(CanvasObject item)
         {
-            return ((ICollection<CadObject>)Children).Remove(item);
+            return ((ICollection<CanvasObject>)Children).Remove(item);
         }
 
         public void RemoveAt(int index)
         {
-            ((IList<CadObject>)Children).RemoveAt(index);
+            ((IList<CanvasObject>)Children).RemoveAt(index);
         }
 
         IEnumerator IEnumerable.GetEnumerator()

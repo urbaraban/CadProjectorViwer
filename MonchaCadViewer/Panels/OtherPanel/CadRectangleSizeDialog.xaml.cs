@@ -21,7 +21,7 @@ namespace CadProjectorViewer.Panels.ObjectPanel
     /// </summary>
     public partial class CadRectangleSizePanel : Window
     {
-        public CadRectangleSizePanel(CadRectangle cadRectangle)
+        public CadRectangleSizePanel(CanvasRectangle cadRectangle)
         {
             InitializeComponent();
             this.Title = cadRectangle.ToolTip.ToString();

@@ -21,10 +21,10 @@ using System.Windows.Shapes;
 
 namespace CadProjectorViewer.CanvasObj
 {
-    public class CadLine : CadObject, IDrawingObject
+    public class CanvasLine : CanvasObject, IDrawingObject
     {
         public override event EventHandler<string> Updated;
-        public override event EventHandler<CadObject> Removed;
+        public override event EventHandler<CanvasObject> Removed;
 
         public CadPoint3D P1;
         public CadPoint3D P2;
@@ -66,12 +66,11 @@ namespace CadProjectorViewer.CanvasObj
             }
         }
 
-
-        private List<CadAnchor> anchors;
+        private List<CanvasAnchor> anchors;
 
         public override Rect Bounds => new Rect(P1.GetMPoint, P2.GetMPoint);
 
-        public CadLine(CadPoint3D P1, CadPoint3D P2, bool MouseSet) : base(true)
+        public CanvasLine(CadPoint3D P1, CadPoint3D P2, bool MouseSet) : base(true)
         {
             this.P1 = P1;
             this.P2 = P2;
@@ -81,7 +80,7 @@ namespace CadProjectorViewer.CanvasObj
         private void LoadSetting(bool MouseSet)
         {
             this.P1.PropertyChanged += P1_PropertyChanged;
-            this.P2.PropertyChanged += P1_PropertyChanged;
+            this.P2.PropertyChanged += P2_PropertyChanged;
             this.Render = true;
             this.NameID = "Line";
         }
@@ -89,8 +88,14 @@ namespace CadProjectorViewer.CanvasObj
 
         private void P1_PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
+            if (e.PropertyName == "IsSelected" && this.P2.IsSelected == true) this.P2.IsSelected = false;
             this.InvalidateVisual();
-            Updated?.Invoke(this, "Point");
+        }
+
+        private void P2_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == "IsSelected" && this.P1.IsSelected == true) this.P1.IsSelected = false;
+            this.InvalidateVisual();
         }
 
 
@@ -115,7 +120,7 @@ namespace CadProjectorViewer.CanvasObj
         public override void Remove()
         {
             Removed?.Invoke(this, this);
-            foreach (CadAnchor cadAnchor in anchors)
+            foreach (CanvasAnchor cadAnchor in anchors)
             {
                 cadAnchor.Remove();
             }
@@ -139,14 +144,14 @@ namespace CadProjectorViewer.CanvasObj
     {
         private VisualCollection _Visuals;
 
-        private List<CadAnchor> _Anchors;
+        private List<CanvasAnchor> _Anchors;
 
-        private CadLine rectangle;
+        private CanvasLine rectangle;
         // Be sure to call the base class constructor.
-        public LineAdorner(CadLine adornedElement) : base(adornedElement)
+        public LineAdorner(CanvasLine adornedElement) : base(adornedElement)
         {
             _Visuals = new VisualCollection(this);
-            _Anchors = new List<CadAnchor>();
+            _Anchors = new List<CanvasAnchor>();
 
             this.rectangle = adornedElement;
             this.rectangle.PropertyChanged += Rectangle_PropertyChanged;
@@ -154,10 +159,10 @@ namespace CadProjectorViewer.CanvasObj
 
             Rect rect = new Rect(0, 0, this.rectangle.Bounds.Width, this.rectangle.Bounds.Height);
 
-            _Anchors.Add(new CadAnchor(adornedElement.P1));
-            _Anchors.Add(new CadAnchor(adornedElement.P2));
+            _Anchors.Add(new CanvasAnchor(adornedElement.P1));
+            _Anchors.Add(new CanvasAnchor(adornedElement.P2));
 
-            foreach (CadAnchor anchor in _Anchors)
+            foreach (CanvasAnchor anchor in _Anchors)
             {
                 _Visuals.Add(anchor);
             }
@@ -170,7 +175,7 @@ namespace CadProjectorViewer.CanvasObj
 
         protected override Size ArrangeOverride(Size finalSize)
         {
-            foreach (CadAnchor anchor in _Anchors)
+            foreach (CanvasAnchor anchor in _Anchors)
             {
                 anchor.Arrange(new Rect(finalSize));
             }

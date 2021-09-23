@@ -38,7 +38,7 @@ namespace CadProjectorViewer.CanvasObj
         }
         private string nameid = string.Empty;
 
-        public CadObject LastSelectObject 
+        public CanvasObject LastSelectObject 
         {
             get => lastselectobject;
             set
@@ -47,12 +47,12 @@ namespace CadProjectorViewer.CanvasObj
                 OnPropertyChanged("LastSelectObject");
             }
         }
-        private CadObject lastselectobject;
+        private CanvasObject lastselectobject;
 
-        public ObservableCollection<CadObject> SelectedObjects = new ObservableCollection<CadObject>();
+        public ObservableCollection<CanvasObject> SelectedObjects = new ObservableCollection<CanvasObject>();
 
-        public ObservableCollection<CadObject> Objects { get; } = new ObservableCollection<CadObject>();
-        public ObservableCollection<CadRectangle> Masks { get; } = new ObservableCollection<CadRectangle>();
+        public ObservableCollection<CanvasObject> Objects { get; } = new ObservableCollection<CanvasObject>();
+        public ObservableCollection<CanvasRectangle> Masks { get; } = new ObservableCollection<CanvasRectangle>();
 
         public IDrawingObject ActiveDrawingObject { get; set; }
 
@@ -64,7 +64,7 @@ namespace CadProjectorViewer.CanvasObj
             SelectedObjects.CollectionChanged += SelectedObjects_CollectionChanged;
         }
 
-        public ProjectionScene(CadObject Obj)
+        public ProjectionScene(CanvasObject Obj)
         {
             Objects.Add(Obj);
         }
@@ -73,7 +73,7 @@ namespace CadProjectorViewer.CanvasObj
         {
             if (e.NewItems != null)
             {
-                foreach (CadObject Obj in e.NewItems)
+                foreach (CanvasObject Obj in e.NewItems)
                 {
                     Obj.Selected += Obj_Selected;
                     Obj.Removed += Obj_Removed;
@@ -83,7 +83,7 @@ namespace CadProjectorViewer.CanvasObj
             }
             if (e.OldItems != null)
             {
-                foreach (CadObject Obj in e.OldItems)
+                foreach (CanvasObject Obj in e.OldItems)
                 {
                     Obj.Selected -= Obj_Selected;
                     Obj.Removed -= Obj_Removed;
@@ -93,7 +93,7 @@ namespace CadProjectorViewer.CanvasObj
             }
         }
 
-        private void Obj_Removed(object sender, CadObject e)
+        private void Obj_Removed(object sender, CanvasObject e)
         {
             this.Remove(e);
         }
@@ -113,7 +113,7 @@ namespace CadProjectorViewer.CanvasObj
         #region SelectionManager
         private void Obj_Selected(object sender, bool e)
         {
-            if (sender is CadObject cadObject)
+            if (sender is CanvasObject cadObject)
             {
                 if (e == true)
                 {
@@ -134,7 +134,7 @@ namespace CadProjectorViewer.CanvasObj
         {
             if (e.NewItems != null)
             {
-                LastSelectObject = (CadObject)e.NewItems[e.NewItems.Count - 1];
+                LastSelectObject = (CanvasObject)e.NewItems[e.NewItems.Count - 1];
 
                 if (Keyboard.Modifiers != ModifierKeys.Shift)
                 {
@@ -149,7 +149,7 @@ namespace CadProjectorViewer.CanvasObj
             }
             if (e.OldItems != null)
             {
-                foreach (CadObject Obj in e.OldItems)
+                foreach (CanvasObject Obj in e.OldItems)
                 {
                     if (LastSelectObject == Obj && SelectedObjects.Count > 0)
                     {
@@ -165,22 +165,22 @@ namespace CadProjectorViewer.CanvasObj
 
         #endregion
 
-        public void AddRange(IList<CadObject> cadObjects)
+        public void AddRange(IList<CanvasObject> cadObjects)
         {
-            foreach (CadObject cadObject in cadObjects)
+            foreach (CanvasObject cadObject in cadObjects)
             {
                 this.Add(cadObject);
             }
             UpdateFrame?.Invoke(this, null);
         }
 
-        public CadObject Add(CadObject cadObject)
+        public CanvasObject Add(CanvasObject cadObject)
         {
             if (Objects.Contains(cadObject) == false)
             {
                 if (cadObject is CadObjectsGroup cadGeometries)
                 {
-                    foreach (CadObject obj in cadGeometries.Children)
+                    foreach (CanvasObject obj in cadGeometries.Children)
                     {
                         Objects.Add(obj);
                     }
@@ -196,7 +196,7 @@ namespace CadProjectorViewer.CanvasObj
 
         public void Add(ProjectionScene scene)
         {
-            foreach (CadObject cadObject in scene.Objects)
+            foreach (CanvasObject cadObject in scene.Objects)
             {
                 this.Add(cadObject);
             }
@@ -204,7 +204,7 @@ namespace CadProjectorViewer.CanvasObj
 
         public void Remove(ProjectionScene scene)
         {
-            foreach (CadObject cadObject in scene.Objects)
+            foreach (CanvasObject cadObject in scene.Objects)
             {
                 if (cadObject is CadObjectsGroup cadGeometries)
                 {
@@ -219,13 +219,13 @@ namespace CadProjectorViewer.CanvasObj
 
         public void Remove(CadObjectsGroup cadObjectsGroup)
         {
-            if (this.Objects.Where(i => i.Uid == cadObjectsGroup.Uid).FirstOrDefault() is CadObject remobj)
+            if (this.Objects.Where(i => i.Uid == cadObjectsGroup.Uid).FirstOrDefault() is CanvasObject remobj)
             {
                 Remove(remobj);
             }
             else
             {
-                foreach (CadObject cadObject in cadObjectsGroup) 
+                foreach (CanvasObject cadObject in cadObjectsGroup) 
                 {
                     if (cadObject is CadObjectsGroup objectsGroup)
                     {
@@ -236,13 +236,13 @@ namespace CadProjectorViewer.CanvasObj
             }
         }
 
-        public void Remove(CadObject obj)
+        public void Remove(CanvasObject obj)
         {
-            if (obj is CadObject cadObject)
+            if (obj is CanvasObject cadObject)
             {
                 if (this.Objects.Remove(this.Objects.Where(i => i.Uid == cadObject.Uid).FirstOrDefault()) == true)
                 {
-                    if (cadObject is CadRectangle rectangle)
+                    if (cadObject is CanvasRectangle rectangle)
                     {
                         this.Masks.Remove(this.Masks.Where(i => i.Uid == cadObject.Uid).FirstOrDefault());
                     }
@@ -260,7 +260,7 @@ namespace CadProjectorViewer.CanvasObj
         {
             if (this.ActiveDrawingObject != null)
             {
-                this.Remove((CadObject)this.ActiveDrawingObject);
+                this.Remove((CanvasObject)this.ActiveDrawingObject);
                 this.ActiveDrawingObject = null;
             }
         }

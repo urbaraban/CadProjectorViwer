@@ -22,9 +22,9 @@ using CadProjectorSDK.CadObjects.LObjects;
 
 namespace CadProjectorViewer.CanvasObj
 {
-    public abstract class CadObject : FrameworkElement, INotifyPropertyChanged, ITransformObject, ISettingObject
+    public class CanvasObject : FrameworkElement, INotifyPropertyChanged, ITransformObject, ISettingObject
     {
-        public ObservableCollection<CadObject> Children { get; } = new ObservableCollection<CadObject>();
+        public ObservableCollection<CanvasObject> Children { get; } = new ObservableCollection<CanvasObject>();
 
         //Event
         //public event EventHandler TranslateChanged;
@@ -32,8 +32,8 @@ namespace CadProjectorViewer.CanvasObj
         public virtual event EventHandler<bool> Selected;
         public virtual event EventHandler<bool> OnObject;
         public virtual event EventHandler<string> Updated;
-        public virtual event EventHandler<CadObject> Removed;
-        public virtual event EventHandler<CadObject> Opening;
+        public virtual event EventHandler<CanvasObject> Removed;
+        public virtual event EventHandler<CanvasObject> Opening;
 
         private PointsObjectList _renderpoint;
 
@@ -494,7 +494,7 @@ namespace CadProjectorViewer.CanvasObj
         }
 
 
-        public CadObject(bool ActiveObject)
+        public CanvasObject(bool ActiveObject)
         {
             if (this.ContextMenu == null)
             {
@@ -609,7 +609,7 @@ namespace CadProjectorViewer.CanvasObj
             //Console.WriteLine("Render");
             if (this is CadObjectsGroup objectsGroup)
             {
-                foreach (CadObject cadObject in objectsGroup)
+                foreach (CanvasObject cadObject in objectsGroup)
                 {
                     drawingContext.DrawGeometry(
                         this.Render == false ? this.myBack : cadObject.myBack, 

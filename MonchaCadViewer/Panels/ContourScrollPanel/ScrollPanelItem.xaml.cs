@@ -79,7 +79,7 @@ namespace CadProjectorViewer.Panels
         {
             if (this.DataContext is ProjectionScene scene)
             {
-                foreach (CadObject cadObject in scene.Objects)
+                foreach (CanvasObject cadObject in scene.Objects)
                 {
                     cadObject.UpdateTransform(true);
                 }
@@ -119,7 +119,7 @@ namespace CadProjectorViewer.Panels
             this.DataContext =
                 new ProjectionScene(
                     new CadObjectsGroup(
-                        await GetGC.Load(this.filepath)));
+                        await FileLoad.Get(this.filepath)));
         }
     }
 }

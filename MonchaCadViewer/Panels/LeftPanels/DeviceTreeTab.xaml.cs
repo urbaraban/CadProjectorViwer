@@ -112,7 +112,7 @@ namespace CadProjectorViewer.Panels
                             //device.Frame = device.CutZone.DrawCutZone();
                             break;
                         case "dvc_showzone":
-                            CanvasObj.CadRectangle cadRectangle = new CanvasObj.CadRectangle(device.Size, device.HWIdentifier);
+                            CanvasObj.CanvasRectangle cadRectangle = new CanvasObj.CanvasRectangle(device.Size, device.HWIdentifier);
                             mainWindow.MainScene.Add(cadRectangle);
                             cadRectangle.Init();
                             break;
@@ -120,7 +120,7 @@ namespace CadProjectorViewer.Panels
                             device.PolyMeshUsed = !device.PolyMeshUsed;
                             break;
                         case "dvc_center":
-                            mainWindow.MainScene.Add(new CadAnchor(device.Size.Center) { Render = false });
+                            mainWindow.MainScene.Add(new CanvasAnchor(device.Size.Center) { Render = false });
                             break;
                         case "dvc_view":
                             ProjectorView projectorView = new ProjectorView() { DataContext = device };
@@ -163,7 +163,7 @@ namespace CadProjectorViewer.Panels
                                 mesh.Affine = !mesh.Affine;
                                 break;
                             case "mesh_showrect":
-                                CanvasObj.CadRectangle rectangle = new CanvasObj.CadRectangle(mesh.Size, mesh.Name);
+                                CanvasObj.CanvasRectangle rectangle = new CanvasObj.CanvasRectangle(mesh.Size, mesh.Name);
                                 mainWindow.MainScene.Add(rectangle);
                                 rectangle.Init();
                                 break;

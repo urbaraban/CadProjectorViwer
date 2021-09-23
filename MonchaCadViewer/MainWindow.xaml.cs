@@ -41,6 +41,7 @@ using ToGeometryConverter.Format;
 using CadProjectorViewer.StaticTools;
 using System.Reflection;
 using CadProjectorSDK.Tools;
+using System.Windows.Media.Imaging;
 
 namespace CadProjectorViewer
 {
@@ -226,7 +227,7 @@ namespace CadProjectorViewer
         private async void OpenBtn_ClickAsync(object sender, EventArgs e)
         {
             WinForms.OpenFileDialog openFile = new WinForms.OpenFileDialog();
-            string filter = GetGC.GetFilter();
+            string filter = FileLoad.GetFilter();
             openFile.Filter = filter;
             if (AppSt.Default.save_work_folder == string.Empty)
             {
@@ -260,10 +261,16 @@ namespace CadProjectorViewer
                     this.kmpsAppl.OpenFile(filename);
                 }
             }
+            else if (filename.Split('.').Last() == "jpg")
+            {
+                
+                CadImage cadImage = new CadImage(new BitmapImage( new Uri(filename)));
+                ProjectorHub.Scene.Add(cadImage);
+                //MainCanvas.A.Canvas(cadImage);
+            }
             else
             {
-
-                GCCollection LoadedFrame = await GetGC.Load(filename);
+                GCCollection LoadedFrame = await FileLoad.Get(filename);
                 GC.Collect();
                 if (LoadedFrame == null)
                 {
@@ -850,4 +857,33 @@ namespace CadProjectorViewer
             return null;
         }
     }
+
+    public class CadObjectConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            if (value is CadImage cadImage) return new ImagePreview(cadImage);
+            else return value;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            return null;
+        }
+    }
+
+    public class LicenceColor : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            if (value is bool b && b == true) return Brushes.Green;
+            else return Brushes.Red;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            return null;
+        }
+    }
+
 }

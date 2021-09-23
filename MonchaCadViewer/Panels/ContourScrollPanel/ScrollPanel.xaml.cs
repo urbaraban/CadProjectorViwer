@@ -29,7 +29,7 @@ namespace CadProjectorViewer.Panels
             InitializeComponent();
         }
 
-        public void Add(bool Clear, CadObject Obj, string Filepath, bool show = true)
+        public void Add(bool Clear, CanvasObject Obj, string Filepath, bool show = true)
         {
             if (Clear)
             {
@@ -106,7 +106,7 @@ namespace CadProjectorViewer.Panels
                         MainScene.Clear();
                     }
 
-                    foreach(CadObject cadObject in scrollPanelItem.Scene.Objects)
+                    foreach(CanvasObject cadObject in scrollPanelItem.Scene.Objects)
                     {
                         if (cadObject is CadObjectsGroup group && AppSt.Default.object_solid == false)
                         {

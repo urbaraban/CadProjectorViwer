@@ -70,7 +70,7 @@ namespace CadProjectorViewer.DeviceManager
             Console.WriteLine("Update Child Viwer");
             if (value is PointsObjectList objectList)
             {
-                return new List<CanvasObj.CadObject>() { new CanvasObj.CadGeometry(objectList, false) };
+                return new List<CanvasObj.CanvasObject>() { new CanvasObj.CadObjectsGroup(objectList, false) };
             }
             else return null;
         }

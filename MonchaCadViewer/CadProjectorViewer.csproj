@@ -260,13 +260,13 @@
     </Compile>
     <Compile Include="Dialogs\MeshTool.cs" />
     <Compile Include="CanvasObj\CadObjectsGroup.cs" />
-    <Compile Include="CanvasObj\CadLine.cs" />
-    <Compile Include="CanvasObj\CadRectangle.cs" />
-    <Compile Include="CanvasObj\CadObject.cs" />
+    <Compile Include="CanvasObj\CanvasLine.cs" />
+    <Compile Include="CanvasObj\CanvasRectangle.cs" />
+    <Compile Include="CanvasObj\CanvasObject.cs" />
     <Compile Include="CanvasObj\ProjectionScene.cs" />
     <Compile Include="CommonConverters.cs" />
     <Compile Include="ContextMenuLib.cs" />
-    <Compile Include="CanvasObj\CadAnchor.cs" />
+    <Compile Include="CanvasObj\CanvasAnchor.cs" />
     <Compile Include="CanvasObj\SceneSender.cs" />
     <Compile Include="CanvasObj\CadGeometry.cs" />
     <Compile Include="Dialogs\CreateGridWindow.xaml.cs">
@@ -317,7 +317,7 @@
     <Compile Include="RequestLicenseCode.xaml.cs">
       <DependentUpon>RequestLicenseCode.xaml</DependentUpon>
     </Compile>
-    <Compile Include="StaticTools\GetGC.cs" />
+    <Compile Include="StaticTools\FileLoad.cs" />
     <Page Include="DeviceManager\ProjectorView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

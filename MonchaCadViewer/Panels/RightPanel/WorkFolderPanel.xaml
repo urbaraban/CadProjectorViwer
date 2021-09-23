@@ -3,50 +3,57 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:local="clr-namespace:CadProjectorViewer.Panels.RightPanel" xmlns:Properties="clr-namespace:CadProjectorViewer.Properties" xmlns:panels="clr-namespace:CadProjectorViewer.Panels"
+             xmlns:local="clr-namespace:CadProjectorViewer.Panels.RightPanel" xmlns:Properties="clr-namespace:CadProjectorViewer.Properties" xmlns:panels="clr-namespace:CadProjectorViewer.Panels" xmlns:togeometryconverter="clr-namespace:ToGeometryConverter;assembly=ToGeometryConverter" d:DataContext="{d:DesignInstance Type=togeometryconverter:GCFormat}"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="200">
+    <UserControl.Resources>
+        <ContextMenu x:Key="itemMenu">
+            <MenuItem Tag="OpenFolder" Header="Show folder..." Click="MenuItem_Click"/>
+            <MenuItem Tag="OpenEditor" Header="Open editor" Click="MenuItem_Click"/>
+        </ContextMenu>
+    </UserControl.Resources>
     <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="133*"/>
+            <ColumnDefinition Width="68*"/>
+        </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
             <RowDefinition Height="40"/>
             <RowDefinition Height="27"/>
             <RowDefinition/>
         </Grid.RowDefinitions>
 
-        <Button x:Name="WorkFolderBtn" Content="{DynamicResource m_Browse}" HorizontalAlignment="Left" Margin="32,10,0,10" Width="75" VerticalAlignment="Center" Click="WorkFolderBtn_Click" Height="20"/>
-        <Label x:Name="WorkFolderLabel" Content="{Binding save_work_folder, Mode=OneWay}" Margin="116,6,8,4">
+        <Button x:Name="WorkFolderBtn" Content="{DynamicResource m_Browse}" Margin="3,0,5,10" VerticalAlignment="Bottom" Click="WorkFolderBtn_Click" Height="20" Grid.Column="1"/>
+        <Label x:Name="WorkFolderLabel" Content="{Binding save_work_folder, Mode=OneWay}" Margin="32,7,10,3">
             <Label.DataContext>
                 <Properties:Settings/>
             </Label.DataContext>
         </Label>
-        <ListView x:Name="WorkFolderListBox" Margin="5,5,5,5" Grid.Row="2">
+        <ListView x:Name="WorkFolderListBox" Margin="5,5,5,5" Grid.Row="2" Grid.ColumnSpan="2">
+            <ListView.Resources>
+                <Style TargetType="GridViewHeaderRowPresenter">
+                    <EventSetter Event="MouseDown" Handler="TextBlock_MouseDownAsync"/>
+                </Style>
+            </ListView.Resources>
+            <ListView.View>
+                <GridView>
+                    <GridViewColumn Header="Path" DisplayMemberBinding="{Binding Path=Filename}" Width="150"/>
+                    <GridViewColumn Header="Size" DisplayMemberBinding="{Binding Path=Filesize}" Width="Auto"/>
+                    <GridViewColumn Header="Format" DisplayMemberBinding="{Binding Path=Fileformat}" Width="Auto"/>
+                </GridView>
+            </ListView.View>
             <ListView.ItemContainerStyle>
                 <Style TargetType="ListViewItem">
-                    <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+                    <EventSetter Event="MouseDoubleClick" Handler="TextBlock_MouseDownAsync"/>
+                    <EventSetter Event="ContextMenuClosing" Handler="Border_ContextMenuClosing"/>
+                    <Setter Property="ToolTip" Value="{Binding Path=Filepath}"/>
+                    <Setter Property="ContextMenu" Value="{StaticResource itemMenu}"/>
                 </Style>
             </ListView.ItemContainerStyle>
-            <ListBox.ItemTemplate>
-                <DataTemplate>
-                    <Border ContextMenuClosing="Border_ContextMenuClosing">
-                        <Border.ContextMenu>
-                            <ContextMenu>
-                                <MenuItem Header = "Open editor" Tag="OpenEditor" Click="MenuItem_Click"/>
-                                <MenuItem Header = "Open folder..." Tag="OpenFolder" Click="MenuItem_Click"/>
-                            </ContextMenu>
-                        </Border.ContextMenu>
-                        <Grid>
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="2*"/>
-                                <ColumnDefinition Width="1*"/>
-                            </Grid.ColumnDefinitions>
-                            <TextBlock  Text="{Binding}" Grid.Column="0" Grid.ColumnSpan="2" MouseDown="TextBlock_MouseDownAsync"/>
-                        </Grid>
-                    </Border>
-                </DataTemplate>
-            </ListBox.ItemTemplate>
         </ListView>
         <Button x:Name="WorkFolderRefreshBtn"  FontFamily="Segoe MDL2 Assets" Content="&#xEDAB;" HorizontalAlignment="Left" Margin="5,10,0,10" VerticalAlignment="Center" Width="22" Height="20" Click="WorkFolderRefreshBtn_Click"/>
-        <TextBox x:Name="WorkFolderFilter" Margin="5,2" Grid.Row="1" TextWrapping="Wrap" VerticalContentAlignment="Center" TextChanged="WorkFolderFilter_TextChanged" Focusable="True" GotFocus="WorkFolderFilter_GotFocus"/>
-
+        <TextBox x:Name="WorkFolderFilter" Margin="5,2,1.5,2" Grid.Row="1" TextWrapping="Wrap" VerticalContentAlignment="Center" TextChanged="WorkFolderFilter_TextChanged" Focusable="True" GotFocus="WorkFolderFilter_GotFocus"/>
+        <ComboBox x:Name="ComboFilter" Grid.Column="1" Margin="4,2,5,0" Grid.Row="1" VerticalAlignment="Top"
+                  DisplayMemberPath="Name" SelectionChanged="ComboFilter_SelectionChanged"/>
     </Grid>
 </UserControl>

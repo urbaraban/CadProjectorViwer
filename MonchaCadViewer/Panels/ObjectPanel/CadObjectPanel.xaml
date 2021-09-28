@@ -5,8 +5,9 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-    xmlns:canvasobj="clr-namespace:CadProjectorViewer.CanvasObj" xmlns:panels="clr-namespace:CadProjectorViewer.Panels"
-    d:DataContext="{d:DesignInstance Type=canvasobj:CanvasObject}"
+    xmlns:panels="clr-namespace:CadProjectorViewer.Panels" 
+    xmlns:cadobjects="clr-namespace:CadProjectorSDK.CadObjects.Abstract;assembly=CadProjectorSDK" 
+    d:DataContext="{d:DesignInstance Type=cadobjects:UidObject}"
     d:DesignHeight="90"
     d:DesignWidth="490"
     mc:Ignorable="d">

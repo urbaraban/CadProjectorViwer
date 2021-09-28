@@ -5,10 +5,8 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              mc:Ignorable="d" 
              d:DesignHeight="250" d:DesignWidth="130"
-             xmlns:src="clr-namespace:CadProjectorViewer.CanvasObj" 
              xmlns:Controls="http://metro.mahapps.com/winfx/xaml/controls"
-             xmlns:properties="clr-namespace:CadProjectorViewer.Properties"
-             d:DataContext="{d:DesignInstance Type=src:ProjectionScene}">
+             xmlns:properties="clr-namespace:CadProjectorViewer.Properties" xmlns:cadobjects="clr-namespace:CadProjectorSDK.CadObjects;assembly=CadProjectorSDK" d:DataContext="{d:DesignInstance Type=cadobjects:ProjectionScene}">
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -21,7 +19,6 @@
         <Grid.Resources>
             <HierarchicalDataTemplate 
                 x:Key="ObjectTree" 
-                DataType ="{x:Type src:CanvasObject}" 
                 ItemsSource="{Binding Children}">
                 <Border ContextMenu="{Binding ContextMenu}">
                     <StackPanel Orientation="Horizontal"

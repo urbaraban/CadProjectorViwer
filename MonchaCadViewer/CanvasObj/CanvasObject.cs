@@ -57,7 +57,7 @@ namespace CadProjectorViewer.CanvasObj
         public virtual event EventHandler<CanvasObject> Removed;
         public virtual event EventHandler<CanvasObject> Opening;
 
-        public virtual Rect Bounds => this.GetGeometry.Bounds;
+        public virtual Rect Bounds => this.CadObject.Bounds;
 
         public virtual Geometry GetGeometry => _Geometry;
         private Geometry _Geometry;
@@ -85,15 +85,15 @@ namespace CadProjectorViewer.CanvasObj
                 {
                     return new Pen(Brushes.Orange, thinkess * 1.5);
                 }
-                else if (this.IsSelected == true)
+                else if (this.CadObject.IsSelected == true)
                 {
                     return new Pen(Brushes.Black, thinkess);
                 }
-                else if (this.Render == false)
+                else if (this.CadObject.Render == false)
                 {
                     return new Pen(Brushes.DarkGray, thinkess);
                 }
-                else if (this.IsFix == true)
+                else if (this.CadObject.IsFix == true)
                 {
                     return new Pen(Brushes.LightBlue, thinkess);
                 }
@@ -155,165 +155,13 @@ namespace CadProjectorViewer.CanvasObj
         protected Point BasePos = new Point();
 
         #region TranformObject
-        public Transform3DGroup TransformGroup 
-        {
-            get => this.CadObject.TransformGroup;
-            set
-            {
-                this.CadObject.TransformGroup = value;
-                OnPropertyChanged("TransformGroup");
-            }
-        }
-
-        private AxisAngleRotation3D AxisAngleX = new AxisAngleRotation3D(new Vector3D(1, 0, 0), 0);
-        public virtual double AngleX
-        {
-            get => this.AxisAngleX.Angle % 360;
-            set
-            {
-                if (this.IsFix == false)
-                {
-                    this.AxisAngleX.Angle = value % 360;
-                    OnPropertyChanged("AngleX");
-                }
-            }
-        }
-        public RotateTransform3D RotateX { get; set; } = new RotateTransform3D();
-
-        public virtual double AngleY
-        {
-            get => this.CadObject.AngleY;
-            set => this.CadObject.AngleY = value;
-        }
-        public RotateTransform3D RotateY { get; set; } = new RotateTransform3D();
-
-        private AxisAngleRotation3D AxisAngleZ = new AxisAngleRotation3D(new Vector3D(0, 0, 1), 0);
-
-        public virtual double AngleZ
-        {
-            get => this.CadObject.AngleZ;
-            set => this.CadObject.AngleZ = value;
-        }
-        public RotateTransform3D RotateZ { get; set; } = new RotateTransform3D();
-        public TranslateTransform3D Translate { get; set; } = new TranslateTransform3D();
-        public ScaleTransform3D Scale { get; set; } = new ScaleTransform3D();
-
-        public bool Mirror
-        {
-            get => _mirror;
-            set
-            {
-                _mirror = value;
-                this.ScaleX = this.ScaleX;
-                OnPropertyChanged("Mirror");
-            }
-        }
-        private bool _mirror = false;
-
-
-
         public double X { get => this.CadObject.X; set => this.CadObject.X = value; }
         public double Y { get => this.CadObject.Y; set => this.CadObject.Y = value; }
-
         public double Z { get => this.CadObject.Z; set => this.CadObject.Z = value; }
-
-
-        public virtual double ScaleX
-        {
-            get => this.Scale.ScaleX;
-            set
-            {
-                this.Scale.ScaleX = (this.Mirror == true ? -1 * Math.Abs(value) : Math.Abs(value));
-                OnPropertyChanged("ScaleX");
-            }
-        }
-        public virtual double ScaleY
-        {
-            get => this.Scale.ScaleY;
-            set
-            {
-                this.Scale.ScaleY = value;
-                OnPropertyChanged("ScaleY");
-            }
-        }
-        public virtual double ScaleZ
-        {
-            get => this.Scale.ScaleZ;
-            set
-            {
-                this.Scale.ScaleZ = value;
-                OnPropertyChanged("ScaleZ");
-            }
-        }
-
-        public virtual double CenterX
-        {
-            get => this.Scale.CenterX;
-            set
-            {
-                this.Scale.CenterX = value;
-                OnPropertyChanged("CenterX");
-            }
-        }
-        public virtual double CenterY
-        {
-            get => this.Scale.CenterY;
-            set
-            {
-                this.Scale.CenterY = value;
-                OnPropertyChanged("CenterY");
-            }
-        }
-        public virtual double CenterZ
-        {
-            get => this.Scale.CenterZ;
-            set
-            {
-                this.Scale.CenterZ = value;
-                OnPropertyChanged("CenterZ");
-            }
-        }
-
-        public bool IsFix
-        {
-            get => this._isfix;
-            set
-            {
-                this._isfix = value;
-                OnPropertyChanged("IsFix");
-                Fixed?.Invoke(this, value);
-            }
-        }
-        private bool _isfix = false;
         #endregion
 
 
         #region Variable
-        public bool IsSelected
-        {
-            get => this._isselected;
-            set
-            {
-                this._isselected = value;
-                Selected?.Invoke(this, this._isselected);
-                OnPropertyChanged("IsSelected");
-            }
-        }
-        private bool _isselected = false;
-
-        public bool Render
-        {
-            get => this._render && (!AppSt.Default.stg_selectable_show || this.IsSelected);
-            set
-            {
-
-                this._render = value;
-                if (AppSt.Default.stg_selectable_show == true) this.IsSelected = value;
-                Updated?.Invoke(this, "Render");
-                OnPropertyChanged("Render");
-            }
-        }
-        private bool _render = true;
 
         public bool ShowName { get; set; } = true;
 
@@ -331,7 +179,7 @@ namespace CadProjectorViewer.CanvasObj
             {
                 if (this.WasMove == false)
                 {
-                    this.IsSelected = !this._isselected;
+                    this.CadObject.IsSelected = !this.CadObject.IsSelected;
                 }
                 else
                 {
@@ -348,7 +196,7 @@ namespace CadProjectorViewer.CanvasObj
             OnPropertyChanged("IsMouseOver");
             if (ActiveObject == true)
             {
-                if (this.IsFix == false)
+                if (this.CadObject.IsFix == false)
                 {
                     CadCanvas canvas = this.Parent as CadCanvas;
 
@@ -401,15 +249,15 @@ namespace CadProjectorViewer.CanvasObj
             {
                 if ((e.Delta != 0) && (Keyboard.Modifiers != ModifierKeys.Control))
                 {
-                    if (Keyboard.Modifiers == ModifierKeys.Alt) RotateAxis(this.CadObject.AngleY, "AngleY");
-                    else if (Keyboard.Modifiers == (ModifierKeys.Alt | ModifierKeys.Shift)) RotateAxis(this.CadObject.AngleX, "AngleX");
+                    if (Keyboard.Modifiers == ModifierKeys.Alt) RotateAxis(this.CadObject.AxisAngleY, "AngleY");
+                    else if (Keyboard.Modifiers == (ModifierKeys.Alt | ModifierKeys.Shift)) RotateAxis(this.CadObject.AxisAngleX, "AngleX");
                     else if (Keyboard.Modifiers == ModifierKeys.None ||
-                        Keyboard.Modifiers == ModifierKeys.Shift) RotateAxis(this.CadObject.AngleZ, "AngleZ");
+                        Keyboard.Modifiers == ModifierKeys.Shift) RotateAxis(this.CadObject.AxisAngleZ, "AngleZ");
                 }
 
-                void RotateAxis(double axisAngleRotation3D, string OnPropertyString)
+                void RotateAxis(AxisAngleRotation3D axisAngleRotation3D, string OnPropertyString)
                 {
-                    axisAngleRotation3D += Math.Abs(e.Delta) / e.Delta * (Keyboard.Modifiers == ModifierKeys.Shift ? 1 : 5);
+                    axisAngleRotation3D.Angle += Math.Abs(e.Delta) / e.Delta * (Keyboard.Modifiers == ModifierKeys.Shift ? 1 : 5);
                     OnPropertyChanged(OnPropertyString);
                 }
             }
@@ -466,11 +314,11 @@ namespace CadProjectorViewer.CanvasObj
             switch (menuItem.Tag)
             {
                 case "obj_Mirror":
-                    this.Mirror = !this.Mirror;
+                    this.CadObject.Mirror = !this.CadObject.Mirror;
                     break;
 
                 case "obj_Fix":
-                    this.IsFix = !this.IsFix;
+                    this.CadObject.IsFix = !this.CadObject.IsFix;
                     break;
 
                 case "common_Remove":
@@ -478,7 +326,7 @@ namespace CadProjectorViewer.CanvasObj
                     break;
 
                 case "obj_Render":
-                    this.Render = !this.Render;
+                    this.CadObject.Render = !this.CadObject.Render;
                     break;
             }
         }
@@ -507,31 +355,31 @@ namespace CadProjectorViewer.CanvasObj
                 }
             }
 
-            if (this.IsSelected == true)
+            if (this.CadObject.IsSelected == true)
             {
-                Geometry geometry = GetGeometry;
+                Rect Bounds = this.Bounds;
                 //Left
                 DrawSize(drawingContext,
-                    new Point(0, geometry.Bounds.Y + geometry.Bounds.Height / 2),
-                    new Point(geometry.Bounds.X, geometry.Bounds.Y + geometry.Bounds.Height / 2));
+                    new Point(0, Bounds.Y + Bounds.Height / 2),
+                    new Point(Bounds.X, Bounds.Y + Bounds.Height / 2));
                 //Right
                 DrawSize(drawingContext,
-                    new Point(ProjectorHub.Size.X, geometry.Bounds.Y + geometry.Bounds.Height / 2),
-                    new Point(geometry.Bounds.X + geometry.Bounds.Width, geometry.Bounds.Y + geometry.Bounds.Height / 2));
+                    new Point(ProjectorHub.Size.X, Bounds.Y + Bounds.Height / 2),
+                    new Point(Bounds.X + Bounds.Width, Bounds.Y + Bounds.Height / 2));
                 //Top
                 DrawSize(drawingContext,
-                    new Point(geometry.Bounds.X + geometry.Bounds.Width / 2, 0),
-                    new Point(geometry.Bounds.X + geometry.Bounds.Width / 2, geometry.Bounds.Y));
+                    new Point(Bounds.X + Bounds.Width / 2, 0),
+                    new Point(Bounds.X + Bounds.Width / 2, Bounds.Y));
                 //Down
                 DrawSize(drawingContext,
-                    new Point(geometry.Bounds.X + geometry.Bounds.Width / 2, ProjectorHub.Size.Y),
-                    new Point(geometry.Bounds.X + geometry.Bounds.Width / 2, geometry.Bounds.Y + geometry.Bounds.Height));
+                    new Point(Bounds.X + Bounds.Width / 2, ProjectorHub.Size.Y),
+                    new Point(Bounds.X + Bounds.Width / 2, Bounds.Y + Bounds.Height));
             }
         }
 
         protected void DrawSize(DrawingContext drawingContext, Point point1, Point point2)
         {
-            double thinkess = ProjectorHub.GetThinkess / 3d / Math.Abs(this.Scale.ScaleX * Math.Max(this.ScaleX, this.ScaleY));
+            double thinkess = ProjectorHub.GetThinkess / 3d / Math.Abs(this.CadObject.Scale.ScaleX * Math.Max(this.CadObject.ScaleX, this.CadObject.ScaleY));
             thinkess = thinkess <= 0 ? 1 : thinkess;
 
             //drawingContext.DrawLine(new Pen(Brushes.DarkGray, thinkess), point1, point2);

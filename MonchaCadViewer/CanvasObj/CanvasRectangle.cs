@@ -128,7 +128,7 @@ namespace CadProjectorViewer.CanvasObj
 
         private void RectangelAdorner_SelectAnchor(object sender, CanvasAnchor e)
         {
-            Selected?.Invoke(e, e.IsSelected);
+            Selected?.Invoke(e, e.CadObject.IsSelected);
         }
 
         public void SetTwoPoint(Point point)

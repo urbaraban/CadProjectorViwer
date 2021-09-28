@@ -4,9 +4,9 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-    xmlns:mwd="clr-namespace:CadProjectorViewer" 
-    xmlns:device="clr-namespace:CadProjectorSDK.Device;assembly=CadProjectorSDK"
-    d:DataContext="{d:DesignInstance Type=mwd:MainWindow}"
+    xmlns:device="clr-namespace:CadProjectorSDK.Device;assembly=CadProjectorSDK" 
+    xmlns:cadprojectorsdk="clr-namespace:CadProjectorSDK;assembly=CadProjectorSDK" 
+    d:DataContext="{d:DesignInstance Type=cadprojectorsdk:ProjectorHub}"
     d:DesignHeight="450"
     d:DesignWidth="200"
     mc:Ignorable="d">
@@ -67,7 +67,7 @@
 
             <HierarchicalDataTemplate 
                 x:Key="DeviceTree" 
-                DataType ="{x:Type device:LDeviceMesh}" 
+                DataType ="{x:Type device:LDevice}" 
                 ItemsSource="{Binding SelectedMeshes}"
                 ItemTemplate="{StaticResource MeshTree}">
                 <Border Margin="5" ContextMenuClosing="DeviceBorder_ContextMenuClosing">
@@ -79,8 +79,9 @@
                             <MenuItem Header = "{DynamicResource dvc_view}" Tag="dvc_view" Click="MenuItem_Click"/>
                         </ContextMenu>
                     </Border.ContextMenu>
-                    <StackPanel Orientation="Horizontal" 
-                                VerticalAlignment="Center">
+                    <StackPanel
+                        Orientation="Horizontal" 
+                        VerticalAlignment="Center">
                         <CheckBox IsChecked="{Binding IsOn}" />
                         <TextBlock VerticalAlignment="Center"
                             Text="&#xE714;"
@@ -142,7 +143,6 @@
                 Margin="0,0,0,0"
                 KeyboardNavigation.DirectionalNavigation="None"
                 KeyboardNavigation.TabNavigation="None" Grid.Row="1"
-             DataContext="{Binding ProjectorHub}"
             SelectedItemChanged="treeView_SelectedItemChanged">
             <TreeView.ItemContainerStyle>
                 <Style TargetType="TreeViewItem">

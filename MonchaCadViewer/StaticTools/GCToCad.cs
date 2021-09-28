@@ -17,9 +17,9 @@ namespace CadProjectorViewer.StaticTools
         {
             if (gCObject is GeometryElement geometryElement)
             {
-                return new CadGeometry(geometryElement.MyGeometry, true);
+                return new CadGeometry(geometryElement.MyGeometry);
             }
-            else if (gCObject is TextElement textElement) 
+            else if (gCObject is TextElement textElement)
             {
                 return new CadText(
                     textElement.Text,
@@ -36,8 +36,20 @@ namespace CadProjectorViewer.StaticTools
                 }
                 return cadPoints;
             }
+            else if (gCObject is GCCollection collection) return GetGroup(collection, string.Empty);
 
             return null;
+        }
+
+        public static CadGroup GetGroup(GCCollection gCObjects, string Name)
+        {
+            CadGroup group = new CadGroup() { NameID = Name };
+            foreach (IGCObject obj in gCObjects)
+            {
+                UidObject uidObject = GCToCad.GetUid(obj);
+                if (uidObject != null) group.Add(uidObject);
+            }
+            return group;
         }
     }
 }

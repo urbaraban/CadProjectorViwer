@@ -18,7 +18,7 @@ namespace CadProjectorViewer.CanvasObj
         private RectangleGeometry rectangle;
 
         public override Pen myPen { get; } = new Pen(null, 0);
-        public override Brush myBack => this.IsSelected == true ? Brushes.Red : Brushes.DarkGray;
+        public override Brush myBack => this.CadObject.IsSelected == true ? Brushes.Red : Brushes.DarkGray;
 
         public override event EventHandler<string> Updated;
 
@@ -63,8 +63,8 @@ namespace CadProjectorViewer.CanvasObj
             Canvas.SetZIndex(this, 999);
             this.RenderTransformOrigin = new Point(1, 1);
 
-            this.Translate.OffsetX = this.PointX.MX;
-            this.Translate.OffsetY = this.PointY.MY;
+            this.CadObject.Translate.OffsetX = this.PointX.MX;
+            this.CadObject.Translate.OffsetY = this.PointY.MY;
 
             this.ContextMenuClosing += DotShape_ContextMenuClosing;
             this.Fixed += CadDot_Fixed;
@@ -74,8 +74,8 @@ namespace CadProjectorViewer.CanvasObj
         {
             Dispatcher.Invoke(() => 
             { 
-                this.Translate.OffsetX = this.PointX.MX;
-                this.Translate.OffsetY = this.PointY.MY;
+                this.CadObject.Translate.OffsetX = this.PointX.MX;
+                this.CadObject.Translate.OffsetY = this.PointY.MY;
                 this.InvalidateVisual();
             });
         }
@@ -97,7 +97,7 @@ namespace CadProjectorViewer.CanvasObj
 
         private void Point_Selected(object sender, bool e)
         {
-            this.Render = e;
+            this.CadObject.Render = e;
         }
 
         private void CadDot_Selected(object sender, bool e)
@@ -127,7 +127,7 @@ namespace CadProjectorViewer.CanvasObj
                 switch (cmindex.Tag)
                 {
                     case "obj_Fix":
-                        this.IsFix = !this.IsFix;
+                        this.CadObject.IsFix = !this.CadObject.IsFix;
                         break;
                     case "common_Remove":
                         this.Remove();

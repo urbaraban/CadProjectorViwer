@@ -242,37 +242,19 @@ namespace CadProjectorViewer
 
         public async Task OpenFile(string filename)
         {
-
-                object loadobj = await FileLoad.Get(filename);
-                if (loadobj is GCCollection gCObjects)
-                {
-                    CadGroup group = new CadGroup() { NameID = filename };
-                    foreach (IGCObject obj in gCObjects)
-                    {
-                        UidObject uidObject = GCToCad.GetUid(obj);
-                        if (uidObject != null) group.Add(uidObject);
-
-                    }
-
-                    ContourScrollPanel.Add(false, group, filename);
-
-                    foreach(IGCObject gCObject in gCObjects)
-                    {
-                        if (gCObject is GeometryElement geometryElement)
-                        {
-                            ProjectorHub.Scene.Add(new CadGeometry(geometryElement.MyGeometry, true));
-                        }
-                    }
-                    
-                }
-                else if (loadobj is ImageSource imageSource)
-                {
-                    ProjectorHub.Scene.Add(new CadImage(imageSource));
-                }
-                else if (loadobj == null)
-                {
-                    return;
-                }
+            object loadobj = await FileLoad.Get(filename);
+            if (loadobj is GCCollection gCObjects)
+            {
+                ContourScrollPanel.Add(false, GCToCad.GetGroup(gCObjects, filename), filename);
+            }
+            else if (loadobj is ImageSource imageSource)
+            {
+                ContourScrollPanel.Add(false, new CadImage(imageSource), filename);
+            }
+            else if (loadobj == null)
+            {
+                return;
+            }
         }
        
 

@@ -72,11 +72,11 @@ namespace CadProjectorViewer.CanvasObj
                     mesh[i, j].M = ProjectorHub.Size;
                     objects.Add(new CanvasAnchor(mesh[i, j])
                     {
-                        IsFix = false,// !mesh.OnlyEdge;
+                        //this.CadObject.IsFix = false,// !mesh.OnlyEdge;
                         Uid = i.ToString() + ":" + j.ToString(),
                         ToolTip = "Позиция: " + i + ":" + j + "\nX: " + mesh[i, j].X + "\n" + "Y: " + mesh[i, j].Y,
                         DataContext = mesh,
-                        Render = Render,
+                        //Render = Render,
                         MeshType = meshType
                     });
                 }

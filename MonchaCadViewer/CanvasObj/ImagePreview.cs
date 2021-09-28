@@ -31,8 +31,8 @@ namespace CadProjectorViewer.CanvasObj
 
             drawingContext.DrawImage(imageSource,
                 new Rect(
-                    this.Translate.OffsetX, 
-                    this.Translate.OffsetY,
+                    this.CadObject.Translate.OffsetX, 
+                    this.CadObject.Translate.OffsetY,
                     imageSource.Width,
                     imageSource.Height));
         }

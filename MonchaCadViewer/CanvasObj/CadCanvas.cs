@@ -10,7 +10,6 @@ using System.Windows.Media;
 using System.Windows.Threading;
 using CadProjectorSDK.CadObjects;
 using System.ComponentModel;
-using CadProjectorViewer.Interface;
 using System.Runtime.CompilerServices;
 using System.Windows.Documents;
 using CadProjectorViewer.Panels;

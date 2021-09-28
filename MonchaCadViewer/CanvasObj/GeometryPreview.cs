@@ -1,0 +1,28 @@
+﻿using CadProjectorSDK.CadObjects.Abstract;
+using CadProjectorSDK.CadObjects.Interface;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Windows.Media;
+
+namespace CadProjectorViewer.CanvasObj
+{
+    public class GeometryPreview : CanvasObject
+    {
+        public IGeometryObject Geometry => (IGeometryObject)this.CadObject;
+
+        public GeometryPreview(UidObject Object) : base(true)
+        {
+            this.CadObject = Object;
+        }
+
+        protected override void OnRender(DrawingContext drawingContext)
+        {
+            base.OnRender(drawingContext);
+
+            drawingContext.DrawGeometry(myBack, myPen, Geometry.GetGeometry());
+        }
+    }
+}

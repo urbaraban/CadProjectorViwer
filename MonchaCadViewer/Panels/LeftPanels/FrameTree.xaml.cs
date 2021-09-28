@@ -1,4 +1,6 @@
-﻿using CadProjectorViewer.CanvasObj;
+﻿using CadProjectorSDK.CadObjects;
+using CadProjectorSDK.CadObjects.Abstract;
+using CadProjectorViewer.CanvasObj;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -43,7 +45,7 @@ namespace CadProjectorViewer.Panels.DevicePanel.LeftPanels
 
             if (DataContext is ProjectionScene projectionScene)
             {
-                foreach (CanvasObject cadObject in projectionScene.Objects)
+                foreach (UidObject cadObject in projectionScene.Objects)
                 {
                     cadObject.Render = RenderStat;
                 }

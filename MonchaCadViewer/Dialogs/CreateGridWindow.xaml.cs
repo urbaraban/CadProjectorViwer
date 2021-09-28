@@ -7,6 +7,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 using AppSt = CadProjectorViewer.Properties.Settings;
+using CadProjectorSDK.CadObjects;
 
 namespace CadProjectorViewer
 {
@@ -30,10 +31,10 @@ namespace CadProjectorViewer
             if (this.IsLoaded)
             {
                 projectionScene.Clear();
-                projectionScene.AddRange(
+               /* projectionScene.AddRange(
                     CadCanvas.GetMesh(
                     new LDeviceMesh(LDeviceMesh.MakeMeshPoint((int)HeightUpDn.Value.Value, (int)WidthUpDn.Value.Value), string.Empty),
-                    ProjectorHub.GetThinkess * AppSt.Default.anchor_size, false, MeshType.NONE).ToArray());
+                    ProjectorHub.GetThinkess * AppSt.Default.anchor_size, false, MeshType.NONE).ToArray());*/
             }
         }
 
@@ -77,10 +78,10 @@ namespace CadProjectorViewer
             HeightUpDn.Value = this._mesh.GetLength(0);
 
             projectionScene.Clear();
-            projectionScene.AddRange(
+            /*projectionScene.AddRange(
                      CadCanvas.GetMesh(
                      (LDeviceMesh)this.DataContext,
-                     ProjectorHub.GetThinkess * AppSt.Default.anchor_size, false, MeshType.NONE).ToArray());
+                     ProjectorHub.GetThinkess * AppSt.Default.anchor_size, false, MeshType.NONE).ToArray());*/
         }
     }
 

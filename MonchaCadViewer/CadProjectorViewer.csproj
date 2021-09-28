@@ -251,6 +251,7 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="CanvasObj\CadCanvas.cs" />
+    <Compile Include="CanvasObj\GeometryPreview.cs" />
     <Compile Include="CanvasObj\ImagePreview.cs" />
     <Compile Include="DeviceManager\ProjectorView.xaml.cs">
       <DependentUpon>ProjectorView.xaml</DependentUpon>
@@ -259,25 +260,17 @@
       <DependentUpon>DotEdit.xaml</DependentUpon>
     </Compile>
     <Compile Include="Dialogs\MeshTool.cs" />
-    <Compile Include="CanvasObj\CadObjectsGroup.cs" />
-    <Compile Include="CanvasObj\CanvasLine.cs" />
     <Compile Include="CanvasObj\CanvasRectangle.cs" />
     <Compile Include="CanvasObj\CanvasObject.cs" />
-    <Compile Include="CanvasObj\ProjectionScene.cs" />
     <Compile Include="CommonConverters.cs" />
     <Compile Include="ContextMenuLib.cs" />
     <Compile Include="CanvasObj\CanvasAnchor.cs" />
-    <Compile Include="CanvasObj\SceneSender.cs" />
-    <Compile Include="CanvasObj\CadGeometry.cs" />
     <Compile Include="Dialogs\CreateGridWindow.xaml.cs">
       <DependentUpon>CreateGridWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="DeviceManager\LaserSearcher.xaml.cs">
       <DependentUpon>LaserSearcher.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Interface\IDrawingObject.cs" />
-    <Compile Include="Interface\SelectableObject.cs" />
-    <Compile Include="Interface\ITransformObject.cs" />
     <Compile Include="Panels\CanvasPanel\CadCanvasPanel.xaml.cs">
       <DependentUpon>CadCanvasPanel.xaml</DependentUpon>
     </Compile>
@@ -318,6 +311,7 @@
       <DependentUpon>RequestLicenseCode.xaml</DependentUpon>
     </Compile>
     <Compile Include="StaticTools\FileLoad.cs" />
+    <Compile Include="StaticTools\GCToCad.cs" />
     <Page Include="DeviceManager\ProjectorView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

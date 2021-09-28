@@ -44,7 +44,6 @@
             </Style>
             <CadProjectorViewer:PlayBackConverter x:Key="PlayBackConverter"/>
             <CadProjectorViewer:MultiObjectList x:Key="MultiList"/>
-            <CadProjectorViewer:CadObjectConverter x:Key="CadObjectConverter"/>
             <CadProjectorViewer:LicenceColor x:Key="LicenceKey"/>
         </ResourceDictionary>
     </Window.Resources>
@@ -168,41 +167,25 @@
                 </TabControl.Resources>
                 <TabItem Header="Device">
                     <panels:DeviceTreeTab 
-                        DataContext="{Binding RelativeSource={RelativeSource AncestorType=Window}}"
+                        DataContext="{Binding .}"
                         x:Name="DeviceTree" 
                         Focusable="False" 
                         Margin="0" Grid.ColumnSpan="2" Grid.Row="2"/>
                     
                 </TabItem>
                 <TabItem Header="Frame">
-                    <leftpanels:FrameTree DataContext="{Binding RelativeSource={RelativeSource AncestorType=Window}, Path=MainScene}"/>
+                    <leftpanels:FrameTree DataContext="{Binding Scene}"/>
                 </TabItem>
             </TabControl>
             <TabControl TabStripPlacement="Bottom" Margin="0,5,0,0" Grid.Column="1" Grid.Row="2">
                 <TabItem Header="{DynamicResource m_CanvasTab}">
-                    <canvaspanel:CadCanvasPanel x:Name="MainCanvas" DataContext="{Binding RelativeSource={RelativeSource AncestorType=Window}, Path=MainScene}" AllowDrop="True" Drop="MainCanvas_Drop"/>
+                    <canvaspanel:CadCanvasPanel x:Name="MainCanvas" DataContext="{Binding Scene}" AllowDrop="True" Drop="MainCanvas_Drop"/>
                 </TabItem>
                 <TabItem Header="ViewPort3D" Visibility="Collapsed">
                 </TabItem>
-                <TabItem Header="Test">
-                    <Viewbox Grid.RowSpan="3" Stretch="Uniform" StretchDirection="Both">
-                        <Grid Height="1000" Width="1000">
-                            <ItemsControl ItemsSource="{Binding Scene.Objects}">
-                                <ItemsControl.ItemsPanel>
-                                    <ItemsPanelTemplate>
-                                        <Canvas/>
-                                    </ItemsPanelTemplate>
-                                </ItemsControl.ItemsPanel>
-                                <ItemsControl.ItemTemplate>
-                                    <DataTemplate/>
-                                </ItemsControl.ItemTemplate>
-                            </ItemsControl>
-                        </Grid>
-                    </Viewbox>
-                </TabItem>
             </TabControl>
             <panels:ScrollPanel x:Name="ContourScrollPanel" Margin="0,5,0,0" Grid.Column="1" Grid.Row="3" 
-                                DataContext="{Binding RelativeSource={RelativeSource AncestorType=Window}, Path=MainScene}"/>
+                                DataContext="{Binding Scene}"/>
 
             <TabControl x:Name="tabControl" DockPanel.Dock="Right" Grid.Column="2" Grid.Row="2" Grid.RowSpan="2" Margin="5,3,5,0">
                 <TabItem x:Name="ContourSettingTab" Header="{DynamicResource dvc_Device}" Controls:HeaderedControlHelper.HeaderFontSize="18">

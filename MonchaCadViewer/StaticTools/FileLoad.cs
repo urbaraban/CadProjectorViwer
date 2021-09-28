@@ -1,9 +1,14 @@
 ﻿using CadProjectorSDK;
+using CadProjectorSDK.CadObjects;
+using CadProjectorViewer.Panels;
+using KompasLib.Tools;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Media.Imaging;
 using ToGeometryConverter;
 using ToGeometryConverter.Format;
 using ToGeometryConverter.Object;
@@ -12,16 +17,34 @@ namespace CadProjectorViewer.StaticTools
 {
     public static class FileLoad
     {
-        private static List<GCFormat> MyFormat = new List<GCFormat>
+        public static List<GCFormat> MyFormat = new List<GCFormat>
         {
-            new GCFormat("Компас 3D", new string[2] { "frw" , "cdw"}),
-            new GCFormat("JPG Image", new string[2] { "jpg" , "jpeg"}),
+            new SVG(),
+            new DXF(),
+            new DEXCeil(),
+            new STL(),
+            new ILD(),
+            new MetaFile(),
+            new JSON(),
+            new GCFormat("Компас 3D", new string[2] { "frw" , "cdw"}) { ReadFile = GetKompas },
+            new GCFormat("JPG Image", new string[2] { "jpg" , "jpeg"}) { ReadFile = GetImage }
         };
+
+
+
+        private static Task<object> GetKompas(string Filepath, double step)
+        {
+            Process.Start(Filepath);
+            return Task.FromResult<object>(null);
+        }
+        private async static Task<object> GetImage(string Filepath, double step)
+        {
+            return new BitmapImage(new Uri(Filepath));
+        }
 
         public static List<GCFormat> GetFormatList()
         {
-            List<GCFormat> Formats = new List<GCFormat>(ToGC.Formats);
-            Formats.AddRange(MyFormat);
+            List<GCFormat> Formats = new List<GCFormat>(MyFormat);
 
             List<string> _allformat = new List<string>();
 
@@ -33,7 +56,7 @@ namespace CadProjectorViewer.StaticTools
                 }
             }
 
-            Formats.Add(new GCFormat("All Format", _allformat.ToArray()));
+            Formats.Insert(0, new GCFormat("All Format", _allformat.ToArray()));
             return Formats;
         }
 
@@ -63,14 +86,16 @@ namespace CadProjectorViewer.StaticTools
             return $"{format.Name}({formatstr}) | {formatstr}";
         }
 
-        public async static Task<GCCollection> Get(string Filename)
+        public async static Task<object> Get(string Filename)
         {
-            GCFormat gCFormat = ToGC.GetConverter(Filename);
-            if (gCFormat is IReadWrite format)
-            {
-                return await format.GetAsync(Filename, ProjectorHub.ProjectionSetting.PointStep.MX);
-            }
-            return new GCCollection(string.Empty);
+            GCFormat gCFormat = ToGC.GetConverter(Filename, MyFormat);
+
+            gCFormat.SetProgress += ProgressPanel.SetProgressBar;
+            object obj = await gCFormat.ReadFile?.Invoke(Filename, ProjectorHub.ProjectionSetting.PointStep.MX);
+            gCFormat.SetProgress -= ProgressPanel.SetProgressBar;
+
+            if (obj != null) return obj;
+            else return new GCCollection(string.Empty);
         }
     }
 }

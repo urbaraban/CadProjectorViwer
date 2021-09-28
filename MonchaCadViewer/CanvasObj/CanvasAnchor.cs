@@ -24,28 +24,6 @@ namespace CadProjectorViewer.CanvasObj
 
         public override Rect Bounds => new Rect(-this.size / 2, -this.size / 2, this.size, this.size);
 
-        public override double X 
-        { 
-            get => this.Translate.OffsetX;
-            set
-            {
-                this.Translate.OffsetX = value;
-                this.PointX.MX = value;
-                OnPropertyChanged("X");
-            }
-        }
-
-        public override double Y
-        {
-            get => this.Translate.OffsetY;
-            set
-            {
-                this.Translate.OffsetY = value;
-                this.PointY.MY = value;
-                OnPropertyChanged("Y");
-            }
-        }
-
         private CadPoint3D PointX { get; set; }
         private CadPoint3D PointY { get; set; }
 
@@ -85,7 +63,6 @@ namespace CadProjectorViewer.CanvasObj
             Canvas.SetZIndex(this, 999);
             this.RenderTransformOrigin = new Point(1, 1);
 
-            this.UpdateTransform(false);
             this.Translate.OffsetX = this.PointX.MX;
             this.Translate.OffsetY = this.PointY.MY;
 

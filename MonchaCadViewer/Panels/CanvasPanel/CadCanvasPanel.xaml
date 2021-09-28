@@ -3,9 +3,16 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-            xmlns:canvasobj="clr-namespace:CadProjectorViewer.CanvasObj" d:DataContext="{d:DesignInstance Type=canvasobj:ProjectionScene}"
+             xmlns:canvaspanel="clr-namespace:CadProjectorViewer.Panels.CanvasPanel"
+             xmlns:cadprojectorsdk="clr-namespace:CadProjectorSDK;assembly=CadProjectorSDK" xmlns:canvasobj="clr-namespace:CadProjectorViewer.CanvasObj" xmlns:cadobjects="clr-namespace:CadProjectorSDK.CadObjects;assembly=CadProjectorSDK" d:DataContext="{d:DesignInstance Type=cadobjects:ProjectionScene}"
              mc:Ignorable="d" 
              d:DesignHeight="400" d:DesignWidth="400">
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <canvaspanel:CadObjectConverter x:Key="CadObjectConverter"/>
+        </ResourceDictionary>
+        
+    </UserControl.Resources>
     <Grid Margin="0" Background="LightGray" ClipToBounds="True">
         <Grid.RowDefinitions>
             <RowDefinition Height="40"/>
@@ -43,14 +50,14 @@
                 <ItemsControl ItemsSource="{Binding Objects}">
                     <ItemsControl.ItemsPanel>
                         <ItemsPanelTemplate>
-                            <canvasobj:CadCanvas Focusable="False" 
-                                                 IsHitTestVisible="True"
-                                                 MouseLeftButtonDown="CanvasGrid_MouseLeftButtonDown"
-                                                 MouseLeftButtonUp="CanvasGrid_MouseLeftButtonUp" 
-                                                 MouseMove="Canvas_MouseMove">
-                            </canvasobj:CadCanvas>
+                            <canvasobj:CadCanvas ClipToBounds="True"/>
                         </ItemsPanelTemplate>
                     </ItemsControl.ItemsPanel>
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <ContentPresenter Content="{Binding Converter={StaticResource CadObjectConverter}}"/>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
                 </ItemsControl>
             </Grid>
         </Viewbox>

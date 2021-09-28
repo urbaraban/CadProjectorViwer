@@ -32,7 +32,7 @@ namespace CadProjectorViewer.Panels.RightPanel
             InitializeComponent();
             List<GCFormat> formats = FileLoad.GetFormatList();
             ComboFilter.ItemsSource = formats;
-            ComboFilter.SelectedItem = formats.Last();
+            ComboFilter.SelectedItem = formats[0];
             RefreshWorkFolderList();
         }
 

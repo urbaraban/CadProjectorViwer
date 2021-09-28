@@ -17,6 +17,9 @@ using System.Windows.Media.Media3D;
 using System.Windows.Navigation;
 using ToGeometryConverter;
 using AppSt = CadProjectorViewer.Properties.Settings;
+using ToGeometryConverter.Object;
+using CadProjectorSDK.CadObjects;
+using CadProjectorSDK.CadObjects.Abstract;
 
 namespace CadProjectorViewer.Panels
 {
@@ -79,7 +82,7 @@ namespace CadProjectorViewer.Panels
         {
             if (this.DataContext is ProjectionScene scene)
             {
-                foreach (CanvasObject cadObject in scene.Objects)
+                foreach (UidObject cadObject in scene.Objects)
                 {
                     cadObject.UpdateTransform(true);
                 }
@@ -116,10 +119,10 @@ namespace CadProjectorViewer.Panels
 
         public async void Refresh()
         {
-            this.DataContext =
+           /*this.DataContext =
                 new ProjectionScene(
-                    new CadObjectsGroup(
-                        await FileLoad.Get(this.filepath)));
+                    new CanvasGroup((GCCollection)
+                        await FileLoad.Get(this.filepath)));*/
         }
     }
 }

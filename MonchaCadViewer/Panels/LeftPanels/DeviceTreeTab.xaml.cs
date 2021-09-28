@@ -32,7 +32,7 @@ namespace CadProjectorViewer.Panels
         public event EventHandler<LDevice> DeviceChange;
 
 
-        MainWindow mainWindow => (MainWindow)this.DataContext;
+        ProjectorHub projectorHub => (ProjectorHub)this.DataContext;
 
         public DeviceTreeTab()
         {
@@ -46,7 +46,7 @@ namespace CadProjectorViewer.Panels
             {
                 if (DeviceTree.DataContext is LDevice device && BaseMeshItem.DataContext is LDeviceMesh mesh)
                 {
-                    mainWindow.MainScene.AddRange(CadCanvas.GetMesh(mesh, ProjectorHub.GetThinkess * AppSt.Default.anchor_size, false, MeshType.NONE).ToArray());
+                    //projectorHub.Scene.AddRange(CadCanvas.GetMesh(mesh, ProjectorHub.GetThinkess * AppSt.Default.anchor_size, false, MeshType.NONE).ToArray());
                 }
             }
         }
@@ -71,19 +71,19 @@ namespace CadProjectorViewer.Panels
 
         private void RemoveLaser_Click(object sender, RoutedEventArgs e)
         {
-            mainWindow.ProjectorHub.RemoveDevice(selectdevice.iPAddress);
+            projectorHub.RemoveDevice(selectdevice.iPAddress);
         }
 
 
         private void RefreshLaser_Click_1(object sender, RoutedEventArgs e)
         {
-            mainWindow.ProjectorHub.Play = false;
-            mainWindow.ProjectorHub.Load(AppSt.Default.cl_moncha_path);
+            projectorHub.Play = false;
+            projectorHub.Load(AppSt.Default.cl_moncha_path);
         }
 
         private void AddLaser_Click(object sender, RoutedEventArgs e)
         {
-            LaserSearcher deviceManager = new LaserSearcher(mainWindow.ProjectorHub);
+            LaserSearcher deviceManager = new LaserSearcher(projectorHub);
             deviceManager.Show();
         }
 
@@ -112,15 +112,15 @@ namespace CadProjectorViewer.Panels
                             //device.Frame = device.CutZone.DrawCutZone();
                             break;
                         case "dvc_showzone":
-                            CanvasObj.CanvasRectangle cadRectangle = new CanvasObj.CanvasRectangle(device.Size, device.HWIdentifier);
-                            mainWindow.MainScene.Add(cadRectangle);
-                            cadRectangle.Init();
+                            CadRectangle cadRectangle = new CadRectangle(device.Size, device.HWIdentifier);
+                            projectorHub.Scene.Add(cadRectangle);
+                            //cadRectangle.Init();
                             break;
                         case "dvc_polymesh":
                             device.PolyMeshUsed = !device.PolyMeshUsed;
                             break;
                         case "dvc_center":
-                            mainWindow.MainScene.Add(new CanvasAnchor(device.Size.Center) { Render = false });
+                            projectorHub.Scene.Add(new CadAnchor(device.Size.Center) { Render = false });
                             break;
                         case "dvc_view":
                             ProjectorView projectorView = new ProjectorView() { DataContext = device };
@@ -147,8 +147,8 @@ namespace CadProjectorViewer.Panels
                                 createGridWindow.ShowDialog();
                                 break;
                             case "mesh_showvirtual":
-                                mainWindow.MainScene.Clear();
-                                mainWindow.MainScene.AddRange(CadCanvas.GetMesh(mesh.VirtualMesh, ProjectorHub.GetThinkess * AppSt.Default.anchor_size, false, MeshType.BASE).ToArray());
+                                projectorHub.Scene.Clear();
+                                //projectorHub.Scene.AddRange(CadCanvas.GetMesh(mesh.VirtualMesh, ProjectorHub.GetThinkess * AppSt.Default.anchor_size, false, MeshType.BASE).ToArray());
                                 break;
                             case "mesh_inverse":
                                 mesh.InverseYPosition();
@@ -163,9 +163,9 @@ namespace CadProjectorViewer.Panels
                                 mesh.Affine = !mesh.Affine;
                                 break;
                             case "mesh_showrect":
-                                CanvasObj.CanvasRectangle rectangle = new CanvasObj.CanvasRectangle(mesh.Size, mesh.Name);
-                                mainWindow.MainScene.Add(rectangle);
-                                rectangle.Init();
+                                CadRectangle rectangle = new CadRectangle(mesh.Size, mesh.Name);
+                                projectorHub.Scene.Add(rectangle);
+                               // rectangle.Init();
                                 break;
                         }
                     }
@@ -190,8 +190,8 @@ namespace CadProjectorViewer.Panels
                 {
                     if (frameworkElement.DataContext is LDeviceMesh mesh)
                     {
-                        mainWindow.MainScene.Clear();
-                        mainWindow.MainScene.AddRange(CadCanvas.GetMesh(mesh, ProjectorHub.GetThinkess * AppSt.Default.anchor_size, false, MeshType.NONE).ToArray());
+                        projectorHub.Scene.Clear();
+                        //projectorHub.Scene.AddRange(CadCanvas.GetMesh(mesh, ProjectorHub.GetThinkess * AppSt.Default.anchor_size, false, MeshType.NONE).ToArray());
                     }
                 }
             }

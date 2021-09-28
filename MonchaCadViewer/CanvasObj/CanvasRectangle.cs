@@ -1,5 +1,4 @@
 ﻿using CadProjectorViewer.CanvasObj;
-using CadProjectorViewer.Interface;
 using CadProjectorViewer.Panels.ObjectPanel;
 using CadProjectorSDK;
 using CadProjectorSDK.CadObjects;
@@ -21,7 +20,7 @@ using System.Windows.Shapes;
 
 namespace CadProjectorViewer.CanvasObj
 {
-    public class CanvasRectangle : CanvasObject, IDrawingObject
+    public class CanvasRectangle : CanvasObject
     {
         #region Property
         public event PropertyChangedEventHandler PropertyChanged;
@@ -58,38 +57,6 @@ namespace CadProjectorViewer.CanvasObj
         }
 
 
-
-        public override double X
-        {
-            get => Math.Min(LRect.P1.MX, LRect.P2.MX);
-            set
-            {
-                if (this.IsFix == false)
-                {
-                    double delta = value - Math.Min(LRect.P1.MX, LRect.P2.MX);
-                    LRect.P1.MX += delta;
-                    LRect.P2.MX += delta;
-                    Updated?.Invoke(this, "X");
-                    OnPropertyChanged("X");
-                }
-            }
-        }
-        public override double Y
-        {
-            get => Math.Min(LRect.P1.MY, LRect.P2.MY);
-            set
-            {
-                if (this.IsFix == false)
-                {
-                    double delta = value - Math.Min(LRect.P1.MY, LRect.P2.MY);
-                    LRect.P1.MY += delta;
-                    LRect.P2.MY += delta;
-                    Updated?.Invoke(this, "Y");
-                    OnPropertyChanged("Y");
-                }
-            }
-        }
-
         public bool IsInit { get; private set; } = false;
 
         public override Rect Bounds => new Rect(LRect.P1.GetMPoint, LRect.P2.GetMPoint);
@@ -111,7 +78,6 @@ namespace CadProjectorViewer.CanvasObj
 
         private void LoadSetting()
         {
-            UpdateTransform(false);
             ContextMenuLib.CadRectMenu(this.ContextMenu);
         }
 

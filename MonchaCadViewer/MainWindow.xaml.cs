@@ -42,6 +42,8 @@ using CadProjectorViewer.StaticTools;
 using System.Reflection;
 using CadProjectorSDK.Tools;
 using System.Windows.Media.Imaging;
+using CadProjectorSDK.CadObjects.Interface;
+using CadProjectorSDK.CadObjects.Abstract;
 
 namespace CadProjectorViewer
 {
@@ -50,7 +52,6 @@ namespace CadProjectorViewer
     /// </summary>
     public partial class MainWindow : Window
     {
-        public CanvasObj.ProjectionScene MainScene { get; } = new CanvasObj.ProjectionScene();
         public ProjectorHub ProjectorHub { get; set; } = new ProjectorHub();
 
         public CadSize3D CanvasSize => ProjectorHub.Size;
@@ -97,23 +98,14 @@ namespace CadProjectorViewer
             #endregion
 
             ProgressPanel.Label = "Hello world!";
-            ToGCLogger.Progressed += ToGC_Progressed;
 
             LLog.LogMsg += MonchaHub_Loging;
-            MainScene.UpdateFrame += MainScene_UpdateFrame;
-
             NameLabel.Content = $"2CUT Viewer v{Assembly.GetExecutingAssembly().GetName().Version.ToString()}";
 
             LoadMoncha();
         }
 
-        private async void MainScene_UpdateFrame(object sender, EventArgs e) => ProjectorHub.MainFrame = await CanvasObj.SceneSender.GetLObject(MainScene);
 
-
-        private void ToGC_Progressed(object sender, ProgBarMessage e)
-        {
-            Dispatcher.Invoke(() => ProgressPanel.SetProgressBar(e.v, e.m, e.t));
-        }
 
         private void LanguageChanged(Object sender, EventArgs e)
         {
@@ -250,36 +242,37 @@ namespace CadProjectorViewer
 
         public async Task OpenFile(string filename)
         {
-            if ((filename.Split('.').Last() == "frw") || (filename.Split('.').Last() == "cdw"))
-            {
-                if (KmpsAppl.KompasAPI == null)
+
+                object loadobj = await FileLoad.Get(filename);
+                if (loadobj is GCCollection gCObjects)
                 {
-                    Process.Start(filename);
+                    CadGroup group = new CadGroup() { NameID = filename };
+                    foreach (IGCObject obj in gCObjects)
+                    {
+                        UidObject uidObject = GCToCad.GetUid(obj);
+                        if (uidObject != null) group.Add(uidObject);
+
+                    }
+
+                    ContourScrollPanel.Add(false, group, filename);
+
+                    foreach(IGCObject gCObject in gCObjects)
+                    {
+                        if (gCObject is GeometryElement geometryElement)
+                        {
+                            ProjectorHub.Scene.Add(new CadGeometry(geometryElement.MyGeometry, true));
+                        }
+                    }
+                    
                 }
-                else
+                else if (loadobj is ImageSource imageSource)
                 {
-                    this.kmpsAppl.OpenFile(filename);
+                    ProjectorHub.Scene.Add(new CadImage(imageSource));
                 }
-            }
-            else if (filename.Split('.').Last() == "jpg")
-            {
-                
-                CadImage cadImage = new CadImage(new BitmapImage( new Uri(filename)));
-                ProjectorHub.Scene.Add(cadImage);
-                //MainCanvas.A.Canvas(cadImage);
-            }
-            else
-            {
-                GCCollection LoadedFrame = await FileLoad.Get(filename);
-                GC.Collect();
-                if (LoadedFrame == null)
+                else if (loadobj == null)
                 {
                     return;
                 }
-
-
-                ContourScrollPanel.Add(false, new CadObjectsGroup(LoadedFrame), filename);
-            }
         }
        
 
@@ -391,11 +384,10 @@ namespace CadProjectorViewer
         {
             if (KmpsAppl.KompasAPI != null)
             {
-                GCCollection gCElements = new GCCollection(this.kmpsAppl.Doc.D7.Name);
-                gCElements.AddRange(
-                    await ContourCalc.GetGeometry(this.kmpsAppl.Doc, ProjectorHub.ProjectionSetting.PointStep.MX, false, true));
-
-                CadObjectsGroup cadGeometries = new CadObjectsGroup(gCElements);
+                CadGroup cadGeometries = 
+                    new CadGroup(
+                        await ContourCalc.GetGeometry(this.kmpsAppl.Doc, ProjectorHub.ProjectionSetting.PointStep.MX, false, true),
+                        this.kmpsAppl.Doc.D7.Name);
 
                 ContourScrollPanel.Add(false, cadGeometries, this.kmpsAppl.Doc.D7.Name);
             }
@@ -409,7 +401,10 @@ namespace CadProjectorViewer
 
                 gCObjects.Add(new GeometryElement(await ContourCalc.GetGeometry(this.kmpsAppl.Doc, ProjectorHub.ProjectionSetting.PointStep.MX, true, true), "Kompas"));
 
-                CadObjectsGroup cadGeometries = new CadObjectsGroup(gCObjects);
+                CadGroup cadGeometries =
+                      new CadGroup(
+                          await ContourCalc.GetGeometry(this.kmpsAppl.Doc, ProjectorHub.ProjectionSetting.PointStep.MX, true, true),
+                          this.kmpsAppl.Doc.D7.Name);
 
                 ContourScrollPanel.Add(true, cadGeometries, this.kmpsAppl.Doc.D7.Path);
                    
@@ -506,10 +501,7 @@ namespace CadProjectorViewer
             }
         }
 
-        private void ClearBtn_Click(object sender, RoutedEventArgs e)
-        {
-            MainScene.Clear();
-        }
+        private void ClearBtn_Click(object sender, RoutedEventArgs e) => ProjectorHub.Scene.Clear();
 
         private void BaseFolderSelect_Click(object sender, RoutedEventArgs e)
         {
@@ -776,9 +768,9 @@ namespace CadProjectorViewer
             {
                 try
                 {
-                    CadObjectsGroup geometries = new CadObjectsGroup(await GCByteReader.Read(e, "Ethernet"));
+                   /* CadGroup geometries = new CadGroup(await GCByteReader.Read(e, "Ethernet"));
 
-                    ContourScrollPanel.Add(false, geometries, geometries.Name);
+                    ContourScrollPanel.Add(false, geometries, geometries.Name);*/
 
                 }
                 catch
@@ -858,19 +850,7 @@ namespace CadProjectorViewer
         }
     }
 
-    public class CadObjectConverter : IValueConverter
-    {
-        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
-        {
-            if (value is CadImage cadImage) return new ImagePreview(cadImage);
-            else return value;
-        }
 
-        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
-        {
-            return null;
-        }
-    }
 
     public class LicenceColor : IValueConverter
     {

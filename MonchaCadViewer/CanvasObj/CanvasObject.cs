@@ -10,7 +10,6 @@ using CadProjectorSDK;
 using System.Collections.Generic;
 using CadProjectorSDK.Setting;
 using System.Threading;
-using CadProjectorViewer.Interface;
 using AppSt = CadProjectorViewer.Properties.Settings;
 using CadProjectorSDK.Device;
 using CadProjectorSDK.CadObjects;
@@ -19,12 +18,35 @@ using ToGeometryConverter;
 using System.Collections.ObjectModel;
 using System.Windows.Media.Media3D;
 using CadProjectorSDK.CadObjects.LObjects;
+using CadProjectorSDK.CadObjects.Abstract;
+using CadProjectorSDK.CadObjects.Interface;
 
 namespace CadProjectorViewer.CanvasObj
 {
-    public class CanvasObject : FrameworkElement, INotifyPropertyChanged, ITransformObject, ISettingObject
+    public class CanvasObject : FrameworkElement, INotifyPropertyChanged
     {
         public ObservableCollection<CanvasObject> Children { get; } = new ObservableCollection<CanvasObject>();
+
+        public UidObject CadObject
+        {
+            get => cadobject;
+            set
+            {
+                cadobject = value;
+                if (cadobject != null)
+                {
+                    cadobject.PropertyChanged += Cadobject_PropertyChanged;
+                }
+                OnPropertyChanged("CadObject");
+            }
+        }
+
+        private void Cadobject_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            this.InvalidateVisual();
+        }
+
+        private UidObject cadobject;
 
         //Event
         //public event EventHandler TranslateChanged;
@@ -34,8 +56,6 @@ namespace CadProjectorViewer.CanvasObj
         public virtual event EventHandler<string> Updated;
         public virtual event EventHandler<CanvasObject> Removed;
         public virtual event EventHandler<CanvasObject> Opening;
-
-        private PointsObjectList _renderpoint;
 
         public virtual Rect Bounds => this.GetGeometry.Bounds;
 
@@ -106,6 +126,7 @@ namespace CadProjectorViewer.CanvasObj
 
         public MeshType MeshType { get; set; } = MeshType.SELECT;
 
+        
 
         #region Property
         public event PropertyChangedEventHandler PropertyChanged;
@@ -120,50 +141,29 @@ namespace CadProjectorViewer.CanvasObj
 
         public LProjectionSetting ProjectionSetting
         {
-            get => projectionSetting == null ? ProjectorHub.ProjectionSetting : projectionSetting;
+            get => cadobject.ProjectionSetting;
             set
             {
-                projectionSetting = value;
-                OnPropertyChanged("ProjectionSetting");
+                if (value != cadobject.ProjectionSetting)
+                {
+                    cadobject.ProjectionSetting = value;
+                    OnPropertyChanged("ProjectionSetting");
+                }
             }
         }
-        private LProjectionSetting projectionSetting;
-
-        public bool OwnedSetting 
-        {
-            get => ownedsetting;
-            set
-            {
-                ownedsetting = value;
-                if (ownedsetting == true) projectionSetting = ProjectorHub.ProjectionSetting.Clone();
-                else projectionSetting = null;
-                OnPropertyChanged("OwnedSetting");
-            }
-        }
-        private bool ownedsetting = false;
+        protected Point MousePos = new Point();
+        protected Point BasePos = new Point();
 
         #region TranformObject
-        public virtual Transform3DGroup TransformGroup 
+        public Transform3DGroup TransformGroup 
         {
-            get => transform;
+            get => this.CadObject.TransformGroup;
             set
             {
-                transform = value;
-                this.Scale = (ScaleTransform3D)value.Children[0];
-                this.RotateX = (RotateTransform3D)value.Children[1];
-                this.AxisAngleX = (AxisAngleRotation3D)this.RotateX.Rotation;
-                this.RotateY = (RotateTransform3D)value.Children[2];
-                this.AxisAngleY = (AxisAngleRotation3D)this.RotateY.Rotation;
-                this.RotateZ = (RotateTransform3D)value.Children[3];
-                this.AxisAngleZ = (AxisAngleRotation3D)this.RotateZ.Rotation;
-                this.Translate = (TranslateTransform3D)value.Children[4];
-                transform.Changed += Transform_Changed;
+                this.CadObject.TransformGroup = value;
                 OnPropertyChanged("TransformGroup");
-                this.Update();
             }
         }
-
-        private Transform3DGroup transform = new Transform3DGroup();
 
         private AxisAngleRotation3D AxisAngleX = new AxisAngleRotation3D(new Vector3D(1, 0, 0), 0);
         public virtual double AngleX
@@ -180,18 +180,10 @@ namespace CadProjectorViewer.CanvasObj
         }
         public RotateTransform3D RotateX { get; set; } = new RotateTransform3D();
 
-        private AxisAngleRotation3D AxisAngleY = new AxisAngleRotation3D(new Vector3D(0, 1, 0), 0);
         public virtual double AngleY
         {
-            get => this.AxisAngleY.Angle % 360;
-            set
-            {
-                if (this.IsFix == false)
-                {
-                    this.AxisAngleY.Angle = value % 360;
-                    OnPropertyChanged("AngleY");
-                }
-            }
+            get => this.CadObject.AngleY;
+            set => this.CadObject.AngleY = value;
         }
         public RotateTransform3D RotateY { get; set; } = new RotateTransform3D();
 
@@ -199,15 +191,8 @@ namespace CadProjectorViewer.CanvasObj
 
         public virtual double AngleZ
         {
-            get => this.AxisAngleZ.Angle % 360;
-            set
-            {
-                if (this.IsFix == false)
-                {
-                    this.AxisAngleZ.Angle = value % 360;
-                    OnPropertyChanged("AngleZ");
-                }
-            }
+            get => this.CadObject.AngleZ;
+            set => this.CadObject.AngleZ = value;
         }
         public RotateTransform3D RotateZ { get; set; } = new RotateTransform3D();
         public TranslateTransform3D Translate { get; set; } = new TranslateTransform3D();
@@ -225,53 +210,12 @@ namespace CadProjectorViewer.CanvasObj
         }
         private bool _mirror = false;
 
-        protected Point MousePos = new Point();
-        protected Point BasePos = new Point();
 
-        public virtual double X
-        {
-            get => this.Translate.OffsetX;
-            set
-            {
-                if (this.IsFix == false)
-                {
-                    this.Translate.OffsetX = value;
-                    OnPropertyChanged("X");
-                }
-            }
-        }
-        public virtual double Y
-        {
-            get => this.Translate.OffsetY;
-            set
-            {
-                if (this.IsFix == false)
-                {
-                    if (this.Translate.OffsetY != value)
-                    {
-                        this.Translate.OffsetY = value;
-                        OnPropertyChanged("Y");
 
-                    }
-                }
-            }
-        }
-        public virtual double Z
-        {
-            get => this.Translate.OffsetZ;
-            set
-            {
-                if (this.IsFix == false)
-                {
-                    if (this.Translate.OffsetZ != value)
-                    {
-                        this.Translate.OffsetZ = value;
-                        OnPropertyChanged("Z");
+        public double X { get => this.CadObject.X; set => this.CadObject.X = value; }
+        public double Y { get => this.CadObject.Y; set => this.CadObject.Y = value; }
 
-                    }
-                }
-            }
-        }
+        public double Z { get => this.CadObject.Z; set => this.CadObject.Z = value; }
 
 
         public virtual double ScaleX
@@ -457,15 +401,15 @@ namespace CadProjectorViewer.CanvasObj
             {
                 if ((e.Delta != 0) && (Keyboard.Modifiers != ModifierKeys.Control))
                 {
-                    if (Keyboard.Modifiers == ModifierKeys.Alt) RotateAxis(AxisAngleY, "AngleY");
-                    else if (Keyboard.Modifiers == (ModifierKeys.Alt | ModifierKeys.Shift)) RotateAxis(AxisAngleX, "AngleX");
+                    if (Keyboard.Modifiers == ModifierKeys.Alt) RotateAxis(this.CadObject.AngleY, "AngleY");
+                    else if (Keyboard.Modifiers == (ModifierKeys.Alt | ModifierKeys.Shift)) RotateAxis(this.CadObject.AngleX, "AngleX");
                     else if (Keyboard.Modifiers == ModifierKeys.None ||
-                        Keyboard.Modifiers == ModifierKeys.Shift) RotateAxis(AxisAngleZ, "AngleZ");
+                        Keyboard.Modifiers == ModifierKeys.Shift) RotateAxis(this.CadObject.AngleZ, "AngleZ");
                 }
 
-                void RotateAxis(AxisAngleRotation3D axisAngleRotation3D, string OnPropertyString)
+                void RotateAxis(double axisAngleRotation3D, string OnPropertyString)
                 {
-                    axisAngleRotation3D.Angle += Math.Abs(e.Delta) / e.Delta * (Keyboard.Modifiers == ModifierKeys.Shift ? 1 : 5);
+                    axisAngleRotation3D += Math.Abs(e.Delta) / e.Delta * (Keyboard.Modifiers == ModifierKeys.Shift ? 1 : 5);
                     OnPropertyChanged(OnPropertyString);
                 }
             }
@@ -501,9 +445,10 @@ namespace CadProjectorViewer.CanvasObj
                 this.ContextMenu = new System.Windows.Controls.ContextMenu();
                 ContextMenuLib.CadObjMenu(this.ContextMenu);
             }
-            this.ProjectionSetting.PropertyChanged += ProjectionSetting_PropertyChanged;
+            //this.ProjectionSetting.PropertyChanged += ProjectionSetting_PropertyChanged;
             this.Uid = Guid.NewGuid().ToString();
             this.ActiveObject = ActiveObject;
+            this.Cursor = Cursors.Hand;
         }
 
 
@@ -513,66 +458,6 @@ namespace CadProjectorViewer.CanvasObj
         
         public void Update()
         {
-            this.InvalidateVisual();
-        }
-
-
-        public void UpdateTransform(bool resetPosition)
-        {
-            if (this.TransformGroup == null || resetPosition == true)
-            {
-                this.TransformGroup = new Transform3DGroup()
-                {
-                    Children = new Transform3DCollection()
-                    {
-                        new ScaleTransform3D(),
-                        new RotateTransform3D() { Rotation = AxisAngleX },
-                        new RotateTransform3D() { Rotation = AxisAngleY },
-                        new RotateTransform3D() { Rotation = AxisAngleZ },
-                        new TranslateTransform3D()
-                    }
-                };
-            }
-
-            Rect bounds = this.Bounds;
-
-            if (resetPosition == true)
-            {
-                Tuple<string, string> position = new Tuple<string, string>("Middle", "Middle");
-                try
-                {
-                    position = new Tuple<string, string>(AppSt.Default.stg_default_position.Split('%')[0], AppSt.Default.stg_default_position.Split('%')[1]);
-                }
-                catch
-                {
-
-                }
-
-                if (position.Item2 == "Left") this.X = -bounds.X;
-                else if (position.Item2 == "Right") this.X = ProjectorHub.Size.X - (bounds.X + bounds.Width);
-                else this.X = ProjectorHub.Size.X / 2 - (bounds.X + bounds.Width / 2);
-
-                if (position.Item1 == "Down") this.Y = ProjectorHub.Size.Y - (bounds.Y + bounds.Height);
-                else if (position.Item1 == "Top") this.Y = -bounds.Y;
-                else this.Y = ProjectorHub.Size.Y / 2 - (bounds.Y + bounds.Height / 2);
-
-                this._mirror = AppSt.Default.default_mirror;
-                Scale.ScaleX = AppSt.Default.default_scale_x / 100 * (AppSt.Default.default_mirror == true ? -1 : 1);
-                if (this.ScaleX < 0) this.Mirror = true;
-                Scale.ScaleY = AppSt.Default.default_scale_y / 100;
-                Scale.CenterX = bounds.X + bounds.Width / 2;
-                Scale.CenterY = bounds.Y + bounds.Height / 2;
-                RotateZ.CenterX = Scale.CenterX;
-                RotateZ.CenterY = Scale.CenterY;
-                AngleZ = 0;
-                RotateX.CenterX = Scale.CenterX;
-                RotateX.CenterY = Scale.CenterY;
-                AngleX = 0;
-                RotateY.CenterX = Scale.CenterX;
-                RotateY.CenterY = Scale.CenterY;
-                AngleY = 0;
-                AngleZ = AppSt.Default.default_angle;
-            }
             this.InvalidateVisual();
         }
 
@@ -606,17 +491,12 @@ namespace CadProjectorViewer.CanvasObj
 
         protected override void OnRender(DrawingContext drawingContext)
         {
-            //Console.WriteLine("Render");
-            if (this is CadObjectsGroup objectsGroup)
+            if (this.CadObject is CadGroup objectsGroup)
             {
-                foreach (CanvasObject cadObject in objectsGroup)
+                foreach (UidObject cadObject in objectsGroup)
                 {
-                    drawingContext.DrawGeometry(
-                        this.Render == false ? this.myBack : cadObject.myBack, 
-                        this.Render == false ? this.myPen : cadObject.myPen, 
-                        cadObject.GetGeometry);
+                    drawingContext.DrawGeometry(this.myBack, this.myPen, GetGeometry);
                 }
-                
             }
             else
             {

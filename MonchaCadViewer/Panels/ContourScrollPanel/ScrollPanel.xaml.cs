@@ -1,4 +1,6 @@
-﻿using CadProjectorViewer.CanvasObj;
+﻿using CadProjectorSDK.CadObjects;
+using CadProjectorSDK.CadObjects.Abstract;
+using CadProjectorViewer.CanvasObj;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -29,7 +31,14 @@ namespace CadProjectorViewer.Panels
             InitializeComponent();
         }
 
-        public void Add(bool Clear, CanvasObject Obj, string Filepath, bool show = true)
+        /// <summary>
+        /// Add object on scroll panel.
+        /// </summary>
+        /// <param name="Clear">Clear Main scene</param>
+        /// <param name="Obj">Add object</param>
+        /// <param name="Filepath">Path for refresh</param>
+        /// <param name="show">Condition for show object on Main scene</param>
+        public void Add(bool Clear, UidObject Obj, string Filepath, bool show = true)
         {
             if (Clear)
             {
@@ -106,11 +115,11 @@ namespace CadProjectorViewer.Panels
                         MainScene.Clear();
                     }
 
-                    foreach(CanvasObject cadObject in scrollPanelItem.Scene.Objects)
+                    foreach(UidObject cadObject in scrollPanelItem.Scene.Objects)
                     {
-                        if (cadObject is CadObjectsGroup group && AppSt.Default.object_solid == false)
+                        if (cadObject is CadGroup group && AppSt.Default.object_solid == false)
                         {
-                            MainScene.AddRange(group.Children.ToArray());
+                            MainScene.AddRange(group.Children);
                         }
                         else
                         {

@@ -68,11 +68,12 @@ namespace CadProjectorViewer.DeviceManager
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
             Console.WriteLine("Update Child Viwer");
-            /*if (value is PointsObjectList objectList)
-            {
-                return new List<CanvasObject>() { new CanvasObj.CanvasGroup(objectList, false) };
-            }
-            else*/ return null;
+            /* if (value is PointsObjectList objectList)
+             {
+                 return new List<CanvasObject>() { new CanvasObj.CanvasGroup(objectList, false) };
+
+             else}*/
+            return null;
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)

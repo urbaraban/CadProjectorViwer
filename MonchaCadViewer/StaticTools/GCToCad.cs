@@ -47,6 +47,7 @@ namespace CadProjectorViewer.StaticTools
             foreach (IGCObject obj in gCObjects)
             {
                 UidObject uidObject = GCToCad.GetUid(obj);
+                uidObject.UpdateTransform(true);
                 if (uidObject != null) group.Add(uidObject);
             }
             return group;

@@ -157,48 +157,47 @@ namespace CadProjectorViewer.Panels.CanvasPanel
         public RotateTransform Rotate { get; set; }
         public TranslateTransform Translate { get; set; }
 
-        private void CanvasGrid_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        protected override void OnMouseLeftButtonDown(MouseButtonEventArgs e)
         {
-            if (sender is IInputElement inputElement)
+            base.OnMouseLeftButtonDown(e);
+            if (this.projectionScene.ActiveDrawingObject != null)
             {
-                if (this.projectionScene.ActiveDrawingObject != null)
-                {
-                    //this.projectionScene.ActiveDrawingObject.Init();
-                    this.projectionScene.ActiveDrawingObject = null;
-                }
-
-                if (Keyboard.Modifiers == ModifierKeys.Control)
-                {
-                    this.StartMousePoint = e.GetPosition(CanvasBox);
-                    this.StartMovePoint = new Point(this.Translate.X, this.Translate.Y);
-                }
-                else if (this.MouseAction == MouseAction.Rectangle)
-                {
-                    Point point = e.GetPosition(CanvasGrid);
-                    CadRectangle cadRectangle = new CadRectangle(new CadPoint3D(point, ProjectorHub.Size), new CadPoint3D(point, ProjectorHub.Size), string.Empty, true);
-                    this.projectionScene.Add(cadRectangle);
-                }
-                else if (this.mouseAction == MouseAction.Mask)
-                {
-                    this.MouseAction = MouseAction.NoAction;
-                    CadSize3D lRect = new CadSize3D(new CadPoint3D(e.GetPosition(inputElement), ProjectorHub.Size, true), new CadPoint3D(e.GetPosition(inputElement), ProjectorHub.Size, true));
-                    CadRectangle Maskrectangle = new CadRectangle(lRect, $"Mask_{this.projectionScene.Masks.Count}") { Render = false };
-                    this.projectionScene.Add(Maskrectangle);
-                    this.projectionScene.Masks.Add(Maskrectangle);
-                    this.projectionScene.ActiveDrawingObject = Maskrectangle;
-                }
-                else if (this.mouseAction == MouseAction.Line)
-                {
-                    CadLine line = new CadLine(new CadPoint3D(e.GetPosition(inputElement)), new CadPoint3D(e.GetPosition(inputElement)), true);
-                    this.projectionScene.Add(line);
-                    this.projectionScene.ActiveDrawingObject = line;
-                }
+                //this.projectionScene.ActiveDrawingObject.Init();
+                this.projectionScene.ActiveDrawingObject = null;
             }
 
+            if (Keyboard.Modifiers == ModifierKeys.Control)
+            {
+                this.StartMousePoint = e.GetPosition(this.CanvasGrid);
+                this.StartMovePoint = new Point(this.Translate.X, this.Translate.Y);
+            }
+            else if (this.MouseAction == MouseAction.Rectangle)
+            {
+                Point point = e.GetPosition(CanvasGrid);
+                CadRectangle cadRectangle = new CadRectangle(new CadPoint3D(point, ProjectorHub.Size), new CadPoint3D(point, ProjectorHub.Size), string.Empty, true);
+                this.projectionScene.Add(cadRectangle);
+            }
+            else if (this.mouseAction == MouseAction.Mask)
+            {
+                this.MouseAction = MouseAction.NoAction;
+                CadSize3D lRect = new CadSize3D(new CadPoint3D(e.GetPosition(this.CanvasGrid), ProjectorHub.Size, true), new CadPoint3D(e.GetPosition(this.CanvasGrid), ProjectorHub.Size, true));
+                CadRectangle Maskrectangle = new CadRectangle(lRect, $"Mask_{this.projectionScene.Masks.Count}") { Render = false };
+                this.projectionScene.Add(Maskrectangle);
+                this.projectionScene.Masks.Add(Maskrectangle);
+                this.projectionScene.ActiveDrawingObject = Maskrectangle;
+            }
+            else if (this.mouseAction == MouseAction.Line)
+            {
+                CadLine line = new CadLine(new CadPoint3D(e.GetPosition(this.CanvasGrid)), new CadPoint3D(e.GetPosition(this.CanvasGrid)), true);
+                this.projectionScene.Add(line);
+                this.projectionScene.ActiveDrawingObject = line;
+            }
         }
 
         protected override void OnMouseMove(MouseEventArgs e)
         {
+            projectionScene.MousePosition = new CadPoint3D(e.GetPosition(this.CanvasGrid));
+
             if (e.LeftButton == MouseButtonState.Pressed && Keyboard.Modifiers == ModifierKeys.Control)
             {
                 this.MouseAction = MouseAction.MoveCanvas;
@@ -347,7 +346,9 @@ namespace CadProjectorViewer.Panels.CanvasPanel
         {
             if (value is UidObject uidObject)
             {
-                if (uidObject is IGeometryObject geometry) return new GeometryPreview(uidObject);
+                if (uidObject is CadLine cadLine) return new CanvasLine(cadLine);
+                else if(uidObject is CadRectangle cadRectangle) return new CanvasRectangle(cadRectangle, cadRectangle.NameID);
+                else if (uidObject is IGeometryObject geometry) return new GeometryPreview(uidObject);
                 else if (uidObject is IPixelObject pixelObject) return new ImagePreview(uidObject);
             }
             return value;

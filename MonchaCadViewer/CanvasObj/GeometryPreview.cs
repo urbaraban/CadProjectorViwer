@@ -13,9 +13,9 @@ namespace CadProjectorViewer.CanvasObj
     {
         public IGeometryObject Geometry => (IGeometryObject)this.CadObject;
 
-        public GeometryPreview(UidObject Object) : base(true)
+        public GeometryPreview(UidObject Object) : base(Object, true)
         {
-            this.CadObject = Object;
+
         }
 
         protected override void OnRender(DrawingContext drawingContext)

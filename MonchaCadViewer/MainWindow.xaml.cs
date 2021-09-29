@@ -635,7 +635,7 @@ namespace CadProjectorViewer
         {
             if (CalibrationFormCombo.SelectedValue != null)
             {
-                LDeviceMesh.ClbrForm = (CalibrationForm)CalibrationFormCombo.SelectedValue;
+                //ProjectorHub.Devices.Sel.ClbrForm = (CalibrationForm)CalibrationFormCombo.SelectedValue;
             }
         }
 

@@ -3,12 +3,20 @@
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" xmlns:canvasobj="clr-namespace:CadProjectorViewer.CanvasObj" d:DataContext="{d:DesignInstance Type=canvasobj:ProjectionScene}"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+    xmlns:canvasobj="clr-namespace:CadProjectorViewer.CanvasObj" 
+    xmlns:cadobjects="clr-namespace:CadProjectorSDK.CadObjects;assembly=CadProjectorSDK" xmlns:canvaspanel="clr-namespace:CadProjectorViewer.Panels.CanvasPanel"
+    d:DataContext="{d:DesignInstance Type=cadobjects:ProjectionScene}"
     d:DesignHeight="100"
     d:DesignWidth="100"
     mc:Ignorable="d"
     MouseLeftButtonUp="_viewbox_MouseLeftButtonUp"
     MouseRightButtonUp="_viewbox_MouseRightButtonUp">
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <canvaspanel:CadObjectConverter x:Key="CadObjectConverter"/>
+        </ResourceDictionary>
+    </UserControl.Resources>
     <Border
         Background="Gray"
         BorderBrush="Gray"
@@ -43,9 +51,14 @@
                     <ItemsControl ItemsSource="{Binding Objects}">
                         <ItemsControl.ItemsPanel>
                             <ItemsPanelTemplate>
-                                <canvasobj:CadCanvas Focusable="False" ClipToBounds="True"/>
+                                <canvasobj:CadCanvas ClipToBounds="True"/>
                             </ItemsPanelTemplate>
                         </ItemsControl.ItemsPanel>
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <ContentPresenter Content="{Binding Converter={StaticResource CadObjectConverter}}"/>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
                     </ItemsControl>
                 </Grid>
             </Viewbox>

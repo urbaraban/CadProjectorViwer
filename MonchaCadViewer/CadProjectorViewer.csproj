@@ -251,6 +251,8 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="CanvasObj\CadCanvas.cs" />
+    <Compile Include="CanvasObj\CanvasLine.cs" />
+    <Compile Include="CanvasObj\CanvasMesh.cs" />
     <Compile Include="CanvasObj\GeometryPreview.cs" />
     <Compile Include="CanvasObj\ImagePreview.cs" />
     <Compile Include="DeviceManager\ProjectorView.xaml.cs">

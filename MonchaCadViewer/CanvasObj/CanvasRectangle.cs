@@ -31,9 +31,6 @@ namespace CadProjectorViewer.CanvasObj
         }
         #endregion
 
-        public override event EventHandler<bool> Selected;
-        public override event EventHandler<string> Updated;
-        public override event EventHandler<CanvasObject> Removed;
 
         public CadSize3D LRect
         {
@@ -53,7 +50,6 @@ namespace CadProjectorViewer.CanvasObj
         private void _lrect_PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
             this.InvalidateVisual();
-            Updated?.Invoke(this, "Rect");
         }
 
 
@@ -61,25 +57,26 @@ namespace CadProjectorViewer.CanvasObj
 
         public override Rect Bounds => new Rect(LRect.P1.GetMPoint, LRect.P2.GetMPoint);
 
-        public CanvasRectangle(CadPoint3D P1, CadPoint3D P2, string Label, bool MouseSet) : base(true)
+        public CanvasRectangle(CadRectangle rectangle, string Label) : base(rectangle, true)
         {
             this.NameID = Label;
-            this.LRect = new CadSize3D(P1, P2);
-            LoadSetting();
-        }
-
-        public CanvasRectangle(CadSize3D lRect, string Label) : base(true)
-        {
-            this.NameID = Label;
-            LRect = lRect;
-            LoadSetting();
+            LRect = rectangle.LRect;
         }
 
 
-        private void LoadSetting()
+
+
+        protected override void OnInitialized(EventArgs e)
         {
+            base.OnInitialized(e);
             ContextMenuLib.CadRectMenu(this.ContextMenu);
+
+            RectangelAdorner rectangelAdorner = new RectangelAdorner(this);
+            adornerLayer.Add(rectangelAdorner);
+            rectangelAdorner.SelectAnchor += RectangelAdorner_SelectAnchor;
+            IsInit = true;
         }
+
 
         protected override void OnContextMenuClosing(ContextMenuEventArgs e)
         {
@@ -112,23 +109,10 @@ namespace CadProjectorViewer.CanvasObj
             drawingContext.DrawRectangle(BackColorBrush, myPen, new Rect(X, Y, Math.Abs(LRect.P1.MX - LRect.P2.MX), Math.Abs(LRect.P1.MY - LRect.P2.MY)));
         }
 
-        public override void Remove()
-        {
-            Removed?.Invoke(this, this);
-        }
-
-        public void Init()
-        {
-            AdornerLayer adornerLayer = AdornerLayer.GetAdornerLayer(this);
-            RectangelAdorner rectangelAdorner = new RectangelAdorner(this);
-            adornerLayer.Add(rectangelAdorner);
-            rectangelAdorner.SelectAnchor += RectangelAdorner_SelectAnchor;
-            IsInit = true;
-        }
 
         private void RectangelAdorner_SelectAnchor(object sender, CanvasAnchor e)
         {
-            Selected?.Invoke(e, e.CadObject.IsSelected);
+            //Selected?.Invoke(e, e.CadObject.IsSelected);
         }
 
         public void SetTwoPoint(Point point)
@@ -156,13 +140,10 @@ namespace CadProjectorViewer.CanvasObj
             this.rectangle = adornedElement;
             this.rectangle.PropertyChanged += Rectangle_PropertyChanged;
 
-
-            Rect rect = new Rect(0, 0, this.rectangle.Bounds.Width, this.rectangle.Bounds.Height);
-
-            AddAnchor(new CanvasAnchor(adornedElement.LRect.P1));
-            AddAnchor(new CanvasAnchor(adornedElement.LRect.P2, adornedElement.LRect.P1));
-            AddAnchor(new CanvasAnchor(adornedElement.LRect.P1, adornedElement.LRect.P2));
-            AddAnchor(new CanvasAnchor(adornedElement.LRect.P2));
+            AddAnchor(new CanvasAnchor(new CadAnchor(adornedElement.LRect.P1)));
+            AddAnchor(new CanvasAnchor(new CadAnchor(adornedElement.LRect.P2, adornedElement.LRect.P1)));
+            AddAnchor(new CanvasAnchor(new CadAnchor(adornedElement.LRect.P1, adornedElement.LRect.P2)));
+            AddAnchor(new CanvasAnchor(new CadAnchor(adornedElement.LRect.P2)));
 
             foreach (CanvasAnchor anchor in _Anchors)
             {

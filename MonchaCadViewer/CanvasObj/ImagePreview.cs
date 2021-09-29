@@ -18,9 +18,8 @@ namespace CadProjectorViewer.CanvasObj
             get => (IPixelObject)CadObject;
         }
 
-        public ImagePreview(UidObject image) : base(true)
+        public ImagePreview(UidObject image) : base(image, true)
         {
-            CadObject = image;
         }
 
         protected override void OnRender(DrawingContext drawingContext)

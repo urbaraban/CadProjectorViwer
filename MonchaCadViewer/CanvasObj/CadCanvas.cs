@@ -70,7 +70,7 @@ namespace CadProjectorViewer.CanvasObj
                 for (int j = 0; j < mesh.GetLength(1); j++)
                 {
                     mesh[i, j].M = ProjectorHub.Size;
-                    objects.Add(new CanvasAnchor(mesh[i, j])
+                    objects.Add(new CanvasAnchor(new CadAnchor(mesh[i, j]))
                     {
                         //this.CadObject.IsFix = false,// !mesh.OnlyEdge;
                         Uid = i.ToString() + ":" + j.ToString(),

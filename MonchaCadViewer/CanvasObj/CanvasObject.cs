@@ -48,6 +48,8 @@ namespace CadProjectorViewer.CanvasObj
 
         private UidObject cadobject;
 
+        public AdornerLayer adornerLayer { get; private set; }
+
         //Event
         //public event EventHandler TranslateChanged;
         public virtual event EventHandler<bool> Fixed;
@@ -190,6 +192,12 @@ namespace CadProjectorViewer.CanvasObj
             }
         }
 
+        protected override void OnInitialized(EventArgs e)
+        {
+            base.OnInitialized(e);
+            adornerLayer = AdornerLayer.GetAdornerLayer(this);
+        }
+
         protected override void OnMouseMove(MouseEventArgs e)
         {
             base.OnMouseMove(e);
@@ -249,10 +257,10 @@ namespace CadProjectorViewer.CanvasObj
             {
                 if ((e.Delta != 0) && (Keyboard.Modifiers != ModifierKeys.Control))
                 {
-                    if (Keyboard.Modifiers == ModifierKeys.Alt) RotateAxis(this.CadObject.AxisAngleY, "AngleY");
-                    else if (Keyboard.Modifiers == (ModifierKeys.Alt | ModifierKeys.Shift)) RotateAxis(this.CadObject.AxisAngleX, "AngleX");
+                    if (Keyboard.Modifiers == ModifierKeys.Alt) RotateAxis(this.CadObject.AxisY, "AngleY");
+                    else if (Keyboard.Modifiers == (ModifierKeys.Alt | ModifierKeys.Shift)) RotateAxis(this.CadObject.AxisX, "AngleX");
                     else if (Keyboard.Modifiers == ModifierKeys.None ||
-                        Keyboard.Modifiers == ModifierKeys.Shift) RotateAxis(this.CadObject.AxisAngleZ, "AngleZ");
+                        Keyboard.Modifiers == ModifierKeys.Shift) RotateAxis(this.CadObject.AxisZ, "AngleZ");
                 }
 
                 void RotateAxis(AxisAngleRotation3D axisAngleRotation3D, string OnPropertyString)
@@ -286,8 +294,9 @@ namespace CadProjectorViewer.CanvasObj
         }
 
 
-        public CanvasObject(bool ActiveObject)
+        public CanvasObject(UidObject uidObject, bool ActiveObject)
         {
+            this.CadObject = uidObject;
             if (this.ContextMenu == null)
             {
                 this.ContextMenu = new System.Windows.Controls.ContextMenu();

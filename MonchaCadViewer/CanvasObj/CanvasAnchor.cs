@@ -24,30 +24,17 @@ namespace CadProjectorViewer.CanvasObj
 
         public override Rect Bounds => new Rect(-this.size / 2, -this.size / 2, this.size, this.size);
 
-        private CadPoint3D PointX { get; set; }
-        private CadPoint3D PointY { get; set; }
+        private CadAnchor Point { get => (CadAnchor)this.CadObject; set => this.CadObject = value; }
 
-        public CadPoint3D GetLPoint => PointX != PointY ? new CadPoint3D(PointX.MX, PointY.MY, PointX.M) : PointX;
+        //public CadPoint3D GetLPoint => PointX != PointY ? new CadPoint3D(PointX.MX, PointY.MY, PointX.M) : PointX;
 
 
-        public CanvasAnchor(CadPoint3D Point) : base(true)
+        public CanvasAnchor(CadAnchor Point) : base(Point, true)
         {
-            this.PointX = Point;
-            this.PointX.PropertyChanged += Point_PropertyChanged;
-            this.PointY = Point;
-
-            this.PointX.Selected += Point_Selected;
+            this.Point.PropertyChanged += Point_PropertyChanged;
+            this.Point.Selected += Point_Selected;
             this.PropertyChanged += CadDot_PropertyChanged;
 
-            CommonSetting();
-        }
-
-        public CanvasAnchor(CadPoint3D PointX, CadPoint3D PointY) : base(true)
-        {
-            this.PointX = PointX;
-            this.PointX.PropertyChanged += Point_PropertyChanged;
-            this.PointY = PointY;
-            this.PointY.PropertyChanged += Point_PropertyChanged;
             CommonSetting();
         }
 
@@ -55,7 +42,6 @@ namespace CadProjectorViewer.CanvasObj
         {
             this.Cursor = Cursors.SizeAll;
             this.AllowDrop = true;
-            this.Drop += CadAnchor_Drop;
 
             this.size = ProjectorHub.GetThinkess * 2;
             this.ShowName = false;
@@ -63,8 +49,8 @@ namespace CadProjectorViewer.CanvasObj
             Canvas.SetZIndex(this, 999);
             this.RenderTransformOrigin = new Point(1, 1);
 
-            this.CadObject.Translate.OffsetX = this.PointX.MX;
-            this.CadObject.Translate.OffsetY = this.PointY.MY;
+            this.CadObject.Translate.OffsetX = this.Point.X;
+            this.CadObject.Translate.OffsetY = this.Point.Y;
 
             this.ContextMenuClosing += DotShape_ContextMenuClosing;
             this.Fixed += CadDot_Fixed;
@@ -74,21 +60,21 @@ namespace CadProjectorViewer.CanvasObj
         {
             Dispatcher.Invoke(() => 
             { 
-                this.CadObject.Translate.OffsetX = this.PointX.MX;
-                this.CadObject.Translate.OffsetY = this.PointY.MY;
+                this.CadObject.Translate.OffsetX = this.Point.X;
+                this.CadObject.Translate.OffsetY = this.Point.Y;
                 this.InvalidateVisual();
             });
         }
 
         private void CadDot_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
-            if (e.PropertyName == "IsSelected" && this.PointX.IsSelected == false)
+            if (e.PropertyName == "IsSelected" && this.Point.IsSelected == false)
             {
-                PointX.IsSelected = true;
+                Point.IsSelected = true;
             }
-            else if (e.PropertyName == "Leave" && this.PointX.IsSelected == true)
+            else if (e.PropertyName == "Leave" && this.Point.IsSelected == true)
             {
-                PointX.IsSelected = false;
+                Point.IsSelected = false;
             }
 
             this.InvalidateVisual();
@@ -102,22 +88,14 @@ namespace CadProjectorViewer.CanvasObj
 
         private void CadDot_Selected(object sender, bool e)
         {
-            this.PointX.IsSelected = e;
+            this.Point.IsSelected = e;
         }
 
 
-        private void CadAnchor_Drop(object sender, DragEventArgs e)
-        {
-            if (e.Data is Tuple<CadPoint3D, CadPoint3D> points)
-            {
-                this.PointX = points.Item1;
-                this.PointY = points.Item2;
-            }
-        }
 
         private void CadDot_Fixed(object sender, bool e)
         {
-            this.PointX.IsFix = e;
+            this.Point.IsFix = e;
         }
 
         private void DotShape_ContextMenuClosing(object sender, ContextMenuEventArgs e)
@@ -133,7 +111,7 @@ namespace CadProjectorViewer.CanvasObj
                         this.Remove();
                         break;
                     case "common_Edit":
-                        DotEdit dotEdit = new DotEdit(this.PointX);
+                        DotEdit dotEdit = new DotEdit(this.Point.PointX);
                         dotEdit.Show();
                         break;
                 }

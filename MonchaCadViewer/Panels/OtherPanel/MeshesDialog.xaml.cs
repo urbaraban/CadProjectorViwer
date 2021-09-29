@@ -1,4 +1,5 @@
 ﻿using CadProjectorSDK.Device;
+using CadProjectorSDK.Device.Mesh;
 using System;
 using System.Collections.Generic;
 using System.Linq;

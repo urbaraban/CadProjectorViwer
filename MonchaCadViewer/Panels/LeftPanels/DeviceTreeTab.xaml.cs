@@ -20,6 +20,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using AppSt = CadProjectorViewer.Properties.Settings;
+using CadProjectorSDK.Device.Mesh;
 
 namespace CadProjectorViewer.Panels
 {
@@ -192,6 +193,7 @@ namespace CadProjectorViewer.Panels
                     {
                         projectorHub.Scene.Clear();
                         //projectorHub.Scene.AddRange(CadCanvas.GetMesh(mesh, ProjectorHub.GetThinkess * AppSt.Default.anchor_size, false, MeshType.NONE).ToArray());
+                        projectorHub.Scene.Add(mesh);
                     }
                 }
             }

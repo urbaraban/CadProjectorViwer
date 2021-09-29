@@ -24,7 +24,7 @@ namespace CadProjectorViewer.CanvasObj
 
         public override Rect Bounds => new Rect(-this.size / 2, -this.size / 2, this.size, this.size);
 
-        private CadAnchor Point { get => (CadAnchor)this.CadObject; set => this.CadObject = value; }
+        private CadAnchor Point  => (CadAnchor)this.CadObject;
 
         //public CadPoint3D GetLPoint => PointX != PointY ? new CadPoint3D(PointX.MX, PointY.MY, PointX.M) : PointX;
 
@@ -32,17 +32,14 @@ namespace CadProjectorViewer.CanvasObj
         public CanvasAnchor(CadAnchor Point) : base(Point, true)
         {
             this.Point.PropertyChanged += Point_PropertyChanged;
-            this.Point.Selected += Point_Selected;
             this.PropertyChanged += CadDot_PropertyChanged;
-
+            this.Cursor = Cursors.SizeAll;
             CommonSetting();
         }
 
         private void CommonSetting()
         {
-            this.Cursor = Cursors.SizeAll;
-            this.AllowDrop = true;
-
+            
             this.size = ProjectorHub.GetThinkess * 2;
             this.ShowName = false;
             ContextMenuLib.DotContextMenu(this.ContextMenu);
@@ -80,17 +77,6 @@ namespace CadProjectorViewer.CanvasObj
             this.InvalidateVisual();
             Updated?.Invoke(this, null);
         }
-
-        private void Point_Selected(object sender, bool e)
-        {
-            this.CadObject.Render = e;
-        }
-
-        private void CadDot_Selected(object sender, bool e)
-        {
-            this.Point.IsSelected = e;
-        }
-
 
 
         private void CadDot_Fixed(object sender, bool e)

@@ -8,6 +8,7 @@ using System.Windows.Controls;
 using System.Windows.Media;
 using AppSt = CadProjectorViewer.Properties.Settings;
 using CadProjectorSDK.CadObjects;
+using CadProjectorSDK.Device.Mesh;
 
 namespace CadProjectorViewer
 {

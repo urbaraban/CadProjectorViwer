@@ -44,6 +44,7 @@ using CadProjectorSDK.Tools;
 using System.Windows.Media.Imaging;
 using CadProjectorSDK.CadObjects.Interface;
 using CadProjectorSDK.CadObjects.Abstract;
+using CadProjectorSDK.Device.Mesh;
 
 namespace CadProjectorViewer
 {

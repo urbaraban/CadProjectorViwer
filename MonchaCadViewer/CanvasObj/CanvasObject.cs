@@ -20,6 +20,7 @@ using System.Windows.Media.Media3D;
 using CadProjectorSDK.CadObjects.LObjects;
 using CadProjectorSDK.CadObjects.Abstract;
 using CadProjectorSDK.CadObjects.Interface;
+using CadProjectorSDK.Device.Mesh;
 
 namespace CadProjectorViewer.CanvasObj
 {
@@ -128,9 +129,9 @@ namespace CadProjectorViewer.CanvasObj
 
         public MeshType MeshType { get; set; } = MeshType.SELECT;
 
-        
 
-        #region Property
+
+        #region OnPropertyChanged
         public event PropertyChangedEventHandler PropertyChanged;
 
         public void OnPropertyChanged([CallerMemberName] string prop = "")

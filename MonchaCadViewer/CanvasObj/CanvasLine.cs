@@ -30,11 +30,6 @@ namespace CadProjectorViewer.CanvasObj
             IsInit = true;
         }
 
-        /// <summary>
-        /// Load Adorner
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
         protected override void OnRender(DrawingContext drawingContext)
         {
             drawingContext.DrawLine(myPen, Line.P1.GetMPoint, Line.P2.GetMPoint);

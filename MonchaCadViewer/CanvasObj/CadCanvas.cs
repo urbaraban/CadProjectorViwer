@@ -15,6 +15,7 @@ using System.Windows.Documents;
 using CadProjectorViewer.Panels;
 using System.Windows.Data;
 using System.Collections.ObjectModel;
+using CadProjectorSDK.Device.Mesh;
 
 namespace CadProjectorViewer.CanvasObj
 {

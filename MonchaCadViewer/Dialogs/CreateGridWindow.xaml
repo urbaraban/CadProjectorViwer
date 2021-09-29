@@ -3,9 +3,12 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:CadProjectorViewer"
         xmlns:Controls="http://metro.mahapps.com/winfx/xaml/controls"
-        xmlns:Properties="clr-namespace:CadProjectorViewer.Properties" xmlns:canvaspanel="clr-namespace:CadProjectorViewer.Panels.CanvasPanel" xmlns:device="clr-namespace:CadProjectorSDK.Device;assembly=CadProjectorSDK" d:DataContext="{d:DesignInstance Type=device:LDeviceMesh}" x:Class="CadProjectorViewer.CreateGridWindow"
+        xmlns:Properties="clr-namespace:CadProjectorViewer.Properties" 
+    xmlns:canvaspanel="clr-namespace:CadProjectorViewer.Panels.CanvasPanel"
+    xmlns:mesh="clr-namespace:CadProjectorSDK.Device.Mesh;assembly=CadProjectorSDK" 
+    d:DataContext="{d:DesignInstance Type=mesh:LDeviceMesh}"
+    x:Class="CadProjectorViewer.CreateGridWindow"
         mc:Ignorable="d"
         Title="CreateGridWindow" Height="450" Width="600" Loaded="Window_Loaded">
     <Window.Resources>

@@ -16,9 +16,55 @@ namespace CadProjectorViewer.CanvasObj
     {
         public LDeviceMesh Mesh => (LDeviceMesh)this.CadObject;
 
+        public override double X
+        {
+            get => this.Mesh.SelectedPoint != null ? this.Mesh.SelectedPoint.MX : 0;
+            set
+            {
+                if (this.Mesh.SelectedPoint != null)
+                {
+                    this.Mesh.SelectedPoint.MX = value;
+                    OnPropertyChanged("X");
+                }
+            }
+        }
+
+        public override double Y
+        {
+            get => this.Mesh.SelectedPoint != null ? this.Mesh.SelectedPoint.MY : 0;
+            set
+            {
+                if (this.Mesh.SelectedPoint != null)
+                {
+                    this.Mesh.SelectedPoint.MY = value;
+                    OnPropertyChanged("Y");
+                }
+            }
+        }
+
+        public override double Z
+        {
+            get => this.Mesh.SelectedPoint != null ? this.Mesh.SelectedPoint.MZ : 0;
+            set
+            {
+                if (this.Mesh.SelectedPoint != null)
+                {
+                    this.Mesh.SelectedPoint.MZ = value;
+                    OnPropertyChanged("Y");
+                }
+            }
+        }
+
         public CanvasMesh(LDeviceMesh mesh) : base(mesh, true)
         {
+            mesh.ChangedMesh += Mesh_ChangedMesh;
         }
+
+        private void Mesh_ChangedMesh(object sender, bool e)
+        {
+            this.InvalidateVisual();
+        }
+
         protected override void OnInitialized(EventArgs e)
         {
             base.OnInitialized(e);

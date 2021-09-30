@@ -163,7 +163,7 @@ namespace CadProjectorViewer.Panels.CanvasPanel
             base.OnMouseLeftButtonDown(e);
             if (this.projectionScene.ActiveDrawingObject != null)
             {
-                //this.projectionScene.ActiveDrawingObject.Init();
+                this.projectionScene.ActiveDrawingObject.Init();
                 this.projectionScene.ActiveDrawingObject = null;
             }
 

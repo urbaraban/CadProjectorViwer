@@ -5,16 +5,15 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
     xmlns:canvasobj="clr-namespace:CadProjectorViewer.CanvasObj" 
-    xmlns:cadobjects="clr-namespace:CadProjectorSDK.CadObjects;assembly=CadProjectorSDK" xmlns:canvaspanel="clr-namespace:CadProjectorViewer.Panels.CanvasPanel"
+    xmlns:cadobjects="clr-namespace:CadProjectorSDK.CadObjects;assembly=CadProjectorSDK" xmlns:canvaspanel="clr-namespace:CadProjectorViewer.Panels.CanvasPanel" xmlns:panels="clr-namespace:CadProjectorViewer.Panels"
     d:DataContext="{d:DesignInstance Type=cadobjects:ProjectionScene}"
     d:DesignHeight="100"
     d:DesignWidth="100"
-    mc:Ignorable="d"
-    MouseLeftButtonUp="_viewbox_MouseLeftButtonUp"
-    MouseRightButtonUp="_viewbox_MouseRightButtonUp">
+    mc:Ignorable="d">
     <UserControl.Resources>
         <ResourceDictionary>
             <canvaspanel:CadObjectConverter x:Key="CadObjectConverter"/>
+            <panels:BackColor x:Key="BackColorConverter"/>
         </ResourceDictionary>
     </UserControl.Resources>
     <Border
@@ -30,7 +29,7 @@
 
             <Viewbox x:Name="CanvasBox" Grid.RowSpan="3" Stretch="Uniform" StretchDirection="Both">
                 <Grid x:Name="CanvasGrid">
-                    <Rectangle Fill="White"/>
+                    <Rectangle Fill="{Binding IsSelected, Converter={StaticResource BackColorConverter}}"/>
                     <Canvas x:Name="BackCanvas" IsHitTestVisible="False">
                         <Canvas.Background>
                             <DrawingBrush TileMode="Tile" Viewport="0,0,200,200" 

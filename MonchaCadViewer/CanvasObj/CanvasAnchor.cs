@@ -20,8 +20,6 @@ namespace CadProjectorViewer.CanvasObj
         public override Pen myPen { get; } = new Pen(null, 0);
         public override Brush myBack => this.CadObject.IsSelected == true ? Brushes.Red : Brushes.DarkGray;
 
-        public override event EventHandler<string> Updated;
-
         public override Rect Bounds => new Rect(-this.size / 2, -this.size / 2, this.size, this.size);
 
         private CadAnchor Point  => (CadAnchor)this.CadObject;
@@ -75,7 +73,6 @@ namespace CadProjectorViewer.CanvasObj
             }
 
             this.InvalidateVisual();
-            Updated?.Invoke(this, null);
         }
 
 
@@ -94,7 +91,7 @@ namespace CadProjectorViewer.CanvasObj
                         this.CadObject.IsFix = !this.CadObject.IsFix;
                         break;
                     case "common_Remove":
-                        this.Remove();
+                        this.CadObject.Remove();
                         break;
                     case "common_Edit":
                         DotEdit dotEdit = new DotEdit(this.Point.PointX);

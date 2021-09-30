@@ -144,7 +144,7 @@ namespace CadProjectorViewer.Panels
                         switch (cmindex.Tag)
                         {
                             case "mesh_create":
-                                CreateGridWindow createGridWindow = new CreateGridWindow() { DataContext = mesh };
+                                CreateGridWindow createGridWindow = new CreateGridWindow(mesh);
                                 createGridWindow.ShowDialog();
                                 break;
                             case "mesh_showvirtual":
@@ -174,14 +174,7 @@ namespace CadProjectorViewer.Panels
             }
         }
 
-        #region INotifyPropertyChanged
-        public event PropertyChangedEventHandler PropertyChanged;
 
-        public void OnPropertyChanged([CallerMemberName] string prop = "")
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(prop));
-        }
-        #endregion
 
         private void MeshBorder_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
@@ -192,7 +185,6 @@ namespace CadProjectorViewer.Panels
                     if (frameworkElement.DataContext is LDeviceMesh mesh)
                     {
                         projectorHub.Scene.Clear();
-                        //projectorHub.Scene.AddRange(CadCanvas.GetMesh(mesh, ProjectorHub.GetThinkess * AppSt.Default.anchor_size, false, MeshType.NONE).ToArray());
                         projectorHub.Scene.Add(mesh);
                     }
                 }
@@ -207,5 +199,14 @@ namespace CadProjectorViewer.Panels
                 selectdevice = device;
             }
         }
+
+        #region INotifyPropertyChanged
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        public void OnPropertyChanged([CallerMemberName] string prop = "")
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(prop));
+        }
+        #endregion
     }
 }

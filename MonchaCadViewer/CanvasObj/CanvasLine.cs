@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Data;
 using System.Windows.Documents;
 using System.Windows.Media;
 
@@ -26,6 +27,12 @@ namespace CadProjectorViewer.CanvasObj
         {
             base.OnInitialized(e);
             LineAdorner lineAdorner = new LineAdorner(this);
+            Binding binding = new Binding()
+            {
+                Source = this.CadObject,
+                Path = new PropertyPath("IsInit"),
+            };
+            lineAdorner.SetBinding(Adorner.VisibilityProperty, binding);
             adornerLayer.Add(lineAdorner);
             IsInit = true;
         }

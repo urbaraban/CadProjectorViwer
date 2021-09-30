@@ -56,8 +56,6 @@ namespace CadProjectorViewer.CanvasObj
         public virtual event EventHandler<bool> Fixed;
         public virtual event EventHandler<bool> Selected;
         public virtual event EventHandler<bool> OnObject;
-        public virtual event EventHandler<string> Updated;
-        public virtual event EventHandler<CanvasObject> Removed;
         public virtual event EventHandler<CanvasObject> Opening;
 
         public virtual Rect Bounds => this.CadObject.Bounds;
@@ -158,9 +156,9 @@ namespace CadProjectorViewer.CanvasObj
         protected Point BasePos = new Point();
 
         #region TranformObject
-        public double X { get => this.CadObject.X; set => this.CadObject.X = value; }
-        public double Y { get => this.CadObject.Y; set => this.CadObject.Y = value; }
-        public double Z { get => this.CadObject.Z; set => this.CadObject.Z = value; }
+        public virtual double X { get => this.CadObject.X; set => this.CadObject.X = value; }
+        public virtual double Y { get => this.CadObject.Y; set => this.CadObject.Y = value; }
+        public virtual double Z { get => this.CadObject.Z; set => this.CadObject.Z = value; }
         #endregion
 
 
@@ -332,7 +330,7 @@ namespace CadProjectorViewer.CanvasObj
                     break;
 
                 case "common_Remove":
-                    this.Remove();
+                    this.CadObject.Remove();
                     break;
 
                 case "obj_Render":
@@ -341,10 +339,6 @@ namespace CadProjectorViewer.CanvasObj
             }
         }
 
-        public virtual void Remove()
-        {
-            Removed?.Invoke(this, this);
-        }
 
 
         protected override void OnRender(DrawingContext drawingContext)

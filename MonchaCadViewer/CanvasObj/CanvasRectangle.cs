@@ -17,6 +17,8 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Media3D;
 using System.Windows.Shapes;
+using System.Windows.Data;
+using CadProjectorSDK.CadObjects.Interface;
 
 namespace CadProjectorViewer.CanvasObj
 {
@@ -64,14 +66,18 @@ namespace CadProjectorViewer.CanvasObj
         }
 
 
-
-
         protected override void OnInitialized(EventArgs e)
         {
             base.OnInitialized(e);
             ContextMenuLib.CadRectMenu(this.ContextMenu);
-
             RectangelAdorner rectangelAdorner = new RectangelAdorner(this);
+            Binding binding = new Binding()
+            {
+                Source = (IDrawingObject)this.CadObject,
+                Path = new PropertyPath("IsInit"),
+            };
+            rectangelAdorner.SetBinding(Adorner.VisibilityProperty, binding);
+
             adornerLayer.Add(rectangelAdorner);
             rectangelAdorner.SelectAnchor += RectangelAdorner_SelectAnchor;
             IsInit = true;

@@ -6,7 +6,7 @@
         xmlns:Controls="http://metro.mahapps.com/winfx/xaml/controls"
         xmlns:Properties="clr-namespace:CadProjectorViewer.Properties" 
     xmlns:canvaspanel="clr-namespace:CadProjectorViewer.Panels.CanvasPanel"
-    xmlns:mesh="clr-namespace:CadProjectorSDK.Device.Mesh;assembly=CadProjectorSDK" 
+    xmlns:mesh="clr-namespace:CadProjectorSDK.Device.Mesh;assembly=CadProjectorSDK" xmlns:canvasobj="clr-namespace:CadProjectorViewer.CanvasObj"
     d:DataContext="{d:DesignInstance Type=mesh:LDeviceMesh}"
     x:Class="CadProjectorViewer.CreateGridWindow"
         mc:Ignorable="d"
@@ -27,6 +27,7 @@
                     </Trigger>
                 </Style.Triggers>
             </Style>
+            <canvaspanel:CadObjectConverter x:Key="CadObjectConverter"/>
         </ResourceDictionary>
 
     </Window.Resources>
@@ -40,8 +41,9 @@
                 <Properties:Settings/>
             </Border.DataContext>
             <Grid>
-                <canvaspanel:CadCanvasPanel x:Name="Canvas" 
-                                            DataContext="{Binding RelativeSource={RelativeSource AncestorType=Window}, Path=projectionScene}"/>
+                <canvaspanel:CadCanvasPanel DataContext="{Binding RelativeSource={RelativeSource AncestorType=Window}, 
+                                            Path=projectionScene, 
+                                            Converter={StaticResource CadObjectConverter}}" />
             </Grid>
         </Border>
         <Controls:NumericUpDown x:Name="WidthUpDn"  Margin="15,115,67,0" Maximum="50" Minimum="2" Value="2" Background="White" Height="26" VerticalAlignment="Top"  Grid.Column="1" ValueChanged="WidthUpDn_ValueChanged"/>

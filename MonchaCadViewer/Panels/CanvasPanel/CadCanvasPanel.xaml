@@ -22,7 +22,6 @@
             <RowDefinition/>
             <RowDefinition Height="25"/>
         </Grid.RowDefinitions>
-
         <StackPanel Margin="0,0,0,0" Orientation="Horizontal" FlowDirection="RightToLeft" Panel.ZIndex="99">
             <Button x:Name="AdornerShowBtn" FontFamily="Segoe MDL2 Assets" Content="&#xE7F0;" Width="30" Height="30" Margin="3" Click="AdornerShowBtn_Click" Panel.ZIndex="999" FontSize="18"/>
             <Button x:Name="ShowDeviceRect" FontFamily="Segoe MDL2 Assets" Content="&#xE9A6;" Width="30" Height="30" Margin="3" Click="ShowDeviceRect_Click" Panel.ZIndex="999" FontSize="20"/>
@@ -53,7 +52,7 @@
                 <ItemsControl ItemsSource="{Binding Objects}">
                     <ItemsControl.ItemsPanel>
                         <ItemsPanelTemplate>
-                            <canvasobj:CadCanvas ClipToBounds="True"/>
+                            <canvasobj:CadCanvas />
                         </ItemsPanelTemplate>
                     </ItemsControl.ItemsPanel>
                     <ItemsControl.ItemTemplate>

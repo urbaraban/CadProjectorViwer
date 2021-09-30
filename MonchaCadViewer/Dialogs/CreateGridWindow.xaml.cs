@@ -19,11 +19,23 @@ namespace CadProjectorViewer
     {
         public ProjectionScene projectionScene { get; set; } = new ProjectionScene();
 
-        private LDeviceMesh _mesh => (LDeviceMesh)this.DataContext;
+        private LDeviceMesh _mesh;
 
-        public CreateGridWindow()
+        public CreateGridWindow(LDeviceMesh mesh)
         {
             InitializeComponent();
+            this._mesh = mesh;
+            this.DataContextChanged += CreateGridWindow_DataContextChanged;
+            this.DataContext = new LDeviceMesh(LDeviceMesh.MakeMeshPoint(this._mesh.Points.GetLength(0), this._mesh.Points.GetLength(1)), this._mesh.Name);
+        }
+
+        private void CreateGridWindow_DataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
+        {
+            projectionScene.Clear();
+            if (this.DataContext is LDeviceMesh mesh)
+            {
+                projectionScene.Add(mesh);
+            }
         }
 
 
@@ -31,11 +43,7 @@ namespace CadProjectorViewer
         {
             if (this.IsLoaded)
             {
-                projectionScene.Clear();
-               /* projectionScene.AddRange(
-                    CadCanvas.GetMesh(
-                    new LDeviceMesh(LDeviceMesh.MakeMeshPoint((int)HeightUpDn.Value.Value, (int)WidthUpDn.Value.Value), string.Empty),
-                    ProjectorHub.GetThinkess * AppSt.Default.anchor_size, false, MeshType.NONE).ToArray());*/
+                this.DataContext = new LDeviceMesh(LDeviceMesh.MakeMeshPoint((int)HeightUpDn.Value.Value, (int)WidthUpDn.Value.Value), this._mesh.Name);
             }
         }
 
@@ -77,12 +85,6 @@ namespace CadProjectorViewer
         {
             WidthUpDn.Value = this._mesh.GetLength(1);
             HeightUpDn.Value = this._mesh.GetLength(0);
-
-            projectionScene.Clear();
-            /*projectionScene.AddRange(
-                     CadCanvas.GetMesh(
-                     (LDeviceMesh)this.DataContext,
-                     ProjectorHub.GetThinkess * AppSt.Default.anchor_size, false, MeshType.NONE).ToArray());*/
         }
     }
 

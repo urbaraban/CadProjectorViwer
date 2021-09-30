@@ -246,11 +246,11 @@ namespace CadProjectorViewer
             object loadobj = await FileLoad.Get(filename);
             if (loadobj is GCCollection gCObjects)
             {
-                ContourScrollPanel.Add(false, GCToCad.GetGroup(gCObjects, filename), filename);
+                ProjectorHub.ScenesCollection.Add(new ProjectionScene(GCToCad.GetGroup(gCObjects, filename)));
             }
             else if (loadobj is ImageSource imageSource)
             {
-                ContourScrollPanel.Add(false, new CadImage(imageSource), filename);
+                ProjectorHub.ScenesCollection.Add(new ProjectionScene(new CadImage(imageSource)));
             }
             else if (loadobj == null)
             {
@@ -372,7 +372,7 @@ namespace CadProjectorViewer
                         await ContourCalc.GetGeometry(this.kmpsAppl.Doc, ProjectorHub.ProjectionSetting.PointStep.MX, false, true),
                         this.kmpsAppl.Doc.D7.Name);
 
-                ContourScrollPanel.Add(false, cadGeometries, this.kmpsAppl.Doc.D7.Name);
+                ProjectorHub.ScenesCollection.Add(new ProjectionScene(cadGeometries));
             }
         }
 
@@ -389,8 +389,7 @@ namespace CadProjectorViewer
                           await ContourCalc.GetGeometry(this.kmpsAppl.Doc, ProjectorHub.ProjectionSetting.PointStep.MX, true, true),
                           this.kmpsAppl.Doc.D7.Name);
 
-                ContourScrollPanel.Add(true, cadGeometries, this.kmpsAppl.Doc.D7.Path);
-                   
+                ProjectorHub.ScenesCollection.Add(new ProjectionScene(cadGeometries));
             }
         }
 
@@ -594,7 +593,7 @@ namespace CadProjectorViewer
         /// <param name="e"></param>
         private async void ILDASaveBtn_Click(object sender, RoutedEventArgs e)
         {
-            SaveFileDialog saveFileDialog = new SaveFileDialog();
+          /*  SaveFileDialog saveFileDialog = new SaveFileDialog();
             saveFileDialog.Filter = "(*.ild)|*.ild| All Files (*.*)|*.*";
 
             foreach(ScrollPanelItem item in ContourScrollPanel.FrameStack.Children)
@@ -612,9 +611,9 @@ namespace CadProjectorViewer
             {
                 for (int i = 0; i < ProjectorHub.Devices.Count; i++)
                 {
-                    //ildaWriter.Write(($"{saveFileDialog.FileName.Replace(".ild", string.Empty)}_{i}.ild"), new List<LFrame>(){ await ProjectorHub.Devices[i].ReadyFrame.GetLFrame(ProjectorHub.Devices[i], ProjectorHub.MainFrame)}, 5);
+                    ildaWriter.Write(($"{saveFileDialog.FileName.Replace(".ild", string.Empty)}_{i}.ild"), new List<LFrame>(){ await ProjectorHub.Devices[i].ReadyFrame.GetLFrame(ProjectorHub.Devices[i], ProjectorHub.MainFrame)}, 5);
                 }
-            }
+            }*/
         }
 
 
@@ -832,8 +831,6 @@ namespace CadProjectorViewer
             return null;
         }
     }
-
-
 
     public class LicenceColor : IValueConverter
     {

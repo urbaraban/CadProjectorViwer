@@ -20,6 +20,7 @@ using AppSt = CadProjectorViewer.Properties.Settings;
 using ToGeometryConverter.Object;
 using CadProjectorSDK.CadObjects;
 using CadProjectorSDK.CadObjects.Abstract;
+using System.Globalization;
 
 namespace CadProjectorViewer.Panels
 {
@@ -28,8 +29,7 @@ namespace CadProjectorViewer.Panels
     /// </summary>
     public partial class ScrollPanelItem : UserControl
     {
-        public event EventHandler<bool> Selected;
-        public event EventHandler Removed;
+        public ProjectionScene ProjectionScene => (ProjectionScene)this.DataContext;
 
         public bool IsSelected
         {
@@ -37,7 +37,6 @@ namespace CadProjectorViewer.Panels
             set
             {
                 this._isselected = value;
-                Selected?.Invoke(this, this._isselected);
                 SetBackround();
             }
         }
@@ -60,26 +59,22 @@ namespace CadProjectorViewer.Panels
 
         public string FileName => Scene.NameID;
 
-        public ScrollPanelItem(string Filepath)
+        public ScrollPanelItem()
         {
             InitializeComponent();
-
             this.Width = this.Height;
-            this.filepath = Filepath;
         }
 
 
-        public void Remove()
+        protected override void OnMouseLeftButtonDown(MouseButtonEventArgs e)
         {
-            Removed?.Invoke(this, null);
-        }
-        private void _viewbox_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
-        {
-            this.IsSelected = !this.IsSelected;
+            base.OnMouseLeftButtonDown(e);
+            ProjectionScene.IsSelected = !ProjectionScene.IsSelected;
         }
 
-        private void _viewbox_MouseRightButtonUp(object sender, MouseButtonEventArgs e)
+        protected override void OnMouseRightButtonUp(MouseButtonEventArgs e)
         {
+            base.OnMouseRightButtonUp(e);
             if (this.DataContext is ProjectionScene scene)
             {
                 foreach (UidObject cadObject in scene.Objects)
@@ -89,9 +84,10 @@ namespace CadProjectorViewer.Panels
             }
         }
 
+
         private void RemoveBtn_Click(object sender, RoutedEventArgs e)
         {
-            Removed?.Invoke(this, null);
+            ProjectionScene.RemoveScene();
         }
 
         private void SetBackround()
@@ -123,6 +119,20 @@ namespace CadProjectorViewer.Panels
                 new ProjectionScene(
                     new CanvasGroup((GCCollection)
                         await FileLoad.Get(this.filepath)));*/
+        }
+    }
+
+    public class BackColor : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            if (value is bool b && b == true) return Brushes.YellowGreen;
+            else return Brushes.White;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            return null;
         }
     }
 }

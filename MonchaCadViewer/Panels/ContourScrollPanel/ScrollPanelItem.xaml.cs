@@ -21,6 +21,7 @@ using ToGeometryConverter.Object;
 using CadProjectorSDK.CadObjects;
 using CadProjectorSDK.CadObjects.Abstract;
 using System.Globalization;
+using CadProjectorSDK.Scenes;
 
 namespace CadProjectorViewer.Panels
 {

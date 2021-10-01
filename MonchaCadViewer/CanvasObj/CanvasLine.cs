@@ -1,6 +1,7 @@
 ﻿using CadProjectorSDK.CadObjects;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -21,7 +22,6 @@ namespace CadProjectorViewer.CanvasObj
         }
 
 
-        public bool IsInit { get; private set; } = false;
 
         protected override void OnInitialized(EventArgs e)
         {
@@ -31,10 +31,10 @@ namespace CadProjectorViewer.CanvasObj
             {
                 Source = this.CadObject,
                 Path = new PropertyPath("IsInit"),
+                Converter = new InitVisible()
             };
             lineAdorner.SetBinding(Adorner.VisibilityProperty, binding);
             adornerLayer.Add(lineAdorner);
-            IsInit = true;
         }
 
         protected override void OnRender(DrawingContext drawingContext)
@@ -91,6 +91,20 @@ namespace CadProjectorViewer.CanvasObj
         protected override void OnRender(DrawingContext drawingContext)
         {
             base.OnRender(drawingContext);
+        }
+    }
+
+    public class InitVisible : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            if (value is bool b && b == true) return Visibility.Visible;
+            else return Visibility.Hidden;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            return null;
         }
     }
 }

@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Media;
+using System.Windows.Media.Imaging;
 
 namespace CadProjectorViewer.CanvasObj
 {
@@ -20,13 +21,14 @@ namespace CadProjectorViewer.CanvasObj
 
         public ImagePreview(UidObject image) : base(image, true)
         {
+
         }
 
         protected override void OnRender(DrawingContext drawingContext)
         {
             base.OnRender(drawingContext);
 
-            ImageSource imageSource = this.CadImage.GetImage();
+            TransformedBitmap imageSource = this.CadImage.GetImage();
 
             drawingContext.DrawImage(imageSource,
                 new Rect(

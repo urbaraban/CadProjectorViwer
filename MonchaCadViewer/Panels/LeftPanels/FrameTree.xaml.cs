@@ -1,5 +1,6 @@
 ﻿using CadProjectorSDK.CadObjects;
 using CadProjectorSDK.CadObjects.Abstract;
+using CadProjectorSDK.Scenes;
 using CadProjectorViewer.CanvasObj;
 using System;
 using System.Collections.Generic;

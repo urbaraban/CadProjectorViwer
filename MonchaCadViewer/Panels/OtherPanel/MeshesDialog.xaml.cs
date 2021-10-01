@@ -30,17 +30,17 @@ namespace CadProjectorViewer.Panels.DevicePanel
 
         private void AddBtn_Click(object sender, RoutedEventArgs e)
         {
-            Device.AddSelectMesh((LDeviceMesh)ReadyMeshesList.SelectedItem);
+            Device.AddSelectMesh((ProjectorMesh)ReadyMeshesList.SelectedItem);
         }
 
         private void RemoveBtn_Click(object sender, RoutedEventArgs e)
         {
-            Device.RemoveSelectMesh((LDeviceMesh)SelectMeshesList.SelectedItem);
+            Device.RemoveSelectMesh((ProjectorMesh)SelectMeshesList.SelectedItem);
         }
 
         private void ReadyPlusBtn_Click(object sender, RoutedEventArgs e)
         {
-            LDeviceMesh mesh = new LDeviceMesh(LDeviceMesh.MakeMeshPoint(5, 5), $"Mesh_{Device.Meshes.Count}");
+            ProjectorMesh mesh = new ProjectorMesh(ProjectorMesh.MakeMeshPoint(5, 5), $"Mesh_{Device.Meshes.Count}");
             Device.Meshes.Add(mesh);
             CreateGridWindow createGridWindow = new CreateGridWindow(mesh);
             createGridWindow.Show();
@@ -48,7 +48,7 @@ namespace CadProjectorViewer.Panels.DevicePanel
 
         private void ReadyMinusBtn_Click(object sender, RoutedEventArgs e)
         {
-            LDeviceMesh mesh = (LDeviceMesh)ReadyMeshesList.SelectedItem;
+            ProjectorMesh mesh = (ProjectorMesh)ReadyMeshesList.SelectedItem;
             Device.RemoveSelectMesh(mesh);
             Device.Meshes.Remove(mesh);
         }

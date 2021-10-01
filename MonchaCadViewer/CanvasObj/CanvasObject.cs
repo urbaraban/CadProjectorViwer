@@ -45,6 +45,7 @@ namespace CadProjectorViewer.CanvasObj
         private void Cadobject_PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
             this.InvalidateVisual();
+            OnPropertyChanged(e.PropertyName);
         }
 
         private UidObject cadobject;
@@ -60,8 +61,6 @@ namespace CadProjectorViewer.CanvasObj
 
         public virtual Rect Bounds => this.CadObject.Bounds;
 
-        public virtual Geometry GetGeometry => _Geometry;
-        private Geometry _Geometry;
 
         public bool ActiveObject { get; private set; }
 
@@ -156,9 +155,33 @@ namespace CadProjectorViewer.CanvasObj
         protected Point BasePos = new Point();
 
         #region TranformObject
-        public virtual double X { get => this.CadObject.X; set => this.CadObject.X = value; }
-        public virtual double Y { get => this.CadObject.Y; set => this.CadObject.Y = value; }
-        public virtual double Z { get => this.CadObject.Z; set => this.CadObject.Z = value; }
+        public virtual double X 
+        { 
+            get => this.CadObject.X;
+            set
+            {
+                this.CadObject.X = value;
+                OnPropertyChanged("X");
+            }
+        }
+        public virtual double Y 
+        { 
+            get => this.CadObject.Y;
+            set
+            {
+                this.CadObject.Y = value;
+                OnPropertyChanged("Y");
+            }
+        }
+        public virtual double Z 
+        {
+            get => this.CadObject.Z;
+            set
+            {
+                this.CadObject.Z = value;
+                OnPropertyChanged("Z");
+            }
+        }
         #endregion
 
 
@@ -340,25 +363,8 @@ namespace CadProjectorViewer.CanvasObj
         }
 
 
-
         protected override void OnRender(DrawingContext drawingContext)
         {
-            if (this.CadObject is CadGroup objectsGroup)
-            {
-                foreach (UidObject cadObject in objectsGroup)
-                {
-                    drawingContext.DrawGeometry(this.myBack, this.myPen, GetGeometry);
-                }
-            }
-            else
-            {
-                Geometry geometry = GetGeometry;
-                if (geometry != null)
-                {
-                    drawingContext.DrawGeometry(myBack, myPen, geometry);
-                }
-            }
-
             if (this.CadObject.IsSelected == true)
             {
                 Rect Bounds = this.Bounds;

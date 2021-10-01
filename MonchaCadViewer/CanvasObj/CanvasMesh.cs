@@ -14,50 +14,18 @@ namespace CadProjectorViewer.CanvasObj
 {
     public class CanvasMesh : CanvasObject
     {
-        public LDeviceMesh Mesh => (LDeviceMesh)this.CadObject;
+        public ProjectorMesh Mesh => (ProjectorMesh)this.CadObject;
 
-        public override double X
-        {
-            get => this.Mesh.SelectedPoint != null ? this.Mesh.SelectedPoint.MX : 0;
-            set
-            {
-                if (this.Mesh.SelectedPoint != null)
-                {
-                    this.Mesh.SelectedPoint.MX = value;
-                    OnPropertyChanged("X");
-                }
-            }
-        }
-
-        public override double Y
-        {
-            get => this.Mesh.SelectedPoint != null ? this.Mesh.SelectedPoint.MY : 0;
-            set
-            {
-                if (this.Mesh.SelectedPoint != null)
-                {
-                    this.Mesh.SelectedPoint.MY = value;
-                    OnPropertyChanged("Y");
-                }
-            }
-        }
-
-        public override double Z
-        {
-            get => this.Mesh.SelectedPoint != null ? this.Mesh.SelectedPoint.MZ : 0;
-            set
-            {
-                if (this.Mesh.SelectedPoint != null)
-                {
-                    this.Mesh.SelectedPoint.MZ = value;
-                    OnPropertyChanged("Y");
-                }
-            }
-        }
-
-        public CanvasMesh(LDeviceMesh mesh) : base(mesh, true)
+        public CanvasMesh(ProjectorMesh mesh) : base(mesh, true)
         {
             mesh.ChangedMesh += Mesh_ChangedMesh;
+            this.CadObject.PropertyChanged += CadObject_PropertyChanged;
+        }
+
+        private void CadObject_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            OnPropertyChanged("X");
+            OnPropertyChanged("Y");
         }
 
         private void Mesh_ChangedMesh(object sender, bool e)

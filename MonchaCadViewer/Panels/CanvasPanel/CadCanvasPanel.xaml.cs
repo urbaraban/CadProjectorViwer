@@ -20,6 +20,7 @@ using System.Globalization;
 using CadProjectorSDK.CadObjects.Abstract;
 using CadProjectorSDK.CadObjects.Interface;
 using CadProjectorSDK.Device.Mesh;
+using CadProjectorSDK.Scenes;
 
 namespace CadProjectorViewer.Panels.CanvasPanel
 {
@@ -169,7 +170,7 @@ namespace CadProjectorViewer.Panels.CanvasPanel
 
             if (Keyboard.Modifiers == ModifierKeys.Control)
             {
-                this.StartMousePoint = e.GetPosition(this.CanvasGrid);
+                this.StartMousePoint = e.GetPosition(this.CanvasBox);
                 this.StartMovePoint = new Point(this.Translate.X, this.Translate.Y);
             }
             else if (this.MouseAction == MouseAction.Rectangle)
@@ -236,16 +237,10 @@ namespace CadProjectorViewer.Panels.CanvasPanel
 
         public void MoveCanvasSet(double left, double top)
         {
-            for (int i = 0; i < this.projectionScene.Objects.Count; i++)
+            foreach (UidObject uidObject in this.projectionScene.SelectedObjects)
             {
-                if (this.projectionScene.Objects[i] is UidObject cadObject)
-                {
-                    if (cadObject.IsSelected == true && cadObject.IsFix == false)
-                    {
-                        cadObject.X += left;
-                        cadObject.Y += top;
-                    }
-                }
+                uidObject.X += left;
+                uidObject.Y += top;
             }
         }
 
@@ -346,7 +341,7 @@ namespace CadProjectorViewer.Panels.CanvasPanel
         {
             if (value is UidObject uidObject)
             {
-                if (uidObject is LDeviceMesh mesh) return new CanvasMesh(mesh);
+                if (uidObject is ProjectorMesh mesh) return new CanvasMesh(mesh);
                 else if(uidObject is CadLine cadLine) return new CanvasLine(cadLine);
                 else if(uidObject is CadRectangle cadRectangle) return new CanvasRectangle(cadRectangle, cadRectangle.NameID);
                 else if (uidObject is IGeometryObject geometry) return new GeometryPreview(uidObject);

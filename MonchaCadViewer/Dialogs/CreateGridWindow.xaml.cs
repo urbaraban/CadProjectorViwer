@@ -9,6 +9,7 @@ using System.Windows.Media;
 using AppSt = CadProjectorViewer.Properties.Settings;
 using CadProjectorSDK.CadObjects;
 using CadProjectorSDK.Device.Mesh;
+using CadProjectorSDK.Scenes;
 
 namespace CadProjectorViewer
 {
@@ -19,20 +20,20 @@ namespace CadProjectorViewer
     {
         public ProjectionScene projectionScene { get; set; } = new ProjectionScene();
 
-        private LDeviceMesh _mesh;
+        private ProjectorMesh _mesh;
 
-        public CreateGridWindow(LDeviceMesh mesh)
+        public CreateGridWindow(ProjectorMesh mesh)
         {
             InitializeComponent();
             this._mesh = mesh;
             this.DataContextChanged += CreateGridWindow_DataContextChanged;
-            this.DataContext = new LDeviceMesh(LDeviceMesh.MakeMeshPoint(this._mesh.Points.GetLength(0), this._mesh.Points.GetLength(1)), this._mesh.Name);
+            this.DataContext = new ProjectorMesh(ProjectorMesh.MakeMeshPoint(this._mesh.Points.GetLength(0), this._mesh.Points.GetLength(1)), this._mesh.Name);
         }
 
         private void CreateGridWindow_DataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
         {
             projectionScene.Clear();
-            if (this.DataContext is LDeviceMesh mesh)
+            if (this.DataContext is ProjectorMesh mesh)
             {
                 projectionScene.Add(mesh);
             }
@@ -43,7 +44,7 @@ namespace CadProjectorViewer
         {
             if (this.IsLoaded)
             {
-                this.DataContext = new LDeviceMesh(LDeviceMesh.MakeMeshPoint((int)HeightUpDn.Value.Value, (int)WidthUpDn.Value.Value), this._mesh.Name);
+                this.DataContext = new ProjectorMesh(ProjectorMesh.MakeMeshPoint((int)HeightUpDn.Value.Value, (int)WidthUpDn.Value.Value), this._mesh.Name);
             }
         }
 
@@ -70,7 +71,7 @@ namespace CadProjectorViewer
             {
                 case MessageBoxResult.Yes:
                     this._mesh.SubscribePoint(false);
-                    this._mesh.Points = LDeviceMesh.MakeMeshPoint((int)HeightUpDn.Value.Value, (int)WidthUpDn.Value.Value);
+                    this._mesh.Points = ProjectorMesh.MakeMeshPoint((int)HeightUpDn.Value.Value, (int)WidthUpDn.Value.Value);
                     this._mesh.SubscribePoint(true);
                     break;
                 case MessageBoxResult.No:

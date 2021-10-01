@@ -62,7 +62,7 @@ namespace CadProjectorViewer.CanvasObj
         //Рисуем квадраты в поле согласно схеме
 
 
-        public static List<CanvasAnchor> GetMesh(LDeviceMesh mesh, double AnchorSize, bool Render, MeshType meshType)
+        public static List<CanvasAnchor> GetMesh(ProjectorMesh mesh, double AnchorSize, bool Render, MeshType meshType)
         {
             List<CanvasAnchor> objects = new List<CanvasAnchor>();
 

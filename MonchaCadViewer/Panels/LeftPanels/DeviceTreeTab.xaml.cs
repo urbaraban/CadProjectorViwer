@@ -45,7 +45,7 @@ namespace CadProjectorViewer.Panels
         {
             if (sender is TreeViewItem BaseMeshItem && BaseMeshItem.Parent is TreeViewItem DeviceTree)
             {
-                if (DeviceTree.DataContext is LDevice device && BaseMeshItem.DataContext is LDeviceMesh mesh)
+                if (DeviceTree.DataContext is LDevice device && BaseMeshItem.DataContext is ProjectorMesh mesh)
                 {
                     //projectorHub.Scene.AddRange(CadCanvas.GetMesh(mesh, ProjectorHub.GetThinkess * AppSt.Default.anchor_size, false, MeshType.NONE).ToArray());
                 }
@@ -114,14 +114,14 @@ namespace CadProjectorViewer.Panels
                             break;
                         case "dvc_showzone":
                             CadRectangle cadRectangle = new CadRectangle(device.Size, device.HWIdentifier);
-                            projectorHub.Scene.Add(cadRectangle);
+                            projectorHub.ScenesCollection.MainScene.Add(cadRectangle);
                             //cadRectangle.Init();
                             break;
                         case "dvc_polymesh":
                             device.PolyMeshUsed = !device.PolyMeshUsed;
                             break;
                         case "dvc_center":
-                            projectorHub.Scene.Add(new CadAnchor(device.Size.Center) { Render = false });
+                            projectorHub.ScenesCollection.MainScene.Add(new CadAnchor(device.Size.Center) { Render = false });
                             break;
                         case "dvc_view":
                             ProjectorView projectorView = new ProjectorView() { DataContext = device };
@@ -139,7 +139,7 @@ namespace CadProjectorViewer.Panels
             {
                 if (element.ContextMenu.DataContext is MenuItem cmindex)
                 {
-                    if (element.DataContext is LDeviceMesh mesh)
+                    if (element.DataContext is ProjectorMesh mesh)
                     {
                         switch (cmindex.Tag)
                         {
@@ -148,8 +148,7 @@ namespace CadProjectorViewer.Panels
                                 createGridWindow.ShowDialog();
                                 break;
                             case "mesh_showvirtual":
-                                projectorHub.Scene.Clear();
-                                //projectorHub.Scene.AddRange(CadCanvas.GetMesh(mesh.VirtualMesh, ProjectorHub.GetThinkess * AppSt.Default.anchor_size, false, MeshType.BASE).ToArray());
+                                projectorHub.ScenesCollection.MainScene.Add(mesh.VirtualMesh);
                                 break;
                             case "mesh_inverse":
                                 mesh.InverseYPosition();
@@ -165,7 +164,7 @@ namespace CadProjectorViewer.Panels
                                 break;
                             case "mesh_showrect":
                                 CadRectangle rectangle = new CadRectangle(mesh.Size, mesh.Name);
-                                projectorHub.Scene.Add(rectangle);
+                                projectorHub.ScenesCollection.MainScene.Add(rectangle);
                                // rectangle.Init();
                                 break;
                         }
@@ -182,10 +181,10 @@ namespace CadProjectorViewer.Panels
             {
                 if (sender is FrameworkElement frameworkElement)
                 {
-                    if (frameworkElement.DataContext is LDeviceMesh mesh)
+                    if (frameworkElement.DataContext is ProjectorMesh mesh)
                     {
-                        projectorHub.Scene.Clear();
-                        projectorHub.Scene.Add(mesh);
+                        projectorHub.ScenesCollection.MainScene.Clear();
+                        projectorHub.ScenesCollection.MainScene.Add(mesh);
                     }
                 }
             }

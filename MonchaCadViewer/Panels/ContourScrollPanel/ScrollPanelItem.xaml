@@ -5,8 +5,10 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
     xmlns:canvasobj="clr-namespace:CadProjectorViewer.CanvasObj" 
-    xmlns:cadobjects="clr-namespace:CadProjectorSDK.CadObjects;assembly=CadProjectorSDK" xmlns:canvaspanel="clr-namespace:CadProjectorViewer.Panels.CanvasPanel" xmlns:panels="clr-namespace:CadProjectorViewer.Panels"
-    d:DataContext="{d:DesignInstance Type=cadobjects:ProjectionScene}"
+    xmlns:scene="clr-namespace:CadProjectorSDK.Scenes;assembly=CadProjectorSDK" 
+    xmlns:canvaspanel="clr-namespace:CadProjectorViewer.Panels.CanvasPanel" 
+    xmlns:panels="clr-namespace:CadProjectorViewer.Panels"
+    d:DataContext="{d:DesignInstance Type=scene:ProjectionScene}"
     d:DesignHeight="100"
     d:DesignWidth="100"
     mc:Ignorable="d">

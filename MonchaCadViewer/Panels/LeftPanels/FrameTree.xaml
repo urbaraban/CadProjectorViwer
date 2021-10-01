@@ -6,7 +6,9 @@
              mc:Ignorable="d" 
              d:DesignHeight="250" d:DesignWidth="130"
              xmlns:Controls="http://metro.mahapps.com/winfx/xaml/controls"
-             xmlns:properties="clr-namespace:CadProjectorViewer.Properties" xmlns:cadobjects="clr-namespace:CadProjectorSDK.CadObjects;assembly=CadProjectorSDK" d:DataContext="{d:DesignInstance Type=cadobjects:ProjectionScene}">
+             xmlns:properties="clr-namespace:CadProjectorViewer.Properties"
+             xmlns:scene="clr-namespace:CadProjectorSDK.Scenes;assembly=CadProjectorSDK"
+             d:DataContext="{d:DesignInstance Type=scene:ProjectionScene}">
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>

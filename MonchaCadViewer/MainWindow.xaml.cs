@@ -45,6 +45,7 @@ using System.Windows.Media.Imaging;
 using CadProjectorSDK.CadObjects.Interface;
 using CadProjectorSDK.CadObjects.Abstract;
 using CadProjectorSDK.Device.Mesh;
+using CadProjectorSDK.Scenes;
 
 namespace CadProjectorViewer
 {
@@ -248,7 +249,7 @@ namespace CadProjectorViewer
             {
                 ProjectorHub.ScenesCollection.Add(new ProjectionScene(GCToCad.GetGroup(gCObjects, filename)));
             }
-            else if (loadobj is ImageSource imageSource)
+            else if (loadobj is BitmapSource imageSource)
             {
                 ProjectorHub.ScenesCollection.Add(new ProjectionScene(new CadImage(imageSource)));
             }
@@ -483,7 +484,7 @@ namespace CadProjectorViewer
             }
         }
 
-        private void ClearBtn_Click(object sender, RoutedEventArgs e) => ProjectorHub.Scene.Clear();
+        private void ClearBtn_Click(object sender, RoutedEventArgs e) => ProjectorHub.ScenesCollection.MainScene.Clear();
 
         private void BaseFolderSelect_Click(object sender, RoutedEventArgs e)
         {

@@ -33,7 +33,6 @@ namespace CadProjectorViewer.CanvasObj
         }
         #endregion
 
-
         public CadSize3D LRect
         {
             get => _lrect;
@@ -54,9 +53,6 @@ namespace CadProjectorViewer.CanvasObj
             this.InvalidateVisual();
         }
 
-
-        public bool IsInit { get; private set; } = false;
-
         public override Rect Bounds => new Rect(LRect.P1.GetMPoint, LRect.P2.GetMPoint);
 
         public CanvasRectangle(CadRectangle rectangle, string Label) : base(rectangle, true)
@@ -75,12 +71,12 @@ namespace CadProjectorViewer.CanvasObj
             {
                 Source = (IDrawingObject)this.CadObject,
                 Path = new PropertyPath("IsInit"),
+                Converter = new InitVisible()
             };
             rectangelAdorner.SetBinding(Adorner.VisibilityProperty, binding);
 
             adornerLayer.Add(rectangelAdorner);
             rectangelAdorner.SelectAnchor += RectangelAdorner_SelectAnchor;
-            IsInit = true;
         }
 
 

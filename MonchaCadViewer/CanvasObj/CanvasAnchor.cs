@@ -29,8 +29,6 @@ namespace CadProjectorViewer.CanvasObj
 
         public CanvasAnchor(CadAnchor Point) : base(Point, true)
         {
-            this.Point.PropertyChanged += Point_PropertyChanged;
-            this.PropertyChanged += CadDot_PropertyChanged;
             this.Cursor = Cursors.SizeAll;
             CommonSetting();
         }
@@ -51,29 +49,6 @@ namespace CadProjectorViewer.CanvasObj
             this.Fixed += CadDot_Fixed;
         }
 
-        private void Point_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
-        {
-            Dispatcher.Invoke(() => 
-            { 
-                this.CadObject.Translate.OffsetX = this.Point.X;
-                this.CadObject.Translate.OffsetY = this.Point.Y;
-                this.InvalidateVisual();
-            });
-        }
-
-        private void CadDot_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
-        {
-            if (e.PropertyName == "IsSelected" && this.Point.IsSelected == false)
-            {
-                Point.IsSelected = true;
-            }
-            else if (e.PropertyName == "Leave" && this.Point.IsSelected == true)
-            {
-                Point.IsSelected = false;
-            }
-
-            this.InvalidateVisual();
-        }
 
 
         private void CadDot_Fixed(object sender, bool e)
@@ -106,6 +81,5 @@ namespace CadProjectorViewer.CanvasObj
             drawingContext.PushTransform(new TranslateTransform(X, Y));
             drawingContext.DrawGeometry(myBack, myPen, new RectangleGeometry(new Rect(-this.size / 2, -this.size / 2, this.size, this.size)));
         }
-
     }
 }

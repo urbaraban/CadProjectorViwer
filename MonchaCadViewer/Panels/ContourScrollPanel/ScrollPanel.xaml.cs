@@ -43,7 +43,7 @@ namespace CadProjectorViewer.Panels
         {
             if (sender is ScrollPanelItem scrollPanelItem)
             {
-                hub.Scene.RemoveObj(scrollPanelItem.Scene);
+                hub.ScenesCollection.MainScene.RemoveObj(scrollPanelItem.Scene);
             }
         }
 

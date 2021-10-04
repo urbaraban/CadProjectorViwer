@@ -21,11 +21,11 @@ namespace CadProjectorViewer.StaticTools
         {
             new SVG(),
             new DXF(),
-            new DEXCeil(),
-            new STL(),
+            //new DEXCeil(),
+            //new STL(),
             //new ILD(),
-            new MetaFile(),
-            new JSON(),
+            //new MetaFile(),
+            //new JSON(),
             new GCFormat("Компас 3D", new string[2] { "frw" , "cdw"}) { ReadFile = GetKompas },
             new GCFormat("JPG Image", new string[2] { "jpg" , "jpeg"}) { ReadFile = GetImage }
         };
@@ -88,11 +88,9 @@ namespace CadProjectorViewer.StaticTools
 
         public async static Task<object> Get(string Filename)
         {
-            GCFormat gCFormat = ToGC.GetConverter(Filename, MyFormat);
+            GCFormat gCFormat = GCTools.GetConverter(Filename, MyFormat);
 
-            gCFormat.SetProgress += ProgressPanel.SetProgressBar;
             object obj = await gCFormat.ReadFile?.Invoke(Filename, ProjectorHub.ProjectionSetting.PointStep.MX);
-            gCFormat.SetProgress -= ProgressPanel.SetProgressBar;
 
             if (obj != null) return obj;
             else return new GCCollection(string.Empty);

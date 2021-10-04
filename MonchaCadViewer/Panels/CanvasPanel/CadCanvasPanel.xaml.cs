@@ -39,35 +39,6 @@ namespace CadProjectorViewer.Panels.CanvasPanel
 
         private ProjectionScene projectionScene => (ProjectionScene)this.DataContext;
 
-
-        public MouseAction MouseAction
-        {
-            get => this.mouseAction;
-            set
-            {
-                mouseAction = value;
-                Console.WriteLine(value.ToString());
-                switch (value)
-                {
-                    case MouseAction.NoAction:
-                        this.Cursor = Cursors.Arrow;
-                        this.CaptureMouse();
-                        this.ReleaseMouseCapture();
-                        this.projectionScene.Cancel(); 
-                        break;
-                    case MouseAction.MoveCanvas:
-                        this.Cursor = Cursors.SizeAll;
-                        break;
-                    case MouseAction.Line:
-                    case MouseAction.Rectangle:
-                    case MouseAction.Mask:
-                        this.Cursor = Cursors.Cross;
-                        break;
-                };
-            }
-        }
-        private MouseAction mouseAction = MouseAction.NoAction;
-
         private double X
         {
             get => this.Translate.X;
@@ -79,12 +50,6 @@ namespace CadProjectorViewer.Panels.CanvasPanel
             set => this.Translate.Y = value;
         }
 
-        public event EventHandler<String> Logging;
-
-        /// <summary>
-        /// Orientation flag for SelecNext void
-        /// </summary>
-        public bool InverseSelectFlag = false;
 
         public CadCanvasPanel()
         {
@@ -93,13 +58,14 @@ namespace CadProjectorViewer.Panels.CanvasPanel
             UpdateTransform(null, true);
         }
 
-
-        private void CanvasGrid_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
+        protected override void OnMouseLeftButtonUp(MouseButtonEventArgs e)
         {
+            base.OnMouseLeftButtonUp(e);
             if (this.projectionScene.ActiveDrawingObject == null)
             {
-                this.MouseAction = MouseAction.NoAction;
+                this.projectionScene.SceneAction = SceneAction.NoAction;
             }
+            this.ReleaseMouseCapture();
         }
 
         protected override void OnMouseWheel(MouseWheelEventArgs e)
@@ -173,22 +139,22 @@ namespace CadProjectorViewer.Panels.CanvasPanel
                 this.StartMousePoint = e.GetPosition(this.CanvasBox);
                 this.StartMovePoint = new Point(this.Translate.X, this.Translate.Y);
             }
-            else if (this.MouseAction == MouseAction.Rectangle)
+            else if (this.projectionScene.SceneAction == SceneAction.Rectangle)
             {
                 Point point = e.GetPosition(CanvasGrid);
                 CadRectangle cadRectangle = new CadRectangle(new CadPoint3D(point, ProjectorHub.Size), new CadPoint3D(point, ProjectorHub.Size), string.Empty, true);
                 this.projectionScene.Add(cadRectangle);
             }
-            else if (this.mouseAction == MouseAction.Mask)
+            else if (this.projectionScene.SceneAction == SceneAction.Mask)
             {
-                this.MouseAction = MouseAction.NoAction;
+                this.projectionScene.SceneAction = SceneAction.NoAction;
                 CadSize3D lRect = new CadSize3D(new CadPoint3D(e.GetPosition(this.CanvasGrid), ProjectorHub.Size, true), new CadPoint3D(e.GetPosition(this.CanvasGrid), ProjectorHub.Size, true));
                 CadRectangle Maskrectangle = new CadRectangle(lRect, $"Mask_{this.projectionScene.Masks.Count}") { Render = false };
                 this.projectionScene.Add(Maskrectangle);
                 this.projectionScene.Masks.Add(Maskrectangle);
                 this.projectionScene.ActiveDrawingObject = Maskrectangle;
             }
-            else if (this.mouseAction == MouseAction.Line)
+            else if (this.projectionScene.SceneAction == SceneAction.Line)
             {
                 CadLine line = new CadLine(new CadPoint3D(e.GetPosition(this.CanvasGrid)), new CadPoint3D(e.GetPosition(this.CanvasGrid)), true);
                 this.projectionScene.Add(line);
@@ -202,7 +168,7 @@ namespace CadProjectorViewer.Panels.CanvasPanel
 
             if (e.LeftButton == MouseButtonState.Pressed && Keyboard.Modifiers == ModifierKeys.Control)
             {
-                this.MouseAction = MouseAction.MoveCanvas;
+                this.projectionScene.SceneAction = SceneAction.MoveCanvas;
                 this.WasMove = true;
                 Point tPoint = e.GetPosition(CanvasBox);
 
@@ -230,67 +196,9 @@ namespace CadProjectorViewer.Panels.CanvasPanel
             projectionScene.MousePosition.Y = tempPoint.Y;
             CoordinateLabel.Content =
                 $"X: { Math.Round(tempPoint.X, 2) }; Y:{ Math.Round(tempPoint.Y, 2) }";
-
-
         }
 
-
-        public void MoveCanvasSet(double left, double top)
-        {
-            foreach (UidObject uidObject in this.projectionScene.SelectedObjects)
-            {
-                uidObject.X += left;
-                uidObject.Y += top;
-            }
-        }
-
-        public void FixPosition()
-        {
-            for (int i = 0; i < projectionScene.Objects.Count; i++)
-            {
-                if (projectionScene.Objects[i] is UidObject cadObject1)
-                {
-                    if (cadObject1.IsSelected)
-                    {
-                        cadObject1.IsFix = !cadObject1.IsFix;
-                    }
-                }
-            }
-
-        }
-
-        public void SelectNext()
-        {
-            for (int i = 0; i < projectionScene.Objects.Count; i++)
-            {
-                if (projectionScene.Objects[i] is UidObject cadObject)
-                {
-                    if (cadObject.IsSelected)
-                    {
-                        cadObject.IsFix = true;
-                        cadObject.IsSelected = false;
-
-                        try
-                        {
-                            if (projectionScene.Objects[i + (InverseSelectFlag ? -1 : +1)] is UidObject cadObject2)
-                            {
-                                cadObject2.IsSelected = true;
-                                cadObject2.IsFix = false;
-                            }
-                        }
-                        catch (Exception exeption)
-                        {
-                            Logging?.Invoke(this, ($"Main: {exeption.Message}"));
-                            InverseSelectFlag = !InverseSelectFlag;
-                            cadObject.IsSelected = true;
-                        }
-                        break;
-                    }
-                }
-            }
-
-        }
-
+       
         private void Canvas_SizeChanged(object sender, SizeChangedEventArgs e)
         {
             if (sender is Canvas canvas)
@@ -356,13 +264,33 @@ namespace CadProjectorViewer.Panels.CanvasPanel
         }
     }
 
-    public enum MouseAction
+    public class CursorActionConverter : IValueConverter
     {
-        NoAction,
-        Rectangle,
-        Line,
-        Circle,
-        MoveCanvas,
-        Mask
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            if (value is SceneAction action)
+            {
+                switch (value)
+                {
+                    case SceneAction.NoAction:
+                        return Cursors.Arrow;
+                        break;
+                    case SceneAction.MoveCanvas:
+                        return Cursors.SizeAll;
+                        break;
+                    case SceneAction.Line:
+                    case SceneAction.Rectangle:
+                    case SceneAction.Mask:
+                        return Cursors.Cross;
+                        break;
+                };
+            }
+            return Cursors.Arrow;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

@@ -78,10 +78,7 @@ namespace CadProjectorViewer.Panels
             base.OnMouseRightButtonUp(e);
             if (this.DataContext is ProjectionScene scene)
             {
-                foreach (UidObject cadObject in scene.Objects)
-                {
-                    cadObject.UpdateTransform(true);
-                }
+                scene.UpdateTransform();
             }
         }
 

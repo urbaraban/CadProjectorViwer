@@ -18,6 +18,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 
 using AppSt = CadProjectorViewer.Properties.Settings;
+using CadProjectorSDK.Device.Controllers;
 
 namespace CadProjectorViewer.Panels
 {

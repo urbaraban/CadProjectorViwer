@@ -71,7 +71,7 @@
             <TreeViewItem Header="Mask" ItemsSource="{Binding Masks}" 
                           ItemTemplate="{StaticResource ResourceKey=ObjectTree}"/>
 
-            <TreeViewItem Header="Objects" ItemsSource="{Binding Objects}" 
+            <TreeViewItem Header="Objects" ItemsSource="{Binding .}" 
                           ItemTemplate="{StaticResource ResourceKey=ObjectTree}"/>
 
 

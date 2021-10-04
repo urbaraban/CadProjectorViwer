@@ -46,7 +46,7 @@ namespace CadProjectorViewer.Panels.DevicePanel.LeftPanels
 
             if (DataContext is ProjectionScene projectionScene)
             {
-                foreach (UidObject cadObject in projectionScene.Objects)
+                foreach (UidObject cadObject in projectionScene)
                 {
                     cadObject.Render = RenderStat;
                 }

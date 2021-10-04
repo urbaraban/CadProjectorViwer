@@ -49,7 +49,7 @@
                             </DrawingBrush>
                         </Canvas.Background>
                     </Canvas>
-                    <ItemsControl ItemsSource="{Binding Objects}">
+                    <ItemsControl ItemsSource="{Binding .}">
                         <ItemsControl.ItemsPanel>
                             <ItemsPanelTemplate>
                                 <canvasobj:CadCanvas ClipToBounds="True"/>

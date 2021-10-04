@@ -46,6 +46,7 @@ using CadProjectorSDK.CadObjects.Interface;
 using CadProjectorSDK.CadObjects.Abstract;
 using CadProjectorSDK.Device.Mesh;
 using CadProjectorSDK.Scenes;
+using System.Threading;
 
 namespace CadProjectorViewer
 {
@@ -101,7 +102,8 @@ namespace CadProjectorViewer
 
             ProgressPanel.Label = "Hello world!";
 
-            LLog.LogMsg += MonchaHub_Loging;
+            ProjectorHub.Log = PostLog;
+            GCTools.Log = PostLog;
             NameLabel.Content = $"2CUT Viewer v{Assembly.GetExecutingAssembly().GetName().Version.ToString()}";
 
             LoadMoncha();
@@ -135,7 +137,7 @@ namespace CadProjectorViewer
 
         }
 
-        private void MonchaHub_Loging(object sender, string e) => LogBox.Invoke(() => { LogBox.Items.Add(e); });
+        private void PostLog(string msg) => LogBox.Items.Add(msg);
 
 
         private async void LoadMoncha()
@@ -244,19 +246,23 @@ namespace CadProjectorViewer
 
         public async Task OpenFile(string filename)
         {
-            object loadobj = await FileLoad.Get(filename);
-            if (loadobj is GCCollection gCObjects)
-            {
-                ProjectorHub.ScenesCollection.Add(new ProjectionScene(GCToCad.GetGroup(gCObjects, filename)));
-            }
-            else if (loadobj is BitmapSource imageSource)
-            {
-                ProjectorHub.ScenesCollection.Add(new ProjectionScene(new CadImage(imageSource)));
-            }
-            else if (loadobj == null)
-            {
-                return;
-            }
+            Dispatcher.Invoke(DispatcherPriority.Normal, new Action(
+                   async () => {
+                object loadobj = await FileLoad.Get(filename);
+                Thread.Sleep(100);
+                if (loadobj is GCCollection gCObjects)
+                {
+                    ProjectorHub.ScenesCollection.Add(new ProjectionScene(GCToCad.GetGroup(gCObjects, filename)));
+                }
+                else if (loadobj is BitmapSource imageSource)
+                {
+                    ProjectorHub.ScenesCollection.Add(new ProjectionScene(new CadImage(imageSource)));
+                }
+                else if (loadobj == null)
+                {
+                    return;
+                }
+            }));
         }
        
 
@@ -402,22 +408,22 @@ namespace CadProjectorViewer
             switch (e.Key)
             {
                 case Key.Q:
-                    MainCanvas.SelectNext();
+                    ProjectorHub.ScenesCollection.MainScene.SelectNext();
                     break;
                 case Key.W:
-                    MainCanvas.MoveCanvasSet(0, -step * _mult);
+                    ProjectorHub.ScenesCollection.MainScene.MoveSelect(0, -step * _mult);
                     break;
                 case Key.S:
-                    MainCanvas.MoveCanvasSet(0, step * _mult);
+                    ProjectorHub.ScenesCollection.MainScene.MoveSelect(0, step * _mult);
                     break;
                 case Key.A:
-                    MainCanvas.MoveCanvasSet(-step * _mult, 0);
+                    ProjectorHub.ScenesCollection.MainScene.MoveSelect(-step * _mult, 0);
                     break;
                 case Key.D:
-                    MainCanvas.MoveCanvasSet(step * _mult, 0); 
+                    ProjectorHub.ScenesCollection.MainScene.MoveSelect(step * _mult, 0); 
                     break;
                 case Key.F:
-                    MainCanvas.FixPosition();
+                    ProjectorHub.ScenesCollection.MainScene.Fix();
                     break;
                 case Key.OemPlus:
                     break;
@@ -479,7 +485,7 @@ namespace CadProjectorViewer
                     }
                     break;
                 case Key.Escape:
-                    MainCanvas.MouseAction = Panels.CanvasPanel.MouseAction.NoAction;
+                    ProjectorHub.ScenesCollection.MainScene.SceneAction = SceneAction.NoAction;
                     break;
             }
         }
@@ -721,9 +727,9 @@ namespace CadProjectorViewer
 
 
 
-        private void RectBtn_Click(object sender, RoutedEventArgs e) => MainCanvas.MouseAction = Panels.CanvasPanel.MouseAction.Mask;
+        private void RectBtn_Click(object sender, RoutedEventArgs e) => ProjectorHub.ScenesCollection.MainScene.SceneAction = SceneAction.Mask;
 
-        private void Line_Click(object sender, RoutedEventArgs e) => MainCanvas.MouseAction = Panels.CanvasPanel.MouseAction.Line;
+        private void Line_Click(object sender, RoutedEventArgs e) => ProjectorHub.ScenesCollection.MainScene.SceneAction = SceneAction.Line;
 
         private void TcpListenBtn_Click(object sender, RoutedEventArgs e)
         {

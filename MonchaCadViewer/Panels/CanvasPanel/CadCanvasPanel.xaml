@@ -12,10 +12,11 @@
     <UserControl.Resources>
         <ResourceDictionary>
             <canvaspanel:CadObjectConverter x:Key="CadObjectConverter"/>
+            <canvaspanel:CursorActionConverter x:Key="CursorAction"/>
         </ResourceDictionary>
         
     </UserControl.Resources>
-    <Grid Margin="0" Background="LightGray" ClipToBounds="True">
+    <Grid Margin="0" Background="LightGray" ClipToBounds="True" >
         <Grid.RowDefinitions>
             <RowDefinition Height="40"/>
             <RowDefinition/>
@@ -26,7 +27,7 @@
             <Button x:Name="ShowDeviceRect" FontFamily="Segoe MDL2 Assets" Content="&#xE9A6;" Width="30" Height="30" Margin="3" Click="ShowDeviceRect_Click" Panel.ZIndex="999" FontSize="20"/>
         </StackPanel>
         <Viewbox x:Name="CanvasBox" Grid.RowSpan="3" Stretch="Uniform" StretchDirection="Both">
-            <Grid x:Name="CanvasGrid">
+            <Grid x:Name="CanvasGrid" Cursor="{Binding SceneAction, Converter={StaticResource CursorAction}}">
                 <Rectangle Fill="White"/>
                 <Canvas 
                     x:Name="BackCanvas" 
@@ -48,7 +49,7 @@
                         </DrawingBrush>
                     </Canvas.Background>
                 </Canvas>
-                <ItemsControl ItemsSource="{Binding Objects}">
+                <ItemsControl ItemsSource="{Binding .}">
                     <ItemsControl.ItemsPanel>
                         <ItemsPanelTemplate>
                             <canvasobj:CadCanvas />

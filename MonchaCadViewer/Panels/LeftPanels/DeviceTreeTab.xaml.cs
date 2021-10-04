@@ -21,6 +21,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using AppSt = CadProjectorViewer.Properties.Settings;
 using CadProjectorSDK.Device.Mesh;
+using CadProjectorSDK.Device.Controllers;
 
 namespace CadProjectorViewer.Panels
 {
@@ -115,7 +116,7 @@ namespace CadProjectorViewer.Panels
                         case "dvc_showzone":
                             CadRectangle cadRectangle = new CadRectangle(device.Size, device.HWIdentifier);
                             projectorHub.ScenesCollection.MainScene.Add(cadRectangle);
-                            //cadRectangle.Init();
+                            cadRectangle.Init();
                             break;
                         case "dvc_polymesh":
                             device.PolyMeshUsed = !device.PolyMeshUsed;
@@ -172,8 +173,6 @@ namespace CadProjectorViewer.Panels
                 }
             }
         }
-
-
 
         private void MeshBorder_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {

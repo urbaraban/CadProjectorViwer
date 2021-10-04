@@ -18,11 +18,19 @@
             </ResourceDictionary.MergedDictionaries>
             <Style x:Key="Border" TargetType="{x:Type Border}">
                 <Setter Property="BorderBrush" Value="DarkGray" />
-                <Setter Property="BorderThickness" Value="1" />
+                <Setter Property="BorderThickness" Value="0" />
                 <Style.Triggers>
-                    <Trigger Property="IsMouseOver" Value="true">
+                    <Trigger Property="{Binding IsConnected}" Value="false">
                         <Setter Property="BorderBrush" Value="CadetBlue" />
                     </Trigger>
+                </Style.Triggers>
+            </Style>
+            <Style x:Key="ConnectedStyle" TargetType="{x:Type TextBlock}">
+                <Setter Property="Foreground" Value="Black"/>
+                <Style.Triggers>
+                    <DataTrigger Binding="{Binding IsConnected}" Value="False">
+                        <Setter Property="Foreground" Value="Gray"/>
+                    </DataTrigger>
                 </Style.Triggers>
             </Style>
             <Style x:Key="ObjCanvas" TargetType="{x:Type Border}">
@@ -64,7 +72,6 @@
                 </Border>
             </HierarchicalDataTemplate>
 
-
             <HierarchicalDataTemplate 
                 x:Key="DeviceTree" 
                 DataType ="{x:Type device:LDevice}" 
@@ -86,8 +93,9 @@
                         <TextBlock VerticalAlignment="Center"
                             Text="&#xE714;"
                             FontFamily="Segoe MDL2 Assets"/>
-                        <TextBlock  Text="{Binding HWIdentifier}" VerticalAlignment="Center" Margin="5,0,0,0"/>
-                        <TextBlock  Text="{Binding IsConnected}" VerticalAlignment="Center" Margin="5,0,0,0"/>
+                        <TextBlock  Text="{Binding HWIdentifier}"
+                                    Style="{StaticResource ConnectedStyle}"
+                                    VerticalAlignment="Center" Margin="5,0,0,0"/>
                     </StackPanel>
                 </Border>
             </HierarchicalDataTemplate>

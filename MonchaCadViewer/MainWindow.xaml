@@ -179,7 +179,7 @@
             </TabControl>
             <TabControl TabStripPlacement="Bottom" Margin="0,5,0,0" Grid.Column="1" Grid.Row="2">
                 <TabItem Header="{DynamicResource m_CanvasTab}">
-                    <canvaspanel:CadCanvasPanel x:Name="MainCanvas" DataContext="{Binding ScenesCollection.MainScene}" AllowDrop="True" Drop="MainCanvas_Drop"/>
+                    <canvaspanel:CadCanvasPanel DataContext="{Binding ScenesCollection.MainScene}" AllowDrop="True" Drop="MainCanvas_Drop"/>
                 </TabItem>
                 <TabItem Header="ViewPort3D" Visibility="Collapsed">
                 </TabItem>

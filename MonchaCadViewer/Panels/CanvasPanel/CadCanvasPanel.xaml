@@ -3,9 +3,8 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:canvaspanel="clr-namespace:CadProjectorViewer.Panels.CanvasPanel"
              xmlns:canvasobj="clr-namespace:CadProjectorViewer.CanvasObj" 
-             xmlns:scene="clr-namespace:CadProjectorSDK.Scenes;assembly=CadProjectorSDK" 
+             xmlns:scene="clr-namespace:CadProjectorSDK.Scenes;assembly=CadProjectorSDK" xmlns:converters="clr-namespace:CadProjectorViewer.Converters" xmlns:canvaspanel="clr-namespace:CadProjectorViewer.Panels.CanvasPanel"
              d:DataContext="{d:DesignInstance Type=scene:ProjectionScene}"
              mc:Ignorable="d" 
              d:DesignHeight="400" d:DesignWidth="400">
@@ -14,7 +13,6 @@
             <canvaspanel:CadObjectConverter x:Key="CadObjectConverter"/>
             <canvaspanel:CursorActionConverter x:Key="CursorAction"/>
         </ResourceDictionary>
-        
     </UserControl.Resources>
     <Grid Margin="0" Background="LightGray" ClipToBounds="True" >
         <Grid.RowDefinitions>
@@ -52,7 +50,7 @@
                 <ItemsControl ItemsSource="{Binding .}">
                     <ItemsControl.ItemsPanel>
                         <ItemsPanelTemplate>
-                            <canvasobj:CadCanvas />
+                            <canvasobj:CadCanvas/>
                         </ItemsPanelTemplate>
                     </ItemsControl.ItemsPanel>
                     <ItemsControl.ItemTemplate>

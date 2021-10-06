@@ -22,11 +22,11 @@
         Background="Gray"
         BorderBrush="Gray"
         BorderThickness="1">
-        <Grid x:Name="MainGrid">
+        <Grid x:Name="MainGrid" HorizontalAlignment="Stretch">
             <Grid.RowDefinitions>
                 <RowDefinition Height="30" />
                 <RowDefinition Height="7*" />
-                <RowDefinition Height="3*" />
+                <RowDefinition Height="20" />
             </Grid.RowDefinitions>
 
             <Viewbox x:Name="CanvasBox" Grid.RowSpan="3" Stretch="Uniform" StretchDirection="Both">
@@ -66,7 +66,7 @@
             <Rectangle Fill="Transparent" Grid.RowSpan="3" />
 
             <DockPanel
-                Margin="0,0,0,1"
+                Margin="0,0,0,0"
                 Panel.ZIndex="99">
                 <Button
                     DockPanel.Dock="Left"
@@ -93,7 +93,7 @@
                 <ToggleButton
                     DockPanel.Dock="Right"
                     x:Name="SolvedToggle"
-                    MinWidth="20"
+                    Width="10"
                     Margin="10,0,0,0"
                     Padding="0"
                     Background="Transparent"
@@ -106,6 +106,7 @@
                     Unchecked="SolvedToggle_Checked" />
             </DockPanel>
             <Label
+                HorizontalAlignment="Stretch"
                 Content="{Binding NameID}"
                 Grid.Row="2"
                 MaxWidth="{Binding ActualHeight, ElementName=MainGrid, Mode=OneWay}"

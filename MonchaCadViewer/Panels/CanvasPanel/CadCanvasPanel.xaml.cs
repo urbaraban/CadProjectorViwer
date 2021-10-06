@@ -250,8 +250,8 @@ namespace CadProjectorViewer.Panels.CanvasPanel
             if (value is UidObject uidObject)
             {
                 if (uidObject is ProjectorMesh mesh) return new CanvasMesh(mesh);
-                else if(uidObject is CadLine cadLine) return new CanvasLine(cadLine);
-                else if(uidObject is CadRectangle cadRectangle) return new CanvasRectangle(cadRectangle, cadRectangle.NameID);
+                else if (uidObject is CadLine cadLine) return new CanvasLine(cadLine);
+                else if (uidObject is CadRectangle cadRectangle) return new CanvasRectangle(cadRectangle, cadRectangle.NameID);
                 else if (uidObject is IGeometryObject geometry) return new GeometryPreview(uidObject);
                 else if (uidObject is IPixelObject pixelObject) return new ImagePreview(uidObject);
             }

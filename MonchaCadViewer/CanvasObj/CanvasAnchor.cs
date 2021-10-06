@@ -66,10 +66,10 @@ namespace CadProjectorViewer.CanvasObj
                         this.CadObject.IsFix = !this.CadObject.IsFix;
                         break;
                     case "common_Remove":
-                        this.CadObject.Remove();
+                        this.CadObject.Remove(this.CadObject);
                         break;
                     case "common_Edit":
-                        DotEdit dotEdit = new DotEdit(this.Point.PointX);
+                        DotEdit dotEdit = new DotEdit() { DataContext = this };
                         dotEdit.Show();
                         break;
                 }

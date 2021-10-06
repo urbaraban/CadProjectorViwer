@@ -62,31 +62,6 @@ namespace CadProjectorViewer.CanvasObj
         //Рисуем квадраты в поле согласно схеме
 
 
-        public static List<CanvasAnchor> GetMesh(ProjectorMesh mesh, double AnchorSize, bool Render, MeshType meshType)
-        {
-            List<CanvasAnchor> objects = new List<CanvasAnchor>();
-
-            for (int i = 0; i < mesh.GetLength(0); i++)
-            {
-                for (int j = 0; j < mesh.GetLength(1); j++)
-                {
-                    mesh[i, j].M = ProjectorHub.Size;
-                    objects.Add(new CanvasAnchor(new CadAnchor(mesh[i, j]))
-                    {
-                        //this.CadObject.IsFix = false,// !mesh.OnlyEdge;
-                        Uid = i.ToString() + ":" + j.ToString(),
-                        ToolTip = "Позиция: " + i + ":" + j + "\nX: " + mesh[i, j].X + "\n" + "Y: " + mesh[i, j].Y,
-                        DataContext = mesh,
-                        //Render = Render,
-                        MeshType = meshType
-                    });
-                }
-            }
-            return objects;
-
-            return null;
-        }
-
         #region TransfromObject
         public TransformGroup TransformGroup { get; set; }
         public ScaleTransform Scale { get; set; }

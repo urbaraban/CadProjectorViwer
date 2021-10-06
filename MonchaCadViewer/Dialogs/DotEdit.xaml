@@ -3,9 +3,11 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:CadProjectorViewer.Calibration" xmlns:Controls="http://metro.mahapps.com/winfx/xaml/controls"
+        xmlns:local="clr-namespace:CadProjectorViewer.Calibration" 
+        xmlns:Controls="http://metro.mahapps.com/winfx/xaml/controls" xmlns:canvasobj="clr-namespace:CadProjectorViewer.CanvasObj" xmlns:converters="clr-namespace:CadProjectorViewer.Converters"
+        d:DataContext="{d:DesignInstance Type=canvasobj:CanvasAnchor}"
         mc:Ignorable="d"
-        Title="DotEdit" Height="174.923" Width="283.892" ResizeMode="NoResize">
+        Title="DotEdit" Height="180" Width="300" ResizeMode="NoResize">
     <Window.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -22,6 +24,7 @@
                     </Trigger>
                 </Style.Triggers>
             </Style>
+            <converters:RoundDoubleConverter x:Key="RoundValue"/>
         </ResourceDictionary>
 
     </Window.Resources>
@@ -35,10 +38,16 @@
             <RowDefinition Height="13*"/>
             <RowDefinition Height="35*"/>
         </Grid.RowDefinitions>
-        <RadioButton x:Name="radioAbs" Content="Абсолютно" Margin="14,11,10,0" VerticalAlignment="Top" Height="20" IsChecked="True" Checked="RadioProp_Checked"/>
-        <RadioButton x:Name="RadioProp" Content="Пропорционально" Margin="10,11,10,0" VerticalAlignment="Top" Grid.Column="1" Height="19" Checked="RadioProp_Checked"/>
-        <Controls:NumericUpDown x:Name="WidthNum" Margin="10,14,10,64" Grid.Row="1" Grid.Column="1"/>
-        <Controls:NumericUpDown x:Name="HeightNum" Margin="10,59,10,19" Grid.Row="1" Grid.Column="1"/>
+        <RadioButton x:Name="radioAbs" Content="Абсолютно" Margin="14,11,10,0" VerticalAlignment="Top" Height="20" IsChecked="True"/>
+        <RadioButton x:Name="RadioProp" Content="Пропорционально" Margin="10,11,10,0" VerticalAlignment="Top" Grid.Column="1" Height="19"/>
+        
+        <Controls:NumericUpDown x:Name="WidthNum"
+                                Value="{Binding X, Converter={StaticResource RoundValue}}" 
+                                Margin="10,14,10,64" Grid.Row="1" Grid.Column="1"/>
+        <Controls:NumericUpDown x:Name="HeightNum" 
+                                Value="{Binding Y, Converter={StaticResource RoundValue}}"
+                                Margin="10,59,10,19" Grid.Row="1" Grid.Column="1"/>
+        
         <Label x:Name="label" Content="Ось Х" Margin="15,14,5,0" Grid.Row="1" VerticalAlignment="Top" HorizontalAlignment="Center"/>
         <Label x:Name="label_Copy" Content="Ось Y" Margin="15,59,5,0" Grid.Row="1" VerticalAlignment="Top" HorizontalAlignment="Center"/>
 

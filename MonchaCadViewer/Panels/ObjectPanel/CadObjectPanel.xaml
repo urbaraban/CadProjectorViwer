@@ -6,13 +6,13 @@
     xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
     xmlns:panels="clr-namespace:CadProjectorViewer.Panels" 
-    xmlns:cadobjects="clr-namespace:CadProjectorSDK.CadObjects.Abstract;assembly=CadProjectorSDK" 
+    xmlns:cadobjects="clr-namespace:CadProjectorSDK.CadObjects.Abstract;assembly=CadProjectorSDK" xmlns:converters="clr-namespace:CadProjectorViewer.Converters"
     d:DataContext="{d:DesignInstance Type=cadobjects:UidObject}"
     d:DesignHeight="90"
     d:DesignWidth="490"
     mc:Ignorable="d">
     <UserControl.Resources>
-        <panels:RoundDoubleConverter x:Key="RoundValue"/>
+        <converters:RoundDoubleConverter x:Key="RoundValue"/>
         <panels:ScaleConverter x:Key="ScaleConverter"/>
     </UserControl.Resources>
     <Grid>

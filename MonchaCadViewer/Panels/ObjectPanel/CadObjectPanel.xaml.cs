@@ -20,7 +20,7 @@ namespace CadProjectorViewer.Panels
         }
     }
 
-    public class RoundDoubleConverter : IValueConverter
+    /*public class RoundDoubleConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
@@ -31,7 +31,7 @@ namespace CadProjectorViewer.Panels
         {
             return value;
         }
-    }
+    }*/
 
     public class ScaleConverter : IValueConverter
     {

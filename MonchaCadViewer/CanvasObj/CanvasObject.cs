@@ -353,7 +353,7 @@ namespace CadProjectorViewer.CanvasObj
                     break;
 
                 case "common_Remove":
-                    this.CadObject.Remove(this.CadObject);
+                    this.CadObject.Remove();
                     break;
 
                 case "obj_Render":

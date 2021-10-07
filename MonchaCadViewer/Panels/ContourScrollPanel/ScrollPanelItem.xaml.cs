@@ -85,7 +85,7 @@ namespace CadProjectorViewer.Panels
 
         private void RemoveBtn_Click(object sender, RoutedEventArgs e)
         {
-            ProjectionScene.RemoveScene();
+            ProjectionScene.Remove();
         }
 
         private void SetBackround()

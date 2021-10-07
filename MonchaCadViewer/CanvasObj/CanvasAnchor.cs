@@ -18,7 +18,15 @@ namespace CadProjectorViewer.CanvasObj
         private RectangleGeometry rectangle;
 
         public override Pen myPen { get; } = new Pen(null, 0);
-        public override Brush myBack => this.CadObject.IsSelected == true ? Brushes.Red : Brushes.DarkGray;
+        public override Brush myBack
+        {
+            get
+            {
+                if (this.CadObject.IsSelected == true) return Brushes.Red;
+                else if (this.CadObject.IsFix == true) return Brushes.Black;
+                return Brushes.DarkGray;
+            }
+        }
 
         public override Rect Bounds => new Rect(-this.size / 2, -this.size / 2, this.size, this.size);
 
@@ -66,7 +74,7 @@ namespace CadProjectorViewer.CanvasObj
                         this.CadObject.IsFix = !this.CadObject.IsFix;
                         break;
                     case "common_Remove":
-                        this.CadObject.Remove(this.CadObject);
+                        this.CadObject.Remove();
                         break;
                     case "common_Edit":
                         DotEdit dotEdit = new DotEdit() { DataContext = this };

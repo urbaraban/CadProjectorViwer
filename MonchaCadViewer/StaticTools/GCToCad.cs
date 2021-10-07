@@ -36,14 +36,14 @@ namespace CadProjectorViewer.StaticTools
                 }
                 return cadPoints;
             }
-            else if (gCObject is GCCollection collection) return GetGroup(collection, string.Empty);
+            else if (gCObject is GCCollection collection) return GetGroup(collection);
 
             return null;
         }
 
-        public static CadGroup GetGroup(GCCollection gCObjects, string Name)
+        public static CadGroup GetGroup(GCCollection gCObjects)
         {
-            CadGroup group = new CadGroup() { NameID = Name };
+            CadGroup group = new CadGroup() { NameID = gCObjects.Name };
             foreach (IGCObject obj in gCObjects)
             {
                 UidObject uidObject = GCToCad.GetUid(obj);

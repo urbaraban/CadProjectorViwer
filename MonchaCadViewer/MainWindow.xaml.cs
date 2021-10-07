@@ -100,10 +100,13 @@ namespace CadProjectorViewer
             App.Language = AppSt.Default.DefaultLanguage;
             #endregion
 
-            ProgressPanel.Label = "Hello world!";
+            ProgressPanel.Label = "Loaded";
 
             ProjectorHub.Log = PostLog;
+            ProjectorHub.SetProgress = ProgressPanel.SetProgressBar;
+
             GCTools.Log = PostLog;
+            GCTools.SetProgress = ProgressPanel.SetProgressBar;
             NameLabel.Content = $"2CUT Viewer v{Assembly.GetExecutingAssembly().GetName().Version.ToString()}";
 
             LoadMoncha();
@@ -137,7 +140,12 @@ namespace CadProjectorViewer
 
         }
 
-        private void PostLog(string msg) => LogBox.Items.Add(msg);
+        private void PostLog(string msg) 
+        {
+            LogBox.Dispatcher.Invoke(() => { 
+            LogBox.Items.Add(msg);
+            });
+        }
 
 
         private async void LoadMoncha()
@@ -252,7 +260,7 @@ namespace CadProjectorViewer
                 Thread.Sleep(100);
                 if (loadobj is GCCollection gCObjects)
                 {
-                    ProjectorHub.ScenesCollection.Add(new ProjectionScene(GCToCad.GetGroup(gCObjects, filename)));
+                    ProjectorHub.ScenesCollection.Add(new ProjectionScene(GCToCad.GetGroup(gCObjects)));
                 }
                 else if (loadobj is BitmapSource imageSource)
                 {

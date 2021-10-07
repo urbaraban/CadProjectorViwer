@@ -21,8 +21,6 @@ namespace CadProjectorViewer.CanvasObj
 
         }
 
-
-
         protected override void OnInitialized(EventArgs e)
         {
             base.OnInitialized(e);

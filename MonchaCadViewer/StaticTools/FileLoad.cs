@@ -22,7 +22,7 @@ namespace CadProjectorViewer.StaticTools
             new SVG(),
             new DXF(),
             //new DEXCeil(),
-            //new STL(),
+            new STL(),
             //new ILD(),
             //new MetaFile(),
             //new JSON(),

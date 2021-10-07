@@ -12,13 +12,15 @@
         <ProgressBar x:Name="BarLine" />
         <Label
             x:Name="BarLabel"
-            HorizontalAlignment="Center"
-            VerticalAlignment="Center"
+            HorizontalAlignment="Stretch"
+            VerticalAlignment="Stretch"
             HorizontalContentAlignment="Center"
             VerticalContentAlignment="Center"
             Panel.ZIndex="99"
             Content=""
-            FontSize="14" />
+            FontSize="14"
+            Padding="0"
+            Margin="0"/>
 
     </Grid>
 </UserControl>

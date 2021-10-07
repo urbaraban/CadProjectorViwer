@@ -362,10 +362,9 @@ namespace CadProjectorViewer.CanvasObj
             }
         }
 
-
         protected override void OnRender(DrawingContext drawingContext)
         {
-            if (this.CadObject.IsSelected == true)
+           /* if (this.CadObject.IsSelected == true)
             {
                 Rect Bounds = this.Bounds;
                 //Left
@@ -384,7 +383,7 @@ namespace CadProjectorViewer.CanvasObj
                 DrawSize(drawingContext,
                     new Point(Bounds.X + Bounds.Width / 2, ProjectorHub.Size.Y),
                     new Point(Bounds.X + Bounds.Width / 2, Bounds.Y + Bounds.Height));
-            }
+            }*/
         }
 
         protected void DrawSize(DrawingContext drawingContext, Point point1, Point point2)

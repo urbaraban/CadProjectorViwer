@@ -76,7 +76,6 @@ namespace CadProjectorViewer.CanvasObj
             rectangelAdorner.SetBinding(Adorner.VisibilityProperty, binding);
 
             adornerLayer.Add(rectangelAdorner);
-            rectangelAdorner.SelectAnchor += RectangelAdorner_SelectAnchor;
         }
 
 
@@ -126,8 +125,6 @@ namespace CadProjectorViewer.CanvasObj
 
     public class RectangelAdorner : Adorner
     {
-        public event EventHandler<CanvasAnchor> SelectAnchor;
-
         private VisualCollection _Visuals;
 
         private List<CanvasAnchor> _Anchors;
@@ -155,13 +152,7 @@ namespace CadProjectorViewer.CanvasObj
 
         private void AddAnchor(CanvasAnchor anchor)
         {
-            anchor.Selected += Anchor_Selected;
             _Anchors.Add(anchor);
-        }
-
-        private void Anchor_Selected(object sender, bool e)
-        {
-            SelectAnchor?.Invoke(this, (CanvasAnchor)sender);
         }
 
         private void Rectangle_PropertyChanged(object sender, PropertyChangedEventArgs e)

@@ -52,10 +52,7 @@ namespace CadProjectorViewer.CanvasObj
 
         public AdornerLayer adornerLayer { get; private set; }
 
-        //Event
-        //public event EventHandler TranslateChanged;
-        public virtual event EventHandler<bool> Fixed;
-        public virtual event EventHandler<bool> Selected;
+
         public virtual event EventHandler<bool> OnObject;
         public virtual event EventHandler<CanvasObject> Opening;
 
@@ -279,16 +276,19 @@ namespace CadProjectorViewer.CanvasObj
             {
                 if ((e.Delta != 0) && (Keyboard.Modifiers != ModifierKeys.Control))
                 {
-                    if (Keyboard.Modifiers == ModifierKeys.Alt) RotateAxis(this.CadObject.AxisY, "AngleY");
-                    else if (Keyboard.Modifiers == (ModifierKeys.Alt | ModifierKeys.Shift)) RotateAxis(this.CadObject.AxisX, "AngleX");
+                    if (Keyboard.Modifiers == ModifierKeys.Alt)
+                    {
+                        this.CadObject.AngleY += Math.Abs(e.Delta) / e.Delta * (Keyboard.Modifiers == ModifierKeys.Shift ? 1 : 5);
+                    }
+                    else if (Keyboard.Modifiers == (ModifierKeys.Alt | ModifierKeys.Shift))
+                    {
+                        this.CadObject.AngleX += Math.Abs(e.Delta) / e.Delta * (Keyboard.Modifiers == ModifierKeys.Shift ? 1 : 5);
+                    }
                     else if (Keyboard.Modifiers == ModifierKeys.None ||
-                        Keyboard.Modifiers == ModifierKeys.Shift) RotateAxis(this.CadObject.AxisZ, "AngleZ");
-                }
-
-                void RotateAxis(AxisAngleRotation3D axisAngleRotation3D, string OnPropertyString)
-                {
-                    axisAngleRotation3D.Angle += Math.Abs(e.Delta) / e.Delta * (Keyboard.Modifiers == ModifierKeys.Shift ? 1 : 5);
-                    OnPropertyChanged(OnPropertyString);
+                        Keyboard.Modifiers == ModifierKeys.Shift)
+                    {
+                        this.CadObject.AngleZ += Math.Abs(e.Delta) / e.Delta * (Keyboard.Modifiers == ModifierKeys.Shift ? 1 : 5);
+                    }
                 }
             }
         }

@@ -43,7 +43,6 @@ namespace CadProjectorViewer.CanvasObj
 
         private void CommonSetting()
         {
-            
             this.size = ProjectorHub.GetThinkess * 2;
             this.ShowName = false;
             ContextMenuLib.DotContextMenu(this.ContextMenu);
@@ -54,15 +53,8 @@ namespace CadProjectorViewer.CanvasObj
             this.CadObject.Translate.OffsetY = this.Point.Y;
 
             this.ContextMenuClosing += DotShape_ContextMenuClosing;
-            this.Fixed += CadDot_Fixed;
         }
 
-
-
-        private void CadDot_Fixed(object sender, bool e)
-        {
-            this.Point.IsFix = e;
-        }
 
         private void DotShape_ContextMenuClosing(object sender, ContextMenuEventArgs e)
         {

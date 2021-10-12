@@ -41,7 +41,7 @@ namespace CadProjectorViewer.CanvasObj
             LoadSetting();
         }
 
-        public CadCanvas(CadSize3D Size, bool MainCanvas)
+        public CadCanvas(CadRect3D Size, bool MainCanvas)
         {
             this.MainCanvas = MainCanvas;
             LoadSetting();
@@ -52,8 +52,8 @@ namespace CadProjectorViewer.CanvasObj
             this.Background = Brushes.Transparent; //backBrush;
             this.DataContext = ProjectorHub.Size;
 
-            this.SetBinding(Canvas.WidthProperty, "X");
-            this.SetBinding(Canvas.HeightProperty, "Y");
+            this.SetBinding(Canvas.WidthProperty, "Width");
+            this.SetBinding(Canvas.HeightProperty, "Height");
 
             ResetTransform();
         }

@@ -33,32 +33,14 @@ namespace CadProjectorViewer.CanvasObj
         }
         #endregion
 
-        public CadSize3D LRect
-        {
-            get => _lrect;
-            set
-            {
-                if (_lrect != null) { }
-                _lrect = value;
-                _lrect.PropertyChanged += _lrect_PropertyChanged;
-            }
-        }
+        public CadRect3D LRect => (CadRect3D)this.CadObject;
 
-        private CadSize3D _lrect;
 
         public SolidColorBrush BackColorBrush;
 
-        private void _lrect_PropertyChanged(object sender, PropertyChangedEventArgs e)
-        {
-            this.InvalidateVisual();
-        }
-
-        public override Rect Bounds => new Rect(LRect.P1.GetMPoint, LRect.P2.GetMPoint);
-
-        public CanvasRectangle(CadRectangle rectangle, string Label) : base(rectangle, true)
+        public CanvasRectangle(CadRect3D rectangle, string Label) : base(rectangle, true)
         {
             this.NameID = Label;
-            LRect = rectangle.LRect;
         }
 
 
@@ -95,7 +77,6 @@ namespace CadProjectorViewer.CanvasObj
             }
         }
 
-
         protected override void OnRender(DrawingContext drawingContext)
         {
             drawingContext.DrawText(
@@ -105,9 +86,9 @@ namespace CadProjectorViewer.CanvasObj
                     new Typeface("Segoe UI"),
                     (int)ProjectorHub.GetThinkess * 3,
                     Brushes.Gray),
-                new Point(LRect.P1.MX, LRect.P1.MY));
+                new Point(X, Y));
 
-            drawingContext.DrawRectangle(BackColorBrush, myPen, new Rect(X, Y, Math.Abs(LRect.P1.MX - LRect.P2.MX), Math.Abs(LRect.P1.MY - LRect.P2.MY)));
+            drawingContext.DrawRectangle(BackColorBrush, myPen, new Rect(LRect.X, LRect.Y, LRect.Width, LRect.Height));
         }
 
 
@@ -137,7 +118,6 @@ namespace CadProjectorViewer.CanvasObj
             _Anchors = new List<CanvasAnchor>();
 
             this.rectangle = adornedElement;
-            this.rectangle.PropertyChanged += Rectangle_PropertyChanged;
 
             AddAnchor(new CanvasAnchor(new CadAnchor(adornedElement.LRect.P1)));
             AddAnchor(new CanvasAnchor(new CadAnchor(adornedElement.LRect.P2, adornedElement.LRect.P1)));
@@ -155,10 +135,6 @@ namespace CadProjectorViewer.CanvasObj
             _Anchors.Add(anchor);
         }
 
-        private void Rectangle_PropertyChanged(object sender, PropertyChangedEventArgs e)
-        {
-            this.InvalidateVisual();
-        }
 
         protected override Size ArrangeOverride(Size finalSize)
         {

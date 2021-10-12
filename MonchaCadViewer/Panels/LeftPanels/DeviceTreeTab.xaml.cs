@@ -114,9 +114,7 @@ namespace CadProjectorViewer.Panels
                             //device.Frame = device.CutZone.DrawCutZone();
                             break;
                         case "dvc_showzone":
-                            CadRectangle cadRectangle = new CadRectangle(device.Size, device.HWIdentifier);
-                            projectorHub.ScenesCollection.MainScene.Add(cadRectangle);
-                            cadRectangle.Init();
+                            projectorHub.ScenesCollection.MainScene.Add(device.Size);
                             break;
                         case "dvc_polymesh":
                             device.PolyMeshUsed = !device.PolyMeshUsed;
@@ -164,8 +162,7 @@ namespace CadProjectorViewer.Panels
                                 mesh.Affine = !mesh.Affine;
                                 break;
                             case "mesh_showrect":
-                                CadRectangle rectangle = new CadRectangle(mesh.Size, mesh.Name);
-                                projectorHub.ScenesCollection.MainScene.Add(rectangle);
+                                projectorHub.ScenesCollection.MainScene.Add(mesh.Size);
                                // rectangle.Init();
                                 break;
                         }

@@ -29,7 +29,7 @@ namespace CadProjectorViewer.Panels.CanvasPanel
     /// </summary>
     public partial class CadCanvasPanel : UserControl
     {
-        public CadSize3D Size => ProjectorHub.Size;
+        public CadRect3D Size => ProjectorHub.Size;
 
         private Point StartMovePoint;
         private Point StartMousePoint;
@@ -142,17 +142,23 @@ namespace CadProjectorViewer.Panels.CanvasPanel
             else if (this.projectionScene.SceneAction == SceneAction.Rectangle)
             {
                 Point point = e.GetPosition(CanvasGrid);
-                CadRectangle cadRectangle = new CadRectangle(new CadPoint3D(point, ProjectorHub.Size), new CadPoint3D(point, ProjectorHub.Size), string.Empty, true);
+                CadRect3D cadRectangle = new CadRect3D(new CadPoint3D(point, ProjectorHub.Size), new CadPoint3D(point, ProjectorHub.Size), string.Empty);
                 this.projectionScene.Add(cadRectangle);
             }
             else if (this.projectionScene.SceneAction == SceneAction.Mask)
             {
                 this.projectionScene.SceneAction = SceneAction.NoAction;
-                CadSize3D lRect = new CadSize3D(new CadPoint3D(e.GetPosition(this.CanvasGrid), ProjectorHub.Size, true), new CadPoint3D(e.GetPosition(this.CanvasGrid), ProjectorHub.Size, true));
-                CadRectangle Maskrectangle = new CadRectangle(lRect, $"Mask_{this.projectionScene.Masks.Count}") { Render = false };
-                this.projectionScene.Add(Maskrectangle);
-                this.projectionScene.Masks.Add(Maskrectangle);
-                this.projectionScene.ActiveDrawingObject = Maskrectangle;
+                CadRect3D lRect = new CadRect3D()
+                {
+                    P1 = new CadPoint3D(e.GetPosition(this.CanvasGrid), ProjectorHub.Size, true),
+                    P2 = new CadPoint3D(e.GetPosition(this.CanvasGrid), ProjectorHub.Size, true),
+                    NameID = "Mask",
+                    ShowName = true,
+                    Render = false
+                };
+                this.projectionScene.Add(lRect);
+                this.projectionScene.Masks.Add(lRect);
+                this.projectionScene.ActiveDrawingObject = lRect;
             }
             else if (this.projectionScene.SceneAction == SceneAction.Line)
             {
@@ -205,7 +211,7 @@ namespace CadProjectorViewer.Panels.CanvasPanel
             {
                 if (canvas.Background is DrawingBrush drawingBrush)
                 {
-                    double cell = (int)(Math.Min(ProjectorHub.Size.X, ProjectorHub.Size.Y) / 10);
+                    double cell = (int)(Math.Min(ProjectorHub.Size.Width, ProjectorHub.Size.Height) / 10);
                     drawingBrush.Viewport = new Rect(0, 0, cell, cell);
                 }
                
@@ -251,7 +257,7 @@ namespace CadProjectorViewer.Panels.CanvasPanel
             {
                 if (uidObject is ProjectorMesh mesh) return new CanvasMesh(mesh);
                 else if (uidObject is CadLine cadLine) return new CanvasLine(cadLine);
-                else if (uidObject is CadRectangle cadRectangle) return new CanvasRectangle(cadRectangle, cadRectangle.NameID);
+                else if (uidObject is CadRect3D cadRectangle) return new CanvasRectangle(cadRectangle, cadRectangle.NameID);
                 else if (uidObject is IGeometryObject geometry) return new GeometryPreview(uidObject);
                 else if (uidObject is IPixelObject pixelObject) return new ImagePreview(uidObject);
             }

@@ -52,10 +52,10 @@ namespace CadProjectorViewer
         {
             if (this.IsLoaded)
             {
-                int Width = (int)(this._mesh.Size.X / StepUpDn.Value.Value) + 1;
-                int Height = (int)(this._mesh.Size.Y / StepUpDn.Value.Value) + 1;
-                WidthStepLabel.Content = "(" + Math.Round(this._mesh.Size.X / Width, 1) + ")";
-                HeightStepLabel.Content = "(" + Math.Round(this._mesh.Size.Y / Height, 1) + ")";
+                int Width = (int)(this._mesh.Size.Width / StepUpDn.Value.Value) + 1;
+                int Height = (int)(this._mesh.Size.Height / StepUpDn.Value.Value) + 1;
+                WidthStepLabel.Content = "(" + Math.Round(this._mesh.Size.Width / Width, 1) + ")";
+                HeightStepLabel.Content = "(" + Math.Round(this._mesh.Size.Height / Height, 1) + ")";
 
                 WidthUpDn.Value = Width;
                 HeightUpDn.Value = Height;

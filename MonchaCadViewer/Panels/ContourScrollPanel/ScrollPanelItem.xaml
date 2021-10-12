@@ -93,7 +93,7 @@
                 <ToggleButton
                     DockPanel.Dock="Right"
                     x:Name="SolvedToggle"
-                    Width="10"
+                    Width="50"
                     Margin="10,0,0,0"
                     Padding="0"
                     Background="Transparent"
@@ -106,10 +106,9 @@
                     Unchecked="SolvedToggle_Checked" />
             </DockPanel>
             <Label
-                HorizontalAlignment="Stretch"
+
                 Content="{Binding NameID}"
                 Grid.Row="2"
-                MaxWidth="{Binding ActualHeight, ElementName=MainGrid, Mode=OneWay}"
                 Padding="0"
                 Panel.ZIndex="99"
                 Background="LightGray"

@@ -57,7 +57,7 @@ namespace CadProjectorViewer
     {
         public ProjectorHub ProjectorHub { get; set; } = new ProjectorHub();
 
-        public CadSize3D CanvasSize => ProjectorHub.Size;
+        public CadRect3D CanvasSize => ProjectorHub.Size;
 
         private KmpsAppl kmpsAppl;
         private bool inverseToggle = true;
@@ -169,15 +169,15 @@ namespace CadProjectorViewer
                 MessageBox.Show("Ошибка конфигурации!");
             }
             WidthUpDn.DataContext = ProjectorHub.Size;
-            WidthUpDn.SetBinding(NumericUpDown.ValueProperty, "X");
+            WidthUpDn.SetBinding(NumericUpDown.ValueProperty, "Width");
 
             HeightUpD.DataContext = ProjectorHub.Size;
-            HeightUpD.SetBinding(NumericUpDown.ValueProperty, "Y");
+            HeightUpD.SetBinding(NumericUpDown.ValueProperty, "Height");
 
             DeepUpDn.DataContext = ProjectorHub.Size;
-            DeepUpDn.SetBinding(NumericUpDown.ValueProperty, "Z");
+            DeepUpDn.SetBinding(NumericUpDown.ValueProperty, "Depth");
 
-            MashMultiplierUpDn.Value = ProjectorHub.Size.M.X;
+            MashMultiplierUpDn.Value = ProjectorHub.Size.M.Width;
 
             CalibrationFormCombo.Items.Clear();
             CalibrationFormCombo.Items.Add(CalibrationForm.cl_Dot);
@@ -264,7 +264,12 @@ namespace CadProjectorViewer
                 }
                 else if (loadobj is BitmapSource imageSource)
                 {
-                    ProjectorHub.ScenesCollection.Add(new ProjectionScene(new CadImage(imageSource)));
+                           ProjectorHub.ScenesCollection.Add(new ProjectionScene(
+                               new CadImage(imageSource)
+                               {
+                                   NameID = GCTools.GetName(filename)
+                               }
+                               ));
                 }
                 else if (loadobj == null)
                 {

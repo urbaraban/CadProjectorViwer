@@ -21,6 +21,8 @@ using CadProjectorSDK.CadObjects.Abstract;
 using CadProjectorSDK.CadObjects.Interface;
 using CadProjectorSDK.Device.Mesh;
 using CadProjectorSDK.Scenes;
+using CadProjectorViewer.StaticTools;
+using System.IO;
 
 namespace CadProjectorViewer.Panels.CanvasPanel
 {
@@ -37,7 +39,8 @@ namespace CadProjectorViewer.Panels.CanvasPanel
 
         private Visibility _showadorner = Visibility.Hidden;
 
-        private ProjectionScene projectionScene => (ProjectionScene)this.DataContext;
+        private ProjectorHub projectorHub => (ProjectorHub)this.DataContext;
+        private ProjectionScene MainScene => projectorHub.ScenesCollection.MainScene;
 
         private double X
         {
@@ -54,16 +57,15 @@ namespace CadProjectorViewer.Panels.CanvasPanel
         public CadCanvasPanel()
         {
             InitializeComponent();
-            this.DataContext = new ProjectionScene();
             UpdateTransform(null, true);
         }
 
         protected override void OnMouseLeftButtonUp(MouseButtonEventArgs e)
         {
             base.OnMouseLeftButtonUp(e);
-            if (this.projectionScene.ActiveDrawingObject == null)
+            if (this.MainScene.ActiveDrawingObject == null)
             {
-                this.projectionScene.SceneAction = SceneAction.NoAction;
+                this.MainScene.SceneAction = SceneAction.NoAction;
             }
             this.ReleaseMouseCapture();
         }
@@ -125,13 +127,22 @@ namespace CadProjectorViewer.Panels.CanvasPanel
         public RotateTransform Rotate { get; set; }
         public TranslateTransform Translate { get; set; }
 
+        protected async override void OnDrop(DragEventArgs e)
+        {
+            base.OnDrop(e);
+            if (await FileLoad.GetScene(e.Data) is ProjectionScene Scene)
+            {
+                this.projectorHub.ScenesCollection.Add(Scene);
+            }
+        }
+
         protected override void OnMouseLeftButtonDown(MouseButtonEventArgs e)
         {
             base.OnMouseLeftButtonDown(e);
-            if (this.projectionScene.ActiveDrawingObject != null)
+            if (this.MainScene.ActiveDrawingObject != null)
             {
-                this.projectionScene.ActiveDrawingObject.Init();
-                this.projectionScene.ActiveDrawingObject = null;
+                this.MainScene.ActiveDrawingObject.Init();
+                this.MainScene.ActiveDrawingObject = null;
             }
 
             if (Keyboard.Modifiers == ModifierKeys.Control)
@@ -139,42 +150,42 @@ namespace CadProjectorViewer.Panels.CanvasPanel
                 this.StartMousePoint = e.GetPosition(this.CanvasBox);
                 this.StartMovePoint = new Point(this.Translate.X, this.Translate.Y);
             }
-            else if (this.projectionScene.SceneAction == SceneAction.Rectangle)
+            else if (this.MainScene.SceneAction == SceneAction.Rectangle)
             {
                 Point point = e.GetPosition(CanvasGrid);
-                CadRect3D cadRectangle = new CadRect3D(new CadPoint3D(point, ProjectorHub.Size), new CadPoint3D(point, ProjectorHub.Size), string.Empty);
-                this.projectionScene.Add(cadRectangle);
+                CadRect3D cadRectangle = new CadRect3D(new CadPoint3D(point, ProjectorHub.Size), new CadPoint3D(point, ProjectorHub.Size), false, string.Empty);
+                this.MainScene.Add(cadRectangle);
             }
-            else if (this.projectionScene.SceneAction == SceneAction.Mask)
+            else if (this.MainScene.SceneAction == SceneAction.Mask)
             {
-                this.projectionScene.SceneAction = SceneAction.NoAction;
-                CadRect3D lRect = new CadRect3D()
+                this.MainScene.SceneAction = SceneAction.NoAction;
+                CadRect3D lRect = new CadRect3D(false)
                 {
                     P1 = new CadPoint3D(e.GetPosition(this.CanvasGrid), ProjectorHub.Size, true),
                     P2 = new CadPoint3D(e.GetPosition(this.CanvasGrid), ProjectorHub.Size, true),
                     NameID = "Mask",
                     ShowName = true,
-                    Render = false
+                    Render = false,
                 };
-                this.projectionScene.Add(lRect);
-                this.projectionScene.Masks.Add(lRect);
-                this.projectionScene.ActiveDrawingObject = lRect;
+                this.MainScene.Add(lRect);
+                this.MainScene.Masks.Add(lRect);
+                this.MainScene.ActiveDrawingObject = lRect;
             }
-            else if (this.projectionScene.SceneAction == SceneAction.Line)
+            else if (this.MainScene.SceneAction == SceneAction.Line)
             {
                 CadLine line = new CadLine(new CadPoint3D(e.GetPosition(this.CanvasGrid)), new CadPoint3D(e.GetPosition(this.CanvasGrid)), true);
-                this.projectionScene.Add(line);
-                this.projectionScene.ActiveDrawingObject = line;
+                this.MainScene.Add(line);
+                this.MainScene.ActiveDrawingObject = line;
             }
         }
 
         protected override void OnMouseMove(MouseEventArgs e)
         {
-            projectionScene.MousePosition = new CadPoint3D(e.GetPosition(this.CanvasGrid));
+            MainScene.MousePosition = new CadPoint3D(e.GetPosition(this.CanvasGrid));
 
             if (e.LeftButton == MouseButtonState.Pressed && Keyboard.Modifiers == ModifierKeys.Control)
             {
-                this.projectionScene.SceneAction = SceneAction.MoveCanvas;
+                this.MainScene.SceneAction = SceneAction.MoveCanvas;
                 this.WasMove = true;
                 Point tPoint = e.GetPosition(CanvasBox);
 
@@ -185,21 +196,20 @@ namespace CadProjectorViewer.Panels.CanvasPanel
 
                 this.CaptureMouse();
             }
-            else if (projectionScene != null)
+            else if (MainScene != null)
             {
-                if (projectionScene.ActiveDrawingObject != null)
+                if (MainScene.ActiveDrawingObject != null)
                 {
-                    projectionScene.ActiveDrawingObject.SetTwoPoint(e.GetPosition(this.CanvasGrid));
+                    MainScene.ActiveDrawingObject.SetTwoPoint(e.GetPosition(this.CanvasGrid));
                 }
             }
         }
 
-
         private void Canvas_MouseMove(object sender, MouseEventArgs e)
         {
             Point tempPoint = e.GetPosition(CanvasGrid);
-            projectionScene.MousePosition.X = tempPoint.X;
-            projectionScene.MousePosition.Y = tempPoint.Y;
+            MainScene.MousePosition.X = tempPoint.X;
+            MainScene.MousePosition.Y = tempPoint.Y;
             CoordinateLabel.Content =
                 $"X: { Math.Round(tempPoint.X, 2) }; Y:{ Math.Round(tempPoint.Y, 2) }";
         }
@@ -226,26 +236,18 @@ namespace CadProjectorViewer.Panels.CanvasPanel
         private void ShowDeviceRect_Click(object sender, RoutedEventArgs e)
         {
             Random rnd = new Random();
-            /*foreach (MonchaDevice monchaDevice in ProjectorHub.Devices)
+            foreach (LDevice monchaDevice in this.projectorHub.Devices)
             {
                 SolidColorBrush ColorBrush = new SolidColorBrush();
                 ColorBrush.Color = Colors.Azure;
-                this.projectionScene.Clear();
-                this.projectionScene.Add(new CadRectangle(monchaDevice.Size, monchaDevice.HWIdentifier, false)
-                { BackColorBrush = new SolidColorBrush()
-                    { Color = Color.FromArgb(100, (byte)rnd.Next(256), (byte)rnd.Next(256), (byte)rnd.Next(256)) }
-                });
+                MainScene.Clear();
+                MainScene.Add(monchaDevice.Size);
 
-                foreach (LDeviceMesh mesh in monchaDevice.SelectedMeshes)
+                foreach (ProjectorMesh mesh in monchaDevice.SelectedMeshes)
                 {
-                    this.projectionScene.Add(
-                        new CadRectangle(mesh.Size, $"{monchaDevice.HWIdentifier} - {mesh.Name}", false)
-                        {
-                            BackColorBrush = new SolidColorBrush()
-                            { Color = Color.FromArgb(100, (byte)rnd.Next(256), (byte)rnd.Next(256), (byte)rnd.Next(256)) }
-                        });
+                    MainScene.Add(mesh.Size);
                 }
-            }*/
+            }
         }
     }
 

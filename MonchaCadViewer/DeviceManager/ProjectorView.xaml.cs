@@ -18,6 +18,8 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using CadProjectorSDK.CadObjects.LObjects;
+using CadProjectorSDK.CadObjects.Interface;
+using CadProjectorSDK.CadObjects.Abstract;
 
 namespace CadProjectorViewer.DeviceManager
 {
@@ -67,13 +69,14 @@ namespace CadProjectorViewer.DeviceManager
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            Console.WriteLine("Update Child Viwer");
-            /* if (value is PointsObjectList objectList)
-             {
-                 return new List<CanvasObject>() { new CanvasObj.CanvasGroup(objectList, false) };
-
-             else}*/
-            return null;
+            if (value is UidObject uidObject)
+            {
+                if (uidObject is CadLine cadLine) return new CanvasLine(cadLine);
+                else if (uidObject is CadRect3D cadRectangle) return new CanvasRectangle(cadRectangle, cadRectangle.NameID);
+                else if (uidObject is IGeometryObject geometry) return new GeometryPreview(uidObject);
+                else if (uidObject is IPixelObject pixelObject) return new ImagePreview(uidObject);
+            }
+            return value;
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)

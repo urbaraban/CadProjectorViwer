@@ -67,10 +67,25 @@ namespace CadProjectorViewer.Panels
         }
 
 
+        protected override void OnMouseLeftButtonUp(MouseButtonEventArgs e)
+        {
+            base.OnMouseLeftButtonUp(e);
+            ProjectionScene.IsSelected = !ProjectionScene.IsSelected;
+        }
+
         protected override void OnMouseLeftButtonDown(MouseButtonEventArgs e)
         {
             base.OnMouseLeftButtonDown(e);
-            ProjectionScene.IsSelected = !ProjectionScene.IsSelected;
+            //DragDrop.DoDragDrop(this, this.Scene, DragDropEffects.Move);
+        }
+
+        protected override void OnMouseMove(MouseEventArgs e)
+        {
+            base.OnMouseMove(e);
+            if (e.LeftButton == MouseButtonState.Pressed)
+            {
+                DragDrop.DoDragDrop(this, this.Scene, DragDropEffects.Move);
+            }
         }
 
         protected override void OnMouseRightButtonUp(MouseButtonEventArgs e)

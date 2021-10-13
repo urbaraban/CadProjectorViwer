@@ -1,4 +1,7 @@
-﻿using CadProjectorViewer.StaticTools;
+﻿using CadProjectorSDK;
+using CadProjectorSDK.CadObjects.Abstract;
+using CadProjectorSDK.Scenes;
+using CadProjectorViewer.StaticTools;
 using Microsoft.WindowsAPICodePack.Dialogs;
 using System;
 using System.Collections.Generic;
@@ -25,7 +28,7 @@ namespace CadProjectorViewer.Panels.RightPanel
     /// </summary>
     public partial class WorkFolderPanel : UserControl
     {
-        private MainWindow mainWindow => (MainWindow)this.DataContext;
+        private ProjectorHub projectorHub => (ProjectorHub)this.DataContext;
 
         public WorkFolderPanel()
         {
@@ -101,7 +104,12 @@ namespace CadProjectorViewer.Panels.RightPanel
         private async void TextBlock_MouseDownAsync(object sender, MouseButtonEventArgs e)
         {
             if (WorkFolderListBox.SelectedItem is FileInfo fileInfo)
-                await mainWindow.OpenFile(fileInfo.Filepath);
+            {
+                if (await FileLoad.GetFilePath(fileInfo.Filepath) is ProjectionScene Scene)
+                {
+                    projectorHub.ScenesCollection.Add(Scene);
+                }
+            }
 
         }
 

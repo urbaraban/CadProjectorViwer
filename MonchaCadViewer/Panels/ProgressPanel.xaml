@@ -21,6 +21,6 @@
             FontSize="14"
             Padding="0"
             Margin="0"/>
-
+        <Button Foreground="Red" Background="Transparent" BorderThickness="0" FontFamily="Segoe MDL2 Assets" Content="&#xE8BB;" Width="50" HorizontalAlignment="Right" Margin="0,0,0,0"/>
     </Grid>
 </UserControl>

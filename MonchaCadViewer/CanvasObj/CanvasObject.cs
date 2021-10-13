@@ -221,32 +221,33 @@ namespace CadProjectorViewer.CanvasObj
         {
             base.OnMouseMove(e);
             OnPropertyChanged("IsMouseOver");
-            if (ActiveObject == true)
+            if (Keyboard.Modifiers == ModifierKeys.None)
             {
-                if (this.CadObject.IsFix == false)
+                if (ActiveObject == true)
                 {
-                    CadCanvas canvas = this.Parent as CadCanvas;
-
-                    if (e.LeftButton == MouseButtonState.Pressed)
+                    if (this.CadObject.IsFix == false)
                     {
-                        this.WasMove = true;
-                        this.Editing = true;
+                        if (e.LeftButton == MouseButtonState.Pressed)
+                        {
+                            this.WasMove = true;
+                            this.Editing = true;
 
-                        Point tPoint = e.GetPosition(this);
+                            Point tPoint = e.GetPosition(this);
 
-                        this.X = this.BasePos.X + (tPoint.X - this.MousePos.X);
-                        this.Y = this.BasePos.Y + (tPoint.Y - this.MousePos.Y);
+                            this.X = this.BasePos.X + (tPoint.X - this.MousePos.X);
+                            this.Y = this.BasePos.Y + (tPoint.Y - this.MousePos.Y);
 
-                        this.CaptureMouse();
-                        this.Cursor = Cursors.SizeAll;
-                    }
-                    else
-                    {
-                        this.Cursor = Cursors.Hand;
+                            this.CaptureMouse();
+                            this.Cursor = Cursors.SizeAll;
+                        }
                     }
                 }
             }
+            else if(Keyboard.Modifiers == ModifierKeys.Alt)
+            {
 
+            }
+            this.Cursor = Cursors.Hand;
         }
 
         protected override void OnMouseLeave(MouseEventArgs e)

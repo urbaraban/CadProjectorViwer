@@ -208,10 +208,7 @@ namespace CadProjectorViewer
         }
 
 
-        private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
-        {
-            e.Cancel = SaveConfiguration(false);
-        }
+
 
         private void Window_Closed(object sender, System.EventArgs e)
         {
@@ -248,71 +245,13 @@ namespace CadProjectorViewer
             openFile.FileName = null;
             if (openFile.ShowDialog() == WinForms.DialogResult.OK)
             {
-                await OpenFile(openFile.FileName);
+                if (await FileLoad.GetFilePath(openFile.FileName) is ProjectionScene scene)
+                {
+                    ProjectorHub.ScenesCollection.Add(scene);
+                }
             }
         }
 
-        public async Task OpenFile(string filename)
-        {
-            Dispatcher.Invoke(DispatcherPriority.Normal, new Action(
-                   async () => {
-                object loadobj = await FileLoad.Get(filename);
-                Thread.Sleep(100);
-                if (loadobj is GCCollection gCObjects)
-                {
-                    ProjectorHub.ScenesCollection.Add(new ProjectionScene(GCToCad.GetGroup(gCObjects)));
-                }
-                else if (loadobj is BitmapSource imageSource)
-                {
-                           ProjectorHub.ScenesCollection.Add(new ProjectionScene(
-                               new CadImage(imageSource)
-                               {
-                                   NameID = GCTools.GetName(filename)
-                               }
-                               ));
-                }
-                else if (loadobj == null)
-                {
-                    return;
-                }
-            }));
-        }
-       
-
-        private async void OpenBtn_DragDropAsync(object sender, DragEventArgs e)
-        {
-            if (e.Data.GetDataPresent(DataFormats.FileDrop))
-            {
-                string[] filePaths = (string[])(e.Data.GetData(DataFormats.FileDrop));
-                foreach (string fileLoc in filePaths)
-                    if (File.Exists(fileLoc))
-                        await OpenFile(fileLoc);
-            }
-            OpenBtn.Background = Brushes.Gainsboro;
-        }
-
-        private void OpenBtn_DragEnter(object sender, DragEventArgs e)
-        {
-            if (e.Data.GetDataPresent(DataFormats.FileDrop)) e.Effects = DragDropEffects.Copy;
-            OpenBtn.Background = Brushes.Yellow;
-            string[] filePaths = (string[])(e.Data.GetData(DataFormats.FileDrop));
-            foreach (string fileLoc in filePaths) //переберает всю инфу пока не найдет строку адреса
-                if (File.Exists(fileLoc))
-                    OpenBtn.Content = "Открыть " + fileLoc.Split('\\').Last();
-        }
-
-        private void OpenBtn_DragLeave(object sender, EventArgs e)
-        {
-            OpenBtn.Content = "Открыть";
-            OpenBtn.Background = Brushes.Gainsboro;
-        }
-
-        private void OpenBtn_DragOver(object sender, DragEventArgs e)
-        {
-            OpenBtn.Background = Brushes.Gainsboro;
-        }
-
-       
         private void MashMultiplierUpDn_ValueIncremented(object sender, NumericUpDownChangedRoutedEventArgs args)
         {
             if (MashMultiplierUpDn.Value == null) MashMultiplierUpDn.Value = 1;
@@ -327,9 +266,6 @@ namespace CadProjectorViewer
             MashMultiplierUpDn.Value = MashMultiplierUpDn.Value.Value / 10;
             ProjectorHub.Size.M.Set(MashMultiplierUpDn.Value.Value);
         }
-
-
-
 
         private void kmpsConnectToggle_Toggled(object sender, RoutedEventArgs e)
         {
@@ -413,8 +349,9 @@ namespace CadProjectorViewer
             }
         }
 
-        private void MainWindow1_KeyUp(object sender, KeyEventArgs e)
+        protected override void OnKeyUp(KeyEventArgs e)
         {
+            base.OnKeyUp(e);
             double _mult = Keyboard.Modifiers == ModifierKeys.Shift ? 10 : 1;
             double step = PointStepUpDn.Value.Value;
 
@@ -433,7 +370,7 @@ namespace CadProjectorViewer
                     ProjectorHub.ScenesCollection.MainScene.MoveSelect(-step * _mult, 0);
                     break;
                 case Key.D:
-                    ProjectorHub.ScenesCollection.MainScene.MoveSelect(step * _mult, 0); 
+                    ProjectorHub.ScenesCollection.MainScene.MoveSelect(step * _mult, 0);
                     break;
                 case Key.F:
                     ProjectorHub.ScenesCollection.MainScene.Fix();
@@ -441,7 +378,7 @@ namespace CadProjectorViewer
                 case Key.OemPlus:
                     break;
                 case Key.Delete:
-                   // this.MainCanvas.RemoveSelectObject();
+                    // this.MainCanvas.RemoveSelectObject();
                     break;
                 case Key.D1:
                     if (Keyboard.Modifiers == ModifierKeys.Control)
@@ -542,28 +479,18 @@ namespace CadProjectorViewer
         private void MainViewBox_DragEnter(object sender, DragEventArgs e)
         {
             if (e.Data.GetDataPresent(DataFormats.FileDrop)) e.Effects = DragDropEffects.Copy;
-            OpenBtn.Background = Brushes.Yellow;
             string[] filePaths = (string[])(e.Data.GetData(DataFormats.FileDrop));
             if (filePaths != null)
-                foreach (string fileLoc in filePaths) //переберает всю инфу пока не найдет строку адреса
-                    if (File.Exists(fileLoc))
-                        OpenBtn.Content = "Открыть " + fileLoc.Split('\\').Last();
-        }
-
-        private async void MainViewBox_DropAsync(object sender, DragEventArgs e)
-        {
-            if (e.Data.GetDataPresent(DataFormats.FileDrop))
             {
-                string[] filePaths = (string[])(e.Data.GetData(DataFormats.FileDrop));
                 foreach (string fileLoc in filePaths)
+                { //переберает всю инфу пока не найдет строку адреса
                     if (File.Exists(fileLoc))
-                        await OpenFile(fileLoc);
+                    {
+                        OpenBtn.Content = "Открыть " + fileLoc.Split('\\').Last();
+                    }
+                }
             }
-            OpenBtn.Background = Brushes.Gainsboro;
         }
-
-
-
 
         private void MinimizedBtn_Click(object sender, RoutedEventArgs e)
         {
@@ -577,8 +504,15 @@ namespace CadProjectorViewer
             else this.WindowState = WindowState.Normal;
         }
 
-        private void CloseBtn_Click(object sender, RoutedEventArgs e)
+        protected override void OnClosing(CancelEventArgs e)
         {
+            e.Cancel = SaveConfiguration(false);
+            base.OnClosing(e);
+        }
+
+        protected override void OnClosed(EventArgs e)
+        {
+            base.OnClosed(e);
             this.Close();
         }
 
@@ -726,19 +660,6 @@ namespace CadProjectorViewer
             LoadMoncha();
         }
 
-        private void MainCanvas_Drop(object sender, DragEventArgs e)
-        {
-            if (e.Data.GetDataPresent(DataFormats.FileDrop))
-            {
-                string[] filePaths = (string[])(e.Data.GetData(DataFormats.FileDrop));
-                foreach (string fileLoc in filePaths)
-                    if (File.Exists(fileLoc))
-                        OpenFile(fileLoc);
-            }
-            OpenBtn.Background = Brushes.Gainsboro;
-        }
-
-
 
         private void RectBtn_Click(object sender, RoutedEventArgs e) => ProjectorHub.ScenesCollection.MainScene.SceneAction = SceneAction.Mask;
 
@@ -823,7 +744,10 @@ namespace CadProjectorViewer
             requestLicenseCode.ShowDialog();
         }
 
-
+        private void Close_Click(object sender, RoutedEventArgs e)
+        {
+            this.Close();
+        }
     }
 
     public class MultiObjectList : IMultiValueConverter

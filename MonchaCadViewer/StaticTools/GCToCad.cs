@@ -13,7 +13,7 @@ namespace CadProjectorViewer.StaticTools
 {
     public static class GCToCad
     {
-        public static UidObject GetUid(IGCObject gCObject)
+        public async static Task<UidObject> GetUid(IGCObject gCObject)
         {
             if (gCObject is GeometryElement geometryElement)
             {
@@ -36,17 +36,17 @@ namespace CadProjectorViewer.StaticTools
                 }
                 return cadPoints;
             }
-            else if (gCObject is GCCollection collection) return GetGroup(collection);
+            else if (gCObject is GCCollection collection) return await GetGroup(collection);
 
             return null;
         }
 
-        public static CadGroup GetGroup(GCCollection gCObjects)
+        public async static Task<CadGroup> GetGroup(GCCollection gCObjects)
         {
             CadGroup group = new CadGroup() { NameID = gCObjects.Name };
             foreach (IGCObject obj in gCObjects)
             {
-                UidObject uidObject = GCToCad.GetUid(obj);
+                UidObject uidObject = await GCToCad.GetUid(obj);
                 uidObject.UpdateTransform(true);
                 if (uidObject != null) group.Add(uidObject);
             }

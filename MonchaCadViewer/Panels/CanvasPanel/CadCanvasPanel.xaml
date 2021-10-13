@@ -4,8 +4,10 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:canvasobj="clr-namespace:CadProjectorViewer.CanvasObj" 
-             xmlns:scene="clr-namespace:CadProjectorSDK.Scenes;assembly=CadProjectorSDK" xmlns:converters="clr-namespace:CadProjectorViewer.Converters" xmlns:canvaspanel="clr-namespace:CadProjectorViewer.Panels.CanvasPanel"
-             d:DataContext="{d:DesignInstance Type=scene:ProjectionScene}"
+             xmlns:hub="clr-namespace:CadProjectorSDK;assembly=CadProjectorSDK"
+             xmlns:converters="clr-namespace:CadProjectorViewer.Converters" 
+             xmlns:canvaspanel="clr-namespace:CadProjectorViewer.Panels.CanvasPanel"
+             d:DataContext="{d:DesignInstance Type=hub:ProjectorHub}"
              mc:Ignorable="d" 
              d:DesignHeight="400" d:DesignWidth="400">
     <UserControl.Resources>
@@ -25,7 +27,7 @@
             <Button x:Name="ShowDeviceRect" FontFamily="Segoe MDL2 Assets" Content="&#xE9A6;" Width="30" Height="30" Margin="3" Click="ShowDeviceRect_Click" Panel.ZIndex="999" FontSize="20"/>
         </StackPanel>
         <Viewbox x:Name="CanvasBox" Grid.RowSpan="3" Stretch="Uniform" StretchDirection="Both">
-            <Grid x:Name="CanvasGrid" Cursor="{Binding SceneAction, Converter={StaticResource CursorAction}}">
+            <Grid x:Name="CanvasGrid" Cursor="{Binding ScenesCollection.MainScene.SceneAction, Converter={StaticResource CursorAction}}">
                 <Rectangle Fill="White"/>
                 <Canvas 
                     x:Name="BackCanvas" 
@@ -47,7 +49,7 @@
                         </DrawingBrush>
                     </Canvas.Background>
                 </Canvas>
-                <ItemsControl ItemsSource="{Binding .}">
+                <ItemsControl ItemsSource="{Binding ScenesCollection.MainScene}">
                     <ItemsControl.ItemsPanel>
                         <ItemsPanelTemplate>
                             <canvasobj:CadCanvas/>

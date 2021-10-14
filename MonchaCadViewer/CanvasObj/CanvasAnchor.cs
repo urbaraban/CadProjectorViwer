@@ -43,7 +43,7 @@ namespace CadProjectorViewer.CanvasObj
 
         private void CommonSetting()
         {
-            this.size = ProjectorHub.GetThinkess * 2;
+            this.size = GetThinkess * 2;
             this.ShowName = false;
             ContextMenuLib.DotContextMenu(this.ContextMenu);
             Canvas.SetZIndex(this, 999);

@@ -16,7 +16,9 @@
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Controls.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Fonts.xaml" />
+                <!-- Theme setting -->
                 <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Themes/Light.Blue.xaml" />
             </ResourceDictionary.MergedDictionaries>
             <Style x:Key="Border" TargetType="{x:Type Border}">
@@ -73,10 +75,8 @@
         <ComboBox
             x:Name="DeviceCombo"
             Grid.Column="1"
-            Height="26"
             Margin="3,20,43,0"
             VerticalAlignment="Top"
-            RenderTransformOrigin="0.5,0.5"
             Grid.ColumnSpan="4" 
             DisplayMemberPath="HWIdentifier"
             SelectedValuePath="HWIdentifier"
@@ -85,29 +85,23 @@
             DataContext="{Binding ElementName=DeviceCombo, Path=SelectedItem}"
             IsOn="{Binding InvertedX}"
             Grid.Row="5"
-            Grid.Column="1"
-            Grid.ColumnSpan="2"
-            Margin="4,0,3,5"
-            HorizontalAlignment="Stretch"
-            VerticalAlignment="Bottom"
-            HorizontalContentAlignment="Right"
-            Controls:HeaderedControlHelper.HeaderFontSize="12"
-            Content="{DynamicResource dvc_InvX}"
             FlowDirection="RightToLeft"
-            FontSize="12" Height="20" />
+            HorizontalContentAlignment="Right"
+            Content="{DynamicResource dvc_InvX}"
+            FontSize="12" Grid.ColumnSpan="3" Margin="1,10,0,7"/>
         <Controls:ToggleSwitch
             DataContext="{Binding ElementName=DeviceCombo, Path=SelectedItem}"
             IsOn="{Binding InvertedY, Mode=TwoWay}"
             Grid.Row="5"
-            Grid.Column="3"
-            Grid.ColumnSpan="2"
-            Margin="1,0,6,5"
+            Grid.Column="2"
+            Grid.ColumnSpan="3"
+            Margin="23,0,10,7"
             HorizontalAlignment="Stretch"
             VerticalAlignment="Bottom"
             HorizontalContentAlignment="Right"
             Content="{DynamicResource dvc_InvY}"
             FlowDirection="RightToLeft"
-            FontSize="12" Height="20" />
+            FontSize="12" />
         <Label
             Grid.Row="7"
             Grid.Column="1"
@@ -150,16 +144,16 @@
         <Controls:ToggleSwitch
             x:Name="LaserMeterToggle"
             Grid.Column="4"
-            Width="48"
+            Width="154"
             Height="25"
-            Margin="0,18,2,0"
+            Margin="0,13,-105,0"
             HorizontalAlignment="Right"
             VerticalAlignment="Top"
             HorizontalContentAlignment="Center"
             Content=""
             IsOn="False"
             RenderTransformOrigin="0.5,0.5"
-            Toggled="LaserMeterToggle_Toggled" Grid.Row="2">
+            Toggled="LaserMeterToggle_Toggled" Grid.Row="2" Grid.ColumnSpan="2" Controls:HeaderedControlHelper.HeaderHorizontalContentAlignment="Center">
             <Controls:ToggleSwitch.RenderTransform>
                 <TransformGroup>
                     <ScaleTransform />
@@ -168,9 +162,6 @@
                     <TranslateTransform />
                 </TransformGroup>
             </Controls:ToggleSwitch.RenderTransform>
-            <Controls:ToggleSwitch.DataContext>
-                <Properties:Settings />
-            </Controls:ToggleSwitch.DataContext>
         </Controls:ToggleSwitch>
         <Label
             Grid.Column="1"
@@ -233,8 +224,7 @@ PreviewMouseDown="ScanRateRealSlider_PreviewMouseDown"
             Grid.Row="4"
             Grid.Column="1"
             Grid.ColumnSpan="2"
-            Width="111"
-            Height="26"
+
             Margin="10,41,0,0"
             HorizontalAlignment="Left"
             VerticalAlignment="Top"
@@ -259,8 +249,6 @@ PreviewMouseDown="ScanRateRealSlider_PreviewMouseDown"
             Grid.Row="4"
             Grid.Column="1"
             Grid.ColumnSpan="2"
-            Width="111"
-            Height="25"
             Margin="10,73,0,0"
             HorizontalAlignment="Left"
             VerticalAlignment="Top"
@@ -284,8 +272,7 @@ PreviewMouseDown="ScanRateRealSlider_PreviewMouseDown"
             Grid.Row="4"
             Grid.Column="1"
             Grid.ColumnSpan="2"
-            Width="111"
-            Height="25"
+
             Margin="10,106,0,0"
             HorizontalAlignment="Left"
             VerticalAlignment="Top"
@@ -378,16 +365,15 @@ PreviewMouseDown="ScanRateRealSlider_PreviewMouseDown"
             DataContext="{Binding ElementName=DeviceCombo, Path=SelectedItem}"
             IsOn="{Binding OwnedSetting}"
             Grid.Column="4"
-            Width="46"
             Height="25"
-            Margin="0,7,4,0"
+            Margin="0,7,-112,0"
             HorizontalAlignment="Right"
             VerticalAlignment="Top"
             HorizontalContentAlignment="Center"
             AutomationProperties.HelpText="Common setting toggle"
             Content=""
             RenderTransformOrigin="0.5,0.5"
-            Grid.Row="3">
+            Grid.Row="3" Grid.ColumnSpan="2">
         </Controls:ToggleSwitch>
         <Button
             x:Name="DeviceSettingBtn"
@@ -397,6 +383,7 @@ PreviewMouseDown="ScanRateRealSlider_PreviewMouseDown"
             VerticalAlignment="Top"
             Click="DeviceSettingBtn_Click"
             Content="&#xE713;"
+            Padding="0"
             FontFamily="Segoe MDL2 Assets"
             FontSize="14" HorizontalAlignment="Right" Width="26" />
         <ComboBox
@@ -423,6 +410,7 @@ PreviewMouseDown="ScanRateRealSlider_PreviewMouseDown"
             Grid.Column="4"
             Height="26"
             Margin="0,17,42,0"
+            Padding="0"
             VerticalAlignment="Top"
             Content="&#xEB7E;"
             FontFamily="Segoe MDL2 Assets"
@@ -433,6 +421,7 @@ PreviewMouseDown="ScanRateRealSlider_PreviewMouseDown"
             Grid.Column="4"
             Height="26"
             Margin="0,17,11,0"
+            Padding="0"
             VerticalAlignment="Top"
             Content="&#xF0B5;"
             FontFamily="Segoe MDL2 Assets"

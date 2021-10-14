@@ -4,7 +4,8 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:Controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" xmlns:canvasobj="clr-namespace:CadProjectorViewer.CanvasObj" d:DataContext="{d:DesignInstance Type=canvasobj:CanvasObject}"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" xmlns:canvasobj="clr-namespace:CadProjectorViewer.CanvasObj" 
+    d:DataContext="{d:DesignInstance Type=canvasobj:CanvasObject}"
     d:DesignHeight="90"
     d:DesignWidth="490"
     mc:Ignorable="d">
@@ -12,7 +13,6 @@
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Fonts.xaml" />
-                <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Themes/Light.Blue.xaml" />
             </ResourceDictionary.MergedDictionaries>
             <Style x:Key="Border" TargetType="{x:Type Border}">
                 <Setter Property="BorderBrush" Value="DarkGray" />
@@ -78,6 +78,7 @@
             Margin="5,5,0,0"
             HorizontalAlignment="Left"
             VerticalAlignment="Top"
+            VerticalContentAlignment="Center"
             OffContent="{DynamicResource dvc_ProjectMain}"
             OnContent="{DynamicResource dvc_ProjectOwn}"/>
         <Controls:NumericUpDown

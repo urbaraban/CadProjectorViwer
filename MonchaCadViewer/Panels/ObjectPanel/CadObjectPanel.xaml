@@ -86,15 +86,14 @@
             Height="26"
             Margin="3,6,5,0"
             VerticalAlignment="Top"
-            mah:TextBoxHelper.WatermarkTrimming="CharacterEllipsis"
             Culture="ru-RU"
-            DecimalPointCorrection="Number" Grid.Column="5" />
+            Grid.Column="5" />
         <mah:NumericUpDown
             Value="{Binding ScaleY, Mode=TwoWay, Converter={StaticResource ScaleConverter}}"
             Height="26"
             Margin="3,32,5,0"
             VerticalAlignment="Top"
-            DecimalPointCorrection="Number" Grid.Column="5" />
+            Grid.Column="5" />
         <Label
             x:Name="label_Copy1"
             Margin="0,56,0,0"
@@ -111,7 +110,7 @@
             Height="26"
             Margin="3,58,5,0"
             VerticalAlignment="Top"
-            DecimalPointCorrection="Number" Grid.Column="5" />
+            Grid.Column="5" />
         <mah:NumericUpDown
             Value="{Binding AngleZ, Mode=TwoWay}"
             Height="26"

@@ -1,0 +1,95 @@
+﻿<UserControl x:Class="CadProjectorViewer.Panels.RightPanel.Configuration.AppDefaultSettingPanel"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:CadProjectorViewer.Panels.RightPanel.Configuration" xmlns:Properties="clr-namespace:CadProjectorViewer.Properties" xmlns:Controls="http://metro.mahapps.com/winfx/xaml/controls"
+             mc:Ignorable="d" 
+             d:DesignHeight="450"
+             d:DesignWidth="250">
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.Dark.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Fonts.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </UserControl.Resources>
+    <UserControl.DataContext>
+        <Properties:Settings/>
+    </UserControl.DataContext>
+    <ScrollViewer>
+        <Grid>
+
+            <StackPanel Orientation="Vertical" Margin="10">
+                <Label x:Name="label2" Content="{DynamicResource setting_mainlabel}" HorizontalAlignment="Stretch" VerticalAlignment="Top"  />
+                <Label x:Name="label2_Copy" Content="{DynamicResource setting_xscale}" />
+                <Controls:NumericUpDown x:Name="ScaleXBox"  Maximum="999" Minimum="1" Background="White" Value="{Binding default_scale_x, Mode=TwoWay}"/>
+                <Label x:Name="label2_Copy1" Content="{DynamicResource setting_yscale}" VerticalAlignment="Top"/>
+                <Controls:NumericUpDown x:Name="ScaleYBox"  Maximum="999" Minimum="1" Background="White"  Value="{Binding default_scale_y, Mode=TwoWay}"/>
+                <Label x:Name="label2_Copy2" Content="{DynamicResource obj_Angle}" VerticalAlignment="Top"/>
+                <Controls:NumericUpDown x:Name="AngleBox" Maximum="360" Minimum="0" Background="White"  Value="{Binding default_angle, Mode=TwoWay}"/>
+                <CheckBox x:Name="MirrorBox" Content="{DynamicResource obj_Mirror}" IsChecked="{Binding default_mirror, Mode=TwoWay}"/>
+                <CheckBox x:Name="ScalePercentCheck" Content="{DynamicResource setting_percent}" IsChecked="{Binding stg_scale_percent, Mode=TwoWay}"/>
+                <CheckBox x:Name="ScaleInvertCheck" Content="{DynamicResource setting_invertscale}" IsChecked="{Binding stg_scale_invert, Mode=TwoWay}"/>
+                <CheckBox x:Name="SolidObject" Content="{DynamicResource setting_solidobject}" IsChecked="{Binding object_solid, Mode=TwoWay}"/>
+                <CheckBox x:Name="ShowNameCheck" Content="{DynamicResource setting_showname}" IsChecked="{Binding stg_show_name, Mode=TwoWay}"/>
+                <CheckBox x:Name="SelectableShowCheck" Content="{DynamicResource setting_selectableshow}" IsChecked="{Binding stg_selectable_show, Mode=TwoWay}"/>
+
+                <Label Content="Thinkess" />
+                <Controls:NumericUpDown  Maximum="10" Minimum="0.0001" Interval="0.01"
+                                     Background="White"
+                                     Value="{Binding default_thinkess_percent, Mode=TwoWay}"/>
+
+                <!-- Attach panel-->
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                    <Label VerticalAlignment="Center" Content="{DynamicResource setting_attach}"/>
+                    <Grid Height="75" Width="75" 
+                  HorizontalAlignment="Center"
+                  Margin="10">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition/>
+                            <ColumnDefinition/>
+                            <ColumnDefinition/>
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition/>
+                            <RowDefinition/>
+                            <RowDefinition/>
+                        </Grid.RowDefinitions>
+                        <RadioButton Grid.Column="0" Grid.Row="0"
+                             HorizontalAlignment="Center" VerticalAlignment="Center"
+                             DataContext="Top%Left" Checked="AttachRadioButton_Checked"/>
+                        <RadioButton Grid.Column="1" Grid.Row="0"
+                                 HorizontalAlignment="Center" VerticalAlignment="Center"
+                                 DataContext="Top$Middle" Checked="AttachRadioButton_Checked"/>
+                        <RadioButton Grid.Column="2" Grid.Row="0"
+                                 HorizontalAlignment="Center" VerticalAlignment="Center"
+                                 DataContext="Top%Right" Checked="AttachRadioButton_Checked"/>
+                        <RadioButton Grid.Column="0" Grid.Row="1"
+                                 HorizontalAlignment="Center" VerticalAlignment="Center" 
+                                 DataContext="Middle%Right" Checked="AttachRadioButton_Checked"/>
+                        <RadioButton Grid.Column="1" Grid.Row="1" 
+                                 HorizontalAlignment="Center" VerticalAlignment="Center" 
+                                 DataContext="Middle%Middle" Checked="AttachRadioButton_Checked"/>
+                        <RadioButton Grid.Column="2" Grid.Row="1"
+                                 HorizontalAlignment="Center" VerticalAlignment="Center"
+                                 DataContext="Middle%Left" Checked="AttachRadioButton_Checked"/>
+                        <RadioButton Grid.Column="0" Grid.Row="2"
+                                 HorizontalAlignment="Center" VerticalAlignment="Center"
+                                 DataContext="Down%Left" Checked="AttachRadioButton_Checked"/>
+                        <RadioButton Grid.Column="1" Grid.Row="2"
+                                 HorizontalAlignment="Center" VerticalAlignment="Center" 
+                                 DataContext="Down%Middle" Checked="AttachRadioButton_Checked"/>
+                        <RadioButton Grid.Column="2" Grid.Row="2"
+                                 HorizontalAlignment="Center" VerticalAlignment="Center"
+                                 DataContext="Down%Right" Checked="AttachRadioButton_Checked"/>
+                    </Grid>
+                </StackPanel>
+
+                <Button Content="{DynamicResource m_Save}"
+        Height="40" Margin="10"/>
+            </StackPanel>
+        </Grid>
+    </ScrollViewer>
+</UserControl>

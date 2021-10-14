@@ -310,5 +310,17 @@ namespace CadProjectorViewer.Properties {
                 this["stg_selectable_show"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("0.01")]
+        public double default_thinkess_percent {
+            get {
+                return ((double)(this["default_thinkess_percent"]));
+            }
+            set {
+                this["default_thinkess_percent"] = value;
+            }
+        }
     }
 }

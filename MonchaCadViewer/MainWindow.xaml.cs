@@ -32,7 +32,6 @@ using System.Threading.Tasks;
 using ToGeometryConverter.Object.Elements;
 using ToGeometryConverter.Format.ILDA;
 using System.Text;
-using System.Net.Sockets;
 using System.Net;
 using CadProjectorViewer.Panels.CanvasPanel;
 using System.Management;
@@ -52,7 +51,7 @@ namespace CadProjectorViewer
     /// <summary>
     /// Логика взаимодействия для MainWindow.xaml
     /// </summary>
-    public partial class MainWindow : Window
+    public partial class MainWindow : MetroWindow
     {
         public ProjectorHub ProjectorHub { get; set; } = new ProjectorHub();
 
@@ -91,7 +90,7 @@ namespace CadProjectorViewer
 
             GCTools.Log = PostLog;
             GCTools.SetProgress = ProgressPanel.SetProgressBar;
-            NameLabel.Content = $"2CUT Viewer v{Assembly.GetExecutingAssembly().GetName().Version.ToString()}";
+            this.Title = $"CUT — Viewer v{Assembly.GetExecutingAssembly().GetName().Version.ToString()}";
 
             LoadMoncha();
         }
@@ -186,7 +185,6 @@ namespace CadProjectorViewer
             {
                 AppSt.Default.cl_moncha_path = fileDialog.FileName;
                 AppSt.Default.Save();
-                MonchaPathBox.Content = fileDialog.FileName;
                 LoadMoncha();
             }
         }
@@ -554,21 +552,6 @@ namespace CadProjectorViewer
             }*/
         }
 
-
-        private void SaveObjStgBtn_Click(object sender, RoutedEventArgs e)
-        {
-            AppSt.Default.default_scale_x = ScaleXBox.Value.Value;
-            AppSt.Default.default_scale_y = ScaleYBox.Value.Value;
-            AppSt.Default.default_angle = AngleBox.Value.Value;
-            AppSt.Default.default_mirror = MirrorBox.IsChecked.Value;
-            AppSt.Default.stg_scale_invert = ScaleInvertCheck.IsChecked.Value;
-            AppSt.Default.stg_scale_percent = ScalePercentCheck.IsChecked.Value;
-            AppSt.Default.object_solid = SolidObject.IsChecked.Value;
-            AppSt.Default.stg_show_name = ShowNameCheck.IsChecked.Value;
-            AppSt.Default.stg_selectable_show = SelectableShowCheck.IsChecked.Value;
-            AppSt.Default.Save();
-        }
-
         private void CalibrationFormCombo_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             if (CalibrationFormCombo.SelectedValue != null)
@@ -583,7 +566,6 @@ namespace CadProjectorViewer
             AppSt.Default.Save();
         }
 
-    
         private void SaveAsItem_Click(object sender, RoutedEventArgs e) => SaveConfiguration(true);
 
 
@@ -617,7 +599,6 @@ namespace CadProjectorViewer
                     {
                         ProjectorHub.Save(AppSt.Default.cl_moncha_path);
                     }
-                    MonchaPathBox.Content = AppSt.Default.cl_moncha_path;
                     AppSt.Default.Save();
                     ProgressPanel.End();
                     return false;
@@ -649,10 +630,7 @@ namespace CadProjectorViewer
 
         private void Line_Click(object sender, RoutedEventArgs e) => ProjectorHub.ScenesCollection.MainScene.SceneAction = SceneAction.Line;
 
-        private void TcpListenBtn_Click(object sender, RoutedEventArgs e)
-        {
-            ProjectorHub.UdpListenerRun(AppSt.Default.ether_udp_port);
-        }
+        private void TcpListenBtn_Click(object sender, RoutedEventArgs e) => ProjectorHub.UdpListenerRun(AppSt.Default.ether_udp_port);
 
 
         private void ethernetToggle_Toggled(object sender, RoutedEventArgs e)
@@ -668,7 +646,6 @@ namespace CadProjectorViewer
                     ProjectorHub.UdpListnerStop();
                 }
             }
-            
         }
 
         private void PortUpDn_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double?> e)
@@ -677,13 +654,7 @@ namespace CadProjectorViewer
             AppSt.Default.Save();
         }
 
-        private void AttachRadioButton_Checked(object sender, RoutedEventArgs e)
-        {
-            if (sender is RadioButton radioButton && radioButton.DataContext != null)
-            {
-                AppSt.Default.stg_default_position = radioButton.DataContext.ToString();
-            }
-        }
+
 
         private void LincenseItem_Click(object sender, RoutedEventArgs e)
         {

@@ -10,9 +10,7 @@
     <Window.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-
                 <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Fonts.xaml" />
-                <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Themes/Light.Blue.xaml" />
             </ResourceDictionary.MergedDictionaries>
             <Style x:Key="Border" TargetType="{x:Type Border}">
                 <Setter Property="BorderBrush" Value="DarkGray"/>
@@ -73,7 +71,8 @@
             VerticalAlignment="Bottom"
             Interval="0.01"
             Maximum="1"
-            Minimum="-1" NumericInputMode="Decimal" Grid.Column="1"/>
+            Minimum="-1" 
+            Grid.Column="1"/>
         <Controls:NumericUpDown
             Value="{Binding WidthResolutuon, Mode=TwoWay}"
             Grid.Row="4"
@@ -82,7 +81,8 @@
             Margin="5,0,10,129"
             VerticalAlignment="Bottom"
             Interval="1"
-            Minimum="1" NumericInputMode="Decimal" Grid.Column="1"/>
+            Minimum="1" 
+            Grid.Column="1"/>
         <Controls:NumericUpDown
             Value="{Binding HeightResolution, Mode=TwoWay}"
             Grid.Row="4"
@@ -91,7 +91,8 @@
             Margin="5,0,10,94"
             VerticalAlignment="Bottom"
             Interval="1"
-            Minimum="1" NumericInputMode="Decimal" Grid.Column="1"/>
+            Minimum="1" 
+            Grid.Column="1"/>
         <Label x:Name="label_Copy2" Content="Width" Margin="5,10,0,134" Grid.Row="4"/>
     </Grid>
 </Window>

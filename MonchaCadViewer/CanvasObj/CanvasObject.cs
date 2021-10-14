@@ -19,7 +19,7 @@ using System.Collections.ObjectModel;
 using System.Windows.Media.Media3D;
 using CadProjectorSDK.CadObjects.LObjects;
 using CadProjectorSDK.CadObjects.Abstract;
-using CadProjectorSDK.CadObjects.Interface;
+using CadProjectorSDK.Interfaces;
 using CadProjectorSDK.Device.Mesh;
 
 namespace CadProjectorViewer.CanvasObj

@@ -8,6 +8,7 @@
     xmlns:scene="clr-namespace:CadProjectorSDK.Scenes;assembly=CadProjectorSDK" 
     xmlns:canvaspanel="clr-namespace:CadProjectorViewer.Panels.CanvasPanel" 
     xmlns:panels="clr-namespace:CadProjectorViewer.Panels"
+    AllowDrop="False"
     d:DataContext="{d:DesignInstance Type=scene:ProjectionScene}"
     d:DesignHeight="100"
     d:DesignWidth="100"

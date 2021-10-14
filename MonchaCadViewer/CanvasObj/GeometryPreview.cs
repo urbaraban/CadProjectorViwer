@@ -1,5 +1,5 @@
 ﻿using CadProjectorSDK.CadObjects.Abstract;
-using CadProjectorSDK.CadObjects.Interface;
+using CadProjectorSDK.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;

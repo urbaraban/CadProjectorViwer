@@ -84,7 +84,7 @@ namespace CadProjectorViewer.Panels
             base.OnMouseMove(e);
             if (e.LeftButton == MouseButtonState.Pressed)
             {
-                DragDrop.DoDragDrop(this, this.Scene, DragDropEffects.Move);
+                DragDrop.DoDragDrop(this, this.Scene, Keyboard.Modifiers == ModifierKeys.Alt ? DragDropEffects.Copy : DragDropEffects.Move);
             }
         }
 

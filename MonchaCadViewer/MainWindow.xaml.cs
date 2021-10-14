@@ -34,7 +34,6 @@ using ToGeometryConverter.Format.ILDA;
 using System.Text;
 using System.Net.Sockets;
 using System.Net;
-using ToGeometryConverter.Object.UDP;
 using CadProjectorViewer.Panels.CanvasPanel;
 using System.Management;
 using ToGeometryConverter.Format;
@@ -42,11 +41,11 @@ using CadProjectorViewer.StaticTools;
 using System.Reflection;
 using CadProjectorSDK.Tools;
 using System.Windows.Media.Imaging;
-using CadProjectorSDK.CadObjects.Interface;
 using CadProjectorSDK.CadObjects.Abstract;
 using CadProjectorSDK.Device.Mesh;
 using CadProjectorSDK.Scenes;
 using System.Threading;
+using CadProjectorSDK.UDP;
 
 namespace CadProjectorViewer
 {
@@ -61,21 +60,6 @@ namespace CadProjectorViewer
 
         private KmpsAppl kmpsAppl;
         private bool inverseToggle = true;
-        private UdpLaserListener UDPLaserListener
-        {
-            get => this._udpLaserListener;
-            set
-            {
-                if (this._udpLaserListener != null)
-                {
-                    this._udpLaserListener.IncomingData -= UdpLaserListener_IncomingData;
-                    this._udpLaserListener.Stop();
-                }
-                this._udpLaserListener = value;
-                this._udpLaserListener.IncomingData += UdpLaserListener_IncomingData;
-            }
-        }
-        private UdpLaserListener _udpLaserListener;
 
         public MainWindow()
         {
@@ -667,58 +651,21 @@ namespace CadProjectorViewer
 
         private void TcpListenBtn_Click(object sender, RoutedEventArgs e)
         {
-            UdpListenerRun();
+            ProjectorHub.UdpListenerRun(AppSt.Default.ether_udp_port);
         }
 
-        private void UdpListenerRun()
-        {
-                this.UDPLaserListener = new UdpLaserListener(AppSt.Default.ether_udp_port);
-                UDPLaserListener.Run();
-
-            LogBox.Items.Add($"Status Listener: {this.UDPLaserListener.Status}");
-        }
-        private void UdpListnerStop()
-        {
-            this.UDPLaserListener.Stop();
-        }
-
-        private async void UdpLaserListener_IncomingData(object sender, byte[] e)
-        {
-            LogBox.Items.Add($"Incomin Data: {string.Join(string.Empty, e)}");
-            int position = 0;
-
-            if (e != null)
-            {
-                try
-                {
-                   /* CadGroup geometries = new CadGroup(await GCByteReader.Read(e, "Ethernet"));
-
-                    ContourScrollPanel.Add(false, geometries, geometries.Name);*/
-
-                }
-                catch
-                {
-                    LogBox.Items.Add($"Incoming bullshit");
-                    Console.WriteLine("Incoming bullshit");
-                }
-            }
-        }
 
         private void ethernetToggle_Toggled(object sender, RoutedEventArgs e)
         {
             if (sender is ToggleSwitch toggle)
             {
-                if (this.UDPLaserListener == null)
+                if (toggle.IsOn == true)
                 {
-                    UdpListenerRun();
+                    ProjectorHub.UdpListenerRun(AppSt.Default.ether_udp_port);
                 }
-                else
+                else 
                 {
-                    if (this.UDPLaserListener.Status == false)
-                    {
-                        UdpListenerRun();
-                    }
-                    else UdpListnerStop();
+                    ProjectorHub.UdpListnerStop();
                 }
             }
             

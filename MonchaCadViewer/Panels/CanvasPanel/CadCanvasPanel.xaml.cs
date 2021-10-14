@@ -18,11 +18,11 @@ using System.Windows.Navigation;
 using AppSt = CadProjectorViewer.Properties.Settings;
 using System.Globalization;
 using CadProjectorSDK.CadObjects.Abstract;
-using CadProjectorSDK.CadObjects.Interface;
 using CadProjectorSDK.Device.Mesh;
 using CadProjectorSDK.Scenes;
 using CadProjectorViewer.StaticTools;
 using System.IO;
+using CadProjectorSDK.Interfaces;
 
 namespace CadProjectorViewer.Panels.CanvasPanel
 {
@@ -130,7 +130,7 @@ namespace CadProjectorViewer.Panels.CanvasPanel
         protected async override void OnDrop(DragEventArgs e)
         {
             base.OnDrop(e);
-            if (await FileLoad.GetScene(e.Data) is ProjectionScene Scene)
+            if (await FileLoad.GetScene(e) is ProjectionScene Scene)
             {
                 this.projectorHub.ScenesCollection.Add(Scene);
             }

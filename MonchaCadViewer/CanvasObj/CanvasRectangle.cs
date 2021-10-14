@@ -18,7 +18,7 @@ using System.Windows.Media;
 using System.Windows.Media.Media3D;
 using System.Windows.Shapes;
 using System.Windows.Data;
-using CadProjectorSDK.CadObjects.Interface;
+using CadProjectorSDK.Interfaces;
 
 namespace CadProjectorViewer.CanvasObj
 {

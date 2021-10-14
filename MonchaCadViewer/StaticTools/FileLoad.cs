@@ -37,11 +37,11 @@ namespace CadProjectorViewer.StaticTools
 
         public static async Task<ProjectionScene> GetScene(object obj)
         {
-            if (obj is IDataObject data)
+            if (obj is DragEventArgs dragEvent)
             {
-                if (data.GetDataPresent(DataFormats.FileDrop))
+                if (dragEvent.Data.GetDataPresent(DataFormats.FileDrop))
                 {
-                    if (data.GetData(DataFormats.FileDrop) is string[] strings) {
+                    if (dragEvent.Data.GetData(DataFormats.FileDrop) is string[] strings) {
                         foreach (string fileLoc in strings)
                         {
                             if (File.Exists(fileLoc))
@@ -51,9 +51,9 @@ namespace CadProjectorViewer.StaticTools
                         }
                     }
                 }
-                else if (data.GetData(data.GetFormats()[0]) is ProjectionScene Scene)
+                else if (dragEvent.Data.GetData(dragEvent.Data.GetFormats()[0]) is ProjectionScene Scene)
                 {
-                    return Scene;
+                    return dragEvent.Effects == DragDropEffects.Copy ? Scene.Clone() : Scene;
                 }
             }
             return await Task.FromResult<ProjectionScene>(null);

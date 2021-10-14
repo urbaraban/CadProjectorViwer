@@ -1,6 +1,6 @@
 ﻿using CadProjectorSDK.CadObjects;
 using CadProjectorSDK.CadObjects.Abstract;
-using CadProjectorSDK.CadObjects.Interface;
+using CadProjectorSDK.Interfaces;
 using CadProjectorSDK.Device.Mesh;
 using CadProjectorSDK.Scenes;
 using CadProjectorViewer.CanvasObj;

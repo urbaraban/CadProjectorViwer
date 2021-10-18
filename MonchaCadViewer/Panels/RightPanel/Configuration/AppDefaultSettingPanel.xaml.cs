@@ -25,15 +25,9 @@ namespace CadProjectorViewer.Panels.RightPanel.Configuration
         public AppDefaultSettingPanel()
         {
             InitializeComponent();
+            AppSt.Default.Upgrade();
         }
 
-        private void AttachRadioButton_Checked(object sender, RoutedEventArgs e)
-        {
-            if (sender is RadioButton radioButton && radioButton.DataContext != null)
-            {
-                AppSt.Default.stg_default_position = radioButton.DataContext.ToString();
-            }
-        }
     }
 
     public class AppSettingSave : IValueConverter
@@ -46,6 +40,19 @@ namespace CadProjectorViewer.Panels.RightPanel.Configuration
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
             return value;
+        }
+    }
+
+    public class AttachConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            return (string)value == (string)parameter;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            return (bool)value == true ? parameter : AppSt.Default.Attach;
         }
     }
 }

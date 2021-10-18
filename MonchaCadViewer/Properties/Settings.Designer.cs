@@ -289,18 +289,6 @@ namespace CadProjectorViewer.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("Down%Left")]
-        public string stg_default_position {
-            get {
-                return ((string)(this["stg_default_position"]));
-            }
-            set {
-                this["stg_default_position"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("False")]
         public bool stg_selectable_show {
             get {
@@ -320,6 +308,18 @@ namespace CadProjectorViewer.Properties {
             }
             set {
                 this["default_thinkess_percent"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("Down%Left")]
+        public string Attach {
+            get {
+                return ((string)(this["Attach"]));
+            }
+            set {
+                this["Attach"] = value;
             }
         }
     }

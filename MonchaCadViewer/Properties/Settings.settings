@@ -68,14 +68,14 @@
     <Setting Name="ether_udp_port" Type="System.Int32" Scope="User">
       <Value Profile="(Default)">11000</Value>
     </Setting>
-    <Setting Name="stg_default_position" Type="System.String" Scope="User">
-      <Value Profile="(Default)">Down%Left</Value>
-    </Setting>
     <Setting Name="stg_selectable_show" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">False</Value>
     </Setting>
     <Setting Name="default_thinkess_percent" Type="System.Double" Scope="User">
       <Value Profile="(Default)">0.01</Value>
+    </Setting>
+    <Setting Name="Attach" Type="System.String" Scope="User">
+      <Value Profile="(Default)">Down%Left</Value>
     </Setting>
   </Settings>
 </SettingsFile>

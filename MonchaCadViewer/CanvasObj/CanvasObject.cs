@@ -296,12 +296,12 @@ namespace CadProjectorViewer.CanvasObj
 
         protected override void OnMouseLeftButtonDown(MouseButtonEventArgs e)
         {
-            base.OnMouseLeftButtonDown(e);
             if (ActiveObject == true)
             {
                 this.MousePos = e.GetPosition(this);
                 this.BasePos = new Point(this.X, this.Y);
             }
+            base.OnMouseLeftButtonDown(e);
         }
 
         protected override void OnContextMenuClosing(ContextMenuEventArgs e)

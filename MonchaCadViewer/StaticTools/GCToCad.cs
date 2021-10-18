@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using ToGeometryConverter.Object;
 using ToGeometryConverter.Object.Elements;
+using AppSt = CadProjectorViewer.Properties.Settings;
 
 namespace CadProjectorViewer.StaticTools
 {
@@ -47,7 +48,7 @@ namespace CadProjectorViewer.StaticTools
             foreach (IGCObject obj in gCObjects)
             {
                 UidObject uidObject = await GCToCad.GetUid(obj);
-                uidObject.UpdateTransform(true);
+                uidObject.UpdateTransform(AppSt.Default.Attach);
                 if (uidObject != null) group.Add(uidObject);
             }
             return group;

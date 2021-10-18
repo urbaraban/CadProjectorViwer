@@ -91,8 +91,7 @@ namespace CadProjectorViewer
             GCTools.Log = PostLog;
             GCTools.SetProgress = ProgressPanel.SetProgressBar;
             this.Title = $"CUT — Viewer v{Assembly.GetExecutingAssembly().GetName().Version.ToString()}";
-
-            LoadMoncha();
+            FileLoad.LoadMoncha(ProjectorHub, false);
         }
 
 
@@ -131,63 +130,8 @@ namespace CadProjectorViewer
         }
 
 
-        private async void LoadMoncha()
-        {
-            ProjectorHub.Play = false;
+      
 
-            //check path to setting file
-            if (File.Exists(AppSt.Default.cl_moncha_path) == false)
-            {
-                BrowseMoncha(); //select if not
-            }
-            ProjectorHub.Disconnect();
-
-            //send path to hub class
-            try
-            {
-                await ProjectorHub.Load(AppSt.Default.cl_moncha_path);
-            }
-            catch
-            {
-                MessageBox.Show("Ошибка конфигурации!");
-            }
-            WidthUpDn.DataContext = ProjectorHub.Size;
-            WidthUpDn.SetBinding(NumericUpDown.ValueProperty, "Width");
-
-            HeightUpD.DataContext = ProjectorHub.Size;
-            HeightUpD.SetBinding(NumericUpDown.ValueProperty, "Height");
-
-            DeepUpDn.DataContext = ProjectorHub.Size;
-            DeepUpDn.SetBinding(NumericUpDown.ValueProperty, "Depth");
-
-            MashMultiplierUpDn.Value = ProjectorHub.Size.M.Width;
-
-            CalibrationFormCombo.Items.Clear();
-            CalibrationFormCombo.Items.Add(CalibrationForm.cl_Dot);
-            CalibrationFormCombo.Items.Add(CalibrationForm.cl_Rect);
-            CalibrationFormCombo.Items.Add(CalibrationForm.cl_miniRect);
-            CalibrationFormCombo.Items.Add(CalibrationForm.cl_Cross);
-            CalibrationFormCombo.Items.Add(CalibrationForm.cl_HLine);
-            CalibrationFormCombo.Items.Add(CalibrationForm.cl_WLine);
-
-        }
-
-        private void BrowseMonchaBtn_Click(object sender, RoutedEventArgs e)
-        {
-            BrowseMoncha();
-        }
-
-        private void BrowseMoncha()
-        {
-            OpenFileDialog fileDialog = new OpenFileDialog();
-            fileDialog.Filter = "Moncha (.mws)|*.mws|All Files (*.*)|*.*";
-            if (fileDialog.ShowDialog() == true)
-            {
-                AppSt.Default.cl_moncha_path = fileDialog.FileName;
-                AppSt.Default.Save();
-                LoadMoncha();
-            }
-        }
 
 
 
@@ -234,20 +178,6 @@ namespace CadProjectorViewer
             }
         }
 
-        private void MashMultiplierUpDn_ValueIncremented(object sender, NumericUpDownChangedRoutedEventArgs args)
-        {
-            if (MashMultiplierUpDn.Value == null) MashMultiplierUpDn.Value = 1;
-            args.Interval = 0;
-            MashMultiplierUpDn.Value = MashMultiplierUpDn.Value.Value * 10;
-            ProjectorHub.Size.M.Set(MashMultiplierUpDn.Value.Value);
-        }
-
-        private void MashMultiplierUpDn_ValueDecremented(object sender, NumericUpDownChangedRoutedEventArgs args)
-        {
-            args.Interval = 0;
-            MashMultiplierUpDn.Value = MashMultiplierUpDn.Value.Value / 10;
-            ProjectorHub.Size.M.Set(MashMultiplierUpDn.Value.Value);
-        }
 
         private void kmpsConnectToggle_Toggled(object sender, RoutedEventArgs e)
         {
@@ -335,7 +265,7 @@ namespace CadProjectorViewer
         {
             base.OnKeyUp(e);
             double _mult = Keyboard.Modifiers == ModifierKeys.Shift ? 10 : 1;
-            double step = PointStepUpDn.Value.Value;
+            double step = ProjectorHub.Movespeed;
 
             switch (e.Key)
             {
@@ -505,22 +435,7 @@ namespace CadProjectorViewer
             this.DragMove();
         }
 
-        private void PointStepUpDn_ValueDecremented(object sender, NumericUpDownChangedRoutedEventArgs args)
-        {
-            if ((Math.Round(PointStepUpDn.Value.Value, 4) - PointStepUpDn.Interval) == 0)
-            {
-                PointStepUpDn.Interval = PointStepUpDn.Interval / 10;
-                args.Interval = args.Interval / 10;
-            }
-        }
 
-        private void PointStepUpDn_ValueIncremented(object sender, NumericUpDownChangedRoutedEventArgs args)
-        {
-            if (Math.Round(PointStepUpDn.Value.Value + PointStepUpDn.Interval, 4) >= PointStepUpDn.Interval * 10)
-            {
-                PointStepUpDn.Interval = PointStepUpDn.Interval * 10;
-            }
-        }
 
         /// <summary>
         /// Save frame to ILDA file
@@ -552,13 +467,7 @@ namespace CadProjectorViewer
             }*/
         }
 
-        private void CalibrationFormCombo_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            if (CalibrationFormCombo.SelectedValue != null)
-            {
-                //ProjectorHub.Devices.Sel.ClbrForm = (CalibrationForm)CalibrationFormCombo.SelectedValue;
-            }
-        }
+
 
         private void Save_Click(object sender, RoutedEventArgs e)
         {
@@ -620,11 +529,6 @@ namespace CadProjectorViewer
         }
 
 
-        private void Button_Click(object sender, RoutedEventArgs e)
-        {
-            LoadMoncha();
-        }
-
 
         private void RectBtn_Click(object sender, RoutedEventArgs e) => ProjectorHub.ScenesCollection.MainScene.SceneAction = SceneAction.Mask;
 
@@ -666,6 +570,8 @@ namespace CadProjectorViewer
         {
             this.Close();
         }
+
+        private void BrowseMWSItem_Click(object sender, RoutedEventArgs e) => FileLoad.LoadMoncha(ProjectorHub, true);
     }
 
     public class MultiObjectList : IMultiValueConverter

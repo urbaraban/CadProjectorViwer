@@ -5,6 +5,7 @@ using CadProjectorSDK.Scenes;
 using CadProjectorViewer.CanvasObj;
 using CadProjectorViewer.Panels;
 using KompasLib.Tools;
+using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -17,6 +18,7 @@ using System.Windows.Media.Imaging;
 using ToGeometryConverter;
 using ToGeometryConverter.Format;
 using ToGeometryConverter.Object;
+using AppSt = CadProjectorViewer.Properties.Settings;
 
 namespace CadProjectorViewer.StaticTools
 {
@@ -34,6 +36,41 @@ namespace CadProjectorViewer.StaticTools
             new GCFormat("Компас 3D", new string[2] { "frw" , "cdw"}) { ReadFile = GetKompas },
             new GCFormat("JPG Image", new string[2] { "jpg" , "jpeg"}) { ReadFile = GetImage }
         };
+
+        private static string BrowseMWS()
+        {
+            OpenFileDialog fileDialog = new OpenFileDialog();
+            fileDialog.Filter = "Moncha (.mws)|*.mws|All Files (*.*)|*.*";
+            if (fileDialog.ShowDialog() == true)
+            {
+                return fileDialog.FileName;
+            }
+            return string.Empty;
+        }
+
+        public static async void LoadMoncha(ProjectorHub projectorHub, bool browse)
+        {
+            projectorHub.Play = false;
+
+            //check path to setting file
+            if (File.Exists(AppSt.Default.cl_moncha_path) == false || browse == true)
+            {
+                string str = FileLoad.BrowseMWS(); //select if not\
+                AppSt.Default.cl_moncha_path = str;
+                AppSt.Default.Save();
+            }
+            projectorHub.Disconnect();
+
+            //send path to hub class
+            try
+            {
+                await projectorHub.Load(AppSt.Default.cl_moncha_path);
+            }
+            catch
+            {
+                MessageBox.Show("Ошибка конфигурации!");
+            }
+        }
 
         public static async Task<ProjectionScene> GetScene(object obj)
         {

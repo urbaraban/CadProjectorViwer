@@ -1,62 +1,26 @@
 ﻿<Controls:MetroWindow
-        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:Properties="clr-namespace:CadProjectorViewer.Properties"
-        xmlns:canvaspanel="clr-namespace:CadProjectorViewer.Panels.CanvasPanel"
-        xmlns:panels="clr-namespace:CadProjectorViewer.Panels" 
-        xmlns:convert="clr-namespace:CadProjectorViewer.Converters"
-        xmlns:leftpanels="clr-namespace:CadProjectorViewer.Panels.DevicePanel.LeftPanels" 
-    xmlns:rightpanel="clr-namespace:CadProjectorViewer.Panels.RightPanel" 
-    xmlns:CadProjectorViewer="clr-namespace:CadProjectorViewer"  
-    xmlns:configuration="clr-namespace:CadProjectorViewer.Panels.RightPanel.Configuration"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:Controls="http://metro.mahapps.com/winfx/xaml/controls"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:CadProjectorViewer="clr-namespace:CadProjectorViewer"
+    xmlns:convert="clr-namespace:CadProjectorViewer.Converters"
+    xmlns:panels="clr-namespace:CadProjectorViewer.Panels"
+    xmlns:canvaspanel="clr-namespace:CadProjectorViewer.Panels.CanvasPanel"
+    xmlns:leftpanels="clr-namespace:CadProjectorViewer.Panels.DevicePanel.LeftPanels"
+    xmlns:rightpanel="clr-namespace:CadProjectorViewer.Panels.RightPanel"
+    xmlns:configuration="clr-namespace:CadProjectorViewer.Panels.RightPanel.Configuration"
+    xmlns:Properties="clr-namespace:CadProjectorViewer.Properties"
     DataContext="{Binding RelativeSource={RelativeSource Self}, Path=ProjectorHub}"
     x:Class="CadProjectorViewer.MainWindow"
         mc:Ignorable="d"
-        Title="CUT - Viwer" KeyboardNavigation.TabNavigation="None"  
+        Title="CUT - Viwer" KeyboardNavigation.TabNavigation="None"
     AllowDrop="True"
-    Height="760" Width="999"  
-    WindowStartupLocation="CenterScreen" 
+    Height="760" Width="999"
+    WindowStartupLocation="CenterScreen"
     Icon="logo.png"
     ResizeMode="CanResizeWithGrip">
-    <Controls:MetroWindow.LeftWindowCommands>
-        <Controls:WindowCommands>
-            <Menu>
-                <MenuItem Header="▼" Focusable="True">
-                    <MenuItem Header="File">
-                        <MenuItem Header="Browse Moncha" Click="BrowseMonchaBtn_Click"/>
-                        <Separator/>
-                        <MenuItem Header="Save Moncha" Click="MenuSaveBtn_Click"/>
-                        <MenuItem Header="Save Moncha as..." Click="SaveAsItem_Click"/>
-                        <MenuItem Header="License" Click="LincenseItem_Click"/>
-                        <Separator/>
-                        <MenuItem Header="Close" Click="Close_Click"/>
-                    </MenuItem>
-                    <MenuItem x:Name="menuLanguage" Header="Language">
-                    </MenuItem>
-                </MenuItem>
-            </Menu>
-            <Button x:Name="MenuSaveBtn" FontFamily="Segoe MDL2 Assets" Content="&#xE792;" Width="25" Height="25" Margin="2" Padding="0,-1,0,0" FontSize="18" BorderBrush="{x:Null}" Background="{x:Null}" Click="MenuSaveBtn_Click"/>
-
-        </Controls:WindowCommands>
-    </Controls:MetroWindow.LeftWindowCommands>
-    <Controls:MetroWindow.RightWindowCommands>
-        <Controls:WindowCommands>
-            <Label Margin="3"   Content="{Binding cl_moncha_path}" VerticalAlignment="Top" Grid.ColumnSpan="3" HorizontalContentAlignment="Right" RenderTransformOrigin="0.7,-1.217" FontSize="10">
-                <Label.DataContext>
-                    <Properties:Settings/>
-                </Label.DataContext>
-            </Label>
-            <Controls:ToggleSwitch
-                        IsOn="{Binding UDPLaserListener.Status, Mode=OneWay}"
-                OffContent="Ethernet"
-                OnContent="Listing"
-                VerticalAlignment="Center"
-                Toggled="ethernetToggle_Toggled"/>
-        </Controls:WindowCommands>
-    </Controls:MetroWindow.RightWindowCommands>
     <Controls:MetroWindow.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -66,20 +30,29 @@
                 <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Themes/Light.Blue.xaml" />
             </ResourceDictionary.MergedDictionaries>
             <Style x:Key="Border" TargetType="{x:Type Border}">
-                <Setter Property="BorderBrush" Value="DarkGray"/>
-                <Setter Property="BorderThickness" Value="1"/>
+                <Setter Property="BorderBrush" Value="DarkGray" />
+                <Setter Property="BorderThickness" Value="1" />
+                <Setter Property="Padding" Value="1" />
                 <Style.Triggers>
                     <Trigger Property="IsMouseOver" Value="true">
-                        <Setter Property="BorderBrush" Value="CadetBlue"/>
+                        <Setter Property="BorderBrush" Value="CadetBlue" />
+                    </Trigger>
+                </Style.Triggers>
+            </Style>
+            <Style x:Key="GridSplitter" TargetType="{x:Type GridSplitter}">
+                <Setter Property="Background" Value="White" />
+                <Style.Triggers>
+                    <Trigger Property="IsMouseOver" Value="true">
+                        <Setter Property="Background" Value="CadetBlue" />
                     </Trigger>
                 </Style.Triggers>
             </Style>
             <Style x:Key="ObjCanvas" TargetType="{x:Type Border}">
-                <Setter Property="BorderBrush" Value="DarkGray"/>
-                <Setter Property="BorderThickness" Value="1"/>
+                <Setter Property="BorderBrush" Value="DarkGray" />
+                <Setter Property="BorderThickness" Value="1" />
                 <Style.Triggers>
                     <Trigger Property="IsMouseOver" Value="true">
-                        <Setter Property="BorderBrush" Value="CadetBlue"/>
+                        <Setter Property="BorderBrush" Value="CadetBlue" />
                     </Trigger>
                 </Style.Triggers>
             </Style>
@@ -87,60 +60,114 @@
             <Style TargetType="{x:Type TabItem}" BasedOn="{StaticResource {x:Type TabItem}}">
                 <Setter Property="Controls:HeaderedControlHelper.HeaderFontSize" Value="14" />
             </Style>
-            
-            <CadProjectorViewer:PlayBackConverter x:Key="PlayBackConverter"/>
-            <CadProjectorViewer:MultiObjectList x:Key="MultiList"/>
-            <CadProjectorViewer:LicenceColor x:Key="LicenceKey"/>
+
+            <CadProjectorViewer:PlayBackConverter x:Key="PlayBackConverter" />
+            <CadProjectorViewer:MultiObjectList x:Key="MultiList" />
+            <CadProjectorViewer:LicenceColor x:Key="LicenceKey" />
         </ResourceDictionary>
     </Controls:MetroWindow.Resources>
+    <Controls:MetroWindow.LeftWindowCommands>
+        <Controls:WindowCommands>
+            <Menu>
+                <MenuItem Header="▼" Focusable="True">
+                    <MenuItem Header="File">
+                        <MenuItem Header="BrowseMWS" Click="BrowseMWSItem_Click" />
+                        <Separator />
+                        <MenuItem Header="Save Moncha" Click="MenuSaveBtn_Click" />
+                        <MenuItem Header="Save Moncha as..." Click="SaveAsItem_Click" />
+                        <MenuItem Header="License" Click="LincenseItem_Click" />
+                        <Separator />
+                        <MenuItem Header="Close" Click="Close_Click" />
+                    </MenuItem>
+                    <MenuItem x:Name="menuLanguage" Header="Language">
+                    </MenuItem>
+                </MenuItem>
+            </Menu>
+            <Button x:Name="MenuSaveBtn" FontFamily="Segoe MDL2 Assets" Content="&#xE792;" Width="25" Height="25" Margin="2" Padding="0,-1,0,0" FontSize="18" BorderBrush="{x:Null}" Background="{x:Null}" Click="MenuSaveBtn_Click" />
+        </Controls:WindowCommands>
+    </Controls:MetroWindow.LeftWindowCommands>
+    <Controls:MetroWindow.RightWindowCommands>
+        <Controls:WindowCommands>
+            <Label Margin="3"   Content="{Binding cl_moncha_path}" VerticalAlignment="Top" Grid.ColumnSpan="3" HorizontalContentAlignment="Right" RenderTransformOrigin="0.7,-1.217" FontSize="10">
+                <Label.DataContext>
+                    <Properties:Settings />
+                </Label.DataContext>
+            </Label>
+            <Ellipse
+                Height="15"
+                Width="15"
+                Fill="{Binding lockKey.IsLicensed, Converter={StaticResource LicenceKey}}"
+                Margin="5,0"
+                />
+            <Controls:ToggleSwitch
+                        IsOn="{Binding UDPLaserListener.Status, Mode=OneWay}"
+                OffContent="Ethernet"
+                OnContent="Listing"
+                VerticalAlignment="Center"
+                Toggled="ethernetToggle_Toggled"
+                MinWidth="0"
+                Margin="3,0,3,0" />
+        </Controls:WindowCommands>
+    </Controls:MetroWindow.RightWindowCommands>
+
     <Border>
         <Border.Resources>
-            <convert:NotNullBool x:Key="NotNullBool"/>
+            <convert:NotNullBool x:Key="NotNullBool" />
         </Border.Resources>
         <Grid>
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="220"/>
-                <ColumnDefinition/>
-                <ColumnDefinition Width="290"/>
+                <ColumnDefinition Width="235*" />
+                <ColumnDefinition Width="466*" />
+                <ColumnDefinition Width="290" />
             </Grid.ColumnDefinitions>
             <Grid.RowDefinitions>
-                <RowDefinition Height="113"/>
-                <RowDefinition Height="491*"/>
-                <RowDefinition Height="95*"/>
-                <RowDefinition Height="30"/>
+                <RowDefinition Height="113" />
+                <RowDefinition Height="491*" />
+                <RowDefinition Height="95*" />
+                <RowDefinition Height="30" />
             </Grid.RowDefinitions>
+            <GridSplitter
+                Style="{StaticResource GridSplitter}"
+                Width="3"
+                Margin="0,3"
+                Grid.Row="1" Grid.RowSpan="2"
+                HorizontalAlignment="Right" />
+
             <DockPanel Margin="5" Grid.Row="0">
                 <ToolBar DockPanel.Dock="Left">
                     <Button x:Name="OpenBtn" Content="{DynamicResource m_Open}" Click="OpenBtn_ClickAsync" Grid.ColumnSpan="2" VerticalContentAlignment="Center" Margin="0,10,0,14" Width="99" VerticalAlignment="Stretch" />
                 </ToolBar>
                 <ToolBarTray DockPanel.Dock="Right" Orientation="Vertical" IsLocked="True" Background="White" HorizontalAlignment="Stretch">
-                    <ToolBar Margin="0,0,0,0" Width="80" >
-                        <Button x:Name="ClearBtn" Content="{DynamicResource edit_Clear}" Click="ClearBtn_Click" HorizontalAlignment="Stretch"/>
-                        <Button x:Name="Line" Content="{DynamicResource edit_Line}" Click="Line_Click"  HorizontalAlignment="Stretch"/>
-                        <Button x:Name="RectBtn" Content="{DynamicResource edit_Mask}" Click="RectBtn_Click" HorizontalAlignment="Stretch"/>
+                    <ToolBar Margin="0,0,0,0" Width="80">
+                        <Button x:Name="ClearBtn" Content="{DynamicResource edit_Clear}" Click="ClearBtn_Click" HorizontalAlignment="Stretch" />
+                        <Button x:Name="Line" Content="{DynamicResource edit_Line}" Click="Line_Click"  HorizontalAlignment="Stretch" />
+                        <Button x:Name="RectBtn" Content="{DynamicResource edit_Mask}" Click="RectBtn_Click" HorizontalAlignment="Stretch" />
                     </ToolBar>
                 </ToolBarTray>
             </DockPanel>
+
             <TabControl x:Name="tabControl1" Margin="0,0,0,0" Grid.Column="1" Grid.Row="0">
                 <TabItem Header="Transform" FontSize="12">
                     <panels:CadObjectPanel DataContext="{Binding ScenesCollection.MainScene.SelectedObject.LastSelectObject}"
-                        IsEnabled="{Binding RelativeSource={RelativeSource Self}, Path=DataContext, Converter={StaticResource NotNullBool}}">
-                    </panels:CadObjectPanel>
+                        IsEnabled="{Binding DataContext, Converter={StaticResource NotNullBool}, RelativeSource={RelativeSource Self}}" />
                 </TabItem>
                 <TabItem Header="ProjectionSetting">
                     <panels:multiplierpanel DataContext="{Binding ScenesCollection.MainScene.SelectedObject.LastSelectObject}"
-                        IsEnabled="{Binding RelativeSource={RelativeSource Self}, Path=DataContext, Converter={StaticResource NotNullBool}}"/>
+                        IsEnabled="{Binding DataContext, Converter={StaticResource NotNullBool}, RelativeSource={RelativeSource Self}}" />
                 </TabItem>
             </TabControl>
-            <Button x:Name="PlayBtn" Content="{DynamicResource m_Play}" 
-                    Margin="5,20,5,0" 
-                    Click="PlayBtn_Click" 
+            <Button x:Name="PlayBtn" Content="{DynamicResource m_Play}"
+                    Margin="5,20,5,0"
+                    Click="PlayBtn_Click"
                     Background="{Binding Play, Converter={StaticResource PlayBackConverter}}"
-                    Grid.Column="2" 
+                    Grid.Column="2"
                     Grid.Row="0"
-                    Style="{DynamicResource ResourceKey=b}"/>
+                    Style="{DynamicResource ResourceKey=b}" />
 
-            <TabControl TabStripPlacement="Left" Margin="0,5,5,0" Grid.Row="1" Grid.RowSpan="2">
+            <TabControl
+                TabStripPlacement="Left"
+                Grid.Row="1" Grid.RowSpan="2"
+                Margin="3,0">
                 <TabControl.Resources>
                     <Style TargetType="{x:Type TabItem}">
                         <Setter Property="HeaderTemplate">
@@ -158,175 +185,139 @@
                     </Style>
                 </TabControl.Resources>
                 <TabItem Header="Device">
-                    <panels:DeviceTreeTab 
+                    <Border  Style="{StaticResource Border}">
+                        <panels:DeviceTreeTab
                         DataContext="{Binding .}"
-                        x:Name="DeviceTree" 
-                        Focusable="False" 
-                        Margin="0" Grid.ColumnSpan="2" Grid.Row="2"/>
-
+                        x:Name="DeviceTree"
+                        Focusable="False"
+                        Margin="0" Grid.ColumnSpan="2" Grid.Row="2" />
+                    </Border>
                 </TabItem>
                 <TabItem Header="Frame">
-                    <leftpanels:FrameTree DataContext="{Binding ScenesCollection.MainScene}"/>
+                    <Border  Style="{StaticResource Border}">
+                        <leftpanels:FrameTree DataContext="{Binding ScenesCollection.MainScene}" />
+                    </Border>
                 </TabItem>
             </TabControl>
-            <TabControl TabStripPlacement="Bottom" Margin="0,5,0,0" Grid.Column="1" Grid.Row="1">
-                <TabItem Header="{DynamicResource m_CanvasTab}">
-                    <canvaspanel:CadCanvasPanel AllowDrop="True"/>
-                </TabItem>
-                <TabItem Header="ViewPort3D" Visibility="Collapsed">
-                </TabItem>
-            </TabControl>
-            <panels:ScrollPanel x:Name="ContourScrollPanel" Margin="0,5,0,0" Grid.Column="1" Grid.Row="2"/>
+            <Border Grid.Column="1" Grid.Row="1" Style="{StaticResource Border}" Margin="0,3,0,0">
+                <TabControl TabStripPlacement="Bottom">
+                    <TabItem Header="{DynamicResource m_CanvasTab}">
+                        <canvaspanel:CadCanvasPanel AllowDrop="True" />
+                    </TabItem>
+                    <TabItem Header="ViewPort3D" Visibility="Collapsed" />
+                </TabControl>
+            </Border>
+
+            <panels:ScrollPanel x:Name="ContourScrollPanel" Margin="0,5,0,0" Grid.Column="1" Grid.Row="2" />
 
             <TabControl x:Name="tabControl" DockPanel.Dock="Right" Grid.Column="2" Grid.Row="1" Grid.RowSpan="2" Margin="5,3,5,0">
                 <TabItem x:Name="ContourSettingTab" Header="{DynamicResource dvc_Device}" FontSize="12">
                     <Grid>
-                        <panels:DeviceTab x:Name="DevicePanel"/>
+                        <panels:DeviceTab x:Name="DevicePanel" />
                     </Grid>
-
                 </TabItem>
                 <TabItem Header="{DynamicResource common_Format}" FontSize="18">
                     <Grid Background="#FFE5E5E5">
                         <TabControl x:Name="TabItem">
                             <TabItem Header="Компас" FontSize="14">
                                 <Grid Background="#FFE5E5E5">
-                                    <Button x:Name="kmpsSelectBtn" Content="{DynamicResource common_Select}" HorizontalAlignment="Left" Margin="10,86,0,0" VerticalAlignment="Top" Width="125" Height="50" Click="kmpsSelectBtn_Click"/>
-                                    <Button x:Name="kmpsAddBtn" Content="{DynamicResource common_ADDIN}" HorizontalAlignment="Left" Margin="140,86,0,0" VerticalAlignment="Top" Width="78" Height="50" Click="kmpsAddBtn_Click"/>
-                                    <Controls:ToggleSwitch x:Name="kmpsConnectToggle"  Content="{DynamicResource common_Connect}" HorizontalAlignment="Left" Margin="10,26,0,0" VerticalAlignment="Top" RenderTransformOrigin="0.5,0.5" Toggled="kmpsConnectToggle_Toggled" HorizontalContentAlignment="Center" Height="24" Width="201">
+                                    <Button x:Name="kmpsSelectBtn" Content="{DynamicResource common_Select}" HorizontalAlignment="Left" Margin="10,86,0,0" VerticalAlignment="Top" Width="125" Height="50" Click="kmpsSelectBtn_Click" />
+                                    <Button x:Name="kmpsAddBtn" Content="{DynamicResource common_ADDIN}" HorizontalAlignment="Left" Margin="140,86,0,0" VerticalAlignment="Top" Width="78" Height="50" Click="kmpsAddBtn_Click" />
+                                    <Controls:ToggleSwitch
+                                        x:Name="kmpsConnectToggle"
+                                        Content="{DynamicResource common_Connect}"
+                                        HorizontalAlignment="Left"
+                                        Margin="10,26,0,0" VerticalAlignment="Top"
+                                        RenderTransformOrigin="0.5,0.5"
+                                        Toggled="kmpsConnectToggle_Toggled"
+                                        HorizontalContentAlignment="Center" MinWidth="9">
                                         <Controls:ToggleSwitch.DataContext>
-                                            <Properties:Settings/>
+                                            <Properties:Settings />
                                         </Controls:ToggleSwitch.DataContext>
                                     </Controls:ToggleSwitch>
-                                    <Label x:Name="KmpsNameLbl" Content="{DynamicResource common_Empty}" HorizontalAlignment="Left" Margin="10,55,0,0" VerticalAlignment="Top" Width="208"/>
+                                    <Label x:Name="KmpsNameLbl" Content="{DynamicResource common_Empty}" HorizontalAlignment="Left" Margin="10,55,0,0" VerticalAlignment="Top" Width="208" />
                                 </Grid>
                             </TabItem>
                             <TabItem Header="ILDA" FontSize="14">
                                 <Grid Background="#FFE5E5E5">
-                                    <Controls:ToggleSwitch x:Name="UsedMeshToggle" Margin="10,10,0,0" IsOn="True" Content="Used device mesh" VerticalAlignment="Top"/>
-                                    <Button x:Name="ILDASaveBtn" Content="{DynamicResource m_Saveas}" HorizontalAlignment="Left" Margin="10,40,0,0" VerticalAlignment="Top" Width="248" Height="29" Click="ILDASaveBtn_Click"/>
+                                    <Controls:ToggleSwitch x:Name="UsedMeshToggle" Margin="10,10,0,0" IsOn="True" Content="Used device mesh" VerticalAlignment="Top" />
+                                    <Button x:Name="ILDASaveBtn" Content="{DynamicResource m_Saveas}" HorizontalAlignment="Left" Margin="10,40,0,0" VerticalAlignment="Top" Width="248" Height="29" Click="ILDASaveBtn_Click" />
                                 </Grid>
                             </TabItem>
                             <TabItem Header="Ethernet">
                                 <Grid>
                                     <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="59*"/>
-                                        <ColumnDefinition Width="75*"/>
+                                        <ColumnDefinition Width="59*" />
+                                        <ColumnDefinition Width="75*" />
                                     </Grid.ColumnDefinitions>
                                     <Grid.RowDefinitions>
-                                        <RowDefinition Height="42*"/>
-                                        <RowDefinition Height="449*"/>
+                                        <RowDefinition Height="42*" />
+                                        <RowDefinition Height="449*" />
                                     </Grid.RowDefinitions>
-                                    <Controls:NumericUpDown x:Name="PortUpDn" Margin="5,10,10,6" Value="{Binding ether_udp_port}" Maximum="49151"  Minimum="1024" Background="White" Height="26" Grid.Column="1" ValueChanged="PortUpDn_ValueChanged" >
+                                    <Controls:NumericUpDown x:Name="PortUpDn" Margin="5,10,10,6" Value="{Binding ether_udp_port}" Maximum="49151"  Minimum="1024" Background="White" Height="26" Grid.Column="1" ValueChanged="PortUpDn_ValueChanged">
                                         <Controls:NumericUpDown.DataContext>
-                                            <Properties:Settings/>
+                                            <Properties:Settings />
                                         </Controls:NumericUpDown.DataContext>
                                     </Controls:NumericUpDown>
-                                    <Label x:Name="label1" Content="UDP Port:" Margin="10,10,0,0" HorizontalAlignment="Left" Width="108"/>
-                                    <Button x:Name="TcpListenBtn" Content="Listen" Height="50" VerticalAlignment="Top" Margin="10,11,10,0" Click="TcpListenBtn_Click" Grid.Row="1" Grid.ColumnSpan="2"/>
+                                    <Label x:Name="label1" Content="UDP Port:" Margin="10,10,0,0" HorizontalAlignment="Left" Width="108" />
+                                    <Button x:Name="TcpListenBtn" Content="Listen" Height="50" VerticalAlignment="Top" Margin="10,11,10,0" Click="TcpListenBtn_Click" Grid.Row="1" Grid.ColumnSpan="2" />
                                 </Grid>
                             </TabItem>
-
                         </TabControl>
-
                     </Grid>
                 </TabItem>
                 <TabItem Header="{DynamicResource common_Configuration}">
                     <TabControl>
                         <TabItem Header="Hub" x:Name="Calibration"  FontSize="18">
-                            <Grid Background="#FFE5E5E5">
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="33*"/>
-                                    <ColumnDefinition Width="53*"/>
-                                    <ColumnDefinition Width="54*"/>
-                                    <ColumnDefinition Width="49*"/>
-                                    <ColumnDefinition Width="73*"/>
-                                </Grid.ColumnDefinitions>
-
-                                <Button x:Name="BrowseMonchaBtn" Content="{DynamicResource m_Browse}" Margin="17,8,10,0" VerticalAlignment="Top" Click="BrowseMonchaBtn_Click" Height="23" Grid.Column="3" Grid.ColumnSpan="2"/>
-                                <Button Content="Edit device" Grid.ColumnSpan="5" Margin="10,38,45,0" Height="27" VerticalAlignment="Top"/>
-                                <Button FontFamily="Segoe MDL2 Assets" Content="&#xEDAB;" Margin="35,38,10,0" Grid.Column="4" Click="Button_Click" Height="27" VerticalAlignment="Top"/>
-                                <Label x:Name="label" Content="Open Moncha" Margin="10,7,0,0" VerticalAlignment="Top" Grid.ColumnSpan="3" Height="26" HorizontalContentAlignment="Left"/>
-                                <Controls:NumericUpDown x:Name="WidthUpDn" Margin="0,70,10,0"  Background="White" Height="26" VerticalAlignment="Top" Grid.Column="2" Grid.ColumnSpan="3" >
-                                    <Controls:NumericUpDown.DataContext>
-                                        <Properties:Settings/>
-                                    </Controls:NumericUpDown.DataContext>
-                                </Controls:NumericUpDown>
-                                <Label x:Name="label_Copy" Content="{DynamicResource obj_Width}" HorizontalAlignment="Left" Margin="6,70,0,0" VerticalAlignment="Top" Width="74" Height="26" Grid.ColumnSpan="2"/>
-                                <Controls:NumericUpDown x:Name="HeightUpD" Margin="0,106,10,0"  Background="White" Height="26" VerticalAlignment="Top" Grid.Column="2" Grid.ColumnSpan="3" />
-                                <Label x:Name="label_Copy1" Content="{DynamicResource obj_Height}" HorizontalAlignment="Left" Margin="6,106,0,0" VerticalAlignment="Top" Width="74" Height="26" Grid.ColumnSpan="2"/>
-                                <Controls:NumericUpDown x:Name="MashMultiplierUpDn" Margin="0,174,10,0"  Background="White" Height="26" Maximum="1" Minimum="0.001" VerticalAlignment="Top" Speedup="False" ValueIncremented="MashMultiplierUpDn_ValueIncremented" ValueDecremented="MashMultiplierUpDn_ValueDecremented" Grid.Column="2" Grid.ColumnSpan="3"/>
-                                <Label x:Name="label_Copy3" Content="{DynamicResource clb_Multiplier}" HorizontalAlignment="Left" Margin="6,174,0,0" VerticalAlignment="Top" Height="26" Width="74" Grid.ColumnSpan="2"/>
-                                <Controls:NumericUpDown x:Name="PointStepUpDn" Margin="0,216,10,0"  Background="White" Height="26" VerticalAlignment="Top" Maximum="10" Minimum="0" Interval="0.1"  Value="1" Grid.Column="2" Grid.ColumnSpan="3" Focusable="False" IsTabStop="False" AllowDrop="False" ValueDecremented="PointStepUpDn_ValueDecremented" ValueIncremented="PointStepUpDn_ValueIncremented">
-                                    <Controls:NumericUpDown.DataContext>
-                                        <Properties:Settings/>
-                                    </Controls:NumericUpDown.DataContext>
-                                </Controls:NumericUpDown>
-                                <Label x:Name="label_Copy4" Content="{DynamicResource obj_Step}" Margin="10,216,10,0" VerticalAlignment="Top" Height="26" Grid.ColumnSpan="2"/>
-                                <ComboBox x:Name="CalibrationFormCombo" Focusable="True" Grid.ColumnSpan="3" Grid.Column="2" HorizontalAlignment="Left" Margin="0,258,0,0" VerticalAlignment="Top" Width="174" SelectionChanged="CalibrationFormCombo_SelectionChanged">
-                                    <ComboBox.Resources>
-                                        <ResourceDictionary>
-
-                                        </ResourceDictionary>
-                                    </ComboBox.Resources>
-                                    <ComboBoxItem Content="{DynamicResource clb_Dot}"/>
-                                    <ComboBoxItem Content="{DynamicResource clb_Rect}"/>
-                                    <ComboBoxItem Content="{DynamicResource clb_Cross}"/>
-                                    <ComboBoxItem Content="{DynamicResource clb_HLine}"/>
-                                    <ComboBoxItem Content="{DynamicResource clb_WLine}"/>
-                                </ComboBox>
-                                <Label x:Name="CalibrationFormLabel" Content="{DynamicResource obj_Type}" Margin="10,258,10,0" VerticalAlignment="Top" Height="26" Grid.ColumnSpan="2"/>
-                                <Button x:Name="Save" Grid.ColumnSpan="5" Content="{DynamicResource m_Save}" HorizontalAlignment="Left" Margin="10,378,0,0" VerticalAlignment="Top" Width="254" Height="34" Click="Save_Click"/>
-                                <Controls:NumericUpDown x:Name="PointStepUpDn_Copy" Margin="0,289,10,0"  Background="White" Height="26" VerticalAlignment="Top" Maximum="10" Minimum="1" Interval="1"  Value="{Binding anchor_size, Mode=TwoWay, UpdateSourceTrigger=Default}" Grid.Column="3" Grid.ColumnSpan="2" IsTabStop="False" AllowDrop="False"/>
-                                <Label x:Name="label_Copy5" Content="{DynamicResource clb_Sizeanchor}" Margin="10,289,10,0" VerticalAlignment="Top" Height="26" Grid.ColumnSpan="2"/>
-                                <Label x:Name="label_Copy2" Content="{DynamicResource obj_Deep}" HorizontalAlignment="Left" Margin="6,137,0,0" VerticalAlignment="Top" Width="74" Height="26" Grid.ColumnSpan="2"/>
-                                <Controls:NumericUpDown x:Name="DeepUpDn" Margin="0,140,10,0"  Background="White" Height="26" VerticalAlignment="Top" Grid.Column="2" Grid.ColumnSpan="3" />
-                            </Grid>
+                            <configuration:HubSettingPanel/>
                         </TabItem>
                         <TabItem Header="Setting" FontSize="14">
-                            <configuration:AppDefaultSettingPanel/>
+                            <configuration:AppDefaultSettingPanel>
+                                <configuration:AppDefaultSettingPanel.DataContext>
+                                    <Properties:Settings/>
+                                </configuration:AppDefaultSettingPanel.DataContext>
+                            </configuration:AppDefaultSettingPanel>
+
                         </TabItem>
                         <TabItem Header="QR" FontSize="14">
                             <Grid Background="#FFE5E5E5">
                                 <TextBox x:Name="BasePathBox" Height="23" TextWrapping="Wrap" Text="{Binding save_base_folder, Mode=TwoWay}" Margin="10,12,109,0" VerticalAlignment="Top">
                                     <TextBox.DataContext>
-                                        <Properties:Settings/>
+                                        <Properties:Settings />
                                     </TextBox.DataContext>
                                 </TextBox>
                                 <TextBox x:Name="AlreadyPathBox" Height="23" TextWrapping="Wrap" Text="{Binding save_work_folder, Mode=TwoWay}" Margin="10,43,109,0" VerticalAlignment="Top">
                                     <TextBox.DataContext>
-                                        <Properties:Settings/>
+                                        <Properties:Settings />
                                     </TextBox.DataContext>
                                 </TextBox>
-                                <Button x:Name="BaseFolderSelect" Content="{DynamicResource m_Browse}" HorizontalAlignment="Left" Margin="124,12,0,0" VerticalAlignment="Top" Width="94" Height="26" Click="BaseFolderSelect_Click"/>
-                                <Button x:Name="WorkFolderSelect" Content="{DynamicResource m_Browse}" HorizontalAlignment="Left" Margin="124,43,0,0" VerticalAlignment="Top" Width="94" Height="26" Click="WorkFolderSelect_Click"/>
+                                <Button x:Name="BaseFolderSelect" Content="{DynamicResource m_Browse}" HorizontalAlignment="Left" Margin="124,12,0,0" VerticalAlignment="Top" Width="94" Height="26" Click="BaseFolderSelect_Click" />
+                                <Button x:Name="WorkFolderSelect" Content="{DynamicResource m_Browse}" HorizontalAlignment="Left" Margin="124,43,0,0" VerticalAlignment="Top" Width="94" Height="26" Click="WorkFolderSelect_Click" />
                             </Grid>
                         </TabItem>
-
                     </TabControl>
-
                 </TabItem>
                 <TabItem Header="{DynamicResource common_Workfolder}">
-                    <rightpanel:WorkFolderPanel/>
+                    <rightpanel:WorkFolderPanel />
                 </TabItem>
                 <TabItem Header="Log" FontSize="18">
-                    <Grid>
-                        <ListBox x:Name="LogBox"/>
-
-                    </Grid>
+                    <ListBox x:Name="LogBox" />
                 </TabItem>
             </TabControl>
 
-            <panels:ProgressPanel Grid.Column="2" Margin="5" Grid.Row="3"/>
-            <Label x:Name="pBarLabel" Visibility="Hidden" Content="Label" Grid.Row="1" Grid.Column="2" HorizontalContentAlignment="Center" VerticalAlignment="Center" HorizontalAlignment="Center" Height="26" Margin="126,233,126,232" Width="38"/>
-            <GridSplitter 
-                Background="White"
+            <panels:ProgressPanel Grid.Column="2" Margin="5" Grid.Row="3" />
+            <Label x:Name="pBarLabel" Visibility="Hidden" Content="Label" Grid.Row="1" Grid.Column="2" HorizontalContentAlignment="Center" VerticalAlignment="Center" HorizontalAlignment="Center" Height="26" Margin="126,233,126,232" Width="38" />
+            <GridSplitter
+                 Style="{StaticResource GridSplitter}"
                 Grid.Row="1" Grid.RowSpan="2"
-                Grid.Column="2" HorizontalAlignment="Left" Width="5"/>
-            <GridSplitter 
-                Background="White"
-                Grid.Row="1" Grid.RowSpan="2" Margin="215,0,0,0"/>
-            <GridSplitter x:Name="gridSplitter1" Grid.Column="1" HorizontalAlignment="Stretch" Grid.Row="2" Height="5" VerticalAlignment="Top"/>
-
+                Grid.Column="2" HorizontalAlignment="Left"
+                Width="3"
+                Margin="0,3" />
+            <GridSplitter Style="{StaticResource GridSplitter}"
+                          Height="3"
+                          Grid.Column="1"
+                          HorizontalAlignment="Stretch"
+                          Grid.Row="2" VerticalAlignment="Top" />
         </Grid>
     </Border>
 </Controls:MetroWindow>

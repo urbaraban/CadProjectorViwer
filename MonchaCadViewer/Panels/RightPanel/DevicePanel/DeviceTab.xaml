@@ -1,14 +1,12 @@
 ﻿<UserControl
-    x:Class="CadProjectorViewer.Panels.DeviceTab"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:Controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
-    xmlns:Properties="clr-namespace:CadProjectorViewer.Properties"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-    xmlns:lhub="clr-namespace:CadProjectorSDK;assembly=CadProjectorSDK" 
-    xmlns:dvc="clr-namespace:CadProjectorSDK.Device;assembly=CadProjectorSDK" 
-    d:DataContext="{d:DesignInstance Type=dvc:LDevice}"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:dvc="clr-namespace:CadProjectorSDK.Device;assembly=CadProjectorSDK"
+    xmlns:Controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
+    x:Class="CadProjectorViewer.Panels.DeviceTab"
+    d:DataContext="{d:DesignInstance Type={x:Type dvc:LDevice}}"
     Padding="0"
     d:DesignHeight="550"
     d:DesignWidth="300"
@@ -21,149 +19,159 @@
                 <!-- Theme setting -->
                 <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Themes/Light.Blue.xaml" />
             </ResourceDictionary.MergedDictionaries>
-            <Style x:Key="Border" TargetType="{x:Type Border}">
-                <Setter Property="BorderBrush" Value="DarkGray" />
-                <Setter Property="BorderThickness" Value="1" />
-                <Style.Triggers>
-                    <Trigger Property="IsMouseOver" Value="true">
-                        <Setter Property="BorderBrush" Value="CadetBlue" />
-                    </Trigger>
-                </Style.Triggers>
+            <Style TargetType="{x:Type DockPanel}">
+                <Setter Property="Margin" Value="5,2"/>
             </Style>
-            <Style x:Key="ObjCanvas" TargetType="{x:Type Border}">
-                <Setter Property="BorderBrush" Value="DarkGray" />
-                <Setter Property="BorderThickness" Value="1" />
-                <Style.Triggers>
-                    <Trigger Property="IsMouseOver" Value="true">
-                        <Setter Property="BorderBrush" Value="CadetBlue" />
-                    </Trigger>
-                </Style.Triggers>
+            <Style x:Key="ColorToggle" TargetType="{x:Type Controls:ToggleSwitch}">
+                <Setter Property="Width" Value="100"/>
+            </Style>
+            <Style TargetType="{x:Type Label}">
+                <Setter Property="FontSize" Value="10"/>
+                <Setter Property="Width" Value="110"/>
+                <Setter Property="VerticalContentAlignment" Value="Center"/>
+            </Style>
+            <Style TargetType="{x:Type Separator}">
+                <Setter Property="Background" Value="LightGray"/>
+                <Setter Property="Margin" Value="5"/>
             </Style>
         </ResourceDictionary>
     </UserControl.Resources>
-    <Grid Background="{DynamicResource {x:Static SystemColors.MenuBrushKey}}">
-        <Grid.RowDefinitions>
-            <RowDefinition Height="50*" />
-            <RowDefinition Height="48*" />
-            <RowDefinition Height="59*"/>
-            <RowDefinition Height="36*"/>
-            <RowDefinition Height="155*" />
-            <RowDefinition Height="49*"/>
-            <RowDefinition Height="44*"/>
-            <RowDefinition Height="40*"/>
-            <RowDefinition Height="69*"/>
-        </Grid.RowDefinitions>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="12*" />
-            <ColumnDefinition Width="100" />
-            <ColumnDefinition Width="42" />
-            <ColumnDefinition Width="43*" />
-            <ColumnDefinition Width="100" />
-            <ColumnDefinition Width="0*" />
-        </Grid.ColumnDefinitions>
-        <Controls:NumericUpDown
-            DataContext="{Binding ElementName=DeviceCombo, Path=SelectedItem}"
-            Value="{Binding ProjectionSetting.StartLineWait, Mode=TwoWay}"
-            Grid.Row="8"
-            Grid.Column="1"
-            Grid.ColumnSpan="2"
-            Height="30"
-            Margin="3,0,3,15"
-            VerticalAlignment="Bottom"
-            Maximum="30"
-            Minimum="1"/>
-        <ComboBox
-            x:Name="DeviceCombo"
-            Grid.Column="1"
-            Margin="3,20,43,0"
-            VerticalAlignment="Top"
-            Grid.ColumnSpan="4" 
-            DisplayMemberPath="HWIdentifier"
-            SelectedValuePath="HWIdentifier"
-            ItemsSource="{Binding Devices}"/>
-        <Controls:ToggleSwitch    
-            DataContext="{Binding ElementName=DeviceCombo, Path=SelectedItem}"
-            IsOn="{Binding InvertedX}"
-            Grid.Row="5"
-            FlowDirection="RightToLeft"
-            HorizontalContentAlignment="Right"
-            Content="{DynamicResource dvc_InvX}"
-            FontSize="12" Grid.ColumnSpan="3" Margin="1,10,0,7"/>
-        <Controls:ToggleSwitch
-            DataContext="{Binding ElementName=DeviceCombo, Path=SelectedItem}"
-            IsOn="{Binding InvertedY, Mode=TwoWay}"
-            Grid.Row="5"
-            Grid.Column="2"
-            Grid.ColumnSpan="3"
-            Margin="23,0,10,7"
-            HorizontalAlignment="Stretch"
-            VerticalAlignment="Bottom"
-            HorizontalContentAlignment="Right"
-            Content="{DynamicResource dvc_InvY}"
-            FlowDirection="RightToLeft"
-            FontSize="12" />
-        <Label
-            Grid.Row="7"
-            Grid.Column="1"
-            Grid.ColumnSpan="2"
-            Height="26"
-            Margin="0,0,3,5"
-            Padding="2,3,0,0"
-            VerticalAlignment="Bottom"
-            Content="{DynamicResource dvc_StepPoint}" HorizontalContentAlignment="Right" />
-        <Controls:NumericUpDown
-            DataContext="{Binding ElementName=DeviceCombo, Path=SelectedItem}"
-            Value="{Binding ProjectionSetting.PointStep.MX}"
-            Grid.Row="7"
-            Grid.Column="3"
-            Grid.ColumnSpan="2"
-            Height="30"
-            Margin="10,0,4,5"
-            VerticalAlignment="Bottom"
-            Background="White"
-            Maximum="999"
-            Minimum="0.0001"/>
+    <ScrollViewer VerticalScrollBarVisibility="Auto">
+        <StackPanel>
+            <Label
+                Width="auto"
+                Padding="0"
+                HorizontalAlignment="Stretch"
+                VerticalAlignment="Bottom"
+                Content="{DynamicResource dvc_Device}" />
+            <DockPanel HorizontalAlignment="Stretch" LastChildFill="True">
+                <Controls:ToggleSwitch
+                    DockPanel.Dock="Right"
+                DataContext="{Binding SelectedItem, ElementName=DeviceCombo}"
+                IsOn="{Binding OwnedSetting}"
+                AutomationProperties.HelpText="Common setting toggle"
+                MinWidth="0"
+                Content=""
+                Grid.Row="3" Grid.ColumnSpan="2" />
+                <Button DockPanel.Dock="Right"
+                Margin="5,0,10,0"
+                Height="26"
+                Click="DeviceSettingBtn_Click"
+                Content="&#xE713;"
+                Padding="0"
+                FontFamily="Segoe MDL2 Assets"
+                FontSize="14" Width="26" />
+                <ComboBox
+                x:Name="DeviceCombo"
+                DockPanel.Dock="Left"
+                DisplayMemberPath="HWIdentifier"
+                SelectedValuePath="HWIdentifier"
+                ItemsSource="{Binding Devices}" />
+            </DockPanel>
+            <Label
+                Width="auto"
+                Padding="0"
+                HorizontalAlignment="Stretch"
+                VerticalAlignment="Top"
+                Content="{DynamicResource dvc_Mesh}" />
+            <DockPanel LastChildFill="True">
+                <Button
+                    DockPanel.Dock="Right"
+                    Height="26" Width="26"
+                    Margin="3,0"
+                    Padding="0"
+                    Content="&#xF0B5;"
+                    FontFamily="Segoe MDL2 Assets"
+                    FontSize="14"
+                    Click="MeshListBtn_Click" />
+                <Button
+                    DockPanel.Dock="Right"
+                    Height="26" Width="26"
+                    Margin="3,0"
+                    Padding="0"
+                    Content="&#xEB7E;"
+                    FontFamily="Segoe MDL2 Assets"
+                    FontSize="14"
+                    Click="MeshSettingBtn_Click" />
+                <CheckBox
+                    DockPanel.Dock="Right"
+                    Margin="9,0,0,0"
+                    DataContext="{Binding SelectedItem, ElementName=DeviceCombo}"
+                    IsChecked="{Binding OnlySelectMesh, Mode=TwoWay}" />
 
-        <Controls:NumericUpDown
+                <ComboBox
+                    DockPanel.Dock="Left"
+                    DataContext="{Binding SelectedItem, ElementName=DeviceCombo}"
+                    ItemsSource="{Binding SelectedMeshes}"
+                    SelectedItem="{Binding SelectMesh, Mode=TwoWay}"
+                    DisplayMemberPath="Name" />
+            </DockPanel>
+
+
+            <DockPanel>
+                <DockPanel LastChildFill="True" DockPanel.Dock="Right">
+                    <Label
+                    Width="auto"
+                    AutomationProperties.HelpText="Кадров в секунду"
+                    Content="{DynamicResource dvc_FPS}"/>
+                    <Controls:NumericUpDown
+                    DataContext="{Binding SelectedItem, ElementName=DeviceCombo}"
+                    Value="{Binding FPS}"
+                    Background="White"
+                    MinWidth="80"
+                    Maximum="40"
+                    Minimum="14" />
+                </DockPanel>
+                <Label
+                x:Name="ScanRateLabel"
+                    Width="auto"
+                Content="{DynamicResource dvc_SRC}"/>
+
+                <Slider
+                DataContext="{Binding SelectedItem, ElementName=DeviceCombo}"
+                Value="{Binding ScanRate, Mode=TwoWay}"
+                Maximum="40000"
+                Minimum="500"
+                PreviewMouseDown="ScanRateRealSlider_PreviewMouseDown"
+                SmallChange="1" />
+
+            </DockPanel>
+
+            <DockPanel Visibility="Collapsed">
+                <Controls:NumericUpDown
             x:Name="DistanceUpDn"
-            Grid.Row="2"
-            Grid.Column="2"
-            Grid.ColumnSpan="3"
-            Height="26"
-            Margin="0,17,59,0"
-            VerticalAlignment="Top"
             Background="White"
-            Value="0"/>
-        <ComboBox
+            Value="0" />
+                <ComboBox
             x:Name="LaserMetersCombo"
             Grid.Column="1"
             Height="26"
             Margin="4,17,9,0"
             VerticalAlignment="Top"
             Grid.Row="2" />
-        <Controls:ToggleSwitch
+            <Controls:ToggleSwitch
             x:Name="LaserMeterToggle"
             Grid.Column="4"
-            Width="154"
-            Height="25"
-            Margin="0,13,-105,0"
             HorizontalAlignment="Right"
             VerticalAlignment="Top"
             HorizontalContentAlignment="Center"
             Content=""
+            MinWidth="0"
             IsOn="False"
-            RenderTransformOrigin="0.5,0.5"
-            Toggled="LaserMeterToggle_Toggled" Grid.Row="2" Grid.ColumnSpan="2" Controls:HeaderedControlHelper.HeaderHorizontalContentAlignment="Center">
-            <Controls:ToggleSwitch.RenderTransform>
-                <TransformGroup>
-                    <ScaleTransform />
-                    <SkewTransform />
-                    <RotateTransform Angle="-0.056" />
-                    <TranslateTransform />
-                </TransformGroup>
-            </Controls:ToggleSwitch.RenderTransform>
-        </Controls:ToggleSwitch>
-        <Label
+            Toggled="LaserMeterToggle_Toggled"
+            Grid.Row="2"
+            Controls:HeaderedControlHelper.HeaderHorizontalContentAlignment="Center"
+            Margin="0,14,1,0">
+                <Controls:ToggleSwitch.RenderTransform>
+                    <TransformGroup>
+                        <ScaleTransform />
+                        <SkewTransform />
+                        <RotateTransform Angle="-0.056" />
+                        <TranslateTransform />
+                    </TransformGroup>
+                </Controls:ToggleSwitch.RenderTransform>
+            </Controls:ToggleSwitch>
+            <Label
             Grid.Column="1"
             Width="74"
             Height="16"
@@ -171,264 +179,138 @@
             HorizontalAlignment="Left"
             VerticalAlignment="Top"
             Content="{DynamicResource dvc_Dimmer}" Margin="4,0,0,0" Grid.Row="2" />
-        <Label
-            Grid.Row="8"
-            Grid.Column="1"
-            Grid.ColumnSpan="2"
-            Height="12"
-            Margin="0,0,0,46"
-            Padding="0"
-            VerticalAlignment="Bottom"
-            HorizontalContentAlignment="Center"
-            Content="{DynamicResource dvc_WaintPoint}"
-            FontSize="8" />
-        <Slider
-            DataContext="{Binding ElementName=DeviceCombo, Path=SelectedItem}"
-            Value="{Binding ScanRate, Mode=TwoWay}"
-            Grid.Row="3"
-            Grid.Column="1"
-            Grid.ColumnSpan="4"
-            Height="25"
-            Margin="31,7,59,0"
-            VerticalAlignment="Top"
-            AllowDrop="False"
-            Maximum="40000"
-            Minimum="500"
-PreviewMouseDown="ScanRateRealSlider_PreviewMouseDown"
-            SmallChange="1"/>
-        <Label
-            x:Name="ScanRateLabel"
-            Grid.Row="3"
-            Grid.Column="1"
-            Height="21"
-            Margin="3,7,0,0"
-            VerticalAlignment="Top"
-            Content="{DynamicResource dvc_SRC}"
-            FontSize="8"
-            RenderTransformOrigin="0.439,0.556" HorizontalAlignment="Left" Width="28" />
-        <Controls:NumericUpDown
-            DataContext="{Binding ElementName=DeviceCombo, Path=SelectedItem}"
-            Value="{Binding ProjectionSetting.Red, Mode=TwoWay}"
-            Grid.Row="4"
-            Grid.Column="2"
-            Grid.ColumnSpan="3"
-            Height="26"
-            Margin="26,41,6,0"
-            VerticalAlignment="Top"
-            Background="White"
-            Maximum="255"
-            Minimum="1"/>
-        <Controls:ToggleSwitch
-            DataContext="{Binding ElementName=DeviceCombo, Path=SelectedItem}"
-            IsOn="{Binding ProjectionSetting.RedOn, Mode=TwoWay}"
-            Grid.Row="4"
-            Grid.Column="1"
-            Grid.ColumnSpan="2"
+            </DockPanel>
 
-            Margin="10,41,0,0"
-            HorizontalAlignment="Left"
-            VerticalAlignment="Top"
-            HorizontalContentAlignment="Center"
-            Background="Red"
-            Content="{DynamicResource dvc_RED}" />
-        <Controls:NumericUpDown
-            DataContext="{Binding ElementName=DeviceCombo, Path=SelectedItem}"
-            Value="{Binding ProjectionSetting.Green, Mode=TwoWay}"
-            Grid.Row="4"
-            Grid.Column="2"
-            Grid.ColumnSpan="3"
-            Height="26"
-            Margin="26,72,6,0"
-            VerticalAlignment="Top"
-            Background="White"
-            Maximum="255"
-            Minimum="1"/>
-        <Controls:ToggleSwitch
-            DataContext="{Binding ElementName=DeviceCombo, Path=SelectedItem}"
-            IsOn="{Binding ProjectionSetting.GreenOn, Mode=TwoWay}"
-            Grid.Row="4"
-            Grid.Column="1"
-            Grid.ColumnSpan="2"
-            Margin="10,73,0,0"
-            HorizontalAlignment="Left"
-            VerticalAlignment="Top"
-            HorizontalContentAlignment="Center"
-            Content="{DynamicResource dvc_GREEN}" />
-        <Controls:NumericUpDown
-            DataContext="{Binding ElementName=DeviceCombo, Path=SelectedItem}"
-             Value="{Binding ProjectionSetting.Blue, Mode=TwoWay}"
-            Grid.Row="4"
-            Grid.Column="2"
-            Grid.ColumnSpan="3"
-            Height="26"
-            Margin="26,105,6,0"
-            VerticalAlignment="Top"
-            Background="White"
-            Maximum="255"
-            Minimum="1" />
-        <Controls:ToggleSwitch
-            DataContext="{Binding ElementName=DeviceCombo, Path=SelectedItem}"
-            IsOn="{Binding ProjectionSetting.BlueOn, Mode=TwoWay}"
-            Grid.Row="4"
-            Grid.Column="1"
-            Grid.ColumnSpan="2"
+            <Separator/>
+            <!--Red-->
+            <DockPanel LastChildFill="True">
+                <Controls:ToggleSwitch
+                    Style="{StaticResource ColorToggle}"
+                    DataContext="{Binding SelectedItem, ElementName=DeviceCombo}"
+                    IsOn="{Binding ProjectionSetting.RedOn, Mode=TwoWay}"
+                    Content="Red"
+                    MinWidth="0"
+                    Margin="5,0"
+                    HorizontalAlignment="Left"
+                    VerticalAlignment="Top"
+                    HorizontalContentAlignment="Center"/>
+                <Controls:NumericUpDown
+                    DataContext="{Binding SelectedItem, ElementName=DeviceCombo}"
+                    Value="{Binding ProjectionSetting.Red, Mode=TwoWay}"
+                    Background="White"
+                    Maximum="255"
+                    Minimum="1" />
+            </DockPanel>
+            <!--Green-->
+            <DockPanel LastChildFill="True">
+                <Controls:ToggleSwitch
+                    Style="{StaticResource ColorToggle}"
+                    DockPanel.Dock="Left"
+                    Margin="5,0"
+                    MinWidth="0"
+                    DataContext="{Binding SelectedItem, ElementName=DeviceCombo}"
+                    IsOn="{Binding ProjectionSetting.GreenOn, Mode=TwoWay}"
+                    Content="{DynamicResource dvc_GREEN}" />
+                <Controls:NumericUpDown
+                    DockPanel.Dock="Right"
+                    DataContext="{Binding SelectedItem, ElementName=DeviceCombo}"
+                    Value="{Binding ProjectionSetting.Green, Mode=TwoWay}"
+                    Background="White"
+                    Maximum="255"
+                    Minimum="1" />
+            </DockPanel>
 
-            Margin="10,106,0,0"
-            HorizontalAlignment="Left"
-            VerticalAlignment="Top"
-            HorizontalContentAlignment="Center"
-            Content="{DynamicResource dvc_Blue}" />
-        <Slider
-            DataContext="{Binding ElementName=DeviceCombo, Path=SelectedItem}"
-            Value="{Binding Alpha, Mode=TwoWay}"
-            Grid.Row="6"
-            Grid.Column="1"
-            Grid.ColumnSpan="4"
-            Height="22"
-            Margin="0,0,6,0"
-            VerticalAlignment="Bottom"
-            Maximum="255"
-            Minimum="1" />
-        <Label
-            x:Name="ScanRateLabel_Copy"
-            Grid.Row="6"
-            Grid.ColumnSpan="2"
-            Margin="0,0,0,17"
-            Padding="0"
-            HorizontalContentAlignment="Center"
-            Content="{DynamicResource dvc_Brightness}"
-            FontSize="8" Height="11" VerticalAlignment="Bottom" Grid.Column="2" />
-        <Controls:NumericUpDown
-            DataContext="{Binding ElementName=DeviceCombo, Path=SelectedItem}"
-            Value="{Binding FPS}"
-            Grid.Row="4"
-            Grid.Column="2"
-            Grid.ColumnSpan="3"
-            Height="26"
-            Margin="26,10,6,0"
-            VerticalAlignment="Top"
-            Background="White"
-            Maximum="40"
-            Minimum="14"/>
-        <Label
-            x:Name="FPSLabel"
-            Grid.Row="4"
-            Grid.Column="1"
-            Height="26"
-            Margin="2,9,11,0"
-            VerticalAlignment="Top"
-            HorizontalContentAlignment="Center"
-            AutomationProperties.HelpText="Кадров в секунду"
-            Content="{DynamicResource dvc_FPS}"
-            RenderTransformOrigin="0.5,0.5">
-            <Label.RenderTransform>
-                <TransformGroup>
-                    <ScaleTransform />
-                    <SkewTransform />
-                    <RotateTransform Angle="0.155" />
-                    <TranslateTransform />
-                </TransformGroup>
-            </Label.RenderTransform>
-        </Label>
-        <Controls:NumericUpDown
-            DataContext="{Binding ElementName=DeviceCombo, Path=SelectedItem}"
-            Value="{Binding ProjectionSetting.EndBlanckWait, Mode=TwoWay}"
-            Grid.Row="8"
-            Grid.ColumnSpan="2"
-            Height="30"
-            Margin="10,0,4,15"
+            <DockPanel LastChildFill="True">
+                <Controls:ToggleSwitch
+                    Style="{StaticResource ColorToggle}"
+                    DockPanel.Dock="Left"
+                    Margin="5,0"
+                    DataContext="{Binding SelectedItem, ElementName=DeviceCombo}"
+                    IsOn="{Binding ProjectionSetting.BlueOn, Mode=TwoWay}"
+                    MinWidth="0"
+                    Content="{DynamicResource dvc_Blue}" />
+                <Controls:NumericUpDown
+                    DockPanel.Dock="Right"
+                    DataContext="{Binding SelectedItem, ElementName=DeviceCombo}"
+                    Value="{Binding ProjectionSetting.Blue, Mode=TwoWay}"
+                    Background="White"
+                    Maximum="255"
+                    Minimum="1" />  
+            </DockPanel>
+            <DockPanel LastChildFill="True">
+                <Label
+                HorizontalContentAlignment="Center"
+                Content="{DynamicResource dvc_Brightness}"
+                VerticalAlignment="Bottom"/>
+                <Slider
+                DataContext="{Binding SelectedItem, ElementName=DeviceCombo}"
+                Value="{Binding Alpha, Mode=TwoWay}"
+                VerticalAlignment="Bottom"
+                Maximum="255"
+                Minimum="1" />
+            </DockPanel>
+            <DockPanel>
+                <Controls:ToggleSwitch
+                DataContext="{Binding SelectedItem, ElementName=DeviceCombo}"
+                IsOn="{Binding InvertedX}"
+                Grid.Row="5"
+                MinWidth="0"
+                FlowDirection="RightToLeft"
+                HorizontalContentAlignment="Right"
+                Content="{DynamicResource dvc_InvX}"
+                FontSize="12" Grid.ColumnSpan="2" Margin="45,0,0,7" Grid.Column="1" HorizontalAlignment="Stretch" VerticalAlignment="Bottom" />
+                <Controls:ToggleSwitch
+                DataContext="{Binding SelectedItem, ElementName=DeviceCombo}"
+                IsOn="{Binding InvertedY, Mode=TwoWay}"
+                Grid.Row="5"
+                Grid.Column="3"
+                Grid.ColumnSpan="2"
+                Margin="24,0,0,7"
+                MinWidth="0"
+                VerticalAlignment="Bottom"
+                HorizontalContentAlignment="Right"
+                Content="{DynamicResource dvc_InvY}"
+                FlowDirection="RightToLeft"
+                FontSize="12" HorizontalAlignment="Left" Width="96" />
+            </DockPanel>
+
+
+            <Separator/>
+            <DockPanel LastChildFill="True">
+                <Label
+                    DockPanel.Dock="Left"
+                    Content="{DynamicResource dvc_StepPoint}" />
+                <Controls:NumericUpDown
+                    DockPanel.Dock="Right"
+                    DataContext="{Binding SelectedItem, ElementName=DeviceCombo}"
+                    Value="{Binding ProjectionSetting.PointStep.MX}"
+                    Background="White"
+                    Maximum="999"
+                    Minimum="0.0001" />
+            </DockPanel>
+            <DockPanel>
+                <Label
+                    Content="{DynamicResource dvc_WaintPointEndBlank}"/>
+                <Controls:NumericUpDown
+                    DataContext="{Binding SelectedItem, ElementName=DeviceCombo}"
+                    Value="{Binding ProjectionSetting.EndBlanckWait, Mode=TwoWay}"
+                    Maximum="30"
+                    Minimum="1"
+                    Grid.Column="3" />
+            </DockPanel>
+
+            <DockPanel LastChildFill="True">
+                <Label
+                    DockPanel.Dock="Left"
+                    Content="{DynamicResource dvc_WaintPoint}" />
+                <Controls:NumericUpDown
+            DataContext="{Binding SelectedItem, ElementName=DeviceCombo}"
+            Value="{Binding ProjectionSetting.StartLineWait, Mode=TwoWay}"
             VerticalAlignment="Bottom"
             Maximum="30"
-            Minimum="1"
-            Grid.Column="3" />
-        <Label
-            x:Name="StartWaitLabel_Copy4"
-            Grid.Row="8"
-            Grid.Column="3"
-            Grid.ColumnSpan="2"
-            Height="10"
-            Margin="0,0,0,48"
-            Padding="0"
-            VerticalAlignment="Bottom"
-            HorizontalContentAlignment="Center"
-            Content="{DynamicResource dvc_WaintPointEndBlank}"
-            FontSize="8" />
-        <Label
-            x:Name="label_Copy7"
-            Grid.Column="1"
-            Width="74"
-            Margin="4,0,0,0"
-            Padding="0"
-            HorizontalAlignment="Left"
-            Content="{DynamicResource dvc_Device}" Height="15" VerticalAlignment="Top" />
-        <Controls:ToggleSwitch
-            DataContext="{Binding ElementName=DeviceCombo, Path=SelectedItem}"
-            IsOn="{Binding OwnedSetting}"
-            Grid.Column="4"
-            Height="25"
-            Margin="0,7,-112,0"
-            HorizontalAlignment="Right"
-            VerticalAlignment="Top"
-            HorizontalContentAlignment="Center"
-            AutomationProperties.HelpText="Common setting toggle"
-            Content=""
-            RenderTransformOrigin="0.5,0.5"
-            Grid.Row="3" Grid.ColumnSpan="2">
-        </Controls:ToggleSwitch>
-        <Button
-            x:Name="DeviceSettingBtn"
-            Grid.Column="4"
-            Height="26"
-            Margin="0,20,10,0"
-            VerticalAlignment="Top"
-            Click="DeviceSettingBtn_Click"
-            Content="&#xE713;"
-            Padding="0"
-            FontFamily="Segoe MDL2 Assets"
-            FontSize="14" HorizontalAlignment="Right" Width="26" />
-        <ComboBox
-            DataContext="{Binding ElementName=DeviceCombo, Path=SelectedItem}"
-            ItemsSource="{Binding SelectedMeshes}"
-            SelectedItem="{Binding SelectMesh, Mode=TwoWay}"
-            DisplayMemberPath="Name"
-            Grid.Column="1"
-            Height="26"
-            Margin="3,17,0,0"
-            VerticalAlignment="Top"
-            RenderTransformOrigin="0.5,0.5"
-            Grid.Row="1" Grid.ColumnSpan="3" />
-        <Label
-            Grid.Column="1"
-            Width="74"
-            Height="17"
-            Padding="0"
-            HorizontalAlignment="Left"
-            VerticalAlignment="Top"
-            Content="{DynamicResource dvc_Mesh}" Margin="4,0,0,0" Grid.Row="1" />
-        <Button
-            x:Name="MeshSettingBtn"
-            Grid.Column="4"
-            Height="26"
-            Margin="0,17,42,0"
-            Padding="0"
-            VerticalAlignment="Top"
-            Content="&#xEB7E;"
-            FontFamily="Segoe MDL2 Assets"
-            FontSize="14" Grid.Row="1" HorizontalAlignment="Right" Width="26"
-            Click="MeshSettingBtn_Click"  />
-        <Button
-            x:Name="MeshListBtn"
-            Grid.Column="4"
-            Height="26"
-            Margin="0,17,11,0"
-            Padding="0"
-            VerticalAlignment="Top"
-            Content="&#xF0B5;"
-            FontFamily="Segoe MDL2 Assets"
-            FontSize="14" Grid.Row="1" HorizontalAlignment="Right" Width="26" Click="MeshListBtn_Click" />
-        <CheckBox
-            DataContext="{Binding ElementName=DeviceCombo, Path=SelectedItem}"
-            IsChecked="{Binding OnlySelectMesh, Mode=TwoWay}"
-            Grid.Column="4" Margin="0,23,77,0" Grid.Row="1" VerticalAlignment="Top" HorizontalAlignment="Right" Width="16" Height="15"/>
-    </Grid>
+            Minimum="1" />
+            </DockPanel>
+
+        </StackPanel>
+    </ScrollViewer>
 </UserControl>

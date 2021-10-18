@@ -1,0 +1,115 @@
+﻿<UserControl x:Class="CadProjectorViewer.Panels.RightPanel.Configuration.HubSettingPanel"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:Controls="http://metro.mahapps.com/winfx/xaml/controls" 
+             xmlns:cadprojectorsdk="clr-namespace:CadProjectorSDK;assembly=CadProjectorSDK"
+             d:DataContext="{d:DesignInstance Type=cadprojectorsdk:ProjectorHub}"
+             Background="White"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="200">
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Controls.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Fonts.xaml" />
+                <!-- Theme setting -->
+                <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Themes/Light.Blue.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+            <Style TargetType="{x:Type DockPanel}">
+                <Setter Property="Margin" Value="3,3"/>
+                <Setter Property="LastChildFill" Value="True"/>
+            </Style>
+            <Style TargetType="{x:Type Label}">
+                <Setter Property="Width" Value="70"/>
+            </Style>
+            <Style TargetType="{x:Type Separator}">
+                <Setter Property="Background" Value="LightGray"/>
+                <Setter Property="Margin" Value="5"/>
+            </Style>
+        </ResourceDictionary>
+    </UserControl.Resources>
+    <StackPanel>
+        <DockPanel LastChildFill="True">
+            <Button 
+                DockPanel.Dock="Right"
+                FontFamily="Segoe MDL2 Assets"
+                Content="&#xEDAB;"
+                Click="RefreshButton_Click" />
+            <Button
+                DockPanel.Dock="Right" x:Name="BrowseMonchaBtn" 
+                    Content="{DynamicResource m_Browse}" 
+                    Click="BrowseMonchaBtn_Click" />
+            <Label
+                Width="auto"
+                DockPanel.Dock="Left"
+                x:Name="label" Content="Open Moncha"
+                HorizontalContentAlignment="Left" />
+
+        </DockPanel>
+        <Separator/>
+        <DockPanel>
+            <Label
+                Content="{DynamicResource obj_Width}"/>
+            <Controls:NumericUpDown  
+                Value="{Binding Size.Width}"
+                Background="White" 
+                Grid.Column="2" Grid.ColumnSpan="3"/>
+        </DockPanel>
+        <DockPanel>
+            <Label
+                Content="{DynamicResource obj_Height}"/>
+            <Controls:NumericUpDown  
+                Value="{Binding Size.Height}"
+                Background="White" 
+                Grid.Column="2" Grid.ColumnSpan="3"/>
+        </DockPanel>
+        <DockPanel>
+            <Label
+                Content="{DynamicResource obj_Depth}"/>
+            <Controls:NumericUpDown 
+                Value="{Binding Size.Depth}"
+                Background="White" 
+                Grid.Column="2" Grid.ColumnSpan="3"/>
+        </DockPanel>
+        <Separator/>
+        <DockPanel>
+            <Label Content="{DynamicResource clb_Multiplier}"/>
+            <Controls:NumericUpDown 
+            x:Name="MashMultiplierUpDn"
+            Value="{Binding Size.M.Width}" 
+            Background="White" 
+            Maximum="1" Minimum="0.001" 
+            Speedup="False" 
+            ValueIncremented="MashMultiplierUpDn_ValueIncremented" 
+            ValueDecremented="MashMultiplierUpDn_ValueDecremented"/>
+
+        </DockPanel>
+        <DockPanel>
+            <Label 
+                Content="{DynamicResource obj_Step}"/>
+            <Controls:NumericUpDown 
+                Name="PointStepUpDn"
+                Maximum="10" Minimum="0" 
+                Interval="0.1" 
+                Value="{Binding Movespeed}"
+                Focusable="False" IsTabStop="False"
+                ValueDecremented="PointStepUpDn_ValueDecremented" 
+                ValueIncremented="PointStepUpDn_ValueIncremented"/>
+        </DockPanel>
+        <DockPanel>
+            <Label x:Name="CalibrationFormLabel" Content="{DynamicResource obj_Type}" />
+            <ComboBox x:Name="CalibrationFormCombo" Focusable="True" SelectionChanged="CalibrationFormCombo_SelectionChanged">
+                <ComboBox.Resources>
+                    <ResourceDictionary />
+                </ComboBox.Resources>
+                <ComboBoxItem Content="{DynamicResource clb_Dot}" />
+                <ComboBoxItem Content="{DynamicResource clb_Rect}" />
+                <ComboBoxItem Content="{DynamicResource clb_Cross}" />
+                <ComboBoxItem Content="{DynamicResource clb_HLine}" />
+                <ComboBoxItem Content="{DynamicResource clb_WLine}" />
+            </ComboBox>
+        </DockPanel>
+    </StackPanel>
+</UserControl>

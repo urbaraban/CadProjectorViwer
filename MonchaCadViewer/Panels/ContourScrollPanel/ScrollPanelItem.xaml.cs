@@ -93,7 +93,7 @@ namespace CadProjectorViewer.Panels
             base.OnMouseRightButtonUp(e);
             if (this.DataContext is ProjectionScene scene)
             {
-                scene.UpdateTransform();
+                scene.UpdateTransform(AppSt.Default.Attach);
             }
         }
 

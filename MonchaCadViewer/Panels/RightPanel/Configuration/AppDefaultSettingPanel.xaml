@@ -3,13 +3,12 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:local="clr-namespace:CadProjectorViewer.Panels.RightPanel.Configuration" xmlns:Properties="clr-namespace:CadProjectorViewer.Properties" xmlns:Controls="http://metro.mahapps.com/winfx/xaml/controls"
+             xmlns:local="clr-namespace:CadProjectorViewer.Panels.RightPanel.Configuration" 
+             xmlns:Controls="http://metro.mahapps.com/winfx/xaml/controls" 
+             DataContext="{Binding RelativeSource={RelativeSource Self}}"
+             d:DataContext="{d:DesignInstance Type=local:AppDefaultSettingPanel}"
              mc:Ignorable="d" 
-             d:DesignHeight="450"
              d:DesignWidth="250">
-    <UserControl.DataContext>
-        <Properties:Settings/>
-    </UserControl.DataContext>
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -25,41 +24,57 @@
     <ScrollViewer>
         <Grid>
             <StackPanel Orientation="Vertical" Margin="10">
+                <StackPanel.Resources>
+                    <Style TargetType="Label">
+                        <Setter Property="Width" Value="75"/>
+                    </Style>
+                </StackPanel.Resources>
                 <Label 
                     Content="{DynamicResource setting_mainlabel}" 
+                    Width="auto"
                     HorizontalAlignment="Stretch"
                     VerticalAlignment="Top"  />
-                <Label Content="{DynamicResource setting_xscale}" />
-                <Controls:NumericUpDown
+                <DockPanel>
+                    <Label Content="{DynamicResource setting_xscale}" />
+                    <Controls:NumericUpDown
+                    x:Name="SizeXUpDn"
                     Maximum="999" Minimum="1"
-                    Background="White" Value="{Binding default_scale_x, Mode=TwoWay}"/>
-                <Label Content="{DynamicResource setting_yscale}"/>
-                <Controls:NumericUpDown
+                    Background="White" Value="{Binding SizeX}"/>
+                </DockPanel>
+                
+                <DockPanel>
+                    <Label Content="{DynamicResource setting_yscale}"/>
+                    <Controls:NumericUpDown
                     Maximum="999" Minimum="1" 
-                    Background="White" Value="{Binding default_scale_y, Mode=TwoWay}"/>
-                <Label Content="{DynamicResource obj_Angle}"/>
-                <Controls:NumericUpDown 
+                    Background="White" Value="{Binding SizeY, Mode=TwoWay}"/>
+                </DockPanel>
+                
+                <DockPanel>
+                    <Label Content="{DynamicResource obj_Angle}"/>
+                    <Controls:NumericUpDown 
                     Maximum="360" Minimum="0" 
-                    Background="White"  Value="{Binding default_angle, Mode=TwoWay}"/>
+                    Background="White"  Value="{Binding Angle, Mode=TwoWay}"/>
+                </DockPanel>
+
                 <Separator/>
                 <CheckBox
                     Content="{DynamicResource obj_Mirror}" 
-                    IsChecked="{Binding default_mirror, Mode=TwoWay}"/>
+                    IsChecked="{Binding Mirror, Mode=TwoWay}"/>
                 <CheckBox 
                     Content="{DynamicResource setting_percent}" 
-                    IsChecked="{Binding stg_scale_percent, Mode=TwoWay}"/>
+                    IsChecked="{Binding PercentFlag, Mode=TwoWay}"/>
                 <CheckBox
                     Content="{DynamicResource setting_invertscale}"
-                    IsChecked="{Binding stg_scale_invert, Mode=TwoWay}"/>
+                    IsChecked="{Binding InvertScaleFlag, Mode=TwoWay}"/>
                 <CheckBox 
                     Content="{DynamicResource setting_solidobject}"
-                    IsChecked="{Binding object_solid, Mode=TwoWay}"/>
+                    IsChecked="{Binding SolidFlag, Mode=TwoWay}"/>
                 <CheckBox
                     Content="{DynamicResource setting_showname}"
-                    IsChecked="{Binding stg_show_name, Mode=TwoWay}"/>
+                    IsChecked="{Binding SelectableShowFlag, Mode=TwoWay}"/>
                 <CheckBox
                     Content="{DynamicResource setting_selectableshow}"
-                    IsChecked="{Binding stg_selectable_show, Mode=TwoWay}"/>
+                    IsChecked="{Binding SelectableShowFlag, Mode=TwoWay}"/>
                 <Separator/>
                 <!-- Attach panel-->
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
@@ -128,18 +143,13 @@
                 <Label Content="Thinkess" />
                 <Controls:NumericUpDown  Maximum="10" Minimum="0.0001" Interval="0.01"
                                      Background="White"
-                                     Value="{Binding default_thinkess_percent, Mode=TwoWay}"/>
+                                     Value="{Binding ThinkessMult, Mode=TwoWay}"/>
                 <Label Content="{DynamicResource clb_Sizeanchor}"/>
                 <Controls:NumericUpDown 
                     Background="White" 
                     Maximum="10" Minimum="1" Interval="1" 
-                    Value="{Binding anchor_size, Mode=TwoWay, UpdateSourceTrigger=Default}" 
+                    Value="{Binding AnchorSize, Mode=TwoWay, UpdateSourceTrigger=Default}" 
                     IsTabStop="False" AllowDrop="False"/>
-
-
-
-                <Button Content="{DynamicResource m_Save}"
-        Height="40" Margin="10"/>
             </StackPanel>
         </Grid>
     </ScrollViewer>

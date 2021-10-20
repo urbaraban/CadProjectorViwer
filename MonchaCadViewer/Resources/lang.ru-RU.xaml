@@ -18,7 +18,7 @@
     <v:String x:Key="obj_Angle">Угол</v:String>
     <v:String x:Key="obj_Width">Ширина</v:String>
     <v:String x:Key="obj_Height">Высота</v:String>
-    <v:String x:Key="obj_Deep">Глубина</v:String>
+    <v:String x:Key="obj_Depth">Глубина</v:String>
     <v:String x:Key="obj_Step">Шаг</v:String>
     <v:String x:Key="obj_Type">Тип</v:String>
 

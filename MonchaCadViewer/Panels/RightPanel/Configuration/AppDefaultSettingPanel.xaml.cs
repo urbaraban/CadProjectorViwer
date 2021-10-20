@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Globalization;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -22,12 +24,138 @@ namespace CadProjectorViewer.Panels.RightPanel.Configuration
     /// </summary>
     public partial class AppDefaultSettingPanel : UserControl
     {
+        public double SizeX
+        {
+            get => AppSt.Default.default_scale_x;
+            set
+            {
+                AppSt.Default.default_scale_x = value;
+                AppSt.Default.Save();
+            }
+        }
+
+        public double SizeY
+        {
+            get => AppSt.Default.default_scale_y;
+            set
+            {
+                AppSt.Default.default_scale_y = value;
+                AppSt.Default.Save();
+            }
+        }
+
+        public double Angle
+        {
+            get => AppSt.Default.default_scale_y;
+            set
+            {
+                AppSt.Default.default_angle = value;
+                AppSt.Default.Save();
+            }
+        }
+
+        public bool Mirror
+        {
+            get => AppSt.Default.default_mirror;
+            set
+            {
+                AppSt.Default.default_mirror = value;
+                AppSt.Default.Save();
+            }
+        }
+
+        public bool PercentFlag
+        {
+            get => AppSt.Default.stg_scale_percent;
+            set
+            {
+                AppSt.Default.stg_scale_percent = value;
+                AppSt.Default.Save();
+            }
+        }
+
+        public bool InvertScaleFlag
+        {
+            get => AppSt.Default.stg_scale_invert;
+            set
+            {
+                AppSt.Default.stg_scale_invert = value;
+                AppSt.Default.Save();
+            }
+        }
+
+        public bool SolidFlag
+        {
+            get => AppSt.Default.object_solid;
+            set
+            {
+                AppSt.Default.object_solid = value;
+                AppSt.Default.Save();
+            }
+        }
+
+        public bool ShowNameFlag
+        {
+            get => AppSt.Default.stg_show_name;
+            set
+            {
+                AppSt.Default.stg_show_name = value;
+                AppSt.Default.Save();
+            }
+        }
+
+        public bool SelectableShowFlag
+        {
+            get => AppSt.Default.stg_selectable_show;
+            set
+            {
+                AppSt.Default.stg_selectable_show = value;
+                AppSt.Default.Save();
+            }
+        }
+
+        public string Attach
+        {
+            get => AppSt.Default.Attach;
+            set
+            {
+                AppSt.Default.Attach = value;
+                OnPropertyChanged("Attach");
+                AppSt.Default.Save();
+            }
+        }
+
+        public double ThinkessMult
+        {
+            get => AppSt.Default.default_thinkess_percent;
+            set
+            {
+                AppSt.Default.default_thinkess_percent = value;
+            }
+        }
+
+        public double AnchorSize
+        {
+            get => AppSt.Default.anchor_size;
+            set
+            {
+                AppSt.Default.anchor_size = value;
+            }
+        }
+
         public AppDefaultSettingPanel()
         {
             InitializeComponent();
-            AppSt.Default.Upgrade();
         }
 
+        #region INotifyPropertyChanged
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        public void OnPropertyChanged([CallerMemberName] string prop = "DeviceFrame")
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(prop));
+        }
+        #endregion
     }
 
     public class AppSettingSave : IValueConverter

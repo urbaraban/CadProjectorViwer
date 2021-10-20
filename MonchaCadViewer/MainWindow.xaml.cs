@@ -613,5 +613,17 @@ namespace CadProjectorViewer
             return null;
         }
     }
+    public class AttachConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            return (string)value == (string)parameter;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            return (bool)value == true ? parameter : AppSt.Default.Attach;
+        }
+    }
 
 }

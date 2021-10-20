@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Globalization;
+using System.IO;
 using System.Linq;
 using System.Windows;
 using AppSt = CadProjectorViewer.Properties.Settings;
@@ -30,6 +32,14 @@ namespace CadProjectorViewer
 
 			this.LoadCompleted += Application_LoadCompleted;
             App.LanguageChanged += App_LanguageChanged;
+
+			Configuration config =
+			ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.PerUserRoamingAndLocal);
+			string path = config.FilePath;
+			if (File.Exists(path) == false)
+            {
+				AppSt.Default.Reset();
+            }
 		}
 
         private void App_LanguageChanged(object sender, EventArgs e)

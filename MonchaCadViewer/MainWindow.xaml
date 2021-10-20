@@ -162,7 +162,7 @@
                     Background="{Binding Play, Converter={StaticResource PlayBackConverter}}"
                     Grid.Column="2"
                     Grid.Row="0"
-                    Style="{DynamicResource ResourceKey=b}" />
+                    />
 
             <TabControl
                 TabStripPlacement="Left"
@@ -220,23 +220,35 @@
                     <Grid Background="#FFE5E5E5">
                         <TabControl x:Name="TabItem">
                             <TabItem Header="Компас" FontSize="14">
-                                <Grid Background="#FFE5E5E5">
-                                    <Button x:Name="kmpsSelectBtn" Content="{DynamicResource common_Select}" HorizontalAlignment="Left" Margin="10,86,0,0" VerticalAlignment="Top" Width="125" Height="50" Click="kmpsSelectBtn_Click" />
-                                    <Button x:Name="kmpsAddBtn" Content="{DynamicResource common_ADDIN}" HorizontalAlignment="Left" Margin="140,86,0,0" VerticalAlignment="Top" Width="78" Height="50" Click="kmpsAddBtn_Click" />
+                                <StackPanel Background="#FFE5E5E5">
+                                    <Label 
+                                        x:Name="KmpsNameLbl" 
+                                        Margin="5"
+                                        Content="{DynamicResource common_Empty}"/>
                                     <Controls:ToggleSwitch
                                         x:Name="kmpsConnectToggle"
+                                        Margin="5"
                                         Content="{DynamicResource common_Connect}"
-                                        HorizontalAlignment="Left"
-                                        Margin="10,26,0,0" VerticalAlignment="Top"
-                                        RenderTransformOrigin="0.5,0.5"
-                                        Toggled="kmpsConnectToggle_Toggled"
-                                        HorizontalContentAlignment="Center" MinWidth="9">
+                                        Toggled="kmpsConnectToggle_Toggled">
                                         <Controls:ToggleSwitch.DataContext>
                                             <Properties:Settings />
                                         </Controls:ToggleSwitch.DataContext>
                                     </Controls:ToggleSwitch>
-                                    <Label x:Name="KmpsNameLbl" Content="{DynamicResource common_Empty}" HorizontalAlignment="Left" Margin="10,55,0,0" VerticalAlignment="Top" Width="208" />
-                                </Grid>
+                                    <DockPanel LastChildFill="True" Margin="5">
+                                        <Button 
+                                            x:Name="kmpsSelectBtn" 
+                                            Content="{DynamicResource common_Select}"
+                                            Width="125" Height="50" 
+                                            Click="kmpsSelectBtn_Click"/>
+                                        <Button 
+                                            Margin="3,0"
+                                            x:Name="kmpsAddBtn" 
+                                            Content="{DynamicResource common_ADDIN}" 
+                                            Height="50" 
+                                            Click="kmpsAddBtn_Click" />
+                                    </DockPanel>
+                                 
+                               </StackPanel>
                             </TabItem>
                             <TabItem Header="ILDA" FontSize="14">
                                 <Grid Background="#FFE5E5E5">
@@ -245,23 +257,34 @@
                                 </Grid>
                             </TabItem>
                             <TabItem Header="Ethernet">
-                                <Grid>
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="59*" />
-                                        <ColumnDefinition Width="75*" />
-                                    </Grid.ColumnDefinitions>
-                                    <Grid.RowDefinitions>
-                                        <RowDefinition Height="42*" />
-                                        <RowDefinition Height="449*" />
-                                    </Grid.RowDefinitions>
-                                    <Controls:NumericUpDown x:Name="PortUpDn" Margin="5,10,10,6" Value="{Binding ether_udp_port}" Maximum="49151"  Minimum="1024" Background="White" Height="26" Grid.Column="1" ValueChanged="PortUpDn_ValueChanged">
-                                        <Controls:NumericUpDown.DataContext>
-                                            <Properties:Settings />
-                                        </Controls:NumericUpDown.DataContext>
-                                    </Controls:NumericUpDown>
-                                    <Label x:Name="label1" Content="UDP Port:" Margin="10,10,0,0" HorizontalAlignment="Left" Width="108" />
-                                    <Button x:Name="TcpListenBtn" Content="Listen" Height="50" VerticalAlignment="Top" Margin="10,11,10,0" Click="TcpListenBtn_Click" Grid.Row="1" Grid.ColumnSpan="2" />
-                                </Grid>
+                                <StackPanel Margin="5">
+                                    <DockPanel LastChildFill="True">
+                                        <Label
+                                            DockPanel.Dock="Left"
+                                            Margin="3"
+                                            Content="UDP Port:" 
+                                            HorizontalAlignment="Left"/>
+
+                                        <Controls:NumericUpDown x:Name="PortUpDn" 
+                                                                DockPanel.Dock="Right"
+                                                                Value="{Binding ether_udp_port}" 
+                                                                Maximum="49151"  
+                                                                Minimum="1024" 
+                                                                Background="White" 
+                                                                ValueChanged="PortUpDn_ValueChanged">
+                                            <Controls:NumericUpDown.DataContext>
+                                                <Properties:Settings />
+                                            </Controls:NumericUpDown.DataContext>
+                                        </Controls:NumericUpDown>
+                
+                                    </DockPanel>
+                                    <Button 
+                                        x:Name="TcpListenBtn" 
+                                        Content="Listen" 
+                                        Height="50" 
+                                        Margin="15"
+                                        Click="TcpListenBtn_Click"/>
+                                </StackPanel>
                             </TabItem>
                         </TabControl>
                     </Grid>
@@ -272,28 +295,48 @@
                             <configuration:HubSettingPanel/>
                         </TabItem>
                         <TabItem Header="Setting" FontSize="14">
-                            <configuration:AppDefaultSettingPanel>
-                                <configuration:AppDefaultSettingPanel.DataContext>
-                                    <Properties:Settings/>
-                                </configuration:AppDefaultSettingPanel.DataContext>
-                            </configuration:AppDefaultSettingPanel>
-
+                            <configuration:AppDefaultSettingPanel/>
                         </TabItem>
                         <TabItem Header="QR" FontSize="14">
-                            <Grid Background="#FFE5E5E5">
-                                <TextBox x:Name="BasePathBox" Height="23" TextWrapping="Wrap" Text="{Binding save_base_folder, Mode=TwoWay}" Margin="10,12,109,0" VerticalAlignment="Top">
-                                    <TextBox.DataContext>
-                                        <Properties:Settings />
-                                    </TextBox.DataContext>
-                                </TextBox>
-                                <TextBox x:Name="AlreadyPathBox" Height="23" TextWrapping="Wrap" Text="{Binding save_work_folder, Mode=TwoWay}" Margin="10,43,109,0" VerticalAlignment="Top">
-                                    <TextBox.DataContext>
-                                        <Properties:Settings />
-                                    </TextBox.DataContext>
-                                </TextBox>
-                                <Button x:Name="BaseFolderSelect" Content="{DynamicResource m_Browse}" HorizontalAlignment="Left" Margin="124,12,0,0" VerticalAlignment="Top" Width="94" Height="26" Click="BaseFolderSelect_Click" />
-                                <Button x:Name="WorkFolderSelect" Content="{DynamicResource m_Browse}" HorizontalAlignment="Left" Margin="124,43,0,0" VerticalAlignment="Top" Width="94" Height="26" Click="WorkFolderSelect_Click" />
-                            </Grid>
+                            <StackPanel Background="#FFE5E5E5">
+                                <StackPanel.Resources>
+                                    <Style TargetType="DockPanel">
+                                        <Setter Property="Margin" Value="3"/>
+                                    </Style>
+                                </StackPanel.Resources>
+                                <DockPanel LastChildFill="True">
+                                    <Button
+                                        DockPanel.Dock="Right"
+                                        Margin="3,0"
+                                        x:Name="BaseFolderSelect"
+                                            Content="{DynamicResource m_Browse}"
+                                            Width="94" 
+                                            Click="BaseFolderSelect_Click" />
+                                    <TextBox 
+                                        DockPanel.Dock="Left"
+                                        x:Name="BasePathBox"
+                                             Text="{Binding save_base_folder, Mode=TwoWay}">
+                                        <TextBox.DataContext>
+                                            <Properties:Settings />
+                                        </TextBox.DataContext>
+                                    </TextBox>
+                                </DockPanel>
+                                <DockPanel LastChildFill="True">
+                                    <Button
+                                        DockPanel.Dock="Right"
+                                        Margin="3,0"
+                                        x:Name="WorkFolderSelect" 
+                                        Content="{DynamicResource m_Browse}"
+                                        Width="94"
+                                        Click="WorkFolderSelect_Click"/>
+                                    <TextBox x:Name="AlreadyPathBox"
+                                             Text="{Binding save_work_folder, Mode=TwoWay}">
+                                        <TextBox.DataContext>
+                                            <Properties:Settings />
+                                        </TextBox.DataContext>
+                                    </TextBox>
+                                       </DockPanel>
+                            </StackPanel>
                         </TabItem>
                     </TabControl>
                 </TabItem>

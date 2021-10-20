@@ -229,10 +229,10 @@ namespace CadProjectorViewer.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("2")]
-        public int anchor_size {
+        [global::System.Configuration.DefaultSettingValueAttribute("1")]
+        public double anchor_size {
             get {
-                return ((int)(this["anchor_size"]));
+                return ((double)(this["anchor_size"]));
             }
             set {
                 this["anchor_size"] = value;

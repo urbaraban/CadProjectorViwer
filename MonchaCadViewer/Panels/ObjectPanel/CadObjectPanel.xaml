@@ -104,7 +104,7 @@
             x:Name="HeightLbl_Copy"
             Margin="1,56,0,0"
             VerticalAlignment="Top"
-            Content="{DynamicResource obj_Deep}" Grid.Column="4" Height="26" HorizontalAlignment="Left" Width="54" />
+            Content="{DynamicResource obj_Depth}" Grid.Column="4" Height="26" HorizontalAlignment="Left" Width="54" />
         <mah:NumericUpDown
             Value="{Binding ScaleZ, Mode=TwoWay, Converter={StaticResource ScaleConverter}}"
             Height="26"

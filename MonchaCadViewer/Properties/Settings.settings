@@ -53,8 +53,8 @@
     <Setting Name="stg_scale_invert" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">False</Value>
     </Setting>
-    <Setting Name="anchor_size" Type="System.Int32" Scope="User">
-      <Value Profile="(Default)">2</Value>
+    <Setting Name="anchor_size" Type="System.Double" Scope="User">
+      <Value Profile="(Default)">1</Value>
     </Setting>
     <Setting Name="object_solid" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">True</Value>

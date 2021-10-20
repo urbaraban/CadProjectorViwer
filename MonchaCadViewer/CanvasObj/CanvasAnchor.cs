@@ -9,12 +9,13 @@ using CadProjectorViewer.Calibration;
 using CadProjectorSDK;
 using CadProjectorSDK.Device;
 using CadProjectorSDK.CadObjects;
+using AppSt = CadProjectorViewer.Properties.Settings;
 
 namespace CadProjectorViewer.CanvasObj
 {
     public class CanvasAnchor : CanvasObject
     {
-        private double size;
+        private double size => GetThinkess * 2 * AppSt.Default.anchor_size;
         private RectangleGeometry rectangle;
 
         public override Pen myPen { get; } = new Pen(null, 0);
@@ -43,7 +44,6 @@ namespace CadProjectorViewer.CanvasObj
 
         private void CommonSetting()
         {
-            this.size = GetThinkess * 2;
             this.ShowName = false;
             ContextMenuLib.DotContextMenu(this.ContextMenu);
             Canvas.SetZIndex(this, 999);

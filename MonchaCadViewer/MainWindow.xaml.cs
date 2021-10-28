@@ -239,7 +239,7 @@ namespace CadProjectorViewer
                     new CadGroup(
                         await ContourCalc.GetGeometry(this.kmpsAppl.Doc, ProjectorHub.ProjectionSetting.PointStep.MX, false, true),
                         this.kmpsAppl.Doc.D7.Name);
-
+                cadGeometries.UpdateTransform(AppSt.Default.Attach);
                 ProjectorHub.ScenesCollection.Add(new ProjectionScene(cadGeometries));
             }
         }

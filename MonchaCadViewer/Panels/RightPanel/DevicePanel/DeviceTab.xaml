@@ -312,6 +312,18 @@
             Minimum="1" />
             </DockPanel>
 
+            <DockPanel LastChildFill="True">
+                <Label
+                    DockPanel.Dock="Left"
+                    Content="{DynamicResource dvc_WaintPoint}" />
+                <Controls:NumericUpDown
+            DataContext="{Binding SelectedItem, ElementName=DeviceCombo}"
+            Value="{Binding ProjectionSetting.RadiusWait, Mode=TwoWay}"
+            VerticalAlignment="Bottom"
+            Maximum="30"
+            Minimum="1" />
+            </DockPanel>
+
         </StackPanel>
     </ScrollViewer>
 </UserControl>

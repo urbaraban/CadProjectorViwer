@@ -62,7 +62,7 @@ namespace CadProjectorViewer.Panels
         {
             if (DeviceCombo.SelectedItem != null)
             {
-                DeviceSettingDialog deviceSettingDialog = new DeviceSettingDialog((LDevice)DeviceCombo.SelectedItem);
+                DeviceSettingDialog deviceSettingDialog = new DeviceSettingDialog() { DataContext = (LDevice)DeviceCombo.SelectedItem };
                 deviceSettingDialog.Show();
             }
         }

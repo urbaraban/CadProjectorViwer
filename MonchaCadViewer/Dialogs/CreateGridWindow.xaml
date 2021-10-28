@@ -6,11 +6,11 @@
         xmlns:Controls="http://metro.mahapps.com/winfx/xaml/controls"
         xmlns:Properties="clr-namespace:CadProjectorViewer.Properties" 
     xmlns:canvaspanel="clr-namespace:CadProjectorViewer.Panels.CanvasPanel"
-    xmlns:mesh="clr-namespace:CadProjectorSDK.Device.Mesh;assembly=CadProjectorSDK" xmlns:canvasobj="clr-namespace:CadProjectorViewer.CanvasObj"
-    d:DataContext="{d:DesignInstance Type=mesh:LDeviceMesh}"
+    xmlns:mesh="clr-namespace:CadProjectorSDK.Device.Mesh;assembly=CadProjectorSDK" xmlns:canvasobj="clr-namespace:CadProjectorViewer.CanvasObj" xmlns:cadprojectorviewer="clr-namespace:CadProjectorViewer"
+    d:DataContext="{d:DesignInstance Type=mesh:ProjectorMesh}"
     x:Class="CadProjectorViewer.CreateGridWindow"
         mc:Ignorable="d"
-        Title="CreateGridWindow" Height="450" Width="600" Loaded="Window_Loaded">
+        Title="CreateGridWindow" SizeToContent="WidthAndHeight" Loaded="Window_Loaded">
     <Window.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -18,7 +18,7 @@
                 <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Fonts.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Themes/Light.Blue.xaml" />
             </ResourceDictionary.MergedDictionaries>
-            <Style x:Key="Border" TargetType="{x:Type Border}">
+            <Style TargetType="Border">
                 <Setter Property="BorderBrush" Value="DarkGray"/>
                 <Setter Property="BorderThickness" Value="1"/>
                 <Style.Triggers>
@@ -27,37 +27,103 @@
                     </Trigger>
                 </Style.Triggers>
             </Style>
+            <Style TargetType="DockPanel">
+                <Setter Property="Margin" Value="5"/>
+                <Setter Property="LastChildFill" Value="True"/>
+            </Style>
+            <Style TargetType="Label">
+                <Setter Property="MinWidth" Value="60"/>
+                <Setter Property="HorizontalContentAlignment" Value="Center"/>
+            </Style>
             <canvaspanel:CadObjectConverter x:Key="CadObjectConverter"/>
+            <cadprojectorviewer:ToSceneObjConverter x:Key="ToSceneConverter"/>
         </ResourceDictionary>
 
     </Window.Resources>
-    <Grid>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="411*"/>
-            <ColumnDefinition Width="188*"/>
-        </Grid.ColumnDefinitions>
-        <Border Style="{StaticResource Border}" Background="#FFF0F0F0" Margin="10">
-            <Border.DataContext>
-                <Properties:Settings/>
-            </Border.DataContext>
-            <Grid>
-                <canvaspanel:CadCanvasPanel DataContext="{Binding RelativeSource={RelativeSource AncestorType=Window}, 
-                                            Path=projectionScene, 
-                                            Converter={StaticResource CadObjectConverter}}" />
+    <StackPanel Orientation="Horizontal" Margin="5">
+        <Border>
+        <Viewbox Width="400" Height="400">
+            <Grid x:Name="CanvasGrid">
+                <Rectangle Fill="White"/>
+                <Canvas 
+                    x:Name="BackCanvas" 
+                    IsHitTestVisible="False">
+                    <Canvas.Background>
+                        <DrawingBrush TileMode="Tile" Viewport="0,0,200,200" 
+                                     ViewportUnits="Absolute">
+                            <DrawingBrush.Drawing>
+                                <GeometryDrawing>
+                                    <GeometryDrawing.Geometry>
+                                        <RectangleGeometry Rect="0,0,200,200"/>
+                                    </GeometryDrawing.Geometry>
+                                    <GeometryDrawing.Pen>
+                                        <Pen Brush="LightSlateGray" Thickness="3"/>
+                                    </GeometryDrawing.Pen>
+                                </GeometryDrawing>
+                            </DrawingBrush.Drawing>
+                        </DrawingBrush>
+                    </Canvas.Background>
+                </Canvas>
+                <ItemsControl ItemsSource="{Binding RelativeSource={RelativeSource FindAncestor, 
+AncestorType={x:Type Window}}, Path=DataContext, Converter={StaticResource ToSceneConverter}}">
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <canvasobj:CadCanvas/>
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <ContentPresenter Content="{Binding Converter={StaticResource CadObjectConverter}}"/>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
             </Grid>
+        </Viewbox>
         </Border>
-        <Controls:NumericUpDown x:Name="WidthUpDn"  Margin="15,115,67,0" Maximum="50" Minimum="2" Value="2" Background="White" Height="26" VerticalAlignment="Top"  Grid.Column="1" ValueChanged="WidthUpDn_ValueChanged"/>
-        <Controls:NumericUpDown x:Name="HeightUpDn" Margin="15,172,67,0" Maximum="50" Minimum="2" Value="2" Background="White" Height="26" VerticalAlignment="Top"  Grid.Column="1" ValueChanged="WidthUpDn_ValueChanged"/>
-        <TextBox Text="{Binding Name}" Margin="15,54,67,331" Grid.Column="1"/>
-        <Label x:Name="label" Content="Ширина" Grid.Column="1" HorizontalAlignment="Left" Margin="15,89,0,0" VerticalAlignment="Top" Height="26" Width="55"/>
-        <Label x:Name="label_Copy" Content="Высота" Grid.Column="1" HorizontalAlignment="Left" Margin="15,146,0,0" VerticalAlignment="Top" Height="26" Width="49"/>
-        <Controls:NumericUpDown x:Name="StepUpDn" Margin="15,234,67,0" Maximum="9999" Value="300" Minimum="2" Background="White" Height="26" VerticalAlignment="Top"  Grid.Column="1" ValueChanged="StepUpDn_ValueChanged" />
-        <Label x:Name="label_Copy1" Content="Каждые" Grid.Column="1" HorizontalAlignment="Left" Margin="15,203,0,0" VerticalAlignment="Top" Height="26" Width="53"/>
-        <Label x:Name="WidthStepLabel" Content="(0.0)" Grid.Column="1" HorizontalAlignment="Left" Margin="135,115,0,0" VerticalAlignment="Top" Height="26" Width="33"/>
-        <Label x:Name="HeightStepLabel" Content="(0.0)" Grid.Column="1" HorizontalAlignment="Left" Margin="135,172,0,0" VerticalAlignment="Top" Width="52" Height="26"/>
-        <Label Content="{Binding Size.X}" Grid.Column="1" HorizontalAlignment="Left" Margin="80,89,0,0" VerticalAlignment="Top" Height="26" Width="36"/>
-        <Label Content="{Binding Size.Y}" Grid.Column="1" HorizontalAlignment="Left" Margin="81,146,0,0" VerticalAlignment="Top" Height="26" Width="36"/>
+        <StackPanel Orientation="Vertical" Width="180" Margin="5">
+            <TextBox Text="{Binding Name}"/>
+            <DockPanel>
+                <Label Content="Ширина"/>
+                <Label Content="{Binding Size.X}" HorizontalContentAlignment="Right"/>
+            </DockPanel>
+            <DockPanel>
+
+                <Label
+                    DockPanel.Dock="Left"
+                    x:Name="WidthStepLabel" Content="(0.0)"/>
+
+                <Controls:NumericUpDown 
+                x:Name="WidthUpDn"  
+                Maximum="50" Minimum="2" Value="2" Background="White" 
+                ValueChanged="WidthUpDn_ValueChanged"/>
+            </DockPanel>
+
+            <DockPanel>
+                <Label Content="Высота"/>
+                <Label Content="{Binding Size.Y}" HorizontalContentAlignment="Right"/>
+            </DockPanel>
+
+            <DockPanel>
+                <Label 
+                    DockPanel.Dock="Left"
+                    x:Name="HeightStepLabel" 
+                       Content="(0.0)"/>
+                <Controls:NumericUpDown 
+                x:Name="HeightUpDn" 
+                Maximum="50" Minimum="2" Value="2"
+                Background="White"
+                ValueChanged="WidthUpDn_ValueChanged"/>
+            </DockPanel>
+
+            <DockPanel>
+                <Label Content="Каждые"/>
+                <Controls:NumericUpDown 
+                   x:Name="StepUpDn"
+                   Maximum="9999" Value="300" Minimum="2" Background="White" 
+                   ValueChanged="StepUpDn_ValueChanged" />
+            </DockPanel>
+        </StackPanel>
 
 
-    </Grid>
+    </StackPanel>
 </Window>

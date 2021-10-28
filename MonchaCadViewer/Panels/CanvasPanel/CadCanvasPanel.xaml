@@ -4,8 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:canvasobj="clr-namespace:CadProjectorViewer.CanvasObj" 
-             xmlns:hub="clr-namespace:CadProjectorSDK;assembly=CadProjectorSDK"
-             xmlns:converters="clr-namespace:CadProjectorViewer.Converters" 
+             xmlns:hub="clr-namespace:CadProjectorSDK;assembly=CadProjectorSDK" 
              xmlns:canvaspanel="clr-namespace:CadProjectorViewer.Panels.CanvasPanel"
              d:DataContext="{d:DesignInstance Type=hub:ProjectorHub}"
              mc:Ignorable="d" 
@@ -23,8 +22,24 @@
             <RowDefinition Height="25"/>
         </Grid.RowDefinitions>
         <StackPanel Margin="0,0,0,0" Orientation="Horizontal" FlowDirection="RightToLeft" Panel.ZIndex="99">
-            <Button x:Name="AdornerShowBtn" FontFamily="Segoe MDL2 Assets" Content="&#xE7F0;" Width="30" Height="30" Margin="3" Click="AdornerShowBtn_Click" Panel.ZIndex="999" FontSize="18"/>
-            <Button x:Name="ShowDeviceRect" FontFamily="Segoe MDL2 Assets" Content="&#xE9A6;" Width="30" Height="30" Margin="3" Click="ShowDeviceRect_Click" Panel.ZIndex="999" FontSize="20"/>
+            <Button x:Name="AdornerShowBtn" 
+                    FontFamily="Segoe MDL2 Assets"
+                    Content="&#xE7F0;" 
+                     Width="{Binding ActualHeight, RelativeSource={RelativeSource Self}}"   
+                    Margin="3" 
+                    Click="AdornerShowBtn_Click" Panel.ZIndex="999" FontSize="18"/>
+            <Button x:Name="ShowDeviceRect"
+                    FontFamily="Segoe MDL2 Assets" 
+                    Content="&#xe773;"
+                     Width="{Binding ActualHeight, RelativeSource={RelativeSource Self}}"
+                  Margin="3" Click="ShowDeviceRect_Click" Panel.ZIndex="999" FontSize="20"/>
+            <ToggleButton  Width="{Binding ActualHeight, RelativeSource={RelativeSource Self}}"
+                           Content="&#xe8b0;"
+                           FontSize="18"
+                           FontFamily="Segoe MDL2 Assets"
+                           Margin="3"
+                           IsChecked="{Binding ScenesCollection.MainScene.ShowCursor}"
+                 />
         </StackPanel>
         <Viewbox x:Name="CanvasBox" Grid.RowSpan="3" Stretch="Uniform" StretchDirection="Both">
             <Grid x:Name="CanvasGrid" Cursor="{Binding ScenesCollection.MainScene.SceneAction, Converter={StaticResource CursorAction}}">

@@ -23,15 +23,13 @@ namespace CadProjectorViewer.Panels.DevicePanel
     /// </summary>
     public partial class DeviceSettingDialog : Window
     {
-        private LDevice _device { get; set; }
+        private LDevice _device => (LDevice)this.DataContext;
 
         public event EventHandler<List<FrameworkElement>> DrawObjects;
 
-        public DeviceSettingDialog(LDevice Device)
+        public DeviceSettingDialog()
         {
             InitializeComponent();
-            this._device = Device;
-            this.DataContext = Device;
 
             if (this._device != null)
             {
@@ -40,18 +38,6 @@ namespace CadProjectorViewer.Panels.DevicePanel
                 IP3.Text = this._device.iPAddress.GetAddressBytes()[2].ToString();
                 IP4.Text = this._device.iPAddress.GetAddressBytes()[3].ToString();
             }
-
-            SelectCombo.DisplayMemberPath = "Name";
-            SelectCombo.ItemsSource = _device.SelectedMeshes;
-            SelectCombo.DataContext = _device;
-            SelectCombo.SelectedItem = _device.SelectMesh;
-            SelectCombo.SetBinding(ComboBox.SelectedItemProperty, "SelectMesh");
-
-            BaseCombo.DisplayMemberPath = "Name";
-            BaseCombo.ItemsSource = _device.Meshes;
-            BaseCombo.DataContext = _device;
-            BaseCombo.SelectedItem = _device.BaseMesh;
-            BaseCombo.SetBinding(ComboBox.SelectedItemProperty, "BaseMesh");
         }
 
         private void SaveBtn_Click(object sender, RoutedEventArgs e)
@@ -97,6 +83,16 @@ namespace CadProjectorViewer.Panels.DevicePanel
             {
                 if (int.Parse(textBox.Text) > 255) textBox.Text = "255";
             }
+        }
+
+        private void MinusBaseBtn_Click(object sender, RoutedEventArgs e)
+        {
+            this._device.BaseMesh = null;
+        }
+
+        private void MinusSelectBtn_Click(object sender, RoutedEventArgs e)
+        {
+            this._device.SelectMesh = null;
         }
     }
 }

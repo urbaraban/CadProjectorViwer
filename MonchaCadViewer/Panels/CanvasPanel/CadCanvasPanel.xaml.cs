@@ -31,7 +31,6 @@ namespace CadProjectorViewer.Panels.CanvasPanel
     /// </summary>
     public partial class CadCanvasPanel : UserControl
     {
-
         public CadRect3D Size => ProjectorHub.Size;
 
         private Point StartMovePoint;

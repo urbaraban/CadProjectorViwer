@@ -7,9 +7,25 @@
         xmlns:CadProjectorSDK="clr-namespace:CadProjectorSDK;assembly=CadProjectorSDK" 
         d:DataContext="{d:DesignInstance Type=CadProjectorSDK:ProjectorHub}"
         mc:Ignorable="d"
-        Title="DeviceManager" Height="430.7" Width="352.848" Closing="DeviceManagerForm_Closing">
-    <Grid>
-        <ListView x:Name="FoundDeviceList" Margin="10,10,10,233">
+        Title="DeviceManager" 
+        SizeToContent="WidthAndHeight"
+        ResizeMode="NoResize"
+        Closing="DeviceManagerForm_Closing">
+    <Window.Resources>
+        <ResourceDictionary>
+            <Style TargetType="Button">
+                <Setter Property="Width" Value="100"/>
+                <Setter Property="Height" Value="30"/>
+                <Setter Property="Margin" Value="3,3"/>
+            </Style>
+            <Style TargetType="ListView">
+                <Setter Property="Height" Value="200"/>
+                <Setter Property="Margin" Value="0,3"/>
+            </Style>
+        </ResourceDictionary>
+    </Window.Resources>
+    <StackPanel Orientation="Vertical" Margin="15">
+        <ListView x:Name="FoundDeviceList">
             <ListView.View>
                 <GridView>
                     <GridViewColumn Header="Name" DisplayMemberBinding="{Binding GetIpString}" />
@@ -23,9 +39,7 @@
                 </GridView>
             </ListView.View>
         </ListView>
-        <Button x:Name="OkBtn" Content="Ok" HorizontalAlignment="Left" Margin="222,363,0,0" VerticalAlignment="Top" Width="113" Height="24" Click="OkBtn_Click"/>
-        <Button x:Name="SearchBtn" Content="Search" HorizontalAlignment="Left" Margin="10,363,0,0" VerticalAlignment="Top" Width="113" Height="24" Click="SearchBtn_Click"/>
-        <ListView x:Name="MonchaDeviceList" Margin="10,195,10,44">
+        <ListView x:Name="MonchaDeviceList">
             <ListView.View>
                 <GridView>
                     <GridViewColumn Header="Name" DisplayMemberBinding="{Binding GetIpString}" />
@@ -39,7 +53,19 @@
                 </GridView>
             </ListView.View>
         </ListView>
-        <Button x:Name="AddVirtualBtn" Content="Add Virtual" HorizontalAlignment="Left" Margin="129,363,0,0" VerticalAlignment="Top" Width="89" Height="24" Click="AddVirtualBtn_Click"/>
+        <DockPanel>
+            <Button x:Name="OkBtn"
+                    Content="Ok" 
+                    Click="OkBtn_Click"/>
+            <Button x:Name="SearchBtn" 
+                    Content="Search" 
+                    HorizontalAlignment="Left"
+                    Click="SearchBtn_Click"/>
+            <Button x:Name="AddVirtualBtn" 
+                    Content="Add Virtual" 
+                    HorizontalAlignment="Left"
+                    Click="AddVirtualBtn_Click"/>
+        </DockPanel>
 
-    </Grid>
+    </StackPanel>
 </Window>

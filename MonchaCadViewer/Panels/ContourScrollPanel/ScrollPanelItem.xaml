@@ -23,53 +23,64 @@
         Background="Gray"
         BorderBrush="Gray"
         BorderThickness="1">
-        <Grid x:Name="MainGrid" HorizontalAlignment="Stretch">
-            <Grid.RowDefinitions>
-                <RowDefinition Height="30" />
-                <RowDefinition Height="7*" />
-                <RowDefinition Height="20" />
-            </Grid.RowDefinitions>
+        <DockPanel LastChildFill="True">
+            <Label
+                DockPanel.Dock="Bottom"
+                Content="{Binding NameID}"
+                Grid.Row="2"
+                Padding="3"
+                Panel.ZIndex="99"
+                Background="LightGray"
+                FontSize="11"
+                Margin="0,0,0,0"
+                MaxWidth="120"
+                Opacity="08" />
+            <Grid x:Name="MainGrid" HorizontalAlignment="Stretch" DockPanel.Dock="Top">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="30" />
+                    <RowDefinition Height="7*" />
+                </Grid.RowDefinitions>
 
-            <Viewbox x:Name="CanvasBox" Grid.RowSpan="3" Stretch="Uniform" StretchDirection="Both">
-                <Grid x:Name="CanvasGrid">
-                    <Rectangle Fill="{Binding IsSelected, Converter={StaticResource BackColorConverter}}"/>
-                    <Canvas x:Name="BackCanvas" IsHitTestVisible="False">
-                        <Canvas.Background>
-                            <DrawingBrush TileMode="Tile" Viewport="0,0,200,200" 
+                <Viewbox x:Name="CanvasBox" Grid.RowSpan="3" Stretch="Uniform" StretchDirection="Both">
+                    <Grid x:Name="CanvasGrid">
+                        <Rectangle Fill="{Binding IsSelected, Converter={StaticResource BackColorConverter}}"/>
+                        <Canvas x:Name="BackCanvas" IsHitTestVisible="False">
+                            <Canvas.Background>
+                                <DrawingBrush TileMode="Tile" Viewport="0,0,200,200" 
                                      ViewportUnits="Absolute">
-                                <DrawingBrush.Drawing>
-                                    <GeometryDrawing>
-                                        <GeometryDrawing.Geometry>
-                                            <RectangleGeometry Rect="0,0,200,200"/>
-                                        </GeometryDrawing.Geometry>
-                                        <GeometryDrawing.Pen>
-                                            <Pen Brush="LightGray" Thickness="5"/>
-                                        </GeometryDrawing.Pen>
-                                    </GeometryDrawing>
-                                </DrawingBrush.Drawing>
-                            </DrawingBrush>
-                        </Canvas.Background>
-                    </Canvas>
-                    <ItemsControl ItemsSource="{Binding .}">
-                        <ItemsControl.ItemsPanel>
-                            <ItemsPanelTemplate>
-                                <canvasobj:CadCanvas ClipToBounds="True"/>
-                            </ItemsPanelTemplate>
-                        </ItemsControl.ItemsPanel>
-                        <ItemsControl.ItemTemplate>
-                            <DataTemplate>
-                                <ContentPresenter Content="{Binding Converter={StaticResource CadObjectConverter}}"/>
-                            </DataTemplate>
-                        </ItemsControl.ItemTemplate>
-                    </ItemsControl>
-                </Grid>
-            </Viewbox>
-            <Rectangle Fill="Transparent" Grid.RowSpan="3" />
+                                    <DrawingBrush.Drawing>
+                                        <GeometryDrawing>
+                                            <GeometryDrawing.Geometry>
+                                                <RectangleGeometry Rect="0,0,200,200"/>
+                                            </GeometryDrawing.Geometry>
+                                            <GeometryDrawing.Pen>
+                                                <Pen Brush="LightGray" Thickness="5"/>
+                                            </GeometryDrawing.Pen>
+                                        </GeometryDrawing>
+                                    </DrawingBrush.Drawing>
+                                </DrawingBrush>
+                            </Canvas.Background>
+                        </Canvas>
+                        <ItemsControl ItemsSource="{Binding .}">
+                            <ItemsControl.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <canvasobj:CadCanvas ClipToBounds="True"/>
+                                </ItemsPanelTemplate>
+                            </ItemsControl.ItemsPanel>
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <ContentPresenter Content="{Binding Converter={StaticResource CadObjectConverter}}"/>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </Grid>
+                </Viewbox>
+                <Rectangle Fill="Transparent" Grid.RowSpan="3" />
 
-            <DockPanel
+                <DockPanel
                 Margin="0,0,0,0"
                 Panel.ZIndex="99">
-                <Button
+                    <Button
                     DockPanel.Dock="Left"
                     x:Name="RemoveBtn"
                     MinWidth="25"
@@ -80,7 +91,7 @@
                     FontFamily="Segoe MDL2 Assets"
                     FontSize="14"
                     Foreground="Red" />
-                <Button
+                    <Button
                     DockPanel.Dock="Left"
                     x:Name="RefreshBtn"
                     MinWidth="25"
@@ -91,7 +102,7 @@
                     FontFamily="Segoe MDL2 Assets"
                     FontSize="14"
                     Foreground="MediumBlue" />
-                <ToggleButton
+                    <ToggleButton
                     DockPanel.Dock="Right"
                     x:Name="SolvedToggle"
                     Width="50"
@@ -105,17 +116,11 @@
                     FontSize="14"
                     Foreground="Green"
                     Unchecked="SolvedToggle_Checked" />
-            </DockPanel>
-            <Label
+                </DockPanel>
 
-                Content="{Binding NameID}"
-                Grid.Row="2"
-                Padding="0"
-                Panel.ZIndex="99"
-                Background="LightGray"
-                FontSize="11"
-                Margin="0,0,0,0"
-                Opacity="08" />
-        </Grid>
+            </Grid>
+
+        </DockPanel>
+      
     </Border>
 </UserControl>

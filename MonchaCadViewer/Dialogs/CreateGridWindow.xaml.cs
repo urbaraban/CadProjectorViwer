@@ -10,6 +10,9 @@ using AppSt = CadProjectorViewer.Properties.Settings;
 using CadProjectorSDK.CadObjects;
 using CadProjectorSDK.Device.Mesh;
 using CadProjectorSDK.Scenes;
+using System.Windows.Data;
+using System.Globalization;
+using CadProjectorSDK.CadObjects.Abstract;
 
 namespace CadProjectorViewer
 {
@@ -18,26 +21,15 @@ namespace CadProjectorViewer
     /// </summary>
     public partial class CreateGridWindow : Window
     {
-        public ProjectionScene projectionScene { get; set; } = new ProjectionScene();
-
         private ProjectorMesh _mesh;
 
         public CreateGridWindow(ProjectorMesh mesh)
         {
             InitializeComponent();
             this._mesh = mesh;
-            this.DataContextChanged += CreateGridWindow_DataContextChanged;
             this.DataContext = new ProjectorMesh(ProjectorMesh.MakeMeshPoint(this._mesh.Points.GetLength(0), this._mesh.Points.GetLength(1)), this._mesh.Name);
         }
 
-        private void CreateGridWindow_DataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
-        {
-            projectionScene.Clear();
-            if (this.DataContext is ProjectorMesh mesh)
-            {
-                projectionScene.Add(mesh);
-            }
-        }
 
 
         private void WidthUpDn_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double?> e)
@@ -88,6 +80,21 @@ namespace CadProjectorViewer
             HeightUpDn.Value = this._mesh.GetLength(0);
         }
     }
+    public class ToSceneObjConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            if (value is UidObject obj)
+            {
+                return new ProjectionScene(obj);
+            }
+            return new ProjectionScene();
+        }
 
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+    }
 
 }

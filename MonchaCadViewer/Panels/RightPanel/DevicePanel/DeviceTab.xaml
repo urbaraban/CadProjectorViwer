@@ -55,17 +55,18 @@
                 Grid.Row="3" Grid.ColumnSpan="2" />
                 <Button DockPanel.Dock="Right"
                 Margin="5,0,10,0"
-                Height="26"
                 Click="DeviceSettingBtn_Click"
                 Content="&#xE713;"
                 Padding="0"
                 FontFamily="Segoe MDL2 Assets"
-                FontSize="14" Width="26" />
+                FontSize="14"
+                Width="{Binding ActualHeight, RelativeSource={RelativeSource Self}}" />
                 <ComboBox
                 x:Name="DeviceCombo"
                 DockPanel.Dock="Left"
                 DisplayMemberPath="HWIdentifier"
                 SelectedValuePath="HWIdentifier"
+                SelectedIndex="0"
                 ItemsSource="{Binding Devices}" />
             </DockPanel>
             <Label
@@ -77,7 +78,7 @@
             <DockPanel LastChildFill="True">
                 <Button
                     DockPanel.Dock="Right"
-                    Height="26" Width="26"
+                     Width="{Binding ActualHeight, RelativeSource={RelativeSource Self}}"
                     Margin="3,0"
                     Padding="0"
                     Content="&#xF0B5;"
@@ -86,7 +87,7 @@
                     Click="MeshListBtn_Click" />
                 <Button
                     DockPanel.Dock="Right"
-                    Height="26" Width="26"
+                     Width="{Binding ActualHeight, RelativeSource={RelativeSource Self}}"
                     Margin="3,0"
                     Padding="0"
                     Content="&#xEB7E;"
@@ -279,7 +280,7 @@
             <DockPanel LastChildFill="True">
                 <Label
                     DockPanel.Dock="Left"
-                    Content="{DynamicResource dvc_StepPoint}" />
+                    Content="{DynamicResource dvc_StepPoint}"/>
                 <Controls:NumericUpDown
                     DockPanel.Dock="Right"
                     DataContext="{Binding SelectedItem, ElementName=DeviceCombo}"

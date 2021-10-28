@@ -5,6 +5,7 @@ using MahApps.Metro.Controls;
 using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -93,6 +94,21 @@ namespace CadProjectorViewer.Panels.RightPanel.Configuration
             {
                 ProjectorMesh.ClbrForm = (CalibrationForm)CalibrationFormCombo.SelectedValue;
             }
+        }
+    }
+
+    public class Splitter : IMultiValueConverter
+    {
+        public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
+        {
+            return values[0];
+        }
+
+        public object[] ConvertBack(object value, Type[] targetTypes, object parameter, CultureInfo culture)
+        {
+            object[] values = new object[targetTypes.Length];
+            for (int i = 0; i < values.Length; i += 1) values[i] = value;
+            return values;
         }
     }
 }

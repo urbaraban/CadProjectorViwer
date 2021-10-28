@@ -6,93 +6,146 @@
         xmlns:Controls="http://metro.mahapps.com/winfx/xaml/controls"
         mc:Ignorable="d"
         xmlns:dvc="clr-namespace:CadProjectorSDK.Device;assembly=CadProjectorSDK" d:DataContext="{d:DesignInstance Type=dvc:LDevice}"
-        Title="DeviceSettingDialog" Height="319.111" Width="200">
+        Title="DeviceSettingDialog"
+        ResizeMode="NoResize"
+        SizeToContent="WidthAndHeight">
     <Window.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Controls.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Fonts.xaml" />
+                <!-- Theme setting -->
+                <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Themes/Light.Blue.xaml" />
             </ResourceDictionary.MergedDictionaries>
-            <Style x:Key="Border" TargetType="{x:Type Border}">
-                <Setter Property="BorderBrush" Value="DarkGray"/>
-                <Setter Property="BorderThickness" Value="1"/>
-                <Style.Triggers>
-                    <Trigger Property="IsMouseOver" Value="true">
-                        <Setter Property="BorderBrush" Value="CadetBlue"/>
-                    </Trigger>
-                </Style.Triggers>
+            <Style TargetType="DockPanel">
+                <Setter Property="LastChildFill" Value="True"/>
+                <Setter Property="Margin" Value="5"/>
             </Style>
-            <Style x:Key="ObjCanvas" TargetType="{x:Type Border}">
-                <Setter Property="BorderBrush" Value="DarkGray"/>
-                <Setter Property="BorderThickness" Value="1"/>
-                <Style.Triggers>
-                    <Trigger Property="IsMouseOver" Value="true">
-                        <Setter Property="BorderBrush" Value="CadetBlue"/>
-                    </Trigger>
-                </Style.Triggers>
+            <Style TargetType="TextBox">
+                <Setter Property="MinWidth" Value="45"/>
+                <Setter Property="Margin" Value="3,0"/>
+                <Setter Property="Padding" Value="3"/>
+            </Style>
+            <Style TargetType="Button">
+                <Setter Property="Height" Value="30"/>
+            </Style>
+            <Style TargetType="Label">
+                <Setter Property="Width" Value="50"/>
+            </Style>
+            <Style TargetType="ComboBox">
+                <Setter Property="MinWidth" Value="90"/>
             </Style>
         </ResourceDictionary>
     </Window.Resources>
-    <Grid>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="50*"/>
-            <ColumnDefinition Width="50*"/>
-            <ColumnDefinition Width="50*"/>
-            <ColumnDefinition Width="50*"/>
-        </Grid.ColumnDefinitions>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="30"/>
-            <RowDefinition Height="30"/>
-            <RowDefinition Height="30"/>
-            <RowDefinition Height="30"/>
-            <RowDefinition/>
-        </Grid.RowDefinitions>
-        <Label x:Name="label" Content="IP" Margin="5"/>
-        <TextBox x:Name="IP1" Height="21" Margin="5,5,5,0" Grid.Row="1" TextWrapping="Wrap" Text="192" VerticalAlignment="Top" TextInput="IP_TextInput" LostFocus="IP_LostFocus"/>
-        <TextBox x:Name="IP2" Height="21" Margin="5,5,5,0" Grid.Row="1" TextWrapping="Wrap" Text="168" VerticalAlignment="Top" Grid.Column="1" TextInput="IP_TextInput" LostFocus="IP_LostFocus"/>
-        <TextBox x:Name="IP3" Height="21" Margin="5,5,5,0" Grid.Row="1" TextWrapping="Wrap" Text="0" VerticalAlignment="Top" Grid.Column="2" TextInput="IP_TextInput" LostFocus="IP_LostFocus"/>
-        <TextBox x:Name="IP4" Height="21" Margin="5,5,5,0" Grid.Row="1" TextWrapping="Wrap" Text="0" VerticalAlignment="Top" Grid.Column="3" TextInput="IP_TextInput" LostFocus="IP_LostFocus"/>
-        <Button x:Name="CheckBtn" Grid.ColumnSpan="2" Content="Chek" Grid.Column="1" HorizontalAlignment="Left" Margin="5,5,0,5" Width="86" Click="CheckBtn_Click" LostFocus="IP_LostFocus"/>
-        <CheckBox x:Name="CheckLabel" Grid.Column="3" Margin="5" IsEnabled="False"/>
-        <Button x:Name="SaveBtn" Grid.ColumnSpan="4" Content="Save" Height="36" Margin="10,0,10,10" Grid.Row="4" VerticalAlignment="Bottom" Click="SaveBtn_Click"/>
+    <StackPanel Grid.ColumnSpan="4" Grid.RowSpan="5">
+        <DockPanel>
+            <Label 
+                    Width="30"
+                HorizontalContentAlignment="Center"
+                    Content="IP"/>
+            <CheckBox 
+                    DockPanel.Dock="Right"
+                    x:Name="CheckLabel" 
+                    IsEnabled="False"
+                    VerticalAlignment="Center"
+                HorizontalContentAlignment="Center"
+                HorizontalAlignment="Center"
+                    Margin="3"/>
+            <Button
+                    x:Name="CheckBtn"
+                    Content="Chek"
+                    Click="CheckBtn_Click"
+                    LostFocus="IP_LostFocus"/>
+        </DockPanel>
+        <DockPanel>
+            <TextBox x:Name="IP1" 
+                     Text="192" 
+                     TextInput="IP_TextInput" LostFocus="IP_LostFocus"/>
+            <TextBox x:Name="IP2" 
+                     Text="168" 
+                     TextInput="IP_TextInput" LostFocus="IP_LostFocus"/>
+            <TextBox x:Name="IP3"
+                     Text="0" 
+                     TextInput="IP_TextInput" LostFocus="IP_LostFocus"/>
+            <TextBox x:Name="IP4" 
+                     Text="0"  
+                     TextInput="IP_TextInput" LostFocus="IP_LostFocus"/>
+        </DockPanel>
+        <DockPanel>
+            <Label 
+                    Content="Select"/>
+            <Button
+                    DockPanel.Dock="Right"
+                    x:Name="MinusSelectBtn" 
+                    Content="-" 
+                Click="MinusSelectBtn_Click"
+                    Width="{Binding ActualHeight, RelativeSource={RelativeSource Self}}" />
 
-        <ComboBox x:Name="SelectCombo" Grid.Column="1" Grid.Row="2" Grid.ColumnSpan="2" Margin="5,3"/>
-        <ComboBox x:Name="BaseCombo" Grid.Column="1" Grid.Row="3" Grid.ColumnSpan="2" Margin="5,3"/>
+            <Button 
+                    DockPanel.Dock="Right"
+                    x:Name="AddSelectBtn"
+                    Content="+"
+                    Width="{Binding ActualHeight, RelativeSource={RelativeSource Self}}"/>
+            <ComboBox 
+                DisplayMemberPath="Name"
+                ItemsSource="{Binding SelectedMeshes}"
+                SelectedItem="{Binding SelectMesh}"
+                x:Name="SelectCombo"/>
+        </DockPanel>
+        <DockPanel>
+            <Label x:Name="label_Copy1" Content="Base"/>
+            <Button
+                    DockPanel.Dock="Right"
+                    x:Name="MinusBaseBtn" 
+                    Content="-" 
+                Click="MinusBaseBtn_Click"
+                    Width="{Binding ActualHeight, RelativeSource={RelativeSource Self}}" />
 
-        <Label x:Name="label_Copy" Content="Select" Margin="5,3,0,3" Grid.Row="2"/>
-        <Label x:Name="label_Copy1" Content="Base" Margin="5,3,0,3" Grid.Row="3"/>
-        <Button x:Name="AddSelectBtn" Content="+" Grid.Column="3" HorizontalAlignment="Left" Margin="10,6,0,4" Width="21" Grid.Row="2"/>
-        <Button x:Name="AddBaseBtn" Content="+" Grid.Column="3" HorizontalAlignment="Left" Margin="10,6,0,4" Width="21" Grid.Row="3"/>
-        <Controls:NumericUpDown
+            <Button
+                    DockPanel.Dock="Right"
+                    x:Name="AddBaseBtn" 
+                    Content="+" 
+                    Width="{Binding ActualHeight, RelativeSource={RelativeSource Self}}" />
+            <ComboBox 
+                DisplayMemberPath="Name"
+                ItemsSource="{Binding Meshes}"
+                SelectedItem="{Binding BaseMesh}"
+                x:Name="BaseCombo"/>
+
+        </DockPanel>
+        <DockPanel>
+            <Label 
+                Content="Koeff"/>
+            <Controls:NumericUpDown
             Value="{Binding DistKoefX, Mode=TwoWay}"
-            Grid.Row="4"
-            Grid.ColumnSpan="3"
-            Height="30"
-            Margin="5,0,10,59"
-            VerticalAlignment="Bottom"
             Interval="0.01"
             Maximum="1"
-            Minimum="-1" 
-            Grid.Column="1"/>
-        <Controls:NumericUpDown
+            Minimum="-1"/>
+        </DockPanel>
+
+        <DockPanel>
+            <Label  
+                Content="Width"/>
+            <Controls:NumericUpDown
             Value="{Binding WidthResolutuon, Mode=TwoWay}"
-            Grid.Row="4"
-            Grid.ColumnSpan="3"
-            Height="30"
-            Margin="5,0,10,129"
-            VerticalAlignment="Bottom"
             Interval="1"
             Minimum="1" 
             Grid.Column="1"/>
-        <Controls:NumericUpDown
+        </DockPanel>
+
+        <DockPanel>
+            <Label  
+                Content="Height"/>
+            <Controls:NumericUpDown
             Value="{Binding HeightResolution, Mode=TwoWay}"
-            Grid.Row="4"
-            Grid.ColumnSpan="3"
-            Height="30"
-            Margin="5,0,10,94"
-            VerticalAlignment="Bottom"
             Interval="1"
-            Minimum="1" 
-            Grid.Column="1"/>
-        <Label x:Name="label_Copy2" Content="Width" Margin="5,10,0,134" Grid.Row="4"/>
-    </Grid>
+            Minimum="1"/>
+        </DockPanel>
+
+        <DockPanel>
+            <Button x:Name="SaveBtn"
+                        Content="Save" 
+                        Click="SaveBtn_Click"/>
+        </DockPanel>
+    </StackPanel>
 </Window>

@@ -4,7 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:Controls="http://metro.mahapps.com/winfx/xaml/controls" 
-             xmlns:cadprojectorsdk="clr-namespace:CadProjectorSDK;assembly=CadProjectorSDK"
+             xmlns:cadprojectorsdk="clr-namespace:CadProjectorSDK;assembly=CadProjectorSDK" xmlns:configuration="clr-namespace:CadProjectorViewer.Panels.RightPanel.Configuration" xmlns:converters="clr-namespace:CadProjectorViewer.Converters"
              d:DataContext="{d:DesignInstance Type=cadprojectorsdk:ProjectorHub}"
              Background="White"
              mc:Ignorable="d" 
@@ -28,6 +28,8 @@
                 <Setter Property="Background" Value="LightGray"/>
                 <Setter Property="Margin" Value="5"/>
             </Style>
+            <configuration:Splitter x:Key="Splitter"/>
+            <converters:RoundDoubleConverter x:Key="RoundDouble"/>
         </ResourceDictionary>
     </UserControl.Resources>
     <StackPanel>
@@ -53,38 +55,42 @@
             <Label
                 Content="{DynamicResource obj_Width}"/>
             <Controls:NumericUpDown  
-                Value="{Binding Size.Width}"
-                Background="White" 
-                Grid.Column="2" Grid.ColumnSpan="3"/>
+                Value="{Binding Size.Width, Converter={StaticResource RoundDouble}}"
+                Background="White"/>
         </DockPanel>
         <DockPanel>
             <Label
                 Content="{DynamicResource obj_Height}"/>
             <Controls:NumericUpDown  
-                Value="{Binding Size.Height}"
-                Background="White" 
-                Grid.Column="2" Grid.ColumnSpan="3"/>
+                Value="{Binding Size.Height , Converter={StaticResource RoundDouble}}"
+                Background="White" />
         </DockPanel>
         <DockPanel>
             <Label
                 Content="{DynamicResource obj_Depth}"/>
             <Controls:NumericUpDown 
-                Value="{Binding Size.Depth}"
-                Background="White" 
-                Grid.Column="2" Grid.ColumnSpan="3"/>
+                Value="{Binding Size.Depth, Converter={StaticResource RoundDouble}}"
+                Background="White" />
         </DockPanel>
         <Separator/>
         <DockPanel>
             <Label Content="{DynamicResource clb_Multiplier}"/>
             <Controls:NumericUpDown 
             x:Name="MashMultiplierUpDn"
-            Value="{Binding Size.M.Width}" 
+
             Background="White" 
             Maximum="1" Minimum="0.001" 
             Speedup="False" 
             ValueIncremented="MashMultiplierUpDn_ValueIncremented" 
-            ValueDecremented="MashMultiplierUpDn_ValueDecremented"/>
-
+            ValueDecremented="MashMultiplierUpDn_ValueDecremented">
+                <Controls:NumericUpDown.Value>
+                    <MultiBinding Converter="{StaticResource Splitter}">
+                        <Binding Path="Size.M.Width"/>
+                        <Binding Path="Size.M.Height"/>
+                        <Binding Path="Size.M.Depth"/>
+                    </MultiBinding>
+                </Controls:NumericUpDown.Value>
+            </Controls:NumericUpDown>
         </DockPanel>
         <DockPanel>
             <Label 
@@ -100,7 +106,9 @@
         </DockPanel>
         <DockPanel>
             <Label x:Name="CalibrationFormLabel" Content="{DynamicResource obj_Type}" />
-            <ComboBox x:Name="CalibrationFormCombo" Focusable="True" SelectionChanged="CalibrationFormCombo_SelectionChanged">
+            <ComboBox x:Name="CalibrationFormCombo"
+                      Focusable="True" 
+                      SelectionChanged="CalibrationFormCombo_SelectionChanged">
                 <ComboBox.Resources>
                     <ResourceDictionary />
                 </ComboBox.Resources>

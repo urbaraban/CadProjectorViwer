@@ -41,6 +41,7 @@ namespace CadProjectorViewer.CanvasObj
                 OnPropertyChanged("CadObject");
             }
         }
+        private UidObject cadobject;
 
         private void Cadobject_PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
@@ -48,7 +49,6 @@ namespace CadProjectorViewer.CanvasObj
             OnPropertyChanged(e.PropertyName);
         }
 
-        private UidObject cadobject;
 
         public AdornerLayer adornerLayer { get; private set; }
 
@@ -255,6 +255,7 @@ namespace CadProjectorViewer.CanvasObj
             base.OnMouseLeave(e);
             if (ActiveObject == true)
             {
+                this.CadObject.IsMouseOver = false;
                 this.WasMove = false;
                 OnObject?.Invoke(this, this.IsMouseOver);
             }
@@ -266,6 +267,7 @@ namespace CadProjectorViewer.CanvasObj
             base.OnMouseEnter(e);
             if (ActiveObject == true)
             {
+                this.CadObject.IsMouseOver = true;
                 OnObject?.Invoke(this, this.IsMouseOver);
             }
         }
@@ -320,6 +322,7 @@ namespace CadProjectorViewer.CanvasObj
         public CanvasObject(UidObject uidObject, bool ActiveObject)
         {
             this.CadObject = uidObject;
+            this.DataContext = uidObject;
             if (this.ContextMenu == null)
             {
                 this.ContextMenu = new System.Windows.Controls.ContextMenu();

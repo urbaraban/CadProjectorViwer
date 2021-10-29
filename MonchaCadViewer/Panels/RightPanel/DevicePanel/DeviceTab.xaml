@@ -315,13 +315,41 @@
             <DockPanel LastChildFill="True">
                 <Label
                     DockPanel.Dock="Left"
-                    Content="{DynamicResource dvc_WaintPoint}" />
+                    Content="{DynamicResource dvc_RadiusWait}" />
                 <Controls:NumericUpDown
             DataContext="{Binding SelectedItem, ElementName=DeviceCombo}"
             Value="{Binding ProjectionSetting.RadiusWait, Mode=TwoWay}"
             VerticalAlignment="Bottom"
             Maximum="30"
             Minimum="1" />
+            </DockPanel>
+
+            <Separator/>
+            <DockPanel>
+                <Label
+                    DockPanel.Dock="Left"
+                    Content="{DynamicResource obj_ParallelCount}" />
+                <Controls:NumericUpDown
+                    DockPanel.Dock="Right"
+                    DataContext="{Binding SelectedItem, ElementName=DeviceCombo}"
+                    Value="{Binding ProjectionSetting.ParallelLineCount}"
+                    Background="White"
+                    Maximum="999"
+                    Interval="1"
+                    Minimum="0" />
+            </DockPanel>
+            <DockPanel>
+                <Label
+                    DockPanel.Dock="Left"
+                    Content="{DynamicResource obj_ParallelMargin}" />
+                <Controls:NumericUpDown
+                    DockPanel.Dock="Right"
+                    DataContext="{Binding SelectedItem, ElementName=DeviceCombo}"
+                    Value="{Binding ProjectionSetting.ParallelLineMargin}"
+                    Background="White"
+                    Maximum="999"
+                    Interval="1"
+                    Minimum="-999" />
             </DockPanel>
 
         </StackPanel>

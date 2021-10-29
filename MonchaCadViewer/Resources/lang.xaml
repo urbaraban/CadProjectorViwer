@@ -23,6 +23,8 @@
     <v:String x:Key="obj_Depth">Depth</v:String>
     <v:String x:Key="obj_Step">Step</v:String>
     <v:String x:Key="obj_Type">Type</v:String>
+    <v:String x:Key="obj_ParallelCount">Strokes count</v:String>
+    <v:String x:Key="obj_ParallelMargin">Strokes margin</v:String>
 
     <v:String x:Key="dvc_Device">Device</v:String>
     <v:String x:Key="dvc_Dimmer">Dimmer</v:String>
@@ -38,10 +40,11 @@
     <v:String x:Key="dvc_Brightness">Brightness</v:String>
     <v:String x:Key="dvc_StepPoint">Step</v:String>
     <v:String x:Key="dvc_FadePoint">Fade</v:String>
-    <v:String x:Key="dvc_WaintPoint">WaintPoint</v:String>
+    <v:String x:Key="dvc_WaintPoint">Waint Point</v:String>
     <v:String x:Key="dvc_WaintPointBlank">WaintPointBlank</v:String>
     <v:String x:Key="dvc_WaintPointEndBlank">WaintPointEndBlank</v:String>
     <v:String x:Key="dvc_Radius">Radius</v:String>
+    <v:String x:Key="dvc_RadiusWait">Radius wait</v:String>
     <v:String x:Key="dvc_showrect">Show rect</v:String>
     <v:String x:Key="dvc_showzone">Show zone</v:String>
     <v:String x:Key="dvc_polymesh">Poly mesh</v:String>

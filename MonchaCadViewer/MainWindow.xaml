@@ -122,8 +122,8 @@
             </Grid.ColumnDefinitions>
             <Grid.RowDefinitions>
                 <RowDefinition Height="113" />
-                <RowDefinition Height="491*" />
-                <RowDefinition Height="95*" />
+                <RowDefinition Height="451*" />
+                <RowDefinition Height="135*" />
                 <RowDefinition Height="30" />
             </Grid.RowDefinitions>
             <GridSplitter
@@ -247,8 +247,8 @@
                                             Height="50" 
                                             Click="kmpsAddBtn_Click" />
                                     </DockPanel>
-                                 
-                               </StackPanel>
+
+                                </StackPanel>
                             </TabItem>
                             <TabItem Header="ILDA" FontSize="14">
                                 <Grid Background="#FFE5E5E5">
@@ -276,7 +276,7 @@
                                                 <Properties:Settings />
                                             </Controls:NumericUpDown.DataContext>
                                         </Controls:NumericUpDown>
-                
+
                                     </DockPanel>
                                     <Button 
                                         x:Name="TcpListenBtn" 
@@ -335,7 +335,7 @@
                                             <Properties:Settings />
                                         </TextBox.DataContext>
                                     </TextBox>
-                                       </DockPanel>
+                                </DockPanel>
                             </StackPanel>
                         </TabItem>
                     </TabControl>
@@ -349,7 +349,7 @@
             </TabControl>
 
             <panels:ProgressPanel Grid.Column="2" Margin="5" Grid.Row="3" />
-            <Label x:Name="pBarLabel" Visibility="Hidden" Content="Label" Grid.Row="1" Grid.Column="2" HorizontalContentAlignment="Center" VerticalAlignment="Center" HorizontalAlignment="Center" Height="26" Margin="126,233,126,232" Width="38" />
+            <Label x:Name="pBarLabel" Visibility="Hidden" Content="Label" Grid.Row="1" Grid.Column="2" HorizontalContentAlignment="Center" VerticalAlignment="Center" HorizontalAlignment="Center" Height="26" Margin="126,213,126,212" Width="38" />
             <GridSplitter
                  Style="{StaticResource GridSplitter}"
                 Grid.Row="1" Grid.RowSpan="2"

@@ -13,6 +13,7 @@
         <ResourceDictionary>
             <canvaspanel:CadObjectConverter x:Key="CadObjectConverter"/>
             <canvaspanel:CursorActionConverter x:Key="CursorAction"/>
+            <canvaspanel:InfoConverter x:Key="InfoConverter"/>
         </ResourceDictionary>
     </UserControl.Resources>
     <Grid Margin="0" Background="LightGray" ClipToBounds="True" >
@@ -78,8 +79,18 @@
                 </ItemsControl>
             </Grid>
         </Viewbox>
-        <Label x:Name="CoordinateLabel" Content="X: 0; Y: 0" Grid.RowSpan="3" 
-               VerticalContentAlignment="Bottom" IsEnabled="False" HorizontalAlignment="Right" 
-               Width="202" HorizontalContentAlignment="Right" Visibility="Hidden" IsHitTestVisible="False"/>
+        <Label x:Name="CoordinateLabel" 
+               Grid.RowSpan="3" 
+               VerticalContentAlignment="Bottom" 
+               IsEnabled="False" HorizontalAlignment="Right" 
+               HorizontalContentAlignment="Right" Visibility="Hidden" IsHitTestVisible="False">
+            <Label.Content>
+                <MultiBinding Converter="{StaticResource InfoConverter}">
+                    <Binding Path="ScenesCollection.MainScene.MousePosition.X"/>
+                    <Binding Path="ScenesCollection.MainScene.MousePosition.Y"/>
+                    <Binding Path="Devices"/>
+                </MultiBinding>
+            </Label.Content>
+        </Label>
     </Grid>
 </UserControl>

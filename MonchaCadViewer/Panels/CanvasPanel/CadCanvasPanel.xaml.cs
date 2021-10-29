@@ -23,6 +23,7 @@ using CadProjectorSDK.Scenes;
 using CadProjectorViewer.StaticTools;
 using System.IO;
 using CadProjectorSDK.Interfaces;
+using System.Collections.ObjectModel;
 
 namespace CadProjectorViewer.Panels.CanvasPanel
 {
@@ -297,6 +298,31 @@ namespace CadProjectorViewer.Panels.CanvasPanel
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
+    public class InfoConverter : IMultiValueConverter
+    {
+        public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
+        {
+            string outstring = $"X: {Math.Round((double)values[0], 1)} Y:{Math.Round((double)values[1])}";
+            if (values[2] is ObservableCollection<LDevice> devices)
+            {
+                foreach(LDevice lDevice in devices)
+                {
+                    if (lDevice.MeshedScene != null)
+                    {
+                        outstring += $"\n {lDevice.HWIdentifier}: {lDevice.MeshedScene.GetAlreadyScan * lDevice.FPS * 1.3} pts";
+                    }
+                }
+            }
+
+            return outstring;
+        }
+
+        public object[] ConvertBack(object value, Type[] targetTypes, object parameter, CultureInfo culture)
         {
             throw new NotImplementedException();
         }

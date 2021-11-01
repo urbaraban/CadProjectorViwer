@@ -1,4 +1,4 @@
-﻿<Window x:Name="DeviceManagerForm" x:Class="CadProjectorViewer.LaserSearcher"
+﻿<Window x:Name="DeviceManagedForm" x:Class="CadProjectorViewer.LaserSearcher"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -7,10 +7,10 @@
         xmlns:CadProjectorSDK="clr-namespace:CadProjectorSDK;assembly=CadProjectorSDK" 
         d:DataContext="{d:DesignInstance Type=CadProjectorSDK:ProjectorHub}"
         mc:Ignorable="d"
-        Title="DeviceManager" 
+        Title="DeviceManaged" 
         SizeToContent="WidthAndHeight"
         ResizeMode="NoResize"
-        Closing="DeviceManagerForm_Closing">
+        Closing="DeviceManagedForm_Closing">
     <Window.Resources>
         <ResourceDictionary>
             <Style TargetType="Button">

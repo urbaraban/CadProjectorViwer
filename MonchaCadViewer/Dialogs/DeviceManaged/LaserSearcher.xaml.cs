@@ -12,7 +12,7 @@ using System.Windows;
 namespace CadProjectorViewer
 {
     /// <summary>
-    /// Логика взаимодействия для DeviceManager.xaml
+    /// Логика взаимодействия для DeviceManaged.xaml
     /// </summary>
     public partial class LaserSearcher : Window
     {
@@ -67,7 +67,7 @@ namespace CadProjectorViewer
 
         }
 
-        private void DeviceManagerForm_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        private void DeviceManagedForm_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
             if (ProjectorHub.lockKey.IsLicensed == true)
             {

@@ -255,7 +255,7 @@
     <Compile Include="CanvasObj\CanvasMesh.cs" />
     <Compile Include="CanvasObj\GeometryPreview.cs" />
     <Compile Include="CanvasObj\ImagePreview.cs" />
-    <Compile Include="DeviceManager\ProjectorView.xaml.cs">
+    <Compile Include="Dialogs\DeviceManaged\ProjectorView.xaml.cs">
       <DependentUpon>ProjectorView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Dialogs\DotEdit.xaml.cs">
@@ -270,7 +270,7 @@
     <Compile Include="Dialogs\CreateGridWindow.xaml.cs">
       <DependentUpon>CreateGridWindow.xaml</DependentUpon>
     </Compile>
-    <Compile Include="DeviceManager\LaserSearcher.xaml.cs">
+    <Compile Include="Dialogs\DeviceManaged\LaserSearcher.xaml.cs">
       <DependentUpon>LaserSearcher.xaml</DependentUpon>
     </Compile>
     <Compile Include="Panels\CanvasPanel\CadCanvasPanel.xaml.cs">
@@ -279,7 +279,7 @@
     <Compile Include="Panels\LeftPanels\FrameTree.xaml.cs">
       <DependentUpon>FrameTree.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Dialogs\DeviceSettingDialog.xaml.cs">
+    <Compile Include="Dialogs\DeviceManaged\DeviceSettingDialog.xaml.cs">
       <DependentUpon>DeviceSettingDialog.xaml</DependentUpon>
     </Compile>
     <Compile Include="Panels\LeftPanels\DeviceTreeTab.xaml.cs">
@@ -321,7 +321,8 @@
     <Compile Include="Settings.cs" />
     <Compile Include="StaticTools\FileLoad.cs" />
     <Compile Include="StaticTools\GCToCad.cs" />
-    <Page Include="DeviceManager\ProjectorView.xaml">
+    <Compile Include="StaticTools\HotKeysManager.cs" />
+    <Page Include="Dialogs\DeviceManaged\ProjectorView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -333,11 +334,11 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="DeviceManager\LaserSearcher.xaml">
+    <Page Include="Dialogs\DeviceManaged\LaserSearcher.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="DeviceManager\LaserMeterWindows.xaml">
+    <Page Include="Dialogs\DeviceManaged\LaserMeterWindows.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -349,7 +350,7 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="DeviceManager\LaserMeterWindows.xaml.cs">
+    <Compile Include="Dialogs\DeviceManaged\LaserMeterWindows.xaml.cs">
       <DependentUpon>LaserMeterWindows.xaml</DependentUpon>
     </Compile>
     <Compile Include="MainWindow.xaml.cs">
@@ -400,7 +401,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Dialogs\DeviceSettingDialog.xaml">
+    <Page Include="Dialogs\DeviceManaged\DeviceSettingDialog.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

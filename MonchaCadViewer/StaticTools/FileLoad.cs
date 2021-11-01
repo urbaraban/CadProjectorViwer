@@ -72,6 +72,13 @@ namespace CadProjectorViewer.StaticTools
             }
         }
 
+        public static async Task<ProjectionScene> GetCliboard(string clip)
+        {
+            SVG svg = new SVG();
+            object obj = await svg.ParseClip(clip);
+            return new ProjectionScene(await ConvertObject(obj));
+        }
+
         public static async Task<ProjectionScene> GetScene(object obj)
         {
             if (obj is DragEventArgs dragEvent)

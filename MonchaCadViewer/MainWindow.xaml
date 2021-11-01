@@ -14,13 +14,20 @@
     xmlns:Properties="clr-namespace:CadProjectorViewer.Properties"
     DataContext="{Binding RelativeSource={RelativeSource Self}, Path=ProjectorHub}"
     x:Class="CadProjectorViewer.MainWindow"
-        mc:Ignorable="d"
-        Title="CUT - Viwer" KeyboardNavigation.TabNavigation="None"
+    x:Name="MainWin"
+    mc:Ignorable="d"
+    Title="CUT - Viwer" KeyboardNavigation.TabNavigation="None"
     AllowDrop="True"
     Height="760" Width="999"
     WindowStartupLocation="CenterScreen"
     Icon="logo.png"
     ResizeMode="CanResizeWithGrip">
+    <Controls:MetroWindow.InputBindings>
+        <KeyBinding 
+            x:Name="SpecialKeyPaste"
+            Modifiers="Ctrl" Key="V"
+            Command="{Binding ElementName=MainWin, Path=PasteCommand}" />
+    </Controls:MetroWindow.InputBindings>
     <Controls:MetroWindow.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -133,17 +140,28 @@
                 Grid.Row="1" Grid.RowSpan="2"
                 HorizontalAlignment="Right" />
 
-            <DockPanel Margin="5" Grid.Row="0">
-                <ToolBar DockPanel.Dock="Left">
-                    <Button x:Name="OpenBtn" Content="{DynamicResource m_Open}" Click="OpenBtn_ClickAsync" Grid.ColumnSpan="2" VerticalContentAlignment="Center" Margin="0,10,0,14" Width="99" VerticalAlignment="Stretch" />
-                </ToolBar>
-                <ToolBarTray DockPanel.Dock="Right" Orientation="Vertical" IsLocked="True" Background="White" HorizontalAlignment="Stretch">
-                    <ToolBar Margin="0,0,0,0" Width="80">
-                        <Button x:Name="ClearBtn" Content="{DynamicResource edit_Clear}" Click="ClearBtn_Click" HorizontalAlignment="Stretch" />
-                        <Button x:Name="Line" Content="{DynamicResource edit_Line}" Click="Line_Click"  HorizontalAlignment="Stretch" />
-                        <Button x:Name="RectBtn" Content="{DynamicResource edit_Mask}" Click="RectBtn_Click" HorizontalAlignment="Stretch" />
-                    </ToolBar>
-                </ToolBarTray>
+            <DockPanel Margin="5" Grid.Row="0" LastChildFill="True">
+                <DockPanel 
+                    DockPanel.Dock="Right"
+                    Margin="0,0,0,0" MinWidth="80">
+                    <Button
+                        DockPanel.Dock="Top"
+                        x:Name="ClearBtn" 
+                        Content="{DynamicResource edit_Clear}"
+                        Click="ClearBtn_Click" 
+                        HorizontalAlignment="Stretch" />
+                    <Button 
+                        DockPanel.Dock="Top"
+                        x:Name="Line" Content="{DynamicResource edit_Line}" Click="Line_Click"  HorizontalAlignment="Stretch" />
+                    <Button 
+                        DockPanel.Dock="Top"
+                        x:Name="RectBtn" Content="{DynamicResource edit_Mask}" Click="RectBtn_Click" HorizontalAlignment="Stretch" />
+                </DockPanel>
+                <Button 
+                    DockPanel.Dock="Left"
+                    Content="{DynamicResource m_Open}" 
+                    Command="{Binding ElementName=MainWin, Path=OpenCommand}"
+                    MinWidth="99" VerticalAlignment="Stretch" />
             </DockPanel>
 
             <TabControl x:Name="tabControl1" Margin="0,0,0,0" Grid.Column="1" Grid.Row="0">

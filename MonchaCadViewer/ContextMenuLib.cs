@@ -41,6 +41,12 @@ namespace CadProjectorViewer.CanvasObj
             AddItem("m_Open", contextMenu);
         }
 
+        public static void CadGroupMenu(ContextMenu contextMenu)
+        {
+            contextMenu.Items.Add(new Separator());
+            AddItem("group_Open", contextMenu);
+        }
+
         public static void CadRectMenu(ContextMenu contextMenu)
         {
             contextMenu.Items.Add(new Separator());

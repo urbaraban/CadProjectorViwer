@@ -1,11 +1,11 @@
-﻿<Window x:Class="CadProjectorViewer.DeviceManager.ProjectorView"
+﻿<Window x:Class="CadProjectorViewer.DeviceManaged.ProjectorView"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:dvc="clr-namespace:CadProjectorSDK.Device;assembly=CadProjectorSDK"
         xmlns:obj="clr-namespace:CadProjectorViewer.CanvasObj"
-        xmlns:devicemanager="clr-namespace:CadProjectorViewer.DeviceManager"
+        xmlns:DeviceManaged="clr-namespace:CadProjectorViewer.DeviceManaged"
         d:DataContext="{d:DesignInstance Type=dvc:LDevice}"
         mc:Ignorable="d"
         WindowState="Maximized"
@@ -16,7 +16,7 @@
         MouseLeftButtonDown="Window_MouseLeftButtonDown">
     <Window.Resources>
         <ResourceDictionary>
-            <devicemanager:LObjectConverter x:Key="LObjConverter"/>
+            <DeviceManaged:LObjectConverter x:Key="LObjConverter"/>
         </ResourceDictionary>
 
     </Window.Resources>

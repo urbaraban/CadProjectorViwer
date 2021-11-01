@@ -100,15 +100,11 @@
             </HierarchicalDataTemplate>
         </ResourceDictionary>
     </UserControl.Resources>
-    <Grid>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="30"/>
-            <RowDefinition/>
-        </Grid.RowDefinitions>
-        <StackPanel
+    <DockPanel LastChildFill="True">
+        <DockPanel
+            DockPanel.Dock="Top"
                     x:Name="TreeHead"
-                    HorizontalAlignment="Left"
-                    Orientation="Horizontal" Width="200" Margin="0,0,0,0">
+                    HorizontalAlignment="Left" Margin="3">
             <Button
                         x:Name="RefreshLaser"
                         Width="25"
@@ -145,8 +141,9 @@
                         Click="RemoveLaser_Click"
                         Content="&#xE947;"
                         FontFamily="Segoe MDL2 Assets" />
-        </StackPanel>
+        </DockPanel>
         <TreeView
+            DockPanel.Dock="Top"
                 Margin="0,0,0,0"
                 KeyboardNavigation.DirectionalNavigation="None"
                 KeyboardNavigation.TabNavigation="None" Grid.Row="1"
@@ -162,5 +159,5 @@
                           />
 
         </TreeView>
-    </Grid>
+    </DockPanel>
 </UserControl>

@@ -1,5 +1,5 @@
 ﻿using CadProjectorViewer.CanvasObj;
-using CadProjectorViewer.DeviceManager;
+using CadProjectorViewer.DeviceManaged;
 using CadProjectorSDK;
 using CadProjectorSDK.Device;
 using CadProjectorSDK.CadObjects;
@@ -63,7 +63,7 @@ namespace CadProjectorViewer.Panels
                     switch (cmindex.Tag)
                     {
                         case "common_ADD":
-                            CadProjectorViewer.DeviceManager.LaserMeterWindows laserMeterWindows = new CadProjectorViewer.DeviceManager.LaserMeterWindows(new VLTLaserMeters());
+                            CadProjectorViewer.DeviceManaged.LaserMeterWindows laserMeterWindows = new CadProjectorViewer.DeviceManaged.LaserMeterWindows(new VLTLaserMeters());
                             laserMeterWindows.ShowDialog();
                             break;
                     }
@@ -85,8 +85,8 @@ namespace CadProjectorViewer.Panels
 
         private void AddLaser_Click(object sender, RoutedEventArgs e)
         {
-            LaserSearcher deviceManager = new LaserSearcher(projectorHub);
-            deviceManager.Show();
+            LaserSearcher DeviceManaged = new LaserSearcher(projectorHub);
+            DeviceManaged.Show();
         }
 
 

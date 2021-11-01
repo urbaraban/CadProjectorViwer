@@ -8,7 +8,7 @@ using System.Windows.Controls;
 using System.Windows.Media;
 using CadProjectorSDK.Device.Controllers;
 
-namespace CadProjectorViewer.DeviceManager
+namespace CadProjectorViewer.DeviceManaged
 {
     /// <summary>
     /// Логика взаимодействия для LaserMeter.xaml
@@ -31,11 +31,13 @@ namespace CadProjectorViewer.DeviceManager
                 for (int k = 0; k < iparr.Length; k++)
                 {
                     if (iparr[k].Length < 3)
+                    {
                         for (int i = 0; i < 3 - iparr[k].Length; i++)
+                        {
                             iparr[k] = iparr[k].Insert(0, " ");
+                        }
+                    }
                 }
-
-                //ipBox.Text = string.Concat(iparr);
             }
 
             TimerUpDn.DataContext = this.LMeter;

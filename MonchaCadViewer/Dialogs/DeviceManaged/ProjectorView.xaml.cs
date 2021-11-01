@@ -21,7 +21,7 @@ using CadProjectorSDK.CadObjects.LObjects;
 using CadProjectorSDK.CadObjects.Abstract;
 using CadProjectorSDK.Interfaces;
 
-namespace CadProjectorViewer.DeviceManager
+namespace CadProjectorViewer.DeviceManaged
 {
     /// <summary>
     /// Логика взаимодействия для ProjectorView.xaml
@@ -37,10 +37,7 @@ namespace CadProjectorViewer.DeviceManager
         }
         #endregion
 
-        public ProjectorView()
-        {
-            InitializeComponent();
-        }
+        public ProjectorView() => InitializeComponent();
 
         private void CloseMenuItem_Click(object sender, RoutedEventArgs e)
         {

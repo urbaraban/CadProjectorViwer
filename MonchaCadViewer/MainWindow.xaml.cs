@@ -45,6 +45,7 @@ using CadProjectorSDK.Device.Mesh;
 using CadProjectorSDK.Scenes;
 using System.Threading;
 using CadProjectorSDK.UDP;
+using Microsoft.Xaml.Behaviors.Core;
 
 namespace CadProjectorViewer
 {
@@ -53,12 +54,10 @@ namespace CadProjectorViewer
     /// </summary>
     public partial class MainWindow : MetroWindow
     {
-        public ProjectorHub ProjectorHub { get; set; } = new ProjectorHub();
-
-        public CadRect3D CanvasSize => ProjectorHub.Size;
-
         private KmpsAppl kmpsAppl;
         private bool inverseToggle = true;
+
+        public ProjectorHub ProjectorHub { get; set; } = new ProjectorHub();
 
         public MainWindow()
         {
@@ -92,6 +91,12 @@ namespace CadProjectorViewer
             GCTools.SetProgress = ProgressPanel.SetProgressBar;
             this.Title = $"CUT — Viewer v{Assembly.GetExecutingAssembly().GetName().Version.ToString()}";
             FileLoad.LoadMoncha(ProjectorHub, false);
+
+            HotKeysManager.KeyActions.Add(new KeyAction()
+            {
+                Keys = new Key[] { Key.Escape },
+                GetAction = ProjectorHub.ScenesCollection.MainScene.Break
+            });
         }
 
 
@@ -151,32 +156,6 @@ namespace CadProjectorViewer
         }
 
 
-        private async void OpenBtn_ClickAsync(object sender, EventArgs e)
-        {
-            WinForms.OpenFileDialog openFile = new WinForms.OpenFileDialog();
-            string filter = FileLoad.GetFilter();
-            openFile.Filter = filter;
-            if (AppSt.Default.save_work_folder == string.Empty)
-            {
-                WinForms.FolderBrowserDialog folderDialog = new WinForms.FolderBrowserDialog();
-
-                if (folderDialog.ShowDialog() == WinForms.DialogResult.OK)
-                {
-                    AppSt.Default.save_work_folder = folderDialog.SelectedPath;
-                    AppSt.Default.Save();
-                }
-            }
-
-            openFile.InitialDirectory = AppSt.Default.save_work_folder;
-            openFile.FileName = null;
-            if (openFile.ShowDialog() == WinForms.DialogResult.OK)
-            {
-                if (await FileLoad.GetFilePath(openFile.FileName) is ProjectionScene scene)
-                {
-                    ProjectorHub.ScenesCollection.Add(scene);
-                }
-            }
-        }
 
 
         private void kmpsConnectToggle_Toggled(object sender, RoutedEventArgs e)
@@ -264,8 +243,11 @@ namespace CadProjectorViewer
         protected override void OnKeyUp(KeyEventArgs e)
         {
             base.OnKeyUp(e);
+
+           // HotKeysManager.RunAsync(new Key[] { e.Key });
+
             double _mult = Keyboard.Modifiers == ModifierKeys.Shift ? 10 : 1;
-            double step = ProjectorHub.Movespeed;
+            double step = ProjectorHub.ScenesCollection.MainScene.Movespeed;
 
             switch (e.Key)
             {
@@ -290,7 +272,7 @@ namespace CadProjectorViewer
                 case Key.OemPlus:
                     break;
                 case Key.Delete:
-                    // this.MainCanvas.RemoveSelectObject();
+                    //ProjectorHub.ScenesCollection.MainScene.SelectedObject.Remove();
                     break;
                 case Key.D1:
                     if (Keyboard.Modifiers == ModifierKeys.Control)
@@ -398,7 +380,7 @@ namespace CadProjectorViewer
                 { //переберает всю инфу пока не найдет строку адреса
                     if (File.Exists(fileLoc))
                     {
-                        OpenBtn.Content = "Открыть " + fileLoc.Split('\\').Last();
+                        //OpenBtn.Content = "Открыть " + fileLoc.Split('\\').Last();
                     }
                 }
             }
@@ -572,6 +554,55 @@ namespace CadProjectorViewer
         }
 
         private void BrowseMWSItem_Click(object sender, RoutedEventArgs e) => FileLoad.LoadMoncha(ProjectorHub, true);
+
+
+
+        private ActionCommand pasteCommand;
+        public ICommand PasteCommand => pasteCommand ??= new ActionCommand(Paste);
+
+        private async void Paste()
+        {
+            var text = Clipboard.GetData(DataFormats.Text) as string;
+            try
+            {
+                ProjectorHub.ScenesCollection.Add(await FileLoad.GetCliboard(text));
+            }
+            catch
+            {
+                LogBox.Items.Add("Clipboard is not geometry");
+            }
+        }
+
+        private ActionCommand openCommand;
+        public ICommand OpenCommand => openCommand ??= new ActionCommand(Open);
+
+        private async void Open()
+        {
+            WinForms.OpenFileDialog openFile = new WinForms.OpenFileDialog();
+            string filter = FileLoad.GetFilter();
+            openFile.Filter = filter;
+            if (AppSt.Default.save_work_folder == string.Empty)
+            {
+                WinForms.FolderBrowserDialog folderDialog = new WinForms.FolderBrowserDialog();
+
+                if (folderDialog.ShowDialog() == WinForms.DialogResult.OK)
+                {
+                    AppSt.Default.save_work_folder = folderDialog.SelectedPath;
+                    AppSt.Default.Save();
+                }
+            }
+
+            openFile.InitialDirectory = AppSt.Default.save_work_folder;
+            openFile.FileName = null;
+            if (openFile.ShowDialog() == WinForms.DialogResult.OK)
+            {
+                if (await FileLoad.GetFilePath(openFile.FileName) is ProjectionScene scene)
+                {
+                    ProjectorHub.ScenesCollection.Add(scene);
+                }
+            }
+        }
+
     }
 
     public class MultiObjectList : IMultiValueConverter

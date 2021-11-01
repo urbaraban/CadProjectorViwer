@@ -10,28 +10,22 @@
              xmlns:scene="clr-namespace:CadProjectorSDK.Scenes;assembly=CadProjectorSDK"
              d:DataContext="{d:DesignInstance Type=scene:ProjectionScene}">
     <UserControl.Resources>
-    </UserControl.Resources>
-    <Grid>
-        <Grid.Resources>
-            <HierarchicalDataTemplate 
+        <HierarchicalDataTemplate 
                 x:Key="ObjectTree" 
                 ItemsSource="{Binding Children}">
-                <Border ContextMenu="{Binding ContextMenu}">
-                    <StackPanel Orientation="Horizontal"
+            <Border ContextMenu="{Binding ContextMenu}">
+                <DockPanel 
                                 VerticalAlignment="Center">
-                        <CheckBox IsChecked="{Binding Render}"/>
-                        <Label Content="{Binding NameID}" VerticalAlignment="Center" MouseDoubleClick="Label_MouseDoubleClick"/>
-                    </StackPanel>
-                </Border>
-            </HierarchicalDataTemplate>
-        </Grid.Resources>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="30"/>
-            <RowDefinition/>
-        </Grid.RowDefinitions>
-        <StackPanel
-                    HorizontalAlignment="Left"
-                    Orientation="Horizontal" Width="130">
+                    <CheckBox IsChecked="{Binding Render}"/>
+                    <Label Content="{Binding NameID}" VerticalAlignment="Center" MouseDoubleClick="Label_MouseDoubleClick"/>
+                </DockPanel>
+            </Border>
+        </HierarchicalDataTemplate>
+    </UserControl.Resources>
+    <DockPanel LastChildFill="True">
+        <DockPanel
+            DockPanel.Dock="Top"
+                    HorizontalAlignment="Left">
             <Button
                         x:Name="CheckAllBtn"
                         Width="29"
@@ -47,8 +41,8 @@
                 Toggled="ToggleSwitch_Toggled"/>
 
 
-        </StackPanel>
-        <TreeView Grid.Row="1">
+        </DockPanel>
+        <TreeView DockPanel.Dock="Top">
             <TreeView.ItemContainerStyle>
                 <Style TargetType="TreeViewItem">
                     <Setter Property="IsSelected" Value="{Binding IsMouseOver, Mode=OneWay}"/>
@@ -70,5 +64,5 @@
 
 
         </TreeView>
-    </Grid>
+    </DockPanel>
 </UserControl>

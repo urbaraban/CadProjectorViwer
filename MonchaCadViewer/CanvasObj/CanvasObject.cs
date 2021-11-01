@@ -323,11 +323,14 @@ namespace CadProjectorViewer.CanvasObj
         {
             this.CadObject = uidObject;
             this.DataContext = uidObject;
-            if (this.ContextMenu == null)
+
+            this.ContextMenu = new System.Windows.Controls.ContextMenu();
+            ContextMenuLib.CadObjMenu(this.ContextMenu);
+            if (uidObject is CadGroup group)
             {
-                this.ContextMenu = new System.Windows.Controls.ContextMenu();
-                ContextMenuLib.CadObjMenu(this.ContextMenu);
+                ContextMenuLib.CadGroupMenu(this.ContextMenu);
             }
+
             //this.ProjectionSetting.PropertyChanged += ProjectionSetting_PropertyChanged;
             this.Uid = Guid.NewGuid().ToString();
             this.ActiveObject = ActiveObject;
@@ -362,6 +365,15 @@ namespace CadProjectorViewer.CanvasObj
 
                 case "obj_Render":
                     this.CadObject.Render = !this.CadObject.Render;
+                    break;
+
+                case "group_Open":
+                    {
+                        if (this.CadObject is CadGroup group)
+                        {
+                            group.Ungroup();
+                        }
+                    }
                     break;
             }
         }

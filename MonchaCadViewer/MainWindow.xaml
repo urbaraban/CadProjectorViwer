@@ -24,9 +24,14 @@
     ResizeMode="CanResizeWithGrip">
     <Controls:MetroWindow.InputBindings>
         <KeyBinding 
-            x:Name="SpecialKeyPaste"
             Modifiers="Ctrl" Key="V"
             Command="{Binding ElementName=MainWin, Path=PasteCommand}" />
+        <KeyBinding
+            Key="Q"
+            Command="{Binding ElementName=MainWin, Path=SelectNextCommand}"/>
+        <KeyBinding
+            Key="F"
+            Command="{Binding ElementName=MainWin, Path=FixSelectCommand}"/>
     </Controls:MetroWindow.InputBindings>
     <Controls:MetroWindow.Resources>
         <ResourceDictionary>
@@ -82,9 +87,11 @@
                         <Separator />
                         <MenuItem Header="Save Moncha" Click="MenuSaveBtn_Click" />
                         <MenuItem Header="Save Moncha as..." Click="SaveAsItem_Click" />
-                        <MenuItem Header="License" Click="LincenseItem_Click" />
+                        <MenuItem 
+                            Header="License" 
+                            Command="{Binding ElementName=MainWin, Path=ShowLicenceCommand}"/>
                         <Separator />
-                        <MenuItem Header="Close" Click="Close_Click" />
+                        <MenuItem Header="Close" Command="{Binding ElementName=MainWin, Path=Closed}" />
                     </MenuItem>
                     <MenuItem x:Name="menuLanguage" Header="Language">
                     </MenuItem>
@@ -104,8 +111,9 @@
                 Height="15"
                 Width="15"
                 Fill="{Binding lockKey.IsLicensed, Converter={StaticResource LicenceKey}}"
-                Margin="5,0"
-                />
+                Margin="5,0">
+            </Ellipse>
+
             <Controls:ToggleSwitch
                         IsOn="{Binding UDPLaserListener.Status, Mode=OneWay}"
                 OffContent="Ethernet"
@@ -146,16 +154,19 @@
                     Margin="0,0,0,0" MinWidth="80">
                     <Button
                         DockPanel.Dock="Top"
-                        x:Name="ClearBtn" 
                         Content="{DynamicResource edit_Clear}"
-                        Click="ClearBtn_Click" 
+                         Command="{Binding ElementName=MainWin, Path=Clear}"
                         HorizontalAlignment="Stretch" />
                     <Button 
                         DockPanel.Dock="Top"
-                        x:Name="Line" Content="{DynamicResource edit_Line}" Click="Line_Click"  HorizontalAlignment="Stretch" />
+                        x:Name="Line" 
+                        Content="{DynamicResource edit_Line}"
+                        Command="{Binding ElementName=MainWin, Path=LineCommand}" />
                     <Button 
                         DockPanel.Dock="Top"
-                        x:Name="RectBtn" Content="{DynamicResource edit_Mask}" Click="RectBtn_Click" HorizontalAlignment="Stretch" />
+                        x:Name="RectBtn" 
+                        Content="{DynamicResource edit_Mask}" 
+                        Command="{Binding ElementName=MainWin, Path=MaskCommand}"/>
                 </DockPanel>
                 <Button 
                     DockPanel.Dock="Left"
@@ -164,7 +175,10 @@
                     MinWidth="99" VerticalAlignment="Stretch" />
             </DockPanel>
 
-            <TabControl x:Name="tabControl1" Margin="0,0,0,0" Grid.Column="1" Grid.Row="0">
+            <TabControl x:Name="tabControl1" 
+                        Margin="0,0,0,0"
+                        
+                        Grid.Column="1" Grid.Row="0">
                 <TabItem Header="Transform" FontSize="12">
                     <panels:CadObjectPanel DataContext="{Binding ScenesCollection.MainScene.SelectedObject.LastSelectObject}"
                         IsEnabled="{Binding DataContext, Converter={StaticResource NotNullBool}, RelativeSource={RelativeSource Self}}" />
@@ -179,8 +193,7 @@
                     Click="PlayBtn_Click"
                     Background="{Binding Play, Converter={StaticResource PlayBackConverter}}"
                     Grid.Column="2"
-                    Grid.Row="0"
-                    />
+                    Grid.Row="0"/>
 
             <TabControl
                 TabStripPlacement="Left"

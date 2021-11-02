@@ -2,6 +2,7 @@
 using CadProjectorSDK.CadObjects;
 using CadProjectorSDK.CadObjects.Abstract;
 using CadProjectorSDK.Scenes;
+using CadProjectorSDK.Tools.ILDA;
 using CadProjectorViewer.CanvasObj;
 using CadProjectorViewer.Panels;
 using KompasLib.Tools;
@@ -18,6 +19,7 @@ using System.Windows.Media.Imaging;
 using ToGeometryConverter;
 using ToGeometryConverter.Format;
 using ToGeometryConverter.Object;
+using static System.Drawing.Graphics;
 using AppSt = CadProjectorViewer.Properties.Settings;
 
 namespace CadProjectorViewer.StaticTools
@@ -30,11 +32,11 @@ namespace CadProjectorViewer.StaticTools
             new DXF(),
             //new DEXCeil(),
             new STL(),
-            //new ILD(),
             //new MetaFile(),
             //new JSON(),
             new GCFormat("Компас 3D", new string[2] { "frw" , "cdw"}) { ReadFile = GetKompas },
-            new GCFormat("JPG Image", new string[2] { "jpg" , "jpeg"}) { ReadFile = GetImage }
+            new GCFormat("JPG Image", new string[2] { "jpg" , "jpeg"}) { ReadFile = GetImage },
+            new GCFormat("ILDA", new string[1] { "ild" }){ ReadFile = GetILDA }
         };
 
         private static string BrowseMWS()
@@ -50,7 +52,7 @@ namespace CadProjectorViewer.StaticTools
 
         public static async void LoadMoncha(ProjectorHub projectorHub, bool browse)
         {
-            projectorHub.Play = false;
+            projectorHub.Disconnect();
 
             //check path to setting file
             if (File.Exists(AppSt.Default.cl_moncha_path) == false || browse == true)
@@ -59,7 +61,7 @@ namespace CadProjectorViewer.StaticTools
                 AppSt.Default.cl_moncha_path = str;
                 AppSt.Default.Save();
             }
-            projectorHub.Disconnect();
+            
 
             //send path to hub class
             try
@@ -72,11 +74,21 @@ namespace CadProjectorViewer.StaticTools
             }
         }
 
-        public static async Task<ProjectionScene> GetCliboard(string clip)
+        public static async Task<ProjectionScene> GetCliboard()
         {
-            SVG svg = new SVG();
-            object obj = await svg.ParseClip(clip);
-            return new ProjectionScene(await ConvertObject(obj));
+            IDataObject Data = Clipboard.GetDataObject();
+
+            string[] frm = Data.GetFormats();
+
+            if (Clipboard.ContainsText() == true)
+            {
+                var text = Clipboard.GetData(DataFormats.Text) as string;
+
+                SVG svg = new SVG();
+                object obj = await svg.Parse(text);
+                return new ProjectionScene(await ConvertObject(obj));
+            }
+            return null;
         }
 
         public static async Task<ProjectionScene> GetScene(object obj)
@@ -151,6 +163,11 @@ namespace CadProjectorViewer.StaticTools
         private async static Task<object> GetImage(string Filepath, double step)
         {
             return new BitmapImage(new Uri(Filepath));
+        }
+
+        private async static Task<object> GetILDA(string Filepath, double step)
+        {
+            return await IldaReader.ReadFile(Filepath);
         }
 
         /// <summary>

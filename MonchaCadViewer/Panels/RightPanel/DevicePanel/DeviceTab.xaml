@@ -102,6 +102,7 @@
 
                 <ComboBox
                     DockPanel.Dock="Left"
+                    SelectedIndex="0"
                     DataContext="{Binding SelectedItem, ElementName=DeviceCombo}"
                     ItemsSource="{Binding SelectedMeshes}"
                     SelectedItem="{Binding SelectMesh, Mode=TwoWay}"

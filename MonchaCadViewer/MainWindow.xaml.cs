@@ -30,7 +30,6 @@ using ToGeometryConverter;
 using ToGeometryConverter.Object;
 using System.Threading.Tasks;
 using ToGeometryConverter.Object.Elements;
-using ToGeometryConverter.Format.ILDA;
 using System.Text;
 using System.Net;
 using CadProjectorViewer.Panels.CanvasPanel;
@@ -46,6 +45,8 @@ using CadProjectorSDK.Scenes;
 using System.Threading;
 using CadProjectorSDK.UDP;
 using Microsoft.Xaml.Behaviors.Core;
+using CadProjectorSDK.Tools.ILDA;
+using System.Drawing.Imaging;
 
 namespace CadProjectorViewer
 {
@@ -136,14 +137,8 @@ namespace CadProjectorViewer
 
 
       
-
-
-
-
-
         private void Window_Closed(object sender, System.EventArgs e)
         {
-            ProjectorHub.Play = false;
             ProjectorHub.Disconnect();
             GC.Collect();
             GC.WaitForPendingFinalizers();
@@ -154,9 +149,6 @@ namespace CadProjectorViewer
         {
             ProjectorHub.Play = !ProjectorHub.Play;
         }
-
-
-
 
         private void kmpsConnectToggle_Toggled(object sender, RoutedEventArgs e)
         {
@@ -251,9 +243,6 @@ namespace CadProjectorViewer
 
             switch (e.Key)
             {
-                case Key.Q:
-                    ProjectorHub.ScenesCollection.MainScene.SelectNext();
-                    break;
                 case Key.W:
                     ProjectorHub.ScenesCollection.MainScene.MoveSelect(0, -step * _mult);
                     break;
@@ -265,9 +254,6 @@ namespace CadProjectorViewer
                     break;
                 case Key.D:
                     ProjectorHub.ScenesCollection.MainScene.MoveSelect(step * _mult, 0);
-                    break;
-                case Key.F:
-                    ProjectorHub.ScenesCollection.MainScene.Fix();
                     break;
                 case Key.OemPlus:
                     break;
@@ -334,7 +320,6 @@ namespace CadProjectorViewer
             }
         }
 
-        private void ClearBtn_Click(object sender, RoutedEventArgs e) => ProjectorHub.ScenesCollection.MainScene.Clear();
 
         private void BaseFolderSelect_Click(object sender, RoutedEventArgs e)
         {
@@ -406,6 +391,9 @@ namespace CadProjectorViewer
 
         protected override void OnClosed(EventArgs e)
         {
+            ProjectorHub.Disconnect();
+            GC.Collect();
+            GC.WaitForPendingFinalizers();
             base.OnClosed(e);
             this.Close();
         }
@@ -426,16 +414,8 @@ namespace CadProjectorViewer
         /// <param name="e"></param>
         private async void ILDASaveBtn_Click(object sender, RoutedEventArgs e)
         {
-          /*  SaveFileDialog saveFileDialog = new SaveFileDialog();
+            SaveFileDialog saveFileDialog = new SaveFileDialog();
             saveFileDialog.Filter = "(*.ild)|*.ild| All Files (*.*)|*.*";
-
-            foreach(ScrollPanelItem item in ContourScrollPanel.FrameStack.Children)
-            {
-                if (item.IsSelected == true)
-                {
-                    saveFileDialog.FileName += $"{(saveFileDialog.FileName != string.Empty ? " " : string.Empty)}{item.Scene.NameID}";
-                }
-            }
 
             saveFileDialog.ShowDialog();
             IldaWriter ildaWriter = new IldaWriter();
@@ -444,11 +424,12 @@ namespace CadProjectorViewer
             {
                 for (int i = 0; i < ProjectorHub.Devices.Count; i++)
                 {
-                    ildaWriter.Write(($"{saveFileDialog.FileName.Replace(".ild", string.Empty)}_{i}.ild"), new List<LFrame>(){ await ProjectorHub.Devices[i].ReadyFrame.GetLFrame(ProjectorHub.Devices[i], ProjectorHub.MainFrame)}, 5);
+                    ildaWriter.Write(($"{saveFileDialog.FileName.Replace(".ild", string.Empty)}_{i}.ild"), 
+                        new List<LFrame>() { await LFrameConverter.SolidLFrame(this.ProjectorHub.Devices[i].MeshedScene, this.ProjectorHub.Devices[i]) ?? new LFrame() }
+                        , 5);
                 }
-            }*/
+            }
         }
-
 
 
         private void Save_Click(object sender, RoutedEventArgs e)
@@ -462,7 +443,7 @@ namespace CadProjectorViewer
 
         private bool SaveConfiguration(bool saveas)
         {
-               MessageBoxResult messageBoxResult = MessageBox.Show("Сохранить настройки?", "Внимание", MessageBoxButton.YesNoCancel, MessageBoxImage.Warning);
+            MessageBoxResult messageBoxResult = MessageBox.Show("Сохранить настройки?", "Внимание", MessageBoxButton.YesNoCancel, MessageBoxImage.Warning);
             switch (messageBoxResult)
             {
                 case MessageBoxResult.Yes:
@@ -510,11 +491,14 @@ namespace CadProjectorViewer
             return false;
         }
 
+        public ICommand MaskCommand => new ActionCommand(() => {
+            ProjectorHub.ScenesCollection.MainScene.SceneAction = SceneAction.Mask;
+        });
 
+        public ICommand LineCommand => new ActionCommand(() => {
+            ProjectorHub.ScenesCollection.MainScene.SceneAction = SceneAction.Line;
+        });
 
-        private void RectBtn_Click(object sender, RoutedEventArgs e) => ProjectorHub.ScenesCollection.MainScene.SceneAction = SceneAction.Mask;
-
-        private void Line_Click(object sender, RoutedEventArgs e) => ProjectorHub.ScenesCollection.MainScene.SceneAction = SceneAction.Line;
 
         private void TcpListenBtn_Click(object sender, RoutedEventArgs e) => ProjectorHub.UdpListenerRun(AppSt.Default.ether_udp_port);
 
@@ -541,20 +525,24 @@ namespace CadProjectorViewer
         }
 
 
-
-        private void LincenseItem_Click(object sender, RoutedEventArgs e)
-        {
-            RequestLicenseCode requestLicenseCode = new RequestLicenseCode() { DataContext = ProjectorHub.lockKey };
-            requestLicenseCode.ShowDialog();
-        }
-
-        private void Close_Click(object sender, RoutedEventArgs e)
-        {
-            this.Close();
-        }
-
         private void BrowseMWSItem_Click(object sender, RoutedEventArgs e) => FileLoad.LoadMoncha(ProjectorHub, true);
 
+        public ICommand Closed => new ActionCommand(() => {
+            ProjectorHub.Disconnect();
+            this.Close();
+        });
+
+        public ICommand Clear => new ActionCommand(ProjectorHub.ScenesCollection.MainScene.Clear);
+
+        public ICommand FixSelectCommand => new ActionCommand(ProjectorHub.ScenesCollection.MainScene.Fix);
+
+        public ICommand SelectNextCommand => new ActionCommand(ProjectorHub.ScenesCollection.MainScene.SelectNext);
+
+
+        public ICommand ShowLicenceCommand => new ActionCommand(()=> {
+            RequestLicenseCode requestLicenseCode = new RequestLicenseCode() { DataContext = ProjectorHub.lockKey };
+            requestLicenseCode.ShowDialog();
+        });
 
 
         private ActionCommand pasteCommand;
@@ -562,16 +550,16 @@ namespace CadProjectorViewer
 
         private async void Paste()
         {
-            var text = Clipboard.GetData(DataFormats.Text) as string;
             try
             {
-                ProjectorHub.ScenesCollection.Add(await FileLoad.GetCliboard(text));
+                ProjectorHub.ScenesCollection.Add(await FileLoad.GetCliboard());
             }
             catch
             {
                 LogBox.Items.Add("Clipboard is not geometry");
             }
         }
+
 
         private ActionCommand openCommand;
         public ICommand OpenCommand => openCommand ??= new ActionCommand(Open);

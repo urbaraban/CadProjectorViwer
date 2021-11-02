@@ -84,7 +84,7 @@ namespace CadProjectorViewer.Panels
         public static void End()
         {
             //ProgressPanel.Label = string.Empty;
-            ProgressPanel.MaxValue = 0;
+            ProgressPanel.MaxValue = 100;
             ProgressPanel.StatValue = 0;
         }
     }

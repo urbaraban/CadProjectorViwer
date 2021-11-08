@@ -7,13 +7,58 @@
         xmlns:tools="clr-namespace:CadProjectorSDK.Tools;assembly=CadProjectorSDK" d:DataContext="{d:DesignInstance Type=tools:LockKey}"
         mc:Ignorable="d"
         ResizeMode="NoResize"
-        Title="RequestLicenseCode" Height="150" Width="400"
+        Title="RequestLicenseCode"
+        SizeToContent="Height"
+        Width="450"
         KeyUp="Window_KeyDown">
-    <Grid>
-        <TextBox x:Name="RequestBox" Height="31" Margin="10,10,12,0" Text="{Binding RequestKey, Mode=OneWay}" VerticalAlignment="Top" VerticalContentAlignment="Center" IsReadOnly="True" />
-        <TextBox x:Name="KeyBox" Height="31" Margin="10,46,12,0" Text="{Binding LicenseKey, Mode=TwoWay}"  VerticalAlignment="Top" VerticalContentAlignment="Center" MaxLines="1"/>
-        <Button Click="Button_Click" Content="Ok" Margin="0,82,12,0" VerticalAlignment="Top" Height="27" HorizontalAlignment="Right" Width="90"/>
-        <Label x:Name="SuccefulLbl" Content="{Binding IsLicensed}" Margin="10,82,107,0" VerticalAlignment="Top"/>
-
-    </Grid>
+    <Window.Resources>
+        <ResourceDictionary>
+            <Style TargetType="Label">
+                <Setter Property="Width" Value="70"/>
+            </Style>
+            <Style TargetType="DockPanel">
+                <Setter Property="Margin" Value="3"/>
+            </Style>
+        </ResourceDictionary>
+    </Window.Resources>
+    <StackPanel Margin="10">
+        <DockPanel>
+            <Label Content="Reqest" VerticalContentAlignment="Center"/>
+            <Button 
+                DockPanel.Dock="Right"
+                Click="Copy_Click" 
+                Content="Copy" 
+                Width="90"/>
+            <TextBox 
+                x:Name="RequestBox"
+                Height="31" Text="{Binding RequestKey, Mode=OneWay}" VerticalAlignment="Top" VerticalContentAlignment="Center" IsReadOnly="True" />
+        </DockPanel>
+        <DockPanel>
+            <Label Content="Key"
+                   VerticalContentAlignment="Center"/>
+            <Button 
+                DockPanel.Dock="Right"
+                Click="Pate_Click" 
+                Content="Paste" 
+                Width="90"/>
+            <TextBox 
+                x:Name="KeyBox" 
+                Height="31" 
+                Text="{Binding LicenseKey, Mode=TwoWay}"
+                VerticalAlignment="Top" 
+                VerticalContentAlignment="Center" MaxLines="1"/>
+        </DockPanel>
+        <DockPanel>
+            <Button 
+                DockPanel.Dock="Left"
+                Click="Button_Click" 
+                Content="Ok" 
+                Width="90"/>
+            <Label
+                DockPanel.Dock="Right"
+                x:Name="SuccefulLbl"
+                HorizontalAlignment="Right"
+                   Content="{Binding IsLicensed}" />
+        </DockPanel>
+    </StackPanel>
 </Window>

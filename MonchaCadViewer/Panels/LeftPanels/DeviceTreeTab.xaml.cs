@@ -73,7 +73,7 @@ namespace CadProjectorViewer.Panels
 
         private void RemoveLaser_Click(object sender, RoutedEventArgs e)
         {
-            projectorHub.RemoveDevice(selectdevice.iPAddress);
+            projectorHub.Devices.RemoveDevice(selectdevice.iPAddress);
         }
 
 
@@ -114,13 +114,13 @@ namespace CadProjectorViewer.Panels
                             //device.Frame = device.CutZone.DrawCutZone();
                             break;
                         case "dvc_showzone":
-                            projectorHub.ScenesCollection.MainScene.Add(device.Size);
+                            projectorHub.ScenesCollection.SelectedScene.Add(device.Size);
                             break;
                         case "dvc_polymesh":
                             device.PolyMeshUsed = !device.PolyMeshUsed;
                             break;
                         case "dvc_center":
-                            projectorHub.ScenesCollection.MainScene.Add(new CadAnchor(device.Size.Center) { Render = false });
+                            projectorHub.ScenesCollection.SelectedScene.Add(new CadAnchor(device.Size.Center) { Render = false });
                             break;
                         case "dvc_view":
                             ProjectorView projectorView = new ProjectorView() { DataContext = device };
@@ -147,7 +147,7 @@ namespace CadProjectorViewer.Panels
                                 createGridWindow.ShowDialog();
                                 break;
                             case "mesh_showvirtual":
-                                projectorHub.ScenesCollection.MainScene.Add(mesh.VirtualMesh);
+                                projectorHub.ScenesCollection.SelectedScene.Add(mesh.VirtualMesh);
                                 break;
                             case "mesh_inverse":
                                 mesh.InverseYPosition();
@@ -162,7 +162,7 @@ namespace CadProjectorViewer.Panels
                                 mesh.Affine = !mesh.Affine;
                                 break;
                             case "mesh_showrect":
-                                projectorHub.ScenesCollection.MainScene.Add(mesh.Size);
+                                projectorHub.ScenesCollection.SelectedScene.Add(mesh.Size);
                                // rectangle.Init();
                                 break;
                         }
@@ -179,8 +179,8 @@ namespace CadProjectorViewer.Panels
                 {
                     if (frameworkElement.DataContext is ProjectorMesh mesh)
                     {
-                        projectorHub.ScenesCollection.MainScene.Clear();
-                        projectorHub.ScenesCollection.MainScene.Add(mesh);
+                        projectorHub.ScenesCollection.SelectedScene.Clear();
+                        projectorHub.ScenesCollection.SelectedScene.Add(mesh);
                     }
                 }
             }

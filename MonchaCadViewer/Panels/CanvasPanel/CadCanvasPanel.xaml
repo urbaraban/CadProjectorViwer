@@ -4,9 +4,9 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:canvasobj="clr-namespace:CadProjectorViewer.CanvasObj" 
-             xmlns:hub="clr-namespace:CadProjectorSDK;assembly=CadProjectorSDK" 
              xmlns:canvaspanel="clr-namespace:CadProjectorViewer.Panels.CanvasPanel"
-             d:DataContext="{d:DesignInstance Type=hub:ProjectorHub}"
+             xmlns:scenes="clr-namespace:CadProjectorSDK.Scenes;assembly=CadProjectorSDK"
+             d:DataContext="{d:DesignInstance Type=scenes:ProjectionScene}"
              mc:Ignorable="d" 
              d:DesignHeight="400" d:DesignWidth="400">
     <UserControl.Resources>
@@ -39,11 +39,14 @@
                            FontSize="18"
                            FontFamily="Segoe MDL2 Assets"
                            Margin="3"
-                           IsChecked="{Binding ScenesCollection.MainScene.ShowCursor}"
+                           IsChecked="{Binding ShowCursor}"
                  />
         </StackPanel>
         <Viewbox x:Name="CanvasBox" Grid.RowSpan="3" Stretch="Uniform" StretchDirection="Both">
-            <Grid x:Name="CanvasGrid" Cursor="{Binding ScenesCollection.MainScene.SceneAction, Converter={StaticResource CursorAction}}">
+            <Grid x:Name="CanvasGrid" Background="Red"
+                  Width="{Binding Size.Width}"
+                  Height="{Binding Size.Height}"
+                  Cursor="{Binding SceneAction, Converter={StaticResource CursorAction}}">
                 <Rectangle Fill="White"/>
                 <Canvas 
                     x:Name="BackCanvas" 
@@ -65,7 +68,7 @@
                         </DrawingBrush>
                     </Canvas.Background>
                 </Canvas>
-                <ItemsControl ItemsSource="{Binding ScenesCollection.MainScene}">
+                <ItemsControl ItemsSource="{Binding .}">
                     <ItemsControl.ItemsPanel>
                         <ItemsPanelTemplate>
                             <canvasobj:CadCanvas/>
@@ -86,8 +89,8 @@
                HorizontalContentAlignment="Right" Visibility="Hidden" IsHitTestVisible="False">
             <Label.Content>
                 <MultiBinding Converter="{StaticResource InfoConverter}">
-                    <Binding Path="ScenesCollection.MainScene.MousePosition.X"/>
-                    <Binding Path="ScenesCollection.MainScene.MousePosition.Y"/>
+                    <Binding Path="MousePosition.X"/>
+                    <Binding Path="MousePosition.Y"/>
                     <Binding Path="Devices"/>
                 </MultiBinding>
             </Label.Content>

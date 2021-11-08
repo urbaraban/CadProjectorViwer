@@ -1,5 +1,6 @@
 ﻿using CadProjectorSDK;
 using CadProjectorSDK.Device.Mesh;
+using CadProjectorSDK.Scenes;
 using CadProjectorViewer.StaticTools;
 using MahApps.Metro.Controls;
 using Microsoft.Win32;
@@ -28,14 +29,12 @@ namespace CadProjectorViewer.Panels.RightPanel.Configuration
     /// </summary>
     public partial class HubSettingPanel : UserControl
     {
-        private ProjectorHub ProjectorHub => (ProjectorHub)this.DataContext;
+        private ProjectionScene Scene => (ProjectionScene)this.DataContext;
 
         public HubSettingPanel()
         {
             InitializeComponent();
            // FileLoad.LoadMoncha(ProjectorHub, false);
-
-            MashMultiplierUpDn.Value = ProjectorHub.Size.M.Width;
 
             CalibrationFormCombo.Items.Clear();
             CalibrationFormCombo.Items.Add(CalibrationForm.cl_Dot);
@@ -46,29 +45,19 @@ namespace CadProjectorViewer.Panels.RightPanel.Configuration
             CalibrationFormCombo.Items.Add(CalibrationForm.cl_WLine);
         }
 
-
-        private void RefreshButton_Click(object sender, RoutedEventArgs e) => FileLoad.LoadMoncha(ProjectorHub, false);
-
-
-
-        private void BrowseMonchaBtn_Click(object sender, RoutedEventArgs e) => FileLoad.LoadMoncha(ProjectorHub, true);
-
-
-
-
         private void MashMultiplierUpDn_ValueIncremented(object sender, NumericUpDownChangedRoutedEventArgs args)
         {
             if (MashMultiplierUpDn.Value == null) MashMultiplierUpDn.Value = 1;
             args.Interval = 0;
             MashMultiplierUpDn.Value = MashMultiplierUpDn.Value.Value * 10;
-            ProjectorHub.Size.M.Set(MashMultiplierUpDn.Value.Value);
+            Scene.Size.M.Set(MashMultiplierUpDn.Value.Value);
         }
 
         private void MashMultiplierUpDn_ValueDecremented(object sender, NumericUpDownChangedRoutedEventArgs args)
         {
             args.Interval = 0;
             MashMultiplierUpDn.Value = MashMultiplierUpDn.Value.Value / 10;
-            ProjectorHub.Size.M.Set(MashMultiplierUpDn.Value.Value);
+            Scene.Size.M.Set(MashMultiplierUpDn.Value.Value);
         }
 
         private void PointStepUpDn_ValueDecremented(object sender, NumericUpDownChangedRoutedEventArgs args)

@@ -4,8 +4,10 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:Controls="http://metro.mahapps.com/winfx/xaml/controls" 
-             xmlns:cadprojectorsdk="clr-namespace:CadProjectorSDK;assembly=CadProjectorSDK" xmlns:configuration="clr-namespace:CadProjectorViewer.Panels.RightPanel.Configuration" xmlns:converters="clr-namespace:CadProjectorViewer.Converters"
-             d:DataContext="{d:DesignInstance Type=cadprojectorsdk:ProjectorHub}"
+             xmlns:configuration="clr-namespace:CadProjectorViewer.Panels.RightPanel.Configuration" 
+             xmlns:converters="clr-namespace:CadProjectorViewer.Converters"
+             xmlns:scenes="clr-namespace:CadProjectorSDK.Scenes;assembly=CadProjectorSDK"
+             d:DataContext="{d:DesignInstance Type=scenes:ProjectionScene}"
              Background="White"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="200">
@@ -33,24 +35,6 @@
         </ResourceDictionary>
     </UserControl.Resources>
     <StackPanel>
-        <DockPanel LastChildFill="True">
-            <Button 
-                DockPanel.Dock="Right"
-                FontFamily="Segoe MDL2 Assets"
-                Content="&#xEDAB;"
-                Click="RefreshButton_Click" />
-            <Button
-                DockPanel.Dock="Right" x:Name="BrowseMonchaBtn" 
-                    Content="{DynamicResource m_Browse}" 
-                    Click="BrowseMonchaBtn_Click" />
-            <Label
-                Width="auto"
-                DockPanel.Dock="Left"
-                x:Name="label" Content="Open Moncha"
-                HorizontalContentAlignment="Left" />
-
-        </DockPanel>
-        <Separator/>
         <DockPanel>
             <Label
                 Content="{DynamicResource obj_Width}"/>
@@ -77,7 +61,6 @@
             <Label Content="{DynamicResource clb_Multiplier}"/>
             <Controls:NumericUpDown 
             x:Name="MashMultiplierUpDn"
-
             Background="White" 
             Maximum="1" Minimum="0.001" 
             Speedup="False" 

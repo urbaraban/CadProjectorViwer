@@ -50,11 +50,6 @@ namespace CadProjectorViewer.CanvasObj
         private void LoadSetting()
         {
             this.Background = Brushes.Transparent; //backBrush;
-            this.DataContext = ProjectorHub.Size;
-
-            this.SetBinding(Canvas.WidthProperty, "Width");
-            this.SetBinding(Canvas.HeightProperty, "Height");
-
             ResetTransform();
         }
 

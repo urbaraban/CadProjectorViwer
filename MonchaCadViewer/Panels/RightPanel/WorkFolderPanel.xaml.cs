@@ -107,7 +107,7 @@ namespace CadProjectorViewer.Panels.RightPanel
             {
                 if (await FileLoad.GetFilePath(fileInfo.Filepath) is ProjectionScene Scene)
                 {
-                    projectorHub.ScenesCollection.Add(Scene);
+                    projectorHub.ScenesCollection.LoadedScenes.Add(Scene);
                 }
             }
 

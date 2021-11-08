@@ -7,7 +7,8 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Net;
 using System.Windows;
-
+using System.Net.NetworkInformation;
+using CadProjectorSDK.Tools;
 
 namespace CadProjectorViewer
 {
@@ -30,9 +31,11 @@ namespace CadProjectorViewer
             RefreshList();
         }
 
+
+
         private void RefreshList()
         {
-            this.iPs = MonchaSearch.FindDevicesOverBroadcast2(MonchaSearch.GetAvailabeBroadcastAddresses());
+            this.iPs = ProjectorSearch.GetMonchaBroadcastReplies();
 
             if (this.iPs.Count > 0)
             {
@@ -83,7 +86,7 @@ namespace CadProjectorViewer
                 {
                     if (device != null && device.IsSelected == false)
                     {
-                        ProjectorHub.RemoveDevice(device.iPAddress);
+                        ProjectorHub.Devices.RemoveDevice(device.iPAddress);
                     }
                 }
             }

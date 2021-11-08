@@ -50,7 +50,6 @@ namespace CadProjectorViewer.StaticTools
                 UidObject uidObject = await GCToCad.GetUid(obj);
                 if (uidObject != null) group.Add(uidObject);
             }
-            group.UpdateTransform(AppSt.Default.Attach);
             return group;
         }
     }

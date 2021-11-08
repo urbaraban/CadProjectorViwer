@@ -47,6 +47,7 @@ using CadProjectorSDK.UDP;
 using Microsoft.Xaml.Behaviors.Core;
 using CadProjectorSDK.Tools.ILDA;
 using System.Drawing.Imaging;
+using System.Runtime.CompilerServices;
 
 namespace CadProjectorViewer
 {
@@ -58,7 +59,16 @@ namespace CadProjectorViewer
         private KmpsAppl kmpsAppl;
         private bool inverseToggle = true;
 
-        public ProjectorHub ProjectorHub { get; set; } = new ProjectorHub();
+        public ProjectorHub ProjectorHub 
+        {
+            get => projectorHub;
+            set
+            {
+                projectorHub = value;
+                OnPropertyChanged("ProjectorHub");
+            }
+        } 
+        private ProjectorHub projectorHub = new ProjectorHub(AppSt.Default.cl_moncha_path);
 
         public MainWindow()
         {
@@ -90,13 +100,14 @@ namespace CadProjectorViewer
 
             GCTools.Log = PostLog;
             GCTools.SetProgress = ProgressPanel.SetProgressBar;
+
             this.Title = $"CUT — Viewer v{Assembly.GetExecutingAssembly().GetName().Version.ToString()}";
             FileLoad.LoadMoncha(ProjectorHub, false);
 
             HotKeysManager.KeyActions.Add(new KeyAction()
             {
                 Keys = new Key[] { Key.Escape },
-                GetAction = ProjectorHub.ScenesCollection.MainScene.Break
+                GetAction = ProjectorHub.ScenesCollection.SelectedScene.Break
             });
         }
 
@@ -210,8 +221,8 @@ namespace CadProjectorViewer
                     new CadGroup(
                         await ContourCalc.GetGeometry(this.kmpsAppl.Doc, ProjectorHub.ProjectionSetting.PointStep.MX, false, true),
                         this.kmpsAppl.Doc.D7.Name);
-                cadGeometries.UpdateTransform(AppSt.Default.Attach);
-                ProjectorHub.ScenesCollection.Add(new ProjectionScene(cadGeometries));
+                cadGeometries.UpdateTransform(ProjectorHub.ScenesCollection.SelectedScene.Size, AppSt.Default.Attach);
+                ProjectorHub.ScenesCollection.LoadedScenes.Add(new ProjectionScene(cadGeometries));
             }
         }
 
@@ -228,7 +239,7 @@ namespace CadProjectorViewer
                           await ContourCalc.GetGeometry(this.kmpsAppl.Doc, ProjectorHub.ProjectionSetting.PointStep.MX, true, true),
                           this.kmpsAppl.Doc.D7.Name);
 
-                ProjectorHub.ScenesCollection.Add(new ProjectionScene(cadGeometries));
+                ProjectorHub.ScenesCollection.LoadedScenes.Add(new ProjectionScene(cadGeometries));
             }
         }
 
@@ -239,21 +250,21 @@ namespace CadProjectorViewer
            // HotKeysManager.RunAsync(new Key[] { e.Key });
 
             double _mult = Keyboard.Modifiers == ModifierKeys.Shift ? 10 : 1;
-            double step = ProjectorHub.ScenesCollection.MainScene.Movespeed;
+            double step = ProjectorHub.ScenesCollection.SelectedScene.Movespeed;
 
             switch (e.Key)
             {
                 case Key.W:
-                    ProjectorHub.ScenesCollection.MainScene.MoveSelect(0, -step * _mult);
+                    ProjectorHub.ScenesCollection.SelectedScene.MoveSelect(0, -step * _mult);
                     break;
                 case Key.S:
-                    ProjectorHub.ScenesCollection.MainScene.MoveSelect(0, step * _mult);
+                    ProjectorHub.ScenesCollection.SelectedScene.MoveSelect(0, step * _mult);
                     break;
                 case Key.A:
-                    ProjectorHub.ScenesCollection.MainScene.MoveSelect(-step * _mult, 0);
+                    ProjectorHub.ScenesCollection.SelectedScene.MoveSelect(-step * _mult, 0);
                     break;
                 case Key.D:
-                    ProjectorHub.ScenesCollection.MainScene.MoveSelect(step * _mult, 0);
+                    ProjectorHub.ScenesCollection.SelectedScene.MoveSelect(step * _mult, 0);
                     break;
                 case Key.OemPlus:
                     break;
@@ -315,7 +326,7 @@ namespace CadProjectorViewer
                     }
                     break;
                 case Key.Escape:
-                    ProjectorHub.ScenesCollection.MainScene.SceneAction = SceneAction.NoAction;
+                    ProjectorHub.ScenesCollection.SelectedScene.SceneAction = SceneAction.NoAction;
                     break;
             }
         }
@@ -492,11 +503,11 @@ namespace CadProjectorViewer
         }
 
         public ICommand MaskCommand => new ActionCommand(() => {
-            ProjectorHub.ScenesCollection.MainScene.SceneAction = SceneAction.Mask;
+            ProjectorHub.ScenesCollection.SelectedScene.SceneAction = SceneAction.Mask;
         });
 
         public ICommand LineCommand => new ActionCommand(() => {
-            ProjectorHub.ScenesCollection.MainScene.SceneAction = SceneAction.Line;
+            ProjectorHub.ScenesCollection.SelectedScene.SceneAction = SceneAction.Line;
         });
 
 
@@ -532,11 +543,11 @@ namespace CadProjectorViewer
             this.Close();
         });
 
-        public ICommand Clear => new ActionCommand(ProjectorHub.ScenesCollection.MainScene.Clear);
+        public ICommand Clear => new ActionCommand(ProjectorHub.ScenesCollection.SelectedScene.Clear);
 
-        public ICommand FixSelectCommand => new ActionCommand(ProjectorHub.ScenesCollection.MainScene.Fix);
+        public ICommand FixSelectCommand => new ActionCommand(ProjectorHub.ScenesCollection.SelectedScene.Fix);
 
-        public ICommand SelectNextCommand => new ActionCommand(ProjectorHub.ScenesCollection.MainScene.SelectNext);
+        public ICommand SelectNextCommand => new ActionCommand(ProjectorHub.ScenesCollection.SelectedScene.SelectNext);
 
 
         public ICommand ShowLicenceCommand => new ActionCommand(()=> {
@@ -552,7 +563,7 @@ namespace CadProjectorViewer
         {
             try
             {
-                ProjectorHub.ScenesCollection.Add(await FileLoad.GetCliboard());
+                ProjectorHub.ScenesCollection.LoadedScenes.Add(await FileLoad.GetCliboard());
             }
             catch
             {
@@ -586,10 +597,19 @@ namespace CadProjectorViewer
             {
                 if (await FileLoad.GetFilePath(openFile.FileName) is ProjectionScene scene)
                 {
-                    ProjectorHub.ScenesCollection.Add(scene);
+                    ProjectorHub.ScenesCollection.LoadedScenes.Add(scene);
                 }
             }
         }
+
+        #region INotifyPropertyChanged
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        public void OnPropertyChanged([CallerMemberName] string prop = "")
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(prop));
+        }
+        #endregion
 
     }
 

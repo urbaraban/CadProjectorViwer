@@ -40,5 +40,15 @@ namespace CadProjectorViewer
         {
             this.Close();
         }
+
+        private void Copy_Click(object sender, RoutedEventArgs e)
+        {
+            Clipboard.SetText(LKey.RequestKey);
+        }
+
+        private void Pate_Click(object sender, RoutedEventArgs e)
+        {
+            LKey.LicenseKey = Clipboard.GetText();
+        }
     }
 }

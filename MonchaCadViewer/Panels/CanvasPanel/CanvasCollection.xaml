@@ -1,0 +1,56 @@
+﻿<UserControl x:Class="CadProjectorViewer.Panels.CanvasPanel.CanvasCollection"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:CadProjectorViewer.Panels.CanvasPanel" 
+             xmlns:cadprojectorsdk="clr-namespace:CadProjectorSDK;assembly=CadProjectorSDK"
+             d:DataContext="{d:DesignInstance Type={x:Type cadprojectorsdk:ProjectorHub}}"
+             x:Name="Main"
+             mc:Ignorable="d" 
+             d:DesignHeight="400" d:DesignWidth="400">
+    <DockPanel>
+        <DockPanel
+            Background="Gray"
+            LastChildFill="False"
+            HorizontalAlignment="Stretch"
+            DockPanel.Dock="Bottom">
+            <Button
+                    DockPanel.Dock="Left"
+                Command="{Binding ElementName=Main, Path=PreviousCommand}"
+                    Content="&#xe76b;"
+                    FontFamily="Segoe MDL2 Assets"
+                    FontSize="14"
+                    Width="{Binding ActualHeight, RelativeSource={RelativeSource Self}}" 
+                />
+            <Button
+                    DockPanel.Dock="Left"
+                Command="{Binding ElementName=Main, Path=NextCommand}"
+                    Content="&#xe76c;"
+                    FontFamily="Segoe MDL2 Assets"
+                    FontSize="14"
+                    Width="{Binding ActualHeight, RelativeSource={RelativeSource Self}}" 
+                />
+            <Button
+                    DockPanel.Dock="Right"
+                    Content="&#xE713;"
+                    FontFamily="Segoe MDL2 Assets"
+                    FontSize="14"
+                    Width="{Binding ActualHeight, RelativeSource={RelativeSource Self}}" 
+                />
+        </DockPanel>
+        <TabControl 
+            x:Name="Tabs"
+            ItemsSource="{Binding ScenesCollection}" 
+            TabStripPlacement="Bottom"
+            DisplayMemberPath="NameID"
+            SelectedItem="{Binding SelectedScene}"
+            SelectedIndex="0">
+            <TabControl.ContentTemplate>
+                <DataTemplate>
+                    <local:CadCanvasPanel/>
+                </DataTemplate>
+            </TabControl.ContentTemplate>
+        </TabControl>
+        </DockPanel>
+</UserControl>

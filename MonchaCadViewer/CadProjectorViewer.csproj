@@ -276,6 +276,9 @@
     <Compile Include="Panels\CanvasPanel\CadCanvasPanel.xaml.cs">
       <DependentUpon>CadCanvasPanel.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Panels\CanvasPanel\CanvasCollection.xaml.cs">
+      <DependentUpon>CanvasCollection.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Panels\LeftPanels\FrameTree.xaml.cs">
       <DependentUpon>FrameTree.xaml</DependentUpon>
     </Compile>
@@ -357,6 +360,10 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Page Include="Panels\CanvasPanel\CanvasCollection.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Panels\LeftPanels\FrameTree.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

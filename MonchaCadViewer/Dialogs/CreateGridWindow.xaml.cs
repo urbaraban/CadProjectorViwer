@@ -27,7 +27,7 @@ namespace CadProjectorViewer
         {
             InitializeComponent();
             this._mesh = mesh;
-            this.DataContext = new ProjectorMesh(ProjectorMesh.MakeMeshPoint(this._mesh.Points.GetLength(0), this._mesh.Points.GetLength(1)), this._mesh.Name);
+            this.DataContext = new ProjectorMesh(ProjectorMesh.MakeMeshPoint(this._mesh.Points.GetLength(0), this._mesh.Points.GetLength(1), new CadRect3D(1,1,1)), this._mesh.Name);
         }
 
 
@@ -36,7 +36,7 @@ namespace CadProjectorViewer
         {
             if (this.IsLoaded)
             {
-                this.DataContext = new ProjectorMesh(ProjectorMesh.MakeMeshPoint((int)HeightUpDn.Value.Value, (int)WidthUpDn.Value.Value), this._mesh.Name);
+                this.DataContext = new ProjectorMesh(ProjectorMesh.MakeMeshPoint((int)HeightUpDn.Value.Value, (int)WidthUpDn.Value.Value, new CadRect3D(1, 1, 1)), this._mesh.Name);
             }
         }
 
@@ -63,7 +63,7 @@ namespace CadProjectorViewer
             {
                 case MessageBoxResult.Yes:
                     this._mesh.SubscribePoint(false);
-                    this._mesh.Points = ProjectorMesh.MakeMeshPoint((int)HeightUpDn.Value.Value, (int)WidthUpDn.Value.Value);
+                    this._mesh.Points = ProjectorMesh.MakeMeshPoint((int)HeightUpDn.Value.Value, (int)WidthUpDn.Value.Value, this._mesh.Size);
                     this._mesh.SubscribePoint(true);
                     break;
                 case MessageBoxResult.No:

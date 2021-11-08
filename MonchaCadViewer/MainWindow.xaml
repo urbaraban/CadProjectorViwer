@@ -83,7 +83,7 @@
             <Menu>
                 <MenuItem Header="▼" Focusable="True">
                     <MenuItem Header="File">
-                        <MenuItem Header="BrowseMWS" Click="BrowseMWSItem_Click" />
+                        <MenuItem Header="Browse MWS" Click="BrowseMWSItem_Click" />
                         <Separator />
                         <MenuItem Header="Save Moncha" Click="MenuSaveBtn_Click" />
                         <MenuItem Header="Save Moncha as..." Click="SaveAsItem_Click" />
@@ -180,11 +180,11 @@
                         
                         Grid.Column="1" Grid.Row="0">
                 <TabItem Header="Transform" FontSize="12">
-                    <panels:CadObjectPanel DataContext="{Binding ScenesCollection.MainScene.SelectedObject.LastSelectObject}"
+                    <panels:CadObjectPanel DataContext="{Binding ScenesCollection.SelectedScene.SelectedObject.LastSelectObject}"
                         IsEnabled="{Binding DataContext, Converter={StaticResource NotNullBool}, RelativeSource={RelativeSource Self}}" />
                 </TabItem>
                 <TabItem Header="ProjectionSetting">
-                    <panels:multiplierpanel DataContext="{Binding ScenesCollection.MainScene.SelectedObject.LastSelectObject}"
+                    <panels:multiplierpanel DataContext="{Binding ScenesCollection.SelectedScene.SelectedObject.LastSelectObject}"
                         IsEnabled="{Binding DataContext, Converter={StaticResource NotNullBool}, RelativeSource={RelativeSource Self}}" />
                 </TabItem>
             </TabControl>
@@ -226,17 +226,12 @@
                 </TabItem>
                 <TabItem Header="Frame">
                     <Border  Style="{StaticResource Border}">
-                        <leftpanels:FrameTree DataContext="{Binding ScenesCollection.MainScene}" />
+                        <leftpanels:FrameTree DataContext="{Binding ScenesCollection.SelectedScene}" />
                     </Border>
                 </TabItem>
             </TabControl>
             <Border Grid.Column="1" Grid.Row="1" Style="{StaticResource Border}" Margin="0,3,0,0">
-                <TabControl TabStripPlacement="Bottom">
-                    <TabItem Header="{DynamicResource m_CanvasTab}">
-                        <canvaspanel:CadCanvasPanel AllowDrop="True" />
-                    </TabItem>
-                    <TabItem Header="ViewPort3D" Visibility="Collapsed" />
-                </TabControl>
+                <canvaspanel:CanvasCollection DataContext="{Binding .}"/>
             </Border>
 
             <panels:ScrollPanel x:Name="ContourScrollPanel" Margin="0,5,0,0" Grid.Column="1" Grid.Row="2" />
@@ -322,8 +317,8 @@
                 </TabItem>
                 <TabItem Header="{DynamicResource common_Configuration}">
                     <TabControl>
-                        <TabItem Header="Hub" x:Name="Calibration"  FontSize="18">
-                            <configuration:HubSettingPanel/>
+                        <TabItem Header="Scene" x:Name="Calibration"  FontSize="18">
+                            <configuration:HubSettingPanel DataContext="{Binding ScenesCollection.SelectedScene}"/>
                         </TabItem>
                         <TabItem Header="Setting" FontSize="14">
                             <configuration:AppDefaultSettingPanel/>

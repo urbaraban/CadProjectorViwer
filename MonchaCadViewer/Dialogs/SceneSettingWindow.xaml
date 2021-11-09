@@ -10,7 +10,8 @@
         ResizeMode="NoResize"
         x:Name="SceneSetting"
         Title="SceneSettingWindow"
-        SizeToContent="WidthAndHeight">
+        Width="350"
+        SizeToContent="Height">
     <Window.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -20,7 +21,6 @@
                 <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Themes/Light.Blue.xaml" />
             </ResourceDictionary.MergedDictionaries>
             <Style TargetType="ListBox">
-                <Setter Property="Width" Value="150"/>
                 <Setter Property="Height" Value="150"/>
             </Style>
             <Style TargetType="Button">
@@ -41,7 +41,7 @@
             <Button 
                 DockPanel.Dock="Right"
                 Content="-"
-                Command="{Binding ElementName=SceneSetting, Path=RemoveDeviceCommand}"
+                Command="{Binding ElementName=SceneSetting, Path=RemoveSceneCommand}"
                 Width="{Binding ActualHeight, RelativeSource={RelativeSource Self}}"/>
             <TextBox
                 DockPanel.Dock="Left"
@@ -62,13 +62,21 @@
         <TabControl.ContentTemplate>
             <DataTemplate>
                     <DockPanel>
-                        <DockPanel Margin="20">
+                        <Grid Margin="20">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="10*"/>
+                                <ColumnDefinition Width="2*"/>
+                                <ColumnDefinition Width="10*"/>
+                            </Grid.ColumnDefinitions>
                             <ListBox
+                                Grid.Column="0"
                                 DataContext="{Binding ElementName=SceneSetting, Path=DataContext}"
                                 ItemsSource="{Binding Devices}"
                                 SelectedItem="{Binding SelectDevice}"
                                 DisplayMemberPath="HWIdentifier"/>
-                            <DockPanel VerticalAlignment="Center">
+                            <DockPanel 
+                                Grid.Column="1"
+                                VerticalAlignment="Center">
                             <Button 
                     Content="&#xe76c;"
                     Command="{Binding ElementName=SceneSetting, Path=MigrateDeviceCommand}"
@@ -83,10 +91,11 @@
                     DockPanel.Dock="Bottom"/>
                         </DockPanel>
                         <ListBox
+                            Grid.Column="2"
                             ItemsSource="{Binding Devices}"
                             SelectedItem="{Binding SelectDevice}"
                             DisplayMemberPath="HWIdentifier"/>
-                    </DockPanel>
+                    </Grid>
                 </DockPanel>
             </DataTemplate>
         </TabControl.ContentTemplate>

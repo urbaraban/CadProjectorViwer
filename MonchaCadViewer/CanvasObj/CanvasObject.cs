@@ -188,7 +188,7 @@ namespace CadProjectorViewer.CanvasObj
 
         public bool WasMove { get; set; } = false;
 
-        public bool Editing { get; set; } = false;
+        public bool Editing { get; set; } = true;
 
         #endregion
 
@@ -221,33 +221,40 @@ namespace CadProjectorViewer.CanvasObj
         {
             base.OnMouseMove(e);
             OnPropertyChanged("IsMouseOver");
-            if (Keyboard.Modifiers == ModifierKeys.None)
+            if (ActiveObject == true)
             {
-                if (ActiveObject == true)
+                if (this.CadObject.IsFix == false)
                 {
-                    if (this.CadObject.IsFix == false)
+                    if (e.LeftButton == MouseButtonState.Pressed && Keyboard.Modifiers == ModifierKeys.Alt && this.Editing == false)
                     {
-                        if (e.LeftButton == MouseButtonState.Pressed)
-                        {
-                            this.WasMove = true;
-                            this.Editing = true;
+                        this.WasMove = true;
+                        this.Editing = true;
+                        this.CadObject.Cloning();
+                        Point tPoint = e.GetPosition(this);
+                        this.X = this.BasePos.X + (tPoint.X - this.MousePos.X);
+                        this.Y = this.BasePos.Y + (tPoint.Y - this.MousePos.Y);
+                    }
+                    else if (e.LeftButton == MouseButtonState.Pressed)
+                    {
+                        this.WasMove = true;
+                        this.Editing = true;
 
-                            Point tPoint = e.GetPosition(this);
+                        Point tPoint = e.GetPosition(this);
 
-                            this.X = this.BasePos.X + (tPoint.X - this.MousePos.X);
-                            this.Y = this.BasePos.Y + (tPoint.Y - this.MousePos.Y);
+                        this.X = this.BasePos.X + (tPoint.X - this.MousePos.X);
+                        this.Y = this.BasePos.Y + (tPoint.Y - this.MousePos.Y);
 
-                            this.CaptureMouse();
-                            this.Cursor = Cursors.SizeAll;
-                        }
+                        this.CaptureMouse();
+                        this.Cursor = Cursors.SizeAll;
+                    }
+                    else if (e.LeftButton == MouseButtonState.Released)
+                    {
+                        this.Editing = false;
                     }
                 }
             }
-            else if(Keyboard.Modifiers == ModifierKeys.Alt)
-            {
-
-            }
-            this.Cursor = Cursors.Hand;
+            else
+                this.Cursor = Cursors.Hand;
         }
 
         protected override void OnMouseLeave(MouseEventArgs e)

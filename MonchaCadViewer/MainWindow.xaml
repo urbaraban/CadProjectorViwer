@@ -32,6 +32,9 @@
         <KeyBinding
             Key="F"
             Command="{Binding ElementName=MainWin, Path=FixSelectCommand}"/>
+        <KeyBinding
+            Key="Delete"
+            Command="{Binding ElementName=MainWin, Path=DeleteCommand}"/>
     </Controls:MetroWindow.InputBindings>
     <Controls:MetroWindow.Resources>
         <ResourceDictionary>

@@ -62,7 +62,6 @@ namespace CadProjectorViewer.Panels
         public ScrollPanelItem()
         {
             InitializeComponent();
-            this.Width = this.Height;
         }
 
 
@@ -90,9 +89,9 @@ namespace CadProjectorViewer.Panels
         protected override void OnMouseRightButtonUp(MouseButtonEventArgs e)
         {
             base.OnMouseRightButtonUp(e);
-            if (this.DataContext is ProjectionScene scene)
+            if (this.DataContext is UidObject Obj)
             {
-                scene.UpdateTransform(AppSt.Default.Attach);
+                Obj.UpdateTransform(new CadRect3D(Obj.Bounds.Width, Obj.Bounds.Height, 0), AppSt.Default.Attach);
             }
         }
 
@@ -105,7 +104,7 @@ namespace CadProjectorViewer.Panels
 
         private void SolvedToggle_Checked(object sender, RoutedEventArgs e)
         {
-            this.IsSolved = SolvedToggle.IsChecked.Value;
+            //this.IsSolved = SolvedToggle.IsChecked.Value;
         }
 
         private void RefreshBtn_Click(object sender, RoutedEventArgs e) => Refresh();

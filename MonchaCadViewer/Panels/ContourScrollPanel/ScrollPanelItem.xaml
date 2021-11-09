@@ -60,6 +60,7 @@
                 <Rectangle Fill="Transparent" Grid.RowSpan="3" />
 
                 <DockPanel
+                    LastChildFill="False"
                 Margin="0,0,0,0"
                 Panel.ZIndex="99">
                     <Button
@@ -74,7 +75,7 @@
                     FontSize="14"
                     Foreground="Red" />
                     <Button
-                    DockPanel.Dock="Left"
+                    DockPanel.Dock="Right"
                     x:Name="RefreshBtn"
                     MinWidth="25"
                     Background="Transparent"
@@ -84,20 +85,6 @@
                     FontFamily="Segoe MDL2 Assets"
                     FontSize="14"
                     Foreground="MediumBlue" />
-                    <ToggleButton
-                    DockPanel.Dock="Right"
-                    x:Name="SolvedToggle"
-                    Width="50"
-                    Margin="10,0,0,0"
-                    Padding="0"
-                    Background="Transparent"
-                    BorderThickness="0"
-                    Checked="SolvedToggle_Checked"
-                    Content="&#xE73E;"
-                    FontFamily="Segoe MDL2 Assets"
-                    FontSize="14"
-                    Foreground="Green"
-                    Unchecked="SolvedToggle_Checked" />
                 </DockPanel>
 
             </Grid>

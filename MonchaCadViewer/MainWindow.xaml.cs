@@ -102,7 +102,6 @@ namespace CadProjectorViewer
             GCTools.SetProgress = ProgressPanel.SetProgressBar;
 
             this.Title = $"CUT — Viewer v{Assembly.GetExecutingAssembly().GetName().Version.ToString()}";
-            FileLoad.LoadMoncha(ProjectorHub, false);
 
             HotKeysManager.KeyActions.Add(new KeyAction()
             {
@@ -263,9 +262,6 @@ namespace CadProjectorViewer
                     ProjectorHub.ScenesCollection.SelectedScene.MoveSelect(step * _mult, 0);
                     break;
                 case Key.OemPlus:
-                    break;
-                case Key.Delete:
-                    //ProjectorHub.ScenesCollection.MainScene.SelectedObject.Remove();
                     break;
                 case Key.D1:
                     if (Keyboard.Modifiers == ModifierKeys.Control)
@@ -552,8 +548,7 @@ namespace CadProjectorViewer
         });
 
 
-        private ActionCommand pasteCommand;
-        public ICommand PasteCommand => pasteCommand ??= new ActionCommand(Paste);
+        public ICommand PasteCommand => new ActionCommand(Paste);
 
         private async void Paste()
         {
@@ -571,9 +566,12 @@ namespace CadProjectorViewer
             this.projectorHub.ScenesCollection.SelectedScene.Play = !this.projectorHub.ScenesCollection.SelectedScene.Play;
         });
 
+        public ICommand DeleteCommand => new ActionCommand(() => {
+            this.projectorHub.ScenesCollection.SelectedScene.RemoveRange(this.projectorHub.ScenesCollection.SelectedScene.SelectedObjects);
+        });
 
-        private ActionCommand openCommand;
-        public ICommand OpenCommand => openCommand ??= new ActionCommand(Open);
+
+        public ICommand OpenCommand => new ActionCommand(Open);
 
         private async void Open()
         {

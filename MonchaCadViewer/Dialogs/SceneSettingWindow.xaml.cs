@@ -64,6 +64,8 @@ namespace CadProjectorViewer.Dialogs
         {
             if (this.Hub.ScenesCollection.SelectedScene is ProjectionScene scene && this.Hub.ScenesCollection.Count > 1)
             {
+                int index = this.Hub.ScenesCollection.IndexOf(scene);
+                this.Hub.ScenesCollection.SelectedScene = this.Hub.ScenesCollection[Math.Abs(index - 1)];
                 this.Hub.ScenesCollection.Remove(scene);
             }
         }

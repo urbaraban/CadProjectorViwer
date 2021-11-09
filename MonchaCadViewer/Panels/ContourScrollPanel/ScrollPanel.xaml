@@ -52,7 +52,7 @@
                     <ItemsControl.ItemTemplate>
                         <DataTemplate>
                             <UniformGrid Rows="1">
-                                <panels:ScrollPanelItem MaxWidth="100" Height="100"/>
+                                <panels:ScrollPanelItem Width="100" Height="100"/>
                             </UniformGrid>
                         </DataTemplate>
                     </ItemsControl.ItemTemplate>

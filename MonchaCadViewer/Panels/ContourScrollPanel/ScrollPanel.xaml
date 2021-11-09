@@ -42,7 +42,7 @@
             <ScrollViewer
                 HorizontalScrollBarVisibility="Visible"
                 VerticalScrollBarVisibility="Disabled">
-                <ItemsControl ItemsSource="{Binding ScenesCollection.LoadedScenes}">
+                <ItemsControl ItemsSource="{Binding ScenesCollection.LoadedObject}">
                     <ItemsControl.ItemsPanel>
                         <ItemsPanelTemplate>
                             <WrapPanel  
@@ -52,7 +52,7 @@
                     <ItemsControl.ItemTemplate>
                         <DataTemplate>
                             <UniformGrid Rows="1">
-                                <panels:ScrollPanelItem MaxWidth="120" MinHeight="80"/>
+                                <panels:ScrollPanelItem MaxWidth="100" Height="100"/>
                             </UniformGrid>
                         </DataTemplate>
                     </ItemsControl.ItemTemplate>

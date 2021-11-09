@@ -19,6 +19,7 @@ using System.Windows.Navigation;
 
 using AppSt = CadProjectorViewer.Properties.Settings;
 using CadProjectorSDK.Device.Controllers;
+using CadProjectorViewer.Dialogs;
 
 namespace CadProjectorViewer.Panels
 {
@@ -27,6 +28,7 @@ namespace CadProjectorViewer.Panels
     /// </summary>
     public partial class DeviceTab : UserControl
     {
+        private ProjectorHub hub => (ProjectorHub)this.DataContext;
         private LDevice device => (LDevice)DeviceCombo.SelectedItem;
 
         public DeviceTab()
@@ -67,11 +69,20 @@ namespace CadProjectorViewer.Panels
             }
         }
 
+        private void SceneSettingBtn_Click(object sender, RoutedEventArgs e)
+        {
+            SceneSettingWindow sceneSettingWindow = new SceneSettingWindow() { DataContext = hub };
+            sceneSettingWindow.Show();
+        }
+
 
         private void MeshSettingBtn_Click(object sender, RoutedEventArgs e)
         {
-            CreateGridWindow createGridWindow = new CreateGridWindow(this.device.SelectMesh);
-            createGridWindow.Show();
+            if (this.device.SelectMesh != null)
+            {
+                CreateGridWindow createGridWindow = new CreateGridWindow(this.device.SelectMesh);
+                createGridWindow.Show();
+            }
         }
 
         private void MeshListBtn_Click(object sender, RoutedEventArgs e)

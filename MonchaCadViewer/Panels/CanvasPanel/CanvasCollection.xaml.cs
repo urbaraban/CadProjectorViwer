@@ -1,4 +1,5 @@
 ﻿using CadProjectorSDK;
+using CadProjectorSDK.CadObjects.Abstract;
 using CadProjectorSDK.Scenes;
 using CadProjectorViewer.StaticTools;
 using Microsoft.Xaml.Behaviors.Core;
@@ -34,9 +35,9 @@ namespace CadProjectorViewer.Panels.CanvasPanel
         protected async override void OnDrop(DragEventArgs e)
         {
             base.OnDrop(e);
-            if (await FileLoad.GetScene(e) is ProjectionScene Scene)
+            if (await FileLoad.GetScene(e) is UidObject Obj)
             {
-                this.projectorHub.ScenesCollection.LoadedScenes.Add(Scene);
+                this.projectorHub.ScenesCollection.LoadedObject.Add(Obj);
             }
         }
 

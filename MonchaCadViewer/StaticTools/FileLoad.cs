@@ -74,7 +74,7 @@ namespace CadProjectorViewer.StaticTools
             }
         }
 
-        public static async Task<ProjectionScene> GetCliboard()
+        public static async Task<UidObject> GetCliboard()
         {
             IDataObject Data = Clipboard.GetDataObject();
 
@@ -86,12 +86,12 @@ namespace CadProjectorViewer.StaticTools
 
                 SVG svg = new SVG();
                 object obj = await svg.Parse(text);
-                return new ProjectionScene(await ConvertObject(obj));
+                return await ConvertObject(obj);
             }
             return null;
         }
 
-        public static async Task<ProjectionScene> GetScene(object obj)
+        public static async Task<UidObject> GetScene(object obj)
         {
             if (obj is DragEventArgs dragEvent)
             {
@@ -107,17 +107,21 @@ namespace CadProjectorViewer.StaticTools
                         }
                     }
                 }
-                else if (dragEvent.Data.GetData(dragEvent.Data.GetFormats()[0]) is ProjectionScene Scene)
+                else if (dragEvent.Data.GetData(dragEvent.Data.GetFormats()[0]) is UidObject Scene)
                 {
-                    return dragEvent.Effects == DragDropEffects.Copy ? Scene.Clone() : Scene;
+                    return Scene;
                 }
             }
-            return await Task.FromResult<ProjectionScene>(null);
+            return await Task.FromResult<UidObject>(null);
         }
 
-        public static async Task<ProjectionScene> GetFilePath(string FilePath)
+        public static async Task<UidObject> GetFilePath(string FilePath)
         {
-            return new ProjectionScene(await ConvertObject(await FileLoad.GetObject(FilePath)));
+            if (await FileLoad.GetObject(FilePath) is object obj)
+            {
+                return await ConvertObject(obj);
+            }
+            return null;
         }
 
         private static async Task<UidObject> ConvertObject(object obj)

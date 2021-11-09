@@ -79,7 +79,6 @@ namespace CadProjectorViewer.Panels
 
         private void RefreshLaser_Click_1(object sender, RoutedEventArgs e)
         {
-            projectorHub.Play = false;
             projectorHub.Load(AppSt.Default.cl_moncha_path);
         }
 

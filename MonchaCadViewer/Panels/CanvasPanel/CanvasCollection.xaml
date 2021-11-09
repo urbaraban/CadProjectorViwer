@@ -4,13 +4,13 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:CadProjectorViewer.Panels.CanvasPanel" 
-             xmlns:cadprojectorsdk="clr-namespace:CadProjectorSDK;assembly=CadProjectorSDK"
+             xmlns:cadprojectorsdk="clr-namespace:CadProjectorSDK;assembly=CadProjectorSDK" xmlns:scenes="clr-namespace:CadProjectorSDK.Scenes;assembly=CadProjectorSDK"
              d:DataContext="{d:DesignInstance Type={x:Type cadprojectorsdk:ProjectorHub}}"
              x:Name="Main"
              mc:Ignorable="d" 
              d:DesignHeight="400" d:DesignWidth="400">
     <DockPanel>
-        <DockPanel
+        <!--<DockPanel
             Background="Gray"
             LastChildFill="False"
             HorizontalAlignment="Stretch"
@@ -38,13 +38,13 @@
                     FontSize="14"
                     Width="{Binding ActualHeight, RelativeSource={RelativeSource Self}}" 
                 />
-        </DockPanel>
+        </DockPanel>-->
         <TabControl 
             x:Name="Tabs"
             ItemsSource="{Binding ScenesCollection}" 
             TabStripPlacement="Bottom"
             DisplayMemberPath="NameID"
-            SelectedItem="{Binding SelectedScene}"
+            SelectedItem="{Binding ScenesCollection.SelectedScene}"
             SelectedIndex="0">
             <TabControl.ContentTemplate>
                 <DataTemplate>

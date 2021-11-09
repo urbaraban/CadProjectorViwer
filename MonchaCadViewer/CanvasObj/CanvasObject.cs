@@ -26,7 +26,7 @@ namespace CadProjectorViewer.CanvasObj
 {
     public class CanvasObject : FrameworkElement, INotifyPropertyChanged
     {
-        public static double GetThinkess => 10;// Math.Max(ProjectorHub.Size.Width, ProjectorHub.Size.Height) * AppSt.Default.default_thinkess_percent;
+        public static double GetThinkess => 30;// Math.Max(ProjectorHub.Size.Width, ProjectorHub.Size.Height) * AppSt.Default.default_thinkess_percent;
 
         public UidObject CadObject
         {

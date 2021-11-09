@@ -57,6 +57,14 @@
                     Grid.Row="3" Grid.ColumnSpan="2" />
                 <Button DockPanel.Dock="Right"
                         Margin="5,0,10,0"
+                        Click="SceneSettingBtn_Click"
+                        Content="&#xF0B5;"
+                        Padding="0"
+                        FontFamily="Segoe MDL2 Assets"
+                        FontSize="14"
+                        Width="{Binding ActualHeight, RelativeSource={RelativeSource Self}}" />
+                <Button DockPanel.Dock="Right"
+                        Margin="5,0,0,0"
                         Click="DeviceSettingBtn_Click"
                         Content="&#xE713;"
                         Padding="0"

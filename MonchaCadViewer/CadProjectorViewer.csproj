@@ -273,6 +273,9 @@
     <Compile Include="Dialogs\DeviceManaged\LaserSearcher.xaml.cs">
       <DependentUpon>LaserSearcher.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Dialogs\SceneSettingWindow.xaml.cs">
+      <DependentUpon>SceneSettingWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Panels\CanvasPanel\CadCanvasPanel.xaml.cs">
       <DependentUpon>CadCanvasPanel.xaml</DependentUpon>
     </Compile>
@@ -288,7 +291,7 @@
     <Compile Include="Panels\LeftPanels\DeviceTreeTab.xaml.cs">
       <DependentUpon>DeviceTreeTab.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Panels\OtherPanel\MeshesDialog.xaml.cs">
+    <Compile Include="Dialogs\MeshesDialog.xaml.cs">
       <DependentUpon>MeshesDialog.xaml</DependentUpon>
     </Compile>
     <Compile Include="Panels\ObjectPanel\CadObjectPanel.xaml.cs">
@@ -345,6 +348,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Dialogs\SceneSettingWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -368,7 +375,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Panels\OtherPanel\MeshesDialog.xaml">
+    <Page Include="Dialogs\MeshesDialog.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

@@ -47,8 +47,10 @@ namespace CadProjectorViewer.CanvasObj
             {
                 for (int j = 0; j < Mesh.Points.GetLength(1); j += 1)
                 {
-                    if (i - 1 > -1) drawingContext.DrawLine(myPen, Mesh.Points[i, j].GetMPoint, Mesh.Points[i - 1, j].GetMPoint);
-                    if (j - 1 > -1) drawingContext.DrawLine(myPen, Mesh.Points[i, j].GetMPoint, Mesh.Points[i, j - 1].GetMPoint);
+                    if (i - 1 > -1) 
+                        drawingContext.DrawLine(myPen, Mesh.Points[i, j].GetMPoint, Mesh.Points[i - 1, j].GetMPoint);
+                    if (j - 1 > -1) 
+                        drawingContext.DrawLine(myPen, Mesh.Points[i, j].GetMPoint, Mesh.Points[i, j - 1].GetMPoint);
                 }
             }
             

@@ -156,10 +156,6 @@ namespace CadProjectorViewer
         }
 
 
-        private void PlayBtn_Click(object sender, RoutedEventArgs e)
-        {
-            ProjectorHub.Play = !ProjectorHub.Play;
-        }
 
         private void kmpsConnectToggle_Toggled(object sender, RoutedEventArgs e)
         {
@@ -222,7 +218,7 @@ namespace CadProjectorViewer
                         await ContourCalc.GetGeometry(this.kmpsAppl.Doc, ProjectorHub.ProjectionSetting.PointStep.MX, false, true),
                         this.kmpsAppl.Doc.D7.Name);
                 cadGeometries.UpdateTransform(ProjectorHub.ScenesCollection.SelectedScene.Size, AppSt.Default.Attach);
-                ProjectorHub.ScenesCollection.LoadedScenes.Add(new ProjectionScene(cadGeometries));
+                ProjectorHub.ScenesCollection.LoadedObject.Add(cadGeometries);
             }
         }
 
@@ -239,7 +235,7 @@ namespace CadProjectorViewer
                           await ContourCalc.GetGeometry(this.kmpsAppl.Doc, ProjectorHub.ProjectionSetting.PointStep.MX, true, true),
                           this.kmpsAppl.Doc.D7.Name);
 
-                ProjectorHub.ScenesCollection.LoadedScenes.Add(new ProjectionScene(cadGeometries));
+                ProjectorHub.ScenesCollection.LoadedObject.Add(cadGeometries);
             }
         }
 
@@ -563,13 +559,17 @@ namespace CadProjectorViewer
         {
             try
             {
-                ProjectorHub.ScenesCollection.LoadedScenes.Add(await FileLoad.GetCliboard());
+                ProjectorHub.ScenesCollection.LoadedObject.Add(await FileLoad.GetCliboard());
             }
             catch
             {
                 LogBox.Items.Add("Clipboard is not geometry");
             }
         }
+
+        public ICommand PlayCommand => new ActionCommand(() => {
+            this.projectorHub.ScenesCollection.SelectedScene.Play = !this.projectorHub.ScenesCollection.SelectedScene.Play;
+        });
 
 
         private ActionCommand openCommand;
@@ -595,9 +595,9 @@ namespace CadProjectorViewer
             openFile.FileName = null;
             if (openFile.ShowDialog() == WinForms.DialogResult.OK)
             {
-                if (await FileLoad.GetFilePath(openFile.FileName) is ProjectionScene scene)
+                if (await FileLoad.GetFilePath(openFile.FileName) is UidObject scene)
                 {
-                    ProjectorHub.ScenesCollection.LoadedScenes.Add(scene);
+                    ProjectorHub.ScenesCollection.LoadedObject.Add(scene);
                 }
             }
         }

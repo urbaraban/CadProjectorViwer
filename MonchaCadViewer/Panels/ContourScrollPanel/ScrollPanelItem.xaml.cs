@@ -22,6 +22,8 @@ using CadProjectorSDK.CadObjects;
 using CadProjectorSDK.CadObjects.Abstract;
 using System.Globalization;
 using CadProjectorSDK.Scenes;
+using CadProjectorSDK.Device.Mesh;
+using CadProjectorSDK.Interfaces;
 
 namespace CadProjectorViewer.Panels
 {
@@ -30,7 +32,7 @@ namespace CadProjectorViewer.Panels
     /// </summary>
     public partial class ScrollPanelItem : UserControl
     {
-        public ProjectionScene ProjectionScene => (ProjectionScene)this.DataContext;
+        public UidObject uidObject => (UidObject)this.DataContext;
 
         public bool IsSelected
         {
@@ -38,7 +40,6 @@ namespace CadProjectorViewer.Panels
             set
             {
                 this._isselected = value;
-                SetBackround();
             }
         }
         private bool _isselected = false;
@@ -49,16 +50,14 @@ namespace CadProjectorViewer.Panels
             set
             {
                 this._issolved = value;
-                SetBackround();
             }
         }
         private bool _issolved = false;
 
-        public ProjectionScene Scene => (ProjectionScene)this.DataContext;
 
         private string filepath = string.Empty;
 
-        public string FileName => Scene.NameID;
+        public string FileName => uidObject.NameID;
 
         public ScrollPanelItem()
         {
@@ -70,7 +69,7 @@ namespace CadProjectorViewer.Panels
         protected override void OnMouseLeftButtonUp(MouseButtonEventArgs e)
         {
             base.OnMouseLeftButtonUp(e);
-            ProjectionScene.IsSelected = !ProjectionScene.IsSelected;
+            uidObject.IsSelected = !uidObject.IsSelected;
         }
 
         protected override void OnMouseLeftButtonDown(MouseButtonEventArgs e)
@@ -84,7 +83,7 @@ namespace CadProjectorViewer.Panels
             base.OnMouseMove(e);
             if (e.LeftButton == MouseButtonState.Pressed)
             {
-                DragDrop.DoDragDrop(this, this.Scene, Keyboard.Modifiers == ModifierKeys.Alt ? DragDropEffects.Copy : DragDropEffects.Move);
+                DragDrop.DoDragDrop(this, this.uidObject, Keyboard.Modifiers == ModifierKeys.Alt ? DragDropEffects.Copy : DragDropEffects.Move);
             }
         }
 
@@ -100,24 +99,9 @@ namespace CadProjectorViewer.Panels
 
         private void RemoveBtn_Click(object sender, RoutedEventArgs e)
         {
-            ProjectionScene.Remove();
+            uidObject.Remove();
         }
 
-        private void SetBackround()
-        {
-            if (this._isselected == true)
-            {
-                this.BackCanvas.Background = Brushes.GreenYellow;
-            }
-            else if (this._issolved == true)
-            {
-                this.BackCanvas.Background = Brushes.Gray;
-            }
-            else
-            {
-                this.BackCanvas.Background = Brushes.White;
-            }
-        }
 
         private void SolvedToggle_Checked(object sender, RoutedEventArgs e)
         {
@@ -141,6 +125,22 @@ namespace CadProjectorViewer.Panels
         {
             if (value is bool b && b == true) return Brushes.YellowGreen;
             else return Brushes.White;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            return null;
+        }
+    }
+
+    public class ItemConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            if (value is CadGroup cadGroup) return cadGroup;
+            else if (value is UidObject uidObject) return new List<UidObject>() { uidObject };
+
+            return value;
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)

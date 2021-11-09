@@ -26,6 +26,8 @@
     <v:String x:Key="obj_ParallelCount">Strokes count</v:String>
     <v:String x:Key="obj_ParallelMargin">Strokes margin</v:String>
 
+    <v:String x:Key="scn_Scene">Scene</v:String>
+    
     <v:String x:Key="dvc_Device">Device</v:String>
     <v:String x:Key="dvc_Dimmer">Dimmer</v:String>
     <v:String x:Key="dvc_Mesh">Place</v:String>

@@ -73,7 +73,7 @@
                                 DataContext="{Binding ElementName=SceneSetting, Path=DataContext}"
                                 ItemsSource="{Binding Devices}"
                                 SelectedItem="{Binding SelectDevice}"
-                                DisplayMemberPath="HWIdentifier"/>
+                                DisplayMemberPath="NameID"/>
                             <DockPanel 
                                 Grid.Column="1"
                                 VerticalAlignment="Center">
@@ -94,7 +94,7 @@
                             Grid.Column="2"
                             ItemsSource="{Binding Devices}"
                             SelectedItem="{Binding SelectDevice}"
-                            DisplayMemberPath="HWIdentifier"/>
+                            DisplayMemberPath="NameID"/>
                     </Grid>
                 </DockPanel>
             </DataTemplate>

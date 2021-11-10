@@ -75,8 +75,8 @@
                     x:Name="DeviceCombo"  
                     d:DataContext="{d:DesignInstance Type={x:Type cadprojectorsdk:ProjectorHub}}"
                     DockPanel.Dock="Left"
-                    DisplayMemberPath="HWIdentifier"
-                    SelectedValuePath="HWIdentifier"
+                    DisplayMemberPath="NameID"
+                    SelectedValuePath="NameID"
                     SelectedIndex="0"
                     ItemsSource="{Binding ScenesCollection.SelectedScene.Devices}" />
             </DockPanel>

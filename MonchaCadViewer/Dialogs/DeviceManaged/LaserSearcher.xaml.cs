@@ -9,6 +9,7 @@ using System.Net;
 using System.Windows;
 using System.Net.NetworkInformation;
 using CadProjectorSDK.Tools;
+using CadProjectorSDK.Interfaces;
 
 namespace CadProjectorViewer
 {
@@ -57,9 +58,9 @@ namespace CadProjectorViewer
             this.OldDevices.Clear();
             foreach (LDevice monchaDevice in ProjectorHub.Devices)
             {
-                if (monchaDevice != null)
+                if (monchaDevice is IConnected connected)
                 {
-                    this.OldDevices.Add(new IpSelect() { iPAddress = monchaDevice.iPAddress, IsSelected = true });
+                    this.OldDevices.Add(new IpSelect() { iPAddress = connected.IPAddress, IsSelected = true });
                 }
             }
             if (this.OldDevices.Count > 0)

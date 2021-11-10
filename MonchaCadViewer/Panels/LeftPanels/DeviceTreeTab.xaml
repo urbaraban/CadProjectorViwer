@@ -89,10 +89,16 @@
                         Orientation="Horizontal" 
                         VerticalAlignment="Center">
                         <CheckBox IsChecked="{Binding IsOn}" />
+                        <Button
+                            Click="ReconnectButton_Click"
+                            Content="&#xEDAB;"
+                            FontFamily="Segoe MDL2 Assets"
+                            Width="{Binding ActualHeight, RelativeSource={RelativeSource Self}}" 
+                            />
                         <TextBlock VerticalAlignment="Center"
                             Text="&#xE714;"
                             FontFamily="Segoe MDL2 Assets"/>
-                        <TextBlock  Text="{Binding HWIdentifier}"
+                        <TextBlock  Text="{Binding NameID}"
                                     Style="{StaticResource ConnectedStyle}"
                                     VerticalAlignment="Center" Margin="5,0,0,0"/>
                     </StackPanel>

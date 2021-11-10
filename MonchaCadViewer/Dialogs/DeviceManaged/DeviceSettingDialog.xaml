@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:Controls="http://metro.mahapps.com/winfx/xaml/controls"
         mc:Ignorable="d"
-        xmlns:dvc="clr-namespace:CadProjectorSDK.Device;assembly=CadProjectorSDK" d:DataContext="{d:DesignInstance Type=dvc:LDevice}"
+        xmlns:dvc="clr-namespace:CadProjectorSDK.Device;assembly=CadProjectorSDK" xmlns:devicepanel="clr-namespace:CadProjectorViewer.Panels.DevicePanel" d:DataContext="{d:DesignInstance Type=dvc:LDevice}"
         Title="DeviceSettingDialog"
         ResizeMode="NoResize"
         SizeToContent="WidthAndHeight">
@@ -35,6 +35,7 @@
             <Style TargetType="ComboBox">
                 <Setter Property="MinWidth" Value="90"/>
             </Style>
+            <devicepanel:IPAdressConverter x:Key="IPAdressConverter"/>
         </ResourceDictionary>
     </Window.Resources>
     <StackPanel Grid.ColumnSpan="4" Grid.RowSpan="5">
@@ -58,17 +59,20 @@
                     LostFocus="IP_LostFocus"/>
         </DockPanel>
         <DockPanel>
+            <TextBox FontSize="16" Text="{Binding NameID}"/>
+        </DockPanel>
+        <DockPanel>
             <TextBox x:Name="IP1" 
-                     Text="192" 
+                     Text="{Binding IPAddress, Converter={StaticResource IPAdressConverter}, ConverterParameter=0, Mode=OneWay}" 
                      TextInput="IP_TextInput" LostFocus="IP_LostFocus"/>
             <TextBox x:Name="IP2" 
-                     Text="168" 
+                     Text="{Binding IPAddress, Converter={StaticResource IPAdressConverter}, ConverterParameter=1, Mode=OneWay}" 
                      TextInput="IP_TextInput" LostFocus="IP_LostFocus"/>
             <TextBox x:Name="IP3"
-                     Text="0" 
+                     Text="{Binding IPAddress, Converter={StaticResource IPAdressConverter}, ConverterParameter=2, Mode=OneWay}"
                      TextInput="IP_TextInput" LostFocus="IP_LostFocus"/>
             <TextBox x:Name="IP4" 
-                     Text="0"  
+                     Text="{Binding IPAddress, Converter={StaticResource IPAdressConverter}, ConverterParameter=3, Mode=OneWay}"  
                      TextInput="IP_TextInput" LostFocus="IP_LostFocus"/>
         </DockPanel>
         <DockPanel>

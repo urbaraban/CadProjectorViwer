@@ -307,7 +307,7 @@ namespace CadProjectorViewer.Panels.CanvasPanel
                 {
                     if (lDevice.MeshedScene != null)
                     {
-                        outstring += $"\n {lDevice.HWIdentifier}: {lDevice.MeshedScene.GetAlreadyScan * lDevice.FPS * 1.3} pts";
+                        outstring += $"\n {lDevice.NameID}: {lDevice.MeshedScene.GetAlreadyScan * lDevice.FPS * 1.3} pts";
                     }
                 }
             }

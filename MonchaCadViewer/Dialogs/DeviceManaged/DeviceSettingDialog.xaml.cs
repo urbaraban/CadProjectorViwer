@@ -15,6 +15,9 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using AppSt = CadProjectorViewer.Properties.Settings;
+using CadProjectorSDK.Interfaces;
+using System.Globalization;
+using System.Net;
 
 namespace CadProjectorViewer.Panels.DevicePanel
 {
@@ -25,37 +28,30 @@ namespace CadProjectorViewer.Panels.DevicePanel
     {
         private LDevice _device => (LDevice)this.DataContext;
 
-        public event EventHandler<List<FrameworkElement>> DrawObjects;
 
         public DeviceSettingDialog()
         {
             InitializeComponent();
-
-            if (this._device != null)
-            {
-                IP1.Text = this._device.iPAddress.GetAddressBytes()[0].ToString();
-                IP2.Text = this._device.iPAddress.GetAddressBytes()[1].ToString();
-                IP3.Text = this._device.iPAddress.GetAddressBytes()[2].ToString();
-                IP4.Text = this._device.iPAddress.GetAddressBytes()[3].ToString();
-            }
         }
 
         private void SaveBtn_Click(object sender, RoutedEventArgs e)
         {
             //ProjectorHub.CanPlay = false;
-
-            this._device.iPAddress = new System.Net.IPAddress(new byte[]
+            if (this._device is IConnected connected)
             {
-                byte.Parse(IP1.Text),
-                byte.Parse(IP2.Text),
-                byte.Parse(IP3.Text),
-                byte.Parse(IP4.Text)
-            });
+                connected.IPAddress = new System.Net.IPAddress(new byte[]
+                {
+                    byte.Parse(IP1.Text),
+                    byte.Parse(IP2.Text),
+                    byte.Parse(IP3.Text),
+                    byte.Parse(IP4.Text)
+                });
+            }
         }
 
         private void CheckBtn_Click(object sender, RoutedEventArgs e)
         {
-            CheckLabel.IsChecked = ProjectorHub.CheckDeviceIP(new System.Net.IPAddress(new byte[]
+            CheckLabel.IsChecked = ProjectorHub.CheckDeviceIP(new IPAddress(new byte[]
             {
                 byte.Parse(IP1.Text),
                 byte.Parse(IP2.Text),
@@ -93,6 +89,24 @@ namespace CadProjectorViewer.Panels.DevicePanel
         private void MinusSelectBtn_Click(object sender, RoutedEventArgs e)
         {
             this._device.SelectMesh = null;
+        }
+    }
+
+    public class IPAdressConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            if (value is IPAddress address)
+            {
+                int index = int.Parse(parameter.ToString());
+                return address.GetAddressBytes()[index].ToString();
+            }
+            return value;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            return value;        
         }
     }
 }

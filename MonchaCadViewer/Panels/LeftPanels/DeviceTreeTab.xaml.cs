@@ -22,6 +22,7 @@ using System.Windows.Navigation;
 using AppSt = CadProjectorViewer.Properties.Settings;
 using CadProjectorSDK.Device.Mesh;
 using CadProjectorSDK.Device.Controllers;
+using CadProjectorSDK.Interfaces;
 
 namespace CadProjectorViewer.Panels
 {
@@ -73,7 +74,7 @@ namespace CadProjectorViewer.Panels
 
         private void RemoveLaser_Click(object sender, RoutedEventArgs e)
         {
-            projectorHub.Devices.RemoveDevice(selectdevice.iPAddress);
+            projectorHub.Devices.RemoveDevice(selectdevice);
         }
 
 
@@ -202,5 +203,13 @@ namespace CadProjectorViewer.Panels
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(prop));
         }
         #endregion
+
+        private void ReconnectButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (sender is Button button && button.DataContext is IConnected connected)
+            {
+
+            }
+        }
     }
 }

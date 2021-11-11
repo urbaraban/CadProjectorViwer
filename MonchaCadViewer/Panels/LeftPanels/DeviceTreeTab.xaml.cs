@@ -204,11 +204,11 @@ namespace CadProjectorViewer.Panels
         }
         #endregion
 
-        private void ReconnectButton_Click(object sender, RoutedEventArgs e)
+        private async void ReconnectButton_Click(object sender, RoutedEventArgs e)
         {
             if (sender is Button button && button.DataContext is IConnected connected)
             {
-
+                await connected.Reconnect();
             }
         }
     }

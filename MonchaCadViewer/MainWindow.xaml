@@ -96,6 +96,11 @@
                         <Separator />
                         <MenuItem Header="Close" Command="{Binding ElementName=MainWin, Path=Closed}" />
                     </MenuItem>
+                    <MenuItem Header="Services">
+                        <MenuItem 
+                                Command="{Binding ElementName=MainWin, Path=RemoveOtherAppCommand}"
+                                Header="Remove other process"/>
+                    </MenuItem>
                     <MenuItem x:Name="menuLanguage" Header="Language">
                     </MenuItem>
                 </MenuItem>
@@ -183,11 +188,11 @@
                         
                         Grid.Column="1" Grid.Row="0">
                 <TabItem Header="Transform" FontSize="12">
-                    <panels:CadObjectPanel DataContext="{Binding ScenesCollection.SelectedScene.SelectedObject.LastSelectObject}"
+                    <panels:CadObjectPanel DataContext="{Binding ScenesCollection.SelectedScene.SelectedObjects.LastSelectObject}"
                         IsEnabled="{Binding DataContext, Converter={StaticResource NotNullBool}, RelativeSource={RelativeSource Self}}" />
                 </TabItem>
                 <TabItem Header="ProjectionSetting">
-                    <panels:multiplierpanel DataContext="{Binding ScenesCollection.SelectedScene.SelectedObject.LastSelectObject}"
+                    <panels:multiplierpanel DataContext="{Binding ScenesCollection.SelectedScene.SelectedObjects.LastSelectObject}"
                         IsEnabled="{Binding DataContext, Converter={StaticResource NotNullBool}, RelativeSource={RelativeSource Self}}" />
                 </TabItem>
             </TabControl>

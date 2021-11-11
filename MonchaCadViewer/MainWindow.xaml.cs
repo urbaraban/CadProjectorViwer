@@ -547,6 +547,25 @@ namespace CadProjectorViewer
             requestLicenseCode.ShowDialog();
         });
 
+        public ICommand RemoveOtherAppCommand => new ActionCommand(RemoveOtherApp);
+
+        private async void RemoveOtherApp()
+        {
+            string Name = AppDomain.CurrentDomain.FriendlyName;
+            Name = Name.Substring(0, Name.LastIndexOf('.'));
+            Process current = Process.GetCurrentProcess();
+            
+            var chromeDriverProcesses = Process.GetProcesses().
+            Where(pr => pr.ProcessName == Name && pr.Id != current.Id); // without '.exe'
+
+            LogBox.Items.Add($"Find {chromeDriverProcesses.Count()} run process");
+
+            foreach (var process in chromeDriverProcesses)
+            {
+                process.Kill();
+            }
+        }
+
 
         public ICommand PasteCommand => new ActionCommand(Paste);
 

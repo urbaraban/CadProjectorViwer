@@ -164,7 +164,8 @@ namespace CadProjectorViewer.Panels.CanvasPanel
             }
             else if (this.SelectedScene.SceneAction == SceneAction.Line)
             {
-                CadLine line = new CadLine(new CadPoint3D(e.GetPosition(this.CanvasGrid)), new CadPoint3D(e.GetPosition(this.CanvasGrid)), true);
+                Point point = e.GetPosition(this.CanvasGrid);
+                CadLine line = new CadLine(new CadPoint3D(point), new CadPoint3D(point), true);
                 this.SelectedScene.Add(line);
                 this.SelectedScene.ActiveDrawingObject = line;
             }

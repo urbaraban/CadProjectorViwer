@@ -91,6 +91,7 @@
                         <CheckBox IsChecked="{Binding IsOn}" />
                         <Button
                             Click="ReconnectButton_Click"
+                            Margin="2,0"
                             Content="&#xEDAB;"
                             FontFamily="Segoe MDL2 Assets"
                             Width="{Binding ActualHeight, RelativeSource={RelativeSource Self}}" 
@@ -98,9 +99,16 @@
                         <TextBlock VerticalAlignment="Center"
                             Text="&#xE714;"
                             FontFamily="Segoe MDL2 Assets"/>
-                        <TextBlock  Text="{Binding NameID}"
+                        <TextBlock  
                                     Style="{StaticResource ConnectedStyle}"
-                                    VerticalAlignment="Center" Margin="5,0,0,0"/>
+                                    VerticalAlignment="Center" Margin="5,0,0,0">
+                            <TextBlock.Text>
+                                <MultiBinding StringFormat="{}{0}_{1}">
+                                    <Binding Path="NameID"/>
+                                    <Binding Path="IPAddress"/>
+                                </MultiBinding>
+                            </TextBlock.Text>
+                        </TextBlock>
                     </StackPanel>
                 </Border>
             </HierarchicalDataTemplate>

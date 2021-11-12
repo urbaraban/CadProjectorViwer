@@ -90,7 +90,7 @@ namespace CadProjectorViewer.Panels
 
         private void ClearBtn_Click(object sender, RoutedEventArgs e)
         {
-            hub.ScenesCollection.Clear();
+            hub.ScenesCollection.LoadedObject.Clear();
         }
 
         private void AllSolvedBtn_Click(object sender, RoutedEventArgs e)

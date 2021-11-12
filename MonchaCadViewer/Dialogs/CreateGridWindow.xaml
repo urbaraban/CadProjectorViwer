@@ -6,11 +6,12 @@
         xmlns:Controls="http://metro.mahapps.com/winfx/xaml/controls"
         xmlns:Properties="clr-namespace:CadProjectorViewer.Properties" 
     xmlns:canvaspanel="clr-namespace:CadProjectorViewer.Panels.CanvasPanel"
-    xmlns:mesh="clr-namespace:CadProjectorSDK.Device.Mesh;assembly=CadProjectorSDK" xmlns:canvasobj="clr-namespace:CadProjectorViewer.CanvasObj" xmlns:cadprojectorviewer="clr-namespace:CadProjectorViewer"
+    xmlns:mesh="clr-namespace:CadProjectorSDK.Device.Mesh;assembly=CadProjectorSDK" xmlns:canvasobj="clr-namespace:CadProjectorViewer.CanvasObj" xmlns:cadprojectorviewer="clr-namespace:CadProjectorViewer" xmlns:panels="clr-namespace:CadProjectorViewer.Panels"
     d:DataContext="{d:DesignInstance Type=mesh:ProjectorMesh}"
     x:Class="CadProjectorViewer.CreateGridWindow"
         mc:Ignorable="d"
-        Title="CreateGridWindow" SizeToContent="WidthAndHeight" Loaded="Window_Loaded">
+        Title="CreateGridWindow"
+    SizeToContent="WidthAndHeight" Loaded="Window_Loaded">
     <Window.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -37,38 +38,17 @@
             </Style>
             <canvaspanel:CadObjectConverter x:Key="CadObjectConverter"/>
             <cadprojectorviewer:ToSceneObjConverter x:Key="ToSceneConverter"/>
+            <panels:ItemConverter x:Key="ItemConverter"/>
         </ResourceDictionary>
 
     </Window.Resources>
     <StackPanel Orientation="Horizontal" Margin="5">
-        <Border>
-        <Viewbox Width="400" Height="400">
-            <Grid x:Name="CanvasGrid">
-                <Rectangle Fill="White"/>
-                <Canvas 
-                    x:Name="BackCanvas" 
-                    IsHitTestVisible="False">
-                    <Canvas.Background>
-                        <DrawingBrush TileMode="Tile" Viewport="0,0,200,200" 
-                                     ViewportUnits="Absolute">
-                            <DrawingBrush.Drawing>
-                                <GeometryDrawing>
-                                    <GeometryDrawing.Geometry>
-                                        <RectangleGeometry Rect="0,0,200,200"/>
-                                    </GeometryDrawing.Geometry>
-                                    <GeometryDrawing.Pen>
-                                        <Pen Brush="LightSlateGray" Thickness="3"/>
-                                    </GeometryDrawing.Pen>
-                                </GeometryDrawing>
-                            </DrawingBrush.Drawing>
-                        </DrawingBrush>
-                    </Canvas.Background>
-                </Canvas>
-                <ItemsControl ItemsSource="{Binding RelativeSource={RelativeSource FindAncestor, 
-AncestorType={x:Type Window}}, Path=DataContext, Converter={StaticResource ToSceneConverter}}">
+        <Viewbox Grid.RowSpan="3" Stretch="Uniform" StretchDirection="Both" Width="200" Height="200">
+            <Grid Background="White" Width="1" Height="1">
+                <ItemsControl ItemsSource="{Binding Converter={StaticResource ItemConverter}}">
                     <ItemsControl.ItemsPanel>
                         <ItemsPanelTemplate>
-                            <canvasobj:CadCanvas/>
+                            <Canvas/>
                         </ItemsPanelTemplate>
                     </ItemsControl.ItemsPanel>
                     <ItemsControl.ItemTemplate>
@@ -79,7 +59,6 @@ AncestorType={x:Type Window}}, Path=DataContext, Converter={StaticResource ToSce
                 </ItemsControl>
             </Grid>
         </Viewbox>
-        </Border>
         <StackPanel Orientation="Vertical" Width="180" Margin="5">
             <TextBox Text="{Binding Name}"/>
             <DockPanel>

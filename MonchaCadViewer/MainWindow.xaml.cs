@@ -48,6 +48,8 @@ using Microsoft.Xaml.Behaviors.Core;
 using CadProjectorSDK.Tools.ILDA;
 using System.Drawing.Imaging;
 using System.Runtime.CompilerServices;
+using CadProjectorSDK.UDP.Scenario;
+using CadProjectorViewer.Panels.RightPanel;
 
 namespace CadProjectorViewer
 {
@@ -56,6 +58,14 @@ namespace CadProjectorViewer
     /// </summary>
     public partial class MainWindow : MetroWindow
     {
+        public delegate void Logging(string message, string sender);
+        public static Logging Log;
+
+        public delegate void Progress(int position, int max, string message);
+        public static Progress SetProgress;
+
+        public LogList Logs { get; } = new LogList();
+
         private KmpsAppl kmpsAppl;
         private bool inverseToggle = true;
 
@@ -73,7 +83,6 @@ namespace CadProjectorViewer
         public MainWindow()
         {
             InitializeComponent();
-
             #region Language
             App.LanguageChanged += LanguageChanged;
 
@@ -93,13 +102,16 @@ namespace CadProjectorViewer
             App.Language = AppSt.Default.DefaultLanguage;
             #endregion
 
-            ProgressPanel.Label = "Loaded";
+            Log = Logs.PostLog;
+            SetProgress = ProgressPanel.SetProgressBar;
 
-            ProjectorHub.Log = PostLog;
+            ProjectorHub.Log = Logs.PostLog;
             ProjectorHub.SetProgress = ProgressPanel.SetProgressBar;
 
-            GCTools.Log = PostLog;
+            GCTools.Log = Logs.PostLog;
             GCTools.SetProgress = ProgressPanel.SetProgressBar;
+
+            SetProgress?.Invoke(1, 1, "Loaded");
 
             this.Title = $"CUT — Viewer v{Assembly.GetExecutingAssembly().GetName().Version.ToString()}";
 
@@ -108,6 +120,8 @@ namespace CadProjectorViewer
                 Keys = new Key[] { Key.Escape },
                 GetAction = ProjectorHub.ScenesCollection.SelectedScene.Break
             });
+
+            projectorHub.OutFilePathWorker = FileLoad.GetUDPString;
         }
 
 
@@ -137,14 +151,6 @@ namespace CadProjectorViewer
             }
 
         }
-
-        private void PostLog(string msg) 
-        {
-            LogBox.Dispatcher.Invoke(() => { 
-            LogBox.Items.Add(msg);
-            });
-        }
-
 
       
         private void Window_Closed(object sender, System.EventArgs e)
@@ -323,40 +329,6 @@ namespace CadProjectorViewer
             }
         }
 
-
-        private void BaseFolderSelect_Click(object sender, RoutedEventArgs e)
-        {
-            System.Windows.Forms.FolderBrowserDialog WorkFolderSlct = new System.Windows.Forms.FolderBrowserDialog();
-
-            if (WorkFolderSlct.ShowDialog() == System.Windows.Forms.DialogResult.OK)
-            {
-                if (WorkFolderSlct.SelectedPath != string.Empty)
-                {
-                    AppSt.Default.save_base_folder = WorkFolderSlct.SelectedPath;
-                    AppSt.Default.Save();
-                }
-            }
-
-            BasePathBox.Text = AppSt.Default.save_base_folder;
-        }
-
-        private void WorkFolderSelect_Click(object sender, RoutedEventArgs e)
-        {
-            DateTime date = DateTime.Now;
-
-            System.Windows.Forms.FolderBrowserDialog WorkFolderSlct = new System.Windows.Forms.FolderBrowserDialog();
-
-            if (WorkFolderSlct.ShowDialog() == System.Windows.Forms.DialogResult.OK)
-            {
-                if (WorkFolderSlct.SelectedPath != string.Empty)
-                {
-                    AppSt.Default.save_work_folder = WorkFolderSlct.SelectedPath;
-                    AppSt.Default.Save();
-                }
-            }
-
-            AlreadyPathBox.Text = AppSt.Default.save_work_folder;
-        }
 
         private void MainViewBox_DragEnter(object sender, DragEventArgs e)
         {
@@ -558,7 +530,7 @@ namespace CadProjectorViewer
             var chromeDriverProcesses = Process.GetProcesses().
             Where(pr => pr.ProcessName == Name && pr.Id != current.Id); // without '.exe'
 
-            LogBox.Items.Add($"Find {chromeDriverProcesses.Count()} run process");
+            Log?.Invoke($"Find {chromeDriverProcesses.Count()} run process", "APP");
 
             foreach (var process in chromeDriverProcesses)
             {
@@ -577,7 +549,7 @@ namespace CadProjectorViewer
             }
             catch
             {
-                LogBox.Items.Add("Clipboard is not geometry");
+                Log?.Invoke("Clipboard is not geometry", "APP");
             }
         }
 

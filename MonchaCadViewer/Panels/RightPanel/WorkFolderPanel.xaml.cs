@@ -110,7 +110,6 @@ namespace CadProjectorViewer.Panels.RightPanel
                     projectorHub.ScenesCollection.LoadedObject.Add(Obj);
                 }
             }
-
         }
 
         private void Border_ContextMenuClosing(object sender, ContextMenuEventArgs e)

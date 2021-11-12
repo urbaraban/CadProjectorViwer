@@ -3,6 +3,7 @@ using CadProjectorSDK.CadObjects;
 using CadProjectorSDK.CadObjects.Abstract;
 using CadProjectorSDK.Scenes;
 using CadProjectorSDK.Tools.ILDA;
+using CadProjectorSDK.UDP;
 using CadProjectorViewer.CanvasObj;
 using CadProjectorViewer.Panels;
 using KompasLib.Tools;
@@ -91,7 +92,7 @@ namespace CadProjectorViewer.StaticTools
             return null;
         }
 
-        public static async Task<UidObject> GetScene(object obj)
+        public static async Task<UidObject> GetDrop(object obj)
         {
             if (obj is DragEventArgs dragEvent)
             {
@@ -122,6 +123,11 @@ namespace CadProjectorViewer.StaticTools
                 return await ConvertObject(obj);
             }
             return null;
+        }
+
+        public static async Task<UidObject> GetUDPString(string Filepath, bool Filename)
+        {
+            return await GetFilePath(Filename == true ? $"{AppSt.Default.save_work_folder}\\{Filepath}" : Filepath);
         }
 
         private static async Task<UidObject> ConvertObject(object obj)

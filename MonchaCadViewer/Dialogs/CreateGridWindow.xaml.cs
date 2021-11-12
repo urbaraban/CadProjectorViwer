@@ -30,8 +30,6 @@ namespace CadProjectorViewer
             this.DataContext = new ProjectorMesh(ProjectorMesh.MakeMeshPoint(this._mesh.Points.GetLength(0), this._mesh.Points.GetLength(1), new CadRect3D(1,1,1)), this._mesh.Name);
         }
 
-
-
         private void WidthUpDn_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double?> e)
         {
             if (this.IsLoaded)
@@ -86,9 +84,9 @@ namespace CadProjectorViewer
         {
             if (value is UidObject obj)
             {
-                return new ProjectionScene(obj);
+                return new ProjectionScene(obj) { Size = new CadRect3D(1000, 1000, 0) };
             }
-            return new ProjectionScene();
+            return new ProjectionScene() { Size = new CadRect3D(1000, 1000, 0) };
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)

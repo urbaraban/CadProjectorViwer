@@ -331,54 +331,13 @@
                         <TabItem Header="Setting" FontSize="14">
                             <configuration:AppDefaultSettingPanel/>
                         </TabItem>
-                        <TabItem Header="QR" FontSize="14">
-                            <StackPanel Background="#FFE5E5E5">
-                                <StackPanel.Resources>
-                                    <Style TargetType="DockPanel">
-                                        <Setter Property="Margin" Value="3"/>
-                                    </Style>
-                                </StackPanel.Resources>
-                                <DockPanel LastChildFill="True">
-                                    <Button
-                                        DockPanel.Dock="Right"
-                                        Margin="3,0"
-                                        x:Name="BaseFolderSelect"
-                                            Content="{DynamicResource m_Browse}"
-                                            Width="94" 
-                                            Click="BaseFolderSelect_Click" />
-                                    <TextBox 
-                                        DockPanel.Dock="Left"
-                                        x:Name="BasePathBox"
-                                             Text="{Binding save_base_folder, Mode=TwoWay}">
-                                        <TextBox.DataContext>
-                                            <Properties:Settings />
-                                        </TextBox.DataContext>
-                                    </TextBox>
-                                </DockPanel>
-                                <DockPanel LastChildFill="True">
-                                    <Button
-                                        DockPanel.Dock="Right"
-                                        Margin="3,0"
-                                        x:Name="WorkFolderSelect" 
-                                        Content="{DynamicResource m_Browse}"
-                                        Width="94"
-                                        Click="WorkFolderSelect_Click"/>
-                                    <TextBox x:Name="AlreadyPathBox"
-                                             Text="{Binding save_work_folder, Mode=TwoWay}">
-                                        <TextBox.DataContext>
-                                            <Properties:Settings />
-                                        </TextBox.DataContext>
-                                    </TextBox>
-                                </DockPanel>
-                            </StackPanel>
-                        </TabItem>
                     </TabControl>
                 </TabItem>
                 <TabItem Header="{DynamicResource common_Workfolder}">
                     <rightpanel:WorkFolderPanel />
                 </TabItem>
                 <TabItem Header="Log" FontSize="12">
-                    <ListBox x:Name="LogBox" />
+                    <rightpanel:LogPanel DataContext="{Binding ElementName=MainWin, Path=Logs}"/>
                 </TabItem>
             </TabControl>
 

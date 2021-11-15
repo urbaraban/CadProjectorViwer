@@ -37,9 +37,9 @@ namespace CadProjectorViewer.Panels.CanvasPanel
             base.OnDrop(e);
             if (await FileLoad.GetDrop(e) is UidObject Obj)
             {
-                if (this.projectorHub.ScenesCollection.LoadedObject.Contains(Obj) == false)
+                if (this.projectorHub.ScenesCollection.LoadedObjects.Contains(Obj) == false)
                 {
-                    this.projectorHub.ScenesCollection.LoadedObject.Add(Obj);
+                    this.projectorHub.ScenesCollection.LoadedObjects.Add(Obj);
                 }
                 else
                 {

@@ -61,10 +61,10 @@ namespace CadProjectorViewer
         public delegate void Logging(string message, string sender);
         public static Logging Log;
 
+
         public delegate void Progress(int position, int max, string message);
         public static Progress SetProgress;
 
-        public LogList Logs { get; } = new LogList();
 
         private KmpsAppl kmpsAppl;
         private bool inverseToggle = true;
@@ -102,13 +102,13 @@ namespace CadProjectorViewer
             App.Language = AppSt.Default.DefaultLanguage;
             #endregion
 
-            Log = Logs.PostLog;
+            Log = LogPanel.Logs.PostLog;
             SetProgress = ProgressPanel.SetProgressBar;
 
-            ProjectorHub.Log = Logs.PostLog;
+            ProjectorHub.Log = LogPanel.Logs.PostLog;
             ProjectorHub.SetProgress = ProgressPanel.SetProgressBar;
 
-            GCTools.Log = Logs.PostLog;
+            GCTools.Log = LogPanel.Logs.PostLog;
             GCTools.SetProgress = ProgressPanel.SetProgressBar;
 
             SetProgress?.Invoke(1, 1, "Loaded");
@@ -121,7 +121,7 @@ namespace CadProjectorViewer
                 GetAction = ProjectorHub.ScenesCollection.SelectedScene.Break
             });
 
-            projectorHub.OutFilePathWorker = FileLoad.GetUDPString;
+            projectorHub.UDPLaserListener.OutFilePathWorker = FileLoad.GetUDPString;
         }
 
 
@@ -223,7 +223,7 @@ namespace CadProjectorViewer
                         await ContourCalc.GetGeometry(this.kmpsAppl.Doc, ProjectorHub.ProjectionSetting.PointStep.MX, false, true),
                         this.kmpsAppl.Doc.D7.Name);
                 cadGeometries.UpdateTransform(ProjectorHub.ScenesCollection.SelectedScene.Size, AppSt.Default.Attach);
-                ProjectorHub.ScenesCollection.LoadedObject.Add(cadGeometries);
+                ProjectorHub.ScenesCollection.LoadedObjects.Add(cadGeometries);
             }
         }
 
@@ -240,7 +240,7 @@ namespace CadProjectorViewer
                           await ContourCalc.GetGeometry(this.kmpsAppl.Doc, ProjectorHub.ProjectionSetting.PointStep.MX, true, true),
                           this.kmpsAppl.Doc.D7.Name);
 
-                ProjectorHub.ScenesCollection.LoadedObject.Add(cadGeometries);
+                ProjectorHub.ScenesCollection.LoadedObjects.Add(cadGeometries);
             }
         }
 
@@ -475,7 +475,7 @@ namespace CadProjectorViewer
         });
 
 
-        private void TcpListenBtn_Click(object sender, RoutedEventArgs e) => ProjectorHub.UdpListenerRun(AppSt.Default.ether_udp_port);
+        private void TcpListenBtn_Click(object sender, RoutedEventArgs e) => ProjectorHub.UDPLaserListener.Run(AppSt.Default.ether_udp_port);
 
 
         private void ethernetToggle_Toggled(object sender, RoutedEventArgs e)
@@ -484,11 +484,11 @@ namespace CadProjectorViewer
             {
                 if (toggle.IsOn == true)
                 {
-                    ProjectorHub.UdpListenerRun(AppSt.Default.ether_udp_port);
+                    ProjectorHub.UDPLaserListener.Run(AppSt.Default.ether_udp_port);
                 }
                 else 
                 {
-                    ProjectorHub.UdpListnerStop();
+                    ProjectorHub.UDPLaserListener.Stop();
                 }
             }
         }
@@ -545,7 +545,7 @@ namespace CadProjectorViewer
         {
             try
             {
-                ProjectorHub.ScenesCollection.LoadedObject.Add(await FileLoad.GetCliboard());
+                ProjectorHub.ScenesCollection.LoadedObjects.Add(await FileLoad.GetCliboard());
             }
             catch
             {
@@ -586,7 +586,7 @@ namespace CadProjectorViewer
             {
                 if (await FileLoad.GetFilePath(openFile.FileName) is UidObject scene)
                 {
-                    ProjectorHub.ScenesCollection.LoadedObject.Add(scene);
+                    ProjectorHub.ScenesCollection.LoadedObjects.Add(scene);
                 }
             }
         }

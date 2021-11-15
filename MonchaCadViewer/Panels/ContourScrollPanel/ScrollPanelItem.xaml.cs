@@ -136,8 +136,14 @@ namespace CadProjectorViewer.Panels
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            if (value is CadGroup cadGroup) return cadGroup;
-            else if (value is UidObject uidObject) return new List<UidObject>() { uidObject };
+            if (value is CadGroup cadGroup)
+            {
+                return cadGroup;
+            }
+            else if (value is UidObject uidObject)
+            {
+                return new List<UidObject>() { uidObject };
+            }
 
             return value;
         }

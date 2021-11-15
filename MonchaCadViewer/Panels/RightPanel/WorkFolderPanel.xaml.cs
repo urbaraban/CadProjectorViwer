@@ -107,7 +107,7 @@ namespace CadProjectorViewer.Panels.RightPanel
             {
                 if (await FileLoad.GetFilePath(fileInfo.Filepath) is UidObject Obj)
                 {
-                    projectorHub.ScenesCollection.LoadedObject.Add(Obj);
+                    projectorHub.ScenesCollection.LoadedObjects.Add(Obj);
                 }
             }
         }

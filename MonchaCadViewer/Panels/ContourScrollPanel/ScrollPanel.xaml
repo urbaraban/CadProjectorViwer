@@ -42,7 +42,7 @@
             <ScrollViewer
                 HorizontalScrollBarVisibility="Visible"
                 VerticalScrollBarVisibility="Disabled">
-                <ItemsControl ItemsSource="{Binding ScenesCollection.LoadedObject}">
+                <ItemsControl ItemsSource="{Binding ScenesCollection.LoadedObjects}">
                     <ItemsControl.ItemsPanel>
                         <ItemsPanelTemplate>
                             <WrapPanel  

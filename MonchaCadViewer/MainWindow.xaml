@@ -337,7 +337,7 @@
                     <rightpanel:WorkFolderPanel />
                 </TabItem>
                 <TabItem Header="Log" FontSize="12">
-                    <rightpanel:LogPanel DataContext="{Binding ElementName=MainWin, Path=Logs}"/>
+                    <rightpanel:LogPanel x:Name="LogPanel"/>
                 </TabItem>
             </TabControl>
 

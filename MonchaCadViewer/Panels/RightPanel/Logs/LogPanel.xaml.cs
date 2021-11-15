@@ -1,4 +1,5 @@
-﻿using System;
+﻿using CadProjectorViewer.Panels.RightPanel.Logs;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -21,23 +22,41 @@ namespace CadProjectorViewer.Panels.RightPanel
     /// </summary>
     public partial class LogPanel : UserControl
     {
+        public LogList Logs { get; } = new LogList();
+
         public LogPanel()
         {
             InitializeComponent();
+            Logs.Post = PostMessage;
         }
 
 
-        private async void TextBlock_MouseDownAsync(object sender, MouseButtonEventArgs e)
+        private void PostMessage(LogMessage logMessage)
         {
+            LogListBox.Dispatcher.Invoke(() => { LogListBox.Items.Add(logMessage); });
+        }
 
+
+        private void ListViewItem_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+        {
+            if (sender is ListViewItem listViewItem && listViewItem.DataContext is LogMessage logMessage)
+            {
+                LogWindow logWindow = new LogWindow() { DataContext = logMessage };
+                logWindow.Show();
+            }
         }
     }
 
     public class LogList : ObservableCollection<LogMessage>
     {
+        public delegate void PostDelegate(LogMessage logMessage);
+        public PostDelegate Post { get; set; }
+
         public void PostLog(string msg, string sender)
         {
-           base.Add(new LogMessage(msg, sender));
+            LogMessage logMessage = new LogMessage(msg, sender);
+            Post?.Invoke(logMessage);
+            base.Add(logMessage);
         }
     }
 

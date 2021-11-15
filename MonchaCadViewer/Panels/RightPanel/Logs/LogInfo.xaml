@@ -1,0 +1,51 @@
+﻿<Window x:Class="CadProjectorViewer.Panels.RightPanel.Logs.LogWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:CadProjectorViewer.Panels.RightPanel.Logs" 
+        xmlns:rightpanel="clr-namespace:CadProjectorViewer.Panels.RightPanel" 
+        d:DataContext="{d:DesignInstance Type=rightpanel:LogMessage}"
+        mc:Ignorable="d"
+        Title="LogWindow"
+        ResizeMode="NoResize"
+        Width="250"
+        SizeToContent="WidthAndHeight">
+    <Window.Resources>
+        <ResourceDictionary>
+            <Style TargetType="TextBlock">
+                <Setter Property="Margin" Value="10"/>
+                <Setter Property="MinWidth" Value="60"/>
+            </Style>
+            <Style TargetType="TextBox">
+                <Setter Property="Margin" Value="10"/>
+            </Style>
+        </ResourceDictionary>
+    </Window.Resources>
+    <DockPanel
+        Margin="10"
+        LastChildFill="False">
+        <DockPanel
+            DockPanel.Dock="Top">
+            <TextBlock Text="Time:"/>
+            <TextBlock Text="{Binding Time, Mode=OneWay}"/>
+        </DockPanel>
+        <DockPanel
+            DockPanel.Dock="Top">
+            <TextBlock Text="Sender:"/>
+            <TextBlock
+            Text="{Binding Sender, Mode=OneWay}"/>
+        </DockPanel>
+
+        <DockPanel
+            DockPanel.Dock="Top">
+            <TextBlock Text="Message:"/>
+            <TextBox
+            IsReadOnly="True"
+            DockPanel.Dock="Top"
+            TextWrapping="Wrap"
+            Text="{Binding Message, Mode=OneWay}"/>
+        </DockPanel>
+
+    </DockPanel>
+</Window>

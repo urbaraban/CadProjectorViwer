@@ -318,8 +318,11 @@
     <Compile Include="Panels\ObjectPanel\multiplierpanel.xaml.cs">
       <DependentUpon>multiplierpanel.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Panels\RightPanel\LogPanel.xaml.cs">
+    <Compile Include="Panels\RightPanel\Logs\LogPanel.xaml.cs">
       <DependentUpon>LogPanel.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Panels\RightPanel\Logs\LogInfo.xaml.cs">
+      <DependentUpon>LogInfo.xaml</DependentUpon>
     </Compile>
     <Compile Include="Panels\RightPanel\WorkFolderPanel.xaml.cs">
       <DependentUpon>WorkFolderPanel.xaml</DependentUpon>
@@ -394,7 +397,11 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Panels\RightPanel\LogPanel.xaml">
+    <Page Include="Panels\RightPanel\Logs\LogPanel.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Panels\RightPanel\Logs\LogInfo.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

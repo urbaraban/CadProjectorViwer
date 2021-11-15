@@ -15,7 +15,6 @@ namespace CadProjectorViewer.CanvasObj
 {
     public class CanvasAnchor : CanvasObject
     {
-        private double size => GetThinkess * 2 * AppSt.Default.anchor_size;
         private RectangleGeometry rectangle;
 
         public override Pen myPen { get; } = new Pen(null, 0);
@@ -29,7 +28,15 @@ namespace CadProjectorViewer.CanvasObj
             }
         }
 
-        public override Rect Bounds => new Rect(-this.size / 2, -this.size / 2, this.size, this.size);
+        public override Rect Bounds 
+        {
+            get
+            {
+                double _size = CadObject.GetThinkess() * AppSt.Default.default_thinkess_percent * 2 * AppSt.Default.anchor_size;
+                return  new Rect(-_size / 2, -_size / 2, _size, _size);
+            }
+
+        }
 
         private CadAnchor Point  => (CadAnchor)this.CadObject;
 
@@ -88,8 +95,9 @@ namespace CadProjectorViewer.CanvasObj
 
         protected override void OnRender(DrawingContext drawingContext)
         {
+            double _size = CadObject.GetThinkess() * AppSt.Default.default_thinkess_percent * 4 * AppSt.Default.anchor_size;
             drawingContext.PushTransform(new TranslateTransform(X, Y));
-            drawingContext.DrawGeometry(myBack, myPen, new RectangleGeometry(new Rect(-this.size / 2, -this.size / 2, this.size, this.size)));
+            drawingContext.DrawGeometry(myBack, myPen, new RectangleGeometry(new Rect(-_size / 2, -_size / 2, _size, _size)));
         }
     }
 }

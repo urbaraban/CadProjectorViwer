@@ -26,8 +26,6 @@ namespace CadProjectorViewer.CanvasObj
 {
     public class CanvasObject : FrameworkElement, INotifyPropertyChanged
     {
-        public static double GetThinkess => 30;// Math.Max(ProjectorHub.Size.Width, ProjectorHub.Size.Height) * AppSt.Default.default_thinkess_percent;
-
         public UidObject CadObject
         {
             get => cadobject;
@@ -63,7 +61,7 @@ namespace CadProjectorViewer.CanvasObj
 
         public double StrokeThinkess
         {
-            get => strokethinkess <= 0 ? GetThinkess / 3d : strokethinkess;
+            get => strokethinkess <= 0 ? CadObject.GetThinkess() * AppSt.Default.default_thinkess_percent : strokethinkess;
             set
             {
                 strokethinkess = value;
@@ -411,7 +409,7 @@ namespace CadProjectorViewer.CanvasObj
 
         protected void DrawSize(DrawingContext drawingContext, Point point1, Point point2)
         {
-            double thinkess = GetThinkess / 3d / Math.Abs(this.CadObject.Scale.ScaleX * Math.Max(this.CadObject.ScaleX, this.CadObject.ScaleY));
+            double thinkess = CadObject.GetThinkess() / 3d / Math.Abs(this.CadObject.Scale.ScaleX * Math.Max(this.CadObject.ScaleX, this.CadObject.ScaleY));
             thinkess = thinkess <= 0 ? 1 : thinkess;
 
             //drawingContext.DrawLine(new Pen(Brushes.DarkGray, thinkess), point1, point2);
@@ -423,7 +421,7 @@ namespace CadProjectorViewer.CanvasObj
                 new System.Globalization.CultureInfo("ru-RU"), 
                 FlowDirection.LeftToRight,
                     new Typeface("Segoe UI"), 
-                    (int)GetThinkess * 3,
+                    (int)thinkess * 3,
                     Brushes.Gray), 
                 new Point((point1.X + point2.X)/2, (point1.Y + point2.Y) / 2));
 

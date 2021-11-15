@@ -84,7 +84,7 @@ namespace CadProjectorViewer.CanvasObj
                 new System.Globalization.CultureInfo("ru-RU"),
                 FlowDirection.LeftToRight,
                     new Typeface("Segoe UI"),
-                    (int)GetThinkess * 3,
+                    (int)CadObject.GetThinkess() * 3,
                     Brushes.Gray),
                 new Point(X, Y));
 

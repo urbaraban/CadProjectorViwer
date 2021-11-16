@@ -107,7 +107,18 @@ namespace CadProjectorViewer.Panels.RightPanel
             {
                 if (await FileLoad.GetFilePath(fileInfo.Filepath) is UidObject Obj)
                 {
-                    projectorHub.ScenesCollection.LoadedObjects.Add(Obj);
+                    SceneTask sceneTask = new SceneTask()
+                    {
+                        Object = Obj,
+                        TableID = projectorHub.ScenesCollection.SelectedScene.TableID,
+                        Command = new List<string>()
+                        {
+                            "CLEAR",
+                            "SHOW",
+                            "PLAY"
+                        }
+                    };
+                    projectorHub.ScenesCollection.AddTask(sceneTask);
                 }
             }
         }

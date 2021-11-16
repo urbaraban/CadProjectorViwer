@@ -32,32 +32,12 @@ namespace CadProjectorViewer.Panels
     /// </summary>
     public partial class ScrollPanelItem : UserControl
     {
-        public UidObject uidObject => (UidObject)this.DataContext;
-
-        public bool IsSelected
-        {
-            get => this._isselected;
-            set
-            {
-                this._isselected = value;
-            }
-        }
-        private bool _isselected = false;
-
-        public bool IsSolved
-        {
-            get => this._issolved;
-            set
-            {
-                this._issolved = value;
-            }
-        }
-        private bool _issolved = false;
+        public SceneTask SceneTsk => (SceneTask)this.DataContext;
 
 
         private string filepath = string.Empty;
 
-        public string FileName => uidObject.NameID;
+        public string FileName => SceneTsk.Object.NameID;
 
         public ScrollPanelItem()
         {
@@ -68,7 +48,7 @@ namespace CadProjectorViewer.Panels
         protected override void OnMouseLeftButtonUp(MouseButtonEventArgs e)
         {
             base.OnMouseLeftButtonUp(e);
-            uidObject.IsSelected = !uidObject.IsSelected;
+            SceneTsk.Selecting();
         }
 
         protected override void OnMouseLeftButtonDown(MouseButtonEventArgs e)
@@ -82,7 +62,7 @@ namespace CadProjectorViewer.Panels
             base.OnMouseMove(e);
             if (e.LeftButton == MouseButtonState.Pressed)
             {
-                DragDrop.DoDragDrop(this, this.uidObject, Keyboard.Modifiers == ModifierKeys.Alt ? DragDropEffects.Copy : DragDropEffects.Move);
+                DragDrop.DoDragDrop(this, this, Keyboard.Modifiers == ModifierKeys.Alt ? DragDropEffects.Copy : DragDropEffects.Move);
             }
         }
 
@@ -98,7 +78,7 @@ namespace CadProjectorViewer.Panels
 
         private void RemoveBtn_Click(object sender, RoutedEventArgs e)
         {
-            uidObject.Remove();
+            SceneTsk.Remove();
         }
 
 
@@ -136,13 +116,16 @@ namespace CadProjectorViewer.Panels
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            if (value is CadGroup cadGroup)
+            if (value is SceneTask sceneTask)
             {
-                return cadGroup;
-            }
-            else if (value is UidObject uidObject)
-            {
-                return new List<UidObject>() { uidObject };
+                if (sceneTask.Object is CadGroup cadGroup)
+                {
+                    return cadGroup;
+                }
+                else if (sceneTask.Object is UidObject uidObject)
+                {
+                    return new List<UidObject>() { uidObject };
+                }
             }
 
             return value;

@@ -4,10 +4,10 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"  
-    xmlns:cadobjects="clr-namespace:CadProjectorSDK.CadObjects.Abstract;assembly=CadProjectorSDK"
-    d:DataContext="{d:DesignInstance Type=cadobjects:UidObject}" 
+    xmlns:scene="clr-namespace:CadProjectorSDK.Scenes;assembly=CadProjectorSDK"
     xmlns:canvaspanel="clr-namespace:CadProjectorViewer.Panels.CanvasPanel" 
-    xmlns:panels="clr-namespace:CadProjectorViewer.Panels"
+    xmlns:panels="clr-namespace:CadProjectorViewer.Panels" 
+    d:DataContext="{d:DesignInstance Type=scene:SceneTask}"
     AllowDrop="False"
     d:DesignHeight="100"
     d:DesignWidth="100"
@@ -42,8 +42,8 @@
                 </Grid.RowDefinitions>
 
                 <Viewbox Grid.RowSpan="3" Stretch="Uniform" StretchDirection="Both">
-                    <Grid Background="White" Width="{Binding Bounds.Width}" Height="{Binding Bounds.Height}">
-                    <ItemsControl ItemsSource="{Binding Converter={StaticResource ItemConverter}}">
+                    <Grid Background="White" Width="{Binding Object.Bounds.Width}" Height="{Binding Object.Bounds.Height}">
+                        <ItemsControl ItemsSource="{Binding Object, Converter={StaticResource ItemConverter}}">
                         <ItemsControl.ItemsPanel>
                             <ItemsPanelTemplate>
                                 <Canvas/>

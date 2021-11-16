@@ -4,7 +4,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:CadProjectorViewer.Dialogs" 
-        xmlns:cadprojectorsdk="clr-namespace:CadProjectorSDK;assembly=CadProjectorSDK"
+        xmlns:cadprojectorsdk="clr-namespace:CadProjectorSDK;assembly=CadProjectorSDK" xmlns:Controls="http://metro.mahapps.com/winfx/xaml/controls"
         d:DataContext="{d:DesignInstance Type=cadprojectorsdk:ProjectorHub}"
         mc:Ignorable="d"
         ResizeMode="NoResize"
@@ -43,11 +43,20 @@
                 Content="-"
                 Command="{Binding ElementName=SceneSetting, Path=RemoveSceneCommand}"
                 Width="{Binding ActualHeight, RelativeSource={RelativeSource Self}}"/>
+            
+            <Controls:NumericUpDown                 
+                DockPanel.Dock="Right"
+                DataContext="{Binding ElementName=SceneTabs, Path=SelectedItem}"
+                Value="{Binding TableID, Mode=TwoWay}"/>
+            <Label
+                FontSize="18"
+                VerticalContentAlignment="Center"
+                DockPanel.Dock="Right"
+                Content="ID:"/>
             <TextBox
                 DockPanel.Dock="Left"
                 DataContext="{Binding ElementName=SceneTabs, Path=SelectedItem}"
                 Text="{Binding NameID}"
-                Margin="5"
                 VerticalContentAlignment="Center"
                 VerticalAlignment="Center"
             Padding="5,0"

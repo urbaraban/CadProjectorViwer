@@ -39,7 +39,18 @@ namespace CadProjectorViewer.Panels.CanvasPanel
             {
                 if (this.projectorHub.ScenesCollection.LoadedObjects.Contains(Obj) == false)
                 {
-                    this.projectorHub.ScenesCollection.LoadedObjects.Add(Obj);
+                    SceneTask sceneTask = new SceneTask()
+                    {
+                        Object = Obj,
+                        TableID = projectorHub.ScenesCollection.SelectedScene.TableID,
+                        Command = new List<string>()
+                        {
+                            "CLEAR",
+                            "SHOW",
+                            "PLAY"
+                        }
+                    };
+                    projectorHub.ScenesCollection.AddTask(sceneTask);
                 }
                 else
                 {

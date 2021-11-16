@@ -223,7 +223,19 @@ namespace CadProjectorViewer
                         await ContourCalc.GetGeometry(this.kmpsAppl.Doc, ProjectorHub.ProjectionSetting.PointStep.MX, false, true),
                         this.kmpsAppl.Doc.D7.Name);
                 cadGeometries.UpdateTransform(ProjectorHub.ScenesCollection.SelectedScene.Size, AppSt.Default.Attach);
-                ProjectorHub.ScenesCollection.LoadedObjects.Add(cadGeometries);
+
+                SceneTask sceneTask = new SceneTask()
+                {
+                    Object = cadGeometries,
+                    TableID = projectorHub.ScenesCollection.SelectedScene.TableID,
+                    Command = new List<string>()
+                        {
+                            "CLEAR",
+                            "SHOW",
+                            "PLAY"
+                        }
+                };
+                projectorHub.ScenesCollection.AddTask(sceneTask);
             }
         }
 
@@ -240,7 +252,18 @@ namespace CadProjectorViewer
                           await ContourCalc.GetGeometry(this.kmpsAppl.Doc, ProjectorHub.ProjectionSetting.PointStep.MX, true, true),
                           this.kmpsAppl.Doc.D7.Name);
 
-                ProjectorHub.ScenesCollection.LoadedObjects.Add(cadGeometries);
+                SceneTask sceneTask = new SceneTask()
+                {
+                    Object = cadGeometries,
+                    TableID = projectorHub.ScenesCollection.SelectedScene.TableID,
+                    Command = new List<string>()
+                        {
+                            "CLEAR",
+                            "SHOW",
+                            "PLAY"
+                        }
+                };
+                projectorHub.ScenesCollection.AddTask(sceneTask);
             }
         }
 
@@ -545,7 +568,12 @@ namespace CadProjectorViewer
         {
             try
             {
-                ProjectorHub.ScenesCollection.LoadedObjects.Add(await FileLoad.GetCliboard());
+                SceneTask sceneTask = new SceneTask()
+                {
+                    TableID = this.ProjectorHub.ScenesCollection.SelectedScene.TableID,
+                    Object = await FileLoad.GetCliboard()
+                };
+                ProjectorHub.ScenesCollection.LoadedObjects.Add(sceneTask);
             }
             catch
             {
@@ -584,9 +612,20 @@ namespace CadProjectorViewer
             openFile.FileName = null;
             if (openFile.ShowDialog() == WinForms.DialogResult.OK)
             {
-                if (await FileLoad.GetFilePath(openFile.FileName) is UidObject scene)
+                if (await FileLoad.GetFilePath(openFile.FileName) is UidObject Obj)
                 {
-                    ProjectorHub.ScenesCollection.LoadedObjects.Add(scene);
+                    SceneTask sceneTask = new SceneTask()
+                    {
+                        Object = Obj,
+                        TableID = projectorHub.ScenesCollection.SelectedScene.TableID,
+                        Command = new List<string>()
+                        {
+                            "CLEAR",
+                            "SHOW",
+                            "PLAY"
+                        }
+                    };
+                    projectorHub.ScenesCollection.AddTask(sceneTask);
                 }
             }
         }

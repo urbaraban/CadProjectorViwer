@@ -43,7 +43,6 @@
             x:Name="Tabs"
             ItemsSource="{Binding ScenesCollection}" 
             TabStripPlacement="Bottom"
-            DisplayMemberPath="NameID"
             SelectedItem="{Binding ScenesCollection.SelectedScene}"
             SelectedIndex="0">
             <TabControl.ContentTemplate>
@@ -51,6 +50,21 @@
                     <local:CadCanvasPanel/>
                 </DataTemplate>
             </TabControl.ContentTemplate>
+            <TabControl.ItemTemplate>
+                <DataTemplate>
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock>
+                            <TextBlock.Text>
+                                <MultiBinding StringFormat="{} {0}:{1}:{2}">
+                                    <Binding Path="TableID"/>
+                                    <Binding Path="NameID"/>
+                                    <Binding Path="Play"/>
+                                </MultiBinding >
+                            </TextBlock.Text>
+                        </TextBlock>
+                    </StackPanel>
+                </DataTemplate>
+            </TabControl.ItemTemplate>
         </TabControl>
         </DockPanel>
 </UserControl>

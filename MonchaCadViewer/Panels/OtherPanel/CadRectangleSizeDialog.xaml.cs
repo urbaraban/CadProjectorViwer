@@ -21,14 +21,9 @@ namespace CadProjectorViewer.Panels.ObjectPanel
     /// </summary>
     public partial class CadRectangleSizePanel : Window
     {
-        public CadRectangleSizePanel(CanvasRectangle cadRectangle)
+        public CadRectangleSizePanel()
         {
             InitializeComponent();
-            this.Title = cadRectangle.ToolTip.ToString();
-            WidthUpDn.DataContext = cadRectangle.LRect;
-            WidthUpDn.SetBinding(NumericUpDown.ValueProperty, "X");
-            HeightUpDn.DataContext = cadRectangle.LRect;
-            HeightUpDn.SetBinding(NumericUpDown.ValueProperty, "Y");
         }
 
     }

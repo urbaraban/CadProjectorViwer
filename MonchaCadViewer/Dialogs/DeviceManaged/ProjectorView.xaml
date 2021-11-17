@@ -34,7 +34,7 @@
         </Grid.RowDefinitions>
         <ItemsControl 
             Grid.Row="0" Grid.RowSpan="3"
-            ItemsSource="{Binding MeshedScene, Converter={StaticResource LObjConverter}, Mode=OneWay}">
+            ItemsSource="{Binding MeshedScene, Mode=OneWay}">
             <ItemsControl.ItemsPanel>
                 <ItemsPanelTemplate>
                     <Canvas Focusable="False" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
@@ -42,8 +42,13 @@
 
                 </ItemsPanelTemplate>
             </ItemsControl.ItemsPanel>
+            <ItemsControl.ItemTemplate>
+                <DataTemplate>
+                    <ContentPresenter Content="{Binding Converter={StaticResource LObjConverter}}"/>
+                </DataTemplate>
+            </ItemsControl.ItemTemplate>
         </ItemsControl>
-        <Label Grid.Row="0" Content="{Binding HWIdentifier}" Foreground="White"/>
+        <Label Grid.Row="0" Content="{Binding NameID}" Foreground="White"/>
         <Label Grid.Row="2" Content="{Binding ScanRate, Mode=TwoWay}" Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Center"/>
     </Grid>
 </Window>

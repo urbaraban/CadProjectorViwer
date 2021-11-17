@@ -56,9 +56,13 @@ namespace CadProjectorViewer.DeviceManaged
             this.WindowState = WindowState.Maximized;
         }
 
-        private void MenuItem_Click(object sender, RoutedEventArgs e)
+        private void SetScreenItem_Click(object sender, RoutedEventArgs e)
         {
-
+            if (this.DataContext is LDevice lDevice)
+            {
+                lDevice.WidthResolutuon = this.Width;
+                lDevice.HeightResolution = this.Height; 
+            }
         }
     }
 

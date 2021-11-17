@@ -288,7 +288,7 @@
     <Compile Include="Dialogs\DeviceManaged\DeviceSettingDialog.xaml.cs">
       <DependentUpon>DeviceSettingDialog.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Dialogs\DeviceTreeTab.xaml.cs">
+    <Compile Include="Panels\LeftPanels\DeviceTreeTab.xaml.cs">
       <DependentUpon>DeviceTreeTab.xaml</DependentUpon>
     </Compile>
     <Compile Include="Dialogs\MeshesDialog.xaml.cs">
@@ -433,7 +433,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Dialogs\DeviceTreeTab.xaml">
+    <Page Include="Panels\LeftPanels\DeviceTreeTab.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

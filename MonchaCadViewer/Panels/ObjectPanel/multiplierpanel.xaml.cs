@@ -18,6 +18,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
+using CadProjectorSDK.CadObjects.Abstract;
 
 namespace CadProjectorViewer.Panels
 {
@@ -51,9 +52,9 @@ namespace CadProjectorViewer.Panels
 
         private void DeviceLayerCombo_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            if (this.DataContext is CanvasObj.CanvasObject cadObject)
+            if (this.DataContext is UidObject cadObject)
             {
-                cadObject.ProjectionSetting.Device = (LDevice)DeviceLayerCombo.SelectedItem;
+               // cadObject.OnlyDevice = (LDevice)DeviceLayerCombo.SelectedItem;
             }
         }
     }

@@ -222,7 +222,6 @@ namespace CadProjectorViewer
                     new CadGroup(
                         await ContourCalc.GetGeometry(this.kmpsAppl.Doc, ProjectorHub.ProjectionSetting.PointStep.MX, false, true),
                         this.kmpsAppl.Doc.D7.Name);
-                cadGeometries.UpdateTransform(ProjectorHub.ScenesCollection.SelectedScene.Size, AppSt.Default.Attach);
 
                 SceneTask sceneTask = new SceneTask()
                 {
@@ -423,7 +422,7 @@ namespace CadProjectorViewer
                 for (int i = 0; i < ProjectorHub.Devices.Count; i++)
                 {
                     ildaWriter.Write(($"{saveFileDialog.FileName.Replace(".ild", string.Empty)}_{i}.ild"), 
-                        new List<LFrame>() { await LFrameConverter.SolidLFrame(this.ProjectorHub.Devices[i].MeshedScene, this.ProjectorHub.Devices[i]) ?? new LFrame() }
+                        new List<LFrame>() { await LFrameConverter.SolidLFrame(this.ProjectorHub.Devices[i].MeshedScene.GetPoints, this.ProjectorHub.Devices[i]) ?? new LFrame() }
                         , 5);
                 }
             }

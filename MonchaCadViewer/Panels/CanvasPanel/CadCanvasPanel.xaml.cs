@@ -24,6 +24,7 @@ using CadProjectorViewer.StaticTools;
 using System.IO;
 using CadProjectorSDK.Interfaces;
 using System.Collections.ObjectModel;
+using CadProjectorSDK.Tools;
 
 namespace CadProjectorViewer.Panels.CanvasPanel
 {
@@ -308,7 +309,7 @@ namespace CadProjectorViewer.Panels.CanvasPanel
                 {
                     if (lDevice.MeshedScene != null)
                     {
-                        outstring += $"\n {lDevice.NameID}: {lDevice.MeshedScene.GetAlreadyScan * lDevice.FPS * 1.3} pts";
+                        outstring += $"\n {lDevice.NameID}: {LFrameConverter.GetAlreadyScan((IList<UidObject>)lDevice.MeshedScene.GetPoints) * lDevice.FPS * 1.3} pts";
                     }
                 }
             }

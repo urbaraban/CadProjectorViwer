@@ -37,7 +37,11 @@ namespace CadProjectorViewer.DeviceManaged
         }
         #endregion
 
-        public ProjectorView() => InitializeComponent();
+        public ProjectorView()
+        {
+            InitializeComponent();
+        }
+
 
         private void CloseMenuItem_Click(object sender, RoutedEventArgs e)
         {
@@ -54,14 +58,10 @@ namespace CadProjectorViewer.DeviceManaged
             this.WindowState = WindowState.Normal;
             this.DragMove();
             this.WindowState = WindowState.Maximized;
-        }
-
-        private void SetScreenItem_Click(object sender, RoutedEventArgs e)
-        {
             if (this.DataContext is LDevice lDevice)
             {
                 lDevice.WidthResolutuon = this.Width;
-                lDevice.HeightResolution = this.Height; 
+                lDevice.HeightResolution = this.Height;
             }
         }
     }

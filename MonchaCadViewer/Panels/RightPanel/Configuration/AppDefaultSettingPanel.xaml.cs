@@ -143,6 +143,12 @@ namespace CadProjectorViewer.Panels.RightPanel.Configuration
             }
         }
 
+        public bool Udp_auto_start
+        {
+            get => AppSt.Default.udp_auto_run;
+            set => AppSt.Default.udp_auto_run = value;
+        }
+
         public AppDefaultSettingPanel()
         {
             InitializeComponent();

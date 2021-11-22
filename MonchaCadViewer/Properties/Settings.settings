@@ -77,5 +77,8 @@
     <Setting Name="Attach" Type="System.String" Scope="User">
       <Value Profile="(Default)">Down%Left</Value>
     </Setting>
+    <Setting Name="udp_auto_run" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">False</Value>
+    </Setting>
   </Settings>
 </SettingsFile>

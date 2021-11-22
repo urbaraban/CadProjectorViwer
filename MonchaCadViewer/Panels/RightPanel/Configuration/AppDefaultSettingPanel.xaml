@@ -29,6 +29,8 @@
                         <Setter Property="Width" Value="75"/>
                     </Style>
                 </StackPanel.Resources>
+                <Controls:ToggleSwitch Content="UDP auto start" IsOn="{Binding Udp_auto_start}"/>
+                <Separator/>
                 <Label 
                     Content="{DynamicResource setting_mainlabel}" 
                     Width="auto"

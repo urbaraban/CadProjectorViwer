@@ -322,5 +322,17 @@ namespace CadProjectorViewer.Properties {
                 this["Attach"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool udp_auto_run {
+            get {
+                return ((bool)(this["udp_auto_run"]));
+            }
+            set {
+                this["udp_auto_run"] = value;
+            }
+        }
     }
 }

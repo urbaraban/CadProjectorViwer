@@ -122,6 +122,11 @@ namespace CadProjectorViewer
             });
 
             projectorHub.UDPLaserListener.OutFilePathWorker = FileLoad.GetUDPString;
+
+            if (AppSt.Default.udp_auto_run == true)
+            {
+                projectorHub.UDPLaserListener.Run(AppSt.Default.ether_udp_port);
+            }
         }
 
 

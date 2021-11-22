@@ -17,7 +17,6 @@ using ToGeometryConverter.Object;
 using ToGeometryConverter;
 using System.Collections.ObjectModel;
 using System.Windows.Media.Media3D;
-using CadProjectorSDK.CadObjects.LObjects;
 using CadProjectorSDK.CadObjects.Abstract;
 using CadProjectorSDK.Interfaces;
 using CadProjectorSDK.Device.Mesh;

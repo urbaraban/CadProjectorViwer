@@ -28,7 +28,7 @@ namespace CadProjectorViewer.CanvasObj
         {
             base.OnRender(drawingContext);
 
-            TransformedBitmap imageSource = this.CadImage.GetImage();
+            BitmapSource imageSource = this.CadImage.GetImage();
 
             drawingContext.DrawImage(imageSource,
                 new Rect(

@@ -312,6 +312,9 @@
     <Compile Include="Panels\RightPanel\Configuration\HubSettingPanel.xaml.cs">
       <DependentUpon>HubSettingPanel.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Panels\RightPanel\Configuration\SceneSetting.xaml.cs">
+      <DependentUpon>SceneSetting.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Panels\RightPanel\DevicePanel\DeviceTab.xaml.cs">
       <DependentUpon>DeviceTab.xaml</DependentUpon>
     </Compile>
@@ -394,6 +397,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Panels\RightPanel\Configuration\HubSettingPanel.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Panels\RightPanel\Configuration\SceneSetting.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

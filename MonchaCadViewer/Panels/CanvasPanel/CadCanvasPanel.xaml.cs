@@ -73,7 +73,7 @@ namespace CadProjectorViewer.Panels.CanvasPanel
         {
             if (Keyboard.Modifiers == ModifierKeys.Control)
             {
-                Point centre = e.GetPosition(BackCanvas);
+                Point centre = e.GetPosition(CanvasGrid);
                 this.Scale.CenterX = centre.X;
                 this.Scale.CenterY = centre.Y;
                 if (this.Scale.ScaleY + (double)e.Delta / 1000 > 1)
@@ -96,7 +96,7 @@ namespace CadProjectorViewer.Panels.CanvasPanel
         {
             if (transformGroup != null)
             {
-                BackCanvas.RenderTransform = TransformGroup;
+                CanvasGrid.RenderTransform = TransformGroup;
                 this.Scale = this.TransformGroup.Children[0] != null ? (ScaleTransform)this.TransformGroup.Children[0] : new ScaleTransform();
                 this.Rotate = this.TransformGroup.Children[1] != null ? (RotateTransform)this.TransformGroup.Children[1] : new RotateTransform();
                 this.Translate = this.TransformGroup.Children[2] != null ? (TranslateTransform)this.TransformGroup.Children[2] : new TranslateTransform();
@@ -118,7 +118,7 @@ namespace CadProjectorViewer.Panels.CanvasPanel
             this.Scale = (ScaleTransform)this.TransformGroup.Children[0];
             this.Rotate = (RotateTransform)this.TransformGroup.Children[1];
             this.Translate = (TranslateTransform)this.TransformGroup.Children[2];
-            BackCanvas.RenderTransform = this.TransformGroup;
+            CanvasGrid.RenderTransform = this.TransformGroup;
         }
 
         public TransformGroup TransformGroup { get; set; }
@@ -139,12 +139,12 @@ namespace CadProjectorViewer.Panels.CanvasPanel
 
             if (Keyboard.Modifiers == ModifierKeys.Control)
             {
-                this.StartMousePoint = e.GetPosition(this.CanvasBox);
+                this.StartMousePoint = e.GetPosition(this.CanvasGrid);
                 this.StartMovePoint = new Point(this.Translate.X, this.Translate.Y);
             }
             else if (this.SelectedScene.SceneAction == SceneAction.Rectangle)
             {
-                Point point = e.GetPosition(BackCanvas);
+                Point point = e.GetPosition(CanvasGrid);
                 CadRect3D cadRectangle = new CadRect3D(new CadPoint3D(point, SelectedScene.Size), new CadPoint3D(point, SelectedScene.Size), false, string.Empty);
                 this.SelectedScene.Add(cadRectangle);
             }
@@ -153,8 +153,8 @@ namespace CadProjectorViewer.Panels.CanvasPanel
                 this.SelectedScene.SceneAction = SceneAction.NoAction;
                 CadRect3D lRect = new CadRect3D(false)
                 {
-                    P1 = new CadPoint3D(e.GetPosition(this.BackCanvas), SelectedScene.Size, true),
-                    P2 = new CadPoint3D(e.GetPosition(this.BackCanvas), SelectedScene.Size, true),
+                    P1 = new CadPoint3D(e.GetPosition(this.CanvasGrid), SelectedScene.Size, true),
+                    P2 = new CadPoint3D(e.GetPosition(this.CanvasGrid), SelectedScene.Size, true),
                     NameID = "Mask",
                     ShowName = true,
                     Render = false,
@@ -165,7 +165,7 @@ namespace CadProjectorViewer.Panels.CanvasPanel
             }
             else if (this.SelectedScene.SceneAction == SceneAction.Line)
             {
-                Point point = e.GetPosition(this.BackCanvas);
+                Point point = e.GetPosition(this.CanvasGrid);
                 CadLine line = new CadLine(new CadPoint3D(point), new CadPoint3D(point), true);
                 this.SelectedScene.Add(line);
                 this.SelectedScene.ActiveDrawingObject = line;
@@ -176,7 +176,7 @@ namespace CadProjectorViewer.Panels.CanvasPanel
         {
             if (SelectedScene != null)
             {
-                SelectedScene.MousePosition = new CadPoint3D(e.GetPosition(this.BackCanvas));
+                SelectedScene.MousePosition = new CadPoint3D(e.GetPosition(this.CanvasGrid));
 
                 if (e.LeftButton == MouseButtonState.Pressed && Keyboard.Modifiers == ModifierKeys.Control)
                 {
@@ -184,7 +184,7 @@ namespace CadProjectorViewer.Panels.CanvasPanel
                     this.WasMove = true;
                     Point tPoint = e.GetPosition(CanvasBox);
 
-                    double prop = Math.Min(BackCanvas.ActualWidth / CanvasBox.ActualWidth, BackCanvas.ActualHeight / CanvasBox.ActualHeight);
+                    double prop = Math.Min(CanvasGrid.ActualWidth / CanvasGrid.ActualWidth, CanvasGrid.ActualHeight / CanvasGrid.ActualHeight);
 
                     Translate.X = (this.StartMovePoint.X + (tPoint.X - this.StartMousePoint.X)) * prop;
                     Translate.Y = (this.StartMovePoint.Y + (tPoint.Y - this.StartMousePoint.Y)) * prop;
@@ -195,7 +195,7 @@ namespace CadProjectorViewer.Panels.CanvasPanel
                 {
                     if (SelectedScene.ActiveDrawingObject != null)
                     {
-                        SelectedScene.ActiveDrawingObject.SetTwoPoint(e.GetPosition(this.BackCanvas));
+                        SelectedScene.ActiveDrawingObject.SetTwoPoint(e.GetPosition(this.CanvasGrid));
                     }
                 }
             }
@@ -203,7 +203,7 @@ namespace CadProjectorViewer.Panels.CanvasPanel
 
         private void Canvas_MouseMove(object sender, MouseEventArgs e)
         {
-            Point tempPoint = e.GetPosition(BackCanvas);
+            Point tempPoint = e.GetPosition(CanvasGrid);
             SelectedScene.MousePosition.X = tempPoint.X;
             SelectedScene.MousePosition.Y = tempPoint.Y;
             CoordinateLabel.Content =

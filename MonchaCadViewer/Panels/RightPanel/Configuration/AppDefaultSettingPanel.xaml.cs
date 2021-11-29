@@ -176,17 +176,4 @@ namespace CadProjectorViewer.Panels.RightPanel.Configuration
             return value;
         }
     }
-
-    public class AttachConverter : IValueConverter
-    {
-        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
-        {
-            return (string)value == (string)parameter;
-        }
-
-        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
-        {
-            return (bool)value == true ? parameter : AppSt.Default.Attach;
-        }
-    }
 }

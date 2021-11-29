@@ -120,7 +120,7 @@ namespace CadProjectorViewer.Panels
                             device.PolyMeshUsed = !device.PolyMeshUsed;
                             break;
                         case "dvc_center":
-                            projectorHub.ScenesCollection.SelectedScene.Add(new CadAnchor(device.Size.Center) { Render = false });
+                            projectorHub.ScenesCollection.SelectedScene.Add(new CadAnchor(device.Size.Center) { IsRender = false });
                             break;
                         case "dvc_view":
                             ProjectorView projectorView = new ProjectorView() { DataContext = device };

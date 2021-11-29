@@ -235,6 +235,7 @@ namespace CadProjectorViewer
                     Command = new List<string>()
                         {
                             "CLEAR",
+                            "ATTACH",
                             "SHOW",
                             "PLAY"
                         }
@@ -261,11 +262,7 @@ namespace CadProjectorViewer
                     Object = cadGeometries,
                     TableID = projectorHub.ScenesCollection.SelectedScene.TableID,
                     Command = new List<string>()
-                        {
-                            "CLEAR",
-                            "SHOW",
-                            "PLAY"
-                        }
+                    { "CLEAR", "ATTACH", "SHOW", "PLAY" }
                 };
                 projectorHub.ScenesCollection.AddTask(sceneTask);
             }
@@ -625,6 +622,7 @@ namespace CadProjectorViewer
                         Command = new List<string>()
                         {
                             "CLEAR",
+                            "ATTACH",
                             "SHOW",
                             "PLAY"
                         }

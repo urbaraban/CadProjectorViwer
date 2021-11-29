@@ -139,9 +139,9 @@
         </Border.Resources>
         <Grid>
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="235*" />
-                <ColumnDefinition Width="466*" />
-                <ColumnDefinition Width="290" />
+                <ColumnDefinition Width="2*" />
+                <ColumnDefinition Width="4*" />
+                <ColumnDefinition Width="3*" />
             </Grid.ColumnDefinitions>
             <Grid.RowDefinitions>
                 <RowDefinition Height="113" />

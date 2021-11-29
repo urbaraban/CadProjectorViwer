@@ -83,7 +83,7 @@ namespace CadProjectorViewer.CanvasObj
                 {
                     return new Pen(Brushes.Black, thinkess);
                 }
-                else if (this.CadObject.Render == false)
+                else if (this.CadObject.IsRender == false)
                 {
                     return new Pen(Brushes.DarkGray, thinkess);
                 }
@@ -368,7 +368,7 @@ namespace CadProjectorViewer.CanvasObj
                     break;
 
                 case "obj_Render":
-                    this.CadObject.Render = !this.CadObject.Render;
+                    this.CadObject.IsRender = !this.CadObject.IsRender;
                     break;
 
                 case "group_Open":

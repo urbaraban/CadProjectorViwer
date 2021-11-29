@@ -30,7 +30,7 @@
             VerticalAlignment="Top"
             Content="{DynamicResource obj_Mirror}" Height="15" />
         <CheckBox
-            IsChecked="{Binding Render, Mode=TwoWay}"
+            IsChecked="{Binding IsRender, Mode=TwoWay}"
             Margin="5,36,6,0"
             VerticalAlignment="Top"
             Content="{DynamicResource obj_Render}" Height="15" />

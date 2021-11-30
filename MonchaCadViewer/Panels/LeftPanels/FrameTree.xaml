@@ -16,7 +16,7 @@
             <Border ContextMenu="{Binding ContextMenu}">
                 <DockPanel 
                                 VerticalAlignment="Center">
-                    <CheckBox IsChecked="{Binding Render}"/>
+                    <CheckBox IsChecked="{Binding IsRender}"/>
                     <Label Content="{Binding NameID}" VerticalAlignment="Center" MouseDoubleClick="Label_MouseDoubleClick"/>
                 </DockPanel>
             </Border>

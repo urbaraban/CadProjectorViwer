@@ -36,7 +36,10 @@ namespace CadProjectorViewer.StaticTools
                 }
                 return cadPoints;
             }
-            else if (gCObject is GCCollection collection) return await GetGroup(collection);
+            else if (gCObject is GCCollection collection)
+            {
+                return await GetGroup(collection);
+            }
 
             return null;
         }

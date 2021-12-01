@@ -331,9 +331,6 @@
                 </TabItem>
                 <TabItem Header="{DynamicResource common_Configuration}">
                     <TabControl>
-                        <TabItem Header="Scene" x:Name="Calibration"  FontSize="18">
-                            <configuration:HubSettingPanel DataContext="{Binding ScenesCollection.SelectedScene}"/>
-                        </TabItem>
                         <TabItem Header="Setting" FontSize="14">
                             <configuration:AppDefaultSettingPanel/>
                         </TabItem>

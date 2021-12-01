@@ -424,7 +424,7 @@ namespace CadProjectorViewer
                 for (int i = 0; i < ProjectorHub.Devices.Count; i++)
                 {
                     ildaWriter.Write(($"{saveFileDialog.FileName.Replace(".ild", string.Empty)}_{i}.ild"), 
-                        new List<LFrame>() { await LFrameConverter.SolidLFrame(this.ProjectorHub.Devices[i].MeshedScene.GetPoints, this.ProjectorHub.Devices[i]) ?? new LFrame() }
+                        new List<LFrame>() { await LFrameConverter.SolidLFrame(this.ProjectorHub.Devices[i].RenderObjects, this.ProjectorHub.Devices[i]) ?? new LFrame() }
                         , 5);
                 }
             }

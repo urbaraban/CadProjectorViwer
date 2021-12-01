@@ -307,9 +307,9 @@ namespace CadProjectorViewer.Panels.CanvasPanel
             {
                 foreach(LDevice lDevice in devices)
                 {
-                    if (lDevice.MeshedScene != null)
+                    if (lDevice.RenderObjects.Count > 0)
                     {
-                        outstring += $"\n {lDevice.NameID}: {LFrameConverter.GetAlreadyScan((IList<UidObject>)lDevice.MeshedScene.GetPoints) * lDevice.FPS * 1.3} pts";
+                        outstring += $"\n {lDevice.NameID}: {LFrameConverter.GetAlreadyScan(lDevice.RenderObjects) * lDevice.FPS * 1.3} pts";
                     }
                 }
             }

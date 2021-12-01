@@ -36,7 +36,7 @@
     <SuiteName>Viwer</SuiteName>
     <WebPage>publish.htm</WebPage>
     <OpenBrowserOnPublish>false</OpenBrowserOnPublish>
-    <ApplicationRevision>84</ApplicationRevision>
+    <ApplicationRevision>85</ApplicationRevision>
     <ApplicationVersion>0.8.1.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <CreateDesktopShortcut>true</CreateDesktopShortcut>
@@ -309,9 +309,6 @@
     <Compile Include="Panels\RightPanel\Configuration\AppDefaultSettingPanel.xaml.cs">
       <DependentUpon>AppDefaultSettingPanel.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Panels\RightPanel\Configuration\HubSettingPanel.xaml.cs">
-      <DependentUpon>HubSettingPanel.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Panels\RightPanel\Configuration\SceneSetting.xaml.cs">
       <DependentUpon>SceneSetting.xaml</DependentUpon>
     </Compile>
@@ -393,10 +390,6 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Panels\RightPanel\Configuration\AppDefaultSettingPanel.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Panels\RightPanel\Configuration\HubSettingPanel.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

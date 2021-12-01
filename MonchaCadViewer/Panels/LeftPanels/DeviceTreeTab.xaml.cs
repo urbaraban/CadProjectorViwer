@@ -74,7 +74,7 @@ namespace CadProjectorViewer.Panels
 
         private void RemoveLaser_Click(object sender, RoutedEventArgs e)
         {
-            projectorHub.Devices.RemoveDevice(selectdevice);
+            selectdevice.Remove();
         }
 
 

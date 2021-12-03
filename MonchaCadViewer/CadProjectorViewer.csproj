@@ -110,7 +110,7 @@
       <HintPath>..\packages\ControlzEx.4.4.0\lib\net462\ControlzEx.dll</HintPath>
     </Reference>
     <Reference Include="CONVERTLIBINTERFACES">
-      <HintPath>..\..\KompasLib\KompasLib\Lib16.15\CONVERTLIBINTERFACES.dll</HintPath>
+      <HintPath>..\..\KompasLib\Lib16.15\CONVERTLIBINTERFACES.dll</HintPath>
       <EmbedInteropTypes>True</EmbedInteropTypes>
     </Reference>
     <Reference Include="DynamicExpresso.Core, Version=2.9.0.0, Culture=neutral, processorArchitecture=MSIL">
@@ -123,27 +123,27 @@
       <HintPath>..\..\KompasLib\Lib16.15\KGAXLib.dll</HintPath>
     </Reference>
     <Reference Include="Kompas6API2D5COM">
-      <HintPath>..\..\KompasLib\KompasLib\Lib16.15\Kompas6API2D5COM.dll</HintPath>
+      <HintPath>..\..\KompasLib\Lib16.15\Kompas6API2D5COM.dll</HintPath>
       <EmbedInteropTypes>True</EmbedInteropTypes>
     </Reference>
     <Reference Include="Kompas6API3D5COM">
-      <HintPath>..\..\KompasLib\KompasLib\Lib16.15\Kompas6API3D5COM.dll</HintPath>
+      <HintPath>..\..\KompasLib\Lib16.15\Kompas6API3D5COM.dll</HintPath>
       <EmbedInteropTypes>True</EmbedInteropTypes>
     </Reference>
     <Reference Include="Kompas6API5">
-      <HintPath>..\..\KompasLib\KompasLib\Lib16.15\Kompas6API5.dll</HintPath>
+      <HintPath>..\..\KompasLib\Lib16.15\Kompas6API5.dll</HintPath>
       <EmbedInteropTypes>True</EmbedInteropTypes>
     </Reference>
     <Reference Include="Kompas6Constants">
-      <HintPath>..\..\KompasLib\KompasLib\Lib16.15\Kompas6Constants.dll</HintPath>
+      <HintPath>..\..\KompasLib\Lib16.15\Kompas6Constants.dll</HintPath>
       <EmbedInteropTypes>True</EmbedInteropTypes>
     </Reference>
     <Reference Include="Kompas6Constants3D">
-      <HintPath>..\..\KompasLib\KompasLib\Lib16.15\Kompas6Constants3D.dll</HintPath>
+      <HintPath>..\..\KompasLib\Lib16.15\Kompas6Constants3D.dll</HintPath>
       <EmbedInteropTypes>True</EmbedInteropTypes>
     </Reference>
     <Reference Include="KompasAPI7">
-      <HintPath>..\..\KompasLib\KompasLib\Lib16.15\KompasAPI7.dll</HintPath>
+      <HintPath>..\..\KompasLib\Lib16.15\KompasAPI7.dll</HintPath>
       <EmbedInteropTypes>True</EmbedInteropTypes>
     </Reference>
     <Reference Include="MahApps.Metro, Version=2.0.0.0, Culture=neutral, PublicKeyToken=51482d6f650b2b3f, processorArchitecture=MSIL">
@@ -223,7 +223,7 @@
       <RequiredTargetFramework>4.0</RequiredTargetFramework>
     </Reference>
     <Reference Include="VCHATCHLib">
-      <HintPath>..\..\KompasLib\KompasLib\Lib16.15\VCHATCHLib.dll</HintPath>
+      <HintPath>..\..\KompasLib\Lib16.15\VCHATCHLib.dll</HintPath>
       <EmbedInteropTypes>True</EmbedInteropTypes>
     </Reference>
     <Reference Include="WindowsBase" />
@@ -498,7 +498,7 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\KompasLib\KompasLib\KompasLib\KompasLib.csproj">
+    <ProjectReference Include="..\..\KompasLib\KompasLib\KompasLib.csproj">
       <Project>{25CE4066-36A4-40BD-A38F-EC08E7AA509F}</Project>
       <Name>KompasLib</Name>
     </ProjectReference>

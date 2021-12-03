@@ -418,7 +418,7 @@ namespace CadProjectorViewer
 
             saveFileDialog.ShowDialog();
             IldaWriter ildaWriter = new IldaWriter();
-
+            
             if (saveFileDialog.FileName != string.Empty)
             {
                 for (int i = 0; i < ProjectorHub.Devices.Count; i++)
@@ -641,6 +641,23 @@ namespace CadProjectorViewer
         }
         #endregion
 
+        private async void Button_Click(object sender, RoutedEventArgs e)
+        {
+            string ToStringBytes = ByteBox.Text;
+            byte[] b = new byte[ToStringBytes.Length / 2];
+            for (int i = 0; i < b.Length; i += 1)
+            {
+                b[i] = byte.Parse($"{ToStringBytes[i * 2]}{ToStringBytes[i * 2 +1]}", NumberStyles.HexNumber);
+            }
+            try
+            {
+                projectorHub.ScenesCollection.AddTask(await ProjectorHub.UDPLaserListener.Read(b));
+            }
+            catch
+            {
+                Log?.Invoke("bytes buulshit", "bytesreader");
+            }
+        }
     }
 
     public class MultiObjectList : IMultiValueConverter

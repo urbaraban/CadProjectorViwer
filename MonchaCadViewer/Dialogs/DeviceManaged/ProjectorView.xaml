@@ -33,7 +33,7 @@
         </Grid.RowDefinitions>
         <ItemsControl 
             Grid.Row="0" Grid.RowSpan="3"
-            ItemsSource="{Binding MeshedScene, Mode=OneWay}">
+            ItemsSource="{Binding RenderObjects, Mode=OneWay}">
             <ItemsControl.ItemsPanel>
                 <ItemsPanelTemplate>
                     <Canvas Focusable="False" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"

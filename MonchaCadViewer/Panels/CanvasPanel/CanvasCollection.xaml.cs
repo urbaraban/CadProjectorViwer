@@ -47,6 +47,7 @@ namespace CadProjectorViewer.Panels.CanvasPanel
                         {
                             "CLEAR",
                             "SHOW",
+                            "ALIGN",
                             "PLAY"
                         }
                     };

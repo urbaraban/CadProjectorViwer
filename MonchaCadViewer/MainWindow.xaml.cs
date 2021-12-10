@@ -423,11 +423,11 @@ namespace CadProjectorViewer
             {
                 for (int i = 0; i < ProjectorHub.Devices.Count; i++)
                 {
-                   /* ildaWriter.Write(($"{saveFileDialog.FileName.Replace(".ild", string.Empty)}_{i}.ild"), 
+                    ildaWriter.Write(($"{saveFileDialog.FileName.Replace(".ild", string.Empty)}_{i}.ild"), 
                         new List<LFrame>() { await LFrameConverter.SolidLFrame(
                             LFrameConverter.GetPointsObjects(this.ProjectorHub.Devices[i].RenderObjects), 
-                            this.ProjectorHub.Devices[i]) ?? new LFrame() }
-                        , 5);*/
+                            this.ProjectorHub.Devices[i], this.ProjectorHub.Devices[i].ScanRate / this.ProjectorHub.Devices[i].FPS) 
+                        ?? new LFrame() } , 5);
                 }
             }
         }
@@ -458,6 +458,7 @@ namespace CadProjectorViewer
                             ProjectorHub.Save(saveFileDialog.FileName);
                             if (File.Exists(saveFileDialog.FileName) == false)
                             {
+                                AppSt.Default.cl_moncha_path = saveFileDialog.FileName;
                                 ProgressPanel.SetProgressBar(2, 2,"Not Save");
                                 SaveConfiguration(true);
                             }

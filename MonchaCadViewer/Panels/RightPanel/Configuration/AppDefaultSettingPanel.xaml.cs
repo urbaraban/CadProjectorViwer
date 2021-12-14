@@ -26,27 +26,27 @@ namespace CadProjectorViewer.Panels.RightPanel.Configuration
     {
         public double SizeX
         {
-            get => AppSt.Default.default_scale_x;
+            get => AppSt.Default.default_scale_x * 100;
             set
             {
-                AppSt.Default.default_scale_x = value;
+                AppSt.Default.default_scale_x = (value) / 100;
                 AppSt.Default.Save();
             }
         }
 
         public double SizeY
         {
-            get => AppSt.Default.default_scale_y;
+            get => AppSt.Default.default_scale_y * 100;
             set
             {
-                AppSt.Default.default_scale_y = value;
+                AppSt.Default.default_scale_y = value / 100;
                 AppSt.Default.Save();
             }
         }
 
         public double Angle
         {
-            get => AppSt.Default.default_scale_y;
+            get => AppSt.Default.default_angle;
             set
             {
                 AppSt.Default.default_angle = value;

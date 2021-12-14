@@ -71,7 +71,7 @@ namespace CadProjectorViewer.Panels
             base.OnMouseRightButtonUp(e);
             if (this.DataContext is UidObject Obj)
             {
-                Obj.UpdateTransform(new CadRect3D(Obj.Bounds.Width, Obj.Bounds.Height, 0), AppSt.Default.Attach);
+                Obj.UpdateTransform(new CadRect3D(Obj.Bounds.Width, Obj.Bounds.Height, 0), false, AppSt.Default.Attach);
             }
         }
 

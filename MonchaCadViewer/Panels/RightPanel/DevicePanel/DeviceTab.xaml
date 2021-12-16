@@ -133,7 +133,7 @@
                     Background="White"
                     MinWidth="80"
                     Maximum="40"
-                    Minimum="14" />
+                    Minimum="10" />
                 </DockPanel>
                 <Label
                 x:Name="ScanRateLabel"

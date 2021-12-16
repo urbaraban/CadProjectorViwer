@@ -18,7 +18,7 @@
     mc:Ignorable="d"
     Title="CUT - Viwer" KeyboardNavigation.TabNavigation="None"
     AllowDrop="True"
-    Height="760" Width="999"
+    Height="700" Width="999"
     WindowStartupLocation="CenterScreen"
     Icon="logo.png"
     ResizeMode="CanResizeWithGrip">

@@ -165,8 +165,10 @@ namespace CadProjectorViewer.Panels.RightPanel
         public FileInfo(string Filepath)
         {
             this.Filepath = Filepath;
-            this.Filename = Filepath.Split('\\').Last().Split('.').First();
             this.Fileformat = Filepath.Split('.').Last();
+            string filename = Filepath.Split('\\').Last();
+            this.Filename = filename.Remove(filename.Length - Fileformat.Length - 1);
+            
             this.Filesize = 0;
         }
     }

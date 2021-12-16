@@ -43,7 +43,11 @@ namespace CadProjectorViewer
                 this.NewDevices.Clear();
                 foreach (BroadcastReply2 broadcastReply in iPs)
                 {
-                    IpSelect ipSelect = new IpSelect() { iPAddress = new IPAddress(BitConverter.GetBytes(broadcastReply.ipv4)), IsSelected = false };
+                    IpSelect ipSelect = new IpSelect() {
+                        iPAddress = new IPAddress(BitConverter.GetBytes(broadcastReply.ipv4)),
+                        DvcType = broadcastReply.hardwareVersion > 1999 ? DeviceType.MonchaNET2 : DeviceType.MonchaNET1,
+                        IsSelected = false
+                    };
                     if (ProjectorHub.CheckDeviceInHub(ipSelect.iPAddress) == false)
                     {
                         this.NewDevices.Add(ipSelect);
@@ -79,7 +83,7 @@ namespace CadProjectorViewer
                 {
                     if (device != null && device.IsSelected == true)
                     {
-                        ProjectorHub.Devices.Add(DevicesMg.GetDevice(device.iPAddress, DeviceType.MonchaNET, ProjectorHub.Devices.Count));
+                        ProjectorHub.Devices.Add(DevicesMg.GetDevice(device.iPAddress, device.DvcType, ProjectorHub.Devices.Count));
                     }
                 }
 
@@ -134,6 +138,8 @@ namespace CadProjectorViewer
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("IP"));
             }
         }
+
+        public DeviceType DvcType { get; set; }
 
         public string GetIpString => ipadress.ToString();
     }

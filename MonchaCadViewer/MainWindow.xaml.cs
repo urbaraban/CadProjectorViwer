@@ -127,6 +127,9 @@ namespace CadProjectorViewer
             {
                 projectorHub.UDPLaserListener.Run(AppSt.Default.ether_udp_port);
             }
+
+            if (this.Height > SystemParameters.FullPrimaryScreenHeight * 0.9) this.Height = SystemParameters.FullPrimaryScreenHeight * 0.9;
+            if (this.Width > SystemParameters.FullPrimaryScreenWidth * 0.9) this.Width = SystemParameters.FullPrimaryScreenWidth * 0.9;
         }
 
 

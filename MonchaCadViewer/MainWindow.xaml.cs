@@ -424,14 +424,14 @@ namespace CadProjectorViewer
             
             if (saveFileDialog.FileName != string.Empty)
             {
-                for (int i = 0; i < ProjectorHub.Devices.Count; i++)
+               /* for (int i = 0; i < ProjectorHub.Devices.Count; i++)
                 {
                     ildaWriter.Write(($"{saveFileDialog.FileName.Replace(".ild", string.Empty)}_{i}.ild"), 
                         new List<LFrame>() { await LFrameConverter.SolidLFrame(
                             LFrameConverter.GetPointsObjects(this.ProjectorHub.Devices[i].RenderObjects), 
                             this.ProjectorHub.Devices[i], this.ProjectorHub.Devices[i].ScanRate / this.ProjectorHub.Devices[i].FPS) 
                         ?? new LFrame() } , 5);
-                }
+                }*/
             }
         }
 

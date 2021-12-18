@@ -306,7 +306,7 @@
                     Content="{DynamicResource dvc_WaintPointEndBlank}"/>
                 <Controls:NumericUpDown
                     DataContext="{Binding SelectedItem, ElementName=DeviceCombo}"
-                    Value="{Binding ProjectionSetting.EndBlanckWait, Mode=TwoWay}"
+                    Value="{Binding ProjectionSetting.BlankWait, Mode=TwoWay}"
                     Maximum="30"
                     Minimum="1"
                     Grid.Column="3" />
@@ -318,7 +318,7 @@
                     Content="{DynamicResource dvc_WaintPoint}" />
                 <Controls:NumericUpDown
             DataContext="{Binding SelectedItem, ElementName=DeviceCombo}"
-            Value="{Binding ProjectionSetting.StartLineWait, Mode=TwoWay}"
+            Value="{Binding ProjectionSetting.LineWait, Mode=TwoWay}"
             VerticalAlignment="Bottom"
             Maximum="30"
             Minimum="1" />

@@ -75,10 +75,22 @@
                     x:Name="DeviceCombo"  
                     d:DataContext="{d:DesignInstance Type={x:Type cadprojectorsdk:ProjectorHub}}"
                     DockPanel.Dock="Left"
-                    DisplayMemberPath="NameID"
                     SelectedValuePath="NameID"
                     SelectedIndex="0"
-                    ItemsSource="{Binding ScenesCollection.SelectedScene.Devices}" />
+                    ItemsSource="{Binding ScenesCollection.SelectedScene.Devices}">
+                    <ComboBox.ItemTemplate>
+                        <DataTemplate>
+                            <TextBlock>
+                                <TextBlock.Text>
+                                    <MultiBinding StringFormat="{}{0}: {1}">
+                                        <Binding Path="NameID"/>
+                                        <Binding Path="IPAddress"/>
+                                    </MultiBinding>
+                                </TextBlock.Text>
+                            </TextBlock>
+                        </DataTemplate>
+                    </ComboBox.ItemTemplate>
+                </ComboBox>
             </DockPanel>
             <Label
                 Width="auto"

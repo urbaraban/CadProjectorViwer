@@ -165,6 +165,9 @@ namespace CadProjectorViewer.Panels
                                 projectorHub.ScenesCollection.SelectedScene.Add(mesh.Size);
                                // rectangle.Init();
                                 break;
+                            case "mesh_vertical":
+                                mesh.VerticalFlag = !mesh.VerticalFlag;
+                                break;
                         }
                     }
                 }

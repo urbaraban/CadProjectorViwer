@@ -56,6 +56,7 @@
                             <MenuItem Header = "{DynamicResource mesh_Morph}" Tag="mesh_morph" Click="MenuItem_Click"/>
                             <MenuItem Header = "{DynamicResource mesh_Affine}" Tag="mesh_affine" Click="MenuItem_Click"/>
                             <MenuItem Header = "{DynamicResource dvc_showrect}" Tag="mesh_showrect" Click="MenuItem_Click"/>
+                            <MenuItem Header = "Vertical" Tag="mesh_vertical" Click="MenuItem_Click"/>
                         </ContextMenu>
                     </Border.ContextMenu>
 

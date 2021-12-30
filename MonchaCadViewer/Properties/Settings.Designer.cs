@@ -145,7 +145,7 @@ namespace CadProjectorViewer.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("100")]
+        [global::System.Configuration.DefaultSettingValueAttribute("1")]
         public double default_scale_x {
             get {
                 return ((double)(this["default_scale_x"]));
@@ -157,7 +157,7 @@ namespace CadProjectorViewer.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("100")]
+        [global::System.Configuration.DefaultSettingValueAttribute("1")]
         public double default_scale_y {
             get {
                 return ((double)(this["default_scale_y"]));

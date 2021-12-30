@@ -126,7 +126,7 @@
             Maximum="1"
             Minimum="-1"/>
         </DockPanel>
-
+        <Separator/>
         <DockPanel>
             <Label  
                 Content="Width"/>
@@ -142,6 +142,26 @@
                 Content="Height"/>
             <Controls:NumericUpDown
             Value="{Binding HeightResolution, Mode=TwoWay}"
+            Interval="0.1"
+            Minimum="0"/>
+        </DockPanel>
+
+        <Separator/>
+
+        <DockPanel>
+            <Label  
+                Content="AngleX"/>
+            <Controls:NumericUpDown
+            Value="{Binding Ellipsoid.AngleX, Mode=TwoWay}"
+            Interval="0.1"
+            Minimum="0"/>
+        </DockPanel>
+
+        <DockPanel>
+            <Label  
+                Content="AngleY"/>
+            <Controls:NumericUpDown
+            Value="{Binding Ellipsoid.AngleY, Mode=TwoWay}"
             Interval="1"
             Minimum="1"/>
         </DockPanel>

@@ -33,10 +33,10 @@
       <Value Profile="(Default)">base folder</Value>
     </Setting>
     <Setting Name="default_scale_x" Type="System.Double" Scope="User">
-      <Value Profile="(Default)">100</Value>
+      <Value Profile="(Default)">1</Value>
     </Setting>
     <Setting Name="default_scale_y" Type="System.Double" Scope="User">
-      <Value Profile="(Default)">100</Value>
+      <Value Profile="(Default)">1</Value>
     </Setting>
     <Setting Name="default_mirror" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">False</Value>

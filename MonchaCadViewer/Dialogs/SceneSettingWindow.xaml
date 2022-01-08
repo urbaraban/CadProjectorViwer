@@ -7,7 +7,7 @@
         xmlns:cadprojectorsdk="clr-namespace:CadProjectorSDK;assembly=CadProjectorSDK" xmlns:Controls="http://metro.mahapps.com/winfx/xaml/controls"
         d:DataContext="{d:DesignInstance Type=cadprojectorsdk:ProjectorHub}"
         mc:Ignorable="d"
-        ResizeMode="NoResize"
+        ResizeMode="CanResizeWithGrip"
         x:Name="SceneSetting"
         Title="SceneSettingWindow"
         Width="350"
@@ -20,9 +20,6 @@
                 <!-- Theme setting -->
                 <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Themes/Light.Blue.xaml" />
             </ResourceDictionary.MergedDictionaries>
-            <Style TargetType="ListBox">
-                <Setter Property="Height" Value="150"/>
-            </Style>
             <Style TargetType="Button">
                 <Setter Property="Margin" Value="5,3"/>
             </Style>

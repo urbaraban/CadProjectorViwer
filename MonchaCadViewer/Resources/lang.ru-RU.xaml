@@ -22,6 +22,8 @@
     <v:String x:Key="obj_Step">Шаг</v:String>
     <v:String x:Key="obj_Type">Тип</v:String>
 
+    <v:String x:Key="scn_Scene">Сцена</v:String>
+
     <v:String x:Key="dvc_Device">Устройство</v:String>
     <v:String x:Key="dvc_Dimmer">Измеритель</v:String>
     <v:String x:Key="dvc_SRR">Скорость лазера</v:String>

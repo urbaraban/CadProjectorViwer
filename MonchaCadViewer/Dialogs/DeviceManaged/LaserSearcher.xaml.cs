@@ -32,8 +32,6 @@ namespace CadProjectorViewer
             RefreshList();
         }
 
-
-
         private void RefreshList()
         {
             this.iPs = ProjectorSearch.GetMonchaBroadcastReplies();
@@ -45,7 +43,7 @@ namespace CadProjectorViewer
                 {
                     IpSelect ipSelect = new IpSelect() {
                         iPAddress = new IPAddress(BitConverter.GetBytes(broadcastReply.ipv4)),
-                        DvcType = broadcastReply.hardwareVersion > 1999 ? DeviceType.MonchaNET2 : DeviceType.MonchaNET1,
+                        DvcType = DeviceType.MonchaNET,
                         IsSelected = false
                     };
                     if (ProjectorHub.CheckDeviceInHub(ipSelect.iPAddress) == false)

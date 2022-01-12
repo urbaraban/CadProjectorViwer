@@ -26,27 +26,38 @@
             <RowDefinition/>
             <RowDefinition Height="25"/>
         </Grid.RowDefinitions>
-        <StackPanel Margin="0,0,0,0" Orientation="Horizontal" FlowDirection="RightToLeft" Panel.ZIndex="99">
-            <Button x:Name="AdornerShowBtn" 
+        <DockPanel Panel.ZIndex="99">
+            <Button x:Name="RefreshBtn" 
+                    FontFamily="Segoe MDL2 Assets"
+                    Content="&#xE72C;" 
+                     Width="{Binding ActualHeight, RelativeSource={RelativeSource Self}}"   
+                    Margin="3" 
+                    Panel.ZIndex="999" FontSize="18"
+                    Click="RefreshBtn_Click"/>
+            <StackPanel 
+                Orientation="Horizontal" FlowDirection="RightToLeft" >
+
+                <Button x:Name="AdornerShowBtn" 
                     FontFamily="Segoe MDL2 Assets"
                     Content="&#xE7F0;" 
                      Width="{Binding ActualHeight, RelativeSource={RelativeSource Self}}"   
                     Margin="3" 
                     Click="AdornerShowBtn_Click" Panel.ZIndex="999" FontSize="18"/>
-            <Button x:Name="ShowDeviceRect"
+                <Button x:Name="ShowDeviceRect"
                     FontFamily="Segoe MDL2 Assets" 
                     Content="&#xe773;"
                      Width="{Binding ActualHeight, RelativeSource={RelativeSource Self}}"
                   Margin="3" Click="ShowDeviceRect_Click" Panel.ZIndex="999" FontSize="20"/>
-            <ToggleButton  Width="{Binding ActualHeight, RelativeSource={RelativeSource Self}}"
+                <ToggleButton  Width="{Binding ActualHeight, RelativeSource={RelativeSource Self}}"
                            Content="&#xe8b0;"
                            FontSize="18"
                            FontFamily="Segoe MDL2 Assets"
                            Margin="3"
                            IsChecked="{Binding ShowCursor}"
                  />
-        </StackPanel>
-        <Viewbox x:Name="CanvasBox" Grid.RowSpan="3" Stretch="Uniform" StretchDirection="Both">
+            </StackPanel>
+        </DockPanel>
+     <Viewbox x:Name="CanvasBox" Grid.RowSpan="3" Stretch="Uniform" StretchDirection="Both">
             <Grid x:Name="CanvasGrid" Background="Red"
                   Width="{Binding Size.Width}"
                   Height="{Binding Size.Height}"

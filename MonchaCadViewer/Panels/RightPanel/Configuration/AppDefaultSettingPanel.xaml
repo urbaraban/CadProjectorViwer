@@ -86,7 +86,7 @@
                 <Label Content="{DynamicResource clb_Sizeanchor}"/>
                 <Controls:NumericUpDown 
                     Background="White" 
-                    Maximum="10" Minimum="1" Interval="1" 
+                    Maximum="10" Minimum="0.01" Interval="1" 
                     Value="{Binding AnchorSize, Mode=TwoWay, UpdateSourceTrigger=Default}" 
                     IsTabStop="False" AllowDrop="False"/>
             </StackPanel>

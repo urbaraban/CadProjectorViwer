@@ -245,6 +245,11 @@ namespace CadProjectorViewer.Panels.CanvasPanel
                 }
             }
         }
+
+        private void RefreshBtn_Click(object sender, RoutedEventArgs e)
+        {
+            SelectedScene.RefreshFrame?.Invoke(SelectedScene);
+        }
     }
 
     public class CadObjectConverter : IValueConverter

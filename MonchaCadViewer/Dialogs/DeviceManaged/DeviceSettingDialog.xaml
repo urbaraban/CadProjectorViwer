@@ -154,7 +154,7 @@
             <Controls:NumericUpDown
             Value="{Binding Ellipsoid.AngleX, Mode=TwoWay}"
             Interval="0.01"
-            Minimum="0"/>
+            Minimum="-3"/>
         </DockPanel>
 
         <DockPanel>
@@ -163,7 +163,7 @@
             <Controls:NumericUpDown
             Value="{Binding Ellipsoid.AngleY, Mode=TwoWay}"
             Interval="0.01"
-            Minimum="0"/>
+            Minimum="-3"/>
         </DockPanel>
 
         <DockPanel>

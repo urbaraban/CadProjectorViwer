@@ -36,7 +36,7 @@ namespace CadProjectorViewer.StaticTools
             //new MetaFile(),
             //new JSON(),
             new GCFormat("Компас 3D", new string[2] { "frw" , "cdw"}) { ReadFile = GetKompas },
-            new GCFormat("JPG Image", new string[2] { "jpg" , "jpeg"}) { ReadFile = GetImage },
+            //new GCFormat("JPG Image", new string[2] { "jpg" , "jpeg"}) { ReadFile = GetImage },
             new GCFormat("ILDA", new string[1] { "ild" }){ ReadFile = GetILDA }
         };
 

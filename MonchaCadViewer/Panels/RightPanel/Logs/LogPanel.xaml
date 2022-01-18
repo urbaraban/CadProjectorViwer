@@ -9,10 +9,6 @@
              d:DesignHeight="400" d:DesignWidth="200">
     <UserControl.Resources>
         <ResourceDictionary>
-            <ContextMenu x:Key="itemMenu">
-                <MenuItem Tag="OpenFolder" Header="Show folder..."/>
-                <MenuItem Tag="OpenEditor" Header="Open editor"/>
-            </ContextMenu>
         </ResourceDictionary>
     </UserControl.Resources>
     <DockPanel>

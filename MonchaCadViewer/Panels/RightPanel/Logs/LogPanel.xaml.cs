@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -33,7 +34,10 @@ namespace CadProjectorViewer.Panels.RightPanel
 
         private void PostMessage(LogMessage logMessage)
         {
-            LogListBox.Dispatcher.Invoke(() => { LogListBox.Items.Add(logMessage); });
+            LogListBox.Dispatcher.Invoke(() => { 
+                LogListBox.Items.Add(logMessage);
+                if (LogListBox.Items.Count > 50) LogListBox.Items.RemoveAt(0);
+            });
         }
 
 

@@ -131,6 +131,7 @@ namespace CadProjectorViewer.Panels.RightPanel.Configuration
             set
             {
                 AppSt.Default.default_thinkess_percent = value;
+                AppSt.Default.Save();
             }
         }
 
@@ -140,13 +141,18 @@ namespace CadProjectorViewer.Panels.RightPanel.Configuration
             set
             {
                 AppSt.Default.anchor_size = value;
+                AppSt.Default.Save();
             }
         }
 
         public bool Udp_auto_start
         {
             get => AppSt.Default.udp_auto_run;
-            set => AppSt.Default.udp_auto_run = value;
+            set
+            {
+                AppSt.Default.udp_auto_run = value;
+                AppSt.Default.Save();
+            }
         }
 
         public AppDefaultSettingPanel()

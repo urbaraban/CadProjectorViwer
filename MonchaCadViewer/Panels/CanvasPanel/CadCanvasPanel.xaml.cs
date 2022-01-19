@@ -307,19 +307,26 @@ namespace CadProjectorViewer.Panels.CanvasPanel
     {
         public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
         {
-            string outstring = $"X: {Math.Round((double)values[0], 1)} Y:{Math.Round((double)values[1])}";
-            if (values[2] is ObservableCollection<LDevice> devices)
+            try
             {
-                foreach(LDevice lDevice in devices)
+                string outstring = $"X: {Math.Round((double)values[0], 1)} Y:{Math.Round((double)values[1])}";
+                if (values[2] is ObservableCollection<LDevice> devices)
                 {
-                    if (lDevice.RenderObjects.Count > 0)
+                    foreach (LDevice lDevice in devices)
                     {
-                        outstring += $"\n {lDevice.NameID}: {LFrameConverter.GetAlreadyScan(lDevice.RenderObjects) * lDevice.FPS * 1.3} pts";
+                        if (lDevice.RenderObjects.Count > 0)
+                        {
+                            outstring += $"\n {lDevice.NameID}: {LFrameConverter.GetAlreadyScan(lDevice.RenderObjects) * lDevice.FPS * 1.3} pts";
+                        }
                     }
                 }
-            }
 
-            return outstring;
+                return outstring;
+            }
+            catch
+            {
+                return string.Empty;
+            }
         }
 
         public object[] ConvertBack(object value, Type[] targetTypes, object parameter, CultureInfo culture)

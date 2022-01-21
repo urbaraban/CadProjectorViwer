@@ -179,6 +179,24 @@
         </DockPanel>
 
         <DockPanel>
+            <Label  
+                Content="RaiusX"/>
+            <Controls:NumericUpDown
+            Value="{Binding Ellipsoid.RadiusX, Mode=TwoWay}"
+            Interval="0.1"
+            Minimum="0"/>
+        </DockPanel>
+
+        <DockPanel>
+            <Label  
+                Content="RaiusY"/>
+            <Controls:NumericUpDown
+            Value="{Binding Ellipsoid.RadiusY, Mode=TwoWay}"
+            Interval="0.1"
+            Minimum="0"/>
+        </DockPanel>
+
+        <DockPanel>
             <Button x:Name="SaveBtn"
                         Content="Save" 
                         Click="SaveBtn_Click"/>

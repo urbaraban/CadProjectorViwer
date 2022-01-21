@@ -6,7 +6,7 @@
     xmlns:dvc="clr-namespace:CadProjectorSDK.Device;assembly=CadProjectorSDK"
     xmlns:Controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
     xmlns:hub="clr-namespace:CadProjectorViewer" 
-    xmlns:cadprojectorsdk="clr-namespace:CadProjectorSDK;assembly=CadProjectorSDK"
+    xmlns:cadprojectorsdk="clr-namespace:CadProjectorSDK;assembly=CadProjectorSDK" xmlns:converters="clr-namespace:CadProjectorViewer.Converters"
     x:Class="CadProjectorViewer.Panels.DeviceTab"
     d:DataContext="{d:DesignInstance Type={x:Type dvc:LDevice}}"
     Padding="0"
@@ -36,6 +36,7 @@
                 <Setter Property="Background" Value="LightGray" />
                 <Setter Property="Margin" Value="5" />
             </Style>
+            <converters:RoundDoubleConverter x:Key="RoundValue"/>
         </ResourceDictionary>
     </UserControl.Resources>
     <ScrollViewer VerticalScrollBarVisibility="Auto">
@@ -313,16 +314,6 @@
                     Maximum="999"
                     Minimum="0.0001" />
             </DockPanel>
-            <DockPanel>
-                <Label
-                    Content="{DynamicResource dvc_WaintPointEndBlank}"/>
-                <Controls:NumericUpDown
-                    DataContext="{Binding SelectedItem, ElementName=DeviceCombo}"
-                    Value="{Binding ProjectionSetting.BlankWait, Mode=TwoWay}"
-                    Maximum="30"
-                    Minimum="1"
-                    Grid.Column="3" />
-            </DockPanel>
 
             <DockPanel LastChildFill="True">
                 <Label
@@ -339,13 +330,40 @@
             <DockPanel LastChildFill="True">
                 <Label
                     DockPanel.Dock="Left"
-                    Content="{DynamicResource dvc_RadiusWait}" />
+                    Content="{DynamicResource dvc_WaintPointBlank}" />
                 <Controls:NumericUpDown
             DataContext="{Binding SelectedItem, ElementName=DeviceCombo}"
-            Value="{Binding ProjectionSetting.RadiusWait, Mode=TwoWay}"
+            Value="{Binding ProjectionSetting.BlankWait, Mode=TwoWay}"
             VerticalAlignment="Bottom"
             Maximum="30"
             Minimum="1" />
+            </DockPanel>
+
+            <DockPanel LastChildFill="True">
+                <Label
+                    DockPanel.Dock="Left"
+                    Content="Blank tail" />
+                <Controls:NumericUpDown
+                    DataContext="{Binding SelectedItem, ElementName=DeviceCombo}"
+                    Value="{Binding ProjectionSetting.BlankTail, Mode=TwoWay, Converter={StaticResource RoundValue}}"
+                    VerticalAlignment="Bottom"
+                    Maximum="0.5"
+                    Minimum="0.01"
+                    Interval="0.01" 
+                    />
+            </DockPanel>
+
+            <DockPanel LastChildFill="True">
+                <Label
+                    DockPanel.Dock="Left"
+                    Content="Line tail" />
+                <Controls:NumericUpDown
+                    DataContext="{Binding SelectedItem, ElementName=DeviceCombo}"
+                    Value="{Binding ProjectionSetting.LineTail, Mode=TwoWay, Converter={StaticResource RoundValue}}"
+                    VerticalAlignment="Bottom"
+                    Maximum="0.5"
+                    Minimum="0.01"
+                    Interval="0.01" />
             </DockPanel>
 
             <Separator/>

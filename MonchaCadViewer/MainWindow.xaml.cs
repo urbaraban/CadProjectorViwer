@@ -541,7 +541,7 @@ namespace CadProjectorViewer
 
         public ICommand FixSelectCommand => new ActionCommand(ProjectorHub.ScenesCollection.SelectedScene.Fix);
 
-        public ICommand SelectNextCommand => new ActionCommand(ProjectorHub.ScenesCollection.SelectedScene.SelectNext);
+        public ICommand SelectNextCommand => new ActionCommand(ProjectorHub.ScenesCollection.SelectedScene.SelectNext); 
 
 
         public ICommand ShowLicenceCommand => new ActionCommand(()=> {

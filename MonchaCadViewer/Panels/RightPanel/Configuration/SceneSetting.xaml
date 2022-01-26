@@ -168,9 +168,14 @@
                 <DockPanel>
                     <Label Content="{DynamicResource setting_xscale}" />
                     <Controls:NumericUpDown
-                    x:Name="SizeXUpDn"
-                    Maximum="999" Minimum="1"
-                    Background="White" Value="{Binding AttachDistance}"/>
+                    Maximum="9999" Minimum="-9999"
+                    Background="White" Value="{Binding AttachDistanceX}"/>
+                </DockPanel>
+                <DockPanel>
+                    <Label Content="{DynamicResource setting_yscale}" />
+                    <Controls:NumericUpDown
+                    Maximum="9999" Minimum="-9999"
+                    Background="White" Value="{Binding AttachDistanceY}"/>
                 </DockPanel>
                 <Separator/>
                 

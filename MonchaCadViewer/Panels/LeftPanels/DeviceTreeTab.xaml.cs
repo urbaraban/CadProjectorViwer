@@ -166,7 +166,6 @@ namespace CadProjectorViewer.Panels
                                 break;
                             case "mesh_showrect":
                                 projectorHub.ScenesCollection.SelectedScene.Add(mesh.Size);
-                               // rectangle.Init();
                                 break;
                             case "mesh_vertical":
                                 mesh.VerticalFlag = !mesh.VerticalFlag;
@@ -185,7 +184,7 @@ namespace CadProjectorViewer.Panels
                 {
                     if (frameworkElement.DataContext is ProjectorMesh mesh)
                     {
-                        projectorHub.ScenesCollection.SelectedScene.Clear();
+                        if (Keyboard.Modifiers != ModifierKeys.Shift) projectorHub.ScenesCollection.SelectedScene.Clear();
                         projectorHub.ScenesCollection.SelectedScene.Add(mesh);
                     }
                 }

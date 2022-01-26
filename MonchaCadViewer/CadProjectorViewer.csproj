@@ -21,7 +21,7 @@
     <TargetFrameworkProfile />
     <LangVersion>8.0</LangVersion>
     <RunAnalyzersDuringBuild>false</RunAnalyzersDuringBuild>
-    <PublishUrl>Z:\soft\LaserCat\</PublishUrl>
+    <PublishUrl>C:\2CUT\</PublishUrl>
     <Install>true</Install>
     <InstallFrom>Disk</InstallFrom>
     <UpdateEnabled>false</UpdateEnabled>
@@ -37,7 +37,7 @@
     <SuiteName>Viwer</SuiteName>
     <WebPage>publish.htm</WebPage>
     <OpenBrowserOnPublish>false</OpenBrowserOnPublish>
-    <ApplicationRevision>98</ApplicationRevision>
+    <ApplicationRevision>103</ApplicationRevision>
     <ApplicationVersion>0.8.1.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <CreateDesktopShortcut>true</CreateDesktopShortcut>
@@ -124,19 +124,19 @@
       <HintPath>..\..\KompasLib\Lib16.15\KGAXLib.dll</HintPath>
     </Reference>
     <Reference Include="Kompas6API2D5COM">
-      <HintPath>..\..\KompasLib\KompasLib\Lib16.15\Kompas6API2D5COM.dll</HintPath>
+      <HintPath>..\..\KompasLib\Lib16.15\Kompas6API2D5COM.dll</HintPath>
       <EmbedInteropTypes>True</EmbedInteropTypes>
     </Reference>
     <Reference Include="Kompas6API3D5COM">
-      <HintPath>..\..\KompasLib\KompasLib\Lib16.15\Kompas6API3D5COM.dll</HintPath>
+      <HintPath>..\..\KompasLib\Lib16.15\Kompas6API3D5COM.dll</HintPath>
       <EmbedInteropTypes>True</EmbedInteropTypes>
     </Reference>
     <Reference Include="Kompas6API5">
-      <HintPath>..\..\KompasLib\KompasLib\Lib16.15\Kompas6API5.dll</HintPath>
+      <HintPath>..\..\KompasLib\Lib16.15\Kompas6API5.dll</HintPath>
       <EmbedInteropTypes>True</EmbedInteropTypes>
     </Reference>
     <Reference Include="Kompas6Constants">
-      <HintPath>..\..\KompasLib\KompasLib\Lib16.15\Kompas6Constants.dll</HintPath>
+      <HintPath>..\..\KompasLib\Lib16.15\Kompas6Constants.dll</HintPath>
       <EmbedInteropTypes>True</EmbedInteropTypes>
     </Reference>
     <Reference Include="Kompas6Constants3D">
@@ -144,7 +144,7 @@
       <EmbedInteropTypes>True</EmbedInteropTypes>
     </Reference>
     <Reference Include="KompasAPI7">
-      <HintPath>..\..\KompasLib\KompasLib\Lib16.15\KompasAPI7.dll</HintPath>
+      <HintPath>..\..\KompasLib\Lib16.15\KompasAPI7.dll</HintPath>
       <EmbedInteropTypes>True</EmbedInteropTypes>
     </Reference>
     <Reference Include="MahApps.Metro, Version=2.0.0.0, Culture=neutral, PublicKeyToken=51482d6f650b2b3f, processorArchitecture=MSIL">
@@ -499,7 +499,7 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\KompasLib\KompasLib\KompasLib\KompasLib.csproj">
+    <ProjectReference Include="..\..\KompasLib\KompasLib\KompasLib.csproj">
       <Project>{25CE4066-36A4-40BD-A38F-EC08E7AA509F}</Project>
       <Name>KompasLib</Name>
     </ProjectReference>

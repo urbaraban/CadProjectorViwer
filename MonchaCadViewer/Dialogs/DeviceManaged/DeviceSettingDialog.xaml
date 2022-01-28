@@ -96,27 +96,7 @@
                 SelectedItem="{Binding SelectMesh}"
                 x:Name="SelectCombo"/>
         </DockPanel>
-        <DockPanel>
-            <Label x:Name="label_Copy1" Content="Base"/>
-            <Button
-                    DockPanel.Dock="Right"
-                    x:Name="MinusBaseBtn" 
-                    Content="-" 
-                Click="MinusBaseBtn_Click"
-                    Width="{Binding ActualHeight, RelativeSource={RelativeSource Self}}" />
-
-            <Button
-                    DockPanel.Dock="Right"
-                    x:Name="AddBaseBtn" 
-                    Content="+" 
-                    Width="{Binding ActualHeight, RelativeSource={RelativeSource Self}}" />
-            <ComboBox 
-                DisplayMemberPath="Name"
-                ItemsSource="{Binding Meshes}"
-                SelectedItem="{Binding BaseMesh}"
-                x:Name="BaseCombo"/>
-
-        </DockPanel>
+        
         <DockPanel>
             <Label 
                 Content="Koeff"/>
@@ -147,7 +127,9 @@
         </DockPanel>
 
         <Separator/>
-
+        <DockPanel>
+            <CheckBox Content="Use Ellipsoid" IsChecked="{Binding UseEllipsoid}"/>
+        </DockPanel>
         <DockPanel>
             <Label  
                 Content="AngleX"/>

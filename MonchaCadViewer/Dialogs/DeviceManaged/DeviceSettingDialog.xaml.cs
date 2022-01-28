@@ -81,11 +81,6 @@ namespace CadProjectorViewer.Panels.DevicePanel
             }
         }
 
-        private void MinusBaseBtn_Click(object sender, RoutedEventArgs e)
-        {
-            this._device.BaseMesh = null;
-        }
-
         private void MinusSelectBtn_Click(object sender, RoutedEventArgs e)
         {
             this._device.SelectMesh = null;

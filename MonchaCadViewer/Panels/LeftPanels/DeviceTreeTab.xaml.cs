@@ -164,6 +164,9 @@ namespace CadProjectorViewer.Panels
                             case "mesh_affine":
                                 mesh.Affine = !mesh.Affine;
                                 break;
+                            case "mesh_ellipsoid":
+                                mesh.UseEllipsoid = !mesh.UseEllipsoid;
+                                break;
                             case "mesh_showrect":
                                 projectorHub.ScenesCollection.SelectedScene.Add(mesh.Size);
                                 break;

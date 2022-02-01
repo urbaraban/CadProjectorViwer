@@ -57,7 +57,7 @@
                  />
             </StackPanel>
         </DockPanel>
-     <Viewbox x:Name="CanvasBox" Grid.RowSpan="3" Stretch="Uniform" StretchDirection="Both">
+     <Viewbox x:Name="CanvasBox" Grid.RowSpan="3" Stretch="Uniform" StretchDirection="Both" >
             <Grid x:Name="CanvasGrid" Background="Red"
                   Width="{Binding Size.Width}"
                   Height="{Binding Size.Height}"
@@ -83,6 +83,18 @@
                         </DrawingBrush>
                     </Canvas.Background>
                 </Canvas>
+                <ItemsControl ItemsSource="{Binding Masks}">
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <canvasobj:CadCanvas/>
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <ContentPresenter Content="{Binding Converter={StaticResource CadObjectConverter}}"/>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
                 <ItemsControl ItemsSource="{Binding .}">
                     <ItemsControl.ItemsPanel>
                         <ItemsPanelTemplate>
@@ -95,6 +107,7 @@
                         </DataTemplate>
                     </ItemsControl.ItemTemplate>
                 </ItemsControl>
+
             </Grid>
         </Viewbox>
         <Label x:Name="CoordinateLabel" 

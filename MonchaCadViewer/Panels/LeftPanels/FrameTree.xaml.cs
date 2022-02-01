@@ -2,6 +2,8 @@
 using CadProjectorSDK.CadObjects.Abstract;
 using CadProjectorSDK.Scenes;
 using CadProjectorViewer.CanvasObj;
+using CadProjectorViewer.Dialogs;
+using Microsoft.Xaml.Behaviors.Core;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -26,6 +28,8 @@ namespace CadProjectorViewer.Panels.DevicePanel.LeftPanels
     public partial class FrameTree : UserControl
     {
         private bool RenderStat = true;
+
+        ProjectionScene Scene => (ProjectionScene)this.DataContext;
 
         public FrameTree()
         {
@@ -56,6 +60,19 @@ namespace CadProjectorViewer.Panels.DevicePanel.LeftPanels
         private void ToggleSwitch_Toggled(object sender, RoutedEventArgs e)
         {
             AppSt.Default.Save();
+        }
+
+
+       /* public ICommand MakeMaskSplit => new ActionCommand(() => {
+
+            MakeMeshSplitDialog makeMeshSplitDialog = new MakeMeshSplitDialog() { DataContext = this.DataContext };
+            makeMeshSplitDialog.ShowDialog();
+        });*/
+
+        private void MakeMaskSplit(object sender, RoutedEventArgs e)
+        {
+            MakeMeshSplitDialog makeMeshSplitDialog = new MakeMeshSplitDialog() { DataContext = this.DataContext };
+            makeMeshSplitDialog.ShowDialog();
         }
     }
 }

@@ -262,6 +262,9 @@
     <Compile Include="Dialogs\DotEdit.xaml.cs">
       <DependentUpon>DotEdit.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Dialogs\MakeMeshSplitDialog.xaml.cs">
+      <DependentUpon>MakeMeshSplitDialog.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Dialogs\MeshTool.cs" />
     <Compile Include="CanvasObj\CanvasRectangle.cs" />
     <Compile Include="CanvasObj\CanvasObject.cs" />
@@ -352,6 +355,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Dialogs\DeviceManaged\LaserMeterWindows.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Dialogs\MakeMeshSplitDialog.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

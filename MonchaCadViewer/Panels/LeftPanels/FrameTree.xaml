@@ -8,10 +8,23 @@
              xmlns:Controls="http://metro.mahapps.com/winfx/xaml/controls"
              xmlns:properties="clr-namespace:CadProjectorViewer.Properties"
              xmlns:scene="clr-namespace:CadProjectorSDK.Scenes;assembly=CadProjectorSDK"
-             d:DataContext="{d:DesignInstance Type=scene:ProjectionScene}">
+             d:DataContext="{d:DesignInstance Type=scene:ProjectionScene}"
+             x:Name="FrameTreePage">
     <UserControl.Resources>
         <HierarchicalDataTemplate 
                 x:Key="ObjectTree" 
+                ItemsSource="{Binding Children}">
+            <Border>
+                <DockPanel 
+                                VerticalAlignment="Center">
+                    <CheckBox IsChecked="{Binding IsRender}"/>
+                    <Label Content="{Binding NameID}" VerticalAlignment="Center" MouseDoubleClick="Label_MouseDoubleClick"/>
+                </DockPanel>
+            </Border>
+        </HierarchicalDataTemplate>
+
+        <HierarchicalDataTemplate 
+                x:Key="MasksTree" 
                 ItemsSource="{Binding Children}">
             <Border>
                 <DockPanel 
@@ -57,7 +70,14 @@
                 </Style>
             </TreeView.ItemContainerStyle>
             <TreeViewItem Header="Mask" ItemsSource="{Binding Masks}" 
-                          ItemTemplate="{StaticResource ResourceKey=ObjectTree}"/>
+                          ItemTemplate="{StaticResource ResourceKey=MasksTree}">
+                <TreeViewItem.ContextMenu>
+                    <ContextMenu>
+                        <MenuItem Header="Split scene" 
+                                  Click="MakeMaskSplit"/>
+                    </ContextMenu>
+                </TreeViewItem.ContextMenu>
+            </TreeViewItem>
 
             <TreeViewItem Header="Objects" ItemsSource="{Binding .}" 
                           ItemTemplate="{StaticResource ResourceKey=ObjectTree}"/>

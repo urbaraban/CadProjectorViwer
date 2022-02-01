@@ -98,11 +98,6 @@ namespace CadProjectorViewer.CanvasObj
             //Selected?.Invoke(e, e.CadObject.IsSelected);
         }
 
-        public void SetTwoPoint(Point point)
-        {
-            this.LRect.P2.MX = point.X;
-            this.LRect.P2.MY = point.Y;
-        }
     }
 
     public class RectangelAdorner : Adorner

@@ -223,6 +223,11 @@
                         <Setter Property="Padding" Value="2" />
                     </Style>
                 </TabControl.Resources>
+                <TabItem Header="Frame">
+                    <Border  Style="{StaticResource Border}">
+                        <leftpanels:FrameTree DataContext="{Binding ScenesCollection.SelectedScene}" />
+                    </Border>
+                </TabItem>
                 <TabItem Header="Device">
                     <Border  Style="{StaticResource Border}">
                         <panels:DeviceTreeTab
@@ -230,11 +235,6 @@
                         x:Name="DeviceTree"
                         Focusable="False"
                         Margin="0" Grid.ColumnSpan="2" Grid.Row="2" />
-                    </Border>
-                </TabItem>
-                <TabItem Header="Frame">
-                    <Border  Style="{StaticResource Border}">
-                        <leftpanels:FrameTree DataContext="{Binding ScenesCollection.SelectedScene}" />
                     </Border>
                 </TabItem>
             </TabControl>

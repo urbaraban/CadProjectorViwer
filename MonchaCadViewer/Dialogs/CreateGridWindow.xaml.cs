@@ -21,34 +21,29 @@ namespace CadProjectorViewer
     /// </summary>
     public partial class CreateGridWindow : Window
     {
+        private CadPoint3D[,] TemplatePoint;
         private ProjectorMesh _mesh;
 
         public CreateGridWindow(ProjectorMesh mesh)
         {
             InitializeComponent();
             this._mesh = mesh;
-            this.DataContext = new ProjectorMesh(ProjectorMesh.MakeMeshPoint(this._mesh.Points.GetLength(0), this._mesh.Points.GetLength(1), new CadRect3D(1,1,1)), this._mesh.Name, this._mesh.MeshType);
+            this.DataContext = mesh;
+            TemplatePoint = mesh.Points;
         }
 
-        private void WidthUpDn_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double?> e)
-        {
-            if (this.IsLoaded)
-            {
-                this.DataContext = new ProjectorMesh(ProjectorMesh.MakeMeshPoint((int)HeightUpDn.Value.Value, (int)WidthUpDn.Value.Value, new CadRect3D(1, 1, 1)), this._mesh.Name, this._mesh.MeshType);
-            }
-        }
 
         private void StepUpDn_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double?> e)
         {
             if (this.IsLoaded)
             {
-                int Width = (int)(this._mesh.Size.Width / StepUpDn.Value.Value) + 1;
-                int Height = (int)(this._mesh.Size.Height / StepUpDn.Value.Value) + 1;
+                int ColumnCount = (int)(this._mesh.Size.Width / StepUpDn.Value.Value) + 1;
+                int StrokeCOunt = (int)(this._mesh.Size.Height / StepUpDn.Value.Value) + 1;
                 WidthStepLabel.Content = "(" + Math.Round(this._mesh.Size.Width / Width, 1) + ")";
                 HeightStepLabel.Content = "(" + Math.Round(this._mesh.Size.Height / Height, 1) + ")";
 
-                WidthUpDn.Value = Width;
-                HeightUpDn.Value = Height;
+                _mesh.ColumnCount = ColumnCount;
+                _mesh.StrokeCount = StrokeCOunt;
             }
         }
 
@@ -60,11 +55,9 @@ namespace CadProjectorViewer
             switch (messageBoxResult)
             {
                 case MessageBoxResult.Yes:
-                    this._mesh.SubscribePoint(false);
-                    this._mesh.Points = ProjectorMesh.MakeMeshPoint((int)HeightUpDn.Value.Value, (int)WidthUpDn.Value.Value, this._mesh.Size);
-                    this._mesh.SubscribePoint(true);
                     break;
                 case MessageBoxResult.No:
+                    this._mesh.Points = TemplatePoint;
                     break;
                 case MessageBoxResult.Cancel:
                     e.Cancel = true;
@@ -72,10 +65,12 @@ namespace CadProjectorViewer
             }
         }
 
-        private void Window_Loaded(object sender, RoutedEventArgs e)
+        private void NumericUpDown_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double?> e)
         {
-            WidthUpDn.Value = this._mesh.GetLength(1);
-            HeightUpDn.Value = this._mesh.GetLength(0);
+            if (DataContext is ProjectorMesh mesh)
+            {
+                mesh.CalculationMorph();
+            }
         }
     }
     public class ToSceneObjConverter : IValueConverter

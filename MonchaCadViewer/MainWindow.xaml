@@ -35,6 +35,9 @@
         <KeyBinding
             Key="Delete"
             Command="{Binding ElementName=MainWin, Path=DeleteCommand}"/>
+        <KeyBinding
+            Key="F5"
+            Command="{Binding ElementName=MainWin, Path=RefreshFrameCommand}"/>
     </Controls:MetroWindow.InputBindings>
     <Controls:MetroWindow.Resources>
         <ResourceDictionary>

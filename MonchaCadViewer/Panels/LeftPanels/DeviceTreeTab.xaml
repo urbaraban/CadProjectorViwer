@@ -5,7 +5,7 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
     xmlns:device="clr-namespace:CadProjectorSDK.Device;assembly=CadProjectorSDK" 
-    xmlns:cadprojectorsdk="clr-namespace:CadProjectorSDK;assembly=CadProjectorSDK" 
+    xmlns:cadprojectorsdk="clr-namespace:CadProjectorSDK;assembly=CadProjectorSDK" xmlns:controllers="clr-namespace:CadProjectorSDK.Device.Controllers;assembly=CadProjectorSDK" xmlns:mesh="clr-namespace:CadProjectorSDK.Device.Mesh;assembly=CadProjectorSDK"
     d:DataContext="{d:DesignInstance Type=cadprojectorsdk:ProjectorHub}"
     d:DesignHeight="450"
     d:DesignWidth="200"
@@ -25,10 +25,10 @@
                 </Style.Triggers>
             </Style>
             <Style x:Key="ConnectedStyle" TargetType="{x:Type TextBlock}">
-                <Setter Property="Foreground" Value="Black"/>
+                <Setter Property="Foreground" Value="Black" />
                 <Style.Triggers>
                     <DataTrigger Binding="{Binding IsConnected}" Value="False">
-                        <Setter Property="Foreground" Value="Gray"/>
+                        <Setter Property="Foreground" Value="Gray" />
                     </DataTrigger>
                 </Style.Triggers>
             </Style>
@@ -42,22 +42,21 @@
                 </Style.Triggers>
             </Style>
 
-            <HierarchicalDataTemplate 
+            <HierarchicalDataTemplate
                 x:Key="MeshTree">
-            <Border 
+                <Border
+                    d:DataContext="{d:DesignInstance Type=mesh:ProjectorMesh}"
                     ContextMenuClosing="MeshBorder_ContextMenuClosing"
                     MouseLeftButtonDown="MeshBorder_MouseLeftButtonDown">
                     <Border.ContextMenu>
                         <ContextMenu>
+                            <MenuItem Header = "{DynamicResource mesh_Morph}" Tag="mesh_morph" IsCheckable="True" IsChecked="{Binding Morph, Mode=TwoWay}"/>
                             <MenuItem Header = "{DynamicResource common_Create}" Tag="mesh_create" Click="MenuItem_Click"/>
-                            <MenuItem Header = "{DynamicResource mesh_ShowVirtual}" Tag="mesh_showvirtual" Click="MenuItem_Click"/>
                             <MenuItem Header = "{DynamicResource mesh_Inverse}" Tag="mesh_inverse" Click="MenuItem_Click"/>
                             <MenuItem Header = "{DynamicResource mesh_Returnpoint}" Tag="mesh_returnpoint" Click="MenuItem_Click"/>
-                            <MenuItem Header = "{DynamicResource mesh_Morph}" Tag="mesh_morph" Click="MenuItem_Click"/>
-                            <MenuItem Header = "{DynamicResource mesh_Affine}" Tag="mesh_affine" Click="MenuItem_Click"/>
-                            <MenuItem Header= "Use ellipsod" Tag="mesh_ellipsoid" Click="MenuItem_Click"/>
                             <MenuItem Header = "{DynamicResource dvc_showrect}" Tag="mesh_showrect" Click="MenuItem_Click"/>
-                            <MenuItem Header = "Vertical" Tag="mesh_vertical" Click="MenuItem_Click"/>
+                            <MenuItem Header = "Vertical" Tag="mesh_Vertical" IsCheckable="True" IsChecked="{Binding VerticalFlag}"/>
+                            <MenuItem Header= "Convert on ellipsoid" Tag="convert_on_ellipsoid" Click="MenuItem_Click"/>
                         </ContextMenu>
                     </Border.ContextMenu>
 

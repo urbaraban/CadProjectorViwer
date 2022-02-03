@@ -17,7 +17,7 @@
                 <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Themes/Light.Blue.xaml" />
             </ResourceDictionary.MergedDictionaries>
             <Style TargetType="{x:Type DockPanel}">
-                <Setter Property="Margin" Value="3,3"/>
+                <Setter Property="Margin" Value="0,3"/>
                 <Setter Property="LastChildFill" Value="True"/>
             </Style>
             <Style TargetType="{x:Type Label}">
@@ -34,7 +34,7 @@
     </UserControl.Resources>
     <ScrollViewer>
         <Grid>
-            <StackPanel>
+            <StackPanel Margin="5">
                 <DockPanel>
                     <Label
                 Content="{DynamicResource obj_Width}"/>
@@ -178,7 +178,7 @@
                     Background="White" Value="{Binding AttachDistanceY}"/>
                 </DockPanel>
                 <Separator/>
-                
+                <CheckBox Content="Cursor Mask Activated" IsChecked="{Binding CursorMaskActivated}"/>
             </StackPanel>
         </Grid>
     </ScrollViewer>

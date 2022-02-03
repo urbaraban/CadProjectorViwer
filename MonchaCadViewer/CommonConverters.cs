@@ -27,6 +27,7 @@ namespace CadProjectorViewer.Converters
             return null;
         }
     }
+
     public class RoundDoubleConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
@@ -37,6 +38,27 @@ namespace CadProjectorViewer.Converters
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
             return value;
+        }
+    }
+
+    public class CadObjectConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            if (value is UidObject uidObject)
+            {
+                if (uidObject is ProjectorMesh mesh) return new CanvasMesh(mesh);
+                else if (uidObject is CadLine cadLine) return new CanvasLine(cadLine);
+                else if (uidObject is CadRect3D cadRectangle) return new CanvasRectangle(cadRectangle, cadRectangle.NameID);
+                else if (uidObject is IGeometryObject geometry) return new GeometryPreview(uidObject);
+                else if (uidObject is IPixelObject pixelObject) return new ImagePreview(uidObject);
+            }
+            return value;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            return null;
         }
     }
 }

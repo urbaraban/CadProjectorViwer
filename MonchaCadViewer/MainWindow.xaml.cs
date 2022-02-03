@@ -505,6 +505,7 @@ namespace CadProjectorViewer
         });
 
 
+
         private void TcpListenBtn_Click(object sender, RoutedEventArgs e) => ProjectorHub.UDPLaserListener.Run(AppSt.Default.ether_udp_port);
 
 
@@ -541,8 +542,11 @@ namespace CadProjectorViewer
 
         public ICommand FixSelectCommand => new ActionCommand(ProjectorHub.ScenesCollection.SelectedScene.Fix);
 
-        public ICommand SelectNextCommand => new ActionCommand(ProjectorHub.ScenesCollection.SelectedScene.SelectNext); 
+        public ICommand SelectNextCommand => new ActionCommand(ProjectorHub.ScenesCollection.SelectedScene.SelectNext);
 
+        public ICommand RefreshFrameCommand => new ActionCommand(() => {
+            ProjectorHub.ScenesCollection.SelectedScene.Refresh();
+        });
 
         public ICommand ShowLicenceCommand => new ActionCommand(()=> {
             RequestLicenseCode requestLicenseCode = new RequestLicenseCode() { DataContext = ProjectorHub.lockKey };

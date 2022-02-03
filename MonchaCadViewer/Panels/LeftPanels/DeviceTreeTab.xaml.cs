@@ -149,8 +149,8 @@ namespace CadProjectorViewer.Panels
                                 CreateGridWindow createGridWindow = new CreateGridWindow(mesh);
                                 createGridWindow.ShowDialog();
                                 break;
-                            case "mesh_showvirtual":
-                                projectorHub.ScenesCollection.SelectedScene.Add(mesh.VirtualMesh);
+                            case "convert_on_ellipsoid":
+                                mesh.ConvertOnEllipsoid();
                                 break;
                             case "mesh_inverse":
                                 mesh.InverseYPosition();
@@ -158,24 +158,13 @@ namespace CadProjectorViewer.Panels
                             case "mesh_returnpoint":
                                 mesh.ReturnPoint();
                                 break;
-                            case "mesh_morph":
-                                mesh.Morph = !mesh.Morph;
-                                break;
-                            case "mesh_affine":
-                                mesh.Affine = !mesh.Affine;
-                                break;
-                            case "mesh_ellipsoid":
-                                mesh.UseEllipsoid = !mesh.UseEllipsoid;
-                                break;
                             case "mesh_showrect":
                                 projectorHub.ScenesCollection.SelectedScene.Add(mesh.Size);
-                                break;
-                            case "mesh_vertical":
-                                mesh.VerticalFlag = !mesh.VerticalFlag;
                                 break;
                         }
                     }
                 }
+                element.ContextMenu.DataContext = null;
             }
         }
 

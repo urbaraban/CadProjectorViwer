@@ -75,6 +75,8 @@
                     <ContextMenu>
                         <MenuItem Header="Split scene" 
                                   Click="MakeMaskSplit"/>
+                        <MenuItem Header="Clear" 
+                                  Click="Clear"/>
                     </ContextMenu>
                 </TreeViewItem.ContextMenu>
             </TreeViewItem>

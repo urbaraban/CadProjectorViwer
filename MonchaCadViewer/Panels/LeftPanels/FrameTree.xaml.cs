@@ -5,6 +5,7 @@ using CadProjectorViewer.CanvasObj;
 using CadProjectorViewer.Dialogs;
 using Microsoft.Xaml.Behaviors.Core;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -63,16 +64,38 @@ namespace CadProjectorViewer.Panels.DevicePanel.LeftPanels
         }
 
 
-       /* public ICommand MakeMaskSplit => new ActionCommand(() => {
-
-            MakeMeshSplitDialog makeMeshSplitDialog = new MakeMeshSplitDialog() { DataContext = this.DataContext };
-            makeMeshSplitDialog.ShowDialog();
-        });*/
-
         private void MakeMaskSplit(object sender, RoutedEventArgs e)
         {
             MakeMeshSplitDialog makeMeshSplitDialog = new MakeMeshSplitDialog() { DataContext = this.DataContext };
-            makeMeshSplitDialog.ShowDialog();
+            makeMeshSplitDialog.Show();
+        }
+
+        private void Clear(object sender, RoutedEventArgs e)
+        {
+            if (sender is FrameworkElement frameworkElement && frameworkElement.DataContext is IList enumerable) enumerable.Clear();
+        }
+
+        private void SendLayer(object sender, RoutedEventArgs e)
+        {
+            if (this.DataContext is ProjectionScene scene)
+            {
+                byte[] layers = new byte[scene.Count];
+                for(int i = 0; i < layers.Length; i += 1)
+                {
+                    layers[i] = (byte)(i % 2);
+                }
+
+                SceneTask sceneTask = new SceneTask()
+                {
+                    Object = layers,
+                    TableID = Scene.TableID,
+                    TaskID = -1,
+                    TaskName = "Layers",
+                    Command = new List<string>()
+                };
+
+                scene.RunTask(sceneTask, false);
+            }
         }
     }
 }

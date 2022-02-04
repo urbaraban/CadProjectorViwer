@@ -37,7 +37,7 @@ namespace CadProjectorViewer.Panels
 
         private string filepath = string.Empty;
 
-        public string FileName => SceneTsk.Object.NameID;
+        public string FileName => SceneTsk.TaskName;
 
         public ScrollPanelItem()
         {

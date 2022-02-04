@@ -30,22 +30,25 @@ namespace CadProjectorViewer.Dialogs
         {
             if (this.DataContext is ProjectionScene Scene)
             {
-                Scene.Masks.Clear();
+                byte[,] masks = new byte[(int)ColumnUpDn.Value.Value, (int)StrokeUpDn.Value.Value];
 
-                double WidthStep = Scene.Size.Width / ColumnUpDn.Value.Value;
-                double HeightStep = Scene.Size.Height / StrokeUpDn.Value.Value;
-
-                for (int i = 0; i < ColumnUpDn.Value.Value; i += 1)
+                for (int i = 0; i < masks.GetLength(0); i += 1)
                 {
-                    for (int j = 0; j < StrokeUpDn.Value.Value; j += 1)
+                    for (int j = 0; j < masks.GetLength(1); j += 1)
                     {
-                        Scene.Masks.Add(new CadRect3D(
-                            new CadPoint3D(new Point(i * WidthStep, j * HeightStep), Scene.Size, true),
-                            new CadPoint3D(new Point((i + 1) * WidthStep, (j + 1) * HeightStep), Scene.Size, true),
-                            true,
-                            $"Mask:{i}/{j}"));
+                        masks[i,j] = 1;
                     }
                 }
+                SceneTask sceneTask = new SceneTask()
+                {
+                    Object = masks,
+                    TableID = Scene.TableID,
+                    TaskID = -1,
+                    TaskName = "Masks",
+                    Command = new List<string>()
+                };
+                
+                Scene.RunTask(sceneTask, false);
             }
         }
     }

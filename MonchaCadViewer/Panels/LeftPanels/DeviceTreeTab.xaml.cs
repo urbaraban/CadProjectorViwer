@@ -162,9 +162,10 @@ namespace CadProjectorViewer.Panels
                                 projectorHub.ScenesCollection.SelectedScene.Add(mesh.Size);
                                 break;
                         }
+                        element.ContextMenu.DataContext = null;
                     }
                 }
-                element.ContextMenu.DataContext = null;
+
             }
         }
 

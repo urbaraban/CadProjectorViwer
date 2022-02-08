@@ -14,7 +14,13 @@
     x:Class="CadProjectorViewer.CreateGridWindow"
         mc:Ignorable="d"
         Title="CreateGridWindow"
-    SizeToContent="WidthAndHeight">
+    SizeToContent="WidthAndHeight"
+    x:Name="ThisWindow">
+    <Window.InputBindings>
+        <KeyBinding
+            Key="Q"
+            Command="{Binding ElementName=ThisWindow, Path=SelectNextCommand}"/>
+    </Window.InputBindings>
     <Window.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -52,6 +58,7 @@
                     Minimum="-1"
                     Interval="0.001"
                     ValueChanged="NumericUpDown_ValueChanged"
+                    GotFocus="NumericUpDown_GotFocus"
                     />
             </HierarchicalDataTemplate>
 

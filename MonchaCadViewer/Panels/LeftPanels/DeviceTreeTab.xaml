@@ -50,7 +50,8 @@
                     MouseLeftButtonDown="MeshBorder_MouseLeftButtonDown">
                     <Border.ContextMenu>
                         <ContextMenu>
-                            <MenuItem Header = "{DynamicResource mesh_Morph}" Tag="mesh_morph" IsCheckable="True" IsChecked="{Binding Morph, Mode=TwoWay}"/>
+                            <MenuItem Header = "{DynamicResource mesh_Morph}" Tag="mesh_morph" IsCheckable="True"
+                                      IsChecked="{Binding Morph}"/>
                             <MenuItem Header = "{DynamicResource common_Create}" Tag="mesh_create" Click="MenuItem_Click"/>
                             <MenuItem Header = "{DynamicResource mesh_Inverse}" Tag="mesh_inverse" Click="MenuItem_Click"/>
                             <MenuItem Header = "{DynamicResource mesh_Returnpoint}" Tag="mesh_returnpoint" Click="MenuItem_Click"/>
@@ -120,18 +121,6 @@
             DockPanel.Dock="Top"
                     x:Name="TreeHead"
                     HorizontalAlignment="Left" Margin="3">
-            <Button
-                        x:Name="RefreshLaser"
-                        Width="25"
-                        Height="26"
-                        Margin="0,0,5,0"
-                        HorizontalAlignment="Right"
-                        VerticalAlignment="Top"
-                        Background="{x:Null}"
-                        BorderBrush="{x:Null}"
-                        Click="RefreshLaser_Click_1"
-                        Content="&#xEDAB;"
-                        FontFamily="Segoe MDL2 Assets" />
             <Button
                         x:Name="AddLaser"
                         Width="25"

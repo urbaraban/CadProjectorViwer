@@ -13,6 +13,8 @@ using CadProjectorSDK.Scenes;
 using System.Windows.Data;
 using System.Globalization;
 using CadProjectorSDK.CadObjects.Abstract;
+using System.Windows.Input;
+using Microsoft.Xaml.Behaviors.Core;
 
 namespace CadProjectorViewer
 {
@@ -70,6 +72,22 @@ namespace CadProjectorViewer
             if (DataContext is ProjectorMesh mesh)
             {
                 mesh.CalculationMorph();
+            }
+        }
+
+        public ICommand SelectNextCommand => _mesh != null ? new ActionCommand(_mesh.SelectNext) : null;
+
+        private void NumericUpDown_GotFocus(object sender, RoutedEventArgs e)
+        {
+            if (sender is FrameworkElement element && element.DataContext is DoubleValue CorrectValue)
+            {
+                if (_mesh != null && _mesh.SelectedPoint != null)
+                {
+                    Tuple<int, int> index = _mesh.IndexOf(_mesh.SelectedPoint);
+                    int WidthIndex = Array.IndexOf(_mesh.ColumnCorrect, CorrectValue);
+                    int HeightIndex = Array.IndexOf(_mesh.StrokeCorrect, CorrectValue);
+                    _mesh.Points[HeightIndex > -1 ? HeightIndex : index.Item1, WidthIndex > -1 ? WidthIndex : index.Item2].IsSelected = true;
+                }
             }
         }
     }

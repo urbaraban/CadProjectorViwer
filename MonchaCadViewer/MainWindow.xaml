@@ -231,8 +231,8 @@
                         <leftpanels:FrameTree DataContext="{Binding ScenesCollection.SelectedScene}" />
                     </Border>
                 </TabItem>
-                <TabItem Header="Device">
-                    <Border  Style="{StaticResource Border}">
+                <TabItem Header="Devices">
+                    <Border Style="{StaticResource Border}">
                         <panels:DeviceTreeTab
                         DataContext="{Binding .}"
                         x:Name="DeviceTree"

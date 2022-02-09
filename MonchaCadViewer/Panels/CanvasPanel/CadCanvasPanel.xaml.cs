@@ -153,8 +153,8 @@ namespace CadProjectorViewer.Panels.CanvasPanel
                 this.SelectedScene.SceneAction = SceneAction.NoAction;
                 CadRect3D lRect = new CadRect3D(false)
                 {
-                    P1 = new CadPoint3D(e.GetPosition(this.CanvasGrid), SelectedScene.Size, true),
-                    P2 = new CadPoint3D(e.GetPosition(this.CanvasGrid), SelectedScene.Size, true),
+                    P1 = new CadPoint3D(e.GetPosition(this.CanvasGrid), SelectedScene.Size),
+                    P2 = new CadPoint3D(e.GetPosition(this.CanvasGrid), SelectedScene.Size),
                     NameID = "Mask",
                     ShowName = true,
                     IsRender = true,

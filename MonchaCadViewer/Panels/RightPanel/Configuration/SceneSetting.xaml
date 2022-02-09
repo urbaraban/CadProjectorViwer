@@ -81,11 +81,9 @@
                     <Controls:NumericUpDown 
                 Name="PointStepUpDn"
                 Maximum="10" Minimum="0" 
-                Interval="0.1" 
+                Interval="0.01" 
                 Value="{Binding Movespeed}"
-                Focusable="False" IsTabStop="False"
-                ValueDecremented="PointStepUpDn_ValueDecremented" 
-                ValueIncremented="PointStepUpDn_ValueIncremented"/>
+                        IsTabStop="False"/>
                 </DockPanel>
                 <DockPanel>
                     <Label x:Name="CalibrationFormLabel" Content="{DynamicResource obj_Type}" />

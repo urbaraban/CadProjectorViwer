@@ -85,7 +85,7 @@ namespace CadProjectorViewer.CanvasObj
                 new System.Globalization.CultureInfo("ru-RU"),
                 FlowDirection.LeftToRight,
                     new Typeface("Segoe UI"),
-                    (int)CadObject.GetThinkess() * AppSt.Default.default_thinkess_percent * 3,
+                    (int)Math.Max(CadObject.GetThinkess() * AppSt.Default.default_thinkess_percent * 3, 1),
                     Brushes.Gray),
                 new Point(X, Y));
 

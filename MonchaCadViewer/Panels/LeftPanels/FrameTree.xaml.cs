@@ -1,5 +1,6 @@
 ﻿using CadProjectorSDK.CadObjects;
 using CadProjectorSDK.CadObjects.Abstract;
+using CadProjectorSDK.Interfaces;
 using CadProjectorSDK.Scenes;
 using CadProjectorViewer.CanvasObj;
 using CadProjectorViewer.Dialogs;
@@ -57,22 +58,24 @@ namespace CadProjectorViewer.Panels.DevicePanel.LeftPanels
                 }
             }
         }
-
-        private void ToggleSwitch_Toggled(object sender, RoutedEventArgs e)
+        public ICommand MaskSplitCommand => new ActionCommand(() => MakeMaskSplit());
+        private void MakeMaskSplit()
         {
-            AppSt.Default.Save();
+            if (this.DataContext != null)
+            {
+                MakeMeshSplitDialog makeMeshSplitDialog = new MakeMeshSplitDialog() { DataContext = this.DataContext };
+                makeMeshSplitDialog.Show();
+            }
         }
 
+        public ICommand ClearMasks => new ActionCommand(() => Clear());
 
-        private void MakeMaskSplit(object sender, RoutedEventArgs e)
+        private void Clear()
         {
-            MakeMeshSplitDialog makeMeshSplitDialog = new MakeMeshSplitDialog() { DataContext = this.DataContext };
-            makeMeshSplitDialog.Show();
-        }
-
-        private void Clear(object sender, RoutedEventArgs e)
-        {
-            if (sender is FrameworkElement frameworkElement && frameworkElement.DataContext is IList enumerable) enumerable.Clear();
+            if (this.DataContext is ProjectionScene scene)
+            {
+                scene.Masks.Clear();
+            }
         }
 
         private void SendLayer(object sender, RoutedEventArgs e)
@@ -95,6 +98,14 @@ namespace CadProjectorViewer.Panels.DevicePanel.LeftPanels
                 };
 
                 scene.RunTask(sceneTask, false);
+            }
+        }
+
+        private async void ReconnectButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (sender is Button button && button.DataContext is IConnected connected)
+            {
+                await connected.Reconnect();
             }
         }
     }

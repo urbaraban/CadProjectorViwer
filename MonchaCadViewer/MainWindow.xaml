@@ -226,7 +226,7 @@
                         <Setter Property="Padding" Value="2" />
                     </Style>
                 </TabControl.Resources>
-                <TabItem Header="Frame">
+                <TabItem Header="Scene Elements">
                     <Border  Style="{StaticResource Border}">
                         <leftpanels:FrameTree DataContext="{Binding ScenesCollection.SelectedScene}" />
                     </Border>

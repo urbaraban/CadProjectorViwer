@@ -4,6 +4,7 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:tb="http://www.hardcodet.net/taskbar"
     xmlns:CadProjectorViewer="clr-namespace:CadProjectorViewer"
     xmlns:convert="clr-namespace:CadProjectorViewer.Converters"
     xmlns:panels="clr-namespace:CadProjectorViewer.Panels"
@@ -12,6 +13,8 @@
     xmlns:rightpanel="clr-namespace:CadProjectorViewer.Panels.RightPanel"
     xmlns:configuration="clr-namespace:CadProjectorViewer.Panels.RightPanel.Configuration"
     xmlns:Properties="clr-namespace:CadProjectorViewer.Properties"
+    xmlns:device="clr-namespace:CadProjectorSDK.Device;assembly=CadProjectorSDK" 
+    xmlns:mesh="clr-namespace:CadProjectorSDK.Device.Mesh;assembly=CadProjectorSDK"
     DataContext="{Binding RelativeSource={RelativeSource Self}, Path=ProjectorHub}"
     x:Class="CadProjectorViewer.MainWindow"
     x:Name="MainWin"
@@ -23,21 +26,21 @@
     Icon="logo.png"
     ResizeMode="CanResizeWithGrip">
     <Controls:MetroWindow.InputBindings>
-        <KeyBinding 
+        <KeyBinding
             Modifiers="Ctrl" Key="V"
             Command="{Binding ElementName=MainWin, Path=PasteCommand}" />
         <KeyBinding
             Key="Q"
-            Command="{Binding ElementName=MainWin, Path=SelectNextCommand}"/>
+            Command="{Binding ElementName=MainWin, Path=SelectNextCommand}" />
         <KeyBinding
             Key="F"
-            Command="{Binding ElementName=MainWin, Path=FixSelectCommand}"/>
+            Command="{Binding ElementName=MainWin, Path=FixSelectCommand}" />
         <KeyBinding
             Key="Delete"
-            Command="{Binding ElementName=MainWin, Path=DeleteCommand}"/>
+            Command="{Binding ElementName=MainWin, Path=DeleteCommand}" />
         <KeyBinding
             Key="F5"
-            Command="{Binding ElementName=MainWin, Path=RefreshFrameCommand}"/>
+            Command="{Binding ElementName=MainWin, Path=RefreshFrameCommand}" />
     </Controls:MetroWindow.InputBindings>
     <Controls:MetroWindow.Resources>
         <ResourceDictionary>
@@ -93,16 +96,16 @@
                         <Separator />
                         <MenuItem Header="Save Moncha" Click="MenuSaveBtn_Click" />
                         <MenuItem Header="Save Moncha as..." Click="SaveAsItem_Click" />
-                        <MenuItem 
-                            Header="License" 
-                            Command="{Binding ElementName=MainWin, Path=ShowLicenceCommand}"/>
+                        <MenuItem
+                            Header="License"
+                            Command="{Binding ElementName=MainWin, Path=ShowLicenceCommand}" />
                         <Separator />
-                        <MenuItem Header="Close" Command="{Binding ElementName=MainWin, Path=Closed}" />
+                        <MenuItem Header="Close" Command="{Binding ElementName=MainWin, Path=ClosedCommand}" />
                     </MenuItem>
                     <MenuItem Header="Services">
-                        <MenuItem 
+                        <MenuItem
                                 Command="{Binding ElementName=MainWin, Path=RemoveOtherAppCommand}"
-                                Header="Remove other process"/>
+                                Header="Remove other process" />
                     </MenuItem>
                     <MenuItem x:Name="menuLanguage" Header="Language">
                     </MenuItem>
@@ -113,7 +116,7 @@
     </Controls:MetroWindow.LeftWindowCommands>
     <Controls:MetroWindow.RightWindowCommands>
         <Controls:WindowCommands>
-            <Label Margin="3"   Content="{Binding cl_moncha_path}" VerticalAlignment="Top" Grid.ColumnSpan="3" HorizontalContentAlignment="Right" RenderTransformOrigin="0.7,-1.217" FontSize="10">
+            <Label Margin="3" Content="{Binding cl_moncha_path}" VerticalAlignment="Top" Grid.ColumnSpan="3" HorizontalContentAlignment="Right" RenderTransformOrigin="0.7,-1.217" FontSize="10">
                 <Label.DataContext>
                     <Properties:Settings />
                 </Label.DataContext>
@@ -133,6 +136,9 @@
                 Toggled="ethernetToggle_Toggled"
                 MinWidth="0"
                 Margin="3,0,3,0" />
+            <Button
+                Content="T"
+                Command="{Binding ElementName=MainWin, Path=HideToTray}" />
         </Controls:WindowCommands>
     </Controls:MetroWindow.RightWindowCommands>
 
@@ -160,7 +166,7 @@
                 HorizontalAlignment="Right" />
 
             <DockPanel Margin="5" Grid.Row="0" LastChildFill="True">
-                <DockPanel 
+                <DockPanel
                     DockPanel.Dock="Right"
                     Margin="0,0,0,0" MinWidth="80">
                     <Button
@@ -168,27 +174,27 @@
                         Content="{DynamicResource edit_Clear}"
                          Command="{Binding ElementName=MainWin, Path=Clear}"
                         HorizontalAlignment="Stretch" />
-                    <Button 
+                    <Button
                         DockPanel.Dock="Top"
-                        x:Name="Line" 
+                        x:Name="Line"
                         Content="{DynamicResource edit_Line}"
                         Command="{Binding ElementName=MainWin, Path=LineCommand}" />
-                    <Button 
+                    <Button
                         DockPanel.Dock="Top"
-                        x:Name="RectBtn" 
-                        Content="{DynamicResource edit_Mask}" 
-                        Command="{Binding ElementName=MainWin, Path=MaskCommand}"/>
+                        x:Name="RectBtn"
+                        Content="{DynamicResource edit_Mask}"
+                        Command="{Binding ElementName=MainWin, Path=MaskCommand}" />
                 </DockPanel>
-                <Button 
+                <Button
                     DockPanel.Dock="Left"
-                    Content="{DynamicResource m_Open}" 
+                    Content="{DynamicResource m_Open}"
                     Command="{Binding ElementName=MainWin, Path=OpenCommand}"
                     MinWidth="99" VerticalAlignment="Stretch" />
             </DockPanel>
 
-            <TabControl x:Name="tabControl1" 
+            <TabControl x:Name="tabControl1"
                         Margin="0,0,0,0"
-                        
+
                         Grid.Column="1" Grid.Row="0">
                 <TabItem Header="Transform" FontSize="12">
                     <panels:CadObjectPanel DataContext="{Binding ScenesCollection.SelectedScene.SelectedObjects.LastSelectObject}"
@@ -204,7 +210,7 @@
                     Command="{Binding ElementName=MainWin, Path=PlayCommand}"
                     Background="{Binding ScenesCollection.SelectedScene.Play, Converter={StaticResource PlayBackConverter}}"
                     Grid.Column="2"
-                    Grid.Row="0"/>
+                    Grid.Row="0" />
 
             <TabControl
                 TabStripPlacement="Left"
@@ -242,7 +248,7 @@
                 </TabItem>
             </TabControl>
             <Border Grid.Column="1" Grid.Row="1" Style="{StaticResource Border}" Margin="0,3,0,0">
-                <canvaspanel:CanvasCollection DataContext="{Binding .}"/>
+                <canvaspanel:CanvasCollection DataContext="{Binding .}" />
             </Border>
 
             <panels:ScrollPanel x:Name="ContourScrollPanel" Margin="0,5,0,0" Grid.Column="1" Grid.Row="2" />
@@ -254,20 +260,19 @@
                             <panels:DeviceTab x:Name="DevicePanel" />
                         </TabItem>
                         <TabItem Header="Setting">
-                            <configuration:SceneSetting DataContext="{Binding ScenesCollection.SelectedScene}"/>
+                            <configuration:SceneSetting DataContext="{Binding ScenesCollection.SelectedScene}" />
                         </TabItem>
                     </TabControl>
-
                 </TabItem>
                 <TabItem Header="{DynamicResource common_Format}" FontSize="18">
                     <Grid Background="#FFE5E5E5">
                         <TabControl x:Name="TabItem">
                             <TabItem Header="Компас" FontSize="14">
                                 <StackPanel Background="#FFE5E5E5">
-                                    <Label 
-                                        x:Name="KmpsNameLbl" 
+                                    <Label
+                                        x:Name="KmpsNameLbl"
                                         Margin="5"
-                                        Content="{DynamicResource common_Empty}"/>
+                                        Content="{DynamicResource common_Empty}" />
                                     <Controls:ToggleSwitch
                                         x:Name="kmpsConnectToggle"
                                         Margin="5"
@@ -278,19 +283,18 @@
                                         </Controls:ToggleSwitch.DataContext>
                                     </Controls:ToggleSwitch>
                                     <DockPanel LastChildFill="True" Margin="5">
-                                        <Button 
-                                            x:Name="kmpsSelectBtn" 
+                                        <Button
+                                            x:Name="kmpsSelectBtn"
                                             Content="{DynamicResource common_Select}"
-                                            Width="125" Height="50" 
-                                            Click="kmpsSelectBtn_Click"/>
-                                        <Button 
+                                            Width="125" Height="50"
+                                            Click="kmpsSelectBtn_Click" />
+                                        <Button
                                             Margin="3,0"
-                                            x:Name="kmpsAddBtn" 
-                                            Content="{DynamicResource common_ADDIN}" 
-                                            Height="50" 
+                                            x:Name="kmpsAddBtn"
+                                            Content="{DynamicResource common_ADDIN}"
+                                            Height="50"
                                             Click="kmpsAddBtn_Click" />
                                     </DockPanel>
-
                                 </StackPanel>
                             </TabItem>
                             <TabItem Header="ILDA" FontSize="14">
@@ -305,30 +309,29 @@
                                         <Label
                                             DockPanel.Dock="Left"
                                             Margin="3"
-                                            Content="UDP Port:" 
-                                            HorizontalAlignment="Left"/>
+                                            Content="UDP Port:"
+                                            HorizontalAlignment="Left" />
 
-                                        <Controls:NumericUpDown x:Name="PortUpDn" 
+                                        <Controls:NumericUpDown x:Name="PortUpDn"
                                                                 DockPanel.Dock="Right"
-                                                                Value="{Binding ether_udp_port}" 
-                                                                Maximum="49151"  
-                                                                Minimum="1024" 
-                                                                Background="White" 
+                                                                Value="{Binding ether_udp_port}"
+                                                                Maximum="49151"
+                                                                Minimum="1024"
+                                                                Background="White"
                                                                 ValueChanged="PortUpDn_ValueChanged">
                                             <Controls:NumericUpDown.DataContext>
                                                 <Properties:Settings />
                                             </Controls:NumericUpDown.DataContext>
                                         </Controls:NumericUpDown>
-
                                     </DockPanel>
-                                    <Button 
-                                        x:Name="TcpListenBtn" 
-                                        Content="Listen" 
-                                        Height="50" 
+                                    <Button
+                                        x:Name="TcpListenBtn"
+                                        Content="Listen"
+                                        Height="50"
                                         Margin="15"
-                                        Click="TcpListenBtn_Click"/>
+                                        Click="TcpListenBtn_Click" />
                                     <TextBox x:Name="ByteBox" />
-                                    <Button Content="Read" Click="Button_Click"/>
+                                    <Button Content="Read" Click="Button_Click" />
                                 </StackPanel>
                             </TabItem>
                         </TabControl>
@@ -337,7 +340,7 @@
                 <TabItem Header="{DynamicResource common_Configuration}">
                     <TabControl>
                         <TabItem Header="Setting" FontSize="14">
-                            <configuration:AppDefaultSettingPanel/>
+                            <configuration:AppDefaultSettingPanel />
                         </TabItem>
                     </TabControl>
                 </TabItem>
@@ -345,7 +348,7 @@
                     <rightpanel:WorkFolderPanel />
                 </TabItem>
                 <TabItem Header="Log" FontSize="12">
-                    <rightpanel:LogPanel x:Name="LogPanel"/>
+                    <rightpanel:LogPanel x:Name="LogPanel" />
                 </TabItem>
             </TabControl>
 
@@ -362,6 +365,85 @@
                           Grid.Column="1"
                           HorizontalAlignment="Stretch"
                           Grid.Row="2" VerticalAlignment="Top" />
+            
+            <tb:TaskbarIcon
+                ToolTipText="2CUT"
+                x:Name ="ttip"
+                IconSource="logo.ico"
+                DoubleClickCommand="{Binding ElementName=MainWin, Path=ShowFromTray}"
+                LeftClickCommand="{Binding ElementName=MainWin, Path=RefreshFrameCommand}">
+                <tb:TaskbarIcon.Resources>
+                <HierarchicalDataTemplate 
+                x:Key="DeviceTree" 
+                DataType ="{x:Type device:LDevice}">
+                        <Border Margin="5">
+                            <StackPanel
+                        Orientation="Horizontal" 
+                        VerticalAlignment="Center">
+                                <CheckBox IsChecked="{Binding IsOn}" />
+                                <Button
+                            Margin="2,0"
+                            Content="&#xEDAB;"
+                                    Click="ReconnectButton_Click"
+                            FontFamily="Segoe MDL2 Assets"
+                            Width="{Binding ActualHeight, RelativeSource={RelativeSource Self}}" 
+                            />
+                                <TextBlock VerticalAlignment="Center"
+                            Text="&#xE714;"
+                            FontFamily="Segoe MDL2 Assets"/>
+                                <TextBlock  
+                                    VerticalAlignment="Center" Margin="5,0,0,0">
+                                    <TextBlock.Text>
+                                        <MultiBinding StringFormat="{}{0}_{1}">
+                                            <Binding Path="NameID"/>
+                                            <Binding Path="IPAddress"/>
+                                        </MultiBinding>
+                                    </TextBlock.Text>
+                                </TextBlock>
+                            </StackPanel>
+                        </Border>
+                    </HierarchicalDataTemplate>
+                </tb:TaskbarIcon.Resources>
+                <!--
+    We can use arbitrary UI elements as Popups.
+    Popups stay open if the user moves away from the tray area
+  -->
+                <tb:TaskbarIcon.TrayPopup>
+                    <Border
+                        Background="White"
+                        BorderBrush="Orange"
+                        BorderThickness="2"
+                        CornerRadius="1">
+                        <ItemsControl
+                            ItemsSource="{Binding ScenesCollection}">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <TreeView>
+                                        <TreeViewItem 
+                                            Header="{Binding NameID}"
+                                            ItemsSource="{Binding Devices}"
+                                            IsExpanded="True"
+                                            ItemTemplate="{StaticResource ResourceKey=DeviceTree}"/>
+                                        <TreeView.ItemTemplate>
+                                            <DataTemplate>
+                                                <TextBlock Text="{Binding NameID}"/>
+                                            </DataTemplate>
+                                        </TreeView.ItemTemplate>
+                                    </TreeView>
+                                    
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                            
+                        </ItemsControl>
+                    </Border>
+                </tb:TaskbarIcon.TrayPopup>
+                <tb:TaskbarIcon.ContextMenu>
+                    <ContextMenu DataContext="{Binding Path=(tb:TaskbarIcon.ParentTaskbarIcon).Tag, RelativeSource={RelativeSource Self}}">
+                        <MenuItem Header="Выключить/Включить" />
+                        <MenuItem Header="Закрыть" Command="{Binding ElementName=MainWin, Path=ClosedCommand}"/>
+                    </ContextMenu>
+                </tb:TaskbarIcon.ContextMenu>
+            </tb:TaskbarIcon>
         </Grid>
     </Border>
 </Controls:MetroWindow>

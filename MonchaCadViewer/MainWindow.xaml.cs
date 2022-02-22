@@ -50,6 +50,7 @@ using System.Drawing.Imaging;
 using System.Runtime.CompilerServices;
 using CadProjectorSDK.UDP.Scenario;
 using CadProjectorViewer.Panels.RightPanel;
+using CadProjectorSDK.Interfaces;
 
 namespace CadProjectorViewer
 {
@@ -533,7 +534,7 @@ namespace CadProjectorViewer
 
         private void BrowseMWSItem_Click(object sender, RoutedEventArgs e) => FileLoad.LoadMoncha(ProjectorHub, true);
 
-        public ICommand Closed => new ActionCommand(() => {
+        public ICommand ClosedCommand => new ActionCommand(() => {
             ProjectorHub.Disconnect();
             this.Close();
         });
@@ -547,6 +548,24 @@ namespace CadProjectorViewer
         public ICommand RefreshFrameCommand => new ActionCommand(() => {
             ProjectorHub.ScenesCollection.SelectedScene.Refresh();
         });
+
+        public ICommand HideToTray => new ActionCommand(() => {
+            this.WindowState = WindowState.Minimized;
+            this.ShowInTaskbar = false;
+            this.Hide();
+        });
+
+        public ICommand ShowFromTray => new ActionCommand(() =>
+        {
+            this.Show();
+            this.WindowState = WindowState.Normal;
+            this.ShowInTaskbar = true;
+        });
+
+        protected override void OnStateChanged(EventArgs e)
+        {
+            base.OnStateChanged(e);
+        }
 
         public ICommand ShowLicenceCommand => new ActionCommand(()=> {
             RequestLicenseCode requestLicenseCode = new RequestLicenseCode() { DataContext = ProjectorHub.lockKey };
@@ -666,6 +685,14 @@ namespace CadProjectorViewer
             catch
             {
                 Log?.Invoke("bytes buulshit", "bytesreader");
+            }
+        }
+
+        private async void ReconnectButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (sender is Button button && button.DataContext is IConnected connected)
+            {
+                await connected.Reconnect();
             }
         }
     }

@@ -228,7 +228,7 @@ namespace CadProjectorViewer
             {
                 CadGroup cadGeometries = 
                     new CadGroup(
-                        await ContourCalc.GetGeometry(this.kmpsAppl.Doc, ProjectorHub.ProjectionSetting.PointStep.MX, false, true),
+                        await ContourCalc.GetGeometry(this.kmpsAppl.Doc, ProjectorHub.ScenesCollection.SelectedScene.ProjectionSetting.PointStep.MX, false, true),
                         this.kmpsAppl.Doc.D7.Name);
 
                 SceneTask sceneTask = new SceneTask()
@@ -253,11 +253,11 @@ namespace CadProjectorViewer
             {
                 GCCollection gCObjects = new GCCollection(this.kmpsAppl.Doc.D7.Name);
 
-                gCObjects.Add(new GeometryElement(await ContourCalc.GetGeometry(this.kmpsAppl.Doc, ProjectorHub.ProjectionSetting.PointStep.MX, true, true), "Kompas"));
+                gCObjects.Add(new GeometryElement(await ContourCalc.GetGeometry(this.kmpsAppl.Doc, ProjectorHub.ScenesCollection.SelectedScene.ProjectionSetting.PointStep.MX, true, true), "Kompas"));
 
                 CadGroup cadGeometries =
                       new CadGroup(
-                          await ContourCalc.GetGeometry(this.kmpsAppl.Doc, ProjectorHub.ProjectionSetting.PointStep.MX, true, true),
+                          await ContourCalc.GetGeometry(this.kmpsAppl.Doc, ProjectorHub.ScenesCollection.SelectedScene.ProjectionSetting.PointStep.MX, true, true),
                           this.kmpsAppl.Doc.D7.Name);
 
                 SceneTask sceneTask = new SceneTask()
@@ -424,14 +424,14 @@ namespace CadProjectorViewer
             
             if (saveFileDialog.FileName != string.Empty)
             {
-               /* for (int i = 0; i < ProjectorHub.Devices.Count; i++)
+                LDevice[] devices = ProjectorHub.ScenesCollection.SelectedScene.Devices;
+                for (int i = 0; i < devices.Length; i++)
                 {
                     ildaWriter.Write(($"{saveFileDialog.FileName.Replace(".ild", string.Empty)}_{i}.ild"), 
-                        new List<LFrame>() { await LFrameConverter.SolidLFrame(
-                            LFrameConverter.GetPointsObjects(this.ProjectorHub.Devices[i].RenderObjects), 
-                            this.ProjectorHub.Devices[i], this.ProjectorHub.Devices[i].ScanRate / this.ProjectorHub.Devices[i].FPS) 
+                        new List<LFrame>() { 
+                            await LFrameConverter.SolidLFrame(devices[i].RenderObjects, devices[i]) 
                         ?? new LFrame() } , 5);
-                }*/
+                }
             }
         }
 
@@ -542,7 +542,7 @@ namespace CadProjectorViewer
 
         public ICommand FixSelectCommand => new ActionCommand(ProjectorHub.ScenesCollection.SelectedScene.Fix);
 
-        public ICommand SelectNextCommand => new ActionCommand(ProjectorHub.ScenesCollection.SelectedScene.SelectNext);
+        public ICommand SelectNextCommand => new ActionCommand(()=> { ProjectorHub.ScenesCollection.SelectedScene.SelectNext(); });
 
         public ICommand RefreshFrameCommand => new ActionCommand(() => {
             ProjectorHub.ScenesCollection.SelectedScene.Refresh();
@@ -623,7 +623,7 @@ namespace CadProjectorViewer
             openFile.FileName = null;
             if (openFile.ShowDialog() == WinForms.DialogResult.OK)
             {
-                if (await FileLoad.GetFilePath(openFile.FileName) is UidObject Obj)
+                if (await FileLoad.GetFilePath(openFile.FileName, projectorHub.ScenesCollection.SelectedScene.ProjectionSetting.PointStep.MX) is UidObject Obj)
                 {
                     SceneTask sceneTask = new SceneTask()
                     {

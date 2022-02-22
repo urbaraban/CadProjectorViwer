@@ -56,8 +56,8 @@ namespace CadProjectorViewer.CanvasObj
             _Visuals = new VisualCollection(this);
             _Anchors = new List<CanvasAnchor>();
 
-            _Anchors.Add(new CanvasAnchor(new CadAnchor(line.Line.P1) { GetThinkess = line.CadObject.GetThinkess }));
-            _Anchors.Add(new CanvasAnchor(new CadAnchor(line.Line.P2) { GetThinkess = line.CadObject.GetThinkess }));
+            _Anchors.Add(new CanvasAnchor(new CadAnchor(line.Line.P1) { GetThinkess = line.Line.GetThinkess }));
+            _Anchors.Add(new CanvasAnchor(new CadAnchor(line.Line.P2) { GetThinkess = line.Line.GetThinkess }));
 
             line.Line.PropertyChanged += Line_PropertyChanged;
 

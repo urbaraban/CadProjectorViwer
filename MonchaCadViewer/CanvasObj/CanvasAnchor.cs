@@ -17,7 +17,7 @@ namespace CadProjectorViewer.CanvasObj
     {
         private RectangleGeometry rectangle;
 
-        public override Pen myPen { get; } = new Pen(null, 0);
+        public override Pen myPen { get; } = new Pen(null, 2);
         public override Brush myBack
         {
             get
@@ -32,10 +32,29 @@ namespace CadProjectorViewer.CanvasObj
         {
             get
             {
-                double _size = CadObject.GetThinkess() * AppSt.Default.default_thinkess_percent * 2 * AppSt.Default.anchor_size;
+                double _size = CadObject.Thinkess() * AppSt.Default.default_thinkess_percent * 2 * AppSt.Default.anchor_size;
                 return  new Rect(-_size / 2, -_size / 2, _size, _size);
             }
 
+        }
+
+        public override double X
+        {
+            get => Point.MX;
+            set
+            {
+                Point.MX = value;
+                OnPropertyChanged("X");
+            }
+        }
+        public override double Y
+        {
+            get => Point.MY;
+            set
+            {
+                Point.MY = value;
+                OnPropertyChanged("Y");
+            }
         }
 
         public new object ToolTip => $"X:{Point.X} Y:{Point.Y}";
@@ -58,8 +77,8 @@ namespace CadProjectorViewer.CanvasObj
             Canvas.SetZIndex(this, 999);
             this.RenderTransformOrigin = new Point(1, 1);
 
-            this.CadObject.Translate.OffsetX = this.Point.X;
-            this.CadObject.Translate.OffsetY = this.Point.Y;
+            this.CadObject.Translate.OffsetX = this.Point.MX;
+            this.CadObject.Translate.OffsetY = this.Point.MY;
 
             this.ContextMenuClosing += DotShape_ContextMenuClosing;
         }
@@ -97,9 +116,9 @@ namespace CadProjectorViewer.CanvasObj
 
         protected override void OnRender(DrawingContext drawingContext)
         {
-            double _size = CadObject.GetThinkess() * AppSt.Default.default_thinkess_percent * 4 * AppSt.Default.anchor_size;
+            double _size = (this.CadObject.GetThinkess?.Invoke() ?? 1) * AppSt.Default.default_thinkess_percent * 4 * AppSt.Default.anchor_size;
             drawingContext.PushTransform(new TranslateTransform(X, Y));
-            drawingContext.DrawGeometry(myBack, myPen, new RectangleGeometry(new Rect(-_size / 2, -_size / 2, _size, _size)));
+            drawingContext.DrawGeometry(myBack, new Pen(Brushes.Black, _size * 0.1), new RectangleGeometry(new Rect(-_size / 2, -_size / 2, _size, _size)));
         }
     }
 }

@@ -58,9 +58,10 @@ namespace CadProjectorViewer.CanvasObj
 
         public bool ActiveObject { get; private set; }
 
+
         public double StrokeThinkess
         {
-            get => strokethinkess <= 0 ? CadObject.GetThinkess() * AppSt.Default.default_thinkess_percent : strokethinkess;
+            get => strokethinkess <= 0 ? (this.CadObject.GetThinkess?.Invoke() ?? 1) * AppSt.Default.default_thinkess_percent : strokethinkess;
             set
             {
                 strokethinkess = value;
@@ -327,7 +328,6 @@ namespace CadProjectorViewer.CanvasObj
         {
             this.CadObject = uidObject;
             this.DataContext = uidObject;
-
             this.ContextMenu = new System.Windows.Controls.ContextMenu();
             ContextMenuLib.CadObjMenu(this.ContextMenu);
             if (uidObject is CadGroup group)
@@ -408,7 +408,7 @@ namespace CadProjectorViewer.CanvasObj
 
         protected void DrawSize(DrawingContext drawingContext, Point point1, Point point2)
         {
-            double thinkess = CadObject.GetThinkess() / 3d / Math.Abs(this.CadObject.Scale.ScaleX * Math.Max(this.CadObject.ScaleX, this.CadObject.ScaleY));
+            double thinkess = CadObject.Thinkess() / 3d / Math.Abs(this.CadObject.Scale.ScaleX * Math.Max(this.CadObject.ScaleX, this.CadObject.ScaleY));
             thinkess = thinkess <= 0 ? 1 : thinkess;
 
             //drawingContext.DrawLine(new Pen(Brushes.DarkGray, thinkess), point1, point2);

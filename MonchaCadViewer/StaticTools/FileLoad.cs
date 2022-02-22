@@ -92,7 +92,7 @@ namespace CadProjectorViewer.StaticTools
             return null;
         }
 
-        public static async Task<UidObject> GetDrop(object obj)
+        public static async Task<UidObject> GetDrop(object obj, double step)
         {
             if (obj is DragEventArgs dragEvent)
             {
@@ -103,7 +103,7 @@ namespace CadProjectorViewer.StaticTools
                         {
                             if (File.Exists(fileLoc))
                             {
-                                return await GetFilePath(fileLoc);
+                                return await GetFilePath(fileLoc, step);
                             }
                         }
                     }
@@ -116,9 +116,9 @@ namespace CadProjectorViewer.StaticTools
             return await Task.FromResult<UidObject>(null);
         }
 
-        public static async Task<UidObject> GetFilePath(string FilePath)
+        public static async Task<UidObject> GetFilePath(string FilePath, double step)
         {
-            if (await FileLoad.GetObject(FilePath) is object obj)
+            if (await FileLoad.GetObject(FilePath, step) is object obj)
             {
                 if (await ConvertObject(obj) is UidObject uidObject)
                 {
@@ -131,9 +131,9 @@ namespace CadProjectorViewer.StaticTools
             return null;
         }
 
-        public static async Task<UidObject> GetUDPString(string Filepath, bool Filename)
+        public static async Task<UidObject> GetUDPString(string Filepath, bool Filename, double step)
         {
-            return await GetFilePath(Filename == true ? $"{AppSt.Default.save_work_folder}\\{Filepath}" : Filepath);
+            return await GetFilePath(Filename == true ? $"{AppSt.Default.save_work_folder}\\{Filepath}" : Filepath, step);
         }
 
         private static async Task<UidObject> ConvertObject(object obj)
@@ -149,11 +149,11 @@ namespace CadProjectorViewer.StaticTools
             return await Task.FromResult<UidObject>(null);
         }
 
-        private async static Task<object> GetObject(string Filename)
+        private async static Task<object> GetObject(string Filename, double step)
         {
             GCFormat gCFormat = GCTools.GetConverter(Filename, MyFormat);
 
-            object obj = await gCFormat.ReadFile?.Invoke(Filename, ProjectorHub.ProjectionSetting.PointStep.MX);
+            object obj = await gCFormat.ReadFile?.Invoke(Filename, step);
 
             if (obj != null) return obj;
             else return new GCCollection(string.Empty);

@@ -51,6 +51,7 @@ using System.Runtime.CompilerServices;
 using CadProjectorSDK.UDP.Scenario;
 using CadProjectorViewer.Panels.RightPanel;
 using CadProjectorSDK.Interfaces;
+using CadProjectorSDK.Scenes.Commands;
 
 namespace CadProjectorViewer
 {
@@ -284,7 +285,9 @@ namespace CadProjectorViewer
             switch (e.Key)
             {
                 case Key.W:
-                    ProjectorHub.ScenesCollection.SelectedScene.MoveSelect(0, -step * _mult);
+                    ProjectorHub.ScenesCollection.SelectedScene.HistoryCommands.Add(
+                        new MovingCommand(ProjectorHub.ScenesCollection.SelectedScene.SelectedObjects.LastSelectObject,
+                        0, -step * _mult));
                     break;
                 case Key.S:
                     ProjectorHub.ScenesCollection.SelectedScene.MoveSelect(0, step * _mult);
@@ -294,6 +297,12 @@ namespace CadProjectorViewer
                     break;
                 case Key.D:
                     ProjectorHub.ScenesCollection.SelectedScene.MoveSelect(step * _mult, 0);
+                    break;
+                case Key.Z:
+                    if (Keyboard.Modifiers == ModifierKeys.Control)
+                    {
+                        ProjectorHub.ScenesCollection.SelectedScene.HistoryCommands.UndoLast();
+                    }
                     break;
                 case Key.OemPlus:
                     break;
@@ -394,6 +403,7 @@ namespace CadProjectorViewer
 
         protected override void OnClosed(EventArgs e)
         {
+            this.ShowInTaskbar = false;
             ProjectorHub.Disconnect();
             GC.Collect();
             GC.WaitForPendingFinalizers();

@@ -14,7 +14,6 @@
     xmlns:configuration="clr-namespace:CadProjectorViewer.Panels.RightPanel.Configuration"
     xmlns:Properties="clr-namespace:CadProjectorViewer.Properties"
     xmlns:device="clr-namespace:CadProjectorSDK.Device;assembly=CadProjectorSDK" 
-    xmlns:mesh="clr-namespace:CadProjectorSDK.Device.Mesh;assembly=CadProjectorSDK"
     DataContext="{Binding RelativeSource={RelativeSource Self}, Path=ProjectorHub}"
     x:Class="CadProjectorViewer.MainWindow"
     x:Name="MainWin"
@@ -24,7 +23,8 @@
     Height="700" Width="999"
     WindowStartupLocation="CenterScreen"
     Icon="logo.png"
-    ResizeMode="CanResizeWithGrip">
+    ResizeMode="CanResizeWithGrip"
+    ShowInTaskbar ="False">
     <Controls:MetroWindow.InputBindings>
         <KeyBinding
             Modifiers="Ctrl" Key="V"

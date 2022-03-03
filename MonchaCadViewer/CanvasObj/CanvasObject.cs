@@ -20,6 +20,7 @@ using System.Windows.Media.Media3D;
 using CadProjectorSDK.CadObjects.Abstract;
 using CadProjectorSDK.Interfaces;
 using CadProjectorSDK.Device.Mesh;
+using CadProjectorSDK.Scenes.Commands;
 
 namespace CadProjectorViewer.CanvasObj
 {
@@ -202,6 +203,8 @@ namespace CadProjectorViewer.CanvasObj
                 }
                 else
                 {
+                    Point tPoint = e.GetPosition(this);
+                    this.CadObject.SendCommand(new MovingCommand(this.CadObject, this.CadObject.X - this.BasePos.X, this.CadObject.Y - this.BasePos.Y) { Status = true });
                     this.WasMove = false;
                     this.Editing = false;
                     this.ReleaseMouseCapture();

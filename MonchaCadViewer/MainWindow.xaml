@@ -24,7 +24,7 @@
     WindowStartupLocation="CenterScreen"
     Icon="logo.png"
     ResizeMode="CanResizeWithGrip"
-    ShowInTaskbar ="False">
+    ShowInTaskbar ="True">
     <Controls:MetroWindow.InputBindings>
         <KeyBinding
             Modifiers="Ctrl" Key="V"

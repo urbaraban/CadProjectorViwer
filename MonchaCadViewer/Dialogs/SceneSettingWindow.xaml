@@ -10,8 +10,9 @@
         ResizeMode="CanResizeWithGrip"
         x:Name="SceneSetting"
         Title="SceneSettingWindow"
-        Width="350"
-        SizeToContent="Height">
+        SizeToContent="WidthAndHeight"
+        d:Height="150"
+        d:Width="250">
     <Window.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -22,6 +23,12 @@
             </ResourceDictionary.MergedDictionaries>
             <Style TargetType="Button">
                 <Setter Property="Margin" Value="5,3"/>
+            </Style>
+            <Style TargetType="ListBox">
+                <Setter Property="BorderThickness" Value="1"/>
+                <Setter Property="BorderBrush" Value="LightGray"/>
+                <Setter Property="MinHeight" Value="150"/>
+                <Setter Property="MinWidth" Value="150"/>
             </Style>
         </ResourceDictionary>
     </Window.Resources>
@@ -74,59 +81,61 @@
                                 <ColumnDefinition Width="2*"/>
                                 <ColumnDefinition Width="10*"/>
                             </Grid.ColumnDefinitions>
-                            <ListBox
-                                Grid.Column="0"
-                                DataContext="{Binding ElementName=SceneSetting, Path=DataContext}"
-                                ItemsSource="{Binding Devices}"
-                                SelectedItem="{Binding SelectDevice}"
-                                DisplayMemberPath="NameID">
-                                <ListBox.ItemTemplate>
-                                    <DataTemplate>
-                                        <TextBlock>
-                                            <TextBlock.Text>
-                                                <MultiBinding StringFormat="{}{0}: {1}">
-                                                    <Binding Path="NameID"/>
-                                                    <Binding Path="IPAddress"/>
-                                                </MultiBinding>
-                                            </TextBlock.Text>
-                                        </TextBlock>
-                                    </DataTemplate>
-                                </ListBox.ItemTemplate>
-                            </ListBox>
+                            <Border Grid.Column="0">
+                                <ListBox
+                                    DataContext="{Binding ElementName=SceneSetting, Path=DataContext}"
+                                    ItemsSource="{Binding Devices}"
+                                    SelectedItem="{Binding SelectDevice}"
+                                    DisplayMemberPath="NameID">
+                                    <ListBox.ItemTemplate>
+                                        <DataTemplate>
+                                            <TextBlock>
+                                                <TextBlock.Text>
+                                                    <MultiBinding StringFormat="{}{0}: {1}">
+                                                        <Binding Path="NameID"/>
+                                                        <Binding Path="IPAddress"/>
+                                                    </MultiBinding>
+                                                </TextBlock.Text>
+                                            </TextBlock>
+                                        </DataTemplate>
+                                    </ListBox.ItemTemplate>
+                                </ListBox>
+                            </Border>
                             <DockPanel 
                                 Grid.Column="1"
                                 VerticalAlignment="Center">
-                            <Button 
-                    Content="&#xe76c;"
-                    Command="{Binding ElementName=SceneSetting, Path=MigrateDeviceCommand}"
-                    FontFamily="Segoe MDL2 Assets"
-                    FontSize="14"
-                    DockPanel.Dock="Top"/>
-                            <Button 
-                    Content="&#xe76b;"
-                    Command="{Binding ElementName=SceneSetting, Path=RemoveDeviceCommand}"
-                    FontFamily="Segoe MDL2 Assets"
-                    FontSize="14"
-                    DockPanel.Dock="Bottom"/>
+                                <Button 
+                                    Content="&#xe76c;"
+                                    Command="{Binding ElementName=SceneSetting, Path=MigrateDeviceCommand}"
+                                    FontFamily="Segoe MDL2 Assets"
+                                    FontSize="14"
+                                    DockPanel.Dock="Top"/>
+                                            <Button 
+                                    Content="&#xe76b;"
+                                    Command="{Binding ElementName=SceneSetting, Path=RemoveDeviceCommand}"
+                                    FontFamily="Segoe MDL2 Assets"
+                                    FontSize="14"
+                                    DockPanel.Dock="Bottom"/>
                         </DockPanel>
-                        <ListBox
-                            Grid.Column="2"
-                            ItemsSource="{Binding Devices}"
-                            SelectedItem="{Binding SelectDevice}"
-                            DisplayMemberPath="NameID">
-                            <ListBox.ItemTemplate>
-                                <DataTemplate>
-                                    <TextBlock>
-                                        <TextBlock.Text>
-                                            <MultiBinding StringFormat="{}{0}: {1}">
-                                                <Binding Path="NameID"/>
-                                                <Binding Path="IPAddress"/>
-                                            </MultiBinding>
-                                        </TextBlock.Text>
-                                    </TextBlock>
-                                </DataTemplate>
-                            </ListBox.ItemTemplate>
-                            </ListBox>
+                            <Border Grid.Column="2">
+                                <ListBox
+                                    ItemsSource="{Binding Devices}"
+                                    SelectedItem="{Binding SelectDevice}"
+                                    DisplayMemberPath="NameID">
+                                    <ListBox.ItemTemplate>
+                                        <DataTemplate>
+                                            <TextBlock>
+                                                <TextBlock.Text>
+                                                    <MultiBinding StringFormat="{}{0}: {1}">
+                                                        <Binding Path="NameID"/>
+                                                        <Binding Path="IPAddress"/>
+                                                    </MultiBinding>
+                                                </TextBlock.Text>
+                                            </TextBlock>
+                                        </DataTemplate>
+                                    </ListBox.ItemTemplate>
+                                    </ListBox>
+                            </Border>
                         </Grid>
                 </DockPanel>
             </DataTemplate>

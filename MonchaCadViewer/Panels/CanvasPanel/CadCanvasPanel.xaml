@@ -7,6 +7,7 @@
              xmlns:canvaspanel="clr-namespace:CadProjectorViewer.Panels.CanvasPanel"
              xmlns:scenes="clr-namespace:CadProjectorSDK.Scenes;assembly=CadProjectorSDK" xmlns:converters="clr-namespace:CadProjectorViewer.Converters"
              d:DataContext="{d:DesignInstance Type=scenes:ProjectionScene}"
+             x:Name="CanvasPanel"
              mc:Ignorable="d" 
              d:DesignHeight="400" d:DesignWidth="400">
     <UserControl.Resources>
@@ -20,20 +21,34 @@
             </Style>
         </ResourceDictionary>
     </UserControl.Resources>
-    <Grid Margin="0" Background="LightGray" ClipToBounds="True" >
+    <Grid Margin="0" Background="Gray" ClipToBounds="True" >
         <Grid.RowDefinitions>
             <RowDefinition Height="40"/>
             <RowDefinition/>
             <RowDefinition Height="25"/>
         </Grid.RowDefinitions>
-        <DockPanel Panel.ZIndex="99">
+        <DockPanel 
+            Grid.Row="0"
+            Panel.ZIndex="99"
+            Background="LightGray">
             <Button x:Name="RefreshBtn" 
                     FontFamily="Segoe MDL2 Assets"
                     Content="&#xE72C;" 
-                     Width="{Binding ActualHeight, RelativeSource={RelativeSource Self}}"   
+                    Width="{Binding ActualHeight, RelativeSource={RelativeSource Self}}"   
                     Margin="3" 
                     Panel.ZIndex="999" FontSize="18"
-                    Click="RefreshBtn_Click"/>
+                    Command="{Binding ElementName=CanvasPanel, Path=RefreshFrameCommand}"/>
+            <TextBlock Text="{Binding SceneAction}" 
+                       Width="80"
+                       Margin="3"
+                       TextAlignment="Right"
+                       VerticalAlignment="Center"/>
+            <Button Content="X"
+                    Background="Transparent"
+                    BorderBrush="Transparent"
+                    Foreground="Red"
+                    Command="{Binding ElementName=CanvasPanel, Path=CancelActionCommand}"
+                     Width="{Binding ActualHeight, RelativeSource={RelativeSource Self}}"/>
             <StackPanel 
                 Orientation="Horizontal" FlowDirection="RightToLeft" >
 
@@ -57,7 +72,10 @@
                  />
             </StackPanel>
         </DockPanel>
-     <Viewbox x:Name="CanvasBox" Grid.RowSpan="3" Stretch="Uniform" StretchDirection="Both" >
+     <Viewbox x:Name="CanvasBox" 
+              Grid.Row="1" Grid.RowSpan="3"
+              Margin="10"
+              Stretch="Uniform" StretchDirection="Both" >
             <Grid x:Name="CanvasGrid" Background="Red"
                   Width="{Binding Size.Width}"
                   Height="{Binding Size.Height}"

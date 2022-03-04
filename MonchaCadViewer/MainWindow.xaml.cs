@@ -290,13 +290,19 @@ namespace CadProjectorViewer
                         0, -step * _mult));
                     break;
                 case Key.S:
-                    ProjectorHub.ScenesCollection.SelectedScene.MoveSelect(0, step * _mult);
+                    ProjectorHub.ScenesCollection.SelectedScene.HistoryCommands.Add(
+                        new MovingCommand(ProjectorHub.ScenesCollection.SelectedScene.SelectedObjects.LastSelectObject,
+                        0, step * _mult));
                     break;
                 case Key.A:
-                    ProjectorHub.ScenesCollection.SelectedScene.MoveSelect(-step * _mult, 0);
+                    ProjectorHub.ScenesCollection.SelectedScene.HistoryCommands.Add(
+                        new MovingCommand(ProjectorHub.ScenesCollection.SelectedScene.SelectedObjects.LastSelectObject,
+                        -step * _mult, 0));
                     break;
                 case Key.D:
-                    ProjectorHub.ScenesCollection.SelectedScene.MoveSelect(step * _mult, 0);
+                    ProjectorHub.ScenesCollection.SelectedScene.HistoryCommands.Add(
+                        new MovingCommand(ProjectorHub.ScenesCollection.SelectedScene.SelectedObjects.LastSelectObject,
+                        step * _mult, 0));
                     break;
                 case Key.Z:
                     if (Keyboard.Modifiers == ModifierKeys.Control)
@@ -570,6 +576,8 @@ namespace CadProjectorViewer
             this.Show();
             this.WindowState = WindowState.Normal;
             this.ShowInTaskbar = true;
+            this.Topmost = true;
+            this.Topmost = false;
         });
 
         protected override void OnStateChanged(EventArgs e)

@@ -38,7 +38,7 @@
                     Margin="3" 
                     Panel.ZIndex="999" FontSize="18"
                     Command="{Binding ElementName=CanvasPanel, Path=RefreshFrameCommand}"/>
-            <TextBlock Text="{Binding SceneAction}" 
+            <TextBlock Text="{Binding AlreadyAction}" 
                        Width="80"
                        Margin="3"
                        TextAlignment="Right"
@@ -75,11 +75,12 @@
      <Viewbox x:Name="CanvasBox" 
               Grid.Row="1" Grid.RowSpan="3"
               Margin="10"
+              ClipToBounds="True"
               Stretch="Uniform" StretchDirection="Both" >
             <Grid x:Name="CanvasGrid" Background="Red"
                   Width="{Binding Size.Width}"
                   Height="{Binding Size.Height}"
-                  Cursor="{Binding SceneAction, Converter={StaticResource CursorAction}}">
+                  Cursor="{Binding AlreadyAction, Converter={StaticResource CursorAction}}">
                 <Rectangle Fill="White"/>
                 <Canvas 
                     x:Name="BackCanvas" 

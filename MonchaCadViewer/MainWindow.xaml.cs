@@ -52,6 +52,7 @@ using CadProjectorSDK.UDP.Scenario;
 using CadProjectorViewer.Panels.RightPanel;
 using CadProjectorSDK.Interfaces;
 using CadProjectorSDK.Scenes.Commands;
+using CadProjectorSDK.Scenes.Actions;
 
 namespace CadProjectorViewer
 {
@@ -367,7 +368,7 @@ namespace CadProjectorViewer
                     }
                     break;
                 case Key.Escape:
-                    ProjectorHub.ScenesCollection.SelectedScene.SceneAction = SceneAction.NoAction;
+                    ProjectorHub.ScenesCollection.SelectedScene.Break();
                     break;
             }
         }
@@ -514,11 +515,11 @@ namespace CadProjectorViewer
         }
 
         public ICommand MaskCommand => new ActionCommand(() => {
-            ProjectorHub.ScenesCollection.SelectedScene.SceneAction = SceneAction.Mask;
+            ProjectorHub.ScenesCollection.SelectedScene.AlreadyAction = new DrawMaskAction(ProjectorHub.ScenesCollection.SelectedScene.Size);
         });
 
         public ICommand LineCommand => new ActionCommand(() => {
-            ProjectorHub.ScenesCollection.SelectedScene.SceneAction = SceneAction.Line;
+            ProjectorHub.ScenesCollection.SelectedScene.AlreadyAction = new DrawLineAction();
         });
 
 

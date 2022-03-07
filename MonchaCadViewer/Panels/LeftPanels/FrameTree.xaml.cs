@@ -74,6 +74,10 @@ namespace CadProjectorViewer.Panels.DevicePanel.LeftPanels
         {
             if (this.DataContext is ProjectionScene scene)
             {
+                for (int i = scene.Masks.Count - 1; i > -1; i -= 1)
+                {
+                    scene.Masks[i].Remove();
+                }
                 scene.Masks.Clear();
             }
         }

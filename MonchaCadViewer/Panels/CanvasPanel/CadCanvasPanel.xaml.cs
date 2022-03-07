@@ -262,7 +262,7 @@ namespace CadProjectorViewer.Panels.CanvasPanel
             SelectedScene.Refresh();
         });
         public ICommand CancelActionCommand => new ActionCommand(() => {
-            SelectedScene.SceneAction = SceneAction.NoAction;
+            SelectedScene.Break();
         });
 
     }
@@ -292,23 +292,8 @@ namespace CadProjectorViewer.Panels.CanvasPanel
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            if (value is SceneAction action)
-            {
-                switch (value)
-                {
-                    case SceneAction.NoAction:
-                        return Cursors.Arrow;
-                        break;
-                    case SceneAction.MoveCanvas:
-                        return Cursors.SizeAll;
-                        break;
-                    case SceneAction.Line:
-                    case SceneAction.Rectangle:
-                    case SceneAction.Mask:
-                        return Cursors.Cross;
-                        break;
-                };
-            }
+            if (value == null) return Cursors.Arrow;
+            else return Cursors.Cross;
             return Cursors.Arrow;
         }
 

@@ -36,7 +36,6 @@
                     Height="30"
                     Background="Transparent"
                     BorderThickness="0"
-                    Click="AllSolvedBtn_Click"
                     Content="&#xE73E;"
                     FontFamily="Segoe MDL2 Assets"
                     FontSize="18"

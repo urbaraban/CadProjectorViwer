@@ -259,7 +259,7 @@ namespace CadProjectorViewer.Panels.CanvasPanel
 
 
         public ICommand RefreshFrameCommand => new ActionCommand(() => {
-            SelectedScene.Refresh();
+            SelectedScene.Refresh(true);
         });
         public ICommand CancelActionCommand => new ActionCommand(() => {
             SelectedScene.Break();

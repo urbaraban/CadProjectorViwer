@@ -29,7 +29,7 @@ namespace CadProjectorViewer.Panels
     public partial class DeviceTab : UserControl
     {
         private ProjectorHub hub => (ProjectorHub)this.DataContext;
-        private LDevice device => (LDevice)DeviceCombo.SelectedItem;
+        private LProjector device => (LProjector)DeviceCombo.SelectedItem;
 
         public DeviceTab()
         {
@@ -64,7 +64,7 @@ namespace CadProjectorViewer.Panels
         {
             if (DeviceCombo.SelectedItem != null)
             {
-                DeviceSettingDialog deviceSettingDialog = new DeviceSettingDialog() { DataContext = (LDevice)DeviceCombo.SelectedItem };
+                DeviceSettingDialog deviceSettingDialog = new DeviceSettingDialog() { DataContext = (LProjector)DeviceCombo.SelectedItem };
                 deviceSettingDialog.Show();
             }
         }

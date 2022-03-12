@@ -37,7 +37,9 @@ namespace CadProjectorViewer.CanvasObj
 
         protected override void OnRender(DrawingContext drawingContext)
         {
-            drawingContext.DrawLine(myPen, Line.P1.GetMPoint, Line.P2.GetMPoint);
+            drawingContext.DrawLine(myPen, 
+                new Point(this.Line.P1.MX, this.Line.P1.MY), 
+                new Point(this.Line.P2.MX, this.Line.P2.MY));
         }
     }
 
@@ -56,8 +58,11 @@ namespace CadProjectorViewer.CanvasObj
             _Visuals = new VisualCollection(this);
             _Anchors = new List<CanvasAnchor>();
 
-            _Anchors.Add(new CanvasAnchor(new CadAnchor(line.Line.P1) { GetThinkess = line.Line.GetThinkess }));
-            _Anchors.Add(new CanvasAnchor(new CadAnchor(line.Line.P2) { GetThinkess = line.Line.GetThinkess }));
+            line.Line.P1.GetThinkess = line.Line.GetThinkess;
+            line.Line.P2.GetThinkess = line.Line.GetThinkess;
+
+            _Anchors.Add(new CanvasAnchor(line.Line.P1));
+            _Anchors.Add(new CanvasAnchor(line.Line.P2));
 
             line.Line.PropertyChanged += Line_PropertyChanged;
 

@@ -7,7 +7,7 @@
     xmlns:Controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
     xmlns:cadprojectorsdk="clr-namespace:CadProjectorSDK;assembly=CadProjectorSDK" xmlns:converters="clr-namespace:CadProjectorViewer.Converters"
     x:Class="CadProjectorViewer.Panels.DeviceTab"
-    d:DataContext="{d:DesignInstance Type={x:Type dvc:LDevice}}"
+    d:DataContext="{d:DesignInstance Type={x:Type dvc:LProjector}}"
     Padding="0"
     d:DesignHeight="550"
     d:DesignWidth="300"
@@ -76,8 +76,8 @@
                     d:DataContext="{d:DesignInstance Type={x:Type cadprojectorsdk:ProjectorHub}}"
                     DockPanel.Dock="Left"
                     SelectedValuePath="NameID"
-                    SelectedItem="{Binding ScenesCollection.SelectedScene.devices.SelectedItem}"
-                    ItemsSource="{Binding ScenesCollection.SelectedScene.Devices}">
+                    SelectedItem="{Binding ScenesCollection.SelectedScene.Projectors.SelectedItem}"
+                    ItemsSource="{Binding ScenesCollection.SelectedScene.Projectors}">
                     <ComboBox.ItemTemplate>
                         <DataTemplate>
                             <TextBlock>
@@ -308,7 +308,7 @@
                 <Controls:NumericUpDown
                     DockPanel.Dock="Right"
                     DataContext="{Binding SelectedItem, ElementName=DeviceCombo}"
-                    Value="{Binding ProjectionSetting.PointStep.MX}"
+                    Value="{Binding ProjectionSetting.PointStep.Value}"
                     Background="White"
                     Maximum="999"
                     Minimum="0.0001" />

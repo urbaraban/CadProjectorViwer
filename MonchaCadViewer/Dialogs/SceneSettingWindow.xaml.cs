@@ -33,7 +33,7 @@ namespace CadProjectorViewer.Dialogs
         public ICommand MigrateDeviceCommand => new ActionCommand(MigrateDevice);
         private async void MigrateDevice()
         {
-            if (Hub.SelectDevice is LDevice device)
+            if (Hub.Projectors.SelectedItem is LProjector device)
             {
                 foreach(ProjectionScene Scene in this.Hub.ScenesCollection)
                 {
@@ -43,7 +43,7 @@ namespace CadProjectorViewer.Dialogs
                     }
                 }
 
-                if (this.Hub.ScenesCollection.SelectedScene.Devices.Contains(device) == false)
+                if (this.Hub.ScenesCollection.SelectedScene.Projectors.Contains(device) == false)
                 {
                     this.Hub.ScenesCollection.SelectedScene.AddDevice(device);
                 }
@@ -53,7 +53,7 @@ namespace CadProjectorViewer.Dialogs
         public ICommand RemoveDeviceCommand => new ActionCommand(RemoveDevice);
         private async void RemoveDevice()
         {
-            if (this.Hub.ScenesCollection.SelectedScene.SelectDevice is LDevice device)
+            if (this.Hub.ScenesCollection.SelectedScene.Projectors.SelectedItem is LProjector device)
             {
                 this.Hub.ScenesCollection.SelectedScene.RemoveDevice(device);
             }

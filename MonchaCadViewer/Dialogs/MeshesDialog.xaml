@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:CadProjectorViewer.Panels.DevicePanel" 
         xmlns:device="clr-namespace:CadProjectorSDK.Device;assembly=CadProjectorSDK"
-        d:DataContext="{d:DesignInstance Type=device:LDevice}"
+        d:DataContext="{d:DesignInstance Type=device:LProjector}"
         mc:Ignorable="d"
         Title="MeshesDialog"
         SizeToContent="WidthAndHeight">

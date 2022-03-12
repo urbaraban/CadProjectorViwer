@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:Controls="http://metro.mahapps.com/winfx/xaml/controls"
         mc:Ignorable="d"
-        xmlns:dvc="clr-namespace:CadProjectorSDK.Device;assembly=CadProjectorSDK" xmlns:devicepanel="clr-namespace:CadProjectorViewer.Panels.DevicePanel" d:DataContext="{d:DesignInstance Type=dvc:LDevice}"
+        xmlns:dvc="clr-namespace:CadProjectorSDK.Device;assembly=CadProjectorSDK" xmlns:devicepanel="clr-namespace:CadProjectorViewer.Panels.DevicePanel" d:DataContext="{d:DesignInstance Type=dvc:LProjector}"
         Title="DeviceSettingDialog"
         ResizeMode="NoResize"
         SizeToContent="WidthAndHeight">

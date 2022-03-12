@@ -58,7 +58,7 @@ namespace CadProjectorViewer
             }
 
             this.OldDevices.Clear();
-            foreach (LDevice monchaDevice in ProjectorHub.Devices)
+            foreach (LProjector monchaDevice in ProjectorHub.Projectors)
             {
                 if (monchaDevice is IConnected connected)
                 {
@@ -81,7 +81,7 @@ namespace CadProjectorViewer
                 {
                     if (device != null && device.IsSelected == true)
                     {
-                        ProjectorHub.Devices.Add(await DevicesMg.GetDeviceAsync(device.iPAddress, device.DvcType, ProjectorHub.Devices.Count));
+                        ProjectorHub.Projectors.Add(await DevicesMg.GetDeviceAsync(device.iPAddress, device.DvcType, ProjectorHub.Projectors.Count));
                     }
                 }
 
@@ -89,7 +89,7 @@ namespace CadProjectorViewer
                 {
                     if (device != null && device.IsSelected == false)
                     {
-                        ProjectorHub.Devices.RemoveDevice(device.iPAddress);
+                        ProjectorHub.Projectors.RemoveDevice(device.iPAddress);
                     }
                 }
             }
@@ -102,7 +102,7 @@ namespace CadProjectorViewer
 
         private void AddVirtualBtn_Click(object sender, RoutedEventArgs e)
         {
-            ProjectorHub.Devices.Add(new VirtualProjector());
+            ProjectorHub.Projectors.Add(new VirtualProjector());
         }
 
         private void SearchBtn_Click(object sender, RoutedEventArgs e)

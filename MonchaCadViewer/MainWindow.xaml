@@ -379,7 +379,7 @@
                 <tb:TaskbarIcon.Resources>
                 <HierarchicalDataTemplate 
                 x:Key="DeviceTree" 
-                DataType ="{x:Type device:LDevice}">
+                DataType ="{x:Type device:LProjector}">
                         <Border Margin="5">
                             <StackPanel
                         Orientation="Horizontal" 

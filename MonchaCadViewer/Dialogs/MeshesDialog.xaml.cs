@@ -21,7 +21,7 @@ namespace CadProjectorViewer.Panels.DevicePanel
     /// </summary>
     public partial class MeshesDialog : Window
     {
-        LDevice Device => (LDevice)this.DataContext;
+        LProjector Device => (LProjector)this.DataContext;
 
         public MeshesDialog()
         {

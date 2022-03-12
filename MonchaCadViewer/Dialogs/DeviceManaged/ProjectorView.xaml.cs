@@ -57,7 +57,7 @@ namespace CadProjectorViewer.DeviceManaged
             this.WindowState = WindowState.Normal;
             this.DragMove();
             this.WindowState = WindowState.Maximized;
-            if (this.DataContext is LDevice lDevice)
+            if (this.DataContext is LProjector lDevice)
             {
                 lDevice.WidthResolutuon = this.Width;
                 lDevice.HeightResolution = this.Height;

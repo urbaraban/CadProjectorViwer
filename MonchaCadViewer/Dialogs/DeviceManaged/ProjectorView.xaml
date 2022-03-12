@@ -6,7 +6,7 @@
         xmlns:dvc="clr-namespace:CadProjectorSDK.Device;assembly=CadProjectorSDK"
         xmlns:obj="clr-namespace:CadProjectorViewer.CanvasObj"
         xmlns:DeviceManaged="clr-namespace:CadProjectorViewer.DeviceManaged"
-        d:DataContext="{d:DesignInstance Type=dvc:LDevice}"
+        d:DataContext="{d:DesignInstance Type=dvc:LProjector}"
         mc:Ignorable="d"
         WindowState="Maximized"
         WindowStyle="None"

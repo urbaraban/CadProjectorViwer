@@ -32,7 +32,7 @@ namespace CadProjectorViewer.Panels
     public partial class DeviceTreeTab : UserControl, INotifyPropertyChanged
     {
         public event EventHandler<bool> NeedRefresh;
-        public event EventHandler<LDevice> DeviceChange;
+        public event EventHandler<LProjector> DeviceChange;
 
 
         ProjectorHub projectorHub => (ProjectorHub)this.DataContext;
@@ -47,7 +47,7 @@ namespace CadProjectorViewer.Panels
         {
             if (sender is TreeViewItem BaseMeshItem && BaseMeshItem.Parent is TreeViewItem DeviceTree)
             {
-                if (DeviceTree.DataContext is LDevice device && BaseMeshItem.DataContext is ProjectorMesh mesh)
+                if (DeviceTree.DataContext is LProjector device && BaseMeshItem.DataContext is ProjectorMesh mesh)
                 {
                     //projectorHub.Scene.AddRange(CadCanvas.GetMesh(mesh, ProjectorHub.GetThinkess * AppSt.Default.anchor_size, false, MeshType.NONE).ToArray());
                 }
@@ -109,7 +109,7 @@ namespace CadProjectorViewer.Panels
             if (sender is FrameworkElement element)
             {
                 if (element.ContextMenu.DataContext is MenuItem cmindex &&
-                            element.DataContext is LDevice device)
+                            element.DataContext is LProjector device)
                 {
                     switch (cmindex.Tag)
                     {
@@ -123,7 +123,7 @@ namespace CadProjectorViewer.Panels
                             device.PolyMeshUsed = !device.PolyMeshUsed;
                             break;
                         case "dvc_center":
-                            projectorHub.ScenesCollection.SelectedScene.Add(new CadAnchor(device.Size.Center) { IsRender = false });
+                            projectorHub.ScenesCollection.SelectedScene.Add(device.Size.Center);
                             break;
                         case "dvc_view":
                             ProjectorView projectorView = new ProjectorView() { DataContext = device };
@@ -184,10 +184,10 @@ namespace CadProjectorViewer.Panels
             }
         }
 
-        private LDevice selectdevice;
+        private LProjector selectdevice;
         private void treeView_SelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
         {
-            if (e.NewValue is LDevice device)
+            if (e.NewValue is LProjector device)
             {
                 selectdevice = device;
             }

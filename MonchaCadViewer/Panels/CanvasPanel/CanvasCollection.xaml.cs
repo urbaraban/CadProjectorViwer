@@ -35,7 +35,7 @@ namespace CadProjectorViewer.Panels.CanvasPanel
         protected async override void OnDrop(DragEventArgs e)
         {
             base.OnDrop(e);
-            if (await FileLoad.GetDrop(e, projectorHub.ScenesCollection.SelectedScene.ProjectionSetting.PointStep.MX) is UidObject Obj)
+            if (await FileLoad.GetDrop(e, projectorHub.ScenesCollection.SelectedScene.ProjectionSetting.PointStep.Value) is UidObject Obj)
             {
                 if (this.projectorHub.ScenesCollection.LoadedObjects.Contains(Obj) == false)
                 {

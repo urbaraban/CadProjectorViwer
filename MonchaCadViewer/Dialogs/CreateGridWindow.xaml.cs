@@ -23,7 +23,7 @@ namespace CadProjectorViewer
     /// </summary>
     public partial class CreateGridWindow : Window
     {
-        private CadPoint3D[,] TemplatePoint;
+        private CadAnchor[,] TemplatePoint;
         private ProjectorMesh _mesh;
 
         public CreateGridWindow(ProjectorMesh mesh)
@@ -86,7 +86,7 @@ namespace CadProjectorViewer
                     Tuple<int, int> index = _mesh.IndexOf(_mesh.SelectedPoint);
                     int WidthIndex = Array.IndexOf(_mesh.ColumnCorrect, CorrectValue);
                     int HeightIndex = Array.IndexOf(_mesh.StrokeCorrect, CorrectValue);
-                    _mesh.Points[HeightIndex > -1 ? HeightIndex : index.Item1, WidthIndex > -1 ? WidthIndex : index.Item2].Select(true);
+                   // _mesh.Points[HeightIndex > -1 ? HeightIndex : index.Item1, WidthIndex > -1 ? WidthIndex : index.Item2].Select(true);
                 }
             }
         }

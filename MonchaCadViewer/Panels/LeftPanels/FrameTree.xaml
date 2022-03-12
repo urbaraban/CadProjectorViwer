@@ -68,7 +68,7 @@
         </HierarchicalDataTemplate>
         <HierarchicalDataTemplate 
                 x:Key="DeviceTree" 
-                DataType ="{x:Type device:LDevice}" 
+                DataType ="{x:Type device:LProjector}" 
                 ItemsSource="{Binding SelectedMeshes}"
                 ItemTemplate="{StaticResource MeshTree}">
             <Border Margin="5">
@@ -108,7 +108,7 @@
             </DockPanel>
             <Expander DockPanel.Dock="Top" Header ="Devices">
                 <TreeView x:Name="DeviceTree"
-                          ItemsSource="{Binding Devices}" 
+                          ItemsSource="{Binding Projectors}" 
                           ItemTemplate="{StaticResource ResourceKey=DeviceTree}"
                           />
             </Expander>

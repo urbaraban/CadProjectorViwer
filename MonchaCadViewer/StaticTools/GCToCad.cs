@@ -23,7 +23,7 @@ namespace CadProjectorViewer.StaticTools
             {
                 return new CadText(
                     textElement.Text,
-                    new CadPoint3D(textElement.Point.X, textElement.Point.Y, textElement.Point.Z),
+                    new CadAnchor(textElement.Point.X, textElement.Point.Y, textElement.Point.Z),
                     textElement.Size
                     );
             }

@@ -26,7 +26,7 @@ namespace CadProjectorViewer.Panels.DevicePanel
     /// </summary>
     public partial class DeviceSettingDialog : Window
     {
-        private LDevice _device => (LDevice)this.DataContext;
+        private LProjector _device => (LProjector)this.DataContext;
 
 
         public DeviceSettingDialog()

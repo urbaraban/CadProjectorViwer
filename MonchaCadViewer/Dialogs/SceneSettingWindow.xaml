@@ -84,8 +84,8 @@
                             <Border Grid.Column="0">
                                 <ListBox
                                     DataContext="{Binding ElementName=SceneSetting, Path=DataContext}"
-                                    ItemsSource="{Binding Devices}"
-                                    SelectedItem="{Binding SelectDevice}"
+                                    ItemsSource="{Binding Projectors}"
+                                    SelectedItem="{Binding Projectors.SelectedItem}"
                                     DisplayMemberPath="NameID">
                                     <ListBox.ItemTemplate>
                                         <DataTemplate>
@@ -119,8 +119,8 @@
                         </DockPanel>
                             <Border Grid.Column="2">
                                 <ListBox
-                                    ItemsSource="{Binding Devices}"
-                                    SelectedItem="{Binding SelectDevice}"
+                                    ItemsSource="{Binding Projectors}"
+                                    SelectedItem="{Binding Projectors.SelectedItem}"
                                     DisplayMemberPath="NameID">
                                     <ListBox.ItemTemplate>
                                         <DataTemplate>

@@ -42,7 +42,7 @@ namespace CadProjectorViewer.Panels.DevicePanel.LeftPanels
         {
             if (sender is Label label)
             {
-                if (label.DataContext is CanvasObject cadObject) cadObject.CadObject.IsSelected = true;
+                if (label.DataContext is CanvasObject cadObject) cadObject.CadObject.Select(true);
             }
         }
 

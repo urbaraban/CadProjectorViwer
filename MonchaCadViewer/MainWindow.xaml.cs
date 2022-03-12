@@ -53,6 +53,8 @@ using CadProjectorViewer.Panels.RightPanel;
 using CadProjectorSDK.Interfaces;
 using CadProjectorSDK.Scenes.Commands;
 using CadProjectorSDK.Scenes.Actions;
+using MonchaCadViewer.Config;
+using CadProjectorSDK.SaveMWS;
 
 namespace CadProjectorViewer
 {
@@ -556,7 +558,9 @@ namespace CadProjectorViewer
             this.Close();
         });
 
-        public ICommand Clear => new ActionCommand(ProjectorHub.ScenesCollection.SelectedScene.Clear);
+        public ICommand Clear => new ActionCommand(() => {
+            ProjectorHub.ScenesCollection.SelectedScene.Clear();
+        });
 
         public ICommand FixSelectCommand => new ActionCommand(ProjectorHub.ScenesCollection.SelectedScene.Fix);
 
@@ -631,11 +635,46 @@ namespace CadProjectorViewer
         }
 
         public ICommand PlayCommand => new ActionCommand(() => {
-            this.projectorHub.ScenesCollection.SelectedScene.Play = !this.projectorHub.ScenesCollection.SelectedScene.Play;
+            if (Keyboard.Modifiers == ModifierKeys.None)
+            {
+                this.projectorHub.ScenesCollection.SelectedScene.Play = !this.projectorHub.ScenesCollection.SelectedScene.Play;
+            }
+            else
+            {
+                PlayAllCommand.Execute(null);
+            }
+        });
+
+        public ICommand PlayAllCommand => new ActionCommand(() =>
+        {
+            bool stat = !this.projectorHub.ScenesCollection.Any(sc => sc.Play);
+            foreach (ProjectionScene scene in this.projectorHub.ScenesCollection)
+            {
+                scene.Play = stat;
+            }
         });
 
         public ICommand DeleteCommand => new ActionCommand(() => {
             this.projectorHub.ScenesCollection.SelectedScene.RemoveRange(this.projectorHub.ScenesCollection.SelectedScene.SelectedObjects);
+        });
+
+        public ICommand SaveSceneCommand => new ActionCommand(() => {
+            SaveFileDialog saveFileDialog = new SaveFileDialog();
+            saveFileDialog.Filter = "2CUT Scene (*.2scn)|*.2scn";
+            if (saveFileDialog.ShowDialog() == true)
+            {
+                SaveScene.WriteXML(projectorHub.ScenesCollection.SelectedScene, saveFileDialog.FileName);
+            }
+           
+        });
+
+        public ICommand OpenSceneCommand => new ActionCommand(() => {
+            OpenFileDialog fileDialog = new OpenFileDialog();
+            fileDialog.Filter = "Moncha (.2scn)|*.2scn|All Files (*.*)|*.*";
+            if (fileDialog.ShowDialog() == true)
+            {
+                projectorHub.ScenesCollection.AddTask(new SceneTask(SaveScene.ReadXML(fileDialog.FileName)));
+            }
         });
 
 

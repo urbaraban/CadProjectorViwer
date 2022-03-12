@@ -85,13 +85,7 @@ namespace CadProjectorViewer.CanvasObj
 
         protected override void OnMouseDown(MouseButtonEventArgs e)
         {
-            if (e.ClickCount > 1) 
-            {
-                DotEdit dotEdit = new DotEdit() { DataContext = this.Point };
-                dotEdit.Show();
-            }
-            else base.OnMouseDown(e);
-
+             base.OnMouseDown(e);
         }
 
         private void DotShape_ContextMenuClosing(object sender, ContextMenuEventArgs e)

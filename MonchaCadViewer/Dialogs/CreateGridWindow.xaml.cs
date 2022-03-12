@@ -86,7 +86,7 @@ namespace CadProjectorViewer
                     Tuple<int, int> index = _mesh.IndexOf(_mesh.SelectedPoint);
                     int WidthIndex = Array.IndexOf(_mesh.ColumnCorrect, CorrectValue);
                     int HeightIndex = Array.IndexOf(_mesh.StrokeCorrect, CorrectValue);
-                    _mesh.Points[HeightIndex > -1 ? HeightIndex : index.Item1, WidthIndex > -1 ? WidthIndex : index.Item2].IsSelected = true;
+                    _mesh.Points[HeightIndex > -1 ? HeightIndex : index.Item1, WidthIndex > -1 ? WidthIndex : index.Item2].Select(true);
                 }
             }
         }

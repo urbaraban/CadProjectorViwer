@@ -199,7 +199,7 @@ namespace CadProjectorViewer.CanvasObj
             {
                 if (this.WasMove == false)
                 {
-                    this.CadObject.IsSelected = !this.CadObject.IsSelected;
+                    this.CadObject.Select(!this.CadObject.IsSelected);
                 }
                 else
                 {

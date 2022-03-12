@@ -96,6 +96,10 @@
                         <Separator />
                         <MenuItem Header="Save Moncha" Click="MenuSaveBtn_Click" />
                         <MenuItem Header="Save Moncha as..." Click="SaveAsItem_Click" />
+                        <Separator/>
+                        <MenuItem Header="Save Scene" Command="{Binding ElementName=MainWin, Path=SaveSceneCommand}"/>
+                        <MenuItem Header="Open Scene" Command="{Binding ElementName=MainWin, Path=OpenSceneCommand}"/>
+                        <Separator/>
                         <MenuItem
                             Header="License"
                             Command="{Binding ElementName=MainWin, Path=ShowLicenceCommand}" />
@@ -414,27 +418,32 @@
                         BorderBrush="Orange"
                         BorderThickness="2"
                         CornerRadius="1">
-                        <ItemsControl
+                        <StackPanel>
+                            <Button Content="{DynamicResource m_Play}"
+                    Command="{Binding ElementName=MainWin, Path=PlayAllCommand}"
+                    Background="{Binding ScenesCollection.SelectedScene.Play, Converter={StaticResource PlayBackConverter}}"
+                    Height="30" />
+                            <ItemsControl
                             ItemsSource="{Binding ScenesCollection}">
                             <ItemsControl.ItemTemplate>
                                 <DataTemplate>
-                                    <TreeView>
-                                        <TreeViewItem 
+                                        <TreeView>
+                                            <TreeViewItem 
                                             Header="{Binding NameID}"
                                             ItemsSource="{Binding Devices}"
                                             IsExpanded="True"
                                             ItemTemplate="{StaticResource ResourceKey=DeviceTree}"/>
-                                        <TreeView.ItemTemplate>
-                                            <DataTemplate>
-                                                <TextBlock Text="{Binding NameID}"/>
-                                            </DataTemplate>
-                                        </TreeView.ItemTemplate>
-                                    </TreeView>
-                                    
-                                </DataTemplate>
+                                            <TreeView.ItemTemplate>
+                                                <DataTemplate>
+                                                    <TextBlock Text="{Binding NameID}"/>
+                                                </DataTemplate>
+                                            </TreeView.ItemTemplate>
+                                        </TreeView>
+                                    </DataTemplate>
                             </ItemsControl.ItemTemplate>
                             
                         </ItemsControl>
+                        </StackPanel>
                     </Border>
                 </tb:TaskbarIcon.TrayPopup>
                 <tb:TaskbarIcon.ContextMenu>

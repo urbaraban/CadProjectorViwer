@@ -5,7 +5,6 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:dvc="clr-namespace:CadProjectorSDK.Device;assembly=CadProjectorSDK"
     xmlns:Controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
-    xmlns:hub="clr-namespace:CadProjectorViewer" 
     xmlns:cadprojectorsdk="clr-namespace:CadProjectorSDK;assembly=CadProjectorSDK" xmlns:converters="clr-namespace:CadProjectorViewer.Converters"
     x:Class="CadProjectorViewer.Panels.DeviceTab"
     d:DataContext="{d:DesignInstance Type={x:Type dvc:LDevice}}"
@@ -77,7 +76,7 @@
                     d:DataContext="{d:DesignInstance Type={x:Type cadprojectorsdk:ProjectorHub}}"
                     DockPanel.Dock="Left"
                     SelectedValuePath="NameID"
-                    SelectedIndex="0"
+                    SelectedItem="{Binding ScenesCollection.SelectedScene.devices.SelectedItem}"
                     ItemsSource="{Binding ScenesCollection.SelectedScene.Devices}">
                     <ComboBox.ItemTemplate>
                         <DataTemplate>

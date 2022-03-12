@@ -10,35 +10,6 @@
              mc:Ignorable="d" 
              d:DesignHeight="400" d:DesignWidth="400">
     <DockPanel>
-        <!--<DockPanel
-            Background="Gray"
-            LastChildFill="False"
-            HorizontalAlignment="Stretch"
-            DockPanel.Dock="Bottom">
-            <Button
-                    DockPanel.Dock="Left"
-                Command="{Binding ElementName=Main, Path=PreviousCommand}"
-                    Content="&#xe76b;"
-                    FontFamily="Segoe MDL2 Assets"
-                    FontSize="14"
-                    Width="{Binding ActualHeight, RelativeSource={RelativeSource Self}}" 
-                />
-            <Button
-                    DockPanel.Dock="Left"
-                Command="{Binding ElementName=Main, Path=NextCommand}"
-                    Content="&#xe76c;"
-                    FontFamily="Segoe MDL2 Assets"
-                    FontSize="14"
-                    Width="{Binding ActualHeight, RelativeSource={RelativeSource Self}}" 
-                />
-            <Button
-                    DockPanel.Dock="Right"
-                    Content="&#xE713;"
-                    FontFamily="Segoe MDL2 Assets"
-                    FontSize="14"
-                    Width="{Binding ActualHeight, RelativeSource={RelativeSource Self}}" 
-                />
-        </DockPanel>-->
         <TabControl 
             x:Name="Tabs"
             ItemsSource="{Binding ScenesCollection}" 

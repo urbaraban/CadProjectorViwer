@@ -73,7 +73,7 @@ namespace CadProjectorViewer
 
         }
 
-        private void DeviceManagedForm_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        private async void DeviceManagedForm_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
             if (ProjectorHub.lockKey.IsLicensed == true)
             {
@@ -81,7 +81,7 @@ namespace CadProjectorViewer
                 {
                     if (device != null && device.IsSelected == true)
                     {
-                        ProjectorHub.Devices.Add(DevicesMg.GetDevice(device.iPAddress, device.DvcType, ProjectorHub.Devices.Count));
+                        ProjectorHub.Devices.Add(await DevicesMg.GetDeviceAsync(device.iPAddress, device.DvcType, ProjectorHub.Devices.Count));
                     }
                 }
 

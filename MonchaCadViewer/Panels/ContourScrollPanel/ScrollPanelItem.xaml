@@ -61,8 +61,8 @@
 
                 <DockPanel
                     LastChildFill="False"
-                Margin="0,0,0,0"
-                Panel.ZIndex="99">
+                    Margin="0,0,0,0"
+                    Panel.ZIndex="99">
                     <Button
                     DockPanel.Dock="Left"
                     x:Name="RemoveBtn"

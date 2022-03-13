@@ -153,28 +153,28 @@ namespace CadProjectorViewer.CanvasObj
         #region TranformObject
         public virtual double X 
         { 
-            get => this.CadObject.X;
+            get => this.CadObject.MX;
             set
             {
-                this.CadObject.X = value;
+                this.CadObject.MX = value;
                 OnPropertyChanged("X");
             }
         }
         public virtual double Y 
         { 
-            get => this.CadObject.Y;
+            get => this.CadObject.MY;
             set
             {
-                this.CadObject.Y = value;
+                this.CadObject.MY = value;
                 OnPropertyChanged("Y");
             }
         }
         public virtual double Z 
         {
-            get => this.CadObject.Z;
+            get => this.CadObject.MZ;
             set
             {
-                this.CadObject.Z = value;
+                this.CadObject.MZ = value;
                 OnPropertyChanged("Z");
             }
         }
@@ -204,7 +204,7 @@ namespace CadProjectorViewer.CanvasObj
                 else
                 {
                     Point tPoint = e.GetPosition(this);
-                    this.CadObject.SendCommand(new MovingCommand(this.CadObject, this.CadObject.X - this.BasePos.X, this.CadObject.Y - this.BasePos.Y) { Status = true });
+                    this.CadObject.SendCommand(new MovingCommand(this.CadObject, this.CadObject.MX - this.BasePos.X, this.CadObject.MY - this.BasePos.Y) { Status = true });
                     this.WasMove = false;
                     this.Editing = false;
                     this.ReleaseMouseCapture();

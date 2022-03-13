@@ -144,7 +144,7 @@
                     Value="{Binding FPS}"
                     Background="White"
                     MinWidth="80"
-                    Maximum="40"
+                    Maximum="60"
                     Minimum="10" />
                 </DockPanel>
                 <Label

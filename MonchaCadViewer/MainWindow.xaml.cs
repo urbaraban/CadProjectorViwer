@@ -289,22 +289,22 @@ namespace CadProjectorViewer
             {
                 case Key.W:
                     ProjectorHub.ScenesCollection.SelectedScene.HistoryCommands.Add(
-                        new MovingCommand(ProjectorHub.ScenesCollection.SelectedScene.SelectedObjects.LastSelectObject,
+                        new MovingCommand(ProjectorHub.ScenesCollection.SelectedScene.SelectedObjects,
                         0, -step * _mult));
                     break;
                 case Key.S:
                     ProjectorHub.ScenesCollection.SelectedScene.HistoryCommands.Add(
-                        new MovingCommand(ProjectorHub.ScenesCollection.SelectedScene.SelectedObjects.LastSelectObject,
+                        new MovingCommand(ProjectorHub.ScenesCollection.SelectedScene.SelectedObjects,
                         0, step * _mult));
                     break;
                 case Key.A:
                     ProjectorHub.ScenesCollection.SelectedScene.HistoryCommands.Add(
-                        new MovingCommand(ProjectorHub.ScenesCollection.SelectedScene.SelectedObjects.LastSelectObject,
+                        new MovingCommand(ProjectorHub.ScenesCollection.SelectedScene.SelectedObjects,
                         -step * _mult, 0));
                     break;
                 case Key.D:
                     ProjectorHub.ScenesCollection.SelectedScene.HistoryCommands.Add(
-                        new MovingCommand(ProjectorHub.ScenesCollection.SelectedScene.SelectedObjects.LastSelectObject,
+                        new MovingCommand(ProjectorHub.ScenesCollection.SelectedScene.SelectedObjects,
                         step * _mult, 0));
                     break;
                 case Key.Z:

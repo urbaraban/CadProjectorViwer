@@ -91,7 +91,7 @@ namespace CadProjectorViewer.CanvasObj
                     Brushes.Gray),
                 new Point(X, Y));
 
-            drawingContext.DrawRectangle(BackColorBrush, myPen, new Rect(LRect.X, LRect.Y, LRect.Width, LRect.Height));
+            drawingContext.DrawRectangle(BackColorBrush, myPen, new Rect(LRect.MX, LRect.MY, LRect.Width, LRect.Height));
         }
 
 

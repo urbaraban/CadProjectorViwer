@@ -61,9 +61,6 @@ namespace CadProjectorViewer.CanvasObj
 
         private CadAnchor Point  => (CadAnchor)this.CadObject;
 
-        //public CadPoint3D GetLPoint => PointX != PointY ? new CadPoint3D(PointX.MX, PointY.MY, PointX.M) : PointX;
-
-
         public CanvasAnchor(CadAnchor Point) : base(Point, true)
         {
             this.Cursor = Cursors.SizeAll;

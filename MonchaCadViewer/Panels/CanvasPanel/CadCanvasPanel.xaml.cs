@@ -66,13 +66,13 @@ namespace CadProjectorViewer.Panels.CanvasPanel
         {
             if (Keyboard.Modifiers == ModifierKeys.Control)
             {
-                Point centre = e.GetPosition(CanvasGrid);
+                Point centre = e.GetPosition(CanvasBox);
                 this.Scale.CenterX = centre.X;
                 this.Scale.CenterY = centre.Y;
-                if (this.Scale.ScaleY + (double)e.Delta / 1000 > 1)
+                if (this.Scale.ScaleY + (double)e.Delta / 5000 > 1)
                 {
-                    this.Scale.ScaleX += (double)e.Delta / 1000;
-                    this.Scale.ScaleY += (double)e.Delta / 1000;
+                    this.Scale.ScaleX += (double)e.Delta / 3000;
+                    this.Scale.ScaleY += (double)e.Delta / 3000;
                 }
                 else
                 {
@@ -111,7 +111,7 @@ namespace CadProjectorViewer.Panels.CanvasPanel
             this.Scale = (ScaleTransform)this.TransformGroup.Children[0];
             this.Rotate = (RotateTransform)this.TransformGroup.Children[1];
             this.Translate = (TranslateTransform)this.TransformGroup.Children[2];
-            CanvasGrid.RenderTransform = this.TransformGroup;
+            CanvasBox.RenderTransform = this.TransformGroup;
         }
 
         public TransformGroup TransformGroup { get; set; }
@@ -135,7 +135,7 @@ namespace CadProjectorViewer.Panels.CanvasPanel
 
             if (Keyboard.Modifiers == ModifierKeys.Control)
             {
-                this.StartMousePoint = e.GetPosition(this.CanvasGrid);
+                this.StartMousePoint = e.GetPosition(this.CanvasBox);
                 this.StartMovePoint = new Point(this.Translate.X, this.Translate.Y);
             }
             else if (this.SelectedScene.AlreadyAction != null)

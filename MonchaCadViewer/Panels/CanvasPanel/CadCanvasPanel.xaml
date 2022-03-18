@@ -21,13 +21,9 @@
             </Style>
         </ResourceDictionary>
     </UserControl.Resources>
-    <Grid Margin="0" Background="Gray" ClipToBounds="True" >
-        <Grid.RowDefinitions>
-            <RowDefinition Height="40"/>
-            <RowDefinition/>
-            <RowDefinition Height="25"/>
-        </Grid.RowDefinitions>
+    <DockPanel>
         <DockPanel 
+            DockPanel.Dock="Top"
             Grid.Row="0"
             Panel.ZIndex="99"
             Background="LightGray">
@@ -72,75 +68,92 @@
                  />
             </StackPanel>
         </DockPanel>
-     <Viewbox x:Name="CanvasBox" 
+        <Grid Margin="0" Background="Gray" ClipToBounds="True" >
+            <Viewbox x:Name="CanvasBox" 
               Grid.Row="1" Grid.RowSpan="3"
               Margin="10"
-              ClipToBounds="True"
               Stretch="Uniform" StretchDirection="Both" >
-            <Grid x:Name="CanvasGrid" Background="Red"
+                <Grid x:Name="CanvasGrid" Background="Red"
                   Width="{Binding Size.Width}"
                   Height="{Binding Size.Height}"
                   Cursor="{Binding AlreadyAction, Converter={StaticResource CursorAction}}">
-                <Rectangle Fill="White"/>
-                <Canvas 
+                    <Rectangle Fill="White"/>
+                    <Canvas 
                     x:Name="BackCanvas" 
                     IsHitTestVisible="False"
                     SizeChanged="Canvas_SizeChanged">
-                    <Canvas.Background>
-                        <DrawingBrush TileMode="Tile" Viewport="0,0,200,200" 
+                        <Canvas.Background>
+                            <DrawingBrush TileMode="Tile" Viewport="0,0,200,200" 
                                      ViewportUnits="Absolute">
-                            <DrawingBrush.Drawing>
-                                <GeometryDrawing>
-                                    <GeometryDrawing.Geometry>
-                                        <RectangleGeometry Rect="0,0,200,200"/>
-                                    </GeometryDrawing.Geometry>
-                                    <GeometryDrawing.Pen>
-                                        <Pen Brush="LightSlateGray" Thickness="3"/>
-                                    </GeometryDrawing.Pen>
-                                </GeometryDrawing>
-                            </DrawingBrush.Drawing>
-                        </DrawingBrush>
-                    </Canvas.Background>
-                </Canvas>
-                <ItemsControl ItemsSource="{Binding Masks}">
-                    <ItemsControl.ItemsPanel>
-                        <ItemsPanelTemplate>
-                            <canvasobj:CadCanvas/>
-                        </ItemsPanelTemplate>
-                    </ItemsControl.ItemsPanel>
-                    <ItemsControl.ItemTemplate>
-                        <DataTemplate>
-                            <ContentPresenter Content="{Binding Converter={StaticResource CadObjectConverter}}"/>
-                        </DataTemplate>
-                    </ItemsControl.ItemTemplate>
-                </ItemsControl>
-                <ItemsControl ItemsSource="{Binding .}">
-                    <ItemsControl.ItemsPanel>
-                        <ItemsPanelTemplate>
-                            <canvasobj:CadCanvas/>
-                        </ItemsPanelTemplate>
-                    </ItemsControl.ItemsPanel>
-                    <ItemsControl.ItemTemplate>
-                        <DataTemplate>
-                            <ContentPresenter Content="{Binding Converter={StaticResource CadObjectConverter}}"/>
-                        </DataTemplate>
-                    </ItemsControl.ItemTemplate>
-                </ItemsControl>
+                                <DrawingBrush.Drawing>
+                                    <GeometryDrawing>
+                                        <GeometryDrawing.Geometry>
+                                            <RectangleGeometry Rect="0,0,200,200"/>
+                                        </GeometryDrawing.Geometry>
+                                        <GeometryDrawing.Pen>
+                                            <Pen Brush="LightSlateGray" Thickness="3"/>
+                                        </GeometryDrawing.Pen>
+                                    </GeometryDrawing>
+                                </DrawingBrush.Drawing>
+                            </DrawingBrush>
+                        </Canvas.Background>
+                    </Canvas>
+                    <ItemsControl ItemsSource="{Binding Masks}">
+                        <ItemsControl.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <canvasobj:CadCanvas/>
+                            </ItemsPanelTemplate>
+                        </ItemsControl.ItemsPanel>
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <ContentPresenter>
+                                    <ContentPresenter.Content>
+                                        <MultiBinding Converter="{StaticResource CadObjectConverter}">
+                                            <Binding Path=""/>
+                                            <Binding ElementName="CanvasPanel"/>
+                                        </MultiBinding>
+                                    </ContentPresenter.Content>
+                                </ContentPresenter>
+                            </DataTemplate>
 
-            </Grid>
-        </Viewbox>
-        <Label x:Name="CoordinateLabel" 
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                    <ItemsControl ItemsSource="{Binding .}">
+                        <ItemsControl.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <canvasobj:CadCanvas/>
+                            </ItemsPanelTemplate>
+                        </ItemsControl.ItemsPanel>
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <ContentPresenter>
+                                    <ContentPresenter.Content>
+                                        <MultiBinding Converter="{StaticResource CadObjectConverter}">
+                                            <Binding Path=""/>
+                                            <Binding ElementName="CanvasPanel"/>
+                                        </MultiBinding>
+                                    </ContentPresenter.Content>
+                                </ContentPresenter>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+
+                </Grid>
+            </Viewbox>
+            <Label x:Name="CoordinateLabel" 
                Grid.RowSpan="3" 
                VerticalContentAlignment="Bottom" 
                IsEnabled="False" HorizontalAlignment="Right" 
                HorizontalContentAlignment="Right" Visibility="Hidden" IsHitTestVisible="False">
-            <Label.Content>
-                <MultiBinding Converter="{StaticResource InfoConverter}">
-                    <Binding Path="MousePosition.X"/>
-                    <Binding Path="MousePosition.Y"/>
-                    <Binding Path="Devices"/>
-                </MultiBinding>
-            </Label.Content>
-        </Label>
-    </Grid>
+                <Label.Content>
+                    <MultiBinding Converter="{StaticResource InfoConverter}">
+                        <Binding Path="MousePosition.X"/>
+                        <Binding Path="MousePosition.Y"/>
+                        <Binding Path="Devices"/>
+                    </MultiBinding>
+                </Label.Content>
+            </Label>
+        </Grid>
+    </DockPanel>
+    
 </UserControl>

@@ -87,7 +87,14 @@
                         </ItemsControl.ItemsPanel>
                         <ItemsControl.ItemTemplate>
                             <DataTemplate>
-                                <ContentPresenter Content="{Binding Converter={StaticResource CadObjectConverter}}"/>
+                                <ContentPresenter>
+                                    <ContentPresenter.Content>
+                                        <MultiBinding Converter="{StaticResource CadObjectConverter}">
+                                            <Binding Path=""/>
+                                            <Binding ElementName="CanvasPanel"/>
+                                        </MultiBinding>
+                                    </ContentPresenter.Content>
+                                </ContentPresenter>
                             </DataTemplate>
                         </ItemsControl.ItemTemplate>
                     </ItemsControl>

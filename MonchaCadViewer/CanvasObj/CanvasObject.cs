@@ -26,6 +26,12 @@ namespace CadProjectorViewer.CanvasObj
 {
     public class CanvasObject : FrameworkElement, INotifyPropertyChanged
     {
+        public virtual GetThinkessDelegate GetThinkess { get; set; }
+        public delegate double GetThinkessDelegate();
+
+        public virtual ChangeSizeDelegate SizeChange { get; set; }
+        public delegate void ChangeSizeDelegate();
+
         public UidObject CadObject
         {
             get => cadobject;
@@ -47,9 +53,21 @@ namespace CadProjectorViewer.CanvasObj
             OnPropertyChanged(e.PropertyName);
         }
 
+        public void ParentChangeSize()
+        {
+            this.InvalidateVisual();
+            SizeChange?.Invoke();
+        }
 
-        public AdornerLayer adornerLayer { get; private set; }
-
+        public AdornerLayer adornerLayer 
+        {
+            get => _alayer;
+            private set
+            {
+                _alayer = value;
+            } 
+        }
+        private AdornerLayer _alayer;
 
         public virtual event EventHandler<bool> OnObject;
         public virtual event EventHandler<CanvasObject> Opening;
@@ -62,7 +80,7 @@ namespace CadProjectorViewer.CanvasObj
 
         public double StrokeThinkess
         {
-            get => strokethinkess <= 0 ? (this.CadObject.GetThinkess?.Invoke() ?? 1) * AppSt.Default.default_thinkess_percent : strokethinkess;
+            get => strokethinkess <= 0 ? (this.GetThinkess?.Invoke() ?? 1) * AppSt.Default.default_thinkess_percent : strokethinkess;
             set
             {
                 strokethinkess = value;

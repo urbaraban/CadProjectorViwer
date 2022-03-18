@@ -35,6 +35,9 @@ namespace CadProjectorViewer.Panels.CanvasPanel
     /// </summary>
     public partial class CadCanvasPanel : UserControl
     {
+        public virtual ChangeSizeDelegate SizeChange { get; set; }
+        public delegate void ChangeSizeDelegate();
+
         private Point StartMovePoint;
         private Point StartMousePoint;
         private bool WasMove = false;
@@ -61,7 +64,6 @@ namespace CadProjectorViewer.Panels.CanvasPanel
             UpdateTransform(null, true);
         }
 
-
         protected override void OnMouseWheel(MouseWheelEventArgs e)
         {
             if (Keyboard.Modifiers == ModifierKeys.Control)
@@ -81,6 +83,8 @@ namespace CadProjectorViewer.Panels.CanvasPanel
                     this.X = 0;
                     this.Y = 0;
                 }
+                CanvasBox.InvalidateVisual();
+                SizeChange?.Invoke();
             }
         }
 
@@ -235,24 +239,40 @@ namespace CadProjectorViewer.Panels.CanvasPanel
             SelectedScene.Break();
         });
 
+        public double Thinkess()
+        {
+            return Math.Min(CanvasGrid.Width, CanvasGrid.Height) / this.Scale.ScaleX;
+        }
+
     }
 
-    public class CadObjectConverter : IValueConverter
+    public class CadObjectConverter : IMultiValueConverter
     {
-        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
         {
-            if (value is UidObject uidObject)
+            if (values[0] is UidObject uidObject && values[1] is CadCanvasPanel canvasPanel)
+            {
+                if (CanvasObjectSwitch(uidObject) is CanvasObject canvasObject)
+                {
+                    canvasObject.GetThinkess = canvasPanel.Thinkess;
+                    canvasPanel.SizeChange += canvasObject.ParentChangeSize;
+                    return canvasObject;
+                }
+
+            }
+            return values;
+
+            CanvasObject CanvasObjectSwitch (UidObject uidObject)
             {
                 if (uidObject is ProjectorMesh mesh) return new CanvasMesh(mesh);
                 else if (uidObject is CadLine cadLine) return new CanvasLine(cadLine);
                 else if (uidObject is CadRect3D cadRectangle) return new CanvasRectangle(cadRectangle, cadRectangle.NameID);
                 else if (uidObject is IGeometryObject geometry) return new GeometryPreview(uidObject);
                 else if (uidObject is IPixelObject pixelObject) return new ImagePreview(uidObject);
+                return null;
             }
-            return value;
         }
-
-        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        public object[] ConvertBack(object value, Type[] targetTypes, object parameter, CultureInfo culture)
         {
             return null;
         }

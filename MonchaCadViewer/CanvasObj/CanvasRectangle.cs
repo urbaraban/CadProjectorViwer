@@ -80,7 +80,7 @@ namespace CadProjectorViewer.CanvasObj
 
         protected override void OnRender(DrawingContext drawingContext)
         {
-            double textsize = Math.Max((CadObject.GetThinkess?.Invoke() ?? 1) * AppSt.Default.default_thinkess_percent * 5, 1d);
+            double textsize = Math.Max((this.GetThinkess?.Invoke() ?? 1) * AppSt.Default.default_thinkess_percent * 5, 1d);
 
             drawingContext.DrawText(
                 new FormattedText(this.NameID.ToString(),
@@ -112,24 +112,22 @@ namespace CadProjectorViewer.CanvasObj
         // Be sure to call the base class constructor.
         public RectangelAdorner(CanvasRectangle adornedElement): base(adornedElement)
         {
+            this.IsClipEnabled = true;
             _Visuals = new VisualCollection(this);
             _Anchors = new List<CanvasAnchor>();
 
             CadRect3D cadRect3D = (CadRect3D)adornedElement.CadObject;
 
             this.rectangle = adornedElement;
-            adornedElement.LRect.P1.GetThinkess = cadRect3D.GetThinkess;
-            adornedElement.LRect.P2.GetThinkess = cadRect3D.GetThinkess;
-            AddAnchor(new CanvasAnchor(adornedElement.LRect.P1));
-            AddAnchor(new CanvasAnchor((adornedElement.LRect.P2)));
-            AddAnchor(new CanvasAnchor(new CadAnchor(adornedElement.LRect.P2.PointX, adornedElement.LRect.P1.PointY, adornedElement.LRect.P1.M)
-            {
-                GetThinkess = cadRect3D.GetThinkess
-            }));
-            AddAnchor(new CanvasAnchor(new CadAnchor(adornedElement.LRect.P1.PointX, adornedElement.LRect.P2.PointY, adornedElement.LRect.P1.M)
-            {
-                GetThinkess = cadRect3D.GetThinkess
-            }));
+
+            AddAnchor(new CanvasAnchor(adornedElement.LRect.P1)
+            { GetThinkess = adornedElement.GetThinkess });
+            AddAnchor(new CanvasAnchor((adornedElement.LRect.P2))
+            { GetThinkess = adornedElement.GetThinkess });
+            AddAnchor(new CanvasAnchor(new CadAnchor(adornedElement.LRect.P2.PointX, adornedElement.LRect.P1.PointY, adornedElement.LRect.P1.M))
+            { GetThinkess = adornedElement.GetThinkess });
+            AddAnchor(new CanvasAnchor(new CadAnchor(adornedElement.LRect.P1.PointX, adornedElement.LRect.P2.PointY, adornedElement.LRect.P1.M))
+            { GetThinkess = adornedElement.GetThinkess });
 
 
             foreach (CanvasAnchor anchor in _Anchors)

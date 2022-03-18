@@ -67,6 +67,7 @@ namespace CadProjectorViewer.CanvasObj
 
         public MeshAdorner(CanvasMesh mesh) : base(mesh)
         {
+            this.IsClipEnabled = true;
             this.Mesh = mesh;
 
             _Visuals = new VisualCollection(this);
@@ -76,8 +77,8 @@ namespace CadProjectorViewer.CanvasObj
             {
                 for (int j = 0; j < mesh.Mesh.Points.GetLength(1); j += 1)
                 {
-                    mesh.Mesh[i, j].GetThinkess = mesh.Mesh.GetThinkess;
-                    _Anchors.Add(new CanvasAnchor(mesh.Mesh[i, j]));
+                    _Anchors.Add(new CanvasAnchor(mesh.Mesh[i, j])
+                    { GetThinkess = mesh.GetThinkess });
                 }
             }
 

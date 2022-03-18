@@ -107,7 +107,7 @@ namespace CadProjectorViewer.CanvasObj
 
         protected override void OnRender(DrawingContext drawingContext)
         {
-            double _size = (this.CadObject.GetThinkess?.Invoke() ?? 1) * AppSt.Default.default_thinkess_percent * 4 * AppSt.Default.anchor_size;
+            double _size = (this.GetThinkess?.Invoke() ?? 1) * AppSt.Default.default_thinkess_percent * 4 * AppSt.Default.anchor_size;
             drawingContext.PushTransform(new TranslateTransform(X, Y));
             drawingContext.DrawGeometry(myBack, new Pen(Brushes.Black, _size * 0.1), new RectangleGeometry(new Rect(-_size / 2, -_size / 2, _size, _size)));
         }

@@ -56,7 +56,6 @@ namespace CadProjectorViewer.CanvasObj
 
         //Рисуем квадраты в поле согласно схеме
 
-
         #region TransfromObject
         public TransformGroup TransformGroup { get; set; }
         public ScaleTransform Scale { get; set; }

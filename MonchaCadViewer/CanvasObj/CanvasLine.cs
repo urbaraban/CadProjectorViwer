@@ -14,6 +14,7 @@ namespace CadProjectorViewer.CanvasObj
 {
     public class CanvasLine : CanvasObject
     {
+
         public CadLine Line => (CadLine)base.CadObject;
 
         public CanvasLine(CadLine line) : base(line, true)
@@ -53,17 +54,20 @@ namespace CadProjectorViewer.CanvasObj
 
         public LineAdorner(CanvasLine line) : base(line)
         {
+            this.IsClipEnabled = true;
             this.canvasLine = line;
 
             _Visuals = new VisualCollection(this);
             _Anchors = new List<CanvasAnchor>();
 
-            line.Line.P1.GetThinkess = line.Line.GetThinkess;
-            line.Line.P2.GetThinkess = line.Line.GetThinkess;
+            CanvasAnchor A1 = new CanvasAnchor(line.Line.P1) { GetThinkess = line.GetThinkess };
+            line.SizeChange += A1.ParentChangeSize;
+            _Anchors.Add(A1);
 
-            _Anchors.Add(new CanvasAnchor(line.Line.P1));
-            _Anchors.Add(new CanvasAnchor(line.Line.P2));
-
+            CanvasAnchor A2 = new CanvasAnchor(line.Line.P2) { GetThinkess = line.GetThinkess };
+            line.SizeChange += A2.ParentChangeSize;
+            _Anchors.Add(A2);
+            
             line.Line.PropertyChanged += Line_PropertyChanged;
 
             foreach (CanvasAnchor anchor in _Anchors)

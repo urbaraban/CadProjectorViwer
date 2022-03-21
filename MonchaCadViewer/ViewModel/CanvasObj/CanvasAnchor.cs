@@ -57,7 +57,7 @@ namespace CadProjectorViewer.CanvasObj
             }
         }
 
-        public new object ToolTip => $"X:{Point.X} Y:{Point.Y}";
+        public new object ToolTip => $"X:{Point.MX} Y:{Point.MY}";
 
         private CadAnchor Point  => (CadAnchor)this.CadObject;
 

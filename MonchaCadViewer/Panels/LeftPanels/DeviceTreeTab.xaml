@@ -14,7 +14,7 @@
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Fonts.xaml" />
+
             </ResourceDictionary.MergedDictionaries>
             <Style x:Key="Border" TargetType="{x:Type Border}">
                 <Setter Property="BorderBrush" Value="DarkGray" />
@@ -78,7 +78,10 @@
                 DataType ="{x:Type device:LProjector}" 
                 ItemsSource="{Binding SelectedMeshes}"
                 ItemTemplate="{StaticResource MeshTree}">
-                <Border Margin="5" ContextMenuClosing="DeviceBorder_ContextMenuClosing">
+                <Border 
+                    Margin="5"
+                    ToolTip="{Binding IPAddress}"
+                    ContextMenuClosing="DeviceBorder_ContextMenuClosing">
                     <Border.ContextMenu>
                         <ContextMenu>
                             <MenuItem Header = "{DynamicResource dvc_showrect}" Tag="dvc_showrect" Click="MenuItem_Click"/>

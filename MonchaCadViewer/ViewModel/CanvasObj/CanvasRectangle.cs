@@ -120,13 +120,13 @@ namespace CadProjectorViewer.CanvasObj
 
             this.rectangle = adornedElement;
 
-            AddAnchor(new CanvasAnchor(adornedElement.LRect.P1)
+            AddAnchor(new CanvasAnchor(adornedElement.LRect.BL)
             { GetThinkess = adornedElement.GetThinkess });
-            AddAnchor(new CanvasAnchor((adornedElement.LRect.P2))
+            AddAnchor(new CanvasAnchor((adornedElement.LRect.TR))
             { GetThinkess = adornedElement.GetThinkess });
-            AddAnchor(new CanvasAnchor(new CadAnchor(adornedElement.LRect.P2.PointX, adornedElement.LRect.P1.PointY, adornedElement.LRect.P1.M))
+            AddAnchor(new CanvasAnchor(adornedElement.LRect.BR)
             { GetThinkess = adornedElement.GetThinkess });
-            AddAnchor(new CanvasAnchor(new CadAnchor(adornedElement.LRect.P1.PointX, adornedElement.LRect.P2.PointY, adornedElement.LRect.P1.M))
+            AddAnchor(new CanvasAnchor(adornedElement.LRect.TL)
             { GetThinkess = adornedElement.GetThinkess });
 
 

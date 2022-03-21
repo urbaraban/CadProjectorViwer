@@ -26,6 +26,8 @@ namespace CadProjectorViewer.CanvasObj
 {
     public class CanvasObject : FrameworkElement, INotifyPropertyChanged
     {
+        public ContextMenu ObjectContextMenu { get; set; }
+
         public virtual GetThinkessDelegate GetThinkess { get; set; }
         public delegate double GetThinkessDelegate();
 

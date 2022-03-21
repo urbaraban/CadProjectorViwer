@@ -1,0 +1,55 @@
+﻿<UserControl x:Class="CadProjectorViewer.ViewModel.Devices.DeviceItem"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:CadProjectorViewer.ViewModel.Devices" 
+             xmlns:device="clr-namespace:CadProjectorSDK.Device;assembly=CadProjectorSDK"
+             d:DataContext="{d:DesignInstance Type=device:LProjector}"
+             mc:Ignorable="d"
+             x:Name="DeviceItemBlock">
+    <UserControl.Resources>
+        <Style x:Key="ConnectedStyle" TargetType="{x:Type TextBlock}">
+            <Setter Property="Foreground" Value="Black" />
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding IsConnected}" Value="False">
+                    <Setter Property="Foreground" Value="Gray" />
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+    </UserControl.Resources>
+    <Border 
+                    Margin="5"
+                    ToolTip="{Binding IPAddress}">
+        <Border.ContextMenu>
+            <ContextMenu>
+                <MenuItem Header = "{DynamicResource dvc_showrect}" Tag="dvc_showrect"/>
+                <MenuItem Header = "{DynamicResource dvc_showzone}" Tag="dvc_showzone"/>
+                <MenuItem Header = "{DynamicResource dvc_polymesh}" Tag="dvc_polymesh"/>
+                <MenuItem Header = "{DynamicResource dvc_view}" Tag="dvc_view"/>
+            </ContextMenu>
+        </Border.ContextMenu>
+        <StackPanel
+                        Orientation="Horizontal" 
+                        VerticalAlignment="Center">
+            <CheckBox IsChecked="{Binding IsOn}" />
+            <Button
+                Command="{Binding ElementName=DeviceItem, Path=ReconnectCommand}"
+                Margin="2,0"
+                Content="&#xEDAB;"
+                FontFamily="Segoe MDL2 Assets"
+                Width="{Binding ActualHeight, RelativeSource={RelativeSource Self}}" 
+                />
+            <TextBlock  
+                                    Style="{StaticResource ConnectedStyle}"
+                                    VerticalAlignment="Center" Margin="5,0,0,0">
+                <TextBlock.Text>
+                    <MultiBinding StringFormat="{}{0}_{1}">
+                        <Binding Path="NameID"/>
+                        <Binding Path="IPAddress"/>
+                    </MultiBinding>
+                </TextBlock.Text>
+            </TextBlock>
+        </StackPanel>
+    </Border>
+</UserControl>

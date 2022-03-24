@@ -155,6 +155,9 @@ namespace CadProjectorViewer.Panels
                             case "mesh_inverse":
                                 mesh.InverseYPosition();
                                 break;
+                            case "mesh_YMirror":
+                                mesh.MirrorMesh();
+                                break;
                             case "mesh_returnpoint":
                                 mesh.ReturnPoint();
                                 break;

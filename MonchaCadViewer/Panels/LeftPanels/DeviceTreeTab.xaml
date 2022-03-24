@@ -55,6 +55,7 @@
                                       IsChecked="{Binding Morph}"/>
                             <MenuItem Header = "{DynamicResource common_Create}" Tag="mesh_create" Click="MenuItem_Click"/>
                             <MenuItem Header = "{DynamicResource mesh_Inverse}" Tag="mesh_inverse" Click="MenuItem_Click"/>
+                            <MenuItem Header = "YMirror" Tag="mesh_YMirror" Click="MenuItem_Click"/>
                             <MenuItem Header = "{DynamicResource mesh_Returnpoint}" Tag="mesh_returnpoint" Click="MenuItem_Click"/>
                             <MenuItem Header = "{DynamicResource dvc_showrect}" Tag="mesh_showrect" Click="MenuItem_Click"/>
                             <MenuItem Header = "Vertical" Tag="mesh_Vertical" IsCheckable="True" IsChecked="{Binding VerticalFlag}"/>

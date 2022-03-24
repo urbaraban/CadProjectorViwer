@@ -308,35 +308,7 @@
                                 </Grid>
                             </TabItem>
                             <TabItem Header="Ethernet">
-                                <StackPanel Margin="5">
-                                    <DockPanel LastChildFill="True">
-                                        <Label
-                                            DockPanel.Dock="Left"
-                                            Margin="3"
-                                            Content="UDP Port:"
-                                            HorizontalAlignment="Left" />
-
-                                        <Controls:NumericUpDown x:Name="PortUpDn"
-                                                                DockPanel.Dock="Right"
-                                                                Value="{Binding ether_udp_port}"
-                                                                Maximum="49151"
-                                                                Minimum="1024"
-                                                                Background="White"
-                                                                ValueChanged="PortUpDn_ValueChanged">
-                                            <Controls:NumericUpDown.DataContext>
-                                                <Properties:Settings />
-                                            </Controls:NumericUpDown.DataContext>
-                                        </Controls:NumericUpDown>
-                                    </DockPanel>
-                                    <Button
-                                        x:Name="TcpListenBtn"
-                                        Content="Listen"
-                                        Height="50"
-                                        Margin="15"
-                                        Click="TcpListenBtn_Click" />
-                                    <TextBox x:Name="ByteBox" />
-                                    <Button Content="Read" Click="Button_Click" />
-                                </StackPanel>
+                                <rightpanel:UdpSetting DataContext="{Binding UDPLaserListener}"/>
                             </TabItem>
                         </TabControl>
                     </Grid>

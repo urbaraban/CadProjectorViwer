@@ -7,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -131,12 +132,32 @@ namespace CadProjectorViewer.Panels.RightPanel
                             System.Diagnostics.Process.Start(fileInfo.Filepath);
                             break;
                         case "OpenFolder":
-                            System.Diagnostics.Process.Start(AppSt.Default.save_work_folder);
+                            OpenFolderAndSelectFile(fileInfo.Filepath);
                             break;
                     }
                 }
             }
         }
+
+        public static void OpenFolderAndSelectFile(string filePath)
+        {
+            if (filePath == null)
+                throw new ArgumentNullException("filePath");
+
+            IntPtr pidl = ILCreateFromPathW(filePath);
+            SHOpenFolderAndSelectItems(pidl, 0, IntPtr.Zero, 0);
+            ILFree(pidl);
+        }
+
+        [DllImport("shell32.dll", CharSet = CharSet.Unicode)]
+        private static extern IntPtr ILCreateFromPathW(string pszPath);
+
+        [DllImport("shell32.dll")]
+        private static extern int SHOpenFolderAndSelectItems(IntPtr pidlFolder, int cild, IntPtr apidl, int dwFlags);
+
+        [DllImport("shell32.dll")]
+        private static extern void ILFree(IntPtr pidl);
+
 
         private void MenuItem_Click(object sender, RoutedEventArgs e)
         {

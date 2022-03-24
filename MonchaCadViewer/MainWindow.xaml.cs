@@ -544,11 +544,6 @@ namespace CadProjectorViewer
             }
         }
 
-        private void PortUpDn_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double?> e)
-        {
-            AppSt.Default.ether_udp_port = (int)PortUpDn.Value.Value;
-            AppSt.Default.Save();
-        }
 
 
         private void BrowseMWSItem_Click(object sender, RoutedEventArgs e) => FileLoad.LoadMoncha(ProjectorHub, true);
@@ -728,23 +723,7 @@ namespace CadProjectorViewer
         }
         #endregion
 
-        private async void Button_Click(object sender, RoutedEventArgs e)
-        {
-            string ToStringBytes = ByteBox.Text;
-            byte[] b = new byte[ToStringBytes.Length / 2];
-            for (int i = 0; i < b.Length; i += 1)
-            {
-                b[i] = byte.Parse($"{ToStringBytes[i * 2]}{ToStringBytes[i * 2 +1]}", NumberStyles.HexNumber);
-            }
-            try
-            {
-                projectorHub.ScenesCollection.AddTask(await ProjectorHub.UDPLaserListener.Read(b));
-            }
-            catch
-            {
-                Log?.Invoke("bytes buulshit", "bytesreader");
-            }
-        }
+
 
         private async void ReconnectButton_Click(object sender, RoutedEventArgs e)
         {

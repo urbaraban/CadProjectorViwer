@@ -126,10 +126,7 @@ namespace CadProjectorViewer.Panels.CanvasPanel
         protected override void OnMouseLeftButtonUp(MouseButtonEventArgs e)
         {
             base.OnMouseLeftButtonUp(e);
-            /*if (this.SelectedScene.ActiveDrawingObject == null)
-            {
-                this.SelectedScene.SceneAction = SceneAction.NoAction;
-            }*/
+
             this.ReleaseMouseCapture();
         }
 
@@ -155,7 +152,20 @@ namespace CadProjectorViewer.Panels.CanvasPanel
             {
                 SelectedScene.MousePosition = new CadPoint3D(e.GetPosition(this.CanvasGrid));
 
-                if (SelectedScene.AlreadyAction != null)
+
+                if (e.LeftButton == MouseButtonState.Pressed && Keyboard.Modifiers == ModifierKeys.Control)
+                {
+                    this.WasMove = true;
+                    Point tPoint = e.GetPosition(CanvasBox);
+
+                    //double prop = Math.Min(CanvasGrid.ActualWidth / CanvasGrid.ActualWidth, CanvasGrid.ActualHeight / CanvasGrid.ActualHeight);
+
+                    this.X = (this.StartMovePoint.X + (tPoint.X - this.StartMousePoint.X)) / this.Scale.ScaleX;
+                    this.Y = (this.StartMovePoint.Y + (tPoint.Y - this.StartMousePoint.Y)) / this.Scale.ScaleY;
+
+                    this.CaptureMouse();
+                }
+                else if (SelectedScene.AlreadyAction != null)
                 {
                     if (this.SelectedScene.AlreadyAction.CanAction == true)
                     {
@@ -163,37 +173,9 @@ namespace CadProjectorViewer.Panels.CanvasPanel
                     }
                 }
 
-                /*if (e.LeftButton == MouseButtonState.Pressed && Keyboard.Modifiers == ModifierKeys.Control)
-                {
-                    this.SelectedScene.SceneAction = SceneAction.MoveCanvas;
-                    this.WasMove = true;
-                    Point tPoint = e.GetPosition(CanvasBox);
-
-                    double prop = Math.Min(CanvasGrid.ActualWidth / CanvasGrid.ActualWidth, CanvasGrid.ActualHeight / CanvasGrid.ActualHeight);
-
-                    Translate.X = (this.StartMovePoint.X + (tPoint.X - this.StartMousePoint.X)) * prop;
-                    Translate.Y = (this.StartMovePoint.Y + (tPoint.Y - this.StartMousePoint.Y)) * prop;
-
-                    this.CaptureMouse();
-                }
-                else
-                {
-                    if (SelectedScene.ActiveDrawingObject != null)
-                    {
-                        SelectedScene.ActiveDrawingObject.SetTwoPoint(e.GetPosition(this.CanvasGrid));
-                    }
-                }*/
             }
         }
 
-        private void Canvas_MouseMove(object sender, MouseEventArgs e)
-        {
-            Point tempPoint = e.GetPosition(CanvasGrid);
-            SelectedScene.MousePosition.X = tempPoint.X;
-            SelectedScene.MousePosition.Y = tempPoint.Y;
-            CoordinateLabel.Content =
-                $"X: { Math.Round(tempPoint.X, 2) }; Y:{ Math.Round(tempPoint.Y, 2) }";
-        }
 
        
         private void Canvas_SizeChanged(object sender, SizeChangedEventArgs e)

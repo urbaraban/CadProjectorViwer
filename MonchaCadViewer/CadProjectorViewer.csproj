@@ -264,7 +264,6 @@
     <Compile Include="Dialogs\MakeMeshSplitDialog.xaml.cs">
       <DependentUpon>MakeMeshSplitDialog.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Dialogs\MeshTool.cs" />
     <Compile Include="ViewModel\CanvasObj\CanvasRectangle.cs" />
     <Compile Include="ViewModel\CanvasObj\CanvasObject.cs" />
     <Compile Include="CommonConverters.cs" />
@@ -300,7 +299,7 @@
     <Compile Include="Panels\ObjectPanel\CadObjectPanel.xaml.cs">
       <DependentUpon>CadObjectPanel.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Panels\OtherPanel\CadRectangleSizeDialog.xaml.cs">
+    <Compile Include="Dialogs\CadRectangleSizeDialog.xaml.cs">
       <DependentUpon>CadRectangleSizeDialog.xaml</DependentUpon>
     </Compile>
     <Compile Include="Panels\ContourScrollPanel\ScrollPanel.xaml.cs">
@@ -471,7 +470,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Panels\OtherPanel\CadRectangleSizeDialog.xaml">
+    <Page Include="Dialogs\CadRectangleSizeDialog.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -549,6 +548,9 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="logo.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Panels\OtherPanel\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">

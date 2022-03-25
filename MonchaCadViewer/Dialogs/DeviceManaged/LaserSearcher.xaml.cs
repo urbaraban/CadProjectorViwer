@@ -69,8 +69,6 @@ namespace CadProjectorViewer
             {
                 MonchaDeviceList.ItemsSource = this.OldDevices;
             }
-
-
         }
 
         private async void DeviceManagedForm_Closing(object sender, System.ComponentModel.CancelEventArgs e)

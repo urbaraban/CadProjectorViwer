@@ -7,7 +7,7 @@
              xmlns:device="clr-namespace:CadProjectorSDK.Device;assembly=CadProjectorSDK" 
              mc:Ignorable="d" 
              d:DesignHeight="350" d:DesignWidth="130"
-             xmlns:scene="clr-namespace:CadProjectorSDK.Scenes;assembly=CadProjectorSDK" xmlns:h="QQ:908293466" xmlns:Controls="http://metro.mahapps.com/winfx/xaml/controls"
+             xmlns:scene="clr-namespace:CadProjectorSDK.Scenes;assembly=CadProjectorSDK" xmlns:h="QQ:908293466" xmlns:Controls="http://metro.mahapps.com/winfx/xaml/controls" xmlns:devices="clr-namespace:CadProjectorViewer.ViewModel.Devices"
              d:DataContext="{d:DesignInstance Type=scene:ProjectionScene}"
              x:Name="FrameTreePage">
     <UserControl.Resources>
@@ -71,33 +71,7 @@
                 DataType ="{x:Type device:LProjector}" 
                 ItemsSource="{Binding SelectedMeshes}"
                 ItemTemplate="{StaticResource MeshTree}">
-            <Border Margin="5">
-                <StackPanel
-                        Orientation="Horizontal" 
-                        VerticalAlignment="Center">
-                    <CheckBox IsChecked="{Binding IsOn}" />
-                    <Button
-                            Click="ReconnectButton_Click"
-                            Margin="2,0"
-                            Content="&#xEDAB;"
-                            FontFamily="Segoe MDL2 Assets"
-                            Width="{Binding ActualHeight, RelativeSource={RelativeSource Self}}" 
-                            />
-                    <TextBlock VerticalAlignment="Center"
-                            Text="&#xE714;"
-                            FontFamily="Segoe MDL2 Assets"/>
-                    <TextBlock  
-                                    Style="{StaticResource ConnectedStyle}"
-                                    VerticalAlignment="Center" Margin="5,0,0,0">
-                        <TextBlock.Text>
-                            <MultiBinding StringFormat="{}{0}_{1}">
-                                <Binding Path="NameID"/>
-                                <Binding Path="IPAddress"/>
-                            </MultiBinding>
-                        </TextBlock.Text>
-                    </TextBlock>
-                </StackPanel>
-            </Border>
+            <devices:DeviceItem/>
         </HierarchicalDataTemplate>
 
     </UserControl.Resources>

@@ -6,7 +6,7 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
     xmlns:device="clr-namespace:CadProjectorSDK.Device;assembly=CadProjectorSDK" 
     xmlns:cadprojectorsdk="clr-namespace:CadProjectorSDK;assembly=CadProjectorSDK" 
-    xmlns:mesh="clr-namespace:CadProjectorSDK.Device.Mesh;assembly=CadProjectorSDK"
+    xmlns:mesh="clr-namespace:CadProjectorSDK.Device.Mesh;assembly=CadProjectorSDK" xmlns:devices="clr-namespace:CadProjectorViewer.ViewModel.Devices"
     d:DataContext="{d:DesignInstance Type=cadprojectorsdk:ProjectorHub}"
     d:DesignHeight="450"
     d:DesignWidth="200"
@@ -79,44 +79,7 @@
                 DataType ="{x:Type device:LProjector}" 
                 ItemsSource="{Binding SelectedMeshes}"
                 ItemTemplate="{StaticResource MeshTree}">
-                <Border 
-                    Margin="5"
-                    ToolTip="{Binding IPAddress}"
-                    ContextMenuClosing="DeviceBorder_ContextMenuClosing">
-                    <Border.ContextMenu>
-                        <ContextMenu>
-                            <MenuItem Header = "{DynamicResource dvc_showrect}" Tag="dvc_showrect" Click="MenuItem_Click"/>
-                            <MenuItem Header = "{DynamicResource dvc_showzone}" Tag="dvc_showzone" Click="MenuItem_Click"/>
-                            <MenuItem Header = "{DynamicResource dvc_polymesh}" Tag="dvc_polymesh" Click="MenuItem_Click"/>
-                            <MenuItem Header = "{DynamicResource dvc_view}" Tag="dvc_view" Click="MenuItem_Click"/>
-                        </ContextMenu>
-                    </Border.ContextMenu>
-                    <StackPanel
-                        Orientation="Horizontal" 
-                        VerticalAlignment="Center">
-                        <CheckBox IsChecked="{Binding IsOn}" />
-                        <Button
-                            Click="ReconnectButton_Click"
-                            Margin="2,0"
-                            Content="&#xEDAB;"
-                            FontFamily="Segoe MDL2 Assets"
-                            Width="{Binding ActualHeight, RelativeSource={RelativeSource Self}}" 
-                            />
-                        <TextBlock VerticalAlignment="Center"
-                            Text="&#xE714;"
-                            FontFamily="Segoe MDL2 Assets"/>
-                        <TextBlock  
-                                    Style="{StaticResource ConnectedStyle}"
-                                    VerticalAlignment="Center" Margin="5,0,0,0">
-                            <TextBlock.Text>
-                                <MultiBinding StringFormat="{}{0}_{1}">
-                                    <Binding Path="NameID"/>
-                                    <Binding Path="IPAddress"/>
-                                </MultiBinding>
-                            </TextBlock.Text>
-                        </TextBlock>
-                    </StackPanel>
-                </Border>
+                <devices:DeviceItem/>
             </HierarchicalDataTemplate>
             
         </ResourceDictionary>

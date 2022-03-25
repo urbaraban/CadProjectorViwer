@@ -1,4 +1,7 @@
-﻿using CadProjectorSDK.Interfaces;
+﻿using CadProjectorSDK.Device;
+using CadProjectorSDK.Interfaces;
+using CadProjectorSDK.Scenes;
+using CadProjectorViewer.DeviceManaged;
 using Microsoft.Xaml.Behaviors.Core;
 using System;
 using System.Collections.Generic;
@@ -28,10 +31,39 @@ namespace CadProjectorViewer.ViewModel.Devices
         }
 
         public ICommand ReconnectCommand => new ActionCommand(async () => {
-            if (this.DataContext is IConnected connected)
+            if (this.DataContext is IConnected device)
             {
-                await connected.Reconnect();
+                await device.Reconnect();
             }
         });
+
+        public ICommand PolyMeshCommand => new ActionCommand(async () => {
+            if (this.DataContext is LProjector device)
+            {
+                device.PolyMeshUsed = !device.PolyMeshUsed;
+            }
+        });
+
+        public ICommand ShowZoneRectCommand => new ActionCommand(() =>
+        {
+            if (this.DataContext is LProjector device && device.GetParentScene?.Invoke() is ProjectionScene Scene)
+            {
+                Scene.Add(device.Size);
+            }
+        });
+
+        public ICommand ProjectorViewCommand => new ActionCommand(() =>
+        {
+            if (this.DataContext is LProjector device)
+            {
+                ProjectorView projectorView = new ProjectorView() { DataContext = device };
+                projectorView.Show();
+            }
+        });
+
+        private void ContextMenu_Opened(object sender, RoutedEventArgs e)
+        {
+            (sender as ContextMenu).DataContext = this;
+        }
     }
 }

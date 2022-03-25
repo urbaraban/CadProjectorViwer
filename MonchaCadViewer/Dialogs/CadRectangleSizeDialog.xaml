@@ -6,7 +6,8 @@
         xmlns:local="clr-namespace:CadProjectorViewer.Panels.ObjectPanel"
         xmlns:Controls="http://metro.mahapps.com/winfx/xaml/controls" 
         xmlns:cadobjects="clr-namespace:CadProjectorSDK.CadObjects;assembly=CadProjectorSDK" 
-        xmlns:converters="clr-namespace:CadProjectorViewer.Converters" xmlns:canvasobj="clr-namespace:CadProjectorViewer.CanvasObj" d:DataContext="{d:DesignInstance Type=canvasobj:CanvasRectangle}"
+        xmlns:converters="clr-namespace:CadProjectorViewer.Converters" 
+        xmlns:canvasobj="clr-namespace:CadProjectorViewer.CanvasObj" d:DataContext="{d:DesignInstance Type=canvasobj:CanvasRectangle}"
         mc:Ignorable="d"
         Title="{Binding ToolTip}" WindowStyle="ToolWindow" 
         SizeToContent="WidthAndHeight">
@@ -22,10 +23,12 @@
             <converters:RoundDoubleConverter x:Key="RoundValue"/>
         </ResourceDictionary>
     </Window.Resources>
-    <StackPanel Margin="20">
+    <StackPanel Margin="20,5,20,10">
         <Label Content="Width" />
         <Controls:NumericUpDown Value="{Binding LRect.Width, Converter={StaticResource RoundValue}}"/>
         <Label Content="Height"/>
         <Controls:NumericUpDown  Value="{Binding LRect.Height, Converter={StaticResource RoundValue}}"/>
+        <Label Content="Depth"/>
+        <Controls:NumericUpDown  Value="{Binding LRect.Depth, Converter={StaticResource RoundValue}}"/>
     </StackPanel>
 </Window>

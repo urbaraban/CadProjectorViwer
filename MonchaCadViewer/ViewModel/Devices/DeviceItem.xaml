@@ -19,22 +19,22 @@
         </Style>
     </UserControl.Resources>
     <Border 
-                    Margin="5"
-                    ToolTip="{Binding IPAddress}">
+       Margin="5"
+       ToolTip="{Binding IPAddress}">
         <Border.ContextMenu>
-            <ContextMenu>
+            <ContextMenu Opened="ContextMenu_Opened">
                 <MenuItem Header = "{DynamicResource dvc_showrect}" Tag="dvc_showrect"/>
-                <MenuItem Header = "{DynamicResource dvc_showzone}" Tag="dvc_showzone"/>
-                <MenuItem Header = "{DynamicResource dvc_polymesh}" Tag="dvc_polymesh"/>
+                <MenuItem Header = "{DynamicResource dvc_showzone}" Tag="1" Command="{Binding ShowZoneRectCommand}"/>
+                <MenuItem Header = "{DynamicResource dvc_polymesh}" Tag="2" Command="{Binding PolyMeshCommand}"/>
                 <MenuItem Header = "{DynamicResource dvc_view}" Tag="dvc_view"/>
             </ContextMenu>
         </Border.ContextMenu>
         <StackPanel
-                        Orientation="Horizontal" 
-                        VerticalAlignment="Center">
+             Orientation="Horizontal" 
+             VerticalAlignment="Center">
             <CheckBox IsChecked="{Binding IsOn}" />
             <Button
-                Command="{Binding ElementName=DeviceItem, Path=ReconnectCommand}"
+                Command="{Binding ElementName=DeviceItemBlock, Path=ReconnectCommand}"
                 Margin="2,0"
                 Content="&#xEDAB;"
                 FontFamily="Segoe MDL2 Assets"

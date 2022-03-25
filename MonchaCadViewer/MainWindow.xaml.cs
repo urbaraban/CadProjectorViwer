@@ -80,6 +80,7 @@ namespace CadProjectorViewer
             set
             {
                 projectorHub = value;
+                this.DataContext = value;
                 OnPropertyChanged("ProjectorHub");
             }
         } 
@@ -609,7 +610,6 @@ namespace CadProjectorViewer
             }
         }
 
-
         public ICommand PasteCommand => new ActionCommand(Paste);
 
         private async void Paste()
@@ -672,6 +672,12 @@ namespace CadProjectorViewer
             }
         });
 
+
+        public ICommand MakeNewWorkPlaceCommand => new ActionCommand(() => {
+            this.ProjectorHub.Disconnect();
+            this.ProjectorHub = new ProjectorHub(string.Empty);
+            GC.Collect();
+        });
 
         public ICommand OpenCommand => new ActionCommand(Open);
 

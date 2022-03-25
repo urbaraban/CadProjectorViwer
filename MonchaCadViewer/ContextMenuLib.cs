@@ -72,13 +72,6 @@ namespace CadProjectorViewer.CanvasObj
             AddItem("canvas_unselectall", contextMenu);
         }
 
-        public static void DeviceTreeMenu(ContextMenu contextMenu)
-        {
-            AddItem("dvc_showrect", contextMenu);
-            AddItem("dvc_showzone", contextMenu);
-            AddItem("dvc_polymesh", contextMenu);
-            AddItem("dvc_center", contextMenu);
-        }
 
         public static void LaserMeterHeadTreeMenu(ContextMenu contextMenu)
         {

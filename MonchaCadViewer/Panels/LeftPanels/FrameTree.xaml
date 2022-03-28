@@ -81,8 +81,7 @@
                 <Controls:ToggleSwitch Content="MaskActivated" IsOn="{Binding CursorMaskActivated}"/>
             </DockPanel>
             <Expander DockPanel.Dock="Top" Header ="Devices">
-                <TreeView x:Name="DeviceTree"
-                          ItemsSource="{Binding Projectors}" 
+                <TreeView ItemsSource="{Binding Projectors}" 
                           ItemTemplate="{StaticResource ResourceKey=DeviceTree}"
                           />
             </Expander>

@@ -41,8 +41,9 @@
                 Width="{Binding ActualHeight, RelativeSource={RelativeSource Self}}" 
                 />
             <TextBlock  
-                                    Style="{StaticResource ConnectedStyle}"
-                                    VerticalAlignment="Center" Margin="5,0,0,0">
+                d:Text="Device"
+                Style="{StaticResource ConnectedStyle}"
+                VerticalAlignment="Center" Margin="5,0,0,0">
                 <TextBlock.Text>
                     <MultiBinding StringFormat="{}{0}_{1}">
                         <Binding Path="NameID"/>

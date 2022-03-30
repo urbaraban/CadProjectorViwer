@@ -223,7 +223,7 @@ namespace CadProjectorViewer.Panels.CanvasPanel
 
         public double Thinkess()
         {
-            return Math.Min(CanvasGrid.Width, CanvasGrid.Height) / this.Scale.ScaleX;
+            return Math.Max(CanvasGrid.Width, CanvasGrid.Height) / this.Scale.ScaleX;
         }
 
     }

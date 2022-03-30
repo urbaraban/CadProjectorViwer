@@ -17,6 +17,7 @@
     <v:String x:Key="obj_Mirror">Mirror</v:String>
     <v:String x:Key="obj_Render">Render</v:String>
     <v:String x:Key="obj_Fix">Fix</v:String>
+    <v:String x:Key="obj_Blank">Blank</v:String>
     <v:String x:Key="obj_Angle">Angle</v:String>
     <v:String x:Key="obj_Width">Width</v:String>
     <v:String x:Key="obj_Height">Height</v:String>

@@ -407,7 +407,6 @@ namespace CadProjectorViewer
 
         protected override void OnClosing(CancelEventArgs e)
         {
-            e.Cancel = SaveConfiguration(false);
             base.OnClosing(e);
         }
 

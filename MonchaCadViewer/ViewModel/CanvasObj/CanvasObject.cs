@@ -109,7 +109,7 @@ namespace CadProjectorViewer.CanvasObj
                 {
                     return new Pen(Brushes.DarkGray, thinkess);
                 }
-                else if (this.CadObject.IsFix == true)
+                else if (this.CadObject.IsBlank == true)
                 {
                     return new Pen(Brushes.LightBlue, thinkess);
                 }

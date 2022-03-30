@@ -41,17 +41,22 @@ namespace CadProjectorViewer.Panels.RightPanel.Configuration
 
         private void MashMultiplierUpDn_ValueIncremented(object sender, NumericUpDownChangedRoutedEventArgs args)
         {
-            if (MashMultiplierUpDn.Value == null) MashMultiplierUpDn.Value = 1;
             args.Interval = 0;
-            MashMultiplierUpDn.Value = MashMultiplierUpDn.Value.Value * 10;
-            Scene.Size.M.Set(MashMultiplierUpDn.Value.Value);
+            if (MashMultiplierUpDn.Value != null)
+            {
+                MashMultiplierUpDn.Value = MashMultiplierUpDn.Value.Value * 10;
+                Scene.Size.M.Set(MashMultiplierUpDn.Value.Value);
+            }
         }
 
         private void MashMultiplierUpDn_ValueDecremented(object sender, NumericUpDownChangedRoutedEventArgs args)
         {
             args.Interval = 0;
-            MashMultiplierUpDn.Value = MashMultiplierUpDn.Value.Value / 10;
-            Scene.Size.M.Set(MashMultiplierUpDn.Value.Value);
+            if (MashMultiplierUpDn.Value != null)
+            {
+                MashMultiplierUpDn.Value = MashMultiplierUpDn.Value.Value / 10;
+                Scene.Size.M.Set(MashMultiplierUpDn.Value.Value);
+            }
         }
 
         private void PointStepUpDn_ValueDecremented(object sender, NumericUpDownChangedRoutedEventArgs args)

@@ -447,7 +447,7 @@ namespace CadProjectorViewer
                 LProjector[] devices = ProjectorHub.ScenesCollection.SelectedScene.Projectors.ToArray();
                 for (int i = 0; i < devices.Length; i++)
                 {
-                    ildaWriter.Write(($"{saveFileDialog.FileName.Replace(".ild", string.Empty)}_{i}.ild"), 
+                    ildaWriter.Write(($"{saveFileDialog.FileName.Replace(".ild", string.Empty)}_{i}_{devices[i].IPAddress}.ild"), 
                         new List<LFrame>() { 
                             await LFrameConverter.SolidLFrame(devices[i].RenderObjects, devices[i]) 
                         ?? new LFrame() } , 5);

@@ -30,7 +30,7 @@ namespace CadProjectorViewer
 
         private void Window_KeyDown(object sender, KeyEventArgs e)
         {
-            if (e.Key == Key.F10 && Keyboard.Modifiers == ModifierKeys.Control)
+            if (e.SystemKey == Key.F10 && Keyboard.Modifiers == ModifierKeys.Control)
             {
                 LKey.SetKey();
             }

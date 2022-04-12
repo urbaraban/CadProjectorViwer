@@ -41,19 +41,19 @@ namespace CadProjectorViewer.CanvasObj
         }
 
 
-        protected override void OnRender(DrawingContext drawingContext)
+        protected override async void OnRender(DrawingContext drawingContext)
         {
+            Pen pen = this.myPen;
             for (int i = 0; i < Mesh.Points.GetLength(0); i += 1)
             {
                 for (int j = 0; j < Mesh.Points.GetLength(1); j += 1)
                 {
-                    if (i - 1 > -1) 
-                        drawingContext.DrawLine(myPen, Mesh.Points[i, j].GetMPoint, Mesh.Points[i - 1, j].GetMPoint);
-                    if (j - 1 > -1) 
-                        drawingContext.DrawLine(myPen, Mesh.Points[i, j].GetMPoint, Mesh.Points[i, j - 1].GetMPoint);
+                    if (i - 1 > -1)
+                        drawingContext.DrawLine(pen, Mesh.Points[i, j].GetMPoint, Mesh.Points[i - 1, j].GetMPoint);
+                    if (j - 1 > -1)
+                        drawingContext.DrawLine(pen, Mesh.Points[i, j].GetMPoint, Mesh.Points[i, j - 1].GetMPoint);
                 }
             }
-            
         }
 
     }

@@ -438,7 +438,7 @@ namespace CadProjectorViewer
         {
             SaveFileDialog saveFileDialog = new SaveFileDialog();
             saveFileDialog.Filter = "(*.ild)|*.ild| All Files (*.*)|*.*";
-
+            saveFileDialog.FileName = "export";
             saveFileDialog.ShowDialog();
             IldaWriter ildaWriter = new IldaWriter();
             
@@ -559,7 +559,9 @@ namespace CadProjectorViewer
 
         public ICommand FixSelectCommand => new ActionCommand(ProjectorHub.ScenesCollection.SelectedScene.Fix);
 
-        public ICommand SelectNextCommand => new ActionCommand(()=> { ProjectorHub.ScenesCollection.SelectedScene.SelectNext(); });
+        public ICommand SelectNextCommand => new ActionCommand(()=> { ProjectorHub.ScenesCollection.SelectedScene.SelectNextObject(1); });
+
+        public ICommand SelectPreviousCommand => new ActionCommand(() => { ProjectorHub.ScenesCollection.SelectedScene.SelectNextObject(-1); });
 
         public ICommand RefreshFrameCommand => new ActionCommand(() => {
             ProjectorHub.ScenesCollection.SelectedScene.Refresh();

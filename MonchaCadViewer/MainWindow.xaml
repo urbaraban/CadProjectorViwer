@@ -33,6 +33,9 @@
             Key="Q"
             Command="{Binding ElementName=MainWin, Path=SelectNextCommand}" />
         <KeyBinding
+            Key="E"
+            Command="{Binding ElementName=MainWin, Path=SelectPreviousCommand}" />
+        <KeyBinding
             Key="F"
             Command="{Binding ElementName=MainWin, Path=FixSelectCommand}" />
         <KeyBinding

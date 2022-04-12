@@ -94,8 +94,7 @@ namespace CadProjectorViewer.CanvasObj
         public virtual Pen myPen { 
             get
             {
-                double thinkess = StrokeThinkess;
-                thinkess = thinkess <= 0 ? 1 : thinkess;
+                double thinkess = Math.Max(0.1, StrokeThinkess);
 
                 if (this.IsMouseOver == true)
                 {

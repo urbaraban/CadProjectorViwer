@@ -186,21 +186,18 @@ namespace CadProjectorViewer
                 {
                     kmpsAppl.ConnectBoolEvent += KmpsAppl_ConnectBoolEvent;
 
-                    kmpsAppl.OpenedDoc += KmpsAppl_OpenedDoc;
+                    kmpsAppl.AppEvent.DocumentOpened += KmpsAppl_OpenedDoc;
 
                     kmpsConnectToggle.IsOn = KmpsAppl.KompasAPI != null;
-
-                    kmpsAppl.SelectDoc();
-
                 }
 
             }
         }
 
-        private void KmpsAppl_OpenedDoc(object sender, object e)
+        private void KmpsAppl_OpenedDoc(object newDoc, int docType)
         {
             KmpsNameLbl.Invoke(() => { 
-            if (e is KmpsDoc kmpsDoc)
+            if (newDoc is KmpsDoc kmpsDoc)
             {
                 if (kmpsDoc.D7.Name != null)
                 {
@@ -230,7 +227,7 @@ namespace CadProjectorViewer
 
         private async void kmpsSelectBtn_Click(object sender, RoutedEventArgs e)
         {
-            if (KmpsAppl.KompasAPI != null)
+            /*if (KmpsAppl.KompasAPI != null)
             {
                 CadGroup cadGeometries = 
                     new CadGroup(
@@ -250,12 +247,12 @@ namespace CadProjectorViewer
                         }
                 };
                 projectorHub.ScenesCollection.AddTask(sceneTask);
-            }
+            }*/
         }
 
         private async void kmpsAddBtn_Click(object sender, RoutedEventArgs e)
         {
-            if (KmpsAppl.KompasAPI != null)
+           /* if (KmpsAppl.KompasAPI != null)
             {
                 GCCollection gCObjects = new GCCollection(this.kmpsAppl.Doc.D7.Name);
 
@@ -274,7 +271,7 @@ namespace CadProjectorViewer
                     { "CLEAR", "ALIGN", "SHOW", "PLAY" }
                 };
                 projectorHub.ScenesCollection.AddTask(sceneTask);
-            }
+            }*/
         }
 
         protected override void OnKeyUp(KeyEventArgs e)
@@ -449,7 +446,7 @@ namespace CadProjectorViewer
                 {
                     ildaWriter.Write(($"{saveFileDialog.FileName.Replace(".ild", string.Empty)}_{i}_{devices[i].IPAddress}.ild"), 
                         new List<LFrame>() { 
-                            await LFrameConverter.SolidLFrame(devices[i].RenderObjects, devices[i]) 
+                            await LFrameConverter.SolidLFrame(devices[i].RenderObjects, devices[i], false) 
                         ?? new LFrame() } , 5);
                 }
             }

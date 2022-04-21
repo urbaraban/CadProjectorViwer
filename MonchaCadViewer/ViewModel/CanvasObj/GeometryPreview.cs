@@ -23,8 +23,8 @@ namespace CadProjectorViewer.CanvasObj
         protected override void OnRender(DrawingContext drawingContext)
         {
             base.OnRender(drawingContext);
-
-            drawingContext.DrawGeometry(myBack, myPen, Geometry.GetGeometry());
+            Geometry geometry = Geometry.GetGeometry();
+            drawingContext.DrawGeometry(myBack, myPen, geometry);
         }
     }
 }

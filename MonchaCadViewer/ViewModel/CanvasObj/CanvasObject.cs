@@ -76,7 +76,6 @@ namespace CadProjectorViewer.CanvasObj
 
         public virtual Rect Bounds => this.CadObject.Bounds;
 
-
         public bool ActiveObject { get; private set; }
 
 
@@ -91,41 +90,43 @@ namespace CadProjectorViewer.CanvasObj
         }
         private double strokethinkess = 0;
 
-        public virtual Pen myPen { 
-            get
+        public virtual Pen myPen => GetPen(StrokeThinkess, this.IsMouseOver, this.CadObject.IsSelected, this.CadObject.IsRender, this.CadObject.IsBlank, this.CadObject.ProjectionSetting.GetBrush);
+
+        public static Pen GetPen(
+            double StrThink,
+            bool MouseOver, 
+            bool Selected,
+            bool Render,
+            bool Blank,
+            SolidColorBrush DefBrush
+            )
+        {
+            double thinkess = Math.Max(0.1, StrThink);
+
+            if (MouseOver == true)
             {
-                double thinkess = Math.Max(0.1, StrokeThinkess);
-
-                if (this.IsMouseOver == true)
-                {
-                    return new Pen(Brushes.Orange, thinkess * 1.5);
-                }
-                else if (this.CadObject.IsSelected == true)
-                {
-                    return new Pen(Brushes.Black, thinkess);
-                }
-                else if (this.CadObject.IsRender == false)
-                {
-                    return new Pen(Brushes.DarkGray, thinkess);
-                }
-                else if (this.CadObject.IsBlank == true)
-                {
-                    return new Pen(Brushes.LightBlue, thinkess);
-                }
-                else
-                {
-                    return new Pen(new SolidColorBrush(
-                        Color.FromArgb(255,
-                        (ProjectionSetting.RedOn == true ? ProjectionSetting.Red : (byte)0),
-                        (ProjectionSetting.GreenOn == true ? ProjectionSetting.Green : (byte)0),
-                        (ProjectionSetting.BlueOn == true ? ProjectionSetting.Blue : (byte)0))),
-                        thinkess);
-                }
-
-                return null;
+                return new Pen(Brushes.Orange, thinkess * 1.5);
             }
+            else if (Selected == true)
+            {
+                return new Pen(Brushes.Black, thinkess);
+            }
+            else if (Render == false)
+            {
+                return new Pen(Brushes.DarkGray, thinkess);
+            }
+            else if (Blank == true)
+            {
+                return new Pen(Brushes.LightBlue, thinkess);
+            }
+            else return new Pen(DefBrush, thinkess);
+
+            return null;
         }
-        public virtual Brush myBack => Brushes.Transparent;
+
+        public static Brush GetBrush(UidObject uidObject) => Brushes.Transparent;
+
+        public virtual Brush myBack => GetBrush(this.CadObject);
 
         public virtual string NameID
         {
@@ -207,6 +208,34 @@ namespace CadProjectorViewer.CanvasObj
         public bool WasMove { get; set; } = false;
 
         public bool Editing { get; set; } = true;
+
+        public bool IsSelected 
+        { 
+            get => this.CadObject.IsSelected;
+            set
+            {
+                this.CadObject.IsSelected = value;
+                OnPropertyChanged("IsSelect");
+            }
+        }
+        public bool IsRender 
+        {
+            get => this.CadObject.IsRender;
+            set
+            {
+                this.CadObject.IsRender = value;
+                OnPropertyChanged("IsRender");
+            }
+        }
+        public bool IsBlank
+        {
+            get => this.CadObject.IsBlank;
+            set
+            {
+                this.CadObject.IsBlank = value;
+                OnPropertyChanged("IsBlank");
+            }
+        }
 
         #endregion
 

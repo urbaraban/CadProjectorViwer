@@ -176,7 +176,12 @@
                     Background="White" Value="{Binding AttachDistanceY}"/>
                 </DockPanel>
                 <Separator/>
-                <CheckBox Content="Cursor Mask Activated" IsChecked="{Binding CursorMaskActivated}"/>
+                <DockPanel>
+                    <CheckBox Content="Step By Step Add" IsChecked="{Binding StepByStep}"/>
+                </DockPanel>
+                <DockPanel>
+                    <CheckBox Content="Cursor Mask Activated" IsChecked="{Binding CursorMaskActivated}"/>
+                </DockPanel>
             </StackPanel>
         </Grid>
     </ScrollViewer>

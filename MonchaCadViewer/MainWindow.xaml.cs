@@ -55,6 +55,7 @@ using CadProjectorSDK.Scenes.Commands;
 using CadProjectorSDK.Scenes.Actions;
 using MonchaCadViewer.Config;
 using CadProjectorSDK.SaveMWS;
+using USB_Barcode_Scanner;
 
 namespace CadProjectorViewer
 {
@@ -227,12 +228,14 @@ namespace CadProjectorViewer
 
         private async void kmpsSelectBtn_Click(object sender, RoutedEventArgs e)
         {
-            /*if (KmpsAppl.KompasAPI != null)
+            if (KmpsAppl.KompasAPI != null)
             {
+                KmpsDoc doc = new KmpsDoc(KmpsAppl.Appl.ActiveDocument);
+
                 CadGroup cadGeometries = 
                     new CadGroup(
-                        await ContourCalc.GetGeometry(this.kmpsAppl.Doc, ProjectorHub.ScenesCollection.SelectedScene.ProjectionSetting.PointStep.Value, false, true),
-                        this.kmpsAppl.Doc.D7.Name);
+                        await ContourCalc.GetGeometry(doc, ProjectorHub.ScenesCollection.SelectedScene.ProjectionSetting.PointStep.Value, false, true),
+                        doc.D7.Name);
 
                 SceneTask sceneTask = new SceneTask()
                 {
@@ -247,21 +250,23 @@ namespace CadProjectorViewer
                         }
                 };
                 projectorHub.ScenesCollection.AddTask(sceneTask);
-            }*/
+            }
         }
 
         private async void kmpsAddBtn_Click(object sender, RoutedEventArgs e)
         {
-           /* if (KmpsAppl.KompasAPI != null)
+           if (KmpsAppl.KompasAPI != null)
             {
-                GCCollection gCObjects = new GCCollection(this.kmpsAppl.Doc.D7.Name);
+                KmpsDoc doc = new KmpsDoc(KmpsAppl.Appl.ActiveDocument);
 
-                gCObjects.Add(new GeometryElement(await ContourCalc.GetGeometry(this.kmpsAppl.Doc, ProjectorHub.ScenesCollection.SelectedScene.ProjectionSetting.PointStep.Value, true, true), "Kompas"));
+                GCCollection gCObjects = new GCCollection(doc.D7.Name);
+
+                gCObjects.Add(new GeometryElement(await ContourCalc.GetGeometry(doc, ProjectorHub.ScenesCollection.SelectedScene.ProjectionSetting.PointStep.Value, true, true), "Kompas"));
 
                 CadGroup cadGeometries =
                       new CadGroup(
-                          await ContourCalc.GetGeometry(this.kmpsAppl.Doc, ProjectorHub.ScenesCollection.SelectedScene.ProjectionSetting.PointStep.Value, true, true),
-                          this.kmpsAppl.Doc.D7.Name);
+                          await ContourCalc.GetGeometry(doc, ProjectorHub.ScenesCollection.SelectedScene.ProjectionSetting.PointStep.Value, true, true),
+                          doc.D7.Name);
 
                 SceneTask sceneTask = new SceneTask()
                 {
@@ -271,7 +276,7 @@ namespace CadProjectorViewer
                     { "CLEAR", "ALIGN", "SHOW", "PLAY" }
                 };
                 projectorHub.ScenesCollection.AddTask(sceneTask);
-            }*/
+            }
         }
 
         protected override void OnKeyUp(KeyEventArgs e)
@@ -446,7 +451,7 @@ namespace CadProjectorViewer
                 {
                     ildaWriter.Write(($"{saveFileDialog.FileName.Replace(".ild", string.Empty)}_{i}_{devices[i].IPAddress}.ild"), 
                         new List<LFrame>() { 
-                            await LFrameConverter.SolidLFrame(devices[i].RenderObjects, devices[i], false) 
+                            await LFrameConverter.SolidLFrame(devices[i].RenderObjects, devices[i]) 
                         ?? new LFrame() } , 5);
                 }
             }

@@ -219,6 +219,9 @@
     <Reference Include="System.Xaml">
       <RequiredTargetFramework>4.0</RequiredTargetFramework>
     </Reference>
+    <Reference Include="USB-Barcode-Scanner">
+      <HintPath>.\USB-Barcode-Scanner.dll</HintPath>
+    </Reference>
     <Reference Include="VCHATCHLib">
       <HintPath>..\..\KompasLib\KompasLib\Lib16.15\VCHATCHLib.dll</HintPath>
       <EmbedInteropTypes>True</EmbedInteropTypes>

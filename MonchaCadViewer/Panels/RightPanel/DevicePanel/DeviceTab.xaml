@@ -326,7 +326,7 @@
                     Background="White"
                     Interval="0.01"
                     Maximum="999"
-                    Minimum="0.0001" />
+                    Minimum="0.1" />
             </DockPanel>
 
             <DockPanel LastChildFill="True">

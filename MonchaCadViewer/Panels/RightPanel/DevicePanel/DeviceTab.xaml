@@ -161,6 +161,18 @@
                 SmallChange="1" />
 
             </DockPanel>
+            <DockPanel LastChildFill="True">
+                <Label
+                    DockPanel.Dock="Left"
+                    Content="Offset" />
+                <Controls:NumericUpDown
+                    DataContext="{Binding SelectedItem, ElementName=DeviceCombo}"
+                    Value="{Binding TimeColorShift}"
+                    VerticalAlignment="Bottom"
+                    Maximum="1"
+                    Minimum="-1"
+                    Interval="0.00001" />
+            </DockPanel>
 
             <DockPanel Visibility="Collapsed">
                 <Controls:NumericUpDown
@@ -393,6 +405,7 @@
                     Minimum="0.01"
                     Interval="0.01" />
             </DockPanel>
+
 
             <Separator/>
             <DockPanel>

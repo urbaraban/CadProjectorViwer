@@ -317,6 +317,16 @@
             <DockPanel LastChildFill="True">
                 <Label
                     DockPanel.Dock="Left"
+                    Content="Find Solid"/>
+                <Controls:ToggleSwitch
+                    DockPanel.Dock="Right"
+                    DataContext="{Binding SelectedItem, ElementName=DeviceCombo}"
+                    IsOn="{Binding ProjectionSetting.FindSolidElement}"/>
+            </DockPanel>
+
+            <DockPanel LastChildFill="True">
+                <Label
+                    DockPanel.Dock="Left"
                     Content="Path Find Deep"/>
                 <Controls:NumericUpDown
                     DockPanel.Dock="Right"
@@ -325,20 +335,6 @@
                     Background="White"
                     Maximum="999"
                     Minimum="0.0001" />
-            </DockPanel>
-
-            <DockPanel LastChildFill="True">
-                <Label
-                    DockPanel.Dock="Left"
-                    Content="Deep distance"/>
-                <Controls:NumericUpDown
-                    DockPanel.Dock="Right"
-                    DataContext="{Binding SelectedItem, ElementName=DeviceCombo}"
-                    Value="{Binding ProjectionSetting.DeepDistance}"
-                    Background="White"
-                    Interval="0.01"
-                    Maximum="999"
-                    Minimum="0.1" />
             </DockPanel>
 
             <DockPanel LastChildFill="True">

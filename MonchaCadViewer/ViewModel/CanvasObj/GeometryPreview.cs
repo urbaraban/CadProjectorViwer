@@ -24,25 +24,26 @@ namespace CadProjectorViewer.CanvasObj
         protected override void OnRender(DrawingContext drawingContext)
         {
             base.OnRender(drawingContext);
-            Drawing(this.CadObject, this.IsMouseOver, true, StrokeThinkess, drawingContext);
+            Drawing(this.CadObject, this.IsSelected, this.IsMouseOver, true, StrokeThinkess, drawingContext);
         }
 
-        private static void Drawing(UidObject uidObject, bool MouseOver, bool ParentRender, double StrThink,  DrawingContext drawingContext)
+        private static void Drawing(UidObject uidObject, bool IsSelected, bool MouseOver, bool ParentRender, double StrThink,  DrawingContext drawingContext)
         {
             if (uidObject is CadGroup group)
             {
                 foreach(UidObject uid in group)
                 {
-                    Drawing(uid, MouseOver, ParentRender && uid.IsRender, StrThink, drawingContext);
+                    Drawing(uid, IsSelected, MouseOver, ParentRender && uid.IsRender, StrThink, drawingContext);
                 }
             }
             else if (uidObject is IGeometryObject geometryObject)
             {
                 Geometry geometry = geometryObject.GetGeometry();
+
                 Pen pen = GetPen(
                     StrThink, 
-                    MouseOver, 
-                    uidObject.IsSelected,
+                    MouseOver,
+                    IsSelected,
                     ParentRender,
                     uidObject.IsBlank,
                     uidObject.ProjectionSetting.GetBrush);

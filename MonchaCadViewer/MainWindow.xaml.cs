@@ -55,7 +55,6 @@ using CadProjectorSDK.Scenes.Commands;
 using CadProjectorSDK.Scenes.Actions;
 using MonchaCadViewer.Config;
 using CadProjectorSDK.SaveMWS;
-using USB_Barcode_Scanner;
 
 namespace CadProjectorViewer
 {
@@ -241,13 +240,6 @@ namespace CadProjectorViewer
                 {
                     Object = cadGeometries,
                     TableID = projectorHub.ScenesCollection.SelectedScene.TableID,
-                    Command = new List<string>()
-                        {
-                            "CLEAR",
-                            "ALIGN",
-                            "SHOW",
-                            "PLAY"
-                        }
                 };
                 projectorHub.ScenesCollection.AddTask(sceneTask);
             }
@@ -272,8 +264,6 @@ namespace CadProjectorViewer
                 {
                     Object = cadGeometries,
                     TableID = projectorHub.ScenesCollection.SelectedScene.TableID,
-                    Command = new List<string>()
-                    { "CLEAR", "ALIGN", "SHOW", "PLAY" }
                 };
                 projectorHub.ScenesCollection.AddTask(sceneTask);
             }
@@ -710,13 +700,6 @@ namespace CadProjectorViewer
                     {
                         Object = Obj,
                         TableID = projectorHub.ScenesCollection.SelectedScene.TableID,
-                        Command = new List<string>()
-                        {
-                            "CLEAR",
-                            "ALIGN",
-                            "SHOW",
-                            "PLAY"
-                        }
                     };
                     projectorHub.ScenesCollection.AddTask(sceneTask);
                 }

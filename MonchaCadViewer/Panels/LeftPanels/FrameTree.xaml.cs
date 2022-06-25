@@ -98,7 +98,6 @@ namespace CadProjectorViewer.Panels.DevicePanel.LeftPanels
                     TableID = Scene.TableID,
                     TaskID = -1,
                     TaskName = "Layers",
-                    Command = new List<string>()
                 };
 
                 scene.RunTask(sceneTask, false);

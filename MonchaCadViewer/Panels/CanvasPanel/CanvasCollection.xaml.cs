@@ -43,13 +43,6 @@ namespace CadProjectorViewer.Panels.CanvasPanel
                     {
                         Object = Obj,
                         TableID = projectorHub.ScenesCollection.SelectedScene.TableID,
-                        Command = new List<string>()
-                        {
-                            "CLEAR",
-                            "SHOW",
-                            "ALIGN",
-                            "PLAY"
-                        }
                     };
                     projectorHub.ScenesCollection.AddTask(sceneTask);
                 }

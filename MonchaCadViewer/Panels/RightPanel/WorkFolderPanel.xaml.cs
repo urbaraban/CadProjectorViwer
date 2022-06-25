@@ -112,8 +112,6 @@ namespace CadProjectorViewer.Panels.RightPanel
                     {
                         Object = Obj,
                         TableID = projectorHub.ScenesCollection.SelectedScene.TableID,
-                        Command = new List<string>()
-                        { "CLEAR", "ALIGN", "SHOW", "PLAY" }
                     };
                     projectorHub.ScenesCollection.AddTask(sceneTask);
                 }

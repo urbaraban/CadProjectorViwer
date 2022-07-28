@@ -19,6 +19,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using CadProjectorSDK.CadObjects.Abstract;
 using CadProjectorSDK.Interfaces;
+using CadProjectorViewer.ViewModel.CanvasObj;
 
 namespace CadProjectorViewer.DeviceManaged
 {
@@ -36,6 +37,17 @@ namespace CadProjectorViewer.DeviceManaged
         }
         #endregion
 
+        private bool Fix
+        {
+            get => _fix;
+            set
+            {
+                _fix = value;
+                OnPropertyChanged("Fix");
+            }
+        }
+        private bool _fix = false;
+
         public ProjectorView()
         {
             InitializeComponent();
@@ -47,6 +59,11 @@ namespace CadProjectorViewer.DeviceManaged
             this.Close();
         }
 
+        private void FixMenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            this.Fix = !this.Fix;
+        }
+
         private void Window_KeyUp(object sender, KeyEventArgs e)
         {
             if (e.Key == Key.Escape) this.Close();
@@ -54,34 +71,34 @@ namespace CadProjectorViewer.DeviceManaged
 
         private void Window_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
-            this.WindowState = WindowState.Normal;
-            this.DragMove();
-            this.WindowState = WindowState.Maximized;
-            if (this.DataContext is LProjector lDevice)
+            if (this.Fix == true)
             {
-                lDevice.WidthResolutuon = this.Width;
-                lDevice.HeightResolution = this.Height;
+                this.WindowState = WindowState.Normal;
+                this.DragMove();
+                this.WindowState = WindowState.Maximized;
+                if (this.DataContext is LProjector lDevice)
+                {
+                    lDevice.WidthResolutuon = this.Width;
+                    lDevice.HeightResolution = this.Height;
+                }
             }
         }
     }
 
-    public class LObjectConverter : IValueConverter
+    public class VectorObjectConverter : IMultiValueConverter
     {
-        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
         {
-            if (value is UidObject uidObject)
+            if (values[0] is UidObject uidObject && values[1] is LProjector projector)
             {
-                if (uidObject is CadLine cadLine) return new CanvasLine(cadLine);
-                else if (uidObject is CadRect3D cadRectangle) return new CanvasRectangle(cadRectangle, cadRectangle.NameID);
-                else if (uidObject is IGeometryObject geometry) return new GeometryPreview(uidObject);
-                else if (uidObject is IPixelObject pixelObject) return new ImagePreview(uidObject);
+                return new VectorPreview(uidObject, projector);
             }
-            return value;
+            return values;
         }
 
-        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        public object[] ConvertBack(object value, Type[] targetTypes, object parameter, CultureInfo culture)
         {
-            return DependencyProperty.UnsetValue;
+            return null;
         }
     }
 

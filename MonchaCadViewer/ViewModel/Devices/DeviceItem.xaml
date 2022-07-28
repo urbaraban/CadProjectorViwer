@@ -26,7 +26,7 @@
                 <MenuItem Header = "{DynamicResource dvc_showrect}" Tag="dvc_showrect"/>
                 <MenuItem Header = "{DynamicResource dvc_showzone}" Tag="1" Command="{Binding ShowZoneRectCommand}"/>
                 <MenuItem Header = "{DynamicResource dvc_polymesh}" Tag="2" Command="{Binding PolyMeshCommand}"/>
-                <MenuItem Header = "{DynamicResource dvc_view}" Tag="dvc_view"/>
+                <MenuItem Header = "{DynamicResource dvc_view}" Command="{Binding ProjectorViewCommand}"/>
             </ContextMenu>
         </Border.ContextMenu>
         <StackPanel

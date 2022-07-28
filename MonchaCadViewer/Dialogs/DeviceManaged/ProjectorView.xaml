@@ -4,9 +4,9 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:dvc="clr-namespace:CadProjectorSDK.Device;assembly=CadProjectorSDK"
-        xmlns:obj="clr-namespace:CadProjectorViewer.CanvasObj"
         xmlns:DeviceManaged="clr-namespace:CadProjectorViewer.DeviceManaged"
         d:DataContext="{d:DesignInstance Type=dvc:LProjector}"
+        x:Name="preview"
         mc:Ignorable="d"
         WindowState="Maximized"
         WindowStyle="None"
@@ -16,13 +16,14 @@
         MouseLeftButtonDown="Window_MouseLeftButtonDown">
     <Window.Resources>
         <ResourceDictionary>
-            <DeviceManaged:LObjectConverter x:Key="LObjConverter"/>
+            <DeviceManaged:VectorObjectConverter x:Key="VObjectConverter"/>
         </ResourceDictionary>
 
     </Window.Resources>
     <Window.ContextMenu>
         <ContextMenu>
-            <MenuItem Header="Close" Click="CloseMenuItem_Click" />
+            <MenuItem Header="Close" Click="CloseMenuItem_Click"/>
+            <MenuItem Header="Fix" Click="FixMenuItem_Click"/>
         </ContextMenu>
     </Window.ContextMenu>
     <Grid>
@@ -43,7 +44,14 @@
             </ItemsControl.ItemsPanel>
             <ItemsControl.ItemTemplate>
                 <DataTemplate>
-                    <ContentPresenter Content="{Binding Converter={StaticResource LObjConverter}}"/>
+                    <ContentPresenter>
+                        <ContentPresenter.Content>
+                            <MultiBinding Converter="{StaticResource VObjectConverter}">
+                                <Binding Path=""/>
+                                <Binding ElementName="preview" Path="DataContext" />
+                            </MultiBinding>
+                        </ContentPresenter.Content>
+                    </ContentPresenter>
                 </DataTemplate>
             </ItemsControl.ItemTemplate>
         </ItemsControl>

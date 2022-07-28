@@ -104,36 +104,6 @@ namespace CadProjectorViewer.Panels
             (obj as ContextMenu).DataContext = sender;
         }
 
-        private void DeviceBorder_ContextMenuClosing(object sender, ContextMenuEventArgs e)
-        {
-            if (sender is FrameworkElement element)
-            {
-                if (element.ContextMenu.DataContext is MenuItem cmindex &&
-                            element.DataContext is LProjector device)
-                {
-                    switch (cmindex.Tag)
-                    {
-                        case "dvc_showrect":
-                            //device.Frame = device.CutZone.DrawCutZone();
-                            break;
-                        case "dvc_showzone":
-                            projectorHub.ScenesCollection.SelectedScene.Add(device.Size);
-                            break;
-                        case "dvc_polymesh":
-                            device.PolyMeshUsed = !device.PolyMeshUsed;
-                            break;
-                        case "dvc_center":
-                            projectorHub.ScenesCollection.SelectedScene.Add(device.Size.Center);
-                            break;
-                        case "dvc_view":
-                            ProjectorView projectorView = new ProjectorView() { DataContext = device };
-                            projectorView.Show();
-                            break;
-
-                    }
-                }
-            }
-        }
 
         private void MeshBorder_ContextMenuClosing(object sender, ContextMenuEventArgs e)
         {

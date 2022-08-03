@@ -439,10 +439,10 @@ namespace CadProjectorViewer
                 LProjector[] devices = ProjectorHub.ScenesCollection.SelectedScene.Projectors.ToArray();
                 for (int i = 0; i < devices.Length; i++)
                 {
-                    ildaWriter.Write(($"{saveFileDialog.FileName.Replace(".ild", string.Empty)}_{i}_{devices[i].IPAddress}.ild"), 
+/*                    ildaWriter.Write(($"{saveFileDialog.FileName.Replace(".ild", string.Empty)}_{i}_{devices[i].IPAddress}.ild"), 
                         new List<LFrame>() { 
                             await LFrameConverter.SolidLFrame(devices[i].RenderObjects, devices[i]) 
-                        ?? new LFrame() } , 5);
+                        ?? new LFrame() } , 5);*/
                 }
             }
         }
@@ -556,7 +556,7 @@ namespace CadProjectorViewer
         public ICommand SelectPreviousCommand => new ActionCommand(() => { ProjectorHub.ScenesCollection.SelectedScene.SelectNextObject(-1); });
 
         public ICommand RefreshFrameCommand => new ActionCommand(() => {
-            ProjectorHub.ScenesCollection.SelectedScene.Refresh();
+            ProjectorHub.ScenesCollection.SelectedScene.Projectors.RefreshDevices();
         });
 
         public ICommand HideToTray => new ActionCommand(() => {

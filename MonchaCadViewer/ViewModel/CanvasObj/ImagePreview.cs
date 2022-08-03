@@ -1,6 +1,6 @@
 ﻿using CadProjectorSDK.CadObjects;
 using CadProjectorSDK.CadObjects.Abstract;
-using CadProjectorSDK.Interfaces;
+using CadProjectorSDK.CadObjects.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -28,14 +28,14 @@ namespace CadProjectorViewer.CanvasObj
         {
             base.OnRender(drawingContext);
 
-            BitmapSource imageSource = this.CadImage.GetImage();
+/*            BitmapSource imageSource = this.CadImage.GetImage();
 
             drawingContext.DrawImage(imageSource,
                 new Rect(
                     this.CadObject.Translate.OffsetX, 
                     this.CadObject.Translate.OffsetY,
                     imageSource.Width,
-                    imageSource.Height));
+                    imageSource.Height));*/
         }
     }
 }

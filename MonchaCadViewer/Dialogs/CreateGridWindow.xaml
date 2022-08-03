@@ -9,7 +9,7 @@
     xmlns:mesh="clr-namespace:CadProjectorSDK.Device.Mesh;assembly=CadProjectorSDK"
     xmlns:canvasobj="clr-namespace:CadProjectorViewer.CanvasObj"
     xmlns:cadprojectorviewer="clr-namespace:CadProjectorViewer" 
-    xmlns:panels="clr-namespace:CadProjectorViewer.Panels"
+    xmlns:panels="clr-namespace:CadProjectorViewer.Panels" xmlns:converters="clr-namespace:CadProjectorViewer.Converters"
     d:DataContext="{d:DesignInstance Type=mesh:ProjectorMesh}"
     x:Class="CadProjectorViewer.CreateGridWindow"
         mc:Ignorable="d"
@@ -45,7 +45,7 @@
                 <Setter Property="MinWidth" Value="60"/>
                 <Setter Property="HorizontalContentAlignment" Value="Center"/>
             </Style>
-            <canvaspanel:CadObjectConverter x:Key="CadObjectConverter"/>
+            <converters:CadObjectConverter x:Key="CadObjectConverter"/>
             <cadprojectorviewer:ToSceneObjConverter x:Key="ToSceneConverter"/>
             <panels:ItemConverter x:Key="ItemConverter"/>
             

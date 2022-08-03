@@ -252,7 +252,6 @@
     <Compile Include="ViewModel\CanvasObj\CadCanvas.cs" />
     <Compile Include="ViewModel\CanvasObj\CanvasLine.cs" />
     <Compile Include="ViewModel\CanvasObj\CanvasMesh.cs" />
-    <Compile Include="ViewModel\CanvasObj\GeometryPreview.cs" />
     <Compile Include="ViewModel\CanvasObj\ImagePreview.cs" />
     <Compile Include="Dialogs\DeviceManaged\ProjectorView.xaml.cs">
       <DependentUpon>ProjectorView.xaml</DependentUpon>
@@ -335,7 +334,6 @@
     <Compile Include="StaticTools\FileLoad.cs" />
     <Compile Include="StaticTools\GCToCad.cs" />
     <Compile Include="StaticTools\HotKeysManager.cs" />
-    <Compile Include="ViewModel\CanvasObj\VectorPreview.cs" />
     <Compile Include="ViewModel\Devices\DeviceItem.xaml.cs">
       <DependentUpon>DeviceItem.xaml</DependentUpon>
     </Compile>

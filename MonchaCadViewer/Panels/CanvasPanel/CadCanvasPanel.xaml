@@ -14,7 +14,7 @@
         <ResourceDictionary>
             <canvaspanel:CursorActionConverter x:Key="CursorAction"/>
             <canvaspanel:InfoConverter x:Key="InfoConverter"/>
-            <canvaspanel:CadObjectConverter x:Key="CadObjectConverter"/>
+            <converters:CadObjectConverter x:Key="CadObjectConverter"/>
             <Style TargetType="canvasobj:CanvasObject">
                 <Setter Property="Width" Value="40"/>
                 <Setter Property="Height" Value="40"/>
@@ -121,7 +121,7 @@
                     <ItemsControl ItemsSource="{Binding .}">
                         <ItemsControl.ItemsPanel>
                             <ItemsPanelTemplate>
-                                <canvasobj:CadCanvas/>
+                                <canvasobj:CadCanvas x:Name="ObjCanvas"/>
                             </ItemsPanelTemplate>
                         </ItemsControl.ItemsPanel>
                         <ItemsControl.ItemTemplate>
@@ -130,7 +130,7 @@
                                     <ContentPresenter.Content>
                                         <MultiBinding Converter="{StaticResource CadObjectConverter}">
                                             <Binding Path=""/>
-                                            <Binding ElementName="CanvasPanel"/>
+                                            <Binding ElementName="ObjCanvas"/>
                                         </MultiBinding>
                                     </ContentPresenter.Content>
                                 </ContentPresenter>

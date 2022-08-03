@@ -5,6 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:dvc="clr-namespace:CadProjectorSDK.Device;assembly=CadProjectorSDK"
         xmlns:DeviceManaged="clr-namespace:CadProjectorViewer.DeviceManaged"
+        xmlns:converters="clr-namespace:CadProjectorViewer.Converters" xmlns:canvasobj="clr-namespace:CadProjectorViewer.CanvasObj"
         d:DataContext="{d:DesignInstance Type=dvc:LProjector}"
         x:Name="preview"
         mc:Ignorable="d"
@@ -16,7 +17,7 @@
         MouseLeftButtonDown="Window_MouseLeftButtonDown">
     <Window.Resources>
         <ResourceDictionary>
-            <DeviceManaged:VectorObjectConverter x:Key="VObjectConverter"/>
+            <converters:CadObjectConverter x:Key="VObjectConverter"/>
         </ResourceDictionary>
 
     </Window.Resources>
@@ -37,9 +38,8 @@
             ItemsSource="{Binding RenderObjects, Mode=OneWay}">
             <ItemsControl.ItemsPanel>
                 <ItemsPanelTemplate>
-                    <Canvas Focusable="False" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
+                    <canvasobj:CadCanvas Focusable="False" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
                                          IsHitTestVisible="True" Grid.RowSpan="3" Background="Black" Height="Auto" Width="Auto"/>
-
                 </ItemsPanelTemplate>
             </ItemsControl.ItemsPanel>
             <ItemsControl.ItemTemplate>

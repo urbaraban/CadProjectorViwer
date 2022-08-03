@@ -6,7 +6,7 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"  
     xmlns:scene="clr-namespace:CadProjectorSDK.Scenes;assembly=CadProjectorSDK"
     xmlns:canvaspanel="clr-namespace:CadProjectorViewer.Panels.CanvasPanel" 
-    xmlns:panels="clr-namespace:CadProjectorViewer.Panels" 
+    xmlns:panels="clr-namespace:CadProjectorViewer.Panels" xmlns:converters="clr-namespace:CadProjectorViewer.Converters"
     d:DataContext="{d:DesignInstance Type=scene:SceneTask}"
     AllowDrop="False"
     d:DesignHeight="100"
@@ -14,7 +14,7 @@
     mc:Ignorable="d">
     <UserControl.Resources>
         <ResourceDictionary>
-            <canvaspanel:CadObjectConverter x:Key="CadObjectConverter"/>
+            <converters:CadObjectConverter x:Key="CadObjectConverter"/>
             <panels:ItemConverter x:Key="ItemConverter"/>
             <panels:BackColor x:Key="BackColorConverter"/>
         </ResourceDictionary>

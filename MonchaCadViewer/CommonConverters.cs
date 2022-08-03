@@ -12,6 +12,9 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Data;
 using System.Windows.Input;
+using CadProjectorSDK.CadObjects.Interfaces;
+using System.Windows.Controls;
+using AppSt = CadProjectorViewer.Properties.Settings;
 
 namespace CadProjectorViewer.Converters
 {
@@ -41,22 +44,33 @@ namespace CadProjectorViewer.Converters
         }
     }
 
-    public class CadObjectConverter : IValueConverter
+    public class CadObjectConverter : IMultiValueConverter
     {
-        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
         {
-            if (value is UidObject uidObject)
+            if (values[0] is UidObject uidObject && values[1] is CadCanvas canvas)
+            {
+                if (CanvasObjectSwitch(uidObject) is CanvasObject canvasObject)
+                {
+                    canvasObject.GetThinkess = canvas.GetThinkess;
+                    canvasObject.GetRenderDevice = canvas.GetActualRenderDevice;
+                    //canvasPanel.SizeChange += canvasObject.ParentChangeSize;
+                    return canvasObject;
+                }
+
+            }
+            return values;
+
+            CanvasObject CanvasObjectSwitch(UidObject uidObject)
             {
                 if (uidObject is ProjectorMesh mesh) return new CanvasMesh(mesh);
                 else if (uidObject is CadLine cadLine) return new CanvasLine(cadLine);
                 else if (uidObject is CadRect3D cadRectangle) return new CanvasRectangle(cadRectangle, cadRectangle.NameID);
-                else if (uidObject is IGeometryObject geometry) return new GeometryPreview(uidObject);
-                else if (uidObject is IPixelObject pixelObject) return new ImagePreview(uidObject);
+                else return new CanvasObject(uidObject, true);
+                return null;
             }
-            return value;
         }
-
-        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        public object[] ConvertBack(object value, Type[] targetTypes, object parameter, CultureInfo culture)
         {
             return null;
         }

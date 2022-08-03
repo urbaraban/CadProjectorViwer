@@ -19,7 +19,6 @@ using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using CadProjectorSDK.CadObjects.Abstract;
 using CadProjectorSDK.Interfaces;
-using CadProjectorViewer.ViewModel.CanvasObj;
 
 namespace CadProjectorViewer.DeviceManaged
 {
@@ -84,22 +83,4 @@ namespace CadProjectorViewer.DeviceManaged
             }
         }
     }
-
-    public class VectorObjectConverter : IMultiValueConverter
-    {
-        public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
-        {
-            if (values[0] is UidObject uidObject && values[1] is LProjector projector)
-            {
-                return new VectorPreview(uidObject, projector);
-            }
-            return values;
-        }
-
-        public object[] ConvertBack(object value, Type[] targetTypes, object parameter, CultureInfo culture)
-        {
-            return null;
-        }
-    }
-
 }

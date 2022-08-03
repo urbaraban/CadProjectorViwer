@@ -21,6 +21,7 @@ using CadProjectorSDK.CadObjects.Abstract;
 using CadProjectorSDK.Interfaces;
 using CadProjectorSDK.Device.Mesh;
 using CadProjectorSDK.Scenes.Commands;
+using CadProjectorSDK.Render;
 
 namespace CadProjectorViewer.CanvasObj
 {
@@ -33,6 +34,10 @@ namespace CadProjectorViewer.CanvasObj
 
         public virtual ChangeSizeDelegate SizeChange { get; set; }
         public delegate void ChangeSizeDelegate();
+
+        public GetRenderDeviceDelegate GetRenderDevice { get; set; }
+        public delegate IRenderingDevice GetRenderDeviceDelegate();
+
 
         public UidObject CadObject
         {
@@ -79,18 +84,7 @@ namespace CadProjectorViewer.CanvasObj
         public bool ActiveObject { get; private set; }
 
 
-        public double StrokeThinkess
-        {
-            get => strokethinkess <= 0 ? (this.GetThinkess?.Invoke() ?? 1) * AppSt.Default.default_thinkess_percent : strokethinkess;
-            set
-            {
-                strokethinkess = value;
-                OnPropertyChanged("StrokeThinkess");
-            }
-        }
-        private double strokethinkess = 0;
-
-        public virtual Pen myPen => GetPen(StrokeThinkess, this.IsMouseOver, this.CadObject.IsSelected, this.CadObject.IsRender, this.CadObject.IsBlank, this.CadObject.ProjectionSetting.GetBrush);
+        public virtual Pen myPen => GetPen(GetThinkess(), this.IsMouseOver, this.CadObject.IsSelected, this.CadObject.IsRender, this.CadObject.IsBlank, this.CadObject.ProjectionSetting.GetBrush);
 
         public static Pen GetPen(
             double StrThink,
@@ -98,28 +92,26 @@ namespace CadProjectorViewer.CanvasObj
             bool Selected,
             bool Render,
             bool Blank,
-            SolidColorBrush DefBrush
-            )
+            SolidColorBrush DefBrush)
         {
-            double thinkess = Math.Max(0.1, StrThink);
 
             if (MouseOver == true)
             {
-                return new Pen(Brushes.Orange, thinkess * 1.5);
+                return new Pen(Brushes.Orange, StrThink * 1.5);
             }
             else if (Selected == true)
             {
-                return new Pen(Brushes.Black, thinkess);
+                return new Pen(Brushes.Black, StrThink);
             }
             else if (Render == false)
             {
-                return new Pen(Brushes.DarkGray, thinkess);
+                return new Pen(Brushes.DarkGray, StrThink);
             }
             else if (Blank == true)
             {
-                return new Pen(Brushes.LightBlue, thinkess);
+                return new Pen(Brushes.LightBlue, StrThink);
             }
-            else return new Pen(DefBrush, thinkess);
+            else return new Pen(DefBrush, StrThink);
 
             return null;
         }
@@ -435,26 +427,37 @@ namespace CadProjectorViewer.CanvasObj
 
         protected override void OnRender(DrawingContext drawingContext)
         {
-           /* if (this.CadObject.IsSelected == true)
+            if (this.GetRenderDevice?.Invoke() is IRenderingDevice renderingDevice)
+                Drawing(CadObject, renderingDevice, this.IsSelected, this.IsMouseOver, this.IsRender, GetThinkess(), drawingContext);
+        }
+
+        protected void Drawing(UidObject uidObject, IRenderingDevice renderingDevice, bool IsSelected, bool MouseOver, bool ParentRender, double StrThink, DrawingContext drawingContext)
+        {
+            if (uidObject is CadGroup group)
             {
-                Rect Bounds = this.Bounds;
-                //Left
-                DrawSize(drawingContext,
-                    new Point(0, Bounds.Y + Bounds.Height / 2),
-                    new Point(Bounds.X, Bounds.Y + Bounds.Height / 2));
-                //Right
-                DrawSize(drawingContext,
-                    new Point(ProjectorHub.Size.X, Bounds.Y + Bounds.Height / 2),
-                    new Point(Bounds.X + Bounds.Width, Bounds.Y + Bounds.Height / 2));
-                //Top
-                DrawSize(drawingContext,
-                    new Point(Bounds.X + Bounds.Width / 2, 0),
-                    new Point(Bounds.X + Bounds.Width / 2, Bounds.Y));
-                //Down
-                DrawSize(drawingContext,
-                    new Point(Bounds.X + Bounds.Width / 2, ProjectorHub.Size.Y),
-                    new Point(Bounds.X + Bounds.Width / 2, Bounds.Y + Bounds.Height));
-            }*/
+                foreach (UidObject uid in group)
+                {
+                    Drawing(uid, renderingDevice, IsSelected, MouseOver, ParentRender && uid.IsRender, StrThink, drawingContext);
+                }
+            }
+            else if (uidObject.Renders.ContainsKey(renderingDevice) == true
+                && uidObject.Renders[renderingDevice] is VectorLinesCollection linesCollection)
+            {
+                Pen pen = GetPen(
+                    StrThink,
+                    MouseOver,
+                    IsSelected,
+                    ParentRender,
+                    uidObject.IsBlank,
+                    renderingDevice.ProjectionSetting.GetBrush);
+
+                Brush brush = GetBrush(uidObject);
+
+                foreach (VectorLine line in linesCollection)
+                {
+                    drawingContext.DrawLine(pen, new Point(line.P1.X, line.P1.Y), new Point(line.P2.X, line.P2.Y));
+                }
+            }
         }
 
         protected void DrawSize(DrawingContext drawingContext, Point point1, Point point2)

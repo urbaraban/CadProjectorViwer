@@ -82,7 +82,7 @@
                     <ItemsControl ItemsSource="{Binding Converter={StaticResource ItemConverter}}">
                         <ItemsControl.ItemsPanel>
                             <ItemsPanelTemplate>
-                                <canvasobj:CadCanvas/>
+                                <Canvas/>
                             </ItemsPanelTemplate>
                         </ItemsControl.ItemsPanel>
                         <ItemsControl.ItemTemplate>

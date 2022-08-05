@@ -29,15 +29,14 @@ namespace CadProjectorViewer.CanvasObj
     {
         public ContextMenu ObjectContextMenu { get; set; }
 
-        public virtual GetThinkessDelegate GetThinkess { get; set; }
-        public delegate double GetThinkessDelegate();
+        public virtual GetResolutionDeligate GetResolution { get; set; }
+        public delegate Tuple<double, double> GetResolutionDeligate();
 
         public virtual ChangeSizeDelegate SizeChange { get; set; }
         public delegate void ChangeSizeDelegate();
 
-        public GetRenderDeviceDelegate GetRenderDevice { get; set; }
-        public delegate IRenderingDevice GetRenderDeviceDelegate();
-
+        public GetCanvasDelegate GetCanvas { get; set; }
+        public delegate CadCanvas GetCanvasDelegate();
 
         public UidObject CadObject
         {
@@ -83,10 +82,18 @@ namespace CadProjectorViewer.CanvasObj
 
         public bool ActiveObject { get; private set; }
 
+        public virtual Pen GetPen()
+        {
+            return GetPen(
+                GetThinkess(),
+                this.IsMouseOver,
+                this.IsSelected,
+                true,
+                this.IsBlank,
+                GetCanvas?.Invoke().RenderDevice.ProjectionSetting.GetBrush);
+        }
 
-        public virtual Pen myPen => GetPen(GetThinkess(), this.IsMouseOver, this.CadObject.IsSelected, this.CadObject.IsRender, this.CadObject.IsBlank, this.CadObject.ProjectionSetting.GetBrush);
-
-        public static Pen GetPen(
+        public virtual Pen GetPen(
             double StrThink,
             bool MouseOver, 
             bool Selected,
@@ -114,6 +121,18 @@ namespace CadProjectorViewer.CanvasObj
             else return new Pen(DefBrush, StrThink);
 
             return null;
+        }
+
+        public double GetThinkess()
+        {
+            double thinkess = 1;
+            if (this.GetCanvas?.Invoke() is CadCanvas canvas)
+            {
+                Tuple<double, double> resolution = GetResolution?.Invoke();
+                thinkess = Math.Max(resolution.Item1, resolution.Item2) * canvas.Setting.Thinkess;
+            }
+
+            return thinkess;
         }
 
         public static Brush GetBrush(UidObject uidObject) => Brushes.Transparent;
@@ -427,21 +446,28 @@ namespace CadProjectorViewer.CanvasObj
 
         protected override void OnRender(DrawingContext drawingContext)
         {
-            if (this.GetRenderDevice?.Invoke() is IRenderingDevice renderingDevice)
-                Drawing(CadObject, renderingDevice, this.IsSelected, this.IsMouseOver, this.IsRender, GetThinkess(), drawingContext);
+            if (this.GetCanvas?.Invoke() is CadCanvas canvas) {
+
+                Tuple<double, double> resolution = GetResolution?.Invoke();
+                Drawing(CadObject, canvas, resolution, this.IsSelected, this.IsMouseOver, this.IsRender, GetThinkess(), drawingContext);
+            }
         }
 
-        protected void Drawing(UidObject uidObject, IRenderingDevice renderingDevice, bool IsSelected, bool MouseOver, bool ParentRender, double StrThink, DrawingContext drawingContext)
+        protected void Drawing (
+            UidObject uidObject, CadCanvas cadCanvas, Tuple<double, double> sizes,
+            bool IsSelected, bool MouseOver, bool ParentRender,
+            double StrThink, 
+            DrawingContext drawingContext)
         {
             if (uidObject is CadGroup group)
             {
                 foreach (UidObject uid in group)
                 {
-                    Drawing(uid, renderingDevice, IsSelected, MouseOver, ParentRender && uid.IsRender, StrThink, drawingContext);
+                    Drawing(uid, cadCanvas, sizes, IsSelected, MouseOver, ParentRender && uid.IsRender, StrThink, drawingContext);
                 }
             }
-            else if (uidObject.Renders.ContainsKey(renderingDevice) == true
-                && uidObject.Renders[renderingDevice] is VectorLinesCollection linesCollection)
+            else if (uidObject.Renders.ContainsKey(cadCanvas.RenderDevice) == true
+                && uidObject.Renders[cadCanvas.RenderDevice] is VectorLinesCollection linesCollection)
             {
                 Pen pen = GetPen(
                     StrThink,
@@ -449,15 +475,23 @@ namespace CadProjectorViewer.CanvasObj
                     IsSelected,
                     ParentRender,
                     uidObject.IsBlank,
-                    renderingDevice.ProjectionSetting.GetBrush);
+                    cadCanvas.RenderDevice.ProjectionSetting.GetBrush);
 
                 Brush brush = GetBrush(uidObject);
 
                 foreach (VectorLine line in linesCollection)
                 {
-                    drawingContext.DrawLine(pen, new Point(line.P1.X, line.P1.Y), new Point(line.P2.X, line.P2.Y));
+                    Point point1 = GetDrawPoint(line.P1, sizes);
+                    Point point2 = GetDrawPoint(line.P2, sizes);
+
+                    drawingContext.DrawLine(pen, point1, point2);
                 }
             }
+        }
+
+        private Point GetDrawPoint(RenderPoint point, Tuple<double, double> sizes)
+        {
+            return new Point(point.X * sizes.Item1, point.Y * sizes.Item2);
         }
 
         protected void DrawSize(DrawingContext drawingContext, Point point1, Point point2)

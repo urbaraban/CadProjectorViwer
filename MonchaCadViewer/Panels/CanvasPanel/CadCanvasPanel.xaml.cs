@@ -153,8 +153,8 @@ namespace CadProjectorViewer.Panels.CanvasPanel
             if (SelectedScene != null)
             {
                 Point m_point = e.GetPosition(this.CanvasGrid);
-                SelectedScene.MousePosition = new RenderPoint(m_point);
-
+                SelectedScene.MousePosition.MX = m_point.X;
+                SelectedScene.MousePosition.MY = m_point.Y;
 
                 if (e.LeftButton == MouseButtonState.Pressed && Keyboard.Modifiers == ModifierKeys.Control)
                 {

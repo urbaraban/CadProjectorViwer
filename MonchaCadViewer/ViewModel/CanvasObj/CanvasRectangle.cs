@@ -80,7 +80,7 @@ namespace CadProjectorViewer.CanvasObj
 
         protected override void OnRender(DrawingContext drawingContext)
         {
-            double textsize = Math.Max((this.GetThinkess?.Invoke() ?? 1) * AppSt.Default.default_thinkess_percent * 5, 1d);
+            double textsize = GetThinkess();
 
             drawingContext.DrawText(
                 new FormattedText(this.NameID.ToString(),
@@ -91,7 +91,7 @@ namespace CadProjectorViewer.CanvasObj
                     Brushes.Gray),
                 new Point(X, Y));
 
-            drawingContext.DrawRectangle(BackColorBrush, myPen, new Rect(LRect.MX, LRect.MY, LRect.Width, LRect.Height));
+            drawingContext.DrawRectangle(BackColorBrush, GetPen(), new Rect(LRect.MX, LRect.MY, LRect.Width, LRect.Height));
         }
 
 
@@ -121,13 +121,13 @@ namespace CadProjectorViewer.CanvasObj
             this.rectangle = adornedElement;
 
             AddAnchor(new CanvasAnchor(adornedElement.LRect.BL)
-            { GetThinkess = adornedElement.GetThinkess });
+            { GetCanvas = adornedElement.GetCanvas});
             AddAnchor(new CanvasAnchor((adornedElement.LRect.TR))
-            { GetThinkess = adornedElement.GetThinkess });
+            { GetCanvas = adornedElement.GetCanvas });
             AddAnchor(new CanvasAnchor(adornedElement.LRect.BR)
-            { GetThinkess = adornedElement.GetThinkess });
+            { GetCanvas = adornedElement.GetCanvas });
             AddAnchor(new CanvasAnchor(adornedElement.LRect.TL)
-            { GetThinkess = adornedElement.GetThinkess });
+            { GetCanvas = adornedElement.GetCanvas });
 
 
             foreach (CanvasAnchor anchor in _Anchors)

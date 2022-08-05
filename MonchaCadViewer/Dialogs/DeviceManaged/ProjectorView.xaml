@@ -3,15 +3,13 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:dvc="clr-namespace:CadProjectorSDK.Device;assembly=CadProjectorSDK"
-        xmlns:DeviceManaged="clr-namespace:CadProjectorViewer.DeviceManaged"
-        xmlns:converters="clr-namespace:CadProjectorViewer.Converters" xmlns:canvasobj="clr-namespace:CadProjectorViewer.CanvasObj"
-        d:DataContext="{d:DesignInstance Type=dvc:LProjector}"
-        x:Name="preview"
+        xmlns:converters="clr-namespace:CadProjectorViewer.Converters" 
+        xmlns:canvasobj="clr-namespace:CadProjectorViewer.CanvasObj" 
+        xmlns:render ="clr-namespace:CadProjectorSDK.Interfaces;assembly=CadProjectorSDK"
+        d:DataContext="{d:DesignInstance Type=render:IRenderingDevice}"
         mc:Ignorable="d"
         WindowState="Maximized"
         WindowStyle="None"
-        Background="Black"
         Title="ProjectorView" Height="450" Width="450"
         KeyUp="Window_KeyUp"
         MouseLeftButtonDown="Window_MouseLeftButtonDown">
@@ -19,7 +17,6 @@
         <ResourceDictionary>
             <converters:CadObjectConverter x:Key="VObjectConverter"/>
         </ResourceDictionary>
-
     </Window.Resources>
     <Window.ContextMenu>
         <ContextMenu>
@@ -38,8 +35,10 @@
             ItemsSource="{Binding RenderObjects, Mode=OneWay}">
             <ItemsControl.ItemsPanel>
                 <ItemsPanelTemplate>
-                    <canvasobj:CadCanvas Focusable="False" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
-                                         IsHitTestVisible="True" Grid.RowSpan="3" Background="Black" Height="Auto" Width="Auto"/>
+                    <canvasobj:CadCanvas 
+                        x:Name="ObjCanvas"
+                        Focusable="False" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
+                        IsHitTestVisible="True" Grid.RowSpan="3" Background="Black" Height="Auto" Width="Auto"/>
                 </ItemsPanelTemplate>
             </ItemsControl.ItemsPanel>
             <ItemsControl.ItemTemplate>
@@ -48,14 +47,13 @@
                         <ContentPresenter.Content>
                             <MultiBinding Converter="{StaticResource VObjectConverter}">
                                 <Binding Path=""/>
-                                <Binding ElementName="preview" Path="DataContext" />
+                                <Binding ElementName="ObjCanvas"/>
+                                <Binding ElementName="ObjCanvas"/>
                             </MultiBinding>
                         </ContentPresenter.Content>
                     </ContentPresenter>
                 </DataTemplate>
             </ItemsControl.ItemTemplate>
         </ItemsControl>
-        <Label Grid.Row="0" Content="{Binding NameID}" Foreground="White"/>
-        <Label Grid.Row="2" Content="{Binding ScanRate, Mode=TwoWay}" Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Center"/>
     </Grid>
 </Window>

@@ -1,97 +1,95 @@
 ﻿<UserControl x:Class="CadProjectorViewer.Panels.CanvasPanel.CadCanvasPanel"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:canvasobj="clr-namespace:CadProjectorViewer.CanvasObj" 
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:scenes="clr-namespace:CadProjectorSDK.Scenes;assembly=CadProjectorSDK"
+             xmlns:canvasobj="clr-namespace:CadProjectorViewer.CanvasObj"
+             xmlns:converters="clr-namespace:CadProjectorViewer.Converters"
              xmlns:canvaspanel="clr-namespace:CadProjectorViewer.Panels.CanvasPanel"
-             xmlns:scenes="clr-namespace:CadProjectorSDK.Scenes;assembly=CadProjectorSDK" xmlns:converters="clr-namespace:CadProjectorViewer.Converters"
              d:DataContext="{d:DesignInstance Type=scenes:ProjectionScene}"
              x:Name="CanvasPanel"
-             mc:Ignorable="d" 
+             mc:Ignorable="d"
              d:DesignHeight="400" d:DesignWidth="400">
     <UserControl.Resources>
         <ResourceDictionary>
-            <canvaspanel:CursorActionConverter x:Key="CursorAction"/>
-            <canvaspanel:InfoConverter x:Key="InfoConverter"/>
-            <converters:CadObjectConverter x:Key="CadObjectConverter"/>
-            <Style TargetType="canvasobj:CanvasObject">
-                <Setter Property="Width" Value="40"/>
-                <Setter Property="Height" Value="40"/>
-            </Style>
+            <canvaspanel:CursorActionConverter x:Key="CursorAction" />
+            <canvaspanel:InfoConverter x:Key="InfoConverter" />
+            <converters:CadObjectConverter x:Key="CadObjectConverter" />
+            <converters:GetCadCanvas x:Key="GetCadCavas"/>
         </ResourceDictionary>
     </UserControl.Resources>
     <DockPanel>
-        <DockPanel 
+        <DockPanel
             DockPanel.Dock="Top"
             Grid.Row="0"
             Panel.ZIndex="99"
             Background="LightGray">
-            <Button x:Name="RefreshBtn" 
+            <Button x:Name="RefreshBtn"
                     FontFamily="Segoe MDL2 Assets"
-                    Content="&#xE72C;" 
-                    Width="{Binding ActualHeight, RelativeSource={RelativeSource Self}}"   
-                    Margin="3" 
+                    Content="&#xE72C;"
+                    Width="{Binding ActualHeight, RelativeSource={RelativeSource Self}}"
+                    Margin="3"
                     Panel.ZIndex="999" FontSize="18"
-                    Command="{Binding ElementName=CanvasPanel, Path=RefreshFrameCommand}"/>
-            <TextBlock Text="{Binding AlreadyAction}" 
+                    Command="{Binding ElementName=CanvasPanel, Path=RefreshFrameCommand}" />
+            <TextBlock Text="{Binding AlreadyAction}"
                        Width="80"
                        Margin="3"
                        TextAlignment="Right"
-                       VerticalAlignment="Center"/>
+                       VerticalAlignment="Center" />
             <Button Content="X"
                     Background="Transparent"
                     BorderBrush="Transparent"
                     Foreground="Red"
                     Command="{Binding ElementName=CanvasPanel, Path=CancelActionCommand}"
-                     Width="{Binding ActualHeight, RelativeSource={RelativeSource Self}}"/>
-            <StackPanel 
-                Orientation="Horizontal" FlowDirection="RightToLeft" >
+                     Width="{Binding ActualHeight, RelativeSource={RelativeSource Self}}" />
+            <StackPanel
+                Orientation="Horizontal" FlowDirection="RightToLeft">
 
-                <Button x:Name="AdornerShowBtn" 
+                <Button x:Name="AdornerShowBtn"
                     FontFamily="Segoe MDL2 Assets"
-                    Content="&#xE7F0;" 
-                     Width="{Binding ActualHeight, RelativeSource={RelativeSource Self}}"   
-                    Margin="3" 
-                    Click="AdornerShowBtn_Click" Panel.ZIndex="999" FontSize="18"/>
+                    Content="&#xE7F0;"
+                     Width="{Binding ActualHeight, RelativeSource={RelativeSource Self}}"
+                    Margin="3"
+                    Click="AdornerShowBtn_Click" Panel.ZIndex="999" FontSize="18" />
                 <Button x:Name="ShowDeviceRect"
-                    FontFamily="Segoe MDL2 Assets" 
+                    FontFamily="Segoe MDL2 Assets"
                     Content="&#xe773;"
                      Width="{Binding ActualHeight, RelativeSource={RelativeSource Self}}"
-                  Margin="3" Click="ShowDeviceRect_Click" Panel.ZIndex="999" FontSize="20"/>
+                  Margin="3" Click="ShowDeviceRect_Click" Panel.ZIndex="999" FontSize="20" />
                 <ToggleButton  Width="{Binding ActualHeight, RelativeSource={RelativeSource Self}}"
                            Content="&#xe8b0;"
                            FontSize="18"
                            FontFamily="Segoe MDL2 Assets"
                            Margin="3"
-                           IsChecked="{Binding ShowCursor}"
-                 />
+                           IsChecked="{Binding ShowCursor}" />
             </StackPanel>
         </DockPanel>
-        <Grid Margin="0" Background="Gray" ClipToBounds="True" >
-            <Viewbox x:Name="CanvasBox" 
+        <Grid Margin="0" Background="Gray" ClipToBounds="True">
+            <Viewbox 
+              x:Name="CanvasBox"
               Grid.Row="1" Grid.RowSpan="3"
               Margin="10"
-              Stretch="Uniform" StretchDirection="Both" >
+              Stretch="Uniform" StretchDirection="Both">
                 <Grid x:Name="CanvasGrid" Background="Red"
                   Width="{Binding Size.Width}"
                   Height="{Binding Size.Height}"
                   Cursor="{Binding AlreadyAction, Converter={StaticResource CursorAction}}">
-                    <Rectangle Fill="White"/>
-                    <Canvas 
-                    x:Name="BackCanvas" 
+                    <Rectangle Fill="White" />
+                    <Canvas
+                    x:Name="BackCanvas"
                     IsHitTestVisible="False"
                     SizeChanged="Canvas_SizeChanged">
                         <Canvas.Background>
-                            <DrawingBrush TileMode="Tile" Viewport="0,0,200,200" 
+                            <DrawingBrush TileMode="Tile" Viewport="0,0,200,200"
                                      ViewportUnits="Absolute">
                                 <DrawingBrush.Drawing>
                                     <GeometryDrawing>
                                         <GeometryDrawing.Geometry>
-                                            <RectangleGeometry Rect="0,0,200,200"/>
+                                            <RectangleGeometry Rect="0,0,200,200" />
                                         </GeometryDrawing.Geometry>
                                         <GeometryDrawing.Pen>
-                                            <Pen Brush="LightSlateGray" Thickness="3"/>
+                                            <Pen Brush="LightSlateGray" Thickness="3" />
                                         </GeometryDrawing.Pen>
                                     </GeometryDrawing>
                                 </DrawingBrush.Drawing>
@@ -109,16 +107,17 @@
                                 <ContentPresenter>
                                     <ContentPresenter.Content>
                                         <MultiBinding Converter="{StaticResource CadObjectConverter}">
-                                            <Binding Path=""/>
-                                            <Binding ElementName="CanvasPanel"/>
+                                            <Binding Path="" />
+                                            <Binding ElementName="CanvasPanel" />
+                                            <Binding ElementName="CanvasBox" />
                                         </MultiBinding>
                                     </ContentPresenter.Content>
                                 </ContentPresenter>
                             </DataTemplate>
-
                         </ItemsControl.ItemTemplate>
                     </ItemsControl>
-                    <ItemsControl ItemsSource="{Binding .}">
+                    <ItemsControl
+                        ItemsSource="{Binding .}">
                         <ItemsControl.ItemsPanel>
                             <ItemsPanelTemplate>
                                 <canvasobj:CadCanvas x:Name="ObjCanvas"/>
@@ -129,31 +128,30 @@
                                 <ContentPresenter>
                                     <ContentPresenter.Content>
                                         <MultiBinding Converter="{StaticResource CadObjectConverter}">
-                                            <Binding Path=""/>
+                                            <Binding Path="" />
                                             <Binding ElementName="ObjCanvas"/>
+                                            <Binding ElementName="CanvasBox"/>
                                         </MultiBinding>
                                     </ContentPresenter.Content>
                                 </ContentPresenter>
                             </DataTemplate>
                         </ItemsControl.ItemTemplate>
                     </ItemsControl>
-
                 </Grid>
             </Viewbox>
-            <Label x:Name="CoordinateLabel" 
-               Grid.RowSpan="3" 
-               VerticalContentAlignment="Bottom" 
-               IsEnabled="False" HorizontalAlignment="Right" 
+            <Label x:Name="CoordinateLabel"
+               Grid.RowSpan="3"
+               VerticalContentAlignment="Bottom"
+               IsEnabled="False" HorizontalAlignment="Right"
                HorizontalContentAlignment="Right" Visibility="Hidden" IsHitTestVisible="False">
                 <Label.Content>
                     <MultiBinding Converter="{StaticResource InfoConverter}">
-                        <Binding Path="MousePosition.X"/>
-                        <Binding Path="MousePosition.Y"/>
-                        <Binding Path="Devices"/>
+                        <Binding Path="MousePosition.MX" />
+                        <Binding Path="MousePosition.MY" />
+                        <Binding Path="Projectors" />
                     </MultiBinding>
                 </Label.Content>
             </Label>
         </Grid>
     </DockPanel>
-    
 </UserControl>

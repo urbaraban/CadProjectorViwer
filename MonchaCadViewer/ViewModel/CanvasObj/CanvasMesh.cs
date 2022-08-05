@@ -43,7 +43,7 @@ namespace CadProjectorViewer.CanvasObj
 
         protected override async void OnRender(DrawingContext drawingContext)
         {
-            Pen pen = this.myPen;
+            Pen pen = this.GetPen();
             for (int i = 0; i < Mesh.Points.GetLength(0); i += 1)
             {
                 for (int j = 0; j < Mesh.Points.GetLength(1); j += 1)
@@ -78,7 +78,7 @@ namespace CadProjectorViewer.CanvasObj
                 for (int j = 0; j < mesh.Mesh.Points.GetLength(1); j += 1)
                 {
                     _Anchors.Add(new CanvasAnchor(mesh.Mesh[i, j])
-                    { GetThinkess = mesh.GetThinkess });
+                    { GetCanvas = mesh.GetCanvas });
                 }
             }
 

@@ -249,7 +249,7 @@
     <Compile Include="Panels\RightPanel\UdpSetting.xaml.cs">
       <DependentUpon>UdpSetting.xaml</DependentUpon>
     </Compile>
-    <Compile Include="ViewModel\CanvasObj\CadCanvas.cs" />
+    <Compile Include="ViewModel\CadCanvas.cs" />
     <Compile Include="ViewModel\CanvasObj\CanvasLine.cs" />
     <Compile Include="ViewModel\CanvasObj\CanvasMesh.cs" />
     <Compile Include="ViewModel\CanvasObj\ImagePreview.cs" />

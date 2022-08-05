@@ -53,8 +53,7 @@ using CadProjectorViewer.Panels.RightPanel;
 using CadProjectorSDK.Interfaces;
 using CadProjectorSDK.Scenes.Commands;
 using CadProjectorSDK.Scenes.Actions;
-using MonchaCadViewer.Config;
-using CadProjectorSDK.SaveMWS;
+using CadProjectorSDK.Config;
 
 namespace CadProjectorViewer
 {

@@ -15,6 +15,12 @@
         MouseLeftButtonDown="Window_MouseLeftButtonDown">
     <Window.Resources>
         <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Controls.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Fonts.xaml" />
+                <!-- Theme setting -->
+                <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Themes/Light.Blue.xaml" />
+            </ResourceDictionary.MergedDictionaries>
             <converters:CadObjectConverter x:Key="VObjectConverter"/>
         </ResourceDictionary>
     </Window.Resources>
@@ -30,8 +36,15 @@
             <RowDefinition Height="10*"/>
             <RowDefinition Height="1*"/>
         </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="4*" />
+            <ColumnDefinition Width="4*" />
+            <ColumnDefinition Width="4*" />
+            <ColumnDefinition Width="4*" />
+        </Grid.ColumnDefinitions>
         <ItemsControl 
             Grid.Row="0" Grid.RowSpan="3"
+            Grid.ColumnSpan="5"
             ItemsSource="{Binding RenderObjects, Mode=OneWay}">
             <ItemsControl.ItemsPanel>
                 <ItemsPanelTemplate>
@@ -55,5 +68,18 @@
                 </DataTemplate>
             </ItemsControl.ItemTemplate>
         </ItemsControl>
+        <DockPanel
+            Grid.Row="1"
+            VerticalAlignment="Center"
+            Background="White"
+            DataContext="{Binding ElementName=ObjCanvas}"
+            d:DataContext="{d:DesignInstance Type=canvasobj:CadCanvas}">
+            <DockPanel LastChildFill="True">
+                <Slider
+                Value="{Binding Setting.Thinkess, Mode=TwoWay}"
+                Maximum="255"
+                Minimum="0" />
+            </DockPanel>
+        </DockPanel>
     </Grid>
 </Window>

@@ -78,7 +78,10 @@ namespace CadProjectorViewer.CanvasObj
                 for (int j = 0; j < mesh.Mesh.Points.GetLength(1); j += 1)
                 {
                     _Anchors.Add(new CanvasAnchor(mesh.Mesh[i, j])
-                    { GetCanvas = mesh.GetCanvas });
+                    { 
+                        GetCanvas = mesh.GetCanvas,
+                        GetResolution = mesh.GetResolution
+                    });
                 }
             }
 

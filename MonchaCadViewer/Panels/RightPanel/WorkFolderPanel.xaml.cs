@@ -31,29 +31,41 @@ namespace CadProjectorViewer.Panels.RightPanel
     {
         private ProjectorHub projectorHub => (ProjectorHub)this.DataContext;
 
+        private string alreadypath;
+
         public WorkFolderPanel()
         {
             InitializeComponent();
             List<GCFormat> formats = FileLoad.GetFormatList();
             ComboFilter.ItemsSource = formats;
             ComboFilter.SelectedItem = formats[0];
-            RefreshWorkFolderList();
+            RefreshWorkFolderList(AppSt.Default.save_work_folder);
         }
 
-        private void WorkFolderRefreshBtn_Click(object sender, RoutedEventArgs e) => RefreshWorkFolderList();
+        private void WorkFolderRefreshBtn_Click(object sender, RoutedEventArgs e) => RefreshWorkFolderList(alreadypath);
 
-        private void RefreshWorkFolderList()
+        private void RefreshWorkFolderList(string Path)
         {
-            if (Directory.Exists(AppSt.Default.save_work_folder) == true)
+            if (Directory.Exists(Path) == true)
             {
                 List<FileInfo> infos = new List<FileInfo>();
-                foreach (string path in Directory.GetFiles(AppSt.Default.save_work_folder))
+
+
+                if (Path != this.alreadypath)
+                    this.alreadypath = Path;
+
+                foreach (string name in Directory.GetDirectories(Path))
+                {
+                    infos.Add(new FileInfo(name, true));
+                }
+
+                foreach (string path in Directory.GetFiles(Path))
                 {
                     string format = path.Split('.').Last();
 
-                    if (FileLoad.GetFilter().Contains($"*.{format};") == true)
+                    if (FileLoad.GetFilter().Contains($"*.{format.ToLower()};") == true)
                     {
-                        infos.Add(new FileInfo(path));
+                        infos.Add(new FileInfo(path, false));
                     }
                 }
                 WorkFolderListBox.ItemsSource = infos;
@@ -70,7 +82,10 @@ namespace CadProjectorViewer.Panels.RightPanel
 
             if (pt is FileInfo fileInfo)
             {
-                return (fileInfo.Filename.ToLower().Contains(WorkFolderFilter.Text.ToLower()) && (FormatString.Contains(fileInfo.Fileformat)));
+                return 
+                    fileInfo.Filename.ToLower().Contains(WorkFolderFilter.Text.ToLower()) 
+                    && (FormatString.Contains(fileInfo.Fileformat)
+                    || fileInfo.IsFolder == true);
             }
             return false;
         }
@@ -86,7 +101,7 @@ namespace CadProjectorViewer.Panels.RightPanel
                 {
                     AppSt.Default.save_work_folder = dialog.FileName;
                     AppSt.Default.Save();
-                    RefreshWorkFolderList();
+                    RefreshWorkFolderList(AppSt.Default.save_work_folder);
                 }
             }
         }
@@ -95,8 +110,15 @@ namespace CadProjectorViewer.Panels.RightPanel
         {
             if (WorkFolderListBox.Items.Count < 1)
             {
-                RefreshWorkFolderList();
+                RefreshWorkFolderList(alreadypath);
             }
+
+            if (WorkFolderListBox.Items.Count == 1 && WorkFolderListBox.Items[0] is FileInfo fileInfo)
+            {
+                WorkFolderListBox.SelectedIndex = 0;
+                SendTask(fileInfo);
+            }
+
             CollectionViewSource.GetDefaultView(WorkFolderListBox.ItemsSource).Refresh();
         }
 
@@ -106,15 +128,23 @@ namespace CadProjectorViewer.Panels.RightPanel
         {
             if (WorkFolderListBox.SelectedItem is FileInfo fileInfo)
             {
-                if (await FileLoad.GetFilePath(fileInfo.Filepath, projectorHub.ScenesCollection.SelectedScene.ProjectionSetting.PointStep.Value) is UidObject Obj)
+                if (fileInfo.IsFolder == true)
+                    RefreshWorkFolderList(fileInfo.Filepath);
+                else
+                    SendTask(fileInfo);
+            }
+        }
+
+        private async void SendTask(FileInfo fileInfo)
+        {
+            if (await FileLoad.GetFilePath(fileInfo.Filepath, projectorHub.ScenesCollection.SelectedScene.ProjectionSetting.PointStep.Value) is UidObject uidObject)
+            {
+                SceneTask sceneTask = new SceneTask()
                 {
-                    SceneTask sceneTask = new SceneTask()
-                    {
-                        Object = Obj,
-                        TableID = projectorHub.ScenesCollection.SelectedScene.TableID,
-                    };
-                    projectorHub.ScenesCollection.AddTask(sceneTask);
-                }
+                    Object = uidObject,
+                    TableID = projectorHub.ScenesCollection.SelectedScene.TableID,
+                };
+                projectorHub.ScenesCollection.AddTask(sceneTask);
             }
         }
 
@@ -170,7 +200,7 @@ namespace CadProjectorViewer.Panels.RightPanel
 
         private void ComboFilter_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            RefreshWorkFolderList();
+            RefreshWorkFolderList(alreadypath);
         }
     }
 
@@ -180,14 +210,20 @@ namespace CadProjectorViewer.Panels.RightPanel
         public string Filename { get; }
         public string Fileformat { get; }
         public int Filesize { get; }
+
+        public bool IsFolder { get; }
         
-        public FileInfo(string Filepath)
+        public FileInfo(string Filepath, bool isfolder)
         {
+            this.IsFolder = isfolder;
             this.Filepath = Filepath;
-            this.Fileformat = Filepath.Split('.').Last();
-            string filename = Filepath.Split('\\').Last();
-            this.Filename = filename.Remove(filename.Length - Fileformat.Length - 1);
-            
+            this.Filename = Filepath.Split('\\').Last();
+            this.Fileformat = "folder";
+            if (isfolder == false)
+            {
+                this.Fileformat = Filepath.Split('.').Last();
+                this.Filename = this.Filename.Remove(this.Filename.Length - Fileformat.Length - 1);
+            }
             this.Filesize = 0;
         }
     }

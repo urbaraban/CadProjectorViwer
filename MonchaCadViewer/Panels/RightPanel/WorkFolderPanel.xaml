@@ -3,7 +3,9 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:local="clr-namespace:CadProjectorViewer.Panels.RightPanel" xmlns:Properties="clr-namespace:CadProjectorViewer.Properties" xmlns:panels="clr-namespace:CadProjectorViewer.Panels" xmlns:togeometryconverter="clr-namespace:ToGeometryConverter;assembly=ToGeometryConverter" d:DataContext="{d:DesignInstance Type=togeometryconverter:GCFormat}"
+             xmlns:Properties="clr-namespace:CadProjectorViewer.Properties"
+             xmlns:togeometryconverter="clr-namespace:ToGeometryConverter;assembly=ToGeometryConverter"
+             d:DataContext="{d:DesignInstance Type=togeometryconverter:GCFormat}"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="200">
     <UserControl.Resources>
@@ -37,6 +39,7 @@
             </ListView.Resources>
             <ListView.View>
                 <GridView>
+                    <GridViewColumn Header="" DisplayMemberBinding="{Binding Path=IsFolder}" Width="30"/>
                     <GridViewColumn Header="Path" DisplayMemberBinding="{Binding Path=Filename}" Width="150"/>
                     <GridViewColumn Header="Size" DisplayMemberBinding="{Binding Path=Filesize}" Width="Auto"/>
                     <GridViewColumn Header="Format" DisplayMemberBinding="{Binding Path=Fileformat}" Width="Auto"/>

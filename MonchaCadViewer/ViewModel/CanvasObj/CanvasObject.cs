@@ -446,8 +446,8 @@ namespace CadProjectorViewer.CanvasObj
 
         protected override void OnRender(DrawingContext drawingContext)
         {
-            if (this.GetCanvas?.Invoke() is CadCanvas canvas) {
-
+            if (this.GetCanvas?.Invoke() is CadCanvas canvas) 
+            {
                 Tuple<double, double> resolution = GetResolution?.Invoke();
                 Drawing(CadObject, canvas, resolution, this.IsSelected, this.IsMouseOver, this.IsRender, GetThinkess(), drawingContext);
             }

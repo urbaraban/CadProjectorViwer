@@ -47,16 +47,17 @@
                 Orientation="Horizontal" FlowDirection="RightToLeft">
 
                 <Button x:Name="AdornerShowBtn"
-                    FontFamily="Segoe MDL2 Assets"
-                    Content="&#xE7F0;"
-                     Width="{Binding ActualHeight, RelativeSource={RelativeSource Self}}"
-                    Margin="3"
-                    Click="AdornerShowBtn_Click" Panel.ZIndex="999" FontSize="18" />
+                        FontFamily="Segoe MDL2 Assets"
+                        Content="&#xE7F0;"
+                        Width="{Binding ActualHeight, RelativeSource={RelativeSource Self}}"
+                        Margin="3"
+                        Click="AdornerShowBtn_Click" Panel.ZIndex="999" FontSize="18" />
                 <Button x:Name="ShowDeviceRect"
-                    FontFamily="Segoe MDL2 Assets"
-                    Content="&#xe773;"
-                     Width="{Binding ActualHeight, RelativeSource={RelativeSource Self}}"
-                  Margin="3" Click="ShowDeviceRect_Click" Panel.ZIndex="999" FontSize="20" />
+                        FontFamily="Segoe MDL2 Assets"
+                        Content="&#xe773;"
+                        Width="{Binding ActualHeight, RelativeSource={RelativeSource Self}}"
+                        Margin="3" 
+                        Click="ShowDeviceRect_Click" Panel.ZIndex="999" FontSize="20" />
                 <ToggleButton  Width="{Binding ActualHeight, RelativeSource={RelativeSource Self}}"
                            Content="&#xe8b0;"
                            FontSize="18"

@@ -120,20 +120,24 @@ namespace CadProjectorViewer.CanvasObj
 
             this.rectangle = adornedElement;
 
-            AddAnchor(new CanvasAnchor(adornedElement.LRect.BL)
-            { GetCanvas = adornedElement.GetCanvas});
-            AddAnchor(new CanvasAnchor((adornedElement.LRect.TR))
-            { GetCanvas = adornedElement.GetCanvas });
-            AddAnchor(new CanvasAnchor(adornedElement.LRect.BR)
-            { GetCanvas = adornedElement.GetCanvas });
-            AddAnchor(new CanvasAnchor(adornedElement.LRect.TL)
-            { GetCanvas = adornedElement.GetCanvas });
-
+            AddAnchor(GetAnchor(adornedElement.LRect.BL, adornedElement));
+            AddAnchor(GetAnchor(adornedElement.LRect.TR, adornedElement));
+            AddAnchor(GetAnchor(adornedElement.LRect.BR, adornedElement));
+            AddAnchor(GetAnchor(adornedElement.LRect.TL, adornedElement));
 
             foreach (CanvasAnchor anchor in _Anchors)
             {
                 _Visuals.Add(anchor);
             }
+        }
+
+        private CanvasAnchor GetAnchor(CadAnchor cadAnchor, CanvasObject parent)
+        {
+            return new CanvasAnchor(cadAnchor)
+            {
+                GetCanvas = parent.GetCanvas,
+                GetResolution = parent.GetResolution
+            };
         }
 
         private void AddAnchor(CanvasAnchor anchor)

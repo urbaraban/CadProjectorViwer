@@ -5,6 +5,7 @@ using CadProjectorViewer.StaticTools;
 using Microsoft.WindowsAPICodePack.Dialogs;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
@@ -31,7 +32,7 @@ namespace CadProjectorViewer.Panels.RightPanel
     {
         private ProjectorHub projectorHub => (ProjectorHub)this.DataContext;
 
-        private string alreadypath;
+        private DirectoryInfo AlreadyDirectory = new DirectoryInfo(AppSt.Default.save_work_folder);
 
         public WorkFolderPanel()
         {
@@ -42,21 +43,24 @@ namespace CadProjectorViewer.Panels.RightPanel
             RefreshWorkFolderList(AppSt.Default.save_work_folder);
         }
 
-        private void WorkFolderRefreshBtn_Click(object sender, RoutedEventArgs e) => RefreshWorkFolderList(alreadypath);
+        private void WorkFolderRefreshBtn_Click(object sender, RoutedEventArgs e) => RefreshWorkFolderList();
+
+        private void RefreshWorkFolderList() => RefreshWorkFolderList(this.AlreadyDirectory.FullName);
 
         private void RefreshWorkFolderList(string Path)
         {
             if (Directory.Exists(Path) == true)
             {
-                List<FileInfo> infos = new List<FileInfo>();
+                List<FileSystemInfo> infos = new List<FileSystemInfo>();
 
+                if (AlreadyDirectory.FullName != Path)
+                    this.AlreadyDirectory = new DirectoryInfo(Path);
 
-                if (Path != this.alreadypath)
-                    this.alreadypath = Path;
+                infos.Add(this.AlreadyDirectory.Parent);
 
                 foreach (string name in Directory.GetDirectories(Path))
                 {
-                    infos.Add(new FileInfo(name, true));
+                    infos.Add(new DirectoryInfo(name));
                 }
 
                 foreach (string path in Directory.GetFiles(Path))
@@ -65,7 +69,7 @@ namespace CadProjectorViewer.Panels.RightPanel
 
                     if (FileLoad.GetFilter().Contains($"*.{format.ToLower()};") == true)
                     {
-                        infos.Add(new FileInfo(path, false));
+                        infos.Add(new FileInfo(path));
                     }
                 }
                 WorkFolderListBox.ItemsSource = infos;
@@ -76,18 +80,21 @@ namespace CadProjectorViewer.Panels.RightPanel
 
         public bool Contains(object pt)
         {
+            bool result = false;
             string FormatString = FileLoad.GetFilter();
 
-            if (ComboFilter.SelectedItem is GCFormat format) FormatString = string.Join(" ", format.ShortName);
+            if (ComboFilter.SelectedItem is GCFormat format) 
+                FormatString = string.Join(" ", format.ShortName);
 
             if (pt is FileInfo fileInfo)
             {
-                return 
-                    fileInfo.Filename.ToLower().Contains(WorkFolderFilter.Text.ToLower()) 
-                    && (FormatString.Contains(fileInfo.Fileformat)
-                    || fileInfo.IsFolder == true);
+                result =
+                    fileInfo.Name.ToLower().Contains(WorkFolderFilter.Text.ToLower())
+                    && (FormatString.Contains(fileInfo.Extension));
             }
-            return false;
+            else
+                result = true;
+            return result;
         }
 
         private void WorkFolderBtn_Click(object sender, RoutedEventArgs e)
@@ -110,7 +117,7 @@ namespace CadProjectorViewer.Panels.RightPanel
         {
             if (WorkFolderListBox.Items.Count < 1)
             {
-                RefreshWorkFolderList(alreadypath);
+                RefreshWorkFolderList();
             }
 
             if (WorkFolderListBox.Items.Count == 1 && WorkFolderListBox.Items[0] is FileInfo fileInfo)
@@ -126,18 +133,19 @@ namespace CadProjectorViewer.Panels.RightPanel
 
         private async void TextBlock_MouseDownAsync(object sender, MouseButtonEventArgs e)
         {
-            if (WorkFolderListBox.SelectedItem is FileInfo fileInfo)
+            if (WorkFolderListBox.SelectedItem is DirectoryInfo directory)
             {
-                if (fileInfo.IsFolder == true)
-                    RefreshWorkFolderList(fileInfo.Filepath);
-                else
-                    SendTask(fileInfo);
+                RefreshWorkFolderList(directory.FullName);
+            }
+            else if (WorkFolderListBox.SelectedItem is FileInfo fileInfo)
+            {
+                SendTask(fileInfo);
             }
         }
 
         private async void SendTask(FileInfo fileInfo)
         {
-            if (await FileLoad.GetFilePath(fileInfo.Filepath, projectorHub.ScenesCollection.SelectedScene.ProjectionSetting.PointStep.Value) is UidObject uidObject)
+            if (await FileLoad.GetFilePath(fileInfo.FullName, projectorHub.ScenesCollection.SelectedScene.ProjectionSetting.PointStep.Value) is UidObject uidObject)
             {
                 SceneTask sceneTask = new SceneTask()
                 {
@@ -157,10 +165,10 @@ namespace CadProjectorViewer.Panels.RightPanel
                     switch (cmindex.Tag)
                     {
                         case "OpenEditor":
-                            System.Diagnostics.Process.Start(fileInfo.Filepath);
+                            System.Diagnostics.Process.Start(fileInfo.FullName);
                             break;
                         case "OpenFolder":
-                            OpenFolderAndSelectFile(fileInfo.Filepath);
+                            OpenFolderAndSelectFile(fileInfo.FullName);
                             break;
                     }
                 }
@@ -200,31 +208,29 @@ namespace CadProjectorViewer.Panels.RightPanel
 
         private void ComboFilter_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            RefreshWorkFolderList(alreadypath);
+            RefreshWorkFolderList();
         }
     }
 
-    internal struct FileInfo
+    [ValueConversion(typeof(string), typeof(string))]
+    public class IconConverter : IValueConverter
     {
-        public string Filepath { get; }
-        public string Filename { get; }
-        public string Fileformat { get; }
-        public int Filesize { get; }
-
-        public bool IsFolder { get; }
-        
-        public FileInfo(string Filepath, bool isfolder)
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            this.IsFolder = isfolder;
-            this.Filepath = Filepath;
-            this.Filename = Filepath.Split('\\').Last();
-            this.Fileformat = "folder";
-            if (isfolder == false)
-            {
-                this.Fileformat = Filepath.Split('.').Last();
-                this.Filename = this.Filename.Remove(this.Filename.Length - Fileformat.Length - 1);
+            string result = string.Empty;
+            if (value is string str) {
+                if (string.IsNullOrEmpty(str))
+                    result = "\uE838";
+                else
+                    result = "\uE7C3";
             }
-            this.Filesize = 0;
+
+            return result;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            return null;
         }
     }
 }

@@ -35,9 +35,9 @@ namespace CadProjectorViewer.StaticTools
             new STL(),
             //new MetaFile(),
             //new JSON(),
-            new GCFormat("Компас 3D", new string[2] { "frw" , "cdw"}) { ReadFile = GetKompas },
+            new GCFormat("Компас 3D", new string[2] { ".frw" , ".cdw"}) { ReadFile = GetKompas },
             //new GCFormat("JPG Image", new string[2] { "jpg" , "jpeg"}) { ReadFile = GetImage },
-            new GCFormat("ILDA", new string[1] { "ild" }){ ReadFile = GetILDA }
+            new GCFormat("ILDA", new string[1] { ".ild" }){ ReadFile = GetILDA }
         };
 
         private static string BrowseMWS()
@@ -152,11 +152,17 @@ namespace CadProjectorViewer.StaticTools
         private async static Task<object> GetObject(string Filename, double step)
         {
             GCFormat gCFormat = GCTools.GetConverter(Filename, MyFormat);
+            object outobj = null;
 
-            object obj = await gCFormat.ReadFile?.Invoke(Filename, step);
+            if (gCFormat != null)
+            {
+                outobj = await gCFormat.ReadFile?.Invoke(Filename, step);
+            }
 
-            if (obj != null) return obj;
-            else return new GCCollection(string.Empty);
+            if (outobj != null) 
+                return outobj;
+            else 
+                return new GCCollection(string.Empty);
         }
 
         /// <summary>
@@ -220,7 +226,7 @@ namespace CadProjectorViewer.StaticTools
 
             for (int i = 1; i < formats.Count; i += 1)
             {
-                _filter += $" | {GetFormatString(formats[i])}";
+                _filter += $" | .{GetFormatString(formats[i])}";
             }
 
             _filter += " | All Files (*.*)|*.*";
@@ -233,7 +239,7 @@ namespace CadProjectorViewer.StaticTools
             string formatstr = string.Empty;
             foreach (string frm in format.ShortName)
             {
-                formatstr += $"*.{frm};";
+                formatstr += $"*{frm};";
             }
             return $"{format.Name}({formatstr}) | {formatstr}";
         }

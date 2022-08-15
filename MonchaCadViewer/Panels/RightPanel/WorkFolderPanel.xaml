@@ -56,7 +56,7 @@
                 <Style TargetType="ListViewItem">
                     <EventSetter Event="MouseDoubleClick" Handler="TextBlock_MouseDownAsync"/>
                     <EventSetter Event="ContextMenuClosing" Handler="Border_ContextMenuClosing"/>
-                    <Setter Property="ToolTip" Value="{Binding Path=Fullname}"/>
+                    <Setter Property="ToolTip" Value="{Binding Path=FullName}"/>
                     <Setter Property="ContextMenu" Value="{StaticResource itemMenu}"/>
                 </Style>
             </ListView.ItemContainerStyle>

@@ -32,6 +32,9 @@ namespace CadProjectorViewer.CanvasObj
         public virtual GetResolutionDeligate GetResolution { get; set; }
         public delegate Tuple<double, double> GetResolutionDeligate();
 
+        public virtual GetContainerSize GetContainer { get; set; }
+        public delegate FrameworkElement GetContainerSize();
+
         public virtual ChangeSizeDelegate SizeChange { get; set; }
         public delegate void ChangeSizeDelegate();
 
@@ -126,10 +129,15 @@ namespace CadProjectorViewer.CanvasObj
         public double GetThinkess()
         {
             double thinkess = 1;
-            if (this.GetCanvas?.Invoke() is CadCanvas canvas)
+            if (this.GetCanvas?.Invoke() is CadCanvas canvas
+                && this.GetContainer?.Invoke() is FrameworkElement Container)
             {
-                Tuple<double, double> resolution = GetResolution?.Invoke();
-                thinkess = Math.Max(resolution.Item1, resolution.Item2) * canvas.Setting.Thinkess;
+                double max_resolution = Math.Max(canvas.DesiredSize.Width, canvas.DesiredSize.Height);
+                double mashtab_in_container = Math.Min(
+                    canvas.Height / Container.DesiredSize.Width,
+                    canvas.Width / Container.DesiredSize.Height);
+
+                thinkess = max_resolution * canvas.Setting.Thinkess * mashtab_in_container;
             }
 
             return thinkess;
@@ -496,7 +504,7 @@ namespace CadProjectorViewer.CanvasObj
 
         protected void DrawSize(DrawingContext drawingContext, Point point1, Point point2)
         {
-            double thinkess = CadObject.Thinkess() / 3d / Math.Abs(this.CadObject.Scale.ScaleX * Math.Max(this.CadObject.ScaleX, this.CadObject.ScaleY));
+            double thinkess = this.GetThinkess() / 3d / Math.Abs(this.CadObject.Scale.ScaleX * Math.Max(this.CadObject.ScaleX, this.CadObject.ScaleY));
             thinkess = thinkess <= 0 ? 1 : thinkess;
 
             //drawingContext.DrawLine(new Pen(Brushes.DarkGray, thinkess), point1, point2);

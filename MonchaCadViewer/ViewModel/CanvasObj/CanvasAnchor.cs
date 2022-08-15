@@ -35,7 +35,7 @@ namespace CadProjectorViewer.CanvasObj
         {
             get
             {
-                double _size = CadObject.Thinkess() * AppSt.Default.default_thinkess_percent * 2 * AppSt.Default.anchor_size;
+                double _size = this.GetThinkess() * AppSt.Default.default_thinkess_percent * 2 * AppSt.Default.anchor_size;
                 return  new Rect(-_size / 2, -_size / 2, _size, _size);
             }
 

@@ -29,13 +29,15 @@ using Microsoft.Xaml.Behaviors.Core;
 using CadProjectorSDK.Scenes.Actions;
 using CadProjectorSDK.CadObjects.Interfaces;
 using CadProjectorSDK.Render;
+using System.ComponentModel;
+using System.Runtime.CompilerServices;
 
 namespace CadProjectorViewer.Panels.CanvasPanel
 {
     /// <summary>
     /// Логика взаимодействия для CadCanvasPanel.xaml
     /// </summary>
-    public partial class CadCanvasPanel : UserControl
+    public partial class CadCanvasPanel : UserControl, INotifyPropertyChanged
     {
         public virtual ChangeSizeDelegate SizeChange { get; set; }
         public delegate void ChangeSizeDelegate();
@@ -64,30 +66,6 @@ namespace CadProjectorViewer.Panels.CanvasPanel
         {
             InitializeComponent();
             UpdateTransform(null, true);
-        }
-
-        protected override void OnMouseWheel(MouseWheelEventArgs e)
-        {
-            if (Keyboard.Modifiers == ModifierKeys.Control)
-            {
-                Point centre = e.GetPosition(CanvasBox);
-                this.Scale.CenterX = centre.X;
-                this.Scale.CenterY = centre.Y;
-                if (this.Scale.ScaleY + (double)e.Delta / 5000 > 1)
-                {
-                    this.Scale.ScaleX += (double)e.Delta / 3000;
-                    this.Scale.ScaleY += (double)e.Delta / 3000;
-                }
-                else
-                {
-                    this.Scale.ScaleX = 1;
-                    this.Scale.ScaleY = 1;
-                    this.X = 0;
-                    this.Y = 0;
-                }
-                CanvasBox.InvalidateVisual();
-                SizeChange?.Invoke();
-            }
         }
 
 
@@ -122,6 +100,21 @@ namespace CadProjectorViewer.Panels.CanvasPanel
 
         public TransformGroup TransformGroup { get; set; }
         public ScaleTransform Scale { get; set; }
+
+        public double ScaleValue
+        {
+            get => Scale != null ? Scale.ScaleX : 1;
+            set
+            {
+                if (Scale != null)
+                {
+                    Scale.ScaleX = value;
+                    Scale.ScaleY = value;
+                    OnPropertyChanged(nameof(ScaleValue));
+                }
+            }
+        }
+
         public RotateTransform Rotate { get; set; }
         public TranslateTransform Translate { get; set; }
 
@@ -163,8 +156,8 @@ namespace CadProjectorViewer.Panels.CanvasPanel
 
                     //double prop = Math.Min(CanvasGrid.ActualWidth / CanvasGrid.ActualWidth, CanvasGrid.ActualHeight / CanvasGrid.ActualHeight);
 
-                    this.X = (this.StartMovePoint.X + (tPoint.X - this.StartMousePoint.X)) / this.Scale.ScaleX;
-                    this.Y = (this.StartMovePoint.Y + (tPoint.Y - this.StartMousePoint.Y)) / this.Scale.ScaleY;
+                    this.X = (this.StartMovePoint.X + (tPoint.X - this.StartMousePoint.X)) / this.ScaleValue;
+                    this.Y = (this.StartMovePoint.Y + (tPoint.Y - this.StartMousePoint.Y)) / this.ScaleValue;
 
                     this.CaptureMouse();
                 }
@@ -179,8 +172,28 @@ namespace CadProjectorViewer.Panels.CanvasPanel
             }
         }
 
+        protected override void OnMouseWheel(MouseWheelEventArgs e)
+        {
+            if (Keyboard.Modifiers == ModifierKeys.Control)
+            {
+                Point centre = e.GetPosition(CanvasBox);
+                this.Scale.CenterX = centre.X;
+                this.Scale.CenterY = centre.Y;
+                if (this.Scale.ScaleY + (double)e.Delta / 5000 > 1)
+                {
+                    this.ScaleValue += (double)e.Delta / 3000;
+                }
+                else
+                {
+                    this.ScaleValue = 1;
+                    this.X = 0;
+                    this.Y = 0;
+                }
+                CanvasBox.InvalidateVisual();
+                SizeChange?.Invoke();
+            }
+        }
 
-       
         private void Canvas_SizeChanged(object sender, SizeChangedEventArgs e)
         {
             if (sender is Canvas canvas && SelectedScene != null)
@@ -224,14 +237,22 @@ namespace CadProjectorViewer.Panels.CanvasPanel
             SelectedScene.Break();
         });
         public ICommand CancelSizeChange => new ActionCommand(() => {
-            this.Scale.ScaleX = 1;
-            this.Scale.ScaleY = 1;
+            this.ScaleValue = 1;
         });
 
         public double Thinkess()
         {
             return Math.Max(CanvasGrid.Width, CanvasGrid.Height) / this.Scale.ScaleX * 0.01;
         }
+
+        #region INotifyPropertyChanged
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        public async void OnPropertyChanged([CallerMemberName] string prop = "")
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(prop));
+        }
+        #endregion
 
     }
 
@@ -256,7 +277,7 @@ namespace CadProjectorViewer.Panels.CanvasPanel
         {
             double result = 0;
             if (value is double dvalue)
-                result = 1 / dvalue * 100;
+                result = dvalue / 1 * 100;
             return Math.Round(result, 0);
         }
 
@@ -296,5 +317,7 @@ namespace CadProjectorViewer.Panels.CanvasPanel
         {
             throw new NotImplementedException();
         }
+
+
     }
 }

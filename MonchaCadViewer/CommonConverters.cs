@@ -71,11 +71,8 @@ namespace CadProjectorViewer.Converters
             {
                 if (CanvasObjectSwitch(uidObject) is CanvasObject canvasObject)
                 {
-                    canvasObject.GetResolution = () =>
-                    {
-                        return new Tuple<double, double>(canvas.ActualWidth, canvas.ActualHeight);
-                    };
-
+                    canvasObject.GetResolution = () => new Tuple<double, double>(canvas.Width, canvas.Height);
+                    canvasObject.GetContainer = () => frameworkElement;
                     canvasObject.GetCanvas = () => canvas;
                     //canvasPanel.SizeChange += canvasObject.ParentChangeSize;
                     return canvasObject;

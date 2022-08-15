@@ -74,8 +74,6 @@
               Margin="10"
               Stretch="Uniform" StretchDirection="Both">
                 <Grid x:Name="CanvasGrid" Background="Red"
-                  Width="{Binding Size.Width}"
-                  Height="{Binding Size.Height}"
                   Cursor="{Binding AlreadyAction, Converter={StaticResource CursorAction}}">
                     <Rectangle Fill="White" />
                     <Canvas
@@ -101,7 +99,10 @@
                     <ItemsControl ItemsSource="{Binding Masks}">
                         <ItemsControl.ItemsPanel>
                             <ItemsPanelTemplate>
-                                <canvasobj:CadCanvas/>
+                                <canvasobj:CadCanvas 
+                                    x:Name="MaskCanvas"
+                                    Width="{Binding Size.Width}"
+                                    Height="{Binding Size.Height}"/>
                             </ItemsPanelTemplate>
                         </ItemsControl.ItemsPanel>
                         <ItemsControl.ItemTemplate>
@@ -110,7 +111,7 @@
                                     <ContentPresenter.Content>
                                         <MultiBinding Converter="{StaticResource CadObjectConverter}">
                                             <Binding Path="" />
-                                            <Binding ElementName="CanvasPanel" />
+                                            <Binding ElementName="MaskCanvas" />
                                             <Binding ElementName="CanvasBox" />
                                         </MultiBinding>
                                     </ContentPresenter.Content>
@@ -122,7 +123,10 @@
                         ItemsSource="{Binding .}">
                         <ItemsControl.ItemsPanel>
                             <ItemsPanelTemplate>
-                                <canvasobj:CadCanvas x:Name="ObjCanvas"/>
+                                <canvasobj:CadCanvas 
+                                    x:Name="ObjCanvas"
+                                    Width="{Binding Size.Width}"
+                                    Height="{Binding Size.Height}"/>
                             </ItemsPanelTemplate>
                         </ItemsControl.ItemsPanel>
                         <ItemsControl.ItemTemplate>
@@ -159,7 +163,7 @@
                 VerticalAlignment="Bottom"
                 HorizontalAlignment="Left">
                 <Label 
-                    Content="{Binding ElementName=CanvasPanel, Path=Scale.ScaleX, Converter={StaticResource ScaleConverter}}"/>
+                    Content="{Binding ElementName=CanvasPanel, Path=ScaleValue, Converter={StaticResource ScaleConverter}}"/>
                 <Button 
                     Content="X"
                     Command="{Binding ElementName=CanvasPanel, Path=CancelSizeChange}"

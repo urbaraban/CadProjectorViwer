@@ -6,7 +6,7 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"  
     xmlns:scene="clr-namespace:CadProjectorSDK.Scenes;assembly=CadProjectorSDK"
     xmlns:canvaspanel="clr-namespace:CadProjectorViewer.Panels.CanvasPanel" 
-    xmlns:panels="clr-namespace:CadProjectorViewer.Panels" xmlns:converters="clr-namespace:CadProjectorViewer.Converters"
+    xmlns:panels="clr-namespace:CadProjectorViewer.Panels" xmlns:converters="clr-namespace:CadProjectorViewer.Converters" xmlns:canvasobj="clr-namespace:CadProjectorViewer.CanvasObj"
     d:DataContext="{d:DesignInstance Type=scene:SceneTask}"
     AllowDrop="False"
     d:DesignHeight="100"
@@ -41,27 +41,39 @@
                     <RowDefinition Height="7*" />
                 </Grid.RowDefinitions>
 
-                <Viewbox Grid.RowSpan="3" Stretch="Uniform" StretchDirection="Both">
-                    <Grid Background="White" Width="{Binding Object.Bounds.Width}" Height="{Binding Object.Bounds.Height}">
-                        <ItemsControl ItemsSource="{Binding Object, Converter={StaticResource ItemConverter}}">
-                        <ItemsControl.ItemsPanel>
-                            <ItemsPanelTemplate>
-                                <Canvas/>
-                            </ItemsPanelTemplate>
-                        </ItemsControl.ItemsPanel>
-                        <ItemsControl.ItemTemplate>
+                <Viewbox 
+                    x:Name="ScrollCanvasBox"
+                    DataContext="{Binding Object, Converter={StaticResource ItemConverter}}"
+                    d:DataContext="{d:DesignInstance Type=scene:ProjectionScene}"
+                    Height="70"
+                    Grid.RowSpan="3" 
+                    Stretch="Uniform" 
+                    StretchDirection="Both">
+                    <Grid 
+                        Background="White">
+                        <ItemsControl ItemsSource="{Binding .}">
+                            <ItemsControl.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <canvasobj:CadCanvas 
+                                        x:Name="ScrollObjCanvas"
+                                        Width="{Binding Size.Width}" 
+                                        Height="{Binding Size.Height}"/>
+                                </ItemsPanelTemplate>
+                            </ItemsControl.ItemsPanel>
+                            <ItemsControl.ItemTemplate>
                                 <DataTemplate>
                                     <ContentPresenter>
                                         <ContentPresenter.Content>
                                             <MultiBinding Converter="{StaticResource CadObjectConverter}">
-                                                <Binding Path=""/>
-                                                <Binding ElementName="CanvasPanel"/>
+                                                <Binding Path="" />
+                                                <Binding ElementName="ScrollObjCanvas"/>
+                                                <Binding ElementName="ScrollCanvasBox"/>
                                             </MultiBinding>
                                         </ContentPresenter.Content>
                                     </ContentPresenter>
                                 </DataTemplate>
                             </ItemsControl.ItemTemplate>
-                    </ItemsControl>
+                        </ItemsControl>
                     </Grid>
                 </Viewbox>
                 <Rectangle Fill="Transparent" Grid.RowSpan="3" />

@@ -116,19 +116,16 @@ namespace CadProjectorViewer.Panels
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            if (value is SceneTask sceneTask)
+            ProjectionScene scene = new ProjectionScene();
+
+            if (value is UidObject uidObject)
             {
-                if (sceneTask.Object is CadGroup cadGroup)
-                {
-                    return cadGroup;
-                }
-                else if (sceneTask.Object is UidObject uidObject)
-                {
-                    return new List<UidObject>() { uidObject };
-                }
+                scene.Size.Width = uidObject.Bounds.Width;
+                scene.Size.Height = uidObject.Bounds.Height;
+                scene.Add(uidObject);
             }
 
-            return value;
+            return scene;
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)

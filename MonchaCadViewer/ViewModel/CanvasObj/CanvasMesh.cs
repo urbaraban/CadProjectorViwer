@@ -80,7 +80,8 @@ namespace CadProjectorViewer.CanvasObj
                     _Anchors.Add(new CanvasAnchor(mesh.Mesh[i, j])
                     { 
                         GetCanvas = mesh.GetCanvas,
-                        GetResolution = mesh.GetResolution
+                        GetResolution = mesh.GetResolution,
+                        GetContainer = mesh.GetContainer
                     });
                 }
             }

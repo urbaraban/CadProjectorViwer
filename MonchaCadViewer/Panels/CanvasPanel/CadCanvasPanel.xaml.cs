@@ -223,6 +223,10 @@ namespace CadProjectorViewer.Panels.CanvasPanel
         public ICommand CancelActionCommand => new ActionCommand(() => {
             SelectedScene.Break();
         });
+        public ICommand CancelSizeChange => new ActionCommand(() => {
+            this.Scale.ScaleX = 1;
+            this.Scale.ScaleY = 1;
+        });
 
         public double Thinkess()
         {
@@ -238,6 +242,22 @@ namespace CadProjectorViewer.Panels.CanvasPanel
             if (value == null) return Cursors.Arrow;
             else return Cursors.Cross;
             return Cursors.Arrow;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
+    public class ScaleConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            double result = 0;
+            if (value is double dvalue)
+                result = 1 / dvalue * 100;
+            return Math.Round(result, 0);
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)

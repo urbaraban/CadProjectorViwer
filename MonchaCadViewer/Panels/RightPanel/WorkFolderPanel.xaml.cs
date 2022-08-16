@@ -86,7 +86,7 @@ namespace CadProjectorViewer.Panels.RightPanel
             if (ComboFilter.SelectedItem is GCFormat format) 
                 FormatString = string.Join(" ", format.ShortName);
 
-            if (pt is FileInfo fileInfo)
+            if (pt is FileSystemInfo fileInfo)
             {
                 result =
                     fileInfo.Name.ToLower().Contains(WorkFolderFilter.Text.ToLower())

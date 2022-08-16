@@ -132,10 +132,10 @@ namespace CadProjectorViewer.CanvasObj
             if (this.GetCanvas?.Invoke() is CadCanvas canvas
                 && this.GetContainer?.Invoke() is FrameworkElement Container)
             {
-                double max_resolution = Math.Max(canvas.DesiredSize.Width, canvas.DesiredSize.Height);
+                double max_resolution = Math.Max(canvas.ActualHeight, canvas.ActualWidth);
                 double mashtab_in_container = Math.Min(
-                    canvas.Height / Container.DesiredSize.Width,
-                    canvas.Width / Container.DesiredSize.Height);
+                    canvas.ActualWidth / Container.ActualWidth,
+                    canvas.ActualHeight / Container.ActualHeight);
 
                 thinkess = max_resolution * canvas.Setting.Thinkess * mashtab_in_container;
             }

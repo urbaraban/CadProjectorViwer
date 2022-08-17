@@ -131,18 +131,6 @@ namespace CadProjectorViewer.Panels.RightPanel
 
         private void WorkFolderFilter_GotFocus(object sender, RoutedEventArgs e) => WorkFolderFilter.SelectAll();
 
-        private async void TextBlock_MouseDownAsync(object sender, MouseButtonEventArgs e)
-        {
-            if (WorkFolderListBox.SelectedItem is DirectoryInfo directory)
-            {
-                RefreshWorkFolderList(directory.FullName);
-            }
-            else if (WorkFolderListBox.SelectedItem is FileInfo fileInfo)
-            {
-                SendTask(fileInfo);
-            }
-        }
-
         private async void SendTask(FileInfo fileInfo)
         {
             if (await FileLoad.GetFilePath(fileInfo.FullName, projectorHub.ScenesCollection.SelectedScene.ProjectionSetting.PointStep.Value) is UidObject uidObject)
@@ -151,6 +139,7 @@ namespace CadProjectorViewer.Panels.RightPanel
                 {
                     Object = uidObject,
                     TableID = projectorHub.ScenesCollection.SelectedScene.TableID,
+                    TaskName = fileInfo.Name
                 };
                 projectorHub.ScenesCollection.AddTask(sceneTask);
             }
@@ -209,6 +198,46 @@ namespace CadProjectorViewer.Panels.RightPanel
         private void ComboFilter_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             RefreshWorkFolderList();
+        }
+
+        private void WorkFolderFilter_KeyUp(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Escape)
+            {
+                WorkFolderFilter.Text = string.Empty;
+                WorkFolderFilter.Focus();
+            }
+            else if (e.Key == Key.Enter || e.Key == Key.Down)
+            {
+                WorkFolderListBox.Focus();
+                WorkFolderListBox.SelectedIndex = 0;
+            } 
+        }
+
+        private void WorkFolderListBox_KeyUp(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Escape)
+            {
+                WorkFolderFilter.Text = string.Empty;
+                WorkFolderFilter.Focus();
+            }
+            else if (e.Key == Key.Enter)
+            {
+                if (WorkFolderListBox.SelectedItem is FileSystemInfo fileInfo)
+                    ListBoxAction();
+            }
+        }
+        private async void TextBlock_MouseDownAsync(object sender, MouseButtonEventArgs e) => ListBoxAction();
+        private void ListBoxAction()
+        {
+            if (WorkFolderListBox.SelectedItem is DirectoryInfo directory)
+            {
+                RefreshWorkFolderList(directory.FullName);
+            }
+            else if (WorkFolderListBox.SelectedItem is FileInfo fileInfo)
+            {
+                SendTask(fileInfo);
+            }
         }
     }
 

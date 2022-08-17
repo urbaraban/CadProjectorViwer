@@ -22,6 +22,12 @@ using CadProjectorSDK.Interfaces;
 using CadProjectorSDK.Device.Mesh;
 using CadProjectorSDK.Scenes.Commands;
 using CadProjectorSDK.Render;
+using static System.Windows.Forms.LinkLabel;
+using System.Drawing;
+using Point = System.Windows.Point;
+using Pen = System.Windows.Media.Pen;
+using Brush = System.Windows.Media.Brush;
+using Brushes = System.Windows.Media.Brushes;
 
 namespace CadProjectorViewer.CanvasObj
 {
@@ -457,49 +463,72 @@ namespace CadProjectorViewer.CanvasObj
             if (this.GetCanvas?.Invoke() is CadCanvas canvas) 
             {
                 Tuple<double, double> resolution = GetResolution?.Invoke();
-                Drawing(CadObject, canvas, resolution, this.IsSelected, this.IsMouseOver, this.IsRender, GetThinkess(), drawingContext);
+
+                DrawSetting drawSetting = new DrawSetting(
+                    resolution.Item1,
+                    resolution.Item2,
+                    GetThinkess()
+                    );
+
+                Drawing(CadObject, canvas, drawSetting, this.IsSelected, this.IsMouseOver, this.IsRender, drawingContext);
             }
         }
 
-        protected void Drawing (
-            UidObject uidObject, CadCanvas cadCanvas, Tuple<double, double> sizes,
+        internal void Drawing (
+            UidObject uidObject, CadCanvas cadCanvas, DrawSetting drawSetting,
             bool IsSelected, bool MouseOver, bool ParentRender,
-            double StrThink, 
             DrawingContext drawingContext)
         {
+
+            Pen pen = GetPen(
+                drawSetting.Thinkess,
+                MouseOver,
+                IsSelected,
+                ParentRender,
+                uidObject.IsBlank,
+                cadCanvas.RenderDevice.ProjectionSetting.GetBrush);
+
+            Brush brush = GetBrush(uidObject);
+
             if (uidObject is CadGroup group)
             {
                 foreach (UidObject uid in group)
                 {
-                    Drawing(uid, cadCanvas, sizes, IsSelected, MouseOver, ParentRender && uid.IsRender, StrThink, drawingContext);
+                    Drawing(uid, cadCanvas, drawSetting, IsSelected, MouseOver, ParentRender && uid.IsRender, drawingContext);
                 }
             }
             else if (uidObject.Renders.ContainsKey(cadCanvas.RenderDevice) == true
-                && uidObject.Renders[cadCanvas.RenderDevice] is VectorLinesCollection linesCollection)
+                && uidObject.Renders[cadCanvas.RenderDevice] is IEnumerable<IRenderedObject> linesCollection)
             {
-                Pen pen = GetPen(
-                    StrThink,
-                    MouseOver,
-                    IsSelected,
-                    ParentRender,
-                    uidObject.IsBlank,
-                    cadCanvas.RenderDevice.ProjectionSetting.GetBrush);
+                DrawingIRenderableObjects(linesCollection, drawingContext, drawSetting, brush, pen);
+            }
+        }
 
-                Brush brush = GetBrush(uidObject);
-
-                foreach (VectorLine line in linesCollection)
+        private void DrawingIRenderableObjects(IEnumerable<IRenderedObject> objects, DrawingContext drawingContext, DrawSetting drawSetting, Brush brush, Pen pen)
+        {
+            foreach(IRenderedObject obj in objects)
+            {
+                if (obj is VectorLinesCollection vectorLines)
                 {
-                    Point point1 = GetDrawPoint(line.P1, sizes);
-                    Point point2 = GetDrawPoint(line.P2, sizes);
-
-                    drawingContext.DrawLine(pen, point1, point2);
+                    DrawVectorLines(vectorLines, drawingContext, drawSetting, pen);
                 }
             }
         }
 
-        private Point GetDrawPoint(RenderPoint point, Tuple<double, double> sizes)
+        private void DrawVectorLines(VectorLinesCollection vectorLines, DrawingContext drawingContext, DrawSetting drawSetting, Pen pen)
         {
-            return new Point(point.X * sizes.Item1, point.Y * sizes.Item2);
+            foreach (VectorLine line in vectorLines)
+            {
+                Point point1 = GetDrawPoint(line.P1, drawSetting);
+                Point point2 = GetDrawPoint(line.P2, drawSetting);
+
+                drawingContext.DrawLine(pen, point1, point2);
+            }
+        }
+
+        private Point GetDrawPoint(RenderPoint point, DrawSetting setting)
+        {
+            return new Point(point.X * setting.Width, point.Y * setting.Height);
         }
 
         protected void DrawSize(DrawingContext drawingContext, Point point1, Point point2)
@@ -520,6 +549,20 @@ namespace CadProjectorViewer.CanvasObj
                     Brushes.Gray), 
                 new Point((point1.X + point2.X)/2, (point1.Y + point2.Y) / 2));
 
+        }
+    }
+
+    internal struct DrawSetting
+    {
+        public double Width { get; }
+        public double Height { get; }
+        public double Thinkess { get; }
+
+        public DrawSetting(double width, double height, double thinkess)
+        {
+            Width = width;
+            Height = height;
+            Thinkess = thinkess;
         }
     }
 }

@@ -54,6 +54,8 @@ using CadProjectorSDK.Interfaces;
 using CadProjectorSDK.Scenes.Commands;
 using CadProjectorSDK.Scenes.Actions;
 using CadProjectorSDK.Config;
+using CadProjectorSDK.Render.Graph;
+using System.Xml.Linq;
 
 namespace CadProjectorViewer
 {
@@ -438,10 +440,17 @@ namespace CadProjectorViewer
                 LProjector[] devices = ProjectorHub.ScenesCollection.SelectedScene.Projectors.ToArray();
                 for (int i = 0; i < devices.Length; i++)
                 {
-/*                    ildaWriter.Write(($"{saveFileDialog.FileName.Replace(".ild", string.Empty)}_{i}_{devices[i].IPAddress}.ild"), 
+                    IList<IGraphElement> elements = GraphExtensions.SolidVectors(devices[i].RenderObjects, devices[i]);
+                    //vectorLines = VectorLinesCollection.Optimize(vectorLines);
+                    IList<GraphConnection> sortedElement = await GraphExtensions.FindShortestCollection(
+                        elements, devices[i].ProjectionSetting.PathFindDeep, devices[i].ProjectionSetting.FindSolidElement);
+
+                    var vectorLine = GraphExtensions.GetVectorLines(sortedElement);
+
+                    ildaWriter.Write(($"{saveFileDialog.FileName.Replace(".ild", string.Empty)}_{i}_{devices[i].IPAddress}.ild"), 
                         new List<LFrame>() { 
-                            await LFrameConverter.SolidLFrame(devices[i].RenderObjects, devices[i]) 
-                        ?? new LFrame() } , 5);*/
+                            await LFrameConverter.SolidLFrame(vectorLine, devices[i]) 
+                        ?? new LFrame() } , 5);
                 }
             }
         }

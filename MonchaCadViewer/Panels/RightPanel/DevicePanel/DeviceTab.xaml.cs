@@ -91,10 +91,5 @@ namespace CadProjectorViewer.Panels
             meshesDialog.Show();
         }
 
-        public void DeviceBright(double TenPercent)
-        {
-            this.device.Alpha = (byte)(255 * TenPercent / 10);
-        }
-
     }
 }

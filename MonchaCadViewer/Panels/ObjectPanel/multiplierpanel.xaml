@@ -48,7 +48,7 @@
             VerticalAlignment="Top"
             Content="{DynamicResource dvc_StepPoint}" />
         <Controls:NumericUpDown
-            Value="{Binding ProjectionSetting.PointStep.MX}"
+            Value="{Binding ProjectionSetting.PointStep.Value}"
             Grid.Column="1"
             Height="26"
             Margin="5,60,5,0"
@@ -57,7 +57,7 @@
             Maximum="999"
             Minimum="0.0001" />
         <Slider
-            Value="{Binding ProjectionSetting.StartLineWait}"
+            Value="{Binding ProjectionSetting.LineWait}"
             Height="22"
             Margin="5,33,5,0"
             VerticalAlignment="Top"

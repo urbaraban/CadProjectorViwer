@@ -307,61 +307,49 @@ namespace CadProjectorViewer
                         ProjectorHub.ScenesCollection.SelectedScene.HistoryCommands.UndoLast();
                     }
                     break;
+                case Key.Q:
+                    this.SelectNextCommand.Execute(this);
+                    break;
+                case Key.E:
+                    this.SelectPreviousCommand.Execute(this);
+                    break;
                 case Key.OemPlus:
                     break;
                 case Key.D1:
                     if (Keyboard.Modifiers == ModifierKeys.Control)
-                    {
-                        DevicePanel.DeviceBright(2);
-                    }
+                        ProjectorHub.ScenesCollection.SelectedScene.Projectors.SelectedItem.DeviceBright(2);
                     break;
                 case Key.D2:
                     if (Keyboard.Modifiers == ModifierKeys.Control)
-                    {
-                        DevicePanel.DeviceBright(3);
-                    }
+                        ProjectorHub.ScenesCollection.SelectedScene.Projectors.SelectedItem.DeviceBright(3);
                     break;
                 case Key.D3:
                     if (Keyboard.Modifiers == ModifierKeys.Control)
-                    {
-                        DevicePanel.DeviceBright(4);
-                    }
+                        ProjectorHub.ScenesCollection.SelectedScene.Projectors.SelectedItem.DeviceBright(4);
                     break;
                 case Key.D4:
                     if (Keyboard.Modifiers == ModifierKeys.Control)
-                    {
-                        DevicePanel.DeviceBright(5);
-                    }
+                        ProjectorHub.ScenesCollection.SelectedScene.Projectors.SelectedItem.DeviceBright(5);
                     break;
                 case Key.D5:
                     if (Keyboard.Modifiers == ModifierKeys.Control)
-                    {
-                        DevicePanel.DeviceBright(6);
-                    }
+                        ProjectorHub.ScenesCollection.SelectedScene.Projectors.SelectedItem.DeviceBright(6);
                     break;
                 case Key.D6:
                     if (Keyboard.Modifiers == ModifierKeys.Control)
-                    {
-                        DevicePanel.DeviceBright(7);
-                    }
+                        ProjectorHub.ScenesCollection.SelectedScene.Projectors.SelectedItem.DeviceBright(7);
                     break;
                 case Key.D7:
                     if (Keyboard.Modifiers == ModifierKeys.Control)
-                    {
-                        DevicePanel.DeviceBright(8);
-                    }
+                        ProjectorHub.ScenesCollection.SelectedScene.Projectors.SelectedItem.DeviceBright(8);
                     break;
                 case Key.D8:
                     if (Keyboard.Modifiers == ModifierKeys.Control)
-                    {
-                        DevicePanel.DeviceBright(9);
-                    }
+                        ProjectorHub.ScenesCollection.SelectedScene.Projectors.SelectedItem.DeviceBright(9);
                     break;
                 case Key.D9:
                     if (Keyboard.Modifiers == ModifierKeys.Control)
-                    {
-                        DevicePanel.DeviceBright(10);
-                    }
+                        ProjectorHub.ScenesCollection.SelectedScene.Projectors.SelectedItem.DeviceBright(10);
                     break;
                 case Key.Escape:
                     ProjectorHub.ScenesCollection.SelectedScene.Break();
@@ -557,12 +545,6 @@ namespace CadProjectorViewer
             ProjectorHub.ScenesCollection.SelectedScene.Clear();
         });
 
-        public ICommand FixSelectCommand => new ActionCommand(ProjectorHub.ScenesCollection.SelectedScene.Fix);
-
-        public ICommand SelectNextCommand => new ActionCommand(()=> { ProjectorHub.ScenesCollection.SelectedScene.SelectNextObject(1); });
-
-        public ICommand SelectPreviousCommand => new ActionCommand(() => { ProjectorHub.ScenesCollection.SelectedScene.SelectNextObject(-1); });
-
         public ICommand RefreshFrameCommand => new ActionCommand(() => {
             ProjectorHub.ScenesCollection.SelectedScene.Projectors.RefreshDevices();
         });
@@ -580,6 +562,18 @@ namespace CadProjectorViewer
             this.ShowInTaskbar = true;
             this.Topmost = true;
             this.Topmost = false;
+        });
+
+        public ICommand SelectNextCommand => new ActionCommand(() => { ProjectorHub.ScenesCollection.SelectedScene.SelectNextObject(1); });
+
+        public ICommand SelectPreviousCommand => new ActionCommand(() => { ProjectorHub.ScenesCollection.SelectedScene.SelectNextObject(-1); });
+
+        public ICommand DeleteCommand => new ActionCommand(() => {
+            ProjectorHub.ScenesCollection.SelectedScene.RemoveRange(ProjectorHub.ScenesCollection.SelectedScene.SelectedObjects);
+        });
+
+        public ICommand UndoCommand => new ActionCommand(() => {
+            ProjectorHub.ScenesCollection.SelectedScene.HistoryCommands.UndoLast();
         });
 
         protected override void OnStateChanged(EventArgs e)
@@ -650,9 +644,6 @@ namespace CadProjectorViewer
             }
         });
 
-        public ICommand DeleteCommand => new ActionCommand(() => {
-            this.projectorHub.ScenesCollection.SelectedScene.RemoveRange(this.projectorHub.ScenesCollection.SelectedScene.SelectedObjects);
-        });
 
         public ICommand SaveSceneCommand => new ActionCommand(() => {
             SaveFileDialog saveFileDialog = new SaveFileDialog();

@@ -70,7 +70,7 @@ namespace CadProjectorViewer.DeviceManaged
 
         private void Window_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
-            if (this.Fix == true)
+            if (this.Fix == false)
             {
                 this.WindowState = WindowState.Normal;
                 this.DragMove();

@@ -94,9 +94,6 @@ namespace CadProjectorViewer.CanvasObj
             {
                 switch (cmindex.Tag)
                 {
-                    case "obj_Fix":
-                        this.CadObject.IsFix = !this.CadObject.IsFix;
-                        break;
                     case "common_Remove":
                         this.CadObject.Remove();
                         break;
@@ -111,7 +108,9 @@ namespace CadProjectorViewer.CanvasObj
         protected override void OnRender(DrawingContext drawingContext)
         {
             double _size = this.GetThinkess() * 4 * AppSt.Default.anchor_size;
-            drawingContext.PushTransform(new TranslateTransform(X, Y));
+            Tuple<double, double> resolution = GetResolution?.Invoke();
+
+            drawingContext.PushTransform(new TranslateTransform(this.Point.X * resolution.Item1, this.Point.Y * resolution.Item2));
             drawingContext.DrawGeometry(myBack, new Pen(Brushes.Black, _size * 0.1), new RectangleGeometry(new Rect(-_size / 2, -_size / 2, _size, _size)));
         }
     }

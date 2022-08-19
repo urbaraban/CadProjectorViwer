@@ -44,14 +44,26 @@ namespace CadProjectorViewer.CanvasObj
         protected override async void OnRender(DrawingContext drawingContext)
         {
             Pen pen = this.GetPen();
+            Tuple<double, double> resolution = GetResolution?.Invoke();
+
             for (int i = 0; i < Mesh.Points.GetLength(0); i += 1)
             {
                 for (int j = 0; j < Mesh.Points.GetLength(1); j += 1)
                 {
+                    Point point1 = new Point(Mesh.Points[i, j].X * resolution.Item1, Mesh.Points[i, j].Y * resolution.Item2);
+
                     if (i - 1 > -1)
-                        drawingContext.DrawLine(pen, Mesh.Points[i, j].GetMPoint, Mesh.Points[i - 1, j].GetMPoint);
+                    {
+                        Point point2 = new Point(Mesh.Points[i - 1, j].X * resolution.Item1, Mesh.Points[i - 1, j].Y * resolution.Item2);
+                        drawingContext.DrawLine(pen, point1, point2);
+                    }
+                        
                     if (j - 1 > -1)
-                        drawingContext.DrawLine(pen, Mesh.Points[i, j].GetMPoint, Mesh.Points[i, j - 1].GetMPoint);
+                    {
+                        Point point2 = new Point(Mesh.Points[i, j - 1].X * resolution.Item1, Mesh.Points[i, j - 1].Y * resolution.Item2);
+                        drawingContext.DrawLine(pen, point1, point2);
+                    }
+                        
                 }
             }
         }
@@ -69,7 +81,6 @@ namespace CadProjectorViewer.CanvasObj
         {
             this.IsClipEnabled = true;
             this.Mesh = mesh;
-
             _Visuals = new VisualCollection(this);
             _Anchors = new List<CanvasAnchor>();
 

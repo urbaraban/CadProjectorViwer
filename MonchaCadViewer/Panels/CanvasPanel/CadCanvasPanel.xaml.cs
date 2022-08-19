@@ -31,6 +31,7 @@ using CadProjectorSDK.CadObjects.Interfaces;
 using CadProjectorSDK.Render;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
+using CadProjectorSDK.Scenes.Commands;
 
 namespace CadProjectorViewer.Panels.CanvasPanel
 {
@@ -117,6 +118,7 @@ namespace CadProjectorViewer.Panels.CanvasPanel
 
         public RotateTransform Rotate { get; set; }
         public TranslateTransform Translate { get; set; }
+
 
         protected override void OnMouseLeftButtonUp(MouseButtonEventArgs e)
         {
@@ -229,7 +231,6 @@ namespace CadProjectorViewer.Panels.CanvasPanel
             }
         }
 
-
         public ICommand RefreshFrameCommand => new ActionCommand(() => {
             SelectedScene.Projectors.RefreshDevices();
         });
@@ -317,7 +318,5 @@ namespace CadProjectorViewer.Panels.CanvasPanel
         {
             throw new NotImplementedException();
         }
-
-
     }
 }

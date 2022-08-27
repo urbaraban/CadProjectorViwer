@@ -31,6 +31,7 @@ namespace CadProjectorViewer.StaticTools
         {
             new SVG(),
             new DXF(),
+            new GCODE(),
             //new DEXCeil(),
             new STL(),
             //new MetaFile(),

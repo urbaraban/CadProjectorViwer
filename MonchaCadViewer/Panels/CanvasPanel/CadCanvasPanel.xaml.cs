@@ -232,7 +232,7 @@ namespace CadProjectorViewer.Panels.CanvasPanel
         }
 
         public ICommand RefreshFrameCommand => new ActionCommand(() => {
-            SelectedScene.Projectors.RefreshDevices();
+            SelectedScene.RefreshScene();
         });
         public ICommand CancelActionCommand => new ActionCommand(() => {
             SelectedScene.Break();

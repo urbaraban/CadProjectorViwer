@@ -28,6 +28,7 @@ using Point = System.Windows.Point;
 using Pen = System.Windows.Media.Pen;
 using Brush = System.Windows.Media.Brush;
 using Brushes = System.Windows.Media.Brushes;
+using System.Threading.Tasks;
 
 namespace CadProjectorViewer.CanvasObj
 {
@@ -422,9 +423,9 @@ namespace CadProjectorViewer.CanvasObj
 
         private void Transform_Changed(object sender, EventArgs e) => this.Update();
         
-        public void Update()
+        public async void Update()
         {
-            this.InvalidateVisual();
+           this.InvalidateVisual();
         }
 
         public virtual void DoItContextMenu(MenuItem menuItem)

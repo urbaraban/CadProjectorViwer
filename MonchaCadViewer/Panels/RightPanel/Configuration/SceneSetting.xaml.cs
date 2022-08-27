@@ -37,6 +37,7 @@ namespace CadProjectorViewer.Panels.RightPanel.Configuration
             CalibrationFormCombo.Items.Add(CalibrationForm.cl_Cross);
             CalibrationFormCombo.Items.Add(CalibrationForm.cl_HLine);
             CalibrationFormCombo.Items.Add(CalibrationForm.cl_WLine);
+            CalibrationFormCombo.Items.Add(CalibrationForm.cl_Mesh);
         }
 
         private void MashMultiplierUpDn_ValueIncremented(object sender, NumericUpDownChangedRoutedEventArgs args)

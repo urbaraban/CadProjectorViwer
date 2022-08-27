@@ -430,14 +430,14 @@ namespace CadProjectorViewer
                 {
                     IList<IGraphElement> elements = GraphExtensions.SolidVectors(devices[i].RenderObjects, devices[i]);
                     //vectorLines = VectorLinesCollection.Optimize(vectorLines);
-                    IList<GraphConnection> sortedElement = await GraphExtensions.FindShortestCollection(
+                    IList<GraphConnection> sortedElement = GraphExtensions.FindShortestCollection(
                         elements, devices[i].ProjectionSetting.PathFindDeep, devices[i].ProjectionSetting.FindSolidElement);
 
                     var vectorLine = GraphExtensions.GetVectorLines(sortedElement);
 
                     ildaWriter.Write(($"{saveFileDialog.FileName.Replace(".ild", string.Empty)}_{i}_{devices[i].IPAddress}.ild"), 
                         new List<LFrame>() { 
-                            await LFrameConverter.SolidLFrame(vectorLine, devices[i]) 
+                            LFrameConverter.SolidLFrame(vectorLine, devices[i]) 
                         ?? new LFrame() } , 5);
                 }
             }
@@ -543,10 +543,6 @@ namespace CadProjectorViewer
 
         public ICommand Clear => new ActionCommand(() => {
             ProjectorHub.ScenesCollection.SelectedScene.Clear();
-        });
-
-        public ICommand RefreshFrameCommand => new ActionCommand(() => {
-            ProjectorHub.ScenesCollection.SelectedScene.Projectors.RefreshDevices();
         });
 
         public ICommand HideToTray => new ActionCommand(() => {

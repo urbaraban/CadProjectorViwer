@@ -98,6 +98,7 @@
                         <ComboBoxItem Content="{DynamicResource clb_Cross}" />
                         <ComboBoxItem Content="{DynamicResource clb_HLine}" />
                         <ComboBoxItem Content="{DynamicResource clb_WLine}" />
+                        <ComboBoxItem Content="{DynamicResource clb_Mesh}" />
                     </ComboBox>
                 </DockPanel>
                 <Separator/>

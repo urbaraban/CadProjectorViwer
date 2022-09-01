@@ -5,8 +5,11 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:Controls="http://metro.mahapps.com/winfx/xaml/controls"
         mc:Ignorable="d"
-        xmlns:dvc="clr-namespace:CadProjectorSDK.Device;assembly=CadProjectorSDK" xmlns:devicepanel="clr-namespace:CadProjectorViewer.Panels.DevicePanel" d:DataContext="{d:DesignInstance Type=dvc:LProjector}"
-        Title="DeviceSettingDialog"
+        xmlns:dvc="clr-namespace:CadProjectorSDK.Device;assembly=CadProjectorSDK" 
+        xmlns:devicepanel="clr-namespace:CadProjectorViewer.Panels.DevicePanel" 
+        d:DataContext="{d:DesignInstance Type=dvc:LProjector}"
+        Title="{Binding NameID}"
+        x:Name="Main"
         ResizeMode="NoResize"
         SizeToContent="WidthAndHeight">
     <Window.Resources>
@@ -134,48 +137,67 @@
             <Label  
                 Content="AngleX"/>
             <Controls:NumericUpDown
-            Value="{Binding Ellipsoid.AngleX, Mode=TwoWay}"
-            Interval="0.01"
-            Minimum="-3"
-                MinWidth="150"/>
+                Value="{Binding Ellipsoid.AngleX, Mode=TwoWay}"
+                Interval="0.01"
+                Minimum="-3"
+                MinWidth="150"
+                ValueChanged="NumericUpDown_ValueChanged"/>
             <Controls:NumericUpDown
-            Value="{Binding Ellipsoid.AngleOffsetX, Mode=TwoWay}"
-            Interval="0.01"
-            Minimum="-3"
-                MinWidth="150"/>
+                Value="{Binding Ellipsoid.AngleOffsetX, Mode=TwoWay}"
+                Interval="0.01"
+                Minimum="-3"
+                MinWidth="150"
+                ValueChanged="NumericUpDown_ValueChanged"/>
         </DockPanel>
 
         <DockPanel>
             <Label  
                 Content="AngleY"/>
             <Controls:NumericUpDown
-            Value="{Binding Ellipsoid.AngleY, Mode=TwoWay}"
-            Interval="0.01"
-            Minimum="-3"
-                MinWidth="150"/>
+                Value="{Binding Ellipsoid.AngleY, Mode=TwoWay}"
+                Interval="0.01"
+                Minimum="-3"
+                MinWidth="150"
+                ValueChanged="NumericUpDown_ValueChanged"/>
             <Controls:NumericUpDown
-            Value="{Binding Ellipsoid.AngleOffsetY, Mode=TwoWay}"
-            Interval="0.01"
-            Minimum="-3"
-                MinWidth="150"/>
+                Value="{Binding Ellipsoid.AngleOffsetY, Mode=TwoWay}"
+                Interval="0.01"
+                Minimum="-3"
+                MinWidth="150"
+                ValueChanged="NumericUpDown_ValueChanged"/>
         </DockPanel>
 
         <DockPanel>
             <Label  
-                Content="RaiusX"/>
+                Content="GrSteps"/>
             <Controls:NumericUpDown
-            Value="{Binding Ellipsoid.RadiusX, Mode=TwoWay}"
-            Interval="0.1"
-            Minimum="0"/>
+                Name="GrSteps"
+                Value="{Binding ElementName=Main, Path=GradientSteps, Mode=TwoWay}"
+                Interval="1"
+                Minimum="1"
+                ValueChanged="NumericUpDown_ValueChanged"/>
         </DockPanel>
 
         <DockPanel>
             <Label  
-                Content="RaiusY"/>
+                Content="GrStep"/>
             <Controls:NumericUpDown
-            Value="{Binding Ellipsoid.RadiusY, Mode=TwoWay}"
-            Interval="0.1"
-            Minimum="0"/>
+                Value="{Binding ElementName=Main, Path=GradientStep, Mode=TwoWay}"
+                Interval="1"
+                Minimum="1"
+                Maximum="{Binding ElementName=GrCount, Path=Value}"
+                ValueChanged="NumericUpDown_ValueChanged"/>
+        </DockPanel>
+
+        <DockPanel>
+            <Label  
+                Content="GrCount"/>
+            <Controls:NumericUpDown
+                Value="{Binding ElementName=Main, Path=GradientCount, Mode=TwoWay}"
+                Interval="1"
+                Minimum="1"
+                Maximum="{Binding ElementName=GrCount, Path=Value}"
+                ValueChanged="NumericUpDown_ValueChanged"/>
         </DockPanel>
 
         <DockPanel>

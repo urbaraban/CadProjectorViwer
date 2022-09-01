@@ -18,6 +18,10 @@ using AppSt = CadProjectorViewer.Properties.Settings;
 using CadProjectorSDK.Interfaces;
 using System.Globalization;
 using System.Net;
+using System.Runtime.CompilerServices;
+using System.ComponentModel;
+using CadProjectorSDK.Render;
+using CadProjectorSDK.Render.Graph;
 
 namespace CadProjectorViewer.Panels.DevicePanel
 {
@@ -28,6 +32,38 @@ namespace CadProjectorViewer.Panels.DevicePanel
     {
         private LProjector _device => (LProjector)this.DataContext;
 
+        public int GradientSteps
+        {
+            get => gradientsteps;
+            set
+            {
+                gradientsteps = value;
+                OnPropertyChanged("GradientSteps");
+            }
+        }
+        private int gradientsteps = 10;
+
+        public int GradientStep
+        {
+            get => gradientstep;
+            set
+            {
+                gradientstep = value;
+                OnPropertyChanged("GradientStep");
+            }
+        }
+        private int gradientstep = 1;
+
+        public int GradientCount
+        {
+            get => gradientcount;
+            set
+            {
+                gradientcount = value;
+                OnPropertyChanged("GradientCount");
+            }
+        }
+        private int gradientcount = 1;
 
         public DeviceSettingDialog()
         {
@@ -84,6 +120,70 @@ namespace CadProjectorViewer.Panels.DevicePanel
         private void MinusSelectBtn_Click(object sender, RoutedEventArgs e)
         {
             this._device.SelectMesh = null;
+        }
+
+
+        #region INotifyPropertyChanged
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        public void OnPropertyChanged([CallerMemberName] string prop = "")
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(prop));
+        }
+        #endregion
+
+        private void NumericUpDown_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double?> e)
+        {
+            if (this._device != null)
+            {
+                IList<IRenderedObject> elements = new List<IRenderedObject>();
+
+                double widthstep = 1d / (GradientSteps * 2);
+                double heightstep = 1d / (GradientSteps * 2);
+
+                for (int i = 0; i < GradientCount && this.GradientStep + i <= GradientSteps; i += 1)
+                {
+                    double alreadywstep = Math.Abs(widthstep * (this.GradientStep + i));
+                    double alreadyhstep = Math.Abs(heightstep * (this.GradientStep + i));
+                    VectorLinesCollection rect = new VectorLinesCollection(CadProjectorSDK.Device.Mesh.MeshType.NONE);
+
+                    /*
+
+                    VectorLine Line2 = new VectorLine(
+                            new RenderPoint(0.5 + alreadywstep, 0.5 - alreadyhstep),
+                            new RenderPoint(0.5 + alreadywstep, 0.5 + alreadyhstep));
+                    elements.Add(Line2.Split(5));
+
+                    VectorLine Line3 = new VectorLine(
+                            new RenderPoint(0.5 + alreadywstep, 0.5 + alreadyhstep),
+                            new RenderPoint(0.5 - alreadywstep, 0.5 + alreadyhstep));
+                    elements.Add(Line3.Split(5));
+                      */
+
+                    VectorLine Line4 = new VectorLine(
+                            new RenderPoint(0.5 - alreadywstep, 0.5 + alreadyhstep),
+                            new RenderPoint(0.5 - alreadywstep, 0.5 - alreadyhstep));
+                    elements.Add(Line4.Split(5));
+
+                    /*
+                    VectorLine Line1 = new VectorLine(
+                        new RenderPoint(0.5 - alreadywstep, 0.5 - alreadyhstep),
+                        new RenderPoint(0.5 + alreadywstep, 0.5 - alreadyhstep));
+                    elements.Add(Line1.Split(5));*/
+
+                    if (this._device.UseEllipsoid == true)
+                    {
+                        for (int k = 0; k < elements.Count; k += 1)
+                        {
+                            if (elements[k] is IRenderedObject renderedObject)
+                                elements[k] = this._device.Ellipsoid.CorrectObject(renderedObject);
+                        }
+                    }
+
+                }
+
+                this._device.RefreshFrame?.Invoke(elements);
+            }
         }
     }
 

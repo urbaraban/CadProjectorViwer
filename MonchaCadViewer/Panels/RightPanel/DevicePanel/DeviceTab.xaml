@@ -317,11 +317,11 @@
             <DockPanel LastChildFill="True">
                 <Label
                     DockPanel.Dock="Left"
-                    Content="Find Solid"/>
+                    Content="Optimized"/>
                 <Controls:ToggleSwitch
                     DockPanel.Dock="Right"
                     DataContext="{Binding SelectedItem, ElementName=DeviceCombo}"
-                    IsOn="{Binding ProjectionSetting.FindSolidElement}"/>
+                    IsOn="{Binding Optimized}"/>
             </DockPanel>
 
             <DockPanel LastChildFill="True">

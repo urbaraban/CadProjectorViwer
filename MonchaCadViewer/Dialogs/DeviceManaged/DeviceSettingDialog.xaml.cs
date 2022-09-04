@@ -22,6 +22,9 @@ using System.Runtime.CompilerServices;
 using System.ComponentModel;
 using CadProjectorSDK.Render;
 using CadProjectorSDK.Render.Graph;
+using CadProjectorSDK.Tools.ILDA;
+using CadProjectorSDK.Tools;
+using StclLibrary.Laser;
 
 namespace CadProjectorViewer.Panels.DevicePanel
 {
@@ -141,6 +144,10 @@ namespace CadProjectorViewer.Panels.DevicePanel
                 double widthstep = 1d / (GradientSteps * 2);
                 double heightstep = 1d / (GradientSteps * 2);
 
+                VectorLinesCollection dot = new VectorLinesCollection(CadProjectorSDK.Device.Mesh.MeshType.NONE);
+                dot.Add(new VectorLine(0.5, 0.5, 0.5, 0.5, false));
+                elements.Add(dot);
+
                 for (int i = 0; i < GradientCount && this.GradientStep + i <= GradientSteps; i += 1)
                 {
                     double alreadywstep = Math.Abs(widthstep * (this.GradientStep + i));
@@ -148,41 +155,43 @@ namespace CadProjectorViewer.Panels.DevicePanel
                     VectorLinesCollection rect = new VectorLinesCollection(CadProjectorSDK.Device.Mesh.MeshType.NONE);
 
                     /*
-
                     VectorLine Line2 = new VectorLine(
                             new RenderPoint(0.5 + alreadywstep, 0.5 - alreadyhstep),
                             new RenderPoint(0.5 + alreadywstep, 0.5 + alreadyhstep));
-                    elements.Add(Line2.Split(5));
-
+                    elements.Add(Line2);
+                                                           
                     VectorLine Line3 = new VectorLine(
                             new RenderPoint(0.5 + alreadywstep, 0.5 + alreadyhstep),
                             new RenderPoint(0.5 - alreadywstep, 0.5 + alreadyhstep));
-                    elements.Add(Line3.Split(5));
-                      */
+                    elements.Add(Line3); */
+
 
                     VectorLine Line4 = new VectorLine(
                             new RenderPoint(0.5 - alreadywstep, 0.5 + alreadyhstep),
                             new RenderPoint(0.5 - alreadywstep, 0.5 - alreadyhstep));
-                    elements.Add(Line4.Split(5));
-
+                    rect.Add(Line4);
                     /*
                     VectorLine Line1 = new VectorLine(
                         new RenderPoint(0.5 - alreadywstep, 0.5 - alreadyhstep),
                         new RenderPoint(0.5 + alreadywstep, 0.5 - alreadyhstep));
-                    elements.Add(Line1.Split(5));*/
-
-                    if (this._device.UseEllipsoid == true)
-                    {
-                        for (int k = 0; k < elements.Count; k += 1)
-                        {
-                            if (elements[k] is IRenderedObject renderedObject)
-                                elements[k] = this._device.Ellipsoid.CorrectObject(renderedObject);
-                        }
-                    }
-
+                    elements.Add(Line1);*/
+                    elements.Add(rect);
                 }
 
                 this._device.RefreshFrame?.Invoke(elements);
+
+                /*
+                IldaWriter ildaWriter = new IldaWriter();
+                if (this._device.Optimized == true && elements.Count > 0)
+                {
+                    //vectorLines = VectorLinesCollection.Optimize(vectorLines);
+                    elements = GraphExtensions.FindShortestCollection(
+                        elements, this._device.ProjectionSetting.PathFindDeep, this._device.ProjectionSetting.FindSolidElement);
+                }
+                var vectorLine = GraphExtensions.GetVectorLines(elements);
+
+                ildaWriter.Write("test.ild",
+                    new List<LFrame>() { LFrameConverter.SolidLFrame(vectorLine, this._device) ?? new LFrame() }, 5);*/
             }
         }
     }

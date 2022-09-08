@@ -29,6 +29,7 @@ using Pen = System.Windows.Media.Pen;
 using Brush = System.Windows.Media.Brush;
 using Brushes = System.Windows.Media.Brushes;
 using System.Threading.Tasks;
+using CadProjectorViewer.ViewModel;
 
 namespace CadProjectorViewer.CanvasObj
 {
@@ -36,17 +37,14 @@ namespace CadProjectorViewer.CanvasObj
     {
         public ContextMenu ObjectContextMenu { get; set; }
 
-        public virtual GetResolutionDeligate GetResolution { get; set; }
-        public delegate Tuple<double, double> GetResolutionDeligate();
-
         public virtual GetContainerSize GetContainer { get; set; }
         public delegate FrameworkElement GetContainerSize();
 
         public virtual ChangeSizeDelegate SizeChange { get; set; }
         public delegate void ChangeSizeDelegate();
 
-        public GetCanvasDelegate GetCanvas { get; set; }
-        public delegate CadCanvas GetCanvasDelegate();
+        public GetViewDelegate GetViewModel { get; set; }
+        public delegate RenderDeviceModel GetViewDelegate();
 
         public UidObject CadObject
         {
@@ -100,7 +98,7 @@ namespace CadProjectorViewer.CanvasObj
                 this.IsSelected,
                 true,
                 this.IsBlank,
-                GetCanvas?.Invoke().RenderDevice.ProjectionSetting.GetBrush);
+                GetViewModel?.Invoke().Rendering.ProjectionSetting.GetBrush);
         }
 
         public virtual Pen GetPen(
@@ -136,15 +134,15 @@ namespace CadProjectorViewer.CanvasObj
         public double GetThinkess()
         {
             double thinkess = 1;
-            if (this.GetCanvas?.Invoke() is CadCanvas canvas
+            if (this.GetViewModel?.Invoke() is RenderDeviceModel deviceModel
                 && this.GetContainer?.Invoke() is FrameworkElement Container)
             {
-                double max_resolution = Math.Max(canvas.ActualHeight, canvas.ActualWidth);
+                double max_resolution = Math.Max(deviceModel.WidthResolutuon, deviceModel.HeightResolution);
                 double mashtab_in_container = Math.Min(
-                    canvas.ActualWidth / Container.ActualWidth,
-                    canvas.ActualHeight / Container.ActualHeight);
+                    deviceModel.WidthResolutuon / Math.Max(Container.ActualWidth, Container.DesiredSize.Width),
+                    deviceModel.HeightResolution / Math.Max(Container.ActualHeight, Container.DesiredSize.Height));
 
-                thinkess = max_resolution * canvas.Setting.Thinkess * mashtab_in_container;
+                thinkess = max_resolution * AppSt.Default.default_thinkess_percent * mashtab_in_container;
             }
 
             return thinkess;
@@ -461,22 +459,20 @@ namespace CadProjectorViewer.CanvasObj
 
         protected override void OnRender(DrawingContext drawingContext)
         {
-            if (this.GetCanvas?.Invoke() is CadCanvas canvas) 
+            if (this.GetViewModel?.Invoke() is RenderDeviceModel deviceModel) 
             {
-                Tuple<double, double> resolution = GetResolution?.Invoke();
-
                 DrawSetting drawSetting = new DrawSetting(
-                    resolution.Item1,
-                    resolution.Item2,
+                    deviceModel.WidthResolutuon,
+                    deviceModel.HeightResolution,
                     GetThinkess()
                     );
 
-                Drawing(CadObject, canvas, drawSetting, this.IsSelected, this.IsMouseOver, this.IsRender, drawingContext);
+                Drawing(CadObject, deviceModel, drawSetting, this.IsSelected, this.IsMouseOver, this.IsRender, drawingContext);
             }
         }
 
         internal void Drawing (
-            UidObject uidObject, CadCanvas cadCanvas, DrawSetting drawSetting,
+            UidObject uidObject, RenderDeviceModel deviceModel, DrawSetting drawSetting,
             bool IsSelected, bool MouseOver, bool ParentRender,
             DrawingContext drawingContext)
         {
@@ -487,7 +483,7 @@ namespace CadProjectorViewer.CanvasObj
                 IsSelected,
                 ParentRender,
                 uidObject.IsBlank,
-                cadCanvas.RenderDevice.ProjectionSetting.GetBrush);
+                deviceModel.Rendering.ProjectionSetting.GetBrush);
 
             Brush brush = GetBrush(uidObject);
 
@@ -495,11 +491,11 @@ namespace CadProjectorViewer.CanvasObj
             {
                 foreach (UidObject uid in group)
                 {
-                    Drawing(uid, cadCanvas, drawSetting, IsSelected, MouseOver, ParentRender && uid.IsRender, drawingContext);
+                    Drawing(uid, deviceModel, drawSetting, IsSelected, MouseOver, ParentRender && uid.IsRender, drawingContext);
                 }
             }
-            else if (uidObject.Renders.ContainsKey(cadCanvas.RenderDevice) == true
-                && uidObject.Renders[cadCanvas.RenderDevice] is IEnumerable<IRenderedObject> linesCollection)
+            else if (uidObject.Renders.ContainsKey(deviceModel.Rendering) == true
+                && uidObject.Renders[deviceModel.Rendering] is IEnumerable<IRenderedObject> linesCollection)
             {
                 DrawingIRenderableObjects(linesCollection, drawingContext, drawSetting, brush, pen);
             }

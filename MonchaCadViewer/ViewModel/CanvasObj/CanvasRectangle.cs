@@ -135,8 +135,7 @@ namespace CadProjectorViewer.CanvasObj
         {
             return new CanvasAnchor(cadAnchor)
             {
-                GetCanvas = parent.GetCanvas,
-                GetResolution = parent.GetResolution,
+                GetViewModel = parent.GetViewModel,
                 GetContainer = parent.GetContainer
             };
         }

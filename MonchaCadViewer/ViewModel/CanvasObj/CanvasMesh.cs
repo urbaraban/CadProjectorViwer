@@ -1,6 +1,7 @@
 ﻿using CadProjectorSDK.CadObjects;
 using CadProjectorSDK.Device;
 using CadProjectorSDK.Device.Mesh;
+using CadProjectorViewer.ViewModel;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -44,23 +45,23 @@ namespace CadProjectorViewer.CanvasObj
         protected override async void OnRender(DrawingContext drawingContext)
         {
             Pen pen = this.GetPen();
-            Tuple<double, double> resolution = GetResolution?.Invoke();
+            RenderDeviceModel deviceModel = this.GetViewModel?.Invoke();
 
             for (int i = 0; i < Mesh.Points.GetLength(0); i += 1)
             {
                 for (int j = 0; j < Mesh.Points.GetLength(1); j += 1)
                 {
-                    Point point1 = new Point(Mesh.Points[i, j].X * resolution.Item1, Mesh.Points[i, j].Y * resolution.Item2);
+                    Point point1 = new Point(Mesh.Points[i, j].X * deviceModel.WidthResolutuon, Mesh.Points[i, j].Y * deviceModel.HeightResolution);
 
                     if (i - 1 > -1)
                     {
-                        Point point2 = new Point(Mesh.Points[i - 1, j].X * resolution.Item1, Mesh.Points[i - 1, j].Y * resolution.Item2);
+                        Point point2 = new Point(Mesh.Points[i - 1, j].X * deviceModel.WidthResolutuon, Mesh.Points[i - 1, j].Y * deviceModel.HeightResolution);
                         drawingContext.DrawLine(pen, point1, point2);
                     }
                         
                     if (j - 1 > -1)
                     {
-                        Point point2 = new Point(Mesh.Points[i, j - 1].X * resolution.Item1, Mesh.Points[i, j - 1].Y * resolution.Item2);
+                        Point point2 = new Point(Mesh.Points[i, j - 1].X * deviceModel.WidthResolutuon, Mesh.Points[i, j - 1].Y * deviceModel.HeightResolution);
                         drawingContext.DrawLine(pen, point1, point2);
                     }
                         
@@ -89,9 +90,8 @@ namespace CadProjectorViewer.CanvasObj
                 for (int j = 0; j < mesh.Mesh.Points.GetLength(1); j += 1)
                 {
                     _Anchors.Add(new CanvasAnchor(mesh.Mesh[i, j])
-                    { 
-                        GetCanvas = mesh.GetCanvas,
-                        GetResolution = mesh.GetResolution,
+                    {
+                        GetViewModel = mesh.GetViewModel,
                         GetContainer = mesh.GetContainer
                     });
                 }

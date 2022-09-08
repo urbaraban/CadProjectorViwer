@@ -61,17 +61,15 @@ namespace CadProjectorViewer.CanvasObj
             _Anchors = new List<CanvasAnchor>();
 
             CanvasAnchor A1 = new CanvasAnchor(line.Line.P1) { 
-                GetCanvas = line.GetCanvas,
+                GetViewModel = line.GetViewModel,
                 GetContainer = line.GetContainer,
-                GetResolution = line.GetResolution
             };
             line.SizeChange += A1.ParentChangeSize;
             _Anchors.Add(A1);
 
             CanvasAnchor A2 = new CanvasAnchor(line.Line.P2) {
-                GetCanvas = line.GetCanvas,
+                GetViewModel = line.GetViewModel,
                 GetContainer = line.GetContainer,
-                GetResolution = line.GetResolution
             };
             line.SizeChange += A2.ParentChangeSize;
             _Anchors.Add(A2);

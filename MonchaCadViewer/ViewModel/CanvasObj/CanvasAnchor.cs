@@ -10,6 +10,7 @@ using CadProjectorSDK;
 using CadProjectorSDK.Device;
 using CadProjectorSDK.CadObjects;
 using AppSt = CadProjectorViewer.Properties.Settings;
+using CadProjectorViewer.ViewModel;
 
 namespace CadProjectorViewer.CanvasObj
 {
@@ -108,9 +109,9 @@ namespace CadProjectorViewer.CanvasObj
         protected override void OnRender(DrawingContext drawingContext)
         {
             double _size = this.GetThinkess() * 4 * AppSt.Default.anchor_size;
-            Tuple<double, double> resolution = GetResolution?.Invoke();
+            RenderDeviceModel deviceModel = this.GetViewModel?.Invoke();
 
-            drawingContext.PushTransform(new TranslateTransform(this.Point.X * resolution.Item1, this.Point.Y * resolution.Item2));
+            drawingContext.PushTransform(new TranslateTransform(this.Point.X * deviceModel.WidthResolutuon, this.Point.Y * deviceModel.HeightResolution));
             drawingContext.DrawGeometry(myBack, new Pen(Brushes.Black, _size * 0.1), new RectangleGeometry(new Rect(-_size / 2, -_size / 2, _size, _size)));
         }
     }

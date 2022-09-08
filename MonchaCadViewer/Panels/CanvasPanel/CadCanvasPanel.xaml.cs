@@ -32,6 +32,7 @@ using CadProjectorSDK.Render;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using CadProjectorSDK.Scenes.Commands;
+using CadProjectorViewer.ViewModel;
 
 namespace CadProjectorViewer.Panels.CanvasPanel
 {
@@ -49,7 +50,7 @@ namespace CadProjectorViewer.Panels.CanvasPanel
 
         private Visibility _showadorner = Visibility.Hidden;
 
-        private ProjectionScene SelectedScene => (ProjectionScene)this.DataContext;
+        private RenderDeviceModel ViewModel => (RenderDeviceModel)this.DataContext;
 
         private double X
         {
@@ -136,20 +137,22 @@ namespace CadProjectorViewer.Panels.CanvasPanel
                 this.StartMousePoint = e.GetPosition(this.CanvasBox);
                 this.StartMovePoint = new Point(this.Translate.X, this.Translate.Y);
             }
-            else if (this.SelectedScene.AlreadyAction != null)
+            else if (
+                ViewModel.Rendering is ProjectionScene scene &&
+                scene.AlreadyAction != null)
             {
                 Point point = e.GetPosition(this.CanvasGrid);
-                this.SelectedScene.AlreadyAction.NextAction(new CadPoint3D(point));
+                scene.AlreadyAction.NextAction(new CadPoint3D(point));
             }
         }
 
         protected override void OnMouseMove(MouseEventArgs e)
         {
-            if (SelectedScene != null)
+            if (ViewModel.Rendering is ProjectionScene scene)
             {
                 Point m_point = e.GetPosition(this.CanvasGrid);
-                SelectedScene.MousePosition.MX = m_point.X;
-                SelectedScene.MousePosition.MY = m_point.Y;
+                scene.MousePosition.MX = m_point.X;
+                scene.MousePosition.MY = m_point.Y;
 
                 if (e.LeftButton == MouseButtonState.Pressed && Keyboard.Modifiers == ModifierKeys.Control)
                 {
@@ -163,11 +166,11 @@ namespace CadProjectorViewer.Panels.CanvasPanel
 
                     this.CaptureMouse();
                 }
-                else if (SelectedScene.AlreadyAction != null)
+                else if (scene.AlreadyAction != null)
                 {
-                    if (this.SelectedScene.AlreadyAction.CanAction == true)
+                    if (scene.AlreadyAction.CanAction == true)
                     {
-                        this.SelectedScene.AlreadyAction.Run(SelectedScene.MousePosition);
+                        scene.AlreadyAction.Run(scene.MousePosition);
                     }
                 }
 
@@ -198,11 +201,11 @@ namespace CadProjectorViewer.Panels.CanvasPanel
 
         private void Canvas_SizeChanged(object sender, SizeChangedEventArgs e)
         {
-            if (sender is Canvas canvas && SelectedScene != null)
+            if (sender is Canvas canvas && ViewModel.Rendering is ProjectionScene scene)
             {
                 if (canvas.Background is DrawingBrush drawingBrush)
                 {
-                    double cell = (int)(Math.Min(SelectedScene.Size.Width, SelectedScene.Size.Height) / 10);
+                    double cell = (int)(Math.Min(scene.Size.Width, scene.Size.Height) / 10);
                     drawingBrush.Viewport = new Rect(0, 0, cell, cell);
                 }
                
@@ -216,26 +219,36 @@ namespace CadProjectorViewer.Panels.CanvasPanel
 
         private void ShowDeviceRect_Click(object sender, RoutedEventArgs e)
         {
-            Random rnd = new Random();
-            foreach (LProjector monchaDevice in this.SelectedScene.Projectors)
+            if (ViewModel.Rendering is ProjectionScene scene)
             {
-                SolidColorBrush ColorBrush = new SolidColorBrush();
-                ColorBrush.Color = Colors.Azure;
-                SelectedScene.Clear();
-                SelectedScene.Add(monchaDevice.Size);
-
-                foreach (ProjectorMesh mesh in monchaDevice.SelectedMeshes)
+                Random rnd = new Random();
+                foreach (LProjector monchaDevice in scene.Projectors)
                 {
-                    SelectedScene.Add(mesh.Size);
+                    SolidColorBrush ColorBrush = new SolidColorBrush();
+                    ColorBrush.Color = Colors.Azure;
+                    scene.Clear();
+                    scene.Add(monchaDevice.Size);
+
+                    foreach (ProjectorMesh mesh in monchaDevice.SelectedMeshes)
+                    {
+                        scene.Add(mesh.Size);
+                    }
                 }
             }
+
         }
 
         public ICommand RefreshFrameCommand => new ActionCommand(() => {
-            SelectedScene.RefreshScene();
+            if (ViewModel.Rendering is ProjectionScene scene)
+            {
+                scene.RefreshScene();
+            }
         });
         public ICommand CancelActionCommand => new ActionCommand(() => {
-            SelectedScene.Break();
+            if (ViewModel.Rendering is ProjectionScene scene)
+            {
+                scene.Break();
+            }
         });
         public ICommand CancelSizeChange => new ActionCommand(() => {
             this.ScaleValue = 1;

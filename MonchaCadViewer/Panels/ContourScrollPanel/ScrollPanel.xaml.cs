@@ -37,7 +37,5 @@ namespace CadProjectorViewer.Panels
         {
             hub.ScenesCollection.LoadedObjects.Clear();
         }
-
-
     }
 }

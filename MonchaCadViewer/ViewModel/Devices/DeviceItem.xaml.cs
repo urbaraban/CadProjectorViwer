@@ -59,7 +59,7 @@ namespace CadProjectorViewer.ViewModel.Devices
             {
                 ProjectorView projectorView = new ProjectorView()
                 {
-                    DataContext = device
+                    DataContext = new RenderDeviceModel(device)
                 };
                 projectorView.Show();
             }

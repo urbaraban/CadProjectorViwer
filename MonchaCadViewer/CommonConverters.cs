@@ -16,6 +16,7 @@ using CadProjectorSDK.CadObjects.Interfaces;
 using System.Windows.Controls;
 using AppSt = CadProjectorViewer.Properties.Settings;
 using System.Windows;
+using CadProjectorViewer.ViewModel;
 
 namespace CadProjectorViewer.Converters
 {
@@ -45,13 +46,13 @@ namespace CadProjectorViewer.Converters
         }
     }
 
-    public class GetCadCanvas : IValueConverter
+    public class GetViewModel : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            CadCanvas cadCanvas = new CadCanvas();
+            RenderDeviceModel cadCanvas = null;
             if (value is IRenderingDevice renderingDevice)
-                cadCanvas = new CadCanvas() { DataContext = renderingDevice };
+                cadCanvas = new RenderDeviceModel(renderingDevice);
             return cadCanvas;
         }
 
@@ -66,14 +67,13 @@ namespace CadProjectorViewer.Converters
         public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
         {
             if (values[0] is UidObject uidObject
-                && values[1] is CadCanvas canvas
+                && values[1] is RenderDeviceModel renderingDevice
                 && values[2] is FrameworkElement frameworkElement)
             {
                 if (CanvasObjectSwitch(uidObject) is CanvasObject canvasObject)
                 {
-                    canvasObject.GetResolution = () => new Tuple<double, double>(canvas.ActualWidth, canvas.ActualHeight);
                     canvasObject.GetContainer = () => frameworkElement;
-                    canvasObject.GetCanvas = () => canvas;
+                    canvasObject.GetViewModel = () => renderingDevice;
                     //canvasPanel.SizeChange += canvasObject.ParentChangeSize;
                     return canvasObject;
                 }

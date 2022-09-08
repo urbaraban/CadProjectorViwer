@@ -4,9 +4,9 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:converters="clr-namespace:CadProjectorViewer.Converters" 
-        xmlns:canvasobj="clr-namespace:CadProjectorViewer.CanvasObj" 
-        xmlns:render ="clr-namespace:CadProjectorSDK.Interfaces;assembly=CadProjectorSDK"
-        d:DataContext="{d:DesignInstance Type=render:IRenderingDevice}"
+        xmlns:render="clr-namespace:CadProjectorViewer.ViewModel"
+        d:DataContext="{d:DesignInstance Type=render:RenderDeviceModel}"
+        x:Name="PrewWindow"
         mc:Ignorable="d"
         WindowState="Maximized"
         WindowStyle="None"
@@ -45,13 +45,17 @@
         <ItemsControl 
             Grid.Row="0" Grid.RowSpan="3"
             Grid.ColumnSpan="5"
-            ItemsSource="{Binding RenderObjects, Mode=OneWay}">
+            ItemsSource="{Binding uidObjects, Mode=OneWay}">
             <ItemsControl.ItemsPanel>
                 <ItemsPanelTemplate>
-                    <canvasobj:CadCanvas 
+                    <Canvas 
                         x:Name="ProjectorCanvas"
+                        DataContext="{Binding ElementName=ScrollCanvasBox, Path=DataContext}"
+                        d:DataContext="{d:DesignInstance Type=render:RenderDeviceModel}"
+                        Width="{Binding WidthResolutuon}" 
+                        Height="{Binding HeightResolution}"
                         Focusable="False" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
-                        IsHitTestVisible="True" Grid.RowSpan="3" Background="Black" Height="Auto" Width="Auto"/>
+                        IsHitTestVisible="True" Grid.RowSpan="3" Background="Black"/>
                 </ItemsPanelTemplate>
             </ItemsControl.ItemsPanel>
             <ItemsControl.ItemTemplate>
@@ -60,7 +64,7 @@
                         <ContentPresenter.Content>
                             <MultiBinding Converter="{StaticResource VObjectConverter}">
                                 <Binding Path=""/>
-                                <Binding ElementName="ProjectorCanvas"/>
+                                <Binding ElementName="PrewWindow" Path="DataContext"/>
                                 <Binding ElementName="ProjectorCanvas"/>
                             </MultiBinding>
                         </ContentPresenter.Content>
@@ -71,12 +75,10 @@
         <DockPanel
             Grid.Row="1"
             VerticalAlignment="Center"
-            Background="White"
-            DataContext="{Binding ElementName=ObjCanvas}"
-            d:DataContext="{d:DesignInstance Type=canvasobj:CadCanvas}">
+            Background="White">
             <DockPanel LastChildFill="True">
                 <Slider
-                Value="{Binding Setting.Thinkess, Mode=TwoWay}"
+                Value="{Binding displaySetting.Thinkess, Mode=TwoWay}"
                 Maximum="255"
                 Minimum="0" />
             </DockPanel>

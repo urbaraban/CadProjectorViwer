@@ -24,6 +24,7 @@ using System.Globalization;
 using CadProjectorSDK.Scenes;
 using CadProjectorSDK.Device.Mesh;
 using CadProjectorSDK.Interfaces;
+using CadProjectorViewer.ViewModel;
 
 namespace CadProjectorViewer.Panels
 {
@@ -125,7 +126,7 @@ namespace CadProjectorViewer.Panels
                 scene.Add(uidObject);
             }
 
-            return scene;
+            return new RenderDeviceModel(scene);
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)

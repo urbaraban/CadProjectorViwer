@@ -3,11 +3,10 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             xmlns:scenes="clr-namespace:CadProjectorSDK.Scenes;assembly=CadProjectorSDK"
-             xmlns:canvasobj="clr-namespace:CadProjectorViewer.CanvasObj"
              xmlns:converters="clr-namespace:CadProjectorViewer.Converters"
              xmlns:canvaspanel="clr-namespace:CadProjectorViewer.Panels.CanvasPanel"
-             d:DataContext="{d:DesignInstance Type=scenes:ProjectionScene}"
+        xmlns:render="clr-namespace:CadProjectorViewer.ViewModel"
+        d:DataContext="{d:DesignInstance Type=render:RenderDeviceModel}"
              x:Name="CanvasPanel"
              mc:Ignorable="d"
              d:DesignHeight="400" d:DesignWidth="400">
@@ -17,7 +16,6 @@
             <canvaspanel:InfoConverter x:Key="InfoConverter" />
             <canvaspanel:ScaleConverter x:Key="ScaleConverter" />
             <converters:CadObjectConverter x:Key="CadObjectConverter" />
-            <converters:GetCadCanvas x:Key="GetCadCavas"/>
         </ResourceDictionary>
     </UserControl.Resources>
     <DockPanel>
@@ -99,7 +97,7 @@
                     <ItemsControl ItemsSource="{Binding Masks}">
                         <ItemsControl.ItemsPanel>
                             <ItemsPanelTemplate>
-                                <canvasobj:CadCanvas 
+                                <Canvas 
                                     x:Name="MaskCanvas"
                                     Width="{Binding Size.Width}"
                                     Height="{Binding Size.Height}"/>
@@ -120,13 +118,15 @@
                         </ItemsControl.ItemTemplate>
                     </ItemsControl>
                     <ItemsControl
-                        ItemsSource="{Binding .}">
+                        ItemsSource="{Binding uidObjects}">
                         <ItemsControl.ItemsPanel>
                             <ItemsPanelTemplate>
-                                <canvasobj:CadCanvas 
+                                <Canvas 
                                     x:Name="ObjCanvas"
-                                    Width="{Binding Size.Width}"
-                                    Height="{Binding Size.Height}"/>
+                                    DataContext="{Binding ElementName=ObjCanvas, Path=DataContext}"
+                                    d:DataContext="{d:DesignInstance Type=render:RenderDeviceModel}"
+                                    Width="{Binding WidthResolutuon}"
+                                    Height="{Binding HeightResolution}"/>
                             </ItemsPanelTemplate>
                         </ItemsControl.ItemsPanel>
                         <ItemsControl.ItemTemplate>
@@ -135,7 +135,7 @@
                                     <ContentPresenter.Content>
                                         <MultiBinding Converter="{StaticResource CadObjectConverter}">
                                             <Binding Path="" />
-                                            <Binding ElementName="ObjCanvas"/>
+                                            <Binding ElementName="ObjCanvas" Path="DataContext"/>
                                             <Binding ElementName="CanvasBox"/>
                                         </MultiBinding>
                                     </ContentPresenter.Content>

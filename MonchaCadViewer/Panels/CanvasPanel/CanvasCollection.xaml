@@ -4,11 +4,15 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:CadProjectorViewer.Panels.CanvasPanel" 
-             xmlns:cadprojectorsdk="clr-namespace:CadProjectorSDK;assembly=CadProjectorSDK" xmlns:scenes="clr-namespace:CadProjectorSDK.Scenes;assembly=CadProjectorSDK"
+             xmlns:cadprojectorsdk="clr-namespace:CadProjectorSDK;assembly=CadProjectorSDK"
+             xmlns:CadProjectorViewer="clr-namespace:CadProjectorViewer.Converters"
              d:DataContext="{d:DesignInstance Type={x:Type cadprojectorsdk:ProjectorHub}}"
              x:Name="Main"
              mc:Ignorable="d" 
              d:DesignHeight="400" d:DesignWidth="400">
+    <UserControl.Resources>
+        <CadProjectorViewer:GetViewModel x:Key="GetViewModel" />
+    </UserControl.Resources>
     <DockPanel>
         <TabControl 
             x:Name="Tabs"
@@ -18,7 +22,7 @@
             SelectedIndex="0">
             <TabControl.ContentTemplate>
                 <DataTemplate>
-                    <local:CadCanvasPanel/>
+                    <local:CadCanvasPanel DataContext="{Binding ., Converter={StaticResource GetViewModel}}"/>
                 </DataTemplate>
             </TabControl.ContentTemplate>
             <TabControl.ItemTemplate>

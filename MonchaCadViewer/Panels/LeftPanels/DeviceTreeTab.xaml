@@ -114,6 +114,7 @@
                         Content="&#xE947;"
                         FontFamily="Segoe MDL2 Assets" />
         </DockPanel>
+
         <TreeView
             DockPanel.Dock="Top"
                 Margin="0,0,0,0"
@@ -125,9 +126,11 @@
                     <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
                 </Style>
             </TreeView.ItemContainerStyle>
-            <TreeViewItem x:Name="DeviceTree" Header="LaserDevice" IsExpanded="True"
-                          ItemsSource="{Binding Projectors}" 
-                          ItemTemplate="{StaticResource ResourceKey=DeviceTree}"
+            <TreeView 
+                x:Name="DeviceTree"
+                ItemsSource="{Binding Projectors}"
+                SelectedValuePath="{Binding Projectors.SelectedItem}"
+                ItemTemplate="{StaticResource ResourceKey=DeviceTree}"
                           />
 
         </TreeView>

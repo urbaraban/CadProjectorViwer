@@ -66,5 +66,11 @@ namespace CadProjectorViewer.Panels.CanvasPanel
             int index = this.projectorHub.ScenesCollection.IndexOf(this.projectorHub.ScenesCollection.SelectedScene);
             this.projectorHub.ScenesCollection.SelectedScene = this.projectorHub.ScenesCollection[Math.Abs(index - 1) % this.projectorHub.ScenesCollection.Count];
         }
+
+        public ICommand RefreshFrameCommand => new ActionCommand(refresh);
+        private async void refresh()
+        {
+            projectorHub.ScenesCollection.SelectedScene.RefreshScene();
+        }
     }
 }

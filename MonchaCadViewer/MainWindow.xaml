@@ -31,7 +31,7 @@
             Command="{Binding ElementName=MainWin, Path=PasteCommand}" />
         <KeyBinding
             Key="F5"
-            Command="{Binding ElementName=MainWin, Path=RefreshFrameCommand}" />
+            Command="{Binding ElementName=CanvasCollection, Path=RefreshFrameCommand}" />
         <KeyBinding
             Key="Delete"
             Command="{Binding ElementName=MainWin, Path=DeleteCommand}" />
@@ -252,8 +252,7 @@
                 </TabItem>
             </TabControl>
             <Border Grid.Column="1" Grid.Row="1" Style="{StaticResource Border}" Margin="0,3,0,0">
-                <canvaspanel:CanvasCollection DataContext="{Binding .}" />
-
+                <canvaspanel:CanvasCollection x:Name="CanvasCollection" DataContext="{Binding .}" />
             </Border>
 
             <panels:ScrollPanel x:Name="ContourScrollPanel" Margin="0,5,0,0" Grid.Column="1" Grid.Row="2" />
@@ -348,7 +347,7 @@
                 x:Name ="ttip"
                 IconSource="logo.ico"
                 DoubleClickCommand="{Binding ElementName=MainWin, Path=ShowFromTray}"
-                LeftClickCommand="{Binding ElementName=MainWin, Path=RefreshFrameCommand}">
+                LeftClickCommand="{Binding ElementName=CanvasCollection, Path=RefreshFrameCommand}">
                 <!--
     We can use arbitrary UI elements as Popups.
     Popups stay open if the user moves away from the tray area

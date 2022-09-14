@@ -101,8 +101,7 @@ namespace CadProjectorViewer.Panels.CanvasPanel
         }
 
         public TransformGroup TransformGroup { get; set; }
-        public ScaleTransform Scale { get; set; }
-
+        
         public double ScaleValue
         {
             get => Scale != null ? Scale.ScaleX : 1;
@@ -116,6 +115,7 @@ namespace CadProjectorViewer.Panels.CanvasPanel
                 }
             }
         }
+        public ScaleTransform Scale { get; set; }
 
         public RotateTransform Rotate { get; set; }
         public TranslateTransform Translate { get; set; }

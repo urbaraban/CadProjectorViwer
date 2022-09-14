@@ -37,8 +37,8 @@ namespace CadProjectorViewer.CanvasObj
     {
         public ContextMenu ObjectContextMenu { get; set; }
 
-        public virtual GetContainerSize GetContainer { get; set; }
-        public delegate FrameworkElement GetContainerSize();
+        public virtual GetScaleDelegate GetFrameTransform { get; set; }
+        public delegate ScaleTransform GetScaleDelegate();
 
         public virtual ChangeSizeDelegate SizeChange { get; set; }
         public delegate void ChangeSizeDelegate();
@@ -135,14 +135,11 @@ namespace CadProjectorViewer.CanvasObj
         {
             double thinkess = 1;
             if (this.GetViewModel?.Invoke() is RenderDeviceModel deviceModel
-                && this.GetContainer?.Invoke() is FrameworkElement Container)
+                && this.GetFrameTransform?.Invoke() is ScaleTransform scale)
             {
-                double max_resolution = Math.Max(deviceModel.WidthResolutuon, deviceModel.HeightResolution);
-                double mashtab_in_container = Math.Min(
-                    deviceModel.WidthResolutuon / Math.Max(Container.ActualWidth, Container.DesiredSize.Width),
-                    deviceModel.HeightResolution / Math.Max(Container.ActualHeight, Container.DesiredSize.Height));
+                double max_size = Math.Max(deviceModel.Size.Width, deviceModel.Size.Height);
 
-                thinkess = max_resolution * AppSt.Default.default_thinkess_percent * mashtab_in_container;
+                thinkess = max_size * AppSt.Default.default_thinkess_percent / scale.ScaleX;
             }
 
             return thinkess;
@@ -165,8 +162,6 @@ namespace CadProjectorViewer.CanvasObj
         private string name = string.Empty;
 
         public MeshType MeshType { get; set; } = MeshType.SELECT;
-
-
 
         #region OnPropertyChanged
         public event PropertyChangedEventHandler PropertyChanged;
@@ -507,19 +502,35 @@ namespace CadProjectorViewer.CanvasObj
             {
                 if (obj is VectorLinesCollection vectorLines)
                 {
-                    DrawVectorLines(vectorLines, drawingContext, drawSetting, pen);
+                    DrawVectorLines(vectorLines, drawingContext, drawSetting, brush, pen);
                 }
             }
         }
 
-        private void DrawVectorLines(VectorLinesCollection vectorLines, DrawingContext drawingContext, DrawSetting drawSetting, Pen pen)
+        private void DrawVectorLines(VectorLinesCollection vectorLines, DrawingContext drawingContext, DrawSetting drawSetting, Brush brush, Pen pen)
         {
-            foreach (VectorLine line in vectorLines)
+            if (vectorLines.Count > 0)
             {
-                Point point1 = GetDrawPoint(line.P1, drawSetting);
-                Point point2 = GetDrawPoint(line.P2, drawSetting);
+                StreamGeometry streamGeometry = new StreamGeometry();
 
-                drawingContext.DrawLine(pen, point1, point2);
+                using (StreamGeometryContext ctx = streamGeometry.Open())
+                {
+                    ctx.BeginFigure(
+                        GetDrawPoint(vectorLines[0].P1, drawSetting),
+                        vectorLines.IsClosed,
+                        vectorLines.IsClosed);
+
+                    for (int i = 0; i < vectorLines.Count; i += 1)
+                    {
+                        ctx.LineTo(
+                             GetDrawPoint(vectorLines[i].P2, drawSetting),
+                            true,
+                            false);
+                    }
+
+                    ctx.Close();
+                }
+                drawingContext.DrawGeometry(brush, pen, streamGeometry);
             }
         }
 

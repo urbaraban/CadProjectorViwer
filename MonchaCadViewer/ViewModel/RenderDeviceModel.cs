@@ -1,6 +1,7 @@
 ﻿using CadProjectorSDK.CadObjects;
 using CadProjectorSDK.CadObjects.Abstract;
 using CadProjectorSDK.Interfaces;
+using CadProjectorSDK.Scenes;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -24,8 +25,21 @@ namespace CadProjectorViewer.ViewModel
 
         public ObservableCollection<UidObject> uidObjects => Rendering.RenderObjects;
 
-        public virtual double HeightResolution => Rendering.HeightResolution;
-        public virtual double WidthResolutuon => Rendering.WidthResolutuon;
+        public ObservableCollection<CadRect3D> masks {
+            get
+            {
+                if (Rendering is ProjectionScene scene)
+                {
+                    return scene.Masks;
+                }
+                return null;
+            }
+        }
+
+        public CadRect3D Size => Rendering.Size;
+
+        public double HeightResolution => Rendering.HeightResolution;
+        public double WidthResolutuon => Rendering.WidthResolutuon;
 
         public ViewDisplaySetting displaySetting { get; }
 

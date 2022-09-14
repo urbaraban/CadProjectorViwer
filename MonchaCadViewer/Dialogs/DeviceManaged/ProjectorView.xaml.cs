@@ -50,8 +50,20 @@ namespace CadProjectorViewer.DeviceManaged
         public ProjectorView()
         {
             InitializeComponent();
+            UpdateTransform();
         }
 
+        private TransformGroup transform = new TransformGroup();
+
+        public ScaleTransform Scale { get; set; } = new ScaleTransform();
+
+        public void UpdateTransform()
+        {
+            if (transform != null)
+            {
+                transform.Children.Add(Scale);
+            }
+        }
 
         private void CloseMenuItem_Click(object sender, RoutedEventArgs e)
         {

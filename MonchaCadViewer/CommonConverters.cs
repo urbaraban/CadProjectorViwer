@@ -17,6 +17,7 @@ using System.Windows.Controls;
 using AppSt = CadProjectorViewer.Properties.Settings;
 using System.Windows;
 using CadProjectorViewer.ViewModel;
+using System.Windows.Media;
 
 namespace CadProjectorViewer.Converters
 {
@@ -68,11 +69,11 @@ namespace CadProjectorViewer.Converters
         {
             if (values[0] is UidObject uidObject
                 && values[1] is RenderDeviceModel renderingDevice
-                && values[2] is FrameworkElement frameworkElement)
+                && values[2] is ScaleTransform transform)
             {
                 if (CanvasObjectSwitch(uidObject) is CanvasObject canvasObject)
                 {
-                    canvasObject.GetContainer = () => frameworkElement;
+                    canvasObject.GetFrameTransform = () => transform;
                     canvasObject.GetViewModel = () => renderingDevice;
                     //canvasPanel.SizeChange += canvasObject.ParentChangeSize;
                     return canvasObject;

@@ -94,7 +94,7 @@
                             </DrawingBrush>
                         </Canvas.Background>
                     </Canvas>
-                    <ItemsControl ItemsSource="{Binding Masks}">
+                    <ItemsControl ItemsSource="{Binding masks}">
                         <ItemsControl.ItemsPanel>
                             <ItemsPanelTemplate>
                                 <Canvas 
@@ -125,8 +125,8 @@
                                     x:Name="ObjCanvas"
                                     DataContext="{Binding ElementName=ObjCanvas, Path=DataContext}"
                                     d:DataContext="{d:DesignInstance Type=render:RenderDeviceModel}"
-                                    Width="{Binding WidthResolutuon}"
-                                    Height="{Binding HeightResolution}"/>
+                                    Width="{Binding Size.Width}"
+                                    Height="{Binding Size.Height}"/>
                             </ItemsPanelTemplate>
                         </ItemsControl.ItemsPanel>
                         <ItemsControl.ItemTemplate>
@@ -136,7 +136,7 @@
                                         <MultiBinding Converter="{StaticResource CadObjectConverter}">
                                             <Binding Path="" />
                                             <Binding ElementName="ObjCanvas" Path="DataContext"/>
-                                            <Binding ElementName="CanvasBox"/>
+                                            <Binding ElementName="CanvasPanel" Path="Scale"/>
                                         </MultiBinding>
                                     </ContentPresenter.Content>
                                 </ContentPresenter>

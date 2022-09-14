@@ -65,7 +65,7 @@
                             <MultiBinding Converter="{StaticResource VObjectConverter}">
                                 <Binding Path=""/>
                                 <Binding ElementName="PrewWindow" Path="DataContext"/>
-                                <Binding ElementName="ProjectorCanvas"/>
+                                <Binding ElementName="PrewWindow" Path="Scale"/>
                             </MultiBinding>
                         </ContentPresenter.Content>
                     </ContentPresenter>

@@ -92,7 +92,7 @@ namespace CadProjectorViewer.CanvasObj
                     _Anchors.Add(new CanvasAnchor(mesh.Mesh[i, j])
                     {
                         GetViewModel = mesh.GetViewModel,
-                        GetContainer = mesh.GetContainer
+                        GetFrameTransform = mesh.GetFrameTransform
                     });
                 }
             }

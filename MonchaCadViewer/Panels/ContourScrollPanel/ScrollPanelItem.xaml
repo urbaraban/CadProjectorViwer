@@ -9,6 +9,7 @@
     xmlns:converters="clr-namespace:CadProjectorViewer.Converters"
     xmlns:render="clr-namespace:CadProjectorViewer.ViewModel"
     d:DataContext="{d:DesignInstance Type=scene:SceneTask}"
+    x:Name="ItemFrame"
     AllowDrop="False"
     d:DesignHeight="100"
     d:DesignWidth="100"
@@ -60,8 +61,8 @@
                                         x:Name="ScrollObjCanvas"
                                         DataContext="{Binding ElementName=ScrollCanvasBox, Path=DataContext}"
                                         d:DataContext="{d:DesignInstance Type=render:RenderDeviceModel}"
-                                        Width="{Binding WidthResolutuon}" 
-                                        Height="{Binding HeightResolution}"/>
+                                        Width="{Binding Width}" 
+                                        Height="{Binding Height}"/>
                                 </ItemsPanelTemplate>
                             </ItemsControl.ItemsPanel>
                             <ItemsControl.ItemTemplate>
@@ -71,7 +72,7 @@
                                             <MultiBinding Converter="{StaticResource CadObjectConverter}">
                                                 <Binding Path="" />
                                                 <Binding ElementName="ScrollObjCanvas" Path="DataContext"/>
-                                                <Binding ElementName="ScrollCanvasBox"/>
+                                                <Binding ElementName="ItemFrame" Path="Scale"/>
                                             </MultiBinding>
                                         </ContentPresenter.Content>
                                     </ContentPresenter>

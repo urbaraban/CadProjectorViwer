@@ -52,8 +52,15 @@ namespace CadProjectorViewer.Converters
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
             RenderDeviceModel cadCanvas = null;
-            if (value is IRenderingDevice renderingDevice)
+            if (value is ProjectionScene scene)
+            {
+                cadCanvas = new SceneModel(scene);
+            }
+            else if (value is IRenderingDevice renderingDevice)
+            {
                 cadCanvas = new RenderDeviceModel(renderingDevice);
+            }
+
             return cadCanvas;
         }
 

@@ -337,6 +337,7 @@
       <DependentUpon>DeviceItem.xaml</DependentUpon>
     </Compile>
     <Compile Include="ViewModel\RenderDeviceModel.cs" />
+    <Compile Include="ViewModel\SceneModel.cs" />
     <Page Include="Dialogs\DeviceManaged\ProjectorView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

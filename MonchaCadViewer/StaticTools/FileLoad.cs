@@ -141,7 +141,11 @@ namespace CadProjectorViewer.StaticTools
         {
             if (obj is GCCollection gCObjects)
             {
-                return await GCToCad.GetGroup(gCObjects);
+                if (await GCToCad.GetGroup(gCObjects) is CadGroup cadGroup)
+                {
+                    return cadGroup;
+                }
+                return null;
             }
             else if (obj is BitmapSource imageSource)
             {

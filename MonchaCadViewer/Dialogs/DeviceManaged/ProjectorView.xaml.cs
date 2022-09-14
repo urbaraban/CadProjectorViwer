@@ -19,6 +19,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using CadProjectorSDK.CadObjects.Abstract;
 using CadProjectorSDK.Interfaces;
+using CadProjectorViewer.ViewModel;
 
 namespace CadProjectorViewer.DeviceManaged
 {
@@ -50,20 +51,12 @@ namespace CadProjectorViewer.DeviceManaged
         public ProjectorView()
         {
             InitializeComponent();
-            UpdateTransform();
         }
 
         private TransformGroup transform = new TransformGroup();
 
         public ScaleTransform Scale { get; set; } = new ScaleTransform();
 
-        public void UpdateTransform()
-        {
-            if (transform != null)
-            {
-                transform.Children.Add(Scale);
-            }
-        }
 
         private void CloseMenuItem_Click(object sender, RoutedEventArgs e)
         {
@@ -87,10 +80,10 @@ namespace CadProjectorViewer.DeviceManaged
                 this.WindowState = WindowState.Normal;
                 this.DragMove();
                 this.WindowState = WindowState.Maximized;
-                if (this.DataContext is LProjector lDevice)
+                if (this.DataContext is RenderDeviceModel deviceModel)
                 {
-                    lDevice.WidthResolutuon = this.Width;
-                    lDevice.HeightResolution = this.Height;
+                    deviceModel.Width = this.Width;
+                    deviceModel.Height = this.Height;
                 }
             }
         }

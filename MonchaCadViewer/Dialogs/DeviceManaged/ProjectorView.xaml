@@ -52,8 +52,8 @@
                         x:Name="ProjectorCanvas"
                         DataContext="{Binding ElementName=ScrollCanvasBox, Path=DataContext}"
                         d:DataContext="{d:DesignInstance Type=render:RenderDeviceModel}"
-                        Width="{Binding WidthResolutuon}" 
-                        Height="{Binding HeightResolution}"
+                        Width="{Binding Width}" 
+                        Height="{Binding Height}"
                         Focusable="False" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
                         IsHitTestVisible="True" Grid.RowSpan="3" Background="Black"/>
                 </ItemsPanelTemplate>

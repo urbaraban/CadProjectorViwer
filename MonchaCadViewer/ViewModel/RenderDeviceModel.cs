@@ -17,7 +17,7 @@ using AppSt = CadProjectorViewer.Properties.Settings;
 
 namespace CadProjectorViewer.ViewModel
 {
-    public class RenderDeviceModel
+    public class RenderDeviceModel : INotifyPropertyChanged
     {
         public IRenderingDevice Rendering { get; }
 
@@ -38,8 +38,42 @@ namespace CadProjectorViewer.ViewModel
 
         public CadRect3D Size => Rendering.Size;
 
-        public double HeightResolution => Rendering.HeightResolution;
-        public double WidthResolutuon => Rendering.WidthResolutuon;
+        public virtual bool ShowHide
+        {
+            get => showhide;
+            set
+            {
+                showhide = value;
+                OnPropertyChanged("ShowHide");
+            }
+        }
+        private bool showhide;
+
+        public virtual double Width
+        {
+            get => widthresolution;
+            set
+            {
+                widthresolution = value;
+                OnPropertyChanged("Width");
+            }
+        }
+        private double widthresolution = 1000;
+
+        public virtual double Height
+        {
+            get => heighthresolution;
+            set
+            {
+                heighthresolution = value;
+                OnPropertyChanged("Height");
+            }
+        }
+        private double heighthresolution = 1000;
+
+        public virtual double ThinkessPersent { get; } = 0.001;
+
+        public virtual double Thinkess => Math.Max(Width, Height) * ThinkessPersent;
 
         public ViewDisplaySetting displaySetting { get; }
 
@@ -48,6 +82,15 @@ namespace CadProjectorViewer.ViewModel
             this.Rendering = rendering;
             this.displaySetting = ViewDisplaySetting.Load(this.Rendering);
         }
+
+
+        #region INotifyPropertyChanged
+        public event PropertyChangedEventHandler PropertyChanged;
+        public void OnPropertyChanged([CallerMemberName] string prop = "")
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(prop));
+        }
+        #endregion
     }
 
     public class ViewDisplaySetting : INotifyPropertyChanged

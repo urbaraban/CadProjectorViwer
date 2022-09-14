@@ -40,6 +40,8 @@ namespace CadProjectorViewer.Panels
 
         public string FileName => SceneTsk.TaskName;
 
+        public ScaleTransform Scale { get; set; } = new ScaleTransform();
+
         public ScrollPanelItem()
         {
             InitializeComponent();
@@ -126,7 +128,7 @@ namespace CadProjectorViewer.Panels
                 scene.Add(uidObject);
             }
 
-            return new RenderDeviceModel(scene);
+            return new SceneModel(scene);
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)

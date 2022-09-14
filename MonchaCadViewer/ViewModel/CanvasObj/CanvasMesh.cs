@@ -44,24 +44,24 @@ namespace CadProjectorViewer.CanvasObj
 
         protected override async void OnRender(DrawingContext drawingContext)
         {
-            Pen pen = this.GetPen();
+            Pen pen = this.GetPen(true);
             RenderDeviceModel deviceModel = this.GetViewModel?.Invoke();
 
             for (int i = 0; i < Mesh.Points.GetLength(0); i += 1)
             {
                 for (int j = 0; j < Mesh.Points.GetLength(1); j += 1)
                 {
-                    Point point1 = new Point(Mesh.Points[i, j].X * deviceModel.WidthResolutuon, Mesh.Points[i, j].Y * deviceModel.HeightResolution);
+                    Point point1 = new Point(Mesh.Points[i, j].X * deviceModel.Width, Mesh.Points[i, j].Y * deviceModel.Height);
 
                     if (i - 1 > -1)
                     {
-                        Point point2 = new Point(Mesh.Points[i - 1, j].X * deviceModel.WidthResolutuon, Mesh.Points[i - 1, j].Y * deviceModel.HeightResolution);
+                        Point point2 = new Point(Mesh.Points[i - 1, j].X * deviceModel.Width, Mesh.Points[i - 1, j].Y * deviceModel.Height);
                         drawingContext.DrawLine(pen, point1, point2);
                     }
                         
                     if (j - 1 > -1)
                     {
-                        Point point2 = new Point(Mesh.Points[i, j - 1].X * deviceModel.WidthResolutuon, Mesh.Points[i, j - 1].Y * deviceModel.HeightResolution);
+                        Point point2 = new Point(Mesh.Points[i, j - 1].X * deviceModel.Width, Mesh.Points[i, j - 1].Y * deviceModel.Height);
                         drawingContext.DrawLine(pen, point1, point2);
                     }
                         

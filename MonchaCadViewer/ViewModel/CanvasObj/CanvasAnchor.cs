@@ -36,7 +36,11 @@ namespace CadProjectorViewer.CanvasObj
         {
             get
             {
-                double _size = this.GetThinkess() * AppSt.Default.default_thinkess_percent * 2 * AppSt.Default.anchor_size;
+                double _size = 4;
+                if (this.GetViewModel?.Invoke() is RenderDeviceModel deviceModel)
+                {
+                    _size = deviceModel.Thinkess * 2 * AppSt.Default.anchor_size;
+                }
                 return  new Rect(-_size / 2, -_size / 2, _size, _size);
             }
 
@@ -108,10 +112,10 @@ namespace CadProjectorViewer.CanvasObj
 
         protected override void OnRender(DrawingContext drawingContext)
         {
-            double _size = this.GetThinkess() * 4 * AppSt.Default.anchor_size;
             RenderDeviceModel deviceModel = this.GetViewModel?.Invoke();
+            double _size = deviceModel.Thinkess * 4;
 
-            drawingContext.PushTransform(new TranslateTransform(this.Point.X * deviceModel.WidthResolutuon, this.Point.Y * deviceModel.HeightResolution));
+            drawingContext.PushTransform(new TranslateTransform(this.Point.X * deviceModel.Width, this.Point.Y * deviceModel.Height));
             drawingContext.DrawGeometry(myBack, new Pen(Brushes.Black, _size * 0.1), new RectangleGeometry(new Rect(-_size / 2, -_size / 2, _size, _size)));
         }
     }

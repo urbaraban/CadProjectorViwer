@@ -6,7 +6,7 @@
              xmlns:converters="clr-namespace:CadProjectorViewer.Converters"
              xmlns:canvaspanel="clr-namespace:CadProjectorViewer.Panels.CanvasPanel"
         xmlns:render="clr-namespace:CadProjectorViewer.ViewModel"
-        d:DataContext="{d:DesignInstance Type=render:RenderDeviceModel}"
+        d:DataContext="{d:DesignInstance Type=render:SceneModel}"
              x:Name="CanvasPanel"
              mc:Ignorable="d"
              d:DesignHeight="400" d:DesignWidth="400">
@@ -31,7 +31,7 @@
                     Margin="3"
                     Panel.ZIndex="999" FontSize="18"
                     Command="{Binding ElementName=CanvasPanel, Path=RefreshFrameCommand}" />
-            <TextBlock Text="{Binding AlreadyAction}"
+            <TextBlock Text="{Binding Scene.AlreadyAction}"
                        Width="80"
                        Margin="3"
                        TextAlignment="Right"
@@ -72,7 +72,7 @@
               Margin="10"
               Stretch="Uniform" StretchDirection="Both">
                 <Grid x:Name="CanvasGrid" Background="Red"
-                  Cursor="{Binding AlreadyAction, Converter={StaticResource CursorAction}}">
+                  Cursor="{Binding Scene.AlreadyAction, Converter={StaticResource CursorAction}}">
                     <Rectangle Fill="White" />
                     <Canvas
                     x:Name="BackCanvas"
@@ -94,7 +94,7 @@
                             </DrawingBrush>
                         </Canvas.Background>
                     </Canvas>
-                    <ItemsControl ItemsSource="{Binding masks}">
+                    <ItemsControl ItemsSource="{Binding Masks}">
                         <ItemsControl.ItemsPanel>
                             <ItemsPanelTemplate>
                                 <Canvas 
@@ -109,8 +109,8 @@
                                     <ContentPresenter.Content>
                                         <MultiBinding Converter="{StaticResource CadObjectConverter}">
                                             <Binding Path="" />
-                                            <Binding ElementName="MaskCanvas" />
-                                            <Binding ElementName="CanvasBox" />
+                                            <Binding ElementName="CanvasPanel" Path="DataContext"/>
+                                            <Binding ElementName="CanvasPanel" Path="Scale"/>
                                         </MultiBinding>
                                     </ContentPresenter.Content>
                                 </ContentPresenter>
@@ -125,8 +125,8 @@
                                     x:Name="ObjCanvas"
                                     DataContext="{Binding ElementName=ObjCanvas, Path=DataContext}"
                                     d:DataContext="{d:DesignInstance Type=render:RenderDeviceModel}"
-                                    Width="{Binding Size.Width}"
-                                    Height="{Binding Size.Height}"/>
+                                    Width="{Binding Width}"
+                                    Height="{Binding Height}"/>
                             </ItemsPanelTemplate>
                         </ItemsControl.ItemsPanel>
                         <ItemsControl.ItemTemplate>

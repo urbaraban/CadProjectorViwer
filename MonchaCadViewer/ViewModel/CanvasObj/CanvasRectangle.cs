@@ -80,7 +80,7 @@ namespace CadProjectorViewer.CanvasObj
 
         protected override void OnRender(DrawingContext drawingContext)
         {
-            double textsize = GetThinkess();
+            double textsize = this.GetViewModel?.Invoke().Thinkess ?? 1;
 
             drawingContext.DrawText(
                 new FormattedText(this.NameID.ToString(),

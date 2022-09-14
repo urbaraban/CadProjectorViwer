@@ -38,7 +38,8 @@ namespace CadProjectorViewer.StaticTools
             }
             else if (gCObject is GCCollection collection)
             {
-                return await GetGroup(collection);
+                if (collection.Count > 0)
+                    return await GetGroup(collection);
             }
 
             return null;
@@ -52,7 +53,7 @@ namespace CadProjectorViewer.StaticTools
                 UidObject uidObject = await GCToCad.GetUid(obj);
                 if (uidObject != null) group.Add(uidObject);
             }
-            return group;
+            return group.Count > 0 ? group : null;
         }
     }
 }

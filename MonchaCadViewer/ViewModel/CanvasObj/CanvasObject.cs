@@ -90,13 +90,15 @@ namespace CadProjectorViewer.CanvasObj
 
         public bool ActiveObject { get; private set; }
 
-        public virtual Pen GetPen()
+        public virtual Pen GetPen(bool parentRender = true)
         {
+            double thinkess = GetViewModel?.Invoke().Thinkess ?? 1;
+
             return GetPen(
-                GetThinkess(),
+                thinkess,
                 this.IsMouseOver,
                 this.IsSelected,
-                true,
+                parentRender,
                 this.IsBlank,
                 GetViewModel?.Invoke().Rendering.ProjectionSetting.GetBrush);
         }
@@ -129,20 +131,6 @@ namespace CadProjectorViewer.CanvasObj
             else return new Pen(DefBrush, StrThink);
 
             return null;
-        }
-
-        public double GetThinkess()
-        {
-            double thinkess = 1;
-            if (this.GetViewModel?.Invoke() is RenderDeviceModel deviceModel
-                && this.GetFrameTransform?.Invoke() is ScaleTransform scale)
-            {
-                double max_size = Math.Max(deviceModel.Size.Width, deviceModel.Size.Height);
-
-                thinkess = max_size * AppSt.Default.default_thinkess_percent / scale.ScaleX;
-            }
-
-            return thinkess;
         }
 
         public static Brush GetBrush(UidObject uidObject) => Brushes.Transparent;
@@ -456,29 +444,18 @@ namespace CadProjectorViewer.CanvasObj
         {
             if (this.GetViewModel?.Invoke() is RenderDeviceModel deviceModel) 
             {
-                DrawSetting drawSetting = new DrawSetting(
-                    deviceModel.WidthResolutuon,
-                    deviceModel.HeightResolution,
-                    GetThinkess()
-                    );
-
-                Drawing(CadObject, deviceModel, drawSetting, this.IsSelected, this.IsMouseOver, this.IsRender, drawingContext);
+                Drawing(CadObject, deviceModel, this.IsSelected, this.IsMouseOver, this.IsRender, drawingContext);
             }
         }
 
         internal void Drawing (
-            UidObject uidObject, RenderDeviceModel deviceModel, DrawSetting drawSetting,
+            UidObject uidObject, RenderDeviceModel deviceModel,
             bool IsSelected, bool MouseOver, bool ParentRender,
             DrawingContext drawingContext)
         {
+            double thinkess = deviceModel.Thinkess;
 
-            Pen pen = GetPen(
-                drawSetting.Thinkess,
-                MouseOver,
-                IsSelected,
-                ParentRender,
-                uidObject.IsBlank,
-                deviceModel.Rendering.ProjectionSetting.GetBrush);
+            Pen pen = this.GetPen(ParentRender);
 
             Brush brush = GetBrush(uidObject);
 
@@ -486,28 +463,29 @@ namespace CadProjectorViewer.CanvasObj
             {
                 foreach (UidObject uid in group)
                 {
-                    Drawing(uid, deviceModel, drawSetting, IsSelected, MouseOver, ParentRender && uid.IsRender, drawingContext);
+                    if (uid.IsRender == true || deviceModel.ShowHide == true)
+                        Drawing(uid, deviceModel, IsSelected, MouseOver, ParentRender && uid.IsRender, drawingContext);
                 }
             }
             else if (uidObject.Renders.ContainsKey(deviceModel.Rendering) == true
                 && uidObject.Renders[deviceModel.Rendering] is IEnumerable<IRenderedObject> linesCollection)
             {
-                DrawingIRenderableObjects(linesCollection, drawingContext, drawSetting, brush, pen);
+                DrawingIRenderableObjects(linesCollection, drawingContext, deviceModel, brush, pen);
             }
         }
 
-        private void DrawingIRenderableObjects(IEnumerable<IRenderedObject> objects, DrawingContext drawingContext, DrawSetting drawSetting, Brush brush, Pen pen)
+        private void DrawingIRenderableObjects(IEnumerable<IRenderedObject> objects, DrawingContext drawingContext, RenderDeviceModel renderDevice, Brush brush, Pen pen)
         {
             foreach(IRenderedObject obj in objects)
             {
                 if (obj is VectorLinesCollection vectorLines)
                 {
-                    DrawVectorLines(vectorLines, drawingContext, drawSetting, brush, pen);
+                    DrawVectorLines(vectorLines, drawingContext, renderDevice, brush, pen);
                 }
             }
         }
 
-        private void DrawVectorLines(VectorLinesCollection vectorLines, DrawingContext drawingContext, DrawSetting drawSetting, Brush brush, Pen pen)
+        private void DrawVectorLines(VectorLinesCollection vectorLines, DrawingContext drawingContext, RenderDeviceModel renderDevice, Brush brush, Pen pen)
         {
             if (vectorLines.Count > 0)
             {
@@ -516,14 +494,14 @@ namespace CadProjectorViewer.CanvasObj
                 using (StreamGeometryContext ctx = streamGeometry.Open())
                 {
                     ctx.BeginFigure(
-                        GetDrawPoint(vectorLines[0].P1, drawSetting),
+                        GetDrawPoint(vectorLines[0].P1, renderDevice),
                         vectorLines.IsClosed,
                         vectorLines.IsClosed);
 
                     for (int i = 0; i < vectorLines.Count; i += 1)
                     {
                         ctx.LineTo(
-                             GetDrawPoint(vectorLines[i].P2, drawSetting),
+                             GetDrawPoint(vectorLines[i].P2, renderDevice),
                             true,
                             false);
                     }
@@ -534,43 +512,29 @@ namespace CadProjectorViewer.CanvasObj
             }
         }
 
-        private Point GetDrawPoint(RenderPoint point, DrawSetting setting)
+        private Point GetDrawPoint(RenderPoint point, RenderDeviceModel deviceModel)
         {
-            return new Point(point.X * setting.Width, point.Y * setting.Height);
+            return new Point(point.X * deviceModel.Width, point.Y * deviceModel.Height);
         }
 
-        protected void DrawSize(DrawingContext drawingContext, Point point1, Point point2)
-        {
-            double thinkess = this.GetThinkess() / 3d / Math.Abs(this.CadObject.Scale.ScaleX * Math.Max(this.CadObject.ScaleX, this.CadObject.ScaleY));
-            thinkess = thinkess <= 0 ? 1 : thinkess;
+        //protected void DrawSize(DrawingContext drawingContext, Point point1, Point point2)
+        //{
+        //    double thinkess = this.GetThinkess() / 3d / Math.Abs(this.CadObject.Scale.ScaleX * Math.Max(this.CadObject.ScaleX, this.CadObject.ScaleY));
+        //    thinkess = thinkess <= 0 ? 1 : thinkess;
 
-            //drawingContext.DrawLine(new Pen(Brushes.DarkGray, thinkess), point1, point2);
+        //    //drawingContext.DrawLine(new Pen(Brushes.DarkGray, thinkess), point1, point2);
 
-            Vector vector = point1 - point2;
+        //    Vector vector = point1 - point2;
 
-            drawingContext.DrawText(
-                new FormattedText(Math.Round(vector.Length, 1).ToString(),
-                new System.Globalization.CultureInfo("ru-RU"), 
-                FlowDirection.LeftToRight,
-                    new Typeface("Segoe UI"), 
-                    (int)thinkess * 3,
-                    Brushes.Gray), 
-                new Point((point1.X + point2.X)/2, (point1.Y + point2.Y) / 2));
+        //    drawingContext.DrawText(
+        //        new FormattedText(Math.Round(vector.Length, 1).ToString(),
+        //        new System.Globalization.CultureInfo("ru-RU"), 
+        //        FlowDirection.LeftToRight,
+        //            new Typeface("Segoe UI"), 
+        //            (int)thinkess * 3,
+        //            Brushes.Gray), 
+        //        new Point((point1.X + point2.X)/2, (point1.Y + point2.Y) / 2));
 
-        }
-    }
-
-    internal struct DrawSetting
-    {
-        public double Width { get; }
-        public double Height { get; }
-        public double Thinkess { get; }
-
-        public DrawSetting(double width, double height, double thinkess)
-        {
-            Width = width;
-            Height = height;
-            Thinkess = thinkess;
-        }
+        //}
     }
 }

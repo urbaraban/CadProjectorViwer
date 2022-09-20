@@ -139,7 +139,7 @@ namespace CadProjectorViewer.Panels.RightPanel
                 {
                     Object = uidObject,
                     TableID = projectorHub.ScenesCollection.SelectedScene.TableID,
-                    TaskName = fileInfo.Name
+                    TaskInfo = fileInfo
                 };
                 projectorHub.ScenesCollection.AddTask(sceneTask);
             }

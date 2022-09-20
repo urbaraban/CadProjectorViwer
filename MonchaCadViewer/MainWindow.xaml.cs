@@ -427,10 +427,10 @@ namespace CadProjectorViewer
             if (saveFileDialog.FileName != string.Empty)
             {
                 LProjector[] devices = ProjectorHub.ScenesCollection.SelectedScene.Projectors.ToArray();
-                for (int i = 0; i < devices.Length; i++)
+                for (int i = 0; i < devices.Length; i += 1)
                 {
                     IList<IRenderedObject> elements = GraphExtensions.SolidVectors(devices[i].RenderObjects, devices[i]);
-                    if (devices[i].Optimized == true)
+                    if (devices[i].Optimized == true && elements.Count > 0)
                     {
                         //vectorLines = VectorLinesCollection.Optimize(vectorLines);
                         elements = GraphExtensions.FindShortestCollection(

@@ -55,7 +55,7 @@ namespace CadProjectorViewer.ViewModel.Devices
 
         public ICommand ProjectorViewCommand => new ActionCommand(() =>
         {
-            if (this.DataContext is IRenderingDevice device)
+            if (this.DataContext is IRenderingDisplay device)
             {
                 ProjectorView projectorView = new ProjectorView()
                 {

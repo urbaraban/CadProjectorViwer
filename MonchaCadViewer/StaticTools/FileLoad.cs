@@ -137,7 +137,7 @@ namespace CadProjectorViewer.StaticTools
             return await GetFilePath(Filename == true ? $"{AppSt.Default.save_work_folder}\\{Filepath}" : Filepath, step);
         }
 
-        private static async Task<UidObject> ConvertObject(object obj)
+        public static async Task<UidObject> ConvertObject(object obj)
         {
             if (obj is GCCollection gCObjects)
             {

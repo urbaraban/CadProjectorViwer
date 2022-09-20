@@ -19,7 +19,7 @@ namespace CadProjectorViewer.ViewModel
 {
     public class RenderDeviceModel : INotifyPropertyChanged
     {
-        public IRenderingDevice Rendering { get; }
+        public IRenderingDisplay Rendering { get; }
 
         public Guid Guid => Rendering.Uid;
 
@@ -77,7 +77,7 @@ namespace CadProjectorViewer.ViewModel
 
         public ViewDisplaySetting displaySetting { get; }
 
-        public RenderDeviceModel(IRenderingDevice rendering)
+        public RenderDeviceModel(IRenderingDisplay rendering)
         {
             this.Rendering = rendering;
             this.displaySetting = ViewDisplaySetting.Load(this.Rendering);
@@ -105,7 +105,7 @@ namespace CadProjectorViewer.ViewModel
 
         }
 
-        public static ViewDisplaySetting Load(IRenderingDevice renderingDevice)
+        public static ViewDisplaySetting Load(IRenderingDisplay renderingDevice)
         {
             ViewDisplaySetting out_setting = null;
 

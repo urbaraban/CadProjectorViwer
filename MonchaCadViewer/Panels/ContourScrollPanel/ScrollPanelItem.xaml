@@ -28,7 +28,7 @@
         <DockPanel LastChildFill="True">
             <Label
                 DockPanel.Dock="Bottom"
-                Content="{Binding TaskName}"
+                Content="{Binding TaskInfo.Name}"
                 Grid.Row="2"
                 Padding="3"
                 Panel.ZIndex="99"

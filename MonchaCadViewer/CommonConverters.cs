@@ -56,7 +56,7 @@ namespace CadProjectorViewer.Converters
             {
                 cadCanvas = new SceneModel(scene);
             }
-            else if (value is IRenderingDevice renderingDevice)
+            else if (value is IRenderingDisplay renderingDevice)
             {
                 cadCanvas = new RenderDeviceModel(renderingDevice);
             }

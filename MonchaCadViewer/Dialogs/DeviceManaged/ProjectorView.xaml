@@ -28,20 +28,13 @@
         <ContextMenu>
             <MenuItem Header="Close" Click="CloseMenuItem_Click"/>
             <MenuItem Header="Fix" Click="FixMenuItem_Click"/>
+            <Slider
+                Value="{Binding displaySetting.Thinkess, Mode=TwoWay}"
+                Maximum="255"
+                Minimum="0" />
         </ContextMenu>
     </Window.ContextMenu>
     <Grid>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="1*"/>
-            <RowDefinition Height="10*"/>
-            <RowDefinition Height="1*"/>
-        </Grid.RowDefinitions>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="4*" />
-            <ColumnDefinition Width="4*" />
-            <ColumnDefinition Width="4*" />
-            <ColumnDefinition Width="4*" />
-        </Grid.ColumnDefinitions>
         <ItemsControl 
             Grid.Row="0" Grid.RowSpan="3"
             Grid.ColumnSpan="5"
@@ -72,16 +65,5 @@
                 </DataTemplate>
             </ItemsControl.ItemTemplate>
         </ItemsControl>
-        <DockPanel
-            Grid.Row="1"
-            VerticalAlignment="Center"
-            Background="White">
-            <DockPanel LastChildFill="True">
-                <Slider
-                Value="{Binding displaySetting.Thinkess, Mode=TwoWay}"
-                Maximum="255"
-                Minimum="0" />
-            </DockPanel>
-        </DockPanel>
     </Grid>
 </Window>

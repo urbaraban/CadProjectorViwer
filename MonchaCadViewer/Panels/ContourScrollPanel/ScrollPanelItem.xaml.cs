@@ -25,6 +25,8 @@ using CadProjectorSDK.Scenes;
 using CadProjectorSDK.Device.Mesh;
 using CadProjectorSDK.Interfaces;
 using CadProjectorViewer.ViewModel;
+using System.Xml.Linq;
+using System.ComponentModel;
 
 namespace CadProjectorViewer.Panels
 {
@@ -38,7 +40,7 @@ namespace CadProjectorViewer.Panels
 
         private string filepath = string.Empty;
 
-        public string FileName => SceneTsk.TaskName;
+        public string FileName => SceneTsk.TaskInfo.Name;
 
         public ScaleTransform Scale { get; set; } = new ScaleTransform();
 
@@ -94,10 +96,15 @@ namespace CadProjectorViewer.Panels
 
         public async void Refresh()
         {
-           /*this.DataContext =
-                new ProjectionScene(
-                    new CanvasGroup((GCCollection)
-                        await FileLoad.Get(this.filepath)));*/
+            foreach(GCFormat gCFormat in FileLoad.MyFormat)
+            {
+                if (gCFormat.ShortName.Contains(this.SceneTsk.TaskInfo.Extension) == true)
+                {
+                    object obj = await gCFormat.ReadFile?.Invoke(this.SceneTsk.TaskInfo.FullName, 35);
+                    this.SceneTsk.Object = await FileLoad.ConvertObject(obj);
+                    this.SceneTsk.Selecting();
+                }
+            }
         }
     }
 

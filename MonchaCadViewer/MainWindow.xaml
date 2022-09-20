@@ -344,6 +344,7 @@
 
             <tb:TaskbarIcon
                 ToolTipText="2CUT"
+                Grid.Row="3"
                 x:Name ="ttip"
                 IconSource="logo.ico"
                 DoubleClickCommand="{Binding ElementName=MainWin, Path=ShowFromTray}"

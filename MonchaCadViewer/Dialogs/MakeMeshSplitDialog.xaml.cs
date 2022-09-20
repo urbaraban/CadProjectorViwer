@@ -44,7 +44,7 @@ namespace CadProjectorViewer.Dialogs
                     Object = masks,
                     TableID = Scene.TableID,
                     TaskID = -1,
-                    TaskName = "Masks",
+                    TaskInfo = new System.IO.FileInfo("Masks"),
                     Command = new List<string>()
                 };
                 

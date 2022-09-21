@@ -24,9 +24,20 @@ namespace CadProjectorViewer.Dialogs
         public MakeMeshSplitDialog()
         {
             InitializeComponent();
+            this.DataContextChanged += MakeMeshSplitDialog_DataContextChanged;
+        }
+
+        private void MakeMeshSplitDialog_DataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
+        {
+            MakeSplit();
         }
 
         private void NumericUpDown_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double?> e)
+        {
+            MakeSplit();
+        }
+
+        private void MakeSplit()
         {
             if (this.DataContext is ProjectionScene Scene)
             {
@@ -36,7 +47,7 @@ namespace CadProjectorViewer.Dialogs
                 {
                     for (int j = 0; j < masks.GetLength(1); j += 1)
                     {
-                        masks[i,j] = 1;
+                        masks[i, j] = 1;
                     }
                 }
                 SceneTask sceneTask = new SceneTask()
@@ -47,7 +58,7 @@ namespace CadProjectorViewer.Dialogs
                     TaskInfo = new System.IO.FileInfo("Masks"),
                     Command = new List<string>()
                 };
-                
+
                 Scene.RunTask(sceneTask, false);
             }
         }

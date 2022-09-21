@@ -142,7 +142,7 @@ namespace CadProjectorViewer.Panels.CanvasPanel
                 scene.AlreadyAction != null)
             {
                 Point point = e.GetPosition(this.CanvasGrid);
-                scene.AlreadyAction.NextAction(new CadPoint3D(point.X / scene.Size.Width, point.Y / scene.Size.Height));
+                scene.AlreadyAction.NextAction(point);
             }
         }
 
@@ -170,7 +170,7 @@ namespace CadProjectorViewer.Panels.CanvasPanel
                 {
                     if (scene.AlreadyAction.CanAction == true)
                     {
-                        scene.AlreadyAction.Run(scene.MousePosition);
+                        scene.AlreadyAction.Run(m_point);
                     }
                 }
 

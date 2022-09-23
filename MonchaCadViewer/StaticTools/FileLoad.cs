@@ -17,6 +17,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Media.Imaging;
+using System.Xml.Linq;
 using ToGeometryConverter;
 using ToGeometryConverter.Format;
 using ToGeometryConverter.Object;
@@ -38,7 +39,8 @@ namespace CadProjectorViewer.StaticTools
             //new JSON(),
             new GCFormat("Компас 3D", new string[2] { ".frw" , ".cdw"}) { ReadFile = GetKompas },
             //new GCFormat("JPG Image", new string[2] { "jpg" , "jpeg"}) { ReadFile = GetImage },
-            new GCFormat("ILDA", new string[1] { ".ild" }){ ReadFile = GetILDA }
+            new GCFormat("ILDA", new string[1] { ".ild" }){ ReadFile = GetILDA },
+            new GCFormat("2CUT", new string[1] { ".2scn" }){ ReadFile = Get2CUT }
         };
 
         private static string BrowseMWS()
@@ -151,6 +153,10 @@ namespace CadProjectorViewer.StaticTools
             {
                 return new CadImage(imageSource);
             }
+            else if (obj is UidObject uidObject)
+            {
+                return uidObject;
+            }
             return await Task.FromResult<UidObject>(null);
         }
 
@@ -195,6 +201,35 @@ namespace CadProjectorViewer.StaticTools
         private async static Task<object> GetILDA(string Filepath, double step)
         {
             return await IldaReader.ReadFile(Filepath);
+        }
+
+        private async static Task<object> Get2CUT(string Filepath, double step)
+        {
+            FileInfo fileInfo = new FileInfo(Filepath);
+            XDocument xDocument = XDocument.Load(Filepath);
+            XElement XObjects = xDocument.Element("Objects");
+
+            CadGroup gCObjects = new CadGroup() { NameID = fileInfo.Name };
+
+            foreach (XElement XObject in XObjects.Elements())
+            {
+                string item_path = XObject.Element("Path").Value;
+
+                if (await FileLoad.GetObject(item_path, step) is GCCollection collection)
+                {
+                    if (await ConvertObject(collection) is UidObject uidObject)
+                    {
+                        uidObject.UpdateTransform(uidObject.Bounds, false, String.Empty);
+                        uidObject.FileInfo = new FileInfo(item_path);
+                        uidObject.MX = double.Parse(XObject.Element("X").Value);
+                        uidObject.MY = double.Parse(XObject.Element("Y").Value);
+                        uidObject.MZ = double.Parse(XObject.Element("Z").Value);
+                        gCObjects.Add(uidObject);
+                    }
+                }
+            }
+
+            return gCObjects;
         }
 
         /// <summary>

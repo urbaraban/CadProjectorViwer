@@ -649,7 +649,8 @@ namespace CadProjectorViewer
             saveFileDialog.Filter = "2CUT Scene (*.2scn)|*.2scn";
             if (saveFileDialog.ShowDialog() == true)
             {
-                SaveScene.WriteXML(projectorHub.ScenesCollection.SelectedScene, saveFileDialog.FileName);
+                FileSave.SaveScene(projectorHub.ScenesCollection.SelectedScene, saveFileDialog.FileName);
+                //SaveScene.WriteXML(projectorHub.ScenesCollection.SelectedScene, saveFileDialog.FileName);
             }
            
         });

@@ -36,7 +36,7 @@
     <SuiteName>Viwer</SuiteName>
     <WebPage>publish.htm</WebPage>
     <OpenBrowserOnPublish>false</OpenBrowserOnPublish>
-    <ApplicationRevision>137</ApplicationRevision>
+    <ApplicationRevision>139</ApplicationRevision>
     <ApplicationVersion>0.8.1.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <CreateDesktopShortcut>true</CreateDesktopShortcut>
@@ -249,6 +249,7 @@
     <Compile Include="Panels\RightPanel\UdpSetting.xaml.cs">
       <DependentUpon>UdpSetting.xaml</DependentUpon>
     </Compile>
+    <Compile Include="StaticTools\FileSave.cs" />
     <Compile Include="ViewModel\CanvasObj\CanvasLine.cs" />
     <Compile Include="ViewModel\CanvasObj\CanvasMesh.cs" />
     <Compile Include="ViewModel\CanvasObj\ImagePreview.cs" />

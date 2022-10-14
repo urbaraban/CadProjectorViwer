@@ -1,4 +1,5 @@
-﻿using System;
+﻿using StclLibrary.Abstract_Classes;
+using System;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
@@ -31,20 +32,6 @@ namespace CadProjectorViewer.CanvasObj
             }
 
             AddItem("obj_Mirror", contextMenu);
-        }
-
-        public static void CadObjMenu(ContextMenu contextMenu)
-        {
-            AddItem("obj_Fix", contextMenu);
-            AddItem("common_Remove", contextMenu);
-            AddItem("obj_Render", contextMenu);
-            AddItem("m_Open", contextMenu);
-        }
-
-        public static void CadGroupMenu(ContextMenu contextMenu)
-        {
-            contextMenu.Items.Add(new Separator());
-            AddItem("group_Open", contextMenu);
         }
 
         public static void CadRectMenu(ContextMenu contextMenu)
@@ -83,12 +70,15 @@ namespace CadProjectorViewer.CanvasObj
             AddItem("common_Remove", contextMenu);
         }
 
-        private static void AddItem(string Name, ContextMenu menu)
+        private static void AddItem(string Name, ContextMenu menu) => AddItem(Name, null, menu);
+
+        public static void AddItem(string Name, System.Windows.Input.ICommand command, ContextMenu menu)
         {
             MenuItem menuItem = new MenuItem();
             menuItem.SetResourceReference(MenuItem.HeaderProperty, Name);
             menuItem.Tag = Name;
             menuItem.Click += MenuItem_Click;
+            menuItem.Command = command;
 
             menu.Items.Add(menuItem);
         }

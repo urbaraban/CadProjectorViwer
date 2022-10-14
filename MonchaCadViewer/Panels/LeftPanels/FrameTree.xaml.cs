@@ -61,9 +61,9 @@ namespace CadProjectorViewer.Panels.DevicePanel.LeftPanels
         public ICommand MaskSplitCommand => new ActionCommand(() => MakeMaskSplit());
         private void MakeMaskSplit()
         {
-            if (this.DataContext != null)
+            if (this.DataContext is ProjectionScene scene)
             {
-                MakeMeshSplitDialog makeMeshSplitDialog = new MakeMeshSplitDialog() { DataContext = this.DataContext };
+                MakeMeshSplitDialog makeMeshSplitDialog = new MakeMeshSplitDialog(scene.Size.Bounds, scene);
                 makeMeshSplitDialog.Show();
             }
         }

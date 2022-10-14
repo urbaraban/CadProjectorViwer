@@ -74,9 +74,9 @@ namespace CadProjectorViewer.Panels
         protected override void OnMouseRightButtonUp(MouseButtonEventArgs e)
         {
             base.OnMouseRightButtonUp(e);
-            if (this.DataContext is UidObject Obj)
+            if (this.DataContext is SceneTask Obj && Obj.Object is TransformObject transformObject)
             {
-                Obj.UpdateTransform(Obj.Bounds, false, AppSt.Default.Attach);
+                transformObject.UpdateTransform(transformObject.Bounds, false, AppSt.Default.Attach);
             }
         }
 

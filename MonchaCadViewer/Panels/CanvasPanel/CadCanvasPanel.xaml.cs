@@ -173,7 +173,6 @@ namespace CadProjectorViewer.Panels.CanvasPanel
                         scene.AlreadyAction.Run(m_point);
                     }
                 }
-
             }
         }
 

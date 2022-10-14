@@ -79,11 +79,15 @@
                     IsChecked="{Binding SelectableShowFlag, Mode=TwoWay}"/>
                 <Separator/>
                 <!-- Attach panel-->
-                <Label Content="Thinkess" />
+                <Label 
+                    Width="auto"
+                    Content="{DynamicResource obj_Thinkess}" />
                 <Controls:NumericUpDown  Maximum="10" Minimum="0.0001" Interval="0.01"
                                      Background="White"
                                      Value="{Binding ThinkessMult, Mode=TwoWay}"/>
-                <Label Content="{DynamicResource clb_Sizeanchor}"/>
+                <Label 
+                    Width="auto"
+                    Content="{DynamicResource clb_Sizeanchor}"/>
                 <Controls:NumericUpDown 
                     Background="White" 
                     Maximum="10" Minimum="0.01" Interval="1" 

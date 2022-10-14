@@ -3,6 +3,7 @@ using CadProjectorSDK.CadObjects.Abstract;
 using CadProjectorSDK.Scenes;
 using CadProjectorViewer.StaticTools;
 using Microsoft.WindowsAPICodePack.Dialogs;
+using Microsoft.Xaml.Behaviors.Core;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -83,7 +84,7 @@ namespace CadProjectorViewer.Panels.RightPanel
             bool result = false;
             string FormatString = FileLoad.GetFilter();
 
-            if (ComboFilter.SelectedItem is GCFormat format) 
+            if (ComboFilter.SelectedItem is GCFormat format)
                 FormatString = string.Join(" ", format.ShortName);
 
             if (pt is FileSystemInfo fileInfo)
@@ -211,8 +212,13 @@ namespace CadProjectorViewer.Panels.RightPanel
             {
                 WorkFolderListBox.Focus();
                 WorkFolderListBox.SelectedIndex = 0;
-            } 
+            }
         }
+
+        public ICommand ClearFilterBoxCommand => new ActionCommand(() => 
+        {
+            WorkFolderFilter.Text = string.Empty;
+        });
 
         private void WorkFolderListBox_KeyUp(object sender, KeyEventArgs e)
         {

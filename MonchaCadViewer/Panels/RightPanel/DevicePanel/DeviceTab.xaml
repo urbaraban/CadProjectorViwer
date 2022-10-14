@@ -225,7 +225,7 @@
                     Style="{StaticResource ColorToggle}"
                     DataContext="{Binding SelectedItem, ElementName=DeviceCombo}"
                     IsOn="{Binding ProjectionSetting.RedOn, Mode=TwoWay}"
-                    Content="Red"
+                    Content="{DynamicResource dvc_RED}"
                     MinWidth="0"
                     Margin="5,0"
                     HorizontalAlignment="Left"
@@ -317,9 +317,11 @@
             <DockPanel LastChildFill="True">
                 <Label
                     DockPanel.Dock="Left"
-                    Content="Optimized"/>
+                    Content="{DynamicResource dvc_Optimize}"/>
                 <Controls:ToggleSwitch
                     DockPanel.Dock="Right"
+                    OffContent="{DynamicResource common_OFF}"
+                    OnContent="{DynamicResource common_ON}"
                     DataContext="{Binding SelectedItem, ElementName=DeviceCombo}"
                     IsOn="{Binding Optimized}"/>
             </DockPanel>

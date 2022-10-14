@@ -21,46 +21,61 @@ namespace CadProjectorViewer.Dialogs
     /// </summary>
     public partial class MakeMeshSplitDialog : Window
     {
-        public MakeMeshSplitDialog()
+        private ProjectionScene _scene;
+        private Rect _bounds;
+
+        public MakeMeshSplitDialog(Rect bounds, ProjectionScene scene)
         {
             InitializeComponent();
+            this._bounds = bounds;
+            this._scene = scene;
             this.DataContextChanged += MakeMeshSplitDialog_DataContextChanged;
         }
 
         private void MakeMeshSplitDialog_DataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
         {
-            MakeSplit();
+            if (this.IsLoaded == true)
+            {
+                MakeSplit();
+            }
         }
 
         private void NumericUpDown_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double?> e)
         {
-            MakeSplit();
+            if (this.IsLoaded == true)
+            {
+                MakeSplit();
+            }
         }
 
         private void MakeSplit()
         {
-            if (this.DataContext is ProjectionScene Scene)
+            Rect[,] masks = new Rect[(int)StrokeUpDn.Value.Value, (int)ColumnUpDn.Value.Value];
+
+            double width_step = this._bounds.Width / ColumnUpDn.Value.Value;
+            double height_step = this._bounds.Height / StrokeUpDn.Value.Value;
+
+            for (int i = 0; i < masks.GetLength(0); i += 1)
             {
-                byte[,] masks = new byte[(int)ColumnUpDn.Value.Value, (int)StrokeUpDn.Value.Value];
-
-                for (int i = 0; i < masks.GetLength(0); i += 1)
+                for (int j = 0; j < masks.GetLength(1); j += 1)
                 {
-                    for (int j = 0; j < masks.GetLength(1); j += 1)
-                    {
-                        masks[i, j] = 1;
-                    }
+                    masks[i, j] = new Rect(
+                        this._bounds.X + width_step * j,
+                        this._bounds.Y + height_step * i,
+                        width_step,
+                        height_step);
                 }
-                SceneTask sceneTask = new SceneTask()
-                {
-                    Object = masks,
-                    TableID = Scene.TableID,
-                    TaskID = -1,
-                    TaskInfo = new System.IO.FileInfo("Masks"),
-                    Command = new List<string>()
-                };
-
-                Scene.RunTask(sceneTask, false);
             }
+            SceneTask sceneTask = new SceneTask()
+            {
+                Object = masks,
+                TableID = _scene.TableID,
+                TaskID = -1,
+                TaskInfo = new System.IO.FileInfo("Masks"),
+                Command = new List<string>()
+            };
+
+            _scene.RunTask(sceneTask, false);
         }
     }
 }

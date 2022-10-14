@@ -5,7 +5,7 @@
 
     <v:String x:Key="m_Refresh">Refresh</v:String>
     <v:String x:Key="m_Save">Save</v:String>
-    <v:String x:Key="m_Saveas">Save as...</v:String>
+    <v:String x:Key="m_SaveConfigAs">Save configuration as...</v:String>
     <v:String x:Key="m_Open">Open</v:String>
     <v:String x:Key="m_Devices">Devices</v:String>
     <v:String x:Key="m_Frames">Frames</v:String>
@@ -26,10 +26,13 @@
     <v:String x:Key="obj_Type">Type</v:String>
     <v:String x:Key="obj_ParallelCount">Strokes count</v:String>
     <v:String x:Key="obj_ParallelMargin">Strokes margin</v:String>
+    <v:String x:Key="obj_Transform">Transform</v:String>
+    <v:String x:Key="obj_Thinkess">Thinkess</v:String>
 
-    <v:String x:Key="scn_Scene">Scene</v:String>
-    
+    <v:String x:Key="gr_Ungroup">Ungroup</v:String>
+
     <v:String x:Key="dvc_Device">Device</v:String>
+    <v:String x:Key="dvc_Devices">Devices</v:String>
     <v:String x:Key="dvc_Dimmer">Dimmer</v:String>
     <v:String x:Key="dvc_Mesh">Place</v:String>
     <v:String x:Key="dvc_SRR">ScanRateReal</v:String>
@@ -42,6 +45,7 @@
     <v:String x:Key="dvc_InvY">Invert Y</v:String>
     <v:String x:Key="dvc_Brightness">Brightness</v:String>
     <v:String x:Key="dvc_StepPoint">Step</v:String>
+    <v:String x:Key="dvc_Optimize">Optimize</v:String>
     <v:String x:Key="dvc_FadePoint">Fade</v:String>
     <v:String x:Key="dvc_WaintPoint">Waint Point</v:String>
     <v:String x:Key="dvc_WaintPointBlank">WaintPointBlank</v:String>
@@ -51,6 +55,7 @@
     <v:String x:Key="dvc_showrect">Show rect</v:String>
     <v:String x:Key="dvc_showzone">Show zone</v:String>
     <v:String x:Key="dvc_polymesh">Poly mesh</v:String>
+    <v:String x:Key="dvc_ProjectionSetting">Projection</v:String>
 
 
     <v:String x:Key="dvc_ProjectMain">Main</v:String>
@@ -69,6 +74,8 @@
     <v:String x:Key="edit_Line">Line</v:String>
     <v:String x:Key="edit_Mask">Mask</v:String>
 
+    <v:String x:Key="common_ON">On</v:String>
+    <v:String x:Key="common_OFF">OFF</v:String>
     <v:String x:Key="common_Select">Select</v:String>
     <v:String x:Key="common_Edit">Edit</v:String>
     <v:String x:Key="common_ADDIN">Add in...</v:String>
@@ -76,12 +83,18 @@
     <v:String x:Key="common_Connect">Connect</v:String>
     <v:String x:Key="common_Empty">Empty</v:String>
     <v:String x:Key="common_Remove">Remove</v:String>
+    <v:String x:Key="common_MasksGrid">Masks grid</v:String>
     <v:String x:Key="common_Create">Create</v:String>
     <v:String x:Key="common_Configuration">Configuration</v:String>
     <v:String x:Key="common_Format">Format</v:String>
     <v:String x:Key="common_Workfolder">Work folder</v:String>
     <v:String x:Key="common_Setting">Setting</v:String>
+    <v:String x:Key="common_File">File</v:String>
+    <v:String x:Key="common_Close">Close</v:String>
 
+    <v:String x:Key="scene_Scene">Scene</v:String>
+
+    <v:String x:Key="setting_setting">Setting</v:String>
     <v:String x:Key="setting_mainlabel">Default object setting</v:String>
     <v:String x:Key="setting_xscale">X scale</v:String>
     <v:String x:Key="setting_yscale">Y scale</v:String>

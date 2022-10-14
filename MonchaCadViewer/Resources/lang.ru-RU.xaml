@@ -4,7 +4,7 @@
 
     <v:String x:Key="m_Refresh">Обновить</v:String>
     <v:String x:Key="m_Save">Сохранить</v:String>
-    <v:String x:Key="m_Saveas">Сохранить как...</v:String>
+    <v:String x:Key="m_SaveConfigAs">Сохранить конфигурацию как...</v:String>
     <v:String x:Key="m_Open">Открыть</v:String>
     <v:String x:Key="m_Frames">Кадр</v:String>
     <v:String x:Key="m_Mesh">Сетка</v:String>
@@ -21,10 +21,15 @@
     <v:String x:Key="obj_Depth">Глубина</v:String>
     <v:String x:Key="obj_Step">Шаг</v:String>
     <v:String x:Key="obj_Type">Тип</v:String>
+    <v:String x:Key="obj_Transform">Трансформация</v:String>
+    <v:String x:Key="obj_Thinkess">Толщина линии</v:String>
+
+    <v:String x:Key="gr_Ungroup">Разгруппировать</v:String>
 
     <v:String x:Key="scn_Scene">Сцена</v:String>
 
     <v:String x:Key="dvc_Device">Устройство</v:String>
+    <v:String x:Key="dvc_Devices">Устройства</v:String>
     <v:String x:Key="dvc_Dimmer">Измеритель</v:String>
     <v:String x:Key="dvc_SRR">Скорость лазера</v:String>
     <v:String x:Key="dvc_SRC">Скорость кадра</v:String>
@@ -32,10 +37,11 @@
     <v:String x:Key="dvc_RED">Красный</v:String>
     <v:String x:Key="dvc_GREEN">Зеленый</v:String>
     <v:String x:Key="dvc_Blue">Синий</v:String>
-    <v:String x:Key="dvc_InvX">Инверсия X</v:String>
-    <v:String x:Key="dvc_InvY">Инверсия Y</v:String>
+    <v:String x:Key="dvc_InvX">Инв. X</v:String>
+    <v:String x:Key="dvc_InvY">Инв. Y</v:String>
     <v:String x:Key="dvc_Brightness">Яркость</v:String>
     <v:String x:Key="dvc_StepPoint">Шаг</v:String>
+    <v:String x:Key="dvc_Optimize">Оптимизация</v:String>
     <v:String x:Key="dvc_FadePoint">Переход</v:String>
     <v:String x:Key="dvc_WaintPoint">Задержка точки</v:String>
     <v:String x:Key="dvc_WaintPointBlank">Задержка пустой точки</v:String>
@@ -44,6 +50,7 @@
     <v:String x:Key="dvc_showrect">Область на столе</v:String>
     <v:String x:Key="dvc_showzone">Показать квадрат</v:String>
     <v:String x:Key="dvc_polymesh">Мульти сетка</v:String>
+    <v:String x:Key="dvc_ProjectionSetting">Проекция</v:String>
     
 
     <v:String x:Key="dvc_ProjectMain">Главный</v:String>
@@ -62,6 +69,8 @@
     <v:String x:Key="edit_Line">Линия</v:String>
     <v:String x:Key="edit_Mask">Маска</v:String>
 
+    <v:String x:Key="common_ON">Вкл.</v:String>
+    <v:String x:Key="common_OFF">Выкл.</v:String>
     <v:String x:Key="common_Select">Выбрать</v:String>
     <v:String x:Key="common_Edit">Редактировать</v:String>
     <v:String x:Key="common_ADDIN">Добавить в...</v:String>
@@ -69,18 +78,26 @@
     <v:String x:Key="common_Connect">Соеденить</v:String>
     <v:String x:Key="common_Empty">Пусто</v:String>
     <v:String x:Key="common_Remove">Удалить</v:String>
+    <v:String x:Key="common_MasksGrid">Масочная сетка</v:String>
     <v:String x:Key="common_Create">Создать</v:String>
     <v:String x:Key="common_Configuration">Конфигурация</v:String>
     <v:String x:Key="common_Format">Формат</v:String>
     <v:String x:Key="common_Workfolder">Рабочая папка</v:String>
+    <v:String x:Key="common_File">Файл</v:String>
+    <v:String x:Key="common_Close">Закрыть</v:String>
 
-    <v:String x:Key="setting_mainlabel">Стандартные настройки проекции</v:String>
+    <v:String x:Key="scene_Scene">Сцена</v:String>
+    
+    <v:String x:Key="setting_setting">Настройки</v:String>
+    <v:String x:Key="setting_mainlabel">Default object setting</v:String>
     <v:String x:Key="setting_xscale">X размер</v:String>
     <v:String x:Key="setting_yscale">Y размер</v:String>
     <v:String x:Key="setting_percent">Процент</v:String>
     <v:String x:Key="setting_showname">Показать имя</v:String>
-    <v:String x:Key="setting_invertscale">Инверсия размера</v:String>
+    <v:String x:Key="setting_invertscale">Инвертировать размер</v:String>
     <v:String x:Key="setting_solidobject">Цельный объект</v:String>
+    <v:String x:Key="setting_attach">Присоеденить</v:String>
+    <v:String x:Key="setting_selectableshow">Показать выбранное</v:String>
 
     <v:String x:Key="mesh_Affine">Аффинные</v:String>
     <v:String x:Key="mesh_Morph">Морф</v:String>

@@ -30,13 +30,16 @@ using Brush = System.Windows.Media.Brush;
 using Brushes = System.Windows.Media.Brushes;
 using System.Threading.Tasks;
 using CadProjectorViewer.ViewModel;
+using Microsoft.Xaml.Behaviors.Core;
+using Cursors = System.Windows.Input.Cursors;
+using CadProjectorViewer.Dialogs;
+using CadProjectorSDK.CadObjects.Interfaces;
+using CadProjectorSDK.Tools;
 
 namespace CadProjectorViewer.CanvasObj
 {
     public class CanvasObject : FrameworkElement, INotifyPropertyChanged
     {
-        public ContextMenu ObjectContextMenu { get; set; }
-
         public virtual GetScaleDelegate GetFrameTransform { get; set; }
         public delegate ScaleTransform GetScaleDelegate();
 
@@ -246,6 +249,29 @@ namespace CadProjectorViewer.CanvasObj
 
         #endregion
 
+        public CanvasObject(UidObject uidObject, bool ActiveObject)
+        {
+            this.CadObject = uidObject;
+            this.DataContext = uidObject;
+            this.ToolTip = this.Name;
+            this.ContextMenu = new System.Windows.Controls.ContextMenu();
+
+            ContextMenuLib.AddItem("obj_Mirror", MirrorCommand, this.ContextMenu);
+            ContextMenuLib.AddItem("common_Remove", RemoveCommand, this.ContextMenu);
+            ContextMenuLib.AddItem("obj_Render", RenderCommand, this.ContextMenu);
+            ContextMenuLib.AddItem("common_MasksGrid", MasksCommand, this.ContextMenu);
+
+            if (uidObject is CadGroup group)
+            {
+                this.ContextMenu.Items.Add(new Separator());
+                ContextMenuLib.AddItem("gr_Ungroup", UngroupCommand, this.ContextMenu);
+            }
+
+            //this.ProjectionSetting.PropertyChanged += ProjectionSetting_PropertyChanged;
+            this.Uid = Guid.NewGuid().ToString();
+            this.ActiveObject = ActiveObject;
+            this.Cursor = Cursors.Hand;
+        }
 
         protected override void OnMouseLeftButtonUp(System.Windows.Input.MouseButtonEventArgs e)
         {
@@ -369,35 +395,36 @@ namespace CadProjectorViewer.CanvasObj
             base.OnMouseLeftButtonDown(e);
         }
 
-        protected override void OnContextMenuClosing(ContextMenuEventArgs e)
+
+        public ICommand RemoveCommand => new ActionCommand(() =>
         {
-            base.OnContextMenuClosing(e);
-            if (ActiveObject == true)
-            {
-                if (this.ContextMenu.DataContext is MenuItem menuItem)
-                {
-                    DoItContextMenu(menuItem);
-                }
-            }
-        }
+            this.CadObject.Remove();
+        });
 
-
-        public CanvasObject(UidObject uidObject, bool ActiveObject)
+        public ICommand MirrorCommand => new ActionCommand(() =>
         {
-            this.CadObject = uidObject;
-            this.DataContext = uidObject;
-            this.ContextMenu = new System.Windows.Controls.ContextMenu();
-            ContextMenuLib.CadObjMenu(this.ContextMenu);
-            if (uidObject is CadGroup group)
-            {
-                ContextMenuLib.CadGroupMenu(this.ContextMenu);
-            }
+            this.CadObject.Mirror = !this.CadObject.Mirror;
+        });
 
-            //this.ProjectionSetting.PropertyChanged += ProjectionSetting_PropertyChanged;
-            this.Uid = Guid.NewGuid().ToString();
-            this.ActiveObject = ActiveObject;
-            this.Cursor = Cursors.Hand;
-        }
+        public ICommand RenderCommand => new ActionCommand(() =>
+        {
+            this.CadObject.IsRender = !this.CadObject.IsRender;
+        });
+
+        public ICommand UngroupCommand => new ActionCommand(() => 
+        {
+            if (this.CadObject is CadGroup group)
+            {
+                group.Ungroup();
+            }
+        });
+
+        public ICommand MasksCommand => new ActionCommand(() =>
+        {
+            Rect bounds = this.CadObject.Bounds;
+            MakeMeshSplitDialog makeMeshSplitDialog = new MakeMeshSplitDialog(bounds, this.CadObject.GetScene?.Invoke());
+            makeMeshSplitDialog.Show();
+        });
 
 
         private void ProjectionSetting_PropertyChanged(object sender, PropertyChangedEventArgs e) => this.Update();
@@ -407,37 +434,6 @@ namespace CadProjectorViewer.CanvasObj
         public async void Update()
         {
            this.InvalidateVisual();
-        }
-
-        public virtual void DoItContextMenu(MenuItem menuItem)
-        {
-            switch (menuItem.Tag)
-            {
-                case "obj_Mirror":
-                    this.CadObject.Mirror = !this.CadObject.Mirror;
-                    break;
-
-                case "obj_Fix":
-                    this.CadObject.IsFix = !this.CadObject.IsFix;
-                    break;
-
-                case "common_Remove":
-                    this.CadObject.Remove();
-                    break;
-
-                case "obj_Render":
-                    this.CadObject.IsRender = !this.CadObject.IsRender;
-                    break;
-
-                case "group_Open":
-                    {
-                        if (this.CadObject is CadGroup group)
-                        {
-                            group.Ungroup();
-                        }
-                    }
-                    break;
-            }
         }
 
         protected override void OnRender(DrawingContext drawingContext)

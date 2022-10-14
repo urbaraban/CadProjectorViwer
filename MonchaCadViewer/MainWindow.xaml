@@ -90,12 +90,12 @@
         <Controls:WindowCommands>
             <Menu>
                 <MenuItem Header="▼" Focusable="True">
-                    <MenuItem Header="File">
+                    <MenuItem Header="{DynamicResource common_File}">
                         <MenuItem Header="New Workplace" Command="{Binding ElementName=MainWin, Path=MakeNewWorkPlaceCommand}" />
                         <MenuItem Header="Browse MWS" Click="BrowseMWSItem_Click" />
                         <Separator />
-                        <MenuItem Header="Save Moncha" Click="MenuSaveBtn_Click" />
-                        <MenuItem Header="Save Moncha as..." Click="SaveAsItem_Click" />
+                        <MenuItem Header="{DynamicResource m_Save}" Click="MenuSaveBtn_Click" />
+                        <MenuItem Header="{DynamicResource m_SaveConfigAs}" Click="SaveAsItem_Click" />
                         <Separator/>
                         <MenuItem Header="Save Scene" Command="{Binding ElementName=MainWin, Path=SaveSceneCommand}"/>
                         <MenuItem Header="Open Scene" Command="{Binding ElementName=MainWin, Path=OpenSceneCommand}"/>
@@ -104,7 +104,7 @@
                             Header="License"
                             Command="{Binding ElementName=MainWin, Path=ShowLicenceCommand}" />
                         <Separator />
-                        <MenuItem Header="Close" Command="{Binding ElementName=MainWin, Path=ClosedCommand}" />
+                        <MenuItem Header="{DynamicResource common_Close}" Command="{Binding ElementName=MainWin, Path=ClosedCommand}" />
                     </MenuItem>
                     <MenuItem Header="Services">
                         <MenuItem
@@ -200,11 +200,11 @@
                         Margin="0,0,0,0"
 
                         Grid.Column="1" Grid.Row="0">
-                <TabItem Header="Transform" FontSize="12">
+                <TabItem Header="{DynamicResource obj_Transform}" FontSize="12">
                     <panels:CadObjectPanel DataContext="{Binding ScenesCollection.SelectedScene.SelectedObjects.LastSelectObject}"
                         IsEnabled="{Binding DataContext, Converter={StaticResource NotNullBool}, RelativeSource={RelativeSource Self}}" />
                 </TabItem>
-                <TabItem Header="ProjectionSetting">
+                <TabItem Header="{DynamicResource dvc_ProjectionSetting}">
                     <panels:multiplierpanel DataContext="{Binding ScenesCollection.SelectedScene.SelectedObjects.LastSelectObject}"
                         IsEnabled="{Binding DataContext, Converter={StaticResource NotNullBool}, RelativeSource={RelativeSource Self}}" />
                 </TabItem>
@@ -236,12 +236,12 @@
                         <Setter Property="Padding" Value="2" />
                     </Style>
                 </TabControl.Resources>
-                <TabItem Header="Scene Elements">
+                <TabItem Header="{DynamicResource scene_Scene}">
                     <Border  Style="{StaticResource Border}">
                         <leftpanels:FrameTree DataContext="{Binding ScenesCollection.SelectedScene}" />
                     </Border>
                 </TabItem>
-                <TabItem Header="Devices">
+                <TabItem Header="{DynamicResource dvc_Devices}">
                     <Border Style="{StaticResource Border}">
                         <panels:DeviceTreeTab
                         DataContext="{Binding .}"
@@ -258,12 +258,12 @@
             <panels:ScrollPanel x:Name="ContourScrollPanel" Margin="0,5,0,0" Grid.Column="1" Grid.Row="2" />
 
             <TabControl x:Name="tabControl" DockPanel.Dock="Right" Grid.Column="2" Grid.Row="1" Grid.RowSpan="2" Margin="5,3,5,0">
-                <TabItem x:Name="ContourSettingTab" Header="{DynamicResource scn_Scene}" FontSize="12">
+                <TabItem x:Name="ContourSettingTab" Header="{DynamicResource scene_Scene}" FontSize="12">
                     <TabControl>
-                        <TabItem Header="Device">
+                        <TabItem Header="{DynamicResource dvc_Device}">
                             <panels:DeviceTab x:Name="DevicePanel" />
                         </TabItem>
-                        <TabItem Header="Setting">
+                        <TabItem Header="{DynamicResource setting_setting}">
                             <configuration:SceneSetting DataContext="{Binding ScenesCollection.SelectedScene}" />
                         </TabItem>
                     </TabControl>

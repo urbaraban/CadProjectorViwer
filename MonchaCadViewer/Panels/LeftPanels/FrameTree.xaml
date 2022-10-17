@@ -29,8 +29,7 @@
         <HierarchicalDataTemplate 
                 x:Key="ObjectTree" 
                 ItemsSource="{Binding Children}">
-            <Border
-                ContextMenu="{Binding ContextMenu}">
+            <Border>
                 <DockPanel 
                      VerticalAlignment="Center">
                     <CheckBox IsChecked="{Binding IsRender}"/>

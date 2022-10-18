@@ -47,24 +47,32 @@ namespace CadProjectorViewer.CanvasObj
             Pen pen = this.GetPen(true);
             RenderDeviceModel deviceModel = this.GetViewModel?.Invoke();
 
+            //pen.Brush = new SolidColorBrush(
+            //            Color.FromArgb(255,
+            //            (this.RedOn == true ? this.Red : (byte)0),
+            //            (this.GreenOn == true ? this.Green : (byte)0),
+            //            (this.BlueOn == true ? this.Blue : (byte)0)));
+
+            double width = deviceModel.Width * Mesh.Size.Width / Mesh.Size.M.Width;
+            double height = deviceModel.Height * Mesh.Size.Height / Mesh.Size.M.Height;
+
             for (int i = 0; i < Mesh.Points.GetLength(0); i += 1)
             {
                 for (int j = 0; j < Mesh.Points.GetLength(1); j += 1)
                 {
-                    Point point1 = new Point(Mesh.Points[i, j].X * deviceModel.Width, Mesh.Points[i, j].Y * deviceModel.Height);
+                    Point point1 = new Point(Mesh.Points[i, j].X * width, Mesh.Points[i, j].Y * height);
 
                     if (i - 1 > -1)
                     {
-                        Point point2 = new Point(Mesh.Points[i - 1, j].X * deviceModel.Width, Mesh.Points[i - 1, j].Y * deviceModel.Height);
+                        Point point2 = new Point(Mesh.Points[i - 1, j].X * width, Mesh.Points[i - 1, j].Y * height);
                         drawingContext.DrawLine(pen, point1, point2);
                     }
                         
                     if (j - 1 > -1)
                     {
-                        Point point2 = new Point(Mesh.Points[i, j - 1].X * deviceModel.Width, Mesh.Points[i, j - 1].Y * deviceModel.Height);
+                        Point point2 = new Point(Mesh.Points[i, j - 1].X * width, Mesh.Points[i, j - 1].Y * height);
                         drawingContext.DrawLine(pen, point1, point2);
-                    }
-                        
+                    } 
                 }
             }
         }

@@ -114,7 +114,6 @@ namespace CadProjectorViewer.CanvasObj
             bool Blank,
             SolidColorBrush DefBrush)
         {
-
             if (MouseOver == true)
             {
                 return new Pen(Brushes.Orange, StrThink * 1.5);

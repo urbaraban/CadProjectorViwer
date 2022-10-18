@@ -304,7 +304,7 @@
                             <TabItem Header="ILDA" FontSize="14">
                                 <Grid Background="#FFE5E5E5">
                                     <Controls:ToggleSwitch x:Name="UsedMeshToggle" Margin="10,10,0,0" IsOn="True" Content="Used device mesh" VerticalAlignment="Top" />
-                                    <Button x:Name="ILDASaveBtn" Content="{DynamicResource m_Saveas}" HorizontalAlignment="Left" Margin="10,40,0,0" VerticalAlignment="Top" Width="248" Height="29" Click="ILDASaveBtn_Click" />
+                                    <Button x:Name="ILDASaveBtn" Content="{DynamicResource m_Save}" HorizontalAlignment="Left" Margin="10,40,0,0" VerticalAlignment="Top" Width="248" Height="29" Click="ILDASaveBtn_Click" />
                                 </Grid>
                             </TabItem>
                             <TabItem Header="Ethernet">

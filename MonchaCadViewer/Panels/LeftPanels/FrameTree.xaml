@@ -80,14 +80,14 @@
             <DockPanel DockPanel.Dock="Top">
                 <Controls:ToggleSwitch Content="MaskActivated" IsOn="{Binding CursorMaskActivated}"/>
             </DockPanel>
-            <Expander DockPanel.Dock="Top" Header ="Devices">
+            <Expander DockPanel.Dock="Top" Header ="{DynamicResource dvc_Devices}">
                 <TreeView ItemsSource="{Binding Projectors}"
                           SelectedValuePath="{Binding Projectors.SelectedItem}"
                           ItemTemplate="{StaticResource ResourceKey=DeviceTree}"
                           />
             </Expander>
 
-            <Expander Header="Masks" DockPanel.Dock="Top" IsExpanded="True">
+            <Expander Header="{DynamicResource edit_Mask}" DockPanel.Dock="Top" IsExpanded="True">
                 <Expander.HeaderTemplate>
                     <DataTemplate>
                         <StackPanel Orientation="Horizontal">
@@ -116,7 +116,7 @@
 
             </Expander>
 
-            <Expander Header="Objects" IsExpanded="True" DockPanel.Dock="Top">
+            <Expander Header="{DynamicResource obj_Objects}" IsExpanded="True" DockPanel.Dock="Top">
                 <TreeView ItemsSource="{Binding .}" 
                           ItemTemplate="{StaticResource ResourceKey=ObjectTree}"/>
             </Expander>

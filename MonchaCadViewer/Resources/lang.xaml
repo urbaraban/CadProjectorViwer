@@ -14,6 +14,8 @@
     <v:String x:Key="m_Play">Play</v:String>
     <v:String x:Key="m_Browse">Browse...</v:String>
 
+    <v:String x:Key="obj_Object">Object</v:String>
+    <v:String x:Key="obj_Objects">Objects</v:String>
     <v:String x:Key="obj_Mirror">Mirror</v:String>
     <v:String x:Key="obj_Render">Render</v:String>
     <v:String x:Key="obj_Fix">Fix</v:String>
@@ -56,6 +58,7 @@
     <v:String x:Key="dvc_showzone">Show zone</v:String>
     <v:String x:Key="dvc_polymesh">Poly mesh</v:String>
     <v:String x:Key="dvc_ProjectionSetting">Projection</v:String>
+    <v:String x:Key="dvc_ShowScreen">Show projection</v:String>
 
 
     <v:String x:Key="dvc_ProjectMain">Main</v:String>

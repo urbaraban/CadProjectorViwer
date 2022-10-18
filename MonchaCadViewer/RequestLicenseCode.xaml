@@ -3,14 +3,16 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:CadProjectorViewer" 
-        xmlns:tools="clr-namespace:CadProjectorSDK.Tools;assembly=CadProjectorSDK" d:DataContext="{d:DesignInstance Type=tools:LockKey}"
+        xmlns:tools="clr-namespace:CadProjectorSDK.Tools;assembly=CadProjectorSDK" xmlns:cadprojectorviewer="clr-namespace:CadProjectorViewer"
+        d:DataContext="{d:DesignInstance Type=tools:LockKey}"
         mc:Ignorable="d"
         ResizeMode="NoResize"
         Title="RequestLicenseCode"
         SizeToContent="Height"
         Width="450"
-        KeyUp="Window_KeyDown">
+        x:Name="LicenseWindow"
+        KeyUp="Window_KeyDown"
+        Closing="LicenseWindow_Closing">
     <Window.Resources>
         <ResourceDictionary>
             <Style TargetType="Label">
@@ -19,46 +21,81 @@
             <Style TargetType="DockPanel">
                 <Setter Property="Margin" Value="3"/>
             </Style>
+            <cadprojectorviewer:IpImageConverter x:Key="IpImageConverter" />
         </ResourceDictionary>
     </Window.Resources>
-    <StackPanel Margin="10">
-        <DockPanel>
-            <Label Content="Reqest" VerticalContentAlignment="Center"/>
-            <Button 
+    <DockPanel Margin="10">
+        <DockPanel
+
+            DockPanel.Dock="Right">
+            <ComboBox
+                x:Name="IPCombo"
+                SelectedIndex="0"
+                DockPanel.Dock="Top"
+                ItemsSource="{Binding ElementName=LicenseWindow, Path=IPAddressInformation}"
+                DisplayMemberPath="Address"
+                SelectedItem="{Binding ElementName=LicenseWindow, Path=selectUnicast}"/>
+            <Border
+                DockPanel.Dock="Top"
+                BorderThickness="1"
+                BorderBrush="DarkGray">
+                <Image
+                    Source="{Binding ElementName=IPCombo, Path=SelectedItem, Converter={StaticResource IpImageConverter}}"
+                    Width="100"
+                    Height="100"
+                    DockPanel.Dock="Top"
+                    x:Name="QRIMAGE"/>
+            </Border>
+            <Label
+                x:Name="PortLabel"
+                DockPanel.Dock="Bottom"
+                Content="Port:"/>
+
+        </DockPanel>
+        <StackPanel
+            DockPanel.Dock="Left">
+            <DockPanel
+            DockPanel.Dock="Top">
+                <Label Content="Reqest" VerticalContentAlignment="Center"/>
+                <Button 
                 DockPanel.Dock="Right"
                 Click="Copy_Click" 
                 Content="Copy" 
                 Width="90"/>
-            <TextBox 
+                <TextBox 
                 x:Name="RequestBox"
                 Height="31" Text="{Binding RequestKey, Mode=OneWay}" VerticalAlignment="Top" VerticalContentAlignment="Center" IsReadOnly="True" />
-        </DockPanel>
-        <DockPanel>
-            <Label Content="Key"
+            </DockPanel>
+            <DockPanel
+            DockPanel.Dock="Top">
+                <Label Content="Key"
                    VerticalContentAlignment="Center"/>
-            <Button 
+                <Button 
                 DockPanel.Dock="Right"
                 Click="Pate_Click" 
                 Content="Paste" 
                 Width="90"/>
-            <TextBox 
+                <TextBox 
                 x:Name="KeyBox" 
                 Height="31" 
                 Text="{Binding LicenseKey, Mode=TwoWay}"
                 VerticalAlignment="Top" 
                 VerticalContentAlignment="Center" MaxLines="1"/>
-        </DockPanel>
-        <DockPanel>
-            <Button 
-                DockPanel.Dock="Left"
+            </DockPanel>
+            <DockPanel
+            DockPanel.Dock="Top">
+                <Button 
+                DockPanel.Dock="Right"
                 Click="Button_Click" 
                 Content="Ok" 
                 Width="90"/>
-            <Label
+                <Label
                 DockPanel.Dock="Right"
                 x:Name="SuccefulLbl"
                 HorizontalAlignment="Right"
                    Content="{Binding IsLicensed}" />
-        </DockPanel>
-    </StackPanel>
+            </DockPanel>
+        </StackPanel>
+
+    </DockPanel>
 </Window>

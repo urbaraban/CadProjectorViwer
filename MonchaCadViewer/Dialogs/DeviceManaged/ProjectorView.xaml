@@ -8,11 +8,12 @@
         d:DataContext="{d:DesignInstance Type=render:RenderDeviceModel}"
         x:Name="PrewWindow"
         mc:Ignorable="d"
-        WindowState="Maximized"
-        WindowStyle="None"
+        WindowState="Normal"
+        WindowStyle="ToolWindow"
         Title="ProjectorView" Height="450" Width="450"
         KeyUp="Window_KeyUp"
-        MouseLeftButtonDown="Window_MouseLeftButtonDown">
+        MouseLeftButtonDown="Window_MouseLeftButtonDown"
+        SizeChanged="PrewWindow_SizeChanged">
     <Window.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -26,15 +27,16 @@
     </Window.Resources>
     <Window.ContextMenu>
         <ContextMenu>
-            <MenuItem Header="Close" Click="CloseMenuItem_Click"/>
+            <MenuItem Header="Maximezed" Click="MaxItem_Click"/>
             <MenuItem Header="Fix" Click="FixMenuItem_Click"/>
+            <MenuItem Header="Close" Click="CloseMenuItem_Click"/>
             <Slider
                 Value="{Binding displaySetting.Thinkess, Mode=TwoWay}"
                 Maximum="255"
                 Minimum="0" />
         </ContextMenu>
     </Window.ContextMenu>
-    <Grid>
+    <Grid x:Name="MainGrid">
         <ItemsControl 
             Grid.Row="0" Grid.RowSpan="3"
             Grid.ColumnSpan="5"

@@ -75,16 +75,38 @@ namespace CadProjectorViewer.DeviceManaged
 
         private void Window_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
-            if (this.Fix == false)
+            if (this.Fix == false && this.WindowState == WindowState.Maximized)
             {
                 this.WindowState = WindowState.Normal;
                 this.DragMove();
                 this.WindowState = WindowState.Maximized;
-                if (this.DataContext is RenderDeviceModel deviceModel)
+            }
+        }
+
+
+        private void MaxItem_Click(object sender, RoutedEventArgs e)
+        {
+            if (this.Fix == false)
+            {
+                if (this.WindowState == WindowState.Maximized)
                 {
-                    deviceModel.Width = this.Width;
-                    deviceModel.Height = this.Height;
+                    this.WindowState = WindowState.Normal;
+                    this.WindowStyle = WindowStyle.ToolWindow;
                 }
+                else
+                {
+                    this.WindowState = WindowState.Maximized;
+                    this.WindowStyle = WindowStyle.None;
+                }
+            }
+        }
+
+        private void PrewWindow_SizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            if (this.DataContext is RenderDeviceModel deviceModel)
+            {
+                deviceModel.Width = MainGrid.ActualWidth;
+                deviceModel.Height = MainGrid.ActualHeight;
             }
         }
     }

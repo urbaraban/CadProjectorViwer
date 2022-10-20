@@ -19,16 +19,16 @@ namespace CadProjectorViewer.ViewModel
 {
     public class RenderDeviceModel : INotifyPropertyChanged
     {
-        public IRenderingDisplay Rendering { get; }
+        public IRenderingDisplay RenderingDisplay { get; }
 
-        public Guid Guid => Rendering.Uid;
+        public Guid Guid => RenderingDisplay.Uid;
 
-        public ObservableCollection<UidObject> uidObjects => Rendering.RenderObjects;
+        public ObservableCollection<UidObject> uidObjects => RenderingDisplay.RenderObjects;
 
         public ObservableCollection<CadRect3D> masks {
             get
             {
-                if (Rendering is ProjectionScene scene)
+                if (RenderingDisplay is ProjectionScene scene)
                 {
                     return scene.Masks;
                 }
@@ -36,7 +36,7 @@ namespace CadProjectorViewer.ViewModel
             }
         }
 
-        public CadRect3D Size => Rendering.Size;
+        public CadRect3D Size => RenderingDisplay.Size;
 
         public virtual bool ShowHide
         {
@@ -77,10 +77,10 @@ namespace CadProjectorViewer.ViewModel
 
         public ViewDisplaySetting displaySetting { get; }
 
-        public RenderDeviceModel(IRenderingDisplay rendering)
+        public RenderDeviceModel(IRenderingDisplay renderingDisplay)
         {
-            this.Rendering = rendering;
-            this.displaySetting = ViewDisplaySetting.Load(this.Rendering);
+            this.RenderingDisplay = renderingDisplay;
+            this.displaySetting = ViewDisplaySetting.Load(this.RenderingDisplay);
         }
 
         public System.Windows.Point GetPoint(double X, double Y)

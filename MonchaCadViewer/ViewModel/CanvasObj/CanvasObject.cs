@@ -103,7 +103,7 @@ namespace CadProjectorViewer.CanvasObj
                 this.IsSelected,
                 parentRender,
                 this.IsBlank,
-                GetViewModel?.Invoke().Rendering.ProjectionSetting.GetBrush);
+                GetViewModel?.Invoke().RenderingDisplay.ProjectionSetting.GetBrush);
         }
 
         public virtual Pen GetPen(
@@ -462,8 +462,8 @@ namespace CadProjectorViewer.CanvasObj
                         Drawing(uid, deviceModel, IsSelected, MouseOver, ParentRender && uid.IsRender, drawingContext);
                 }
             }
-            else if (uidObject.Renders.ContainsKey(deviceModel.Rendering) == true
-                && uidObject.Renders[deviceModel.Rendering] is IEnumerable<IRenderedObject> linesCollection)
+            else if (uidObject.Renders.ContainsKey(deviceModel.RenderingDisplay) == true
+                && uidObject.Renders[deviceModel.RenderingDisplay] is IEnumerable<IRenderedObject> linesCollection)
             {
                 DrawingIRenderableObjects(linesCollection, drawingContext, deviceModel, brush, pen);
             }
@@ -497,7 +497,7 @@ namespace CadProjectorViewer.CanvasObj
 
                     for (int i = 0; i < vectorLines.Count; i += 1)
                     {
-                        Point point_second = renderDevice.GetPoint(vectorLines[0].P2.X, vectorLines[0].P2.Y);
+                        Point point_second = renderDevice.GetPoint(vectorLines[i].P2.X, vectorLines[i].P2.Y);
                         ctx.LineTo(point_second, true, false);
                     }
 

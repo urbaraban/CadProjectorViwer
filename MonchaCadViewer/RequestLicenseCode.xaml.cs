@@ -98,14 +98,16 @@ namespace CadProjectorViewer
 
         private async void StartTCP(IPAddress iPAddress)
         {
-            if (tcpListener != null) tcpListener.Stop();
-            int port = FreeTcpPort(iPAddress);
-            PortLabel.Content = port.ToString();
 
-            tcpListener = new TcpListener(port);
-            tcpListener.Start();
             try
             {
+                if (tcpListener != null) tcpListener.Stop();
+                int port = FreeTcpPort(iPAddress);
+                PortLabel.Content = port.ToString();
+
+                tcpListener = new TcpListener(port);
+                tcpListener.Start();
+
                 TcpClient client = await tcpListener.AcceptTcpClientAsync();
                 NetworkStream networkStream = client.GetStream();
 
@@ -124,10 +126,8 @@ namespace CadProjectorViewer
             }
             catch
             {
-                Console.WriteLine("TCP ERROR");
+                PortLabel.Content = "TCP ERROR";
             }
-            
-
         }
 
         private void LicenseWindow_Closing(object sender, CancelEventArgs e)
@@ -137,11 +137,11 @@ namespace CadProjectorViewer
 
         static int FreeTcpPort(IPAddress iPAddress)
         {
-            TcpListener l = new TcpListener(iPAddress, 0);
-            l.Start();
-            int port = ((IPEndPoint)l.LocalEndpoint).Port;
-            l.Stop();
-            return port;
+                TcpListener l = new TcpListener(iPAddress, 0);
+                l.Start();
+                int port = ((IPEndPoint)l.LocalEndpoint).Port;
+                l.Stop();
+                return port;
         }
     }
 

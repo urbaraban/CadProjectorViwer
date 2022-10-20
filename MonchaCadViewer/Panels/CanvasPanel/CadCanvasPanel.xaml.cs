@@ -138,7 +138,7 @@ namespace CadProjectorViewer.Panels.CanvasPanel
                 this.StartMovePoint = new Point(this.Translate.X, this.Translate.Y);
             }
             else if (
-                ViewModel.Rendering is ProjectionScene scene &&
+                ViewModel.RenderingDisplay is ProjectionScene scene &&
                 scene.AlreadyAction != null)
             {
                 Point point = e.GetPosition(this.CanvasGrid);
@@ -148,7 +148,7 @@ namespace CadProjectorViewer.Panels.CanvasPanel
 
         protected override void OnMouseMove(MouseEventArgs e)
         {
-            if (ViewModel.Rendering is ProjectionScene scene)
+            if (ViewModel.RenderingDisplay is ProjectionScene scene)
             {
                 Point m_point = e.GetPosition(this.CanvasGrid);
                 scene.MousePosition.MX = m_point.X;
@@ -200,7 +200,7 @@ namespace CadProjectorViewer.Panels.CanvasPanel
 
         private void Canvas_SizeChanged(object sender, SizeChangedEventArgs e)
         {
-            if (sender is Canvas canvas && ViewModel.Rendering is ProjectionScene scene)
+            if (sender is Canvas canvas && ViewModel.RenderingDisplay is ProjectionScene scene)
             {
                 if (canvas.Background is DrawingBrush drawingBrush)
                 {
@@ -218,7 +218,7 @@ namespace CadProjectorViewer.Panels.CanvasPanel
 
         private void ShowDeviceRect_Click(object sender, RoutedEventArgs e)
         {
-            if (ViewModel.Rendering is ProjectionScene scene)
+            if (ViewModel.RenderingDisplay is ProjectionScene scene)
             {
                 Random rnd = new Random();
                 foreach (LProjector monchaDevice in scene.Projectors)
@@ -238,13 +238,13 @@ namespace CadProjectorViewer.Panels.CanvasPanel
         }
 
         public ICommand RefreshFrameCommand => new ActionCommand(() => {
-            if (ViewModel.Rendering is ProjectionScene scene)
+            if (ViewModel.RenderingDisplay is ProjectionScene scene)
             {
                 scene.RefreshScene();
             }
         });
         public ICommand CancelActionCommand => new ActionCommand(() => {
-            if (ViewModel.Rendering is ProjectionScene scene)
+            if (ViewModel.RenderingDisplay is ProjectionScene scene)
             {
                 scene.Break();
             }

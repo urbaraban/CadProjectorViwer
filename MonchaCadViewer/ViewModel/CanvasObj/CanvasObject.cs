@@ -488,28 +488,23 @@ namespace CadProjectorViewer.CanvasObj
 
                 using (StreamGeometryContext ctx = streamGeometry.Open())
                 {
+                    Point point = renderDevice.GetPoint(vectorLines[0].P1.X, vectorLines[0].P1.Y);
+
                     ctx.BeginFigure(
-                        GetDrawPoint(vectorLines[0].P1, renderDevice),
+                        point,
                         vectorLines.IsClosed,
                         vectorLines.IsClosed);
 
                     for (int i = 0; i < vectorLines.Count; i += 1)
                     {
-                        ctx.LineTo(
-                             GetDrawPoint(vectorLines[i].P2, renderDevice),
-                            true,
-                            false);
+                        Point point_second = renderDevice.GetPoint(vectorLines[0].P2.X, vectorLines[0].P2.Y);
+                        ctx.LineTo(point_second, true, false);
                     }
 
                     ctx.Close();
                 }
                 drawingContext.DrawGeometry(brush, pen, streamGeometry);
             }
-        }
-
-        private Point GetDrawPoint(RenderPoint point, RenderDeviceModel deviceModel)
-        {
-            return new Point(point.X * deviceModel.Width, point.Y * deviceModel.Height);
         }
 
         //protected void DrawSize(DrawingContext drawingContext, Point point1, Point point2)

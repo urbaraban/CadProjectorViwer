@@ -83,6 +83,12 @@ namespace CadProjectorViewer.ViewModel
             this.displaySetting = ViewDisplaySetting.Load(this.Rendering);
         }
 
+        public System.Windows.Point GetPoint(double X, double Y)
+        {
+            return new System.Windows.Point(
+                X * this.Width,
+                Y * this.Height);
+        }
 
         #region INotifyPropertyChanged
         public event PropertyChangedEventHandler PropertyChanged;

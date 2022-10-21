@@ -10,10 +10,11 @@
         mc:Ignorable="d"
         WindowState="Normal"
         WindowStyle="ToolWindow"
-        Title="ProjectorView" Height="450" Width="450"
+        Height="450" Width="450"
         KeyUp="Window_KeyUp"
         MouseLeftButtonDown="Window_MouseLeftButtonDown"
-        SizeChanged="PrewWindow_SizeChanged">
+        SizeChanged="PrewWindow_SizeChanged"
+        Title="{Binding RenderingDisplay.DisplayName}">
     <Window.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>

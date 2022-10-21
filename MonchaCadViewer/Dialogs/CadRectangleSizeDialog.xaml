@@ -25,10 +25,10 @@
     </Window.Resources>
     <StackPanel Margin="20,5,20,10">
         <Label Content="Width" />
-        <Controls:NumericUpDown Value="{Binding LRect.Width, Converter={StaticResource RoundValue}}"/>
+        <Controls:NumericUpDown Value="{Binding LRect.MWidth, Converter={StaticResource RoundValue}}"/>
         <Label Content="Height"/>
-        <Controls:NumericUpDown  Value="{Binding LRect.Height, Converter={StaticResource RoundValue}}"/>
+        <Controls:NumericUpDown  Value="{Binding LRect.MHeight, Converter={StaticResource RoundValue}}"/>
         <Label Content="Depth"/>
-        <Controls:NumericUpDown  Value="{Binding LRect.Depth, Converter={StaticResource RoundValue}}"/>
+        <Controls:NumericUpDown  Value="{Binding LRect.MDepth, Converter={StaticResource RoundValue}}"/>
     </StackPanel>
 </Window>

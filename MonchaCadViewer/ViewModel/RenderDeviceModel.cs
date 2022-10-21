@@ -6,12 +6,12 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Media;
 using System.Xml.Linq;
 using AppSt = CadProjectorViewer.Properties.Settings;
 
@@ -88,6 +88,13 @@ namespace CadProjectorViewer.ViewModel
             return new System.Windows.Point(
                 X * this.Width,
                 Y * this.Height);
+        }
+
+        public System.Windows.Point GetProportion(double X, double Y)
+        {
+            return new System.Windows.Point(
+                (X - this.Size.MX) / this.Size.MWidth, 
+                (Y - this.Size.MX) / this.Size.MHeight);
         }
 
         #region INotifyPropertyChanged

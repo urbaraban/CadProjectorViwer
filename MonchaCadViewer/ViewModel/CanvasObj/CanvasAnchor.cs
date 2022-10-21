@@ -116,11 +116,10 @@ namespace CadProjectorViewer.CanvasObj
             RenderDeviceModel deviceModel = this.GetViewModel?.Invoke();
             double _size = deviceModel.Thinkess * 4;
 
-            Point point = deviceModel.GetPoint(
-                this.Point.MX / deviceModel.Size.MWidth, 
-                this.Point.MY / deviceModel.Size.MHeight);
+            Point ProportionPoint = deviceModel.GetProportion(this.Point.MX, this.Point.MY);
+            Point RenderPoint = deviceModel.GetPoint(ProportionPoint.X, ProportionPoint.Y);
 
-            drawingContext.PushTransform(new TranslateTransform(point.X, point.Y));
+            drawingContext.PushTransform(new TranslateTransform(RenderPoint.X, RenderPoint.Y));
             drawingContext.DrawGeometry(
                 myBack, 
                 new Pen(Brushes.Black, _size * 0.1), 

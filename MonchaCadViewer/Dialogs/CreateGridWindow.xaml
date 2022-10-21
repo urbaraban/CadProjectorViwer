@@ -107,7 +107,7 @@
                 ItemTemplate="{StaticResource CorrectUpDn}">
                 <ItemsControl.ItemsPanel>
                     <ItemsPanelTemplate>
-                        <WrapPanel Orientation="Vertical"/>
+                        <StackPanel Orientation="Vertical" />
                     </ItemsPanelTemplate>
                 </ItemsControl.ItemsPanel>
             </ItemsControl>
@@ -119,8 +119,8 @@
                 ItemTemplate="{StaticResource CorrectUpDn}">
                 <ItemsControl.ItemsPanel>
                     <ItemsPanelTemplate>
-                        <WrapPanel Orientation="Horizontal">
-                            <WrapPanel.Resources>
+                        <StackPanel Orientation="Horizontal">
+                            <StackPanel.Resources>
                                 <Style TargetType="Controls:NumericUpDown">
                                     <Setter Property="LayoutTransform">
                                         <Setter.Value>
@@ -128,8 +128,8 @@
                                         </Setter.Value>
                                     </Setter>
                                 </Style>
-                            </WrapPanel.Resources>
-                        </WrapPanel>
+                            </StackPanel.Resources>
+                        </StackPanel>
                     </ItemsPanelTemplate>
                 </ItemsControl.ItemsPanel>
             </ItemsControl>

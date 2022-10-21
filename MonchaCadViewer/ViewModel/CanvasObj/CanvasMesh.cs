@@ -60,33 +60,27 @@ namespace CadProjectorViewer.CanvasObj
             {
                 for (int j = 0; j < Mesh.Points.GetLength(1); j += 1)
                 {
-                    Point point1 = deviceModel.GetPoint(
-                        Mesh.Points[i, j].MX / propwidth,
-                        Mesh.Points[i, j].MY / propheight);
+                    Point ProportionPoint1 = deviceModel.GetProportion(Mesh.Points[i, j].MX, Mesh.Points[i, j].MY);
+                    Point RenderPoint1 = deviceModel.GetPoint(ProportionPoint1.X, ProportionPoint1.Y);
 
                     if (i - 1 > -1)
                     {
-                        Point point2 = deviceModel.GetPoint(
-                            Mesh.Points[i - 1, j].MX / propwidth,
-                            Mesh.Points[i - 1, j].MY / propheight);
+                        Point ProportionPoint2 = deviceModel.GetProportion(Mesh.Points[i - 1, j].MX, Mesh.Points[i - 1, j].MY);
+                        Point RenderPoint2 = deviceModel.GetPoint(ProportionPoint2.X, ProportionPoint2.Y);
 
-                        drawingContext.DrawLine(pen, point1, point2);
+                        drawingContext.DrawLine(pen, RenderPoint1, RenderPoint2);
                     }
                         
                     if (j - 1 > -1)
                     {
+                        Point ProportionPoint2 = deviceModel.GetProportion(Mesh.Points[i, j - 1].MX, Mesh.Points[i, j - 1].MY);
+                        Point RenderPoint2 = deviceModel.GetPoint(ProportionPoint2.X, ProportionPoint2.Y);
 
-                        Point point2 = deviceModel.GetPoint(
-                            Mesh.Points[i, j - 1].MX / propwidth, 
-                            Mesh.Points[i, j - 1].MY / propheight);
-
-                        drawingContext.DrawLine(pen, point1, point2);
+                        drawingContext.DrawLine(pen, RenderPoint1, RenderPoint2);
                     } 
                 }
             }
         }
-
-
     }
     public class MeshAdorner : Adorner
     {

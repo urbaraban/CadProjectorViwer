@@ -88,6 +88,7 @@
     <v:String x:Key="common_Workfolder">Рабочая папка</v:String>
     <v:String x:Key="common_File">Файл</v:String>
     <v:String x:Key="common_Close">Закрыть</v:String>
+    <v:String x:Key="common_Setting">Настройки</v:String>
 
     <v:String x:Key="scene_Scene">Сцена</v:String>
     

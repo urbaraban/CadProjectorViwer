@@ -33,11 +33,11 @@
     <StackPanel Margin="10">
         <DockPanel>
             <Label  Content="Ось Х"/>
-            <Controls:NumericUpDown Value="{Binding X, Converter={StaticResource RoundValue}}"/>
+            <Controls:NumericUpDown Value="{Binding MX, Converter={StaticResource RoundValue}}"/>
         </DockPanel>
         <DockPanel>
             <Label Content="Ось Y"/>
-            <Controls:NumericUpDown Value="{Binding Y, Converter={StaticResource RoundValue}}"/>
+            <Controls:NumericUpDown Value="{Binding MY, Converter={StaticResource RoundValue}}"/>
         </DockPanel>
     </StackPanel>
 </Window>

@@ -91,6 +91,9 @@ namespace CadProjectorViewer
         public MainWindow()
         {
             InitializeComponent();
+
+            RemoveOtherApp();
+
             #region Language
             App.LanguageChanged += LanguageChanged;
 
@@ -138,6 +141,7 @@ namespace CadProjectorViewer
 
             if (this.Height > SystemParameters.FullPrimaryScreenHeight * 0.9) this.Height = SystemParameters.FullPrimaryScreenHeight * 0.9;
             if (this.Width > SystemParameters.FullPrimaryScreenWidth * 0.9) this.Width = SystemParameters.FullPrimaryScreenWidth * 0.9;
+
         }
 
 
@@ -593,14 +597,21 @@ namespace CadProjectorViewer
             Name = Name.Substring(0, Name.LastIndexOf('.'));
             Process current = Process.GetCurrentProcess();
             
-            var chromeDriverProcesses = Process.GetProcesses().
+            var CUTOtherProcesses = Process.GetProcesses().
             Where(pr => pr.ProcessName == Name && pr.Id != current.Id); // without '.exe'
 
-            Log?.Invoke($"Find {chromeDriverProcesses.Count()} run process", "APP");
+            Log?.Invoke($"Find {CUTOtherProcesses.Count()} run process", "APP");
 
-            foreach (var process in chromeDriverProcesses)
+            if (CUTOtherProcesses.Count() > 0)
             {
-                process.Kill();
+                if (AppSt.Default.app_auto_kill_other_process == true || MessageBox.Show($"Find {CUTOtherProcesses.Count()} other process. Kill them?", "Warning!", MessageBoxButton.OKCancel) == MessageBoxResult.OK)
+                {
+                    foreach (var process in CUTOtherProcesses)
+                    {
+                        Log?.Invoke($"kill process {process.Id}", "APP");
+                        process.Kill();
+                    }
+                }
             }
         }
 

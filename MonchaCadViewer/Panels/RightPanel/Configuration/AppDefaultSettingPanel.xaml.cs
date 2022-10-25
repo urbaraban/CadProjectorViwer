@@ -155,6 +155,15 @@ namespace CadProjectorViewer.Panels.RightPanel.Configuration
             }
         }
 
+        public bool App_kill_other_process
+        {
+            get => AppSt.Default.app_auto_kill_other_process;
+            set
+            {
+                AppSt.Default.app_auto_kill_other_process = value;
+            }
+        }
+
         public AppDefaultSettingPanel()
         {
             InitializeComponent();

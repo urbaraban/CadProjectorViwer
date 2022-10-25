@@ -93,6 +93,10 @@
                     Maximum="10" Minimum="0.01" Interval="1" 
                     Value="{Binding AnchorSize, Mode=TwoWay, UpdateSourceTrigger=Default}" 
                     IsTabStop="False" AllowDrop="False"/>
+                <CheckBox
+                    Content="Kill other process"
+                    IsChecked="{Binding App_kill_other_process, Mode=TwoWay}"/>
+
             </StackPanel>
         </Grid>
     </ScrollViewer>

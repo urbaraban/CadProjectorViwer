@@ -50,32 +50,35 @@ namespace CadProjectorViewer.Dialogs
 
         private void MakeSplit()
         {
-            Rect[,] masks = new Rect[(int)StrokeUpDn.Value.Value, (int)ColumnUpDn.Value.Value];
-
-            double width_step = this._bounds.Width / ColumnUpDn.Value.Value;
-            double height_step = this._bounds.Height / StrokeUpDn.Value.Value;
-
-            for (int i = 0; i < masks.GetLength(0); i += 1)
+            if (_scene != null)
             {
-                for (int j = 0; j < masks.GetLength(1); j += 1)
+                Rect[,] masks = new Rect[(int)StrokeUpDn.Value.Value, (int)ColumnUpDn.Value.Value];
+
+                double width_step = this._bounds.Width / ColumnUpDn.Value.Value;
+                double height_step = this._bounds.Height / StrokeUpDn.Value.Value;
+
+                for (int i = 0; i < masks.GetLength(0); i += 1)
                 {
-                    masks[i, j] = new Rect(
-                        this._bounds.X + width_step * j,
-                        this._bounds.Y + height_step * i,
-                        width_step,
-                        height_step);
+                    for (int j = 0; j < masks.GetLength(1); j += 1)
+                    {
+                        masks[i, j] = new Rect(
+                            this._bounds.X + width_step * j,
+                            this._bounds.Y + height_step * i,
+                            width_step,
+                            height_step);
+                    }
                 }
-            }
-            SceneTask sceneTask = new SceneTask()
-            {
-                Object = masks,
-                TableID = _scene.TableID,
-                TaskID = -1,
-                TaskInfo = new System.IO.FileInfo("Masks"),
-                Command = new List<string>()
-            };
+                SceneTask sceneTask = new SceneTask()
+                {
+                    Object = masks,
+                    TableID = _scene.TableID,
+                    TaskID = -1,
+                    TaskInfo = new System.IO.FileInfo("Masks"),
+                    Command = new List<string>()
+                };
 
-            _scene.RunTask(sceneTask, false);
+                _scene.RunTask(sceneTask, false);
+            }
         }
     }
 }

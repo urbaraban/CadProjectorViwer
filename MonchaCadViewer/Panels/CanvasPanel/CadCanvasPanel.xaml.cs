@@ -33,6 +33,7 @@ using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using CadProjectorSDK.Scenes.Commands;
 using CadProjectorViewer.ViewModel;
+using CadProjectorViewer.TCPServer;
 
 namespace CadProjectorViewer.Panels.CanvasPanel
 {
@@ -236,6 +237,27 @@ namespace CadProjectorViewer.Panels.CanvasPanel
             }
 
         }
+
+        public ToCUTServer CUTServer { get; set; }
+
+        public ICommand StartTCPServer => new ActionCommand(() =>
+        {
+            if (ViewModel.RenderingDisplay is ProjectionScene scene)
+            {
+                this.CUTServer = new ToCUTServer(scene);
+                this.CUTServer.Start();
+            }
+        });
+
+        public ICommand StopTCPServer => new ActionCommand(() =>
+        {
+            if (ViewModel.RenderingDisplay is ProjectionScene scene)
+            {
+                this.CUTServer.Stop();
+                this.CUTServer = null;
+                
+            }
+        });
 
         public ICommand RefreshFrameCommand => new ActionCommand(() => {
             if (ViewModel.RenderingDisplay is ProjectionScene scene)

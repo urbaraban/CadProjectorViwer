@@ -313,6 +313,7 @@ namespace CadProjectorViewer
                     }
                     break;
                 case Key.Q:
+;
                     this.SelectNextCommand.Execute(this);
                     break;
                 case Key.E:
@@ -567,9 +568,13 @@ namespace CadProjectorViewer
             this.Topmost = false;
         });
 
-        public ICommand SelectNextCommand => new ActionCommand(() => { ProjectorHub.ScenesCollection.SelectedScene.SelectNextObject(1); });
+        public ICommand SelectNextCommand => new ActionCommand(() => {
+            ProjectorHub.ScenesCollection.SelectedScene.HistoryCommands.Add(
+                        new SelectNextCommand(true, ProjectorHub.ScenesCollection.SelectedScene)); });
 
-        public ICommand SelectPreviousCommand => new ActionCommand(() => { ProjectorHub.ScenesCollection.SelectedScene.SelectNextObject(-1); });
+        public ICommand SelectPreviousCommand => new ActionCommand(() => {
+            ProjectorHub.ScenesCollection.SelectedScene.HistoryCommands.Add(
+                        new SelectNextCommand(false, ProjectorHub.ScenesCollection.SelectedScene)); });
 
         public ICommand DeleteCommand => new ActionCommand(() => {
             ProjectorHub.ScenesCollection.SelectedScene.RemoveRange(ProjectorHub.ScenesCollection.SelectedScene.SelectedObjects);

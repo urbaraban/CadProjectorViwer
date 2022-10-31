@@ -66,8 +66,11 @@ namespace CadProjectorViewer.CanvasObj
 
         private void Cadobject_PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            this.InvalidateVisual();
-            OnPropertyChanged(e.PropertyName);
+            this.Dispatcher.Invoke(() =>
+            {
+                this.InvalidateVisual();
+                OnPropertyChanged(e.PropertyName);
+            });
         }
 
         public void ParentChangeSize()
@@ -432,7 +435,7 @@ namespace CadProjectorViewer.CanvasObj
         
         public async void Update()
         {
-           this.InvalidateVisual();
+            this.Dispatcher.Invoke(() => this.InvalidateVisual());
         }
 
         protected override void OnRender(DrawingContext drawingContext)

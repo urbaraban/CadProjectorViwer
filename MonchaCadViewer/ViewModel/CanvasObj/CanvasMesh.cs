@@ -31,7 +31,10 @@ namespace CadProjectorViewer.CanvasObj
 
         private void Mesh_ChangedMesh(object sender, bool e)
         {
-            this.InvalidateVisual();
+            this.Dispatcher.Invoke(() =>
+            {
+                this.InvalidateVisual();
+            });
         }
 
         protected override void OnInitialized(EventArgs e)
@@ -119,7 +122,7 @@ namespace CadProjectorViewer.CanvasObj
 
         private void Line_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
-            this.InvalidateVisual();
+            this.Dispatcher.Invoke(() => this.InvalidateVisual());
         }
 
         protected override Size ArrangeOverride(Size finalSize)

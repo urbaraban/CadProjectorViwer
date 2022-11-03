@@ -34,6 +34,7 @@ using System.Runtime.CompilerServices;
 using CadProjectorSDK.Scenes.Commands;
 using CadProjectorViewer.ViewModel;
 using CadProjectorViewer.TCPServer;
+using CadProjectorViewer.Dialogs;
 
 namespace CadProjectorViewer.Panels.CanvasPanel
 {
@@ -289,6 +290,18 @@ namespace CadProjectorViewer.Panels.CanvasPanel
         }
         #endregion
 
+        private void ShowTCPDialog_Click(object sender, RoutedEventArgs e)
+        {
+            if (ViewModel.RenderingDisplay is ProjectionScene scene)
+            {
+                if (this.CUTServer == null)
+                {
+                    this.CUTServer = new ToCUTServer(scene);
+                }
+                ManipulatorTCPDialog manipulatorTCP = new ManipulatorTCPDialog(this.CUTServer);
+                manipulatorTCP.Show();
+            }
+        }
     }
 
     public class CursorActionConverter : IValueConverter

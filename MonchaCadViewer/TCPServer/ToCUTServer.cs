@@ -17,7 +17,10 @@ namespace CadProjectorViewer.TCPServer
     {
         public ProjectionScene Scene { get; }
 
-        public bool IsConnected => server.Connections > 0;
+        public bool IsListening => server != null && server.IsListening;
+
+        public UnicastIPAddressInformation ServerAddress { get; set; }
+        public int Port { get; set; }
 
         private SimpleTcpServer server
         {
@@ -80,7 +83,6 @@ namespace CadProjectorViewer.TCPServer
                             point.Y = double.Parse(coord[1]);
                             break;
                     }
-
                 }
             }
             catch { }
@@ -93,11 +95,19 @@ namespace CadProjectorViewer.TCPServer
         public ToCUTServer(ProjectionScene scene)
         {
             this.Scene = scene;
-            this.server = new SimpleTcpServer("192.168.33.10:9000");
         }
 
-        public void Stop() => server.Stop();
+        public void Stop()
+        {
+            if (this.server != null && this.server.IsConnected(this.ServerAddress.ToString()) == true)
+                server.Stop();
+        }
 
-        public void Start() => server.Start();
+        public void Start()
+        {
+            if (server != null) Stop();
+            this.server = new SimpleTcpServer(this.ServerAddress.Address.ToString(), this.Port);
+            server.Start();
+        }
     }
 }

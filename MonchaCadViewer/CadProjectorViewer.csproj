@@ -252,10 +252,14 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Dialogs\ManipulatorTCPDialog.xaml.cs">
+      <DependentUpon>ManipulatorTCPDialog.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Panels\RightPanel\UdpSetting.xaml.cs">
       <DependentUpon>UdpSetting.xaml</DependentUpon>
     </Compile>
     <Compile Include="StaticTools\FileSave.cs" />
+    <Compile Include="TCPServer\TCPTools.cs" />
     <Compile Include="TCPServer\ToCUTServer.cs" />
     <Compile Include="ViewModel\CanvasObj\CanvasLine.cs" />
     <Compile Include="ViewModel\CanvasObj\CanvasMesh.cs" />
@@ -367,6 +371,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Dialogs\MakeMeshSplitDialog.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Dialogs\ManipulatorTCPDialog.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

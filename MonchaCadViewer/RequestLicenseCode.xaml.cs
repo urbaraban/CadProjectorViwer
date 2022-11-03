@@ -1,5 +1,6 @@
 ﻿using CadProjectorSDK;
 using CadProjectorSDK.Tools;
+using CadProjectorViewer.TCPServer;
 using OpenCvSharp.WpfExtensions;
 using QRCoder;
 using System;
@@ -58,18 +59,7 @@ namespace CadProjectorViewer
         {
             InitializeComponent();
 
-            NetworkInterface[] interfaces = NetworkInterface.GetAllNetworkInterfaces();
-            foreach (NetworkInterface @interface in interfaces)
-            {
-                foreach (UnicastIPAddressInformation unicastIPAddress in @interface.GetIPProperties().UnicastAddresses)
-                {
-                    if (unicastIPAddress.Address.AddressFamily == System.Net.Sockets.AddressFamily.InterNetwork)
-                    {
-                        IPAddressInformation.Add(unicastIPAddress);
-                    }
-                }
-            }
-
+            IPAddressInformation = TCPTools.GetInterfaces();
             IPCombo.ItemsSource = IPAddressInformation;
         }
 
@@ -98,11 +88,10 @@ namespace CadProjectorViewer
 
         private async void StartTCP(IPAddress iPAddress)
         {
-
             try
             {
                 if (tcpListener != null) tcpListener.Stop();
-                int port = FreeTcpPort(iPAddress);
+                int port = TCPTools.FreeTcpPort(iPAddress);
                 PortLabel.Content = port.ToString();
 
                 tcpListener = new TcpListener(port);
@@ -134,15 +123,6 @@ namespace CadProjectorViewer
         {
             if (tcpListener != null) tcpListener.Stop();
         }
-
-        static int FreeTcpPort(IPAddress iPAddress)
-        {
-                TcpListener l = new TcpListener(iPAddress, 0);
-                l.Start();
-                int port = ((IPEndPoint)l.LocalEndpoint).Port;
-                l.Stop();
-                return port;
-        }
     }
 
     public class IpImageConverter : IValueConverter
@@ -151,11 +131,7 @@ namespace CadProjectorViewer
         {
             if (value is UnicastIPAddressInformation addressInformation)
             {
-                QRCodeGenerator qrGenerator = new QRCodeGenerator();
-                QRCodeData qrCodeData = qrGenerator.CreateQrCode(addressInformation.Address.ToString(), QRCodeGenerator.ECCLevel.Q);
-                QRCode qrCode = new QRCode(qrCodeData);
-                Bitmap qrCodeImage = qrCode.GetGraphic(20);
-                return qrCodeImage.ToBitmapSource();
+                return TCPTools.GetQR(addressInformation.Address);
             }
             return new BitmapImage();
         }

@@ -1,5 +1,6 @@
 ﻿using CadProjectorSDK.CadObjects;
 using CadProjectorSDK.CadObjects.Abstract;
+using CadProjectorSDK.Device;
 using CadProjectorSDK.Interfaces;
 using CadProjectorSDK.Scenes;
 using CadProjectorViewer.CanvasObj;
@@ -67,6 +68,19 @@ namespace CadProjectorViewer.Panels.DevicePanel.LeftPanels
                 makeMeshSplitDialog.Show();
             }
         }
+
+        public ICommand RefreshAllDevicesCommand => new ActionCommand(async () => {
+            if (this.DataContext is ProjectionScene scene)
+            {
+                foreach (LProjector lProjector in scene.Projectors)
+                {
+                    if (lProjector is IConnected connected)
+                    {
+                        await connected.Reconnect();
+                    }
+                }
+            }
+        });
 
         public ICommand ClearMasks => new ActionCommand(() => Clear());
 

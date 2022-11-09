@@ -124,7 +124,7 @@
                         <RadioButton Grid.Column="1" Grid.Row="0"
                                          IsChecked="{Binding DefAttach, 
                                          Converter={StaticResource AttachConverter},
-                                         ConverterParameter=Top$Middle}"
+                                         ConverterParameter=Top%Middle}"
                                          HorizontalAlignment="Center" VerticalAlignment="Center"/>
                         <RadioButton Grid.Column="2" Grid.Row="0"
                                          IsChecked="{Binding DefAttach, 

@@ -18,7 +18,8 @@
     x:Class="CadProjectorViewer.MainWindow"
     x:Name="MainWin"
     mc:Ignorable="d"
-    Title="CUT - Viwer" KeyboardNavigation.TabNavigation="None"
+    Title="CUT - Viwer" 
+    KeyboardNavigation.TabNavigation="None"
     AllowDrop="True"
     Height="700" Width="999"
     WindowStartupLocation="CenterScreen"
@@ -77,6 +78,7 @@
             </Style>
 
             <CadProjectorViewer:PlayBackConverter x:Key="PlayBackConverter" />
+            <convert:BoolVisibleConverter x:Key="BoolVisibleConverter"/>
             <CadProjectorViewer:MultiObjectList x:Key="MultiList" />
             <CadProjectorViewer:LicenceColor x:Key="LicenceKey" />
             <HierarchicalDataTemplate 
@@ -152,14 +154,14 @@
         </Border.Resources>
         <Grid>
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="2*" MaxWidth="200" />
+                <ColumnDefinition Width="2*" MinWidth="150" MaxWidth="300" />
                 <ColumnDefinition Width="4*" />
-                <ColumnDefinition Width="3*" MaxWidth="300"/>
+                <ColumnDefinition Width="3*" MinWidth="250" MaxWidth="300"/>
             </Grid.ColumnDefinitions>
             <Grid.RowDefinitions>
                 <RowDefinition Height="113" />
                 <RowDefinition Height="451*" />
-                <RowDefinition Height="135*" MaxHeight="200"/>
+                <RowDefinition Height="135*" MinHeight="150" MaxHeight="300"/>
                 <RowDefinition Height="30" />
             </Grid.RowDefinitions>
             <GridSplitter
@@ -204,10 +206,6 @@
                     <panels:CadObjectPanel DataContext="{Binding ScenesCollection.SelectedScene.SelectedObjects.LastSelectObject}"
                         IsEnabled="{Binding DataContext, Converter={StaticResource NotNullBool}, RelativeSource={RelativeSource Self}}" />
                 </TabItem>
-                <TabItem Header="{DynamicResource dvc_ProjectionSetting}">
-                    <panels:multiplierpanel DataContext="{Binding ScenesCollection.SelectedScene.SelectedObjects.LastSelectObject}"
-                        IsEnabled="{Binding DataContext, Converter={StaticResource NotNullBool}, RelativeSource={RelativeSource Self}}" />
-                </TabItem>
             </TabControl>
             <Button x:Name="PlayBtn" Content="{DynamicResource m_Play}"
                     Margin="5,20,5,0"
@@ -241,7 +239,9 @@
                         <leftpanels:FrameTree DataContext="{Binding ScenesCollection.SelectedScene}" />
                     </Border>
                 </TabItem>
-                <TabItem Header="{DynamicResource dvc_Devices}">
+                <TabItem 
+                    Visibility="{Binding ElementName=MainWin,Path=AdminMode, Converter={StaticResource BoolVisibleConverter}}"
+                    Header="{DynamicResource dvc_Devices}">
                     <Border Style="{StaticResource Border}">
                         <panels:DeviceTreeTab
                         DataContext="{Binding .}"
@@ -313,7 +313,9 @@
                         </TabControl>
                     </Grid>
                 </TabItem>
-                <TabItem Header="{DynamicResource common_Configuration}">
+                <TabItem 
+                    Visibility="{Binding ElementName=MainWin, Path=AdminMode, Converter={StaticResource BoolVisibleConverter}}"
+                    Header="{DynamicResource common_Configuration}">
                     <TabControl>
                         <TabItem Header="Setting" FontSize="14">
                             <configuration:AppDefaultSettingPanel />
@@ -328,7 +330,11 @@
                 </TabItem>
             </TabControl>
 
-            <panels:ProgressPanel Grid.Column="0" Grid.ColumnSpan="3" Margin="5" Grid.Row="3" />
+            <panels:ProgressPanel 
+                
+                Grid.Column="0" 
+                Grid.ColumnSpan="3" 
+                Margin="5" Grid.Row="3" MouseDown="ProgressPanel_MouseDown" />
             <Label x:Name="pBarLabel" Visibility="Hidden" Content="Label" Grid.Row="1" Grid.Column="2" HorizontalContentAlignment="Center" VerticalAlignment="Center" HorizontalAlignment="Center" Height="26" Margin="126,213,126,212" Width="38" />
             <GridSplitter
                  Style="{StaticResource GridSplitter}"

@@ -63,8 +63,12 @@ namespace CadProjectorViewer
     /// <summary>
     /// Логика взаимодействия для MainWindow.xaml
     /// </summary>
-    public partial class MainWindow : MetroWindow
+    public partial class MainWindow : MetroWindow, INotifyPropertyChanged
     {
+        public bool AdminMode => _adminlick > 9;
+
+        private int _adminlick;
+
         public delegate void Logging(string message, string sender);
         public static Logging Log;
 
@@ -143,8 +147,6 @@ namespace CadProjectorViewer
             if (this.Width > SystemParameters.FullPrimaryScreenWidth * 0.9) this.Width = SystemParameters.FullPrimaryScreenWidth * 0.9;
 
         }
-
-
 
         private void LanguageChanged(Object sender, EventArgs e)
         {
@@ -392,10 +394,6 @@ namespace CadProjectorViewer
             else this.WindowState = WindowState.Normal;
         }
 
-        protected override void OnClosing(CancelEventArgs e)
-        {
-            base.OnClosing(e);
-        }
 
         protected override void OnClosed(EventArgs e)
         {
@@ -738,6 +736,25 @@ namespace CadProjectorViewer
             {
                 await connected.Reconnect();
             }
+        }
+
+        private void ProgressPanel_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+            _adminlick += 1;
+            if (_adminlick > 5 && _adminlick < 10)
+            {
+                ProgressPanel.SetProgressBar(_adminlick, 9, $"{_adminlick} in 10 to the admin");
+            }
+            else if (_adminlick > 20)
+            {
+                ProgressPanel.SetProgressBar(1, 1, $"Please STOP!!! You realy admin!!!");
+            }
+            else if (_adminlick > 9)
+            {
+                ProgressPanel.SetProgressBar(1, 1, $"you admin!!!");
+            }
+            OnPropertyChanged(nameof(AdminMode));
+
         }
     }
 

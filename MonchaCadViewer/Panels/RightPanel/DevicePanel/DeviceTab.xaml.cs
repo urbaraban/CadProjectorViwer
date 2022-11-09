@@ -90,6 +90,5 @@ namespace CadProjectorViewer.Panels
             MeshesDialog meshesDialog = new MeshesDialog() { DataContext = this.device };
             meshesDialog.Show();
         }
-
     }
 }

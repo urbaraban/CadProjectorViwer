@@ -35,7 +35,6 @@ namespace CadProjectorViewer.ViewModel
         public ProjectionScene Scene { get; set; }
 
         public override bool ShowHide => true;
-
         public override double Width => Size.Width;
         public override double Height => Size.Height;
         public override double Thinkess => Math.Max(Width, Height) * AppSt.Default.default_thinkess_percent;

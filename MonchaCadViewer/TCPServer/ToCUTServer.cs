@@ -1,6 +1,7 @@
 ﻿using CadProjectorSDK;
 using CadProjectorSDK.Scenes;
 using CadProjectorSDK.Scenes.Commands;
+using CadProjectorViewer.ViewModel;
 using SuperSimpleTcp;
 using System;
 using System.Collections.Generic;
@@ -15,7 +16,9 @@ namespace CadProjectorViewer.TCPServer
 {
     public class ToCUTServer
     {
-        public ProjectionScene Scene { get; }
+        public event EventHandler<ISceneCommand> SendedCommand;
+
+        public SceneModel MScene { get; }
 
         public bool IsListening => server != null && server.IsListening;
 
@@ -50,19 +53,21 @@ namespace CadProjectorViewer.TCPServer
             string[] split = message.Split(new[] { ':' }, 2);
             if (split.Length > 0)
             {
+                ISceneCommand sceneCommand = null;
                 switch (split[0])
                 {
                     case "NEXT":
-                        Scene.HistoryCommands.Add(new SelectNextCommand(true, Scene));
+                        sceneCommand = new SelectNextCommand(true, MScene.Scene);
                         break;
                     case "PREV":
-                        Scene.HistoryCommands.Add(new SelectNextCommand(false, Scene));
+                        sceneCommand = new SelectNextCommand(false, MScene.Scene);
                         break;
                     case "MOVE":
                         Point point = ParseMovePoint(split[1]);
-                        Scene.HistoryCommands.Add(new MovingCommand(Scene, point.X, point.Y));
+                        sceneCommand = new MovingCommand(MScene.Scene, point.X, point.Y);
                         break;
                 }
+                SendedCommand?.Invoke(this, sceneCommand);
             }
         }
 
@@ -92,9 +97,9 @@ namespace CadProjectorViewer.TCPServer
 
 
 
-        public ToCUTServer(ProjectionScene scene)
+        public ToCUTServer(SceneModel scene)
         {
-            this.Scene = scene;
+            this.MScene = scene;
         }
 
         public void Stop()

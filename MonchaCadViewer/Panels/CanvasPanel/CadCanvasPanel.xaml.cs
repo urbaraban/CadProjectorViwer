@@ -239,11 +239,32 @@ namespace CadProjectorViewer.Panels.CanvasPanel
 
         }
 
-        public ToCUTServer CUTServer { get; set; }
+        public ToCUTServer CUTServer 
+        {
+            get => _cutserver;
+            set
+            {
+                if (_cutserver != null) _cutserver.SendedCommand -= _cutserver_SendedCommand;
+                _cutserver = value;
+                _cutserver.SendedCommand += _cutserver_SendedCommand;
+            }
+        }
+
+        private void _cutserver_SendedCommand(object sender, ISceneCommand e)
+        {
+            this.Dispatcher.Invoke(() => { 
+                if (this.ViewModel.RenderingDisplay is ProjectionScene scene)
+                {
+                    scene.HistoryCommands.Add(e);
+                }
+            });
+        }
+
+        private ToCUTServer _cutserver;
 
         public ICommand StartTCPServer => new ActionCommand(() =>
         {
-            if (ViewModel.RenderingDisplay is ProjectionScene scene)
+            if (ViewModel is SceneModel scene)
             {
                 this.CUTServer = new ToCUTServer(scene);
                 this.CUTServer.Start();
@@ -252,11 +273,10 @@ namespace CadProjectorViewer.Panels.CanvasPanel
 
         public ICommand StopTCPServer => new ActionCommand(() =>
         {
-            if (ViewModel.RenderingDisplay is ProjectionScene scene)
+            if (ViewModel is SceneModel scene)
             {
                 this.CUTServer.Stop();
                 this.CUTServer = null;
-                
             }
         });
 
@@ -292,7 +312,7 @@ namespace CadProjectorViewer.Panels.CanvasPanel
 
         private void ShowTCPDialog_Click(object sender, RoutedEventArgs e)
         {
-            if (ViewModel.RenderingDisplay is ProjectionScene scene)
+            if (ViewModel is SceneModel scene)
             {
                 if (this.CUTServer == null)
                 {

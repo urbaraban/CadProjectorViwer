@@ -25,9 +25,12 @@
                 </DataTrigger>
             </Style.Triggers>
         </Style>
-       
+        <Style x:Key="ObjectTreeMainStyle" TargetType="TreeView">
+            <Setter Property="TreeViewItem.IsExpanded" Value="True"/>
+        </Style>
+
         <HierarchicalDataTemplate 
-                x:Key="ObjectTree" 
+                x:Key="ObjectTree"
                 ItemsSource="{Binding Children}">
             <Border>
                 <DockPanel 
@@ -43,7 +46,7 @@
                 ItemsSource="{Binding Children}">
             <Border>
                 <DockPanel 
-                                VerticalAlignment="Center">
+                      VerticalAlignment="Center">
                     <CheckBox IsChecked="{Binding IsRender}"/>
                     <Label Content="{Binding NameID}" VerticalAlignment="Center" MouseDoubleClick="Label_MouseDoubleClick"/>
                 </DockPanel>
@@ -81,10 +84,28 @@
                 <Controls:ToggleSwitch Content="MaskActivated" IsOn="{Binding CursorMaskActivated}"/>
             </DockPanel>
             <Expander DockPanel.Dock="Top" Header ="{DynamicResource dvc_Devices}">
-                <TreeView ItemsSource="{Binding Projectors}"
+                <Expander.HeaderTemplate>
+                    <DataTemplate>
+                        <StackPanel
+                            Orientation="Horizontal">
+                            <TextBlock Text="{Binding}" Margin="4"/>
+                            <Button
+                                Content="&#xEDAB;"
+                                FontFamily="Segoe MDL2 Assets"
+                                FontSize="16"
+                                Height="25"
+                                Padding="0"
+                                Width="{Binding ActualHeight, RelativeSource={RelativeSource Self}}"
+                                Command="{Binding ElementName=FrameTreePage, Path=RefreshAllDevicesCommand}"/>
+                        </StackPanel>
+                    </DataTemplate>
+                </Expander.HeaderTemplate>
+                <StackPanel>
+                    <TreeView ItemsSource="{Binding Projectors}"
                           SelectedValuePath="{Binding Projectors.SelectedItem}"
-                          ItemTemplate="{StaticResource ResourceKey=DeviceTree}"
-                          />
+                          ItemTemplate="{StaticResource ResourceKey=DeviceTree}"/>
+                </StackPanel>
+
             </Expander>
 
             <Expander Header="{DynamicResource edit_Mask}" DockPanel.Dock="Top" IsExpanded="True">
@@ -116,9 +137,16 @@
 
             </Expander>
 
-            <Expander Header="{DynamicResource obj_Objects}" IsExpanded="True" DockPanel.Dock="Top">
-                <TreeView ItemsSource="{Binding .}" 
-                          ItemTemplate="{StaticResource ResourceKey=ObjectTree}"/>
+            <Expander 
+                Header="{DynamicResource obj_Objects}" 
+                IsExpanded="True"
+                DockPanel.Dock="Top">
+                <TreeView
+                    Style="{StaticResource ObjectTreeMainStyle}"
+                    ItemsSource="{Binding .}" 
+                          ItemTemplate="{StaticResource ResourceKey=ObjectTree}">
+                </TreeView>
+
             </Expander>
 
         </DockPanel>

@@ -65,7 +65,8 @@ namespace CadProjectorViewer
     /// </summary>
     public partial class MainWindow : MetroWindow, INotifyPropertyChanged
     {
-        public bool AdminMode => _adminlick > 9;
+        public bool AdminMode => Debugger.IsAttached == true || _adminlick > 9;
+
 
         private int _adminlick;
 
@@ -98,7 +99,7 @@ namespace CadProjectorViewer
 
             RemoveOtherApp();
 
-            #region Language
+#region Language
             App.LanguageChanged += LanguageChanged;
 
             CultureInfo currLang = App.Language;
@@ -115,7 +116,7 @@ namespace CadProjectorViewer
             }
 
             App.Language = AppSt.Default.DefaultLanguage;
-            #endregion
+#endregion
 
             Log = LogPanel.Logs.PostLog;
             SetProgress = ProgressPanel.SetProgressBar;
@@ -719,14 +720,14 @@ namespace CadProjectorViewer
             }
         }
 
-        #region INotifyPropertyChanged
+#region INotifyPropertyChanged
         public event PropertyChangedEventHandler PropertyChanged;
 
         public void OnPropertyChanged([CallerMemberName] string prop = "")
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(prop));
         }
-        #endregion
+#endregion
 
 
 

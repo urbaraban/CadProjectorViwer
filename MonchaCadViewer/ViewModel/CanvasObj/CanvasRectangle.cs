@@ -25,15 +25,6 @@ namespace CadProjectorViewer.CanvasObj
 {
     public class CanvasRectangle : CanvasObject
     {
-        #region Property
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        public void OnPropertyChanged([CallerMemberName] string prop = "")
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(prop));
-        }
-        #endregion
-
         public CadRect3D LRect => (CadRect3D)this.CadObject;
 
 

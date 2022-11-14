@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Configuration;
+using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -14,7 +15,13 @@ namespace CadProjectorViewer
     /// </summary>
     public partial class App : Application
     {
-		private static List<CultureInfo> m_Languages = new List<CultureInfo>();
+        public delegate void Logging(string message, string sender);
+        public static Logging Log;
+
+        public delegate void Progress(int position, int max, string message);
+        public static Progress SetProgress;
+
+        private static List<CultureInfo> m_Languages = new List<CultureInfo>();
 
 		public static List<CultureInfo> Languages
 		{
@@ -40,7 +47,9 @@ namespace CadProjectorViewer
             {
 				AppSt.Default.Reset();
             }
-		}
+
+            RemoveOtherApp();
+        }
 
         private void App_LanguageChanged(object sender, EventArgs e)
         {
@@ -101,5 +110,29 @@ namespace CadProjectorViewer
 				LanguageChanged(Application.Current, new EventArgs());
 			}
 		}
-	}
+
+        public static async void RemoveOtherApp()
+        {
+            string Name = AppDomain.CurrentDomain.FriendlyName;
+            Name = Name.Substring(0, Name.LastIndexOf('.'));
+            Process current = Process.GetCurrentProcess();
+
+            var CUTOtherProcesses = Process.GetProcesses().
+            Where(pr => pr.ProcessName == Name && pr.Id != current.Id); // without '.exe'
+
+            Log?.Invoke($"Find {CUTOtherProcesses.Count()} run process", "APP");
+
+            if (CUTOtherProcesses.Count() > 0)
+            {
+                if (AppSt.Default.app_auto_kill_other_process == true || MessageBox.Show($"Find {CUTOtherProcesses.Count()} other process. Kill them?", "Warning!", MessageBoxButton.OKCancel) == MessageBoxResult.OK)
+                {
+                    foreach (var process in CUTOtherProcesses)
+                    {
+                        Log?.Invoke($"kill process {process.Id}", "APP");
+                        process.Kill();
+                    }
+                }
+            }
+        }
+    }
 }

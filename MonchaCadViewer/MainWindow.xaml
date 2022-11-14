@@ -13,8 +13,10 @@
     xmlns:rightpanel="clr-namespace:CadProjectorViewer.Panels.RightPanel"
     xmlns:configuration="clr-namespace:CadProjectorViewer.Panels.RightPanel.Configuration"
     xmlns:Properties="clr-namespace:CadProjectorViewer.Properties"
-    xmlns:device="clr-namespace:CadProjectorSDK.Device;assembly=CadProjectorSDK" xmlns:devices="clr-namespace:CadProjectorViewer.ViewModel.Devices"
-    DataContext="{Binding RelativeSource={RelativeSource Self}, Path=ProjectorHub}"
+    xmlns:device="clr-namespace:CadProjectorSDK.Device;assembly=CadProjectorSDK" 
+    xmlns:devices="clr-namespace:CadProjectorViewer.ViewModel.Devices"
+    xmlns:model="clr-namespace:CadProjectorViewer.ViewModel"
+    d:DataContext="{d:DesignInstance Type={x:Type model:AppMainModel}}"
     x:Class="CadProjectorViewer.MainWindow"
     x:Name="MainWin"
     mc:Ignorable="d"
@@ -29,13 +31,13 @@
     <Controls:MetroWindow.InputBindings>
         <KeyBinding
             Modifiers="Ctrl" Key="V"
-            Command="{Binding ElementName=MainWin, Path=PasteCommand}" />
+            Command="{Binding PasteCommand}" />
         <KeyBinding
             Key="F5"
-            Command="{Binding ElementName=CanvasCollection, Path=RefreshFrameCommand}" />
+            Command="{Binding RefreshFrameCommand}" />
         <KeyBinding
             Key="Delete"
-            Command="{Binding ElementName=MainWin, Path=DeleteCommand}" />
+            Command="{Binding DeleteCommand}" />
     </Controls:MetroWindow.InputBindings>
     <Controls:MetroWindow.Resources>
         <ResourceDictionary>
@@ -93,36 +95,58 @@
             <Menu>
                 <MenuItem Header="▼" Focusable="True">
                     <MenuItem Header="{DynamicResource common_File}">
-                        <MenuItem Header="New Workplace" Command="{Binding ElementName=MainWin, Path=MakeNewWorkPlaceCommand}" />
-                        <MenuItem Header="Browse MWS" Click="BrowseMWSItem_Click" />
+                        <MenuItem 
+                            Header="New Workplace"
+                            Command="{Binding MakeNewWorkPlaceCommand}" />
+                        <MenuItem
+                            Header="Browse MWS"
+                            Command="{Binding LoadMWSCommand}" />
                         <Separator />
-                        <MenuItem Header="{DynamicResource m_Save}" Click="MenuSaveBtn_Click" />
-                        <MenuItem Header="{DynamicResource m_SaveConfigAs}" Click="SaveAsItem_Click" />
+                        <MenuItem
+                            Header="{DynamicResource m_Save}"
+                            Command="{Binding Path=SaveCommand}" />
+                        <MenuItem
+                            Header="{DynamicResource m_SaveConfigAs}"
+                            Command="{Binding SaveAsCommand}" />
                         <Separator/>
-                        <MenuItem Header="Save Scene" Command="{Binding ElementName=MainWin, Path=SaveSceneCommand}"/>
-                        <MenuItem Header="Open Scene" Command="{Binding ElementName=MainWin, Path=OpenSceneCommand}"/>
+                        <MenuItem
+                            Header="Save Scene"
+                            Command="{Binding SaveSceneCommand}"/>
+                        <MenuItem 
+                            Header="Open Scene" 
+                            Command="{Binding OpenSceneCommand}"/>
                         <Separator/>
                         <MenuItem
                             Header="License"
-                            Command="{Binding ElementName=MainWin, Path=ShowLicenceCommand}" />
+                            Command="{Binding ShowLicenceCommand}" />
                         <Separator />
-                        <MenuItem Header="{DynamicResource common_Close}" Command="{Binding ElementName=MainWin, Path=ClosedCommand}" />
+                        <MenuItem Header="{DynamicResource common_Close}" 
+                                  Command="{Binding ElementName=MainWin, Path=ClosedCommand}" />
                     </MenuItem>
                     <MenuItem Header="Services">
                         <MenuItem
-                                Command="{Binding ElementName=MainWin, Path=RemoveOtherAppCommand}"
+                                Command="{Binding RemoveOtherAppCommand}"
                                 Header="Remove other process" />
                     </MenuItem>
                     <MenuItem x:Name="menuLanguage" Header="Language">
                     </MenuItem>
                 </MenuItem>
             </Menu>
-            <Button x:Name="MenuSaveBtn" FontFamily="Segoe MDL2 Assets" Content="&#xE792;" Width="25" Height="25" Margin="2" Padding="0,-1,0,0" FontSize="18" BorderBrush="{x:Null}" Background="{x:Null}" Click="MenuSaveBtn_Click" />
+            <Button 
+                x:Name="MenuSaveBtn" 
+                FontFamily="Segoe MDL2 Assets"
+                Content="&#xE792;"
+                Width="25" Height="25" 
+                Margin="2" Padding="0,-1,0,0" FontSize="18" 
+                BorderBrush="{x:Null}" Background="{x:Null}" Command="{Binding SaveCommand}" />
         </Controls:WindowCommands>
     </Controls:MetroWindow.LeftWindowCommands>
     <Controls:MetroWindow.RightWindowCommands>
         <Controls:WindowCommands>
-            <Label Margin="3" Content="{Binding cl_moncha_path}" VerticalAlignment="Top" Grid.ColumnSpan="3" HorizontalContentAlignment="Right" RenderTransformOrigin="0.7,-1.217" FontSize="10">
+            <Label Margin="3" Content="{Binding cl_moncha_path}" 
+                   VerticalAlignment="Top" Grid.ColumnSpan="3" 
+                   HorizontalContentAlignment="Right" 
+                   FontSize="10">
                 <Label.DataContext>
                     <Properties:Settings />
                 </Label.DataContext>
@@ -130,16 +154,16 @@
             <Ellipse
                 Height="15"
                 Width="15"
-                Fill="{Binding lockKey.IsLicensed, Converter={StaticResource LicenceKey}}"
+                Fill="{Binding ProjectorHub.lockKey.IsLicensed, Converter={StaticResource LicenceKey}}"
                 Margin="5,0">
             </Ellipse>
 
             <Controls:ToggleSwitch
-                        IsOn="{Binding UDPLaserListener.Status, Mode=OneWay}"
+                        IsOn="{Binding ProjectorHub.UDPLaserListener.Status, Mode=OneWay}"
                 OffContent="Ethernet"
                 OnContent="Listing"
                 VerticalAlignment="Center"
-                Toggled="ethernetToggle_Toggled"
+                Command="{Binding UDPToggleCommand}"
                 MinWidth="0"
                 Margin="3,0,3,0" />
             <Button
@@ -178,23 +202,23 @@
                     <Button
                         DockPanel.Dock="Top"
                         Content="{DynamicResource edit_Clear}"
-                         Command="{Binding ElementName=MainWin, Path=Clear}"
+                         Command="{Binding Path=Clear}"
                         HorizontalAlignment="Stretch" />
                     <Button
                         DockPanel.Dock="Top"
                         x:Name="Line"
                         Content="{DynamicResource edit_Line}"
-                        Command="{Binding ElementName=MainWin, Path=LineCommand}" />
+                        Command="{Binding Path=LineCommand}" />
                     <Button
                         DockPanel.Dock="Top"
                         x:Name="RectBtn"
                         Content="{DynamicResource edit_Mask}"
-                        Command="{Binding ElementName=MainWin, Path=MaskCommand}" />
+                        Command="{Binding Path=MaskCommand}" />
                 </DockPanel>
                 <Button
                     DockPanel.Dock="Left"
                     Content="{DynamicResource m_Open}"
-                    Command="{Binding ElementName=MainWin, Path=OpenCommand}"
+                    Command="{Binding OpenCommand}"
                     MinWidth="99" VerticalAlignment="Stretch" />
             </DockPanel>
 

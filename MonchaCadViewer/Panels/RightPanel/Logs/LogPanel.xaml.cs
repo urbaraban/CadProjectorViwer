@@ -23,23 +23,10 @@ namespace CadProjectorViewer.Panels.RightPanel
     /// </summary>
     public partial class LogPanel : UserControl
     {
-        public LogList Logs { get; } = new LogList();
-
         public LogPanel()
         {
             InitializeComponent();
-            Logs.Post = PostMessage;
         }
-
-
-        private void PostMessage(LogMessage logMessage)
-        {
-            LogListBox.Dispatcher.Invoke(() => { 
-                LogListBox.Items.Add(logMessage);
-                if (LogListBox.Items.Count > 50) LogListBox.Items.RemoveAt(0);
-            });
-        }
-
 
         private void ListViewItem_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
@@ -49,37 +36,5 @@ namespace CadProjectorViewer.Panels.RightPanel
                 logWindow.Show();
             }
         }
-    }
-
-    public class LogList : ObservableCollection<LogMessage>
-    {
-        public delegate void PostDelegate(LogMessage logMessage);
-        public PostDelegate Post { get; set; }
-
-        public void PostLog(string msg, string sender)
-        {
-            LogMessage logMessage = new LogMessage(msg, sender);
-            Post?.Invoke(logMessage);
-            base.Add(logMessage);
-        }
-    }
-
-
-    public struct LogMessage
-    {
-        private string message;
-        private string sender;
-        private DateTime time;
-
-        public LogMessage(string Message, string Sender)
-        {
-            this.message = Message;
-            this.sender = Sender;
-            this.time = DateTime.UtcNow;
-        }
-
-        public string Message => message;
-        public string Sender => sender;
-        public DateTime Time => time;
     }
 }

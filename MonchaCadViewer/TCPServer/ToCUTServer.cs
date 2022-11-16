@@ -1,6 +1,7 @@
 ﻿using CadProjectorSDK;
 using CadProjectorSDK.Scenes;
 using CadProjectorSDK.Scenes.Commands;
+using CadProjectorViewer.ToCommands;
 using CadProjectorViewer.ViewModel;
 using SuperSimpleTcp;
 using System;
@@ -16,9 +17,7 @@ namespace CadProjectorViewer.TCPServer
 {
     public class ToCUTServer
     {
-        public event EventHandler<ISceneCommand> SendedCommand;
-
-        public SceneModel MScene { get; }
+        public AppMainModel MainModel { get; }
 
         public bool IsListening => server != null && server.IsListening;
 
@@ -50,25 +49,18 @@ namespace CadProjectorViewer.TCPServer
         private void Events_DataReceived(object sender, DataReceivedEventArgs e)
         {
             string message = Encoding.UTF8.GetString(e.Data.Array, 0, e.Data.Count);
-            string[] split = message.Split(new[] { ':' }, 2);
-            if (split.Length > 0)
+            ToCommand.RunCommands(message, this.CommandsList);
+        }
+
+        public bool SendMessage(string Message)
+        {
+            bool connected = this.server.IsConnected(Port.ToString());
+            if (connected == true)
             {
-                ISceneCommand sceneCommand = null;
-                switch (split[0])
-                {
-                    case "NEXT":
-                        sceneCommand = new SelectNextCommand(true, MScene.Scene);
-                        break;
-                    case "PREV":
-                        sceneCommand = new SelectNextCommand(false, MScene.Scene);
-                        break;
-                    case "MOVE":
-                        Point point = ParseMovePoint(split[1]);
-                        sceneCommand = new MovingCommand(MScene.Scene, point.X, point.Y);
-                        break;
-                }
-                SendedCommand?.Invoke(this, sceneCommand);
+                byte[] bytes = Encoding.UTF8.GetBytes(Message);
+                this.server.Send(Port.ToString(), bytes);
             }
+            return connected;
         }
 
         private Point ParseMovePoint(string message)
@@ -96,10 +88,15 @@ namespace CadProjectorViewer.TCPServer
         }
 
 
+        private List<IToCommand> CommandsList { get; }
 
-        public ToCUTServer(SceneModel scene)
+        public ToCUTServer(AppMainModel appMainModel)
         {
-            this.MScene = scene;
+            this.MainModel = appMainModel;
+            this.CommandsList = new List<IToCommand>()
+            {
+                new SendFiles(appMainModel)
+            };
         }
 
         public void Stop()

@@ -64,13 +64,6 @@
                            FontFamily="Segoe MDL2 Assets"
                            Margin="3"
                            IsChecked="{Binding ShowCursor}" />
-                <Button
-                    Content="&#xE703;"
-                    Margin="3"
-                    FontSize="18"
-                    FontFamily="Segoe MDL2 Assets"
-                    Width="{Binding ActualHeight, RelativeSource={RelativeSource Self}}"
-                    Click="ShowTCPDialog_Click"/>
             </StackPanel>
         </DockPanel>
         <Grid Margin="0" Background="Gray" ClipToBounds="True">

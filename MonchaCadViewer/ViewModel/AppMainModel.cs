@@ -23,11 +23,16 @@ using CadProjectorSDK.Config;
 using ToGeometryConverter;
 using CadProjectorViewer.ViewModel.Modules;
 using System.Diagnostics;
+using CadProjectorViewer.TCPServer;
+using CadProjectorViewer.Dialogs;
+using CadProjectorViewer.ToCommands;
 
 namespace CadProjectorViewer.ViewModel
 {
     public class AppMainModel : INotifyPropertyChanged
     {
+        public ToCUTServer CUTServer { get; }
+
         public bool AdminMode => Debugger.IsAttached == true || Adminclick > 9;
         public int Adminclick 
         {
@@ -74,6 +79,13 @@ namespace CadProjectorViewer.ViewModel
             }
 
             WorkFolder.PathSelected += WorkFolder_PathSelected;
+
+            this.CUTServer = new ToCUTServer(this);
+        }
+
+        private void CUTServer_IncomingMessage(object sender, string e)
+        {
+            throw new NotImplementedException();
         }
 
         private async void WorkFolder_PathSelected(object sender, string e) => OpenGeometryFile(e);
@@ -251,6 +263,12 @@ namespace CadProjectorViewer.ViewModel
 
         public ICommand OpenCommand => new ActionCommand(Open);
 
+
+        public ICommand ShowTCPDialogCommand => new ActionCommand(() => {
+            ManipulatorTCPDialog manipulatorTCP = new ManipulatorTCPDialog(this.CUTServer);
+            manipulatorTCP.Show();
+        });
+
         private async void Open()
         {
             OpenFileDialog openFile = new OpenFileDialog();
@@ -288,6 +306,15 @@ namespace CadProjectorViewer.ViewModel
             }
         }
 
+        private List<IToCommand> toCommands { get; set; }
+
+        private void SetToCommandList()
+        {
+            this.toCommands = new List<IToCommand>()
+            {
+                new SendFiles(this)
+            };
+        }
 
         #region INotifyPropertyChanged
         public event PropertyChangedEventHandler PropertyChanged;

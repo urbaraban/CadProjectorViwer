@@ -20,7 +20,7 @@
     <TargetFrameworkProfile />
     <LangVersion>10.0</LangVersion>
     <RunAnalyzersDuringBuild>false</RunAnalyzersDuringBuild>
-    <PublishUrl>C:\2CUT\</PublishUrl>
+    <PublishUrl>Z:\soft\LaserCat\</PublishUrl>
     <Install>true</Install>
     <InstallFrom>Disk</InstallFrom>
     <UpdateEnabled>false</UpdateEnabled>
@@ -36,7 +36,7 @@
     <SuiteName>Viwer</SuiteName>
     <WebPage>publish.htm</WebPage>
     <OpenBrowserOnPublish>false</OpenBrowserOnPublish>
-    <ApplicationRevision>144</ApplicationRevision>
+    <ApplicationRevision>145</ApplicationRevision>
     <ApplicationVersion>0.8.1.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <CreateDesktopShortcut>true</CreateDesktopShortcut>
@@ -261,6 +261,9 @@
     <Compile Include="StaticTools\FileSave.cs" />
     <Compile Include="TCPServer\TCPTools.cs" />
     <Compile Include="TCPServer\ToCUTServer.cs" />
+    <Compile Include="ToCommands\SendFiles.cs" />
+    <Compile Include="ToCommands\IToCommand.cs" />
+    <Compile Include="ToCommands\ToCommand.cs" />
     <Compile Include="ViewModel\AppMainModel.cs" />
     <Compile Include="ViewModel\CanvasObj\CanvasLine.cs" />
     <Compile Include="ViewModel\CanvasObj\CanvasMesh.cs" />

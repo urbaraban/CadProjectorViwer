@@ -4,6 +4,10 @@ using CadProjectorSDK.Interfaces;
 using CadProjectorSDK.Render;
 using CadProjectorSDK.Scenes;
 using CadProjectorSDK.Scenes.Actions;
+using CadProjectorSDK.Scenes.Commands;
+using CadProjectorViewer.Dialogs;
+using CadProjectorViewer.TCPServer;
+using Microsoft.Xaml.Behaviors.Core;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -12,12 +16,16 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
+using System.Windows.Input;
+using System.Windows.Threading;
 using AppSt = CadProjectorViewer.Properties.Settings;
 
 namespace CadProjectorViewer.ViewModel
 {
     public class SceneModel : RenderDeviceModel
     {
+        private Dispatcher dispatcher { get; }
         public CadAnchor MousePosition => Scene.MousePosition;
 
         public bool ShowCursor
@@ -39,11 +47,10 @@ namespace CadProjectorViewer.ViewModel
         public override double Height => Size.Height;
         public override double Thinkess => Math.Max(Width, Height) * AppSt.Default.default_thinkess_percent;
 
-
         public SceneModel(ProjectionScene scene) : base(scene)
         {
+            this.dispatcher = Dispatcher.CurrentDispatcher;
             this.Scene = scene;
         }
-
     }
 }

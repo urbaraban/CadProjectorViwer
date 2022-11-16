@@ -239,46 +239,9 @@ namespace CadProjectorViewer.Panels.CanvasPanel
 
         }
 
-        public ToCUTServer CUTServer 
-        {
-            get => _cutserver;
-            set
-            {
-                if (_cutserver != null) _cutserver.SendedCommand -= _cutserver_SendedCommand;
-                _cutserver = value;
-                _cutserver.SendedCommand += _cutserver_SendedCommand;
-            }
-        }
 
-        private void _cutserver_SendedCommand(object sender, ISceneCommand e)
-        {
-            this.Dispatcher.Invoke(() => { 
-                if (this.ViewModel.RenderingDisplay is ProjectionScene scene)
-                {
-                    scene.HistoryCommands.Add(e);
-                }
-            });
-        }
 
-        private ToCUTServer _cutserver;
 
-        public ICommand StartTCPServer => new ActionCommand(() =>
-        {
-            if (ViewModel is SceneModel scene)
-            {
-                this.CUTServer = new ToCUTServer(scene);
-                this.CUTServer.Start();
-            }
-        });
-
-        public ICommand StopTCPServer => new ActionCommand(() =>
-        {
-            if (ViewModel is SceneModel scene)
-            {
-                this.CUTServer.Stop();
-                this.CUTServer = null;
-            }
-        });
 
         public ICommand RefreshFrameCommand => new ActionCommand(() => {
             if (ViewModel.RenderingDisplay is ProjectionScene scene)
@@ -309,19 +272,6 @@ namespace CadProjectorViewer.Panels.CanvasPanel
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(prop));
         }
         #endregion
-
-        private void ShowTCPDialog_Click(object sender, RoutedEventArgs e)
-        {
-            if (ViewModel is SceneModel scene)
-            {
-                if (this.CUTServer == null)
-                {
-                    this.CUTServer = new ToCUTServer(scene);
-                }
-                ManipulatorTCPDialog manipulatorTCP = new ManipulatorTCPDialog(this.CUTServer);
-                manipulatorTCP.Show();
-            }
-        }
     }
 
     public class CursorActionConverter : IValueConverter

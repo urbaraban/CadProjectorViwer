@@ -163,6 +163,11 @@
                 MinWidth="0"
                 Margin="3,0,3,0" />
             <Button
+                    Content="&#xE703;"
+                    FontFamily="Segoe MDL2 Assets"
+                    Width="{Binding ActualHeight, RelativeSource={RelativeSource Self}}"
+                    Command="{Binding ShowTCPDialogCommand}"/>
+            <Button
                 Content="T"
                 Command="{Binding ElementName=MainWin, Path=HideToTray}" />
         </Controls:WindowCommands>

@@ -204,7 +204,7 @@ namespace CadProjectorViewer.ViewModel.Modules
 
         public override bool Exists => File.Exists(FullName);
 
-        public string Extension => Path.GetExtension(FullName) ?? string.Empty;
+        public string Extension => Path.GetExtension(FullName).ToLower() ?? string.Empty;
 
         public override void Delete()
         {

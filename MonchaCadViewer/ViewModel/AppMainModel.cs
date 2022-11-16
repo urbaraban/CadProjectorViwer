@@ -22,11 +22,23 @@ using Microsoft.Win32;
 using CadProjectorSDK.Config;
 using ToGeometryConverter;
 using CadProjectorViewer.ViewModel.Modules;
+using System.Diagnostics;
 
 namespace CadProjectorViewer.ViewModel
 {
-    public class AppMainModel
+    public class AppMainModel : INotifyPropertyChanged
     {
+        public bool AdminMode => Debugger.IsAttached == true || Adminclick > 9;
+        public int Adminclick 
+        {
+            get => _adminclick;
+            set
+            {
+                _adminclick = value;
+            }
+        }
+        private int _adminclick = 0;
+
         public ProjectorHub ProjectorHub
         {
             get => projectorHub;
@@ -38,7 +50,10 @@ namespace CadProjectorViewer.ViewModel
         }
         private ProjectorHub projectorHub = new ProjectorHub(AppSt.Default.cl_moncha_path);
 
+        public WorkFolderList WorkFolder { get; } = new WorkFolderList();
+
         public LogList Logs { get; } = new LogList(string.Empty);
+
 
         public AppMainModel()
         {
@@ -57,7 +72,11 @@ namespace CadProjectorViewer.ViewModel
             {
                 projectorHub.UDPLaserListener.Run(AppSt.Default.ether_udp_port);
             }
+
+            WorkFolder.PathSelected += WorkFolder_PathSelected;
         }
+
+        private async void WorkFolder_PathSelected(object sender, string e) => OpenGeometryFile(e);
 
         public ICommand SaveCommand => new ActionCommand(() => SaveConfiguration(false));
 
@@ -134,7 +153,7 @@ namespace CadProjectorViewer.ViewModel
             }
         });
 
-        public ICommand LoadMWSCommand => new ActionCommand(() => FileLoad.LoadMoncha(ProjectorHub, true));
+        public ICommand LoadMWSCommand => new ActionCommand(() => FileLoad.LoadMoncha(ProjectorHub, false));
 
         public ICommand Clear => new ActionCommand(() => {
             ProjectorHub.ScenesCollection.SelectedScene.Clear();
@@ -252,15 +271,20 @@ namespace CadProjectorViewer.ViewModel
             openFile.FileName = null;
             if (openFile.ShowDialog() == true)
             {
-                if (await FileLoad.GetFilePath(openFile.FileName, projectorHub.ScenesCollection.SelectedScene.ProjectionSetting.PointStep.Value) is UidObject Obj)
+                OpenGeometryFile(openFile.FileName);
+            }
+        }
+
+        private async void OpenGeometryFile(string path)
+        {
+            if (await FileLoad.GetFilePath(path, this.ProjectorHub.ScenesCollection.SelectedScene.ProjectionSetting.PointStep.Value) is UidObject uidObject)
+            {
+                SceneTask sceneTask = new SceneTask()
                 {
-                    SceneTask sceneTask = new SceneTask()
-                    {
-                        Object = Obj,
-                        TableID = projectorHub.ScenesCollection.SelectedScene.TableID,
-                    };
-                    projectorHub.ScenesCollection.AddTask(sceneTask);
-                }
+                    Object = uidObject,
+                    TableID = projectorHub.ScenesCollection.SelectedScene.TableID,
+                };
+                this.ProjectorHub.ScenesCollection.AddTask(sceneTask);
             }
         }
 

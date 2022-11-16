@@ -4,15 +4,15 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:Properties="clr-namespace:CadProjectorViewer.Properties"
-             xmlns:togeometryconverter="clr-namespace:ToGeometryConverter;assembly=ToGeometryConverter" xmlns:rightpanel="clr-namespace:CadProjectorViewer.Panels.RightPanel"
-             d:DataContext="{d:DesignInstance Type=togeometryconverter:GCFormat}"
+             xmlns:rightpanel="clr-namespace:CadProjectorViewer.Panels.RightPanel"
+             xmlns:modul="clr-namespace:CadProjectorViewer.ViewModel.Modules"
              mc:Ignorable="d"
-             x:Name="WorkFolderMain"
+             d:DataContext="{d:DesignInstance Type={x:Type modul:WorkFolderList}}"
              d:DesignHeight="450" d:DesignWidth="200">
     <UserControl.Resources>
         <ContextMenu x:Key="itemMenu">
-            <MenuItem Tag="OpenFolder" Header="Show folder..." Click="MenuItem_Click"/>
-            <MenuItem Tag="OpenEditor" Header="Open editor" Click="MenuItem_Click"/>
+            <MenuItem Header="Show folder..." Command="{Binding OpenFolderCommand}"/>
+            <MenuItem Header="Open editor" Command="{Binding OpenEditorCommand}"/>
         </ContextMenu>
         <rightpanel:IconConverter x:Key="IconConverter" />
     </UserControl.Resources>
@@ -27,18 +27,23 @@
             <RowDefinition/>
         </Grid.RowDefinitions>
 
-        <Button x:Name="WorkFolderBtn" Content="{DynamicResource m_Browse}" Margin="3,0,5,10" VerticalAlignment="Bottom" Click="WorkFolderBtn_Click" Height="20" Grid.Column="1"/>
+        <Button 
+            Command="{Binding SelectWorkFolderCommand}"
+            Content="{DynamicResource m_Browse}" 
+            Margin="3,0,5,10" VerticalAlignment="Bottom"
+            Height="20" Grid.Column="1"/>
         <Label x:Name="WorkFolderLabel" Content="{Binding save_work_folder, Mode=OneWay}" Margin="32,7,10,3">
             <Label.DataContext>
                 <Properties:Settings/>
             </Label.DataContext>
         </Label>
-        <ListView x:Name="WorkFolderListBox" Margin="5,5,5,5" Grid.Row="2" Grid.ColumnSpan="2" BorderThickness="1" BorderBrush="LightGray" KeyUp="WorkFolderListBox_KeyUp">
-            <ListView.Resources>
-                <Style TargetType="GridViewHeaderRowPresenter">
-                    <EventSetter Event="MouseDown" Handler="TextBlock_MouseDownAsync"/>
-                </Style>
-            </ListView.Resources>
+        <ListView
+            ItemsSource="{Binding FilInfosCollection}"
+            x:Name="WorkFolderListBox"
+            Margin="5,5,5,5" 
+            Grid.Row="2" Grid.ColumnSpan="2"
+            BorderThickness="1" BorderBrush="LightGray"
+            KeyUp="WorkFolderListBox_KeyUp">
             <ListView.View>
                 <GridView>
                     <GridViewColumn Header="ic" Width="30">
@@ -55,41 +60,42 @@
             </ListView.View>
             <ListView.ItemContainerStyle>
                 <Style TargetType="ListViewItem">
-                    <EventSetter Event="MouseDoubleClick" Handler="TextBlock_MouseDownAsync"/>
-                    <EventSetter Event="ContextMenuClosing" Handler="Border_ContextMenuClosing"/>
+                    <EventSetter Event="MouseDoubleClick" Handler="ListViewItem_MouseDoubleClick"/>
                     <Setter Property="ToolTip" Value="{Binding Path=FullName}"/>
                     <Setter Property="ContextMenu" Value="{StaticResource itemMenu}"/>
                 </Style>
             </ListView.ItemContainerStyle>
         </ListView>
         <Button 
-            x:Name="WorkFolderRefreshBtn"  
             FontFamily="Segoe MDL2 Assets" 
             Content="&#xEDAB;" 
             HorizontalAlignment="Left" 
             Margin="5,10,0,10"
             VerticalAlignment="Center"
             Width="{Binding ActualHeight, RelativeSource={RelativeSource Self}}" 
-            Click="WorkFolderRefreshBtn_Click"/>
+            Command="{Binding RefreshListCommand}"/>
         <DockPanel 
             Grid.Row="1">
             <Button
                 DockPanel.Dock="Right"
                 Content="X"
-                Command="{Binding ElementName= WorkFolderMain, Path=ClearFilterBoxCommand}"
+                Command="{Binding ClearFilterBoxCommand}"
                 Width="{Binding ActualHeight, RelativeSource={RelativeSource Self}}" />
             <TextBox
+                Text="{Binding StringFilter, UpdateSourceTrigger=PropertyChanged}"
+                x:Name="WorkFolderFilter"
                 DockPanel.Dock="Right"
-                x:Name="WorkFolderFilter" 
                 Margin="5,2,1.5,2"  
                 TextWrapping="Wrap" 
                 VerticalContentAlignment="Center" 
-                TextChanged="WorkFolderFilter_TextChanged" 
                 Focusable="True" 
                 GotFocus="WorkFolderFilter_GotFocus" 
                 KeyUp="WorkFolderFilter_KeyUp"/>
         </DockPanel>
-       <ComboBox x:Name="ComboFilter" Grid.Column="1" Margin="4,2,5,0" Grid.Row="1" VerticalAlignment="Center"
-                  DisplayMemberPath="Name" SelectionChanged="ComboFilter_SelectionChanged"/>
+       <ComboBox 
+           ItemsSource="{Binding Extensions}"
+           SelectedItem="{Binding SelectExtension}"
+           Grid.Column="1" Margin="4,2,5,0" Grid.Row="1" VerticalAlignment="Center"
+                  DisplayMemberPath="Name"/>
     </Grid>
 </UserControl>

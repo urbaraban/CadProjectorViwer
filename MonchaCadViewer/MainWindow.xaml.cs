@@ -64,13 +64,8 @@ namespace CadProjectorViewer
     /// <summary>
     /// Логика взаимодействия для MainWindow.xaml
     /// </summary>
-    public partial class MainWindow : MetroWindow, INotifyPropertyChanged
+    public partial class MainWindow : MetroWindow
     {
-        public bool AdminMode => Debugger.IsAttached == true || _adminlick > 9;
-
-
-        private int _adminlick;
-
         public delegate void Logging(string message, string sender);
         public static Logging Log;
         private AppMainModel mainModel { get; } = new AppMainModel();
@@ -81,12 +76,7 @@ namespace CadProjectorViewer
         {
             InitializeComponent();
 
-            SetLanguage();
-
-            App.SetProgress?.Invoke(1, 1, "Loaded");
-
-            this.Title = $"CUT — Viewer v{Assembly.GetExecutingAssembly().GetName().VersionCompatibility.ToString()}";
-
+            LanguageSet();
             this.DataContext = mainModel;
 
             HotKeysManager.KeyActions.Add(new KeyAction()
@@ -98,7 +88,16 @@ namespace CadProjectorViewer
             if (this.Height > SystemParameters.FullPrimaryScreenHeight * 0.9) this.Height = SystemParameters.FullPrimaryScreenHeight * 0.9;
             if (this.Width > SystemParameters.FullPrimaryScreenWidth * 0.9) this.Width = SystemParameters.FullPrimaryScreenWidth * 0.9;
 
-            #region Language
+            Version version = Assembly.GetExecutingAssembly().GetName().Version;
+            this.Title = $"CUT — Viewer v{version.Build.ToString()}.{version.MinorRevision.ToString()}";
+
+
+            App.SetProgress?.Invoke(1, 1, "Loaded");
+        }
+
+        #region Language
+        private void LanguageSet()
+        {
             App.LanguageChanged += LanguageChanged;
 
             CultureInfo currLang = App.Language;
@@ -115,40 +114,7 @@ namespace CadProjectorViewer
             }
 
             App.Language = AppSt.Default.DefaultLanguage;
-            #endregion
-
-            Log = LogPanel.Logs.PostLog;
-            SetProgress = ProgressPanel.SetProgressBar;
-
-            ProjectorHub.Log = LogPanel.Logs.PostLog;
-            ProjectorHub.SetProgress = ProgressPanel.SetProgressBar;
-
-            GCTools.Log = LogPanel.Logs.PostLog;
-            GCTools.SetProgress = ProgressPanel.SetProgressBar;
-
-            SetProgress?.Invoke(1, 1, "Loaded");
-
-            this.Title = $"CUT — Viewer v{Assembly.GetExecutingAssembly().GetName().Version.ToString()}";
-
-            HotKeysManager.KeyActions.Add(new KeyAction()
-            {
-                Keys = new Key[] { Key.Escape },
-                GetAction = ProjectorHub.ScenesCollection.SelectedScene.Break
-            });
-
-            projectorHub.UDPLaserListener.OutFilePathWorker = FileLoad.GetUDPString;
-
-            if (AppSt.Default.udp_auto_run == true)
-            {
-                projectorHub.UDPLaserListener.Run(AppSt.Default.ether_udp_port);
-            }
-
-            if (this.Height > SystemParameters.FullPrimaryScreenHeight * 0.9) this.Height = SystemParameters.FullPrimaryScreenHeight * 0.9;
-            if (this.Width > SystemParameters.FullPrimaryScreenWidth * 0.9) this.Width = SystemParameters.FullPrimaryScreenWidth * 0.9;
-
         }
-
-
 
         private void LanguageChanged(Object sender, EventArgs e)
         {
@@ -184,8 +150,7 @@ namespace CadProjectorViewer
             GC.WaitForPendingFinalizers();
         }
 
-
-
+        #region Kompas3D
         private void kmpsConnectToggle_Toggled(object sender, RoutedEventArgs e)
         {
             if (KmpsAppl.KompasAPI == null)
@@ -234,7 +199,6 @@ namespace CadProjectorViewer
             kmpsConnectToggle.IsOn = e;
         }
 
-
         private async void kmpsSelectBtn_Click(object sender, RoutedEventArgs e)
         {
             if (KmpsAppl.KompasAPI != null)
@@ -278,6 +242,7 @@ namespace CadProjectorViewer
                 mainModel.ProjectorHub.ScenesCollection.AddTask(sceneTask);
             }
         }
+        #endregion
 
         protected override void OnKeyUp(KeyEventArgs e)
         {
@@ -286,83 +251,83 @@ namespace CadProjectorViewer
            // HotKeysManager.RunAsync(new Key[] { e.Key });
 
             double _mult = Keyboard.Modifiers == ModifierKeys.Shift ? 10 : 1;
-            double step = ProjectorHub.ScenesCollection.SelectedScene.Movespeed;
+            double step = mainModel.ProjectorHub.ScenesCollection.SelectedScene.Movespeed;
 
             switch (e.Key)
             {
                 case Key.W:
-                    ProjectorHub.ScenesCollection.SelectedScene.HistoryCommands.Add(
-                        new MovingCommand(ProjectorHub.ScenesCollection.SelectedScene.SelectedObjects,
+                    mainModel.ProjectorHub.ScenesCollection.SelectedScene.HistoryCommands.Add(
+                        new MovingCommand(mainModel.ProjectorHub.ScenesCollection.SelectedScene.SelectedObjects,
                         0, -step * _mult));
                     break;
                 case Key.S:
-                    ProjectorHub.ScenesCollection.SelectedScene.HistoryCommands.Add(
-                        new MovingCommand(ProjectorHub.ScenesCollection.SelectedScene.SelectedObjects,
+                    mainModel.ProjectorHub.ScenesCollection.SelectedScene.HistoryCommands.Add(
+                        new MovingCommand(mainModel.ProjectorHub.ScenesCollection.SelectedScene.SelectedObjects,
                         0, step * _mult));
                     break;
                 case Key.A:
-                    ProjectorHub.ScenesCollection.SelectedScene.HistoryCommands.Add(
-                        new MovingCommand(ProjectorHub.ScenesCollection.SelectedScene.SelectedObjects,
+                    mainModel.ProjectorHub.ScenesCollection.SelectedScene.HistoryCommands.Add(
+                        new MovingCommand(mainModel.ProjectorHub.ScenesCollection.SelectedScene.SelectedObjects,
                         -step * _mult, 0));
                     break;
                 case Key.D:
-                    ProjectorHub.ScenesCollection.SelectedScene.HistoryCommands.Add(
-                        new MovingCommand(ProjectorHub.ScenesCollection.SelectedScene.SelectedObjects,
+                    mainModel.ProjectorHub.ScenesCollection.SelectedScene.HistoryCommands.Add(
+                        new MovingCommand(mainModel.ProjectorHub.ScenesCollection.SelectedScene.SelectedObjects,
                         step * _mult, 0));
                     break;
                 case Key.Z:
                     if (Keyboard.Modifiers == ModifierKeys.Control)
                     {
-                        ProjectorHub.ScenesCollection.SelectedScene.HistoryCommands.UndoLast();
+                        mainModel.ProjectorHub.ScenesCollection.SelectedScene.HistoryCommands.UndoLast();
                     }
                     break;
                 case Key.Q:
 ;
-                    this.SelectNextCommand.Execute(this);
+                    mainModel.SelectNextCommand.Execute(this);
                     break;
                 case Key.E:
-                    this.SelectPreviousCommand.Execute(this);
+                    mainModel.SelectPreviousCommand.Execute(this);
                     break;
                 case Key.OemPlus:
                     break;
                 case Key.D1:
                     if (Keyboard.Modifiers == ModifierKeys.Control)
-                        ProjectorHub.ScenesCollection.SelectedScene.Projectors.SelectedItem.DeviceBright(2);
+                        mainModel.ProjectorHub.ScenesCollection.SelectedScene.Projectors.SelectedItem.DeviceBright(2);
                     break;
                 case Key.D2:
                     if (Keyboard.Modifiers == ModifierKeys.Control)
-                        ProjectorHub.ScenesCollection.SelectedScene.Projectors.SelectedItem.DeviceBright(3);
+                        mainModel.ProjectorHub.ScenesCollection.SelectedScene.Projectors.SelectedItem.DeviceBright(3);
                     break;
                 case Key.D3:
                     if (Keyboard.Modifiers == ModifierKeys.Control)
-                        ProjectorHub.ScenesCollection.SelectedScene.Projectors.SelectedItem.DeviceBright(4);
+                        mainModel.ProjectorHub.ScenesCollection.SelectedScene.Projectors.SelectedItem.DeviceBright(4);
                     break;
                 case Key.D4:
                     if (Keyboard.Modifiers == ModifierKeys.Control)
-                        ProjectorHub.ScenesCollection.SelectedScene.Projectors.SelectedItem.DeviceBright(5);
+                        mainModel.ProjectorHub.ScenesCollection.SelectedScene.Projectors.SelectedItem.DeviceBright(5);
                     break;
                 case Key.D5:
                     if (Keyboard.Modifiers == ModifierKeys.Control)
-                        ProjectorHub.ScenesCollection.SelectedScene.Projectors.SelectedItem.DeviceBright(6);
+                        mainModel.ProjectorHub.ScenesCollection.SelectedScene.Projectors.SelectedItem.DeviceBright(6);
                     break;
                 case Key.D6:
                     if (Keyboard.Modifiers == ModifierKeys.Control)
-                        ProjectorHub.ScenesCollection.SelectedScene.Projectors.SelectedItem.DeviceBright(7);
+                        mainModel.ProjectorHub.ScenesCollection.SelectedScene.Projectors.SelectedItem.DeviceBright(7);
                     break;
                 case Key.D7:
                     if (Keyboard.Modifiers == ModifierKeys.Control)
-                        ProjectorHub.ScenesCollection.SelectedScene.Projectors.SelectedItem.DeviceBright(8);
+                        mainModel.ProjectorHub.ScenesCollection.SelectedScene.Projectors.SelectedItem.DeviceBright(8);
                     break;
                 case Key.D8:
                     if (Keyboard.Modifiers == ModifierKeys.Control)
-                        ProjectorHub.ScenesCollection.SelectedScene.Projectors.SelectedItem.DeviceBright(9);
+                        mainModel.ProjectorHub.ScenesCollection.SelectedScene.Projectors.SelectedItem.DeviceBright(9);
                     break;
                 case Key.D9:
                     if (Keyboard.Modifiers == ModifierKeys.Control)
-                        ProjectorHub.ScenesCollection.SelectedScene.Projectors.SelectedItem.DeviceBright(10);
+                        mainModel.ProjectorHub.ScenesCollection.SelectedScene.Projectors.SelectedItem.DeviceBright(10);
                     break;
                 case Key.Escape:
-                    ProjectorHub.ScenesCollection.SelectedScene.Break();
+                    mainModel.ProjectorHub.ScenesCollection.SelectedScene.Break();
                     break;
             }
         }
@@ -466,94 +431,9 @@ namespace CadProjectorViewer
             this.Close();
         });
 
-        public ICommand PlayAllCommand => new ActionCommand(() =>
+        private void ProgressPanel_MouseDown(object sender, MouseButtonEventArgs e)
         {
-            bool stat = !this.projectorHub.ScenesCollection.Any(sc => sc.Play);
-            foreach (ProjectionScene scene in this.projectorHub.ScenesCollection)
-            {
-                scene.Play = stat;
-            }
-        });
-
-
-        public ICommand SaveSceneCommand => new ActionCommand(() => {
-            SaveFileDialog saveFileDialog = new SaveFileDialog();
-            saveFileDialog.Filter = "2CUT Scene (*.2scn)|*.2scn";
-            if (saveFileDialog.ShowDialog() == true)
-            {
-                FileSave.SaveScene(projectorHub.ScenesCollection.SelectedScene, saveFileDialog.FileName);
-                //SaveScene.WriteXML(projectorHub.ScenesCollection.SelectedScene, saveFileDialog.FileName);
-            }
-           
-        });
-
-        public ICommand OpenSceneCommand => new ActionCommand(() => {
-            OpenFileDialog fileDialog = new OpenFileDialog();
-            fileDialog.Filter = "Moncha (.2scn)|*.2scn|All Files (*.*)|*.*";
-            if (fileDialog.ShowDialog() == true)
-            {
-                projectorHub.ScenesCollection.AddTask(new SceneTask(SaveScene.ReadXML(fileDialog.FileName)));
-            }
-        });
-
-
-        public ICommand MakeNewWorkPlaceCommand => new ActionCommand(() => {
-            this.ProjectorHub.Disconnect();
-            this.ProjectorHub = new ProjectorHub(string.Empty);
-            GC.Collect();
-        });
-
-        public ICommand OpenCommand => new ActionCommand(Open);
-
-        private async void Open()
-        {
-            WinForms.OpenFileDialog openFile = new WinForms.OpenFileDialog();
-            string filter = FileLoad.GetFilter();
-            openFile.Filter = filter;
-            if (AppSt.Default.save_work_folder == string.Empty)
-            {
-                WinForms.FolderBrowserDialog folderDialog = new WinForms.FolderBrowserDialog();
-
-                if (folderDialog.ShowDialog() == WinForms.DialogResult.OK)
-                {
-                    AppSt.Default.save_work_folder = folderDialog.SelectedPath;
-                    AppSt.Default.Save();
-                }
-            }
-
-            openFile.InitialDirectory = AppSt.Default.save_work_folder;
-            openFile.FileName = null;
-            if (openFile.ShowDialog() == WinForms.DialogResult.OK)
-            {
-                if (await FileLoad.GetFilePath(openFile.FileName, projectorHub.ScenesCollection.SelectedScene.ProjectionSetting.PointStep.Value) is UidObject Obj)
-                {
-                    SceneTask sceneTask = new SceneTask()
-                    {
-                        Object = Obj,
-                        TableID = projectorHub.ScenesCollection.SelectedScene.TableID,
-                    };
-                    projectorHub.ScenesCollection.AddTask(sceneTask);
-                }
-            }
-        }
-
-        #region INotifyPropertyChanged
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        public void OnPropertyChanged([CallerMemberName] string prop = "")
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(prop));
-        }
-        #endregion
-
-
-
-        private async void ReconnectButton_Click(object sender, RoutedEventArgs e)
-        {
-            if (sender is Button button && button.DataContext is IConnected connected)
-            {
-                await connected.Reconnect();
-            }
+            this.mainModel.Adminclick += 1;
         }
     }
 

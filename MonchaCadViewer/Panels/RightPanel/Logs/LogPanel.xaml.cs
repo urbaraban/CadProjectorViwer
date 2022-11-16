@@ -1,4 +1,5 @@
 ﻿using CadProjectorViewer.Panels.RightPanel.Logs;
+using CadProjectorViewer.ViewModel.Modules;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;

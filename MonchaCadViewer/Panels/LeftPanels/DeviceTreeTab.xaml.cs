@@ -80,12 +80,6 @@ namespace CadProjectorViewer.Panels
             }
         }
 
-
-        private void RefreshLaser_Click_1(object sender, RoutedEventArgs e)
-        {
-            projectorHub.Load(AppSt.Default.cl_moncha_path);
-        }
-
         private void AddLaser_Click(object sender, RoutedEventArgs e)
         {
             LaserSearcher DeviceManaged = new LaserSearcher(projectorHub);

@@ -8,7 +8,7 @@
     xmlns:cadprojectorsdk="clr-namespace:CadProjectorSDK;assembly=CadProjectorSDK" 
     xmlns:converters="clr-namespace:CadProjectorViewer.Converters"
     x:Class="CadProjectorViewer.Panels.DeviceTab"
-    d:DataContext="{d:DesignInstance Type={x:Type dvc:LProjector}}"
+    d:DataContext="{d:DesignInstance Type={x:Type dvc:ProjectorCollection}}"
     Padding="0"
     d:DesignHeight="550"
     d:DesignWidth="300"
@@ -74,11 +74,10 @@
                         Width="{Binding ActualHeight, RelativeSource={RelativeSource Self}}" />
                 <ComboBox
                     x:Name="DeviceCombo"  
-                    d:DataContext="{d:DesignInstance Type={x:Type cadprojectorsdk:ProjectorHub}}"
                     DockPanel.Dock="Left"
                     SelectedValuePath="NameID"
-                    SelectedItem="{Binding ScenesCollection.SelectedScene.Projectors.SelectedItem}"
-                    ItemsSource="{Binding ScenesCollection.SelectedScene.Projectors}">
+                    SelectedItem="{Binding SelectedItem}"
+                    ItemsSource="{Binding .}">
                     <ComboBox.ItemTemplate>
                         <DataTemplate>
                             <TextBlock>

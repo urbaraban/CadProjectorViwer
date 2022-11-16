@@ -3,8 +3,8 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-            xmlns:rightpanel="clr-namespace:CadProjectorViewer.Panels.RightPanel" 
-            d:DataContext="{d:DesignInstance Type=rightpanel:LogMessage}"
+            xmlns:modules="clr-namespace:CadProjectorViewer.ViewModel.Modules" 
+            d:DataContext="{d:DesignInstance Type=modules:LogMessage}"
              mc:Ignorable="d" 
              d:DesignHeight="400" d:DesignWidth="200">
     <UserControl.Resources>
@@ -17,8 +17,8 @@
             LastChildFill="False">
         </DockPanel>
         <DockPanel>
-            <ListView 
-                x:Name="LogListBox"
+            <ListView
+                ItemsSource="{Binding .}"
                 Margin="5,5,5,5" 
                 BorderThickness="1"
                 BorderBrush="LightGray">

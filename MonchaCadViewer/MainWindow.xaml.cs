@@ -64,8 +64,15 @@ namespace CadProjectorViewer
     /// <summary>
     /// Логика взаимодействия для MainWindow.xaml
     /// </summary>
-    public partial class MainWindow : MetroWindow
+    public partial class MainWindow : MetroWindow, INotifyPropertyChanged
     {
+        public bool AdminMode => Debugger.IsAttached == true || _adminlick > 9;
+
+
+        private int _adminlick;
+
+        public delegate void Logging(string message, string sender);
+        public static Logging Log;
         private AppMainModel mainModel { get; } = new AppMainModel();
 
         private KmpsAppl kmpsAppl;
@@ -91,11 +98,7 @@ namespace CadProjectorViewer
             if (this.Height > SystemParameters.FullPrimaryScreenHeight * 0.9) this.Height = SystemParameters.FullPrimaryScreenHeight * 0.9;
             if (this.Width > SystemParameters.FullPrimaryScreenWidth * 0.9) this.Width = SystemParameters.FullPrimaryScreenWidth * 0.9;
 
-        }
-
-        #region Language
-        private void SetLanguage()
-        {
+            #region Language
             App.LanguageChanged += LanguageChanged;
 
             CultureInfo currLang = App.Language;
@@ -112,7 +115,40 @@ namespace CadProjectorViewer
             }
 
             App.Language = AppSt.Default.DefaultLanguage;
+            #endregion
+
+            Log = LogPanel.Logs.PostLog;
+            SetProgress = ProgressPanel.SetProgressBar;
+
+            ProjectorHub.Log = LogPanel.Logs.PostLog;
+            ProjectorHub.SetProgress = ProgressPanel.SetProgressBar;
+
+            GCTools.Log = LogPanel.Logs.PostLog;
+            GCTools.SetProgress = ProgressPanel.SetProgressBar;
+
+            SetProgress?.Invoke(1, 1, "Loaded");
+
+            this.Title = $"CUT — Viewer v{Assembly.GetExecutingAssembly().GetName().Version.ToString()}";
+
+            HotKeysManager.KeyActions.Add(new KeyAction()
+            {
+                Keys = new Key[] { Key.Escape },
+                GetAction = ProjectorHub.ScenesCollection.SelectedScene.Break
+            });
+
+            projectorHub.UDPLaserListener.OutFilePathWorker = FileLoad.GetUDPString;
+
+            if (AppSt.Default.udp_auto_run == true)
+            {
+                projectorHub.UDPLaserListener.Run(AppSt.Default.ether_udp_port);
+            }
+
+            if (this.Height > SystemParameters.FullPrimaryScreenHeight * 0.9) this.Height = SystemParameters.FullPrimaryScreenHeight * 0.9;
+            if (this.Width > SystemParameters.FullPrimaryScreenWidth * 0.9) this.Width = SystemParameters.FullPrimaryScreenWidth * 0.9;
+
         }
+
+
 
         private void LanguageChanged(Object sender, EventArgs e)
         {
@@ -359,10 +395,6 @@ namespace CadProjectorViewer
             else this.WindowState = WindowState.Normal;
         }
 
-        protected override void OnClosing(CancelEventArgs e)
-        {
-            base.OnClosing(e);
-        }
 
         protected override void OnClosed(EventArgs e)
         {
@@ -433,6 +465,96 @@ namespace CadProjectorViewer
             mainModel.ProjectorHub.Disconnect();
             this.Close();
         });
+
+        public ICommand PlayAllCommand => new ActionCommand(() =>
+        {
+            bool stat = !this.projectorHub.ScenesCollection.Any(sc => sc.Play);
+            foreach (ProjectionScene scene in this.projectorHub.ScenesCollection)
+            {
+                scene.Play = stat;
+            }
+        });
+
+
+        public ICommand SaveSceneCommand => new ActionCommand(() => {
+            SaveFileDialog saveFileDialog = new SaveFileDialog();
+            saveFileDialog.Filter = "2CUT Scene (*.2scn)|*.2scn";
+            if (saveFileDialog.ShowDialog() == true)
+            {
+                FileSave.SaveScene(projectorHub.ScenesCollection.SelectedScene, saveFileDialog.FileName);
+                //SaveScene.WriteXML(projectorHub.ScenesCollection.SelectedScene, saveFileDialog.FileName);
+            }
+           
+        });
+
+        public ICommand OpenSceneCommand => new ActionCommand(() => {
+            OpenFileDialog fileDialog = new OpenFileDialog();
+            fileDialog.Filter = "Moncha (.2scn)|*.2scn|All Files (*.*)|*.*";
+            if (fileDialog.ShowDialog() == true)
+            {
+                projectorHub.ScenesCollection.AddTask(new SceneTask(SaveScene.ReadXML(fileDialog.FileName)));
+            }
+        });
+
+
+        public ICommand MakeNewWorkPlaceCommand => new ActionCommand(() => {
+            this.ProjectorHub.Disconnect();
+            this.ProjectorHub = new ProjectorHub(string.Empty);
+            GC.Collect();
+        });
+
+        public ICommand OpenCommand => new ActionCommand(Open);
+
+        private async void Open()
+        {
+            WinForms.OpenFileDialog openFile = new WinForms.OpenFileDialog();
+            string filter = FileLoad.GetFilter();
+            openFile.Filter = filter;
+            if (AppSt.Default.save_work_folder == string.Empty)
+            {
+                WinForms.FolderBrowserDialog folderDialog = new WinForms.FolderBrowserDialog();
+
+                if (folderDialog.ShowDialog() == WinForms.DialogResult.OK)
+                {
+                    AppSt.Default.save_work_folder = folderDialog.SelectedPath;
+                    AppSt.Default.Save();
+                }
+            }
+
+            openFile.InitialDirectory = AppSt.Default.save_work_folder;
+            openFile.FileName = null;
+            if (openFile.ShowDialog() == WinForms.DialogResult.OK)
+            {
+                if (await FileLoad.GetFilePath(openFile.FileName, projectorHub.ScenesCollection.SelectedScene.ProjectionSetting.PointStep.Value) is UidObject Obj)
+                {
+                    SceneTask sceneTask = new SceneTask()
+                    {
+                        Object = Obj,
+                        TableID = projectorHub.ScenesCollection.SelectedScene.TableID,
+                    };
+                    projectorHub.ScenesCollection.AddTask(sceneTask);
+                }
+            }
+        }
+
+        #region INotifyPropertyChanged
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        public void OnPropertyChanged([CallerMemberName] string prop = "")
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(prop));
+        }
+        #endregion
+
+
+
+        private async void ReconnectButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (sender is Button button && button.DataContext is IConnected connected)
+            {
+                await connected.Reconnect();
+            }
+        }
     }
 
     public class MultiObjectList : IMultiValueConverter

@@ -49,7 +49,8 @@ namespace CadProjectorViewer.TCPServer
         private void Events_DataReceived(object sender, DataReceivedEventArgs e)
         {
             string message = Encoding.UTF8.GetString(e.Data.Array, 0, e.Data.Count);
-            ToCommand.RunCommands(message, this.CommandsList);
+            IEnumerable<CommandDummy> commands = ToCommand.ParseDummys(message);
+
         }
 
         public bool SendMessage(string Message)

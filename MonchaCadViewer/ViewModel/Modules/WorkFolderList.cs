@@ -99,10 +99,17 @@ namespace CadProjectorViewer.ViewModel.Modules
 
         private void RefreshWorkFolderList(string Path)
         {
-            if (Directory.Exists(Path) == true)
-            {
-                List<FileSystemInfo> infos = new List<FileSystemInfo>();
+            List<FileSystemInfo> fileSystemInfos = GetFolderItems(Path);
+            CollectionView view = CollectionViewSource.GetDefaultView(fileSystemInfos) as CollectionView;
+            FilInfosCollection = view;
+        }
 
+        public List<FileSystemInfo> GetFolderItems(string Path)
+        {
+            List<FileSystemInfo> infos = new List<FileSystemInfo>();
+
+            if (Directory.Exists(Path))
+            {
                 if (AlreadyDirectory.FullName != Path)
                     this.AlreadyDirectory = new DirectoryInfo(Path);
 
@@ -122,10 +129,9 @@ namespace CadProjectorViewer.ViewModel.Modules
                         infos.Add(new FileInfoItem(path));
                     }
                 }
-
-                CollectionView view = CollectionViewSource.GetDefaultView(infos) as CollectionView;
-                FilInfosCollection = view;
             }
+
+            return infos;
         }
 
         public ICommand SelectWorkFolderCommand => new ActionCommand(() =>

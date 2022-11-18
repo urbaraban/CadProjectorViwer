@@ -150,7 +150,9 @@
             <Ellipse
                 Height="15"
                 Width="15"
-                Fill="{Binding ProjectorHub.lockKey.IsLicensed, Converter={StaticResource LicenceKey}}"
+                Fill="{Binding ProjectorHub.LockKey.IsLicensed, Converter={StaticResource LicenceKey}}"
+                ToolTip="{Binding StringFormat= Licensed: {0},
+                Path=ProjectorHub.LockKey.IsLicensed}"
                 Margin="5,0">
             </Ellipse>
 

@@ -73,22 +73,19 @@ namespace CadProjectorViewer
 
         private async void DeviceManagedForm_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
-            if (ProjectorHub.lockKey.IsLicensed == true)
+            foreach (IpSelect device in FoundDeviceList.Items)
             {
-                foreach (IpSelect device in FoundDeviceList.Items)
+                if (device != null && device.IsSelected == true)
                 {
-                    if (device != null && device.IsSelected == true)
-                    {
-                        ProjectorHub.Projectors.Add(await DevicesMg.GetDeviceAsync(device.iPAddress, device.DvcType, ProjectorHub.Projectors.Count));
-                    }
+                    ProjectorHub.Projectors.Add(await DevicesMg.GetDeviceAsync(device.iPAddress, device.DvcType, ProjectorHub.Projectors.Count));
                 }
+            }
 
-                foreach (IpSelect device in MonchaDeviceList.Items)
+            foreach (IpSelect device in MonchaDeviceList.Items)
+            {
+                if (device != null && device.IsSelected == false)
                 {
-                    if (device != null && device.IsSelected == false)
-                    {
-                        ProjectorHub.Projectors.RemoveDevice(device.iPAddress);
-                    }
+                    ProjectorHub.Projectors.RemoveDevice(device.iPAddress);
                 }
             }
         }

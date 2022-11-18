@@ -30,7 +30,7 @@ using CadProjectorViewer.ToCommands;
 namespace CadProjectorViewer.ViewModel
 {
     public class AppMainModel : INotifyPropertyChanged
-    {
+    { 
         public ToCUTServer CUTServer { get; }
 
         public bool AdminMode => Debugger.IsAttached == true || Adminclick > 9;
@@ -190,7 +190,7 @@ namespace CadProjectorViewer.ViewModel
         });
 
         public ICommand ShowLicenceCommand => new ActionCommand(() => {
-            RequestLicenseCode requestLicenseCode = new RequestLicenseCode() { DataContext = ProjectorHub.lockKey };
+            RequestLicenseCode requestLicenseCode = new RequestLicenseCode() { DataContext = ProjectorHub.LockKey };
             requestLicenseCode.ShowDialog();
         });
 

@@ -6,6 +6,7 @@ using CadProjectorViewer.DeviceManaged;
 using Microsoft.Xaml.Behaviors.Core;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -62,6 +63,17 @@ namespace CadProjectorViewer.ViewModel.Devices
                     DataContext = new RenderDeviceModel(device)
                 };
                 projectorView.Show();
+            }
+        });
+
+        public ICommand GoToWebInterface => new ActionCommand(() =>
+        {
+            if (this.DataContext is IConnected connected)
+            {
+                Process.Start(new ProcessStartInfo
+                {
+                    FileName = $"http://{connected.IPAddress.ToString()}"
+                });
             }
         });
 

@@ -10,6 +10,8 @@ namespace CadProjectorViewer.ToCommands
     internal interface IToCommand
     {
         public string Name { get; }
-        public object Run(string Message);
+        public string Description { get; }
+        public object Run();
+        public IToCommand MakeThisCommand(object OperableObj, string message);
     }
 }

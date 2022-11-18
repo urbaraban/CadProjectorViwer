@@ -2,6 +2,7 @@
 using CadProjectorSDK.Scenes;
 using CadProjectorSDK.Scenes.Commands;
 using CadProjectorViewer.ToCommands;
+using CadProjectorViewer.ToCommands.MainAppCommand;
 using CadProjectorViewer.ViewModel;
 using SuperSimpleTcp;
 using System;
@@ -15,8 +16,10 @@ using System.Windows;
 
 namespace CadProjectorViewer.TCPServer
 {
-    public class ToCUTServer
+    internal class ToCUTServer
     {
+        internal event EventHandler<IEnumerable<CommandDummy>> CommandDummyIncomming;
+
         public AppMainModel MainModel { get; }
 
         public bool IsListening => server != null && server.IsListening;
@@ -49,8 +52,11 @@ namespace CadProjectorViewer.TCPServer
         private void Events_DataReceived(object sender, DataReceivedEventArgs e)
         {
             string message = Encoding.UTF8.GetString(e.Data.Array, 0, e.Data.Count);
-            IEnumerable<CommandDummy> commands = ToCommand.ParseDummys(message);
-
+            if (string.IsNullOrEmpty(message) == false)
+            {
+                IEnumerable<CommandDummy> commands = ToCommand.ParseDummys(message);
+                CommandDummyIncomming?.Invoke(this, commands);
+            }
         }
 
         public bool SendMessage(string Message)
@@ -86,18 +92,6 @@ namespace CadProjectorViewer.TCPServer
             catch { }
 
             return point;
-        }
-
-
-        private List<IToCommand> CommandsList { get; }
-
-        public ToCUTServer(AppMainModel appMainModel)
-        {
-            this.MainModel = appMainModel;
-            this.CommandsList = new List<IToCommand>()
-            {
-                new SendFiles(appMainModel)
-            };
         }
 
         public void Stop()

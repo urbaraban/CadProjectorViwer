@@ -26,10 +26,11 @@ using System.Diagnostics;
 using CadProjectorViewer.TCPServer;
 using CadProjectorViewer.Dialogs;
 using CadProjectorViewer.ToCommands;
+using CadProjectorViewer.ToCommands.MainAppCommand;
 
 namespace CadProjectorViewer.ViewModel
 {
-    public class AppMainModel : INotifyPropertyChanged
+    internal class AppMainModel : INotifyPropertyChanged
     { 
         public ToCUTServer CUTServer { get; }
 
@@ -59,6 +60,15 @@ namespace CadProjectorViewer.ViewModel
 
         public LogList Logs { get; } = new LogList(string.Empty);
 
+        private List<IToCommand> toCommands { get; set; }
+
+        private void SetToCommandList()
+        {
+            this.toCommands = new List<IToCommand>()
+            {
+                new SendFiles(null, string.Empty)
+            };
+        }
 
         public AppMainModel()
         {
@@ -80,12 +90,16 @@ namespace CadProjectorViewer.ViewModel
 
             WorkFolder.PathSelected += WorkFolder_PathSelected;
 
-            this.CUTServer = new ToCUTServer(this);
+            this.CUTServer = new ToCUTServer();
+            this.CUTServer.CommandDummyIncomming += CUTServer_CommandDummyIncomming;
         }
 
-        private void CUTServer_IncomingMessage(object sender, string e)
+        private void CUTServer_CommandDummyIncomming(object sender, IEnumerable<CommandDummy> e)
         {
-            throw new NotImplementedException();
+            foreach(CommandDummy c in e)
+            {
+
+            }
         }
 
         private async void WorkFolder_PathSelected(object sender, string e) => OpenGeometryFile(e);
@@ -304,16 +318,6 @@ namespace CadProjectorViewer.ViewModel
                 };
                 this.ProjectorHub.ScenesCollection.AddTask(sceneTask);
             }
-        }
-
-        private List<IToCommand> toCommands { get; set; }
-
-        private void SetToCommandList()
-        {
-            this.toCommands = new List<IToCommand>()
-            {
-                new SendFiles(this)
-            };
         }
 
         #region INotifyPropertyChanged

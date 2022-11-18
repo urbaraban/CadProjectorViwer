@@ -9,15 +9,23 @@ namespace CadProjectorViewer.ToCommands
 {
     internal abstract class ToCommand
     {
-        internal AppMainModel mainModel { get; }
-        public ToCommand(AppMainModel appMainModel)
+        public virtual string Name => "EmptyCommand";
+        public virtual string Description { get; } = string.Empty;
+        internal object OperableObj { get; }
+        public ToCommand(object operableObj, string description)
         {
-            this.mainModel = appMainModel;
+            this.OperableObj = operableObj;
+            this.Description = description;
         }
 
-        public static void RunCommands(IEnumerable<CommandDummy> commandDummies)
+        public static IToCommand GetToCommand(string Name, IEnumerable<IToCommand> toCommands)
         {
-
+            foreach(var command in toCommands)
+            {
+                if (Name == command.Name)
+                    return command;
+            }
+            return null;
         }
 
         public static IEnumerable<CommandDummy> ParseDummys(string message)

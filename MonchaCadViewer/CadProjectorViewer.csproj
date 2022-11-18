@@ -261,7 +261,7 @@
     <Compile Include="StaticTools\FileSave.cs" />
     <Compile Include="TCPServer\TCPTools.cs" />
     <Compile Include="TCPServer\ToCUTServer.cs" />
-    <Compile Include="ToCommands\SendFiles.cs" />
+    <Compile Include="ToCommands\MainAppCommand\SendFiles.cs" />
     <Compile Include="ToCommands\IToCommand.cs" />
     <Compile Include="ToCommands\ToCommand.cs" />
     <Compile Include="ViewModel\AppMainModel.cs" />

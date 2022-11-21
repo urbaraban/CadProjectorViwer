@@ -92,13 +92,24 @@ namespace CadProjectorViewer.ViewModel
 
             this.CUTServer = new ToCUTServer();
             this.CUTServer.CommandDummyIncomming += CUTServer_CommandDummyIncomming;
+
+            SetToCommandList();
         }
 
         private void CUTServer_CommandDummyIncomming(object sender, IEnumerable<CommandDummy> e)
         {
-            foreach(CommandDummy c in e)
+            foreach(var command in e)
             {
+                if (ToCommand.GetToCommand(command.Name, this.toCommands) is IToCommand toCommand)
+                {
+                    object result = toCommand.MakeThisCommand(this, command.Description).Run();
 
+                    if (toCommand.ReturnRequest == true && result != null)
+                    {
+                        string message = toCommand.GetRequestMessage(result);
+                        this.CUTServer.SendRequest(message, sender);
+                    }
+                }
             }
         }
 
@@ -276,7 +287,6 @@ namespace CadProjectorViewer.ViewModel
         });
 
         public ICommand OpenCommand => new ActionCommand(Open);
-
 
         public ICommand ShowTCPDialogCommand => new ActionCommand(() => {
             ManipulatorTCPDialog manipulatorTCP = new ManipulatorTCPDialog(this.CUTServer);

@@ -11,7 +11,9 @@ namespace CadProjectorViewer.ToCommands
     {
         public string Name { get; }
         public string Description { get; }
+        public bool ReturnRequest { get; }
         public object Run();
+        public string GetRequestMessage(object obj);
         public IToCommand MakeThisCommand(object OperableObj, string message);
     }
 }

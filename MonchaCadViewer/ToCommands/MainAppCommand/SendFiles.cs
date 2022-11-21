@@ -12,6 +12,8 @@ namespace CadProjectorViewer.ToCommands.MainAppCommand
     {
         public string Name => "FILESLIST";
 
+        public bool ReturnRequest => true;
+
         public SendFiles(object OperableObj, string description) : base(OperableObj, description) { }
 
         public IToCommand MakeThisCommand(object OperableObj, string description)
@@ -22,23 +24,27 @@ namespace CadProjectorViewer.ToCommands.MainAppCommand
         {
             if (this.OperableObj is AppMainModel isAppMainModel)
             {
-                string[] strs = this.Description.Split(':');
+                string path = string.IsNullOrEmpty(this.Description) == false ?
+                    this.Description : CadProjectorViewer.Properties.Settings.Default.save_work_folder;
+                List<FileSystemInfo> items = isAppMainModel.WorkFolder.GetFolderItems(path);
 
-                if (strs[0] == this.Name)
-                {
-                    List<FileSystemInfo> items = isAppMainModel.WorkFolder.GetFolderItems(strs[1]);
-                    string paths_concat = string.Empty;
-                    for (int i = 0; i < items.Count; i += 1)
-                    {
-                        paths_concat = string.Join(Environment.NewLine, items[i].FullName);
-                    }
-                    string outmessage = $"{this.Name}:{paths_concat}";
-
-                    return isAppMainModel.CUTServer.SendMessage(outmessage);
-                }
+                return items;
             }
 
-            return false;
+            return null;
+        }
+
+        public string GetRequestMessage(object obj)
+        {
+            string outmessage = $"{this.Name}:";
+            if (obj is List<FileSystemInfo> list)
+            {
+                foreach (FileSystemInfo item in list)
+                {
+                    outmessage += $"{Environment.NewLine}{item.FullName}";
+                }
+            }
+            return outmessage;
         }
     }
 }

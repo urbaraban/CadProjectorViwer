@@ -16,11 +16,11 @@ using System.Windows;
 
 namespace CadProjectorViewer.TCPServer
 {
-    internal class ToCUTServer
+    public class ToCUTServer
     {
         internal event EventHandler<IEnumerable<CommandDummy>> CommandDummyIncomming;
 
-        public AppMainModel MainModel { get; }
+        internal AppMainModel MainModel { get; }
 
         public bool IsListening => server != null && server.IsListening;
 
@@ -55,17 +55,26 @@ namespace CadProjectorViewer.TCPServer
             if (string.IsNullOrEmpty(message) == false)
             {
                 IEnumerable<CommandDummy> commands = ToCommand.ParseDummys(message);
-                CommandDummyIncomming?.Invoke(this, commands);
+                CommandDummyIncomming?.Invoke(e, commands);
             }
         }
 
-        public bool SendMessage(string Message)
+        public bool SendRequest(string Message, object requestdata)
         {
-            bool connected = this.server.IsConnected(Port.ToString());
+            if (requestdata is DataReceivedEventArgs RecievedData)
+            {
+                return SendMessage(Message, RecievedData.IpPort);
+            }
+            return false;
+        }
+
+        public bool SendMessage(string Message, string ipport)
+        {
+            bool connected = this.server.IsConnected(ipport);
             if (connected == true)
             {
                 byte[] bytes = Encoding.UTF8.GetBytes(Message);
-                this.server.Send(Port.ToString(), bytes);
+                this.server.Send(ipport, bytes);
             }
             return connected;
         }

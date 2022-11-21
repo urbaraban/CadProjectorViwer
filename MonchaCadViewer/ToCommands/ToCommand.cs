@@ -19,18 +19,11 @@ namespace CadProjectorViewer.ToCommands
         }
 
         public static IToCommand GetToCommand(string Name, IEnumerable<IToCommand> toCommands)
-        {
-            foreach(var command in toCommands)
-            {
-                if (Name == command.Name)
-                    return command;
-            }
-            return null;
-        }
+            => toCommands.FirstOrDefault(e => e.Name == Name);
 
         public static IEnumerable<CommandDummy> ParseDummys(string message)
         {
-            foreach(var command in message.Split(new char[] { ';', '\n' })) 
+            foreach(var command in message.Split(new char[] { ';' })) 
             {
                 string[] splitstr = command.Split(new char[] {':', ' '});
                 string name = splitstr.Length > 0 ? splitstr[0] : string.Empty;

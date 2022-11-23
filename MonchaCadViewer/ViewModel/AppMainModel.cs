@@ -27,12 +27,17 @@ using CadProjectorViewer.TCPServer;
 using CadProjectorViewer.Dialogs;
 using CadProjectorViewer.ToCommands;
 using CadProjectorViewer.ToCommands.MainAppCommand;
+using static MonchaNETDll.MNetStructs;
+using WatsonTcp;
+using System.Windows.Threading;
 
 namespace CadProjectorViewer.ViewModel
 {
     internal class AppMainModel : INotifyPropertyChanged
     { 
         public ToCUTServer CUTServer { get; }
+
+        private Dispatcher dispatcher { get; }
 
         public bool AdminMode => Debugger.IsAttached == true || Adminclick > 9;
         public int Adminclick 
@@ -66,12 +71,15 @@ namespace CadProjectorViewer.ViewModel
         {
             this.toCommands = new List<IToCommand>()
             {
-                new SendFiles(null, string.Empty)
+                new FilePathCommand(null, string.Empty),
+                new FileListCommand(null, string.Empty)
             };
         }
 
         public AppMainModel()
         {
+            dispatcher = Dispatcher.CurrentDispatcher;
+
             App.Log = Logs.PostLog;
             App.SetProgress = ProgressPanel.SetProgressBar;
 
@@ -100,16 +108,26 @@ namespace CadProjectorViewer.ViewModel
         {
             foreach(var command in e)
             {
-                if (ToCommand.GetToCommand(command.Name, this.toCommands) is IToCommand toCommand)
+                if (ToCommand.GetToCommand(command.Name, this.toCommands) is IToCommand toCommand
+                    && sender is MessageReceivedEventArgs args)
                 {
-                    object result = toCommand.MakeThisCommand(this, command.Description).Run();
-
-                    if (toCommand.ReturnRequest == true && result != null)
-                    {
-                        string message = toCommand.GetRequestMessage(result);
-                        this.CUTServer.SendRequest(message, sender);
-                    }
+                    IToCommand exCommand = toCommand.MakeThisCommand(this, command.Description);
+                    ExecutCommand(exCommand, args.Client.IpPort);
                 }
+            }
+        }
+
+        private void ExecutCommand(IToCommand toCommand, string IpPort)
+        {
+            object result = toCommand.Run();
+
+            if (toCommand.ReturnRequest == true && result is string message)
+            {
+                this.CUTServer.SendMessage(message, IpPort);
+            }
+            else if (result is IToCommand newcommand)
+            {
+                ExecutCommand(newcommand, IpPort);
             }
         }
 
@@ -317,17 +335,19 @@ namespace CadProjectorViewer.ViewModel
             }
         }
 
-        private async void OpenGeometryFile(string path)
+        public async void OpenGeometryFile(string path)
         {
-            if (await FileLoad.GetFilePath(path, this.ProjectorHub.ScenesCollection.SelectedScene.ProjectionSetting.PointStep.Value) is UidObject uidObject)
-            {
-                SceneTask sceneTask = new SceneTask()
+            dispatcher.Invoke(async() => { 
+                if (await FileLoad.GetFilePath(path, this.ProjectorHub.ScenesCollection.SelectedScene.ProjectionSetting.PointStep.Value) is UidObject uidObject)
                 {
-                    Object = uidObject,
-                    TableID = projectorHub.ScenesCollection.SelectedScene.TableID,
-                };
-                this.ProjectorHub.ScenesCollection.AddTask(sceneTask);
-            }
+                    SceneTask sceneTask = new SceneTask()
+                    {
+                        Object = uidObject,
+                        TableID = projectorHub.ScenesCollection.SelectedScene.TableID,
+                    };
+                    this.ProjectorHub.ScenesCollection.AddTask(sceneTask);
+                }
+            });
         }
 
         #region INotifyPropertyChanged

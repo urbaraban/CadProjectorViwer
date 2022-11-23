@@ -9,6 +9,7 @@ using System.Linq;
 using System.Net.NetworkInformation;
 using System.Runtime.CompilerServices;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -67,6 +68,7 @@ namespace CadProjectorViewer.Dialogs
             if (this.Port < 8000) this.Port = TCPTools.FreeTcpPort(this.SelectAddress.Address);
             cUTServer.Port = this.Port;
             cUTServer.Start();
+            Thread.Sleep(100);
             OnPropertyChanged(nameof(IsListening));
             if (cUTServer.IsListening == true)
             {

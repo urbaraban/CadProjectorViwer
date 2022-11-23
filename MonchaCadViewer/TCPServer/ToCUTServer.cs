@@ -60,15 +60,6 @@ namespace CadProjectorViewer.TCPServer
             
         }
 
-        public bool SendRequest(string Message, object requestdata)
-        {
-            if (requestdata is MessageReceivedEventArgs RecievedData)
-            {
-                return SendMessage(Message, RecievedData.Client.IpPort);
-            }
-            return false;
-        }
-
         public bool SendMessage(string Message, string ipport)
         {
             this.server.Send(ipport, Message);

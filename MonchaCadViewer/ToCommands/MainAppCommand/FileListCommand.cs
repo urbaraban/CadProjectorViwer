@@ -8,17 +8,17 @@ using System.Threading.Tasks;
 
 namespace CadProjectorViewer.ToCommands.MainAppCommand
 {
-    internal class SendFiles : ToCommand, IToCommand
+    internal class FileListCommand : ToCommand, IToCommand
     {
         public string Name => "FILESLIST";
 
         public bool ReturnRequest => true;
 
-        public SendFiles(object OperableObj, string description) : base(OperableObj, description) { }
+        public FileListCommand(object OperableObj, string description) : base(OperableObj, description) { }
 
         public IToCommand MakeThisCommand(object OperableObj, string description)
         {
-            return new SendFiles(OperableObj, description);
+            return new FileListCommand(OperableObj, description);
         }
         public object Run()
         {
@@ -28,23 +28,17 @@ namespace CadProjectorViewer.ToCommands.MainAppCommand
                     this.Description : CadProjectorViewer.Properties.Settings.Default.save_work_folder;
                 List<FileSystemInfo> items = isAppMainModel.WorkFolder.GetFolderItems(path);
 
-                return items;
+                string outmessage = $"{this.Name}:";
+                foreach (FileSystemInfo item in items)
+                {
+                    outmessage += $"{Environment.NewLine}{item.FullName}";
+                }
+                return outmessage;
             }
 
             return null;
         }
 
-        public string GetRequestMessage(object obj)
-        {
-            string outmessage = $"{this.Name}:";
-            if (obj is List<FileSystemInfo> list)
-            {
-                foreach (FileSystemInfo item in list)
-                {
-                    outmessage += $"{Environment.NewLine}{item.FullName}";
-                }
-            }
-            return outmessage;
-        }
+
     }
 }

@@ -4,7 +4,6 @@ using CadProjectorSDK.Scenes.Commands;
 using CadProjectorViewer.ToCommands;
 using CadProjectorViewer.ToCommands.MainAppCommand;
 using CadProjectorViewer.ViewModel;
-using SuperSimpleTcp;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,6 +12,7 @@ using System.Net.NetworkInformation;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
+using WatsonTcp;
 
 namespace CadProjectorViewer.TCPServer
 {
@@ -27,31 +27,25 @@ namespace CadProjectorViewer.TCPServer
         public UnicastIPAddressInformation ServerAddress { get; set; }
         public int Port { get; set; }
 
-        private SimpleTcpServer server
+        private WatsonTcpServer server
         {
             get => _server;
             set
             {
                 if (_server != null)
                 {
-                    _server.Events.DataReceived -= Events_DataReceived;
+                    _server.Events.MessageReceived -= Events_MessageReceived;
                     _server.Events.ClientConnected -= Events_ClientConnected;
                 }
                 _server = value;
-                _server.Events.DataReceived += Events_DataReceived;
+                _server.Events.MessageReceived += Events_MessageReceived; ;
                 _server.Events.ClientConnected += Events_ClientConnected;
             }
         }
-        private SimpleTcpServer _server;
 
-        private void Events_ClientConnected(object sender, ConnectionEventArgs e)
+        private void Events_MessageReceived(object sender, MessageReceivedEventArgs e)
         {
-            
-        }
-
-        private void Events_DataReceived(object sender, DataReceivedEventArgs e)
-        {
-            string message = Encoding.UTF8.GetString(e.Data.Array, 0, e.Data.Count);
+            string message = Encoding.UTF8.GetString(e.Data, 0, e.Data.Length);
             if (string.IsNullOrEmpty(message) == false)
             {
                 IEnumerable<CommandDummy> commands = ToCommand.ParseDummys(message);
@@ -59,24 +53,27 @@ namespace CadProjectorViewer.TCPServer
             }
         }
 
+        private WatsonTcpServer _server;
+
+        private void Events_ClientConnected(object sender, ConnectionEventArgs e)
+        {
+            
+        }
+
         public bool SendRequest(string Message, object requestdata)
         {
-            if (requestdata is DataReceivedEventArgs RecievedData)
+            if (requestdata is MessageReceivedEventArgs RecievedData)
             {
-                return SendMessage(Message, RecievedData.IpPort);
+                return SendMessage(Message, RecievedData.Client.IpPort);
             }
             return false;
         }
 
         public bool SendMessage(string Message, string ipport)
         {
-            bool connected = this.server.IsConnected(ipport);
-            if (connected == true)
-            {
-                byte[] bytes = Encoding.UTF8.GetBytes(Message);
-                this.server.Send(ipport, bytes);
-            }
-            return connected;
+            this.server.Send(ipport, Message);
+
+            return true;
         }
 
         private Point ParseMovePoint(string message)
@@ -105,14 +102,14 @@ namespace CadProjectorViewer.TCPServer
 
         public void Stop()
         {
-            if (this.server != null && this.server.IsConnected(this.ServerAddress.ToString()) == true)
+            if (this.server != null && this.server.IsListening == true)
                 server.Stop();
         }
 
         public void Start()
         {
             if (server != null) Stop();
-            this.server = new SimpleTcpServer(this.ServerAddress.Address.ToString(), this.Port);
+            this.server = new WatsonTcpServer(this.ServerAddress.Address.ToString(), this.Port);
             server.Start();
         }
     }

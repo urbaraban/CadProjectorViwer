@@ -50,5 +50,10 @@ namespace CadProjectorViewer.TCPServer
             Bitmap qrCodeImage = qrCode.GetGraphic(20);
             return qrCodeImage.ToBitmapSource();
         }
+
+        public static byte[] GetBytes(string message)
+        {
+            return Encoding.UTF8.GetBytes(message);
+        }
     }
 }

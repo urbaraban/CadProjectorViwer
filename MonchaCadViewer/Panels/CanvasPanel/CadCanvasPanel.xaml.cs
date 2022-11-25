@@ -33,7 +33,7 @@ using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using CadProjectorSDK.Scenes.Commands;
 using CadProjectorViewer.ViewModel;
-using CadProjectorViewer.TCPServer;
+using CadProjectorViewer.EthernetServer;
 using CadProjectorViewer.Dialogs;
 
 namespace CadProjectorViewer.Panels.CanvasPanel

@@ -11,7 +11,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Media.Imaging;
 
-namespace CadProjectorViewer.TCPServer
+namespace CadProjectorViewer.EthernetServer
 {
     public static class TCPTools
     {

@@ -1,6 +1,6 @@
 ﻿using CadProjectorSDK;
 using CadProjectorSDK.Tools;
-using CadProjectorViewer.TCPServer;
+using CadProjectorViewer.EthernetServer;
 using OpenCvSharp.WpfExtensions;
 using QRCoder;
 using System;

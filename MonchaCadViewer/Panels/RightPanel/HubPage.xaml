@@ -1,0 +1,71 @@
+﻿<Page x:Class="CadProjectorViewer.Panels.RightPanel.HubPage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      mc:Ignorable="d"
+      xmlns:viewmodel="clr-namespace:CadProjectorViewer.ViewModel" xmlns:converters="clr-namespace:CadProjectorViewer.Converters"
+      d:DataContext="{d:DesignInstance Type=viewmodel:AppMainModel}"
+      d:DesignHeight="450"
+      d:DesignWidth="250"
+      Title="HubPage">
+    <Page.Resources>
+        <converters:BoolRegGreenColor x:Key="BoolRegGreen"/>
+        <ContextMenu x:Key="itemMenu">
+            <MenuItem Header="Start" Command="{Binding StartCommand}"/>
+            <MenuItem Header="Stop" Command="{Binding StopCommand}"/>
+        </ContextMenu>
+    </Page.Resources>
+    <Grid>
+        <StackPanel Margin="20">
+            <ListView ItemsSource="{Binding EthernetHub}"
+                      MinHeight="100" d:ItemsSource="{d:SampleData ItemCount=5}">
+                <ListView.View>
+                    <GridView>
+                        <GridViewColumn Header="ic" Width="30">
+                            <GridViewColumn.CellTemplate>
+                                <DataTemplate>
+                                    <Ellipse Width="10" Height="10" Fill="{Binding IsListening, Converter={StaticResource BoolRegGreen}}"/>
+                                </DataTemplate>
+                            </GridViewColumn.CellTemplate>
+                        </GridViewColumn>
+                        <GridViewColumn Header="Scene" DisplayMemberBinding="{Binding ObjectName}" Width="120"/>
+                        <GridViewColumn Header="Type" DisplayMemberBinding="{Binding ServerType}" Width="Auto"/>
+                        <GridViewColumn Header="Port" DisplayMemberBinding="{Binding Port}" Width="40"/>
+                    </GridView>
+                </ListView.View>
+                <ListView.ItemContainerStyle>
+                    <Style TargetType="ListViewItem">
+                        <Setter Property="ContextMenu" Value="{StaticResource itemMenu}"/>
+                    </Style>
+                </ListView.ItemContainerStyle>
+            </ListView>
+            <Label Content="Scene"/>
+            <ComboBox ItemsSource="{Binding ProjectorHub.ScenesCollection}"
+                      SelectedItem="{Binding EthernetHub.SelectedScene}"
+                      SelectedIndex="0"
+                      DisplayMemberPath="DisplayName"/>
+            <Label Content="Address"/>
+            <ComboBox ItemsSource="{Binding EthernetHub.NetworkInterfaces}"
+                      SelectedItem="{Binding EthernetHub.SelectAddress}"
+                      DisplayMemberPath="Address"
+                      SelectedIndex="0"/>
+            <Label 
+                Content="Port"/>
+            <DockPanel>
+                <TextBox DockPanel.Dock="Right"
+                         Text="{Binding EthernetHub.SelectPort}"
+                         MinWidth="100"/>
+                <ComboBox SelectedItem="{Binding EthernetHub.SelectType}"
+                          ItemsSource="{Binding EthernetHub.ServerType}"
+                          DisplayMemberPath="TypeName"
+                          SelectedIndex="0"/>
+            </DockPanel>
+            
+            <Button Content="Add"
+                    Command="{Binding EthernetHub.AddServerCommand}"/>
+            <Label/>
+            <Image/>
+        </StackPanel>
+    </Grid>
+</Page>

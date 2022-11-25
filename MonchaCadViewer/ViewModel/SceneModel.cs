@@ -6,7 +6,8 @@ using CadProjectorSDK.Scenes;
 using CadProjectorSDK.Scenes.Actions;
 using CadProjectorSDK.Scenes.Commands;
 using CadProjectorViewer.Dialogs;
-using CadProjectorViewer.TCPServer;
+using CadProjectorViewer.EthernetServer;
+using CadProjectorViewer.ToCommands;
 using Microsoft.Xaml.Behaviors.Core;
 using System;
 using System.Collections.Generic;
@@ -23,8 +24,12 @@ using AppSt = CadProjectorViewer.Properties.Settings;
 
 namespace CadProjectorViewer.ViewModel
 {
-    public class SceneModel : RenderDeviceModel
+    public class SceneModel : RenderDeviceModel, IToCutCommandObject
     {
+        #region IToCutCommandObject
+        public string Name => this.Scene.DisplayName;
+        #endregion
+
         private Dispatcher dispatcher { get; }
         public CadAnchor MousePosition => Scene.MousePosition;
 

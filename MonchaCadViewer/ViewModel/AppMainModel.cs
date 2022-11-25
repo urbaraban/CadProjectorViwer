@@ -23,20 +23,19 @@ using CadProjectorSDK.Config;
 using ToGeometryConverter;
 using CadProjectorViewer.ViewModel.Modules;
 using System.Diagnostics;
-using CadProjectorViewer.TCPServer;
+using CadProjectorViewer.EthernetServer;
 using CadProjectorViewer.Dialogs;
 using CadProjectorViewer.ToCommands;
 using CadProjectorViewer.ToCommands.MainAppCommand;
 using static MonchaNETDll.MNetStructs;
 using WatsonTcp;
 using System.Windows.Threading;
+using CadProjectorViewer.EthernetServer.Servers;
 
 namespace CadProjectorViewer.ViewModel
 {
-    internal class AppMainModel : INotifyPropertyChanged
+    public class AppMainModel : INotifyPropertyChanged
     { 
-        public ToCUTServer CUTServer { get; }
-
         private Dispatcher dispatcher { get; }
 
         public bool AdminMode => Debugger.IsAttached == true || Adminclick > 9;
@@ -64,6 +63,8 @@ namespace CadProjectorViewer.ViewModel
         public WorkFolderList WorkFolder { get; } = new WorkFolderList();
 
         public LogList Logs { get; } = new LogList(string.Empty);
+
+        public ToCutEthernetHub EthernetHub { get; } = new ToCutEthernetHub();
 
         private List<IToCommand> toCommands { get; set; }
 
@@ -98,36 +99,38 @@ namespace CadProjectorViewer.ViewModel
 
             WorkFolder.PathSelected += WorkFolder_PathSelected;
 
-            this.CUTServer = new ToCUTServer();
-            this.CUTServer.CommandDummyIncomming += CUTServer_CommandDummyIncomming;
+            this.EthernetHub.CommandDummyIncomming += CUTServer_CommandDummyIncomming;
 
             SetToCommandList();
         }
 
-        private void CUTServer_CommandDummyIncomming(object sender, IEnumerable<CommandDummy> e)
+        private void CUTServer_CommandDummyIncomming(object sender, ReceivedCookies e)
         {
-            foreach(var command in e)
+            if (sender is IToCUTServer server)
             {
-                if (ToCommand.GetToCommand(command.Name, this.toCommands) is IToCommand toCommand
-                    && sender is MessageReceivedEventArgs args)
+                foreach (var command in e.Dummies)
                 {
-                    IToCommand exCommand = toCommand.MakeThisCommand(this, command.Description);
-                    ExecutCommand(exCommand, args.Client.IpPort);
+                    if (ToCommand.GetToCommand(command.Name, this.toCommands) is IToCommand toCommand
+                        && sender is MessageReceivedEventArgs args)
+                    {
+                        IToCommand exCommand = toCommand.MakeThisCommand(this, command.Description);
+                        ExecutCommand(exCommand, server, e);
+                    }
                 }
             }
         }
 
-        private void ExecutCommand(IToCommand toCommand, string IpPort)
+        private void ExecutCommand(IToCommand toCommand, IToCUTServer server, ReceivedCookies cookies)
         {
             object result = toCommand.Run();
 
             if (toCommand.ReturnRequest == true && result is string message)
             {
-                this.CUTServer.SendMessage(message, IpPort);
+                server.SendMessage(message, cookies.ClientIp, cookies.ClientPort);
             }
             else if (result is IToCommand newcommand)
             {
-                ExecutCommand(newcommand, IpPort);
+                ExecutCommand(newcommand, server, cookies);
             }
         }
 
@@ -307,7 +310,10 @@ namespace CadProjectorViewer.ViewModel
         public ICommand OpenCommand => new ActionCommand(Open);
 
         public ICommand ShowTCPDialogCommand => new ActionCommand(() => {
-            ManipulatorTCPDialog manipulatorTCP = new ManipulatorTCPDialog(this.CUTServer);
+            ManipulatorTCPDialog manipulatorTCP = new ManipulatorTCPDialog()
+            {
+                DataContext = this
+            };
             manipulatorTCP.Show();
         });
 

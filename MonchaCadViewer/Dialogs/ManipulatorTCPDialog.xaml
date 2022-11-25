@@ -3,30 +3,11 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:CadProjectorViewer.Dialogs"
+        xmlns:local="clr-namespace:CadProjectorViewer.Dialogs" xmlns:rightpanel="clr-namespace:CadProjectorViewer.Panels.RightPanel"
         mc:Ignorable="d"
         x:Name="MTCPMain"
         Title="ManipulatorTCPDialog" Height="450" Width="300">
-    <Grid>
-        <StackPanel Margin="20">
-            <Label Content="Address"/>
-            <ComboBox
-                x:Name="IpCombo"
-                DisplayMemberPath="Address"
-                SelectedIndex="0"
-                ItemsSource="{Binding ElementName=MTCPMain, Path=NetworkInterfaces}"
-                SelectedItem="{Binding ElementName=MTCPMain, Path=SelectAddress}"/>
-            <Label 
-                Content="Port"/>
-            <TextBox 
-                Text="{Binding ElementName=MTCPMain, Path=Port}"/>
-            <Button 
-                Content="Start" 
-                Command="{Binding ElementName=MTCPMain, Path=StartManipulatorServer}"/>
-            <Label
-                Content="{Binding ElementName=MTCPMain, Path=IsListening}"/>
-            <Image
-                Source="{Binding ElementName=MTCPMain, Path=IPQP}"/>
-        </StackPanel>
-    </Grid>
+    <Window.Content>
+        <rightpanel:HubPage/>
+    </Window.Content>
 </Window>

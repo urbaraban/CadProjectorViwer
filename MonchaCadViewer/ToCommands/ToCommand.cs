@@ -33,7 +33,7 @@ namespace CadProjectorViewer.ToCommands
         }
     }
 
-    internal struct CommandDummy
+    public struct CommandDummy
     {
         public string Name { get; }
         public string Description { get; set; } = string.Empty;

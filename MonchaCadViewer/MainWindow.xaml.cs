@@ -489,4 +489,24 @@ namespace CadProjectorViewer
         }
     }
 
+    public class GetHubPageConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            if (value is AppMainModel mainModel)
+            {
+                return new HubPage()
+                {
+                    DataContext = mainModel
+                };
+            }
+            return null;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            return (bool)value == true ? parameter : AppSt.Default.Attach;
+        }
+    }
+
 }

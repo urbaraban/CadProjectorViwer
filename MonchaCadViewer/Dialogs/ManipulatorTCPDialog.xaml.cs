@@ -1,4 +1,5 @@
-﻿using CadProjectorViewer.TCPServer;
+﻿using CadProjectorViewer.EthernetServer;
+using CadProjectorViewer.ViewModel;
 using Kompas6API7;
 using Microsoft.Xaml.Behaviors.Core;
 using System;
@@ -25,64 +26,11 @@ namespace CadProjectorViewer.Dialogs
     /// <summary>
     /// Логика взаимодействия для ManipulatorTCPDialog.xaml
     /// </summary>
-    public partial class ManipulatorTCPDialog : Window, INotifyPropertyChanged
+    public partial class ManipulatorTCPDialog : Window
     {
-        private ToCUTServer cUTServer { get; }
-
-        public ObservableCollection<UnicastIPAddressInformation> NetworkInterfaces { get; } = new(TCPTools.GetInterfaces());
-        public UnicastIPAddressInformation SelectAddress
+        public ManipulatorTCPDialog()
         {
-            get => cUTServer.ServerAddress ?? NetworkInterfaces[0];
-            set
-            {
-                cUTServer.ServerAddress = value;
-                Port = TCPTools.FreeTcpPort(cUTServer.ServerAddress.Address);
-                OnPropertyChanged("SelectAddress");
-                OnPropertyChanged("Port");
-            }
-        }
-        private UnicastIPAddressInformation _selectaddress;
-
-        public int Port
-        {
-            get => cUTServer.Port;
-            set
-            {
-                cUTServer.Port = value;
-                OnPropertyChanged("Port");
-            }
-        }
-
-        public bool IsListening => cUTServer.IsListening;
-
-        public BitmapSource IPQP => TCPTools.GetQR(this.SelectAddress.Address, this.Port);
-
-        public ManipulatorTCPDialog(ToCUTServer toCUTServer)
-        {
-            cUTServer = toCUTServer;
             InitializeComponent();
         }
-
-        public ICommand StartManipulatorServer => new ActionCommand(() => {
-            cUTServer.ServerAddress = this.SelectAddress;
-            if (this.Port < 8000) this.Port = TCPTools.FreeTcpPort(this.SelectAddress.Address);
-            cUTServer.Port = this.Port;
-            cUTServer.Start();
-            Thread.Sleep(100);
-            OnPropertyChanged(nameof(IsListening));
-            if (cUTServer.IsListening == true)
-            {
-                OnPropertyChanged(nameof(IPQP));
-            }
-        });
-
-        #region INotifyPropertyChanged
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        public void OnPropertyChanged([CallerMemberName] string prop = "")
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(prop));
-        }
-        #endregion
     }
 }

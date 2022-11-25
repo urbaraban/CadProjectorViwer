@@ -79,6 +79,7 @@
             <convert:BoolVisibleConverter x:Key="BoolVisibleConverter"/>
             <CadProjectorViewer:MultiObjectList x:Key="MultiList" />
             <CadProjectorViewer:LicenceColor x:Key="LicenceKey" />
+            <CadProjectorViewer:GetHubPageConverter x:Key="GetHubPage" />
             <HierarchicalDataTemplate 
                 x:Key="DeviceTree" 
                 DataType ="{x:Type device:LProjector}">
@@ -337,7 +338,8 @@
                                 </Grid>
                             </TabItem>
                             <TabItem Header="Ethernet">
-                                <rightpanel:UdpSetting DataContext="{Binding ProjectorHub.UDPLaserListener}"/>
+                                <Frame Content="{Binding .,
+                                    Converter={StaticResource GetHubPage}}"/>
                             </TabItem>
                         </TabControl>
                     </Grid>

@@ -1,7 +1,9 @@
-﻿using System;
+﻿using CadProjectorViewer.ToCommands;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using WatsonTcp;
 
@@ -44,9 +46,29 @@ namespace CadProjectorViewer.EthernetServer.Servers
             this.server.Send($"{ip}:{port}", message);
         }
 
-        public void Start() => server.Start();
+        public void Start()
+        {
+            server.Events.MessageReceived += Events_MessageReceived;
+            server.Start();
+            Thread.Sleep(100);
+        }
 
-        public void Stop() => server.Stop();
+        private void Events_MessageReceived(object sender, MessageReceivedEventArgs e)
+        {
+            string message = Encoding.UTF8.GetString(e.Data);
+            IEnumerable<CommandDummy> dummies = ToCommand.ParseDummys(message);
+            ReceivedCookies receivedCookies = new ReceivedCookies(e.Client.IpPort, dummies);
+            CommandDummyIncomming?.Invoke(this, receivedCookies);
+        }
+
+        public void Stop()
+        {
+            if (server.IsListening == true)
+            {
+                server.Events.MessageReceived -= Events_MessageReceived;
+                server.Stop();
+            }
+        }
 
         public IToCUTServer GetCUTServer(string ip, int port)
         {

@@ -2,6 +2,7 @@
 using CadProjectorSDK.Scenes;
 using CadProjectorSDK.Scenes.Commands;
 using CadProjectorViewer.EthernetServer.Servers;
+using CadProjectorViewer.Interfaces;
 using CadProjectorViewer.ToCommands;
 using CadProjectorViewer.ToCommands.MainAppCommand;
 using CadProjectorViewer.ViewModel;
@@ -19,6 +20,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
 using WatsonTcp;
+using static StclLibrary.WPF.GUI.AdvancedMsgBox;
 
 namespace CadProjectorViewer.EthernetServer
 {
@@ -66,8 +68,8 @@ namespace CadProjectorViewer.EthernetServer
         {
             this.ServerType = new List<IToCUTServer>()
             {
-                new UdpCutServer("127.0.0.1", 0),
-                new TcpCutServer("127.0.0.1", 0, false)
+                new TcpCutServer("127.0.0.1", 0, false),
+                new UdpCutServer("127.0.0.1", 0),               
             };
         }
 
@@ -81,18 +83,62 @@ namespace CadProjectorViewer.EthernetServer
 
             });
 
+        public string Name => throw new NotImplementedException();
+
         public void AddServer(ProjectionScene scene, int port, string ipadress)
         {
             if (this.FirstOrDefault(e => e.IpAdress == ipadress && e.Port == port) == null)
             {
                 if (SelectType is IToCUTServer type)
                 {
-                    IToCUTServer new_server = type.GetCUTServer(ipadress, port);
-                    this.Add(new ToCutServerObject(new_server, new SceneModel(scene)));
+                    if (port == 0)
+                    {
+                        if (System.Net.IPAddress.TryParse(ipadress, out var ipAddress) == true)
+                        {
+                            port = TCPTools.FreeTcpPort(ipAddress);
+                        }
+                    }
+                    if (port > 0)
+                    {
+                        IToCUTServer new_server = type.GetCUTServer(ipadress, port);
+                        ToCutServerObject serverObject = new ToCutServerObject(new_server, new SceneModel(scene));
+                        this.Add(serverObject);
+                        this.SelectServerObject = serverObject;
+                        this.SelectServerObject.StartCommand.Execute(null);
+                    }
+                    else
+                    {
+                        // Paste log
+                    }
                 }
             }
 
             OnPropertyChanged(nameof(Servers));
+        }
+
+        protected override void InsertItem(int index, ToCutServerObject item)
+        {
+            base.InsertItem(index, item);
+            item.CommandDummyIncomming += Item_CommandDummyIncomming;
+            if (item is IToRemoveObject removeObject)
+            {
+                removeObject.Remove += RemoveObject_Remove;
+            }
+        }
+
+        private void Item_CommandDummyIncomming(object sender, ReceivedCookies e)
+        {
+            this.CommandDummyIncomming?.Invoke(this, e);
+        }
+
+        private void RemoveObject_Remove(IToRemoveObject toRemoveObject)
+        {
+            for (int i = 0; i < this.Count; i += 1)
+                if (this[i].Guid == toRemoveObject.Guid)
+                {
+                    this.RemoveAt(i);
+                    return;
+                }
         }
 
         #region INotifyPropertyChanged

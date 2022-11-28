@@ -7,7 +7,9 @@ using CadProjectorSDK.Scenes.Actions;
 using CadProjectorSDK.Scenes.Commands;
 using CadProjectorViewer.Dialogs;
 using CadProjectorViewer.EthernetServer;
+using CadProjectorViewer.EthernetServer.Servers;
 using CadProjectorViewer.ToCommands;
+using CadProjectorViewer.ToCommands.MainAppCommand;
 using Microsoft.Xaml.Behaviors.Core;
 using System;
 using System.Collections.Generic;
@@ -27,6 +29,8 @@ namespace CadProjectorViewer.ViewModel
     public class SceneModel : RenderDeviceModel, IToCutCommandObject
     {
         #region IToCutCommandObject
+        public event EventHandler<ReceivedCookies> CommandDummyIncomming;
+
         public string Name => this.Scene.DisplayName;
         #endregion
 
@@ -56,6 +60,16 @@ namespace CadProjectorViewer.ViewModel
         {
             this.dispatcher = Dispatcher.CurrentDispatcher;
             this.Scene = scene;
+        }
+
+        private List<IToCommand> toCommands { get; } = new List<IToCommand>()
+        {
+                new FilePathCommand(null, string.Empty),
+        };
+
+        public IToCommand GetCommand(CommandDummy toCommand)
+        {
+            return this.toCommands.FirstOrDefault(e => e.Name == toCommand.Name);
         }
     }
 }

@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace CadProjectorViewer.ToCommands
 {
-    internal interface IToCommand
+    public interface IToCommand
     {
         public string Name { get; }
         public string Description { get; }

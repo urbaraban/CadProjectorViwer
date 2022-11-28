@@ -1,5 +1,8 @@
-﻿using System;
+﻿using CadProjectorViewer.EthernetServer;
+using CadProjectorViewer.EthernetServer.Servers;
+using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -23,6 +26,23 @@ namespace CadProjectorViewer.Panels.RightPanel
         public HubPage()
         {
             InitializeComponent();
+        }
+    }
+
+    public class GetQrConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            if (value is ToCutServerObject serverObject)
+            {
+                return TCPTools.GetQR(serverObject.IpAdress, serverObject.Port);
+            }
+            return null;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            return null;
         }
     }
 }

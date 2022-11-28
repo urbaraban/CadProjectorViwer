@@ -36,16 +36,16 @@ namespace CadProjectorViewer.ToCommands
     public struct CommandDummy
     {
         public string Name { get; }
-        public string Description { get; set; } = string.Empty;
+        public string Message { get; set; } = string.Empty;
 
         public CommandDummy(string name)
         {
             Name = name;
         }
 
-        public CommandDummy(string name, string description) : this(name)
+        public CommandDummy(string name, string message) : this(name)
         {
-            Description = description;
+            Message = message;
         }
     }
 }

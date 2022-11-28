@@ -66,16 +66,10 @@ namespace CadProjectorViewer.ViewModel
 
         public ToCutEthernetHub EthernetHub { get; } = new ToCutEthernetHub();
 
-        private List<IToCommand> toCommands { get; set; }
-
-        private void SetToCommandList()
+        private List<IToCommand> toCommands { get; } = new List<IToCommand>()
         {
-            this.toCommands = new List<IToCommand>()
-            {
-                new FilePathCommand(null, string.Empty),
-                new FileListCommand(null, string.Empty)
-            };
-        }
+            new FileListCommand(null, string.Empty)
+        };
 
         public AppMainModel()
         {
@@ -100,8 +94,6 @@ namespace CadProjectorViewer.ViewModel
             WorkFolder.PathSelected += WorkFolder_PathSelected;
 
             this.EthernetHub.CommandDummyIncomming += CUTServer_CommandDummyIncomming;
-
-            SetToCommandList();
         }
 
         private void CUTServer_CommandDummyIncomming(object sender, ReceivedCookies e)
@@ -113,7 +105,7 @@ namespace CadProjectorViewer.ViewModel
                     if (ToCommand.GetToCommand(command.Name, this.toCommands) is IToCommand toCommand
                         && sender is MessageReceivedEventArgs args)
                     {
-                        IToCommand exCommand = toCommand.MakeThisCommand(this, command.Description);
+                        IToCommand exCommand = toCommand.MakeThisCommand(this, command.Message);
                         ExecutCommand(exCommand, server, e);
                     }
                 }

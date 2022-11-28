@@ -277,6 +277,7 @@
     <Compile Include="EthernetServer\Servers\TcpCutServer.cs" />
     <Compile Include="EthernetServer\Servers\ToCutServerObject.cs" />
     <Compile Include="EthernetServer\Servers\UdpCutServer.cs" />
+    <Compile Include="Interfaces\IToRemoveObject.cs" />
     <Compile Include="Panels\RightPanel\HubPage.xaml.cs">
       <DependentUpon>HubPage.xaml</DependentUpon>
     </Compile>

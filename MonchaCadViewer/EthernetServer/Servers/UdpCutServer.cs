@@ -35,7 +35,7 @@ namespace CadProjectorViewer.EthernetServer.Servers
 
         public string IpAddress { get; }
 
-        public int Port { get; set; }
+        public int Port { get; set; } = 11000;
 
         public UdpCutServer(string address, int port = 11000)
         {
@@ -62,11 +62,7 @@ namespace CadProjectorViewer.EthernetServer.Servers
             string message = Encoding.UTF8.GetString(e.Data, 0, e.Data.Length);
             if (string.IsNullOrEmpty(message) == false)
             {
-                ReceivedCookies cookies = new ReceivedCookies (
-                    e.Port,
-                    e.Ip,
-                    ToCommand.ParseDummys(message));
-
+                ReceivedCookies cookies = new ReceivedCookies (e.Ip, e.Port, ToCommand.ParseDummys(message));
                 CommandDummyIncomming?.Invoke(this, cookies);
             }
         }

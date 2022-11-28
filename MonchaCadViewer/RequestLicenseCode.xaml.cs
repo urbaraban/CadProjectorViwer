@@ -131,7 +131,7 @@ namespace CadProjectorViewer
         {
             if (value is UnicastIPAddressInformation addressInformation)
             {
-                return TCPTools.GetQR(addressInformation.Address);
+                return TCPTools.GetQR(addressInformation.Address.ToString());
             }
             return new BitmapImage();
         }

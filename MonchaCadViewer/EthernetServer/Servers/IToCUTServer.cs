@@ -34,10 +34,17 @@ namespace CadProjectorViewer.EthernetServer.Servers
         public string ClientIp { get; }
         public int ClientPort { get; }
 
-        public ReceivedCookies(int port, string ip, IEnumerable<CommandDummy> dummies)
+        public ReceivedCookies(string ip, int port, IEnumerable<CommandDummy> dummies)
         {
             ClientPort = port;
             ClientIp = ip;
+            Dummies = dummies;
+        }
+
+        public ReceivedCookies(string ipPort, IEnumerable<CommandDummy> dummies) : this()
+        {
+            ClientIp = ipPort.Split(':')[0];
+            ClientPort = int.Parse(ipPort.Split(':')[1]);
             Dummies = dummies;
         }
     }

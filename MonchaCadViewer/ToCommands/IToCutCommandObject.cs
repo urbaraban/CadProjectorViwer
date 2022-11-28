@@ -1,4 +1,5 @@
-﻿using System;
+﻿using CadProjectorViewer.EthernetServer.Servers;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,6 +9,7 @@ namespace CadProjectorViewer.ToCommands
 {
     public interface IToCutCommandObject
     {
-        string Name { get; }
+        public string Name { get; }
+        public IToCommand GetCommand(CommandDummy toCommand);
     }
 }

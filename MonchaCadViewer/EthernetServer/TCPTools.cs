@@ -41,7 +41,7 @@ namespace CadProjectorViewer.EthernetServer
             return port;
         }
 
-        public static BitmapSource GetQR(IPAddress iPAddress, int port = 0)
+        public static BitmapSource GetQR(string iPAddress, int port = 0)
         {
             QRCodeGenerator qrGenerator = new QRCodeGenerator();
             string message = $"{iPAddress}:{port}";

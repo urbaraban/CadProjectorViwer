@@ -128,7 +128,7 @@ namespace CadProjectorViewer.EthernetServer
 
         private void Item_CommandDummyIncomming(object sender, ReceivedCookies e)
         {
-            this.CommandDummyIncomming?.Invoke(this, e);
+            this.CommandDummyIncomming?.Invoke(sender, e);
         }
 
         private void RemoveObject_Remove(IToRemoveObject toRemoveObject)

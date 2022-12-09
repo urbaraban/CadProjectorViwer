@@ -1,10 +1,15 @@
-﻿using CadProjectorViewer.ViewModel;
+﻿using CadProjectorSDK.CadObjects.Abstract;
+using CadProjectorSDK.Scenes;
+using CadProjectorSDK;
+using CadProjectorViewer.StaticTools;
+using CadProjectorViewer.ViewModel;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Shapes;
 
 namespace CadProjectorViewer.ToCommands.MainAppCommand
 {
@@ -23,21 +28,14 @@ namespace CadProjectorViewer.ToCommands.MainAppCommand
 
         public object Run()
         {
-            if (this.OperableObj is AppMainModel isAppMainModel)
+            if (this.OperableObj is SceneModel sceneModel)
             {
-                if (File.Exists(this.Description)) 
+                if (sceneModel.PathLoad(this.Description) == false)
                 {
-                    isAppMainModel.OpenGeometryFile(this.Description);
-                    return null;
-                }
-                else if (Directory.Exists(this.Description))
-                {
-                    return new FileListCommand(this.OperableObj, this.Description);
+                    return new CommandDummy("FILESLIST", this.Description);
                 }
             }
-
             return null;
         }
-
     }
 }

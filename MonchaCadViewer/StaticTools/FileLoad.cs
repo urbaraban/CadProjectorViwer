@@ -56,21 +56,22 @@ namespace CadProjectorViewer.StaticTools
 
         public static async void LoadMoncha(ProjectorHub projectorHub, bool browse)
         {
-            projectorHub.Disconnect();
-
-            //check path to setting file
-            if (File.Exists(AppSt.Default.cl_moncha_path) == false || browse == true)
-            {
-                string str = FileLoad.BrowseMWS(); //select if not\
-                AppSt.Default.cl_moncha_path = str;
-                AppSt.Default.Save();
-            }
-
-            await projectorHub.Load(AppSt.Default.cl_moncha_path);
             //send path to hub class
             try
             {
-               
+                projectorHub.Disconnect();
+
+                //check path to setting file
+                if (File.Exists(AppSt.Default.cl_moncha_path) == false || browse == true)
+                {
+                    string str = FileLoad.BrowseMWS(); //select if not\
+                    AppSt.Default.cl_moncha_path = str;
+                    AppSt.Default.Save();
+                }
+                else
+                {
+                    await projectorHub.Load(AppSt.Default.cl_moncha_path);
+                }
             }
             catch
             {

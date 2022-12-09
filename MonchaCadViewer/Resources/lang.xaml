@@ -89,7 +89,7 @@
     <v:String x:Key="common_MasksGrid">Masks grid</v:String>
     <v:String x:Key="common_Create">Create</v:String>
     <v:String x:Key="common_Configuration">Configuration</v:String>
-    <v:String x:Key="common_Format">Format</v:String>
+    <v:String x:Key="common_Source">Source</v:String>
     <v:String x:Key="common_Workfolder">Work folder</v:String>
     <v:String x:Key="common_Setting">Setting</v:String>
     <v:String x:Key="common_File">File</v:String>

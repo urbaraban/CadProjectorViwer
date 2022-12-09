@@ -84,7 +84,7 @@
     <v:String x:Key="common_MasksGrid">Масочная сетка</v:String>
     <v:String x:Key="common_Create">Создать</v:String>
     <v:String x:Key="common_Configuration">Конфигурация</v:String>
-    <v:String x:Key="common_Format">Формат</v:String>
+    <v:String x:Key="common_Source">Источник</v:String>
     <v:String x:Key="common_Workfolder">Рабочая папка</v:String>
     <v:String x:Key="common_File">Файл</v:String>
     <v:String x:Key="common_Close">Закрыть</v:String>

@@ -298,7 +298,7 @@
                         </TabItem>
                     </TabControl>
                 </TabItem>
-                <TabItem Header="{DynamicResource common_Format}" FontSize="18">
+                <TabItem Header="{DynamicResource common_Source}" FontSize="18">
                     <Grid Background="#FFE5E5E5">
                         <TabControl x:Name="TabItem">
                             <TabItem Header="Компас" FontSize="14">

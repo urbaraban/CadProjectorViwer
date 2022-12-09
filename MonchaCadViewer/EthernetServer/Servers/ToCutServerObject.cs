@@ -37,15 +37,35 @@ namespace CadProjectorViewer.EthernetServer.Servers
         {
             foreach (var dummy in e.Dummies)
             {
-                if (commandObject.GetCommand(dummy) is IToCommand toCommand)
-                {
-                    toCommand.MakeThisCommand(this.commandObject, dummy.Message);
-                }
-                else
-                {
-                    ReceivedCookies receivedCookies = new ReceivedCookies(e.ClientIp, e.ClientPort, new List<CommandDummy>() { dummy });
-                    CommandDummyIncomming?.Invoke(this, receivedCookies);
-                }
+                CheckDummmy(dummy, e);
+            }
+        }
+
+        private void CheckDummmy(CommandDummy dummy, ReceivedCookies cookies)
+        {
+            if (commandObject.GetCommand(dummy) is IToCommand toCommand)
+            {
+                IToCommand command = toCommand.MakeThisCommand(this.commandObject, dummy.Message);
+                ExecutCommand(command, cookies);
+            }
+            else
+            {
+                ReceivedCookies receivedCookies = new ReceivedCookies(cookies.ClientIp, cookies.ClientPort, new List<CommandDummy>() { dummy });
+                CommandDummyIncomming?.Invoke(this, receivedCookies);
+            }
+        }
+
+        private void ExecutCommand(IToCommand toCommand, ReceivedCookies cookies)
+        {
+            object result = toCommand.Run();
+
+            if (toCommand.ReturnRequest == true && result is string message)
+            {
+                this.SendMessage(message, cookies);
+            }
+            else if (result is CommandDummy dummy)
+            {
+                CheckDummmy(dummy, cookies);
             }
         }
 
@@ -63,6 +83,11 @@ namespace CadProjectorViewer.EthernetServer.Servers
             StopCommand.Execute(this);
             Remove?.Invoke(this);
         });
+
+        public void SendMessage(string message, ReceivedCookies receivedCookies)
+        {
+            this.server.SendMessage(message, receivedCookies.ClientIp, receivedCookies.ClientPort);
+        }
 
 
         #region IToRemoveObject

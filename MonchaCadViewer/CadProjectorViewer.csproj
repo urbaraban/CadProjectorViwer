@@ -285,6 +285,7 @@
     <Compile Include="EthernetServer\TCPTools.cs" />
     <Compile Include="EthernetServer\ToCutEthernetHub.cs" />
     <Compile Include="ToCommands\IToCutCommandObject.cs" />
+    <Compile Include="ToCommands\MainAppCommand\ClearSceneCommand.cs" />
     <Compile Include="ToCommands\MainAppCommand\FilePathCommand.cs" />
     <Compile Include="ToCommands\MainAppCommand\FileListCommand.cs" />
     <Compile Include="ToCommands\IToCommand.cs" />

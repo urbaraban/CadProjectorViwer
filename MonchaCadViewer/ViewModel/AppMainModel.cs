@@ -68,7 +68,7 @@ namespace CadProjectorViewer.ViewModel
 
         private List<IToCommand> toCommands { get; } = new List<IToCommand>()
         {
-            new FileListCommand(null, string.Empty)
+            new FileListCommand(null, string.Empty),
         };
 
         public AppMainModel()
@@ -98,31 +98,30 @@ namespace CadProjectorViewer.ViewModel
 
         private void CUTServer_CommandDummyIncomming(object sender, ReceivedCookies e)
         {
-            if (sender is IToCUTServer server)
+            if (sender is ToCutServerObject toCutServerObject)
             {
                 foreach (var command in e.Dummies)
                 {
-                    if (ToCommand.GetToCommand(command.Name, this.toCommands) is IToCommand toCommand
-                        && sender is MessageReceivedEventArgs args)
+                    if (ToCommand.GetToCommand(command.Name, this.toCommands) is IToCommand toCommand)
                     {
                         IToCommand exCommand = toCommand.MakeThisCommand(this, command.Message);
-                        ExecutCommand(exCommand, server, e);
+                        ExecutCommand(exCommand, toCutServerObject, e);
                     }
                 }
             }
         }
 
-        private void ExecutCommand(IToCommand toCommand, IToCUTServer server, ReceivedCookies cookies)
+        private void ExecutCommand(IToCommand toCommand, ToCutServerObject toCutServerObject, ReceivedCookies cookies)
         {
             object result = toCommand.Run();
 
             if (toCommand.ReturnRequest == true && result is string message)
             {
-                server.SendMessage(message, cookies.ClientIp, cookies.ClientPort);
+                toCutServerObject.SendMessage(message, cookies);
             }
             else if (result is IToCommand newcommand)
             {
-                ExecutCommand(newcommand, server, cookies);
+                ExecutCommand(newcommand, toCutServerObject, cookies);
             }
         }
 
@@ -203,7 +202,7 @@ namespace CadProjectorViewer.ViewModel
             }
         });
 
-        public ICommand LoadMWSCommand => new ActionCommand(() => FileLoad.LoadMoncha(ProjectorHub, false));
+        public ICommand LoadMWSCommand => new ActionCommand(() => FileLoad.LoadMoncha(ProjectorHub, true));
 
         public ICommand Clear => new ActionCommand(() => {
             ProjectorHub.ScenesCollection.SelectedScene.Clear();

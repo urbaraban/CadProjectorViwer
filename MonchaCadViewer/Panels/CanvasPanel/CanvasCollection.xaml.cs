@@ -2,6 +2,7 @@
 using CadProjectorSDK.CadObjects.Abstract;
 using CadProjectorSDK.Scenes;
 using CadProjectorViewer.StaticTools;
+using CadProjectorViewer.ViewModel;
 using Microsoft.Xaml.Behaviors.Core;
 using System;
 using System.Collections.Generic;
@@ -25,8 +26,6 @@ namespace CadProjectorViewer.Panels.CanvasPanel
     /// </summary>
     public partial class CanvasCollection : UserControl
     {
-        ProjectorHub projectorHub => (ProjectorHub)this.DataContext;
-
         public CanvasCollection()
         {
             InitializeComponent();
@@ -35,20 +34,23 @@ namespace CadProjectorViewer.Panels.CanvasPanel
         protected async override void OnDrop(DragEventArgs e)
         {
             base.OnDrop(e);
-            if (await FileLoad.GetDrop(e, projectorHub.ScenesCollection.SelectedScene.ProjectionSetting.PointStep.Value) is UidObject Obj)
+            if (this.DataContext is ScenesCollection scenecollection)
             {
-                if (this.projectorHub.ScenesCollection.LoadedObjects.Contains(Obj) == false)
+                if (await FileLoad.GetDrop(e, scenecollection.SelectedScene.ProjectionSetting.PointStep.Value) is UidObject Obj)
                 {
-                    SceneTask sceneTask = new SceneTask()
+                    if (scenecollection.LoadedObjects.Contains(Obj) == false)
                     {
-                        Object = Obj,
-                        TableID = projectorHub.ScenesCollection.SelectedScene.TableID,
-                    };
-                    projectorHub.ScenesCollection.AddTask(sceneTask);
-                }
-                else
-                {
-                    this.projectorHub.ScenesCollection.SelectedScene.Add(Obj);
+                        SceneTask sceneTask = new SceneTask()
+                        {
+                            Object = Obj,
+                            TableID = scenecollection.SelectedScene.TableID,
+                        };
+                        scenecollection.AddTask(sceneTask);
+                    }
+                    else
+                    {
+                        scenecollection.SelectedScene.Add(Obj);
+                    }
                 }
             }
         }
@@ -56,21 +58,33 @@ namespace CadProjectorViewer.Panels.CanvasPanel
         public ICommand NextCommand => new ActionCommand(Next);
         private async void Next()
         {
-            int index = this.projectorHub.ScenesCollection.IndexOf(this.projectorHub.ScenesCollection.SelectedScene);
-            this.projectorHub.ScenesCollection.SelectedScene = this.projectorHub.ScenesCollection[Math.Abs(index + 1) % this.projectorHub.ScenesCollection.Count];
+            if (this.DataContext is ScenesCollection scenecollection)
+            {
+                int index = scenecollection.IndexOf(scenecollection.SelectedScene);
+                scenecollection.SelectedScene =
+                    scenecollection[Math.Abs(index + 1) % scenecollection.Count];
+            }
+
         }
 
         public ICommand PreviousCommand => new ActionCommand(Previous);
         private async void Previous()
         {
-            int index = this.projectorHub.ScenesCollection.IndexOf(this.projectorHub.ScenesCollection.SelectedScene);
-            this.projectorHub.ScenesCollection.SelectedScene = this.projectorHub.ScenesCollection[Math.Abs(index - 1) % this.projectorHub.ScenesCollection.Count];
+            if (this.DataContext is ScenesCollection scenecollection)
+            {
+                int index = scenecollection.IndexOf(scenecollection.SelectedScene);
+                scenecollection.SelectedScene =
+                    scenecollection[Math.Abs(index - 1) % scenecollection.Count];
+            }
         }
 
         public ICommand RefreshFrameCommand => new ActionCommand(refresh);
         private async void refresh()
         {
-            projectorHub.ScenesCollection.SelectedScene.RefreshScene();
+            if (this.DataContext is ScenesCollection scenecollection)
+            {
+                scenecollection.SelectedScene.RefreshScene();
+            }
         }
     }
 }

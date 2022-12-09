@@ -2,6 +2,7 @@
 using CadProjectorSDK.CadObjects;
 using CadProjectorSDK.CadObjects.Abstract;
 using CadProjectorViewer.CanvasObj;
+using CadProjectorViewer.ViewModel;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -25,8 +26,6 @@ namespace CadProjectorViewer.Panels
     /// </summary>
     public partial class ScrollPanel : UserControl
     {
-        private ProjectorHub hub => (ProjectorHub)this.DataContext;
-
         public ScrollPanel()
         {
             InitializeComponent();
@@ -35,7 +34,11 @@ namespace CadProjectorViewer.Panels
 
         private void ClearBtn_Click(object sender, RoutedEventArgs e)
         {
-            hub.ScenesCollection.LoadedObjects.Clear();
+            if (this.DataContext is AppMainModel appMainModel)
+            {
+                appMainModel.ProjectorHub.ScenesCollection.LoadedObjects.Clear();
+            }
+
         }
     }
 }

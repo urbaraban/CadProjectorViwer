@@ -50,12 +50,6 @@ namespace CadProjectorViewer.CanvasObj
             Pen pen = this.GetPen(true);
             RenderDeviceModel deviceModel = this.GetViewModel?.Invoke();
 
-            //pen.Brush = new SolidColorBrush(
-            //            Color.FromArgb(255,
-            //            (this.RedOn == true ? this.Red : (byte)0),
-            //            (this.GreenOn == true ? this.Green : (byte)0),
-            //            (this.BlueOn == true ? this.Blue : (byte)0)));
-
             double propwidth = deviceModel.Size.MWidth;
             double propheight = deviceModel.Size.MHeight;
 

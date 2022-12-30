@@ -68,10 +68,7 @@ namespace CadProjectorViewer.StaticTools
                     AppSt.Default.cl_moncha_path = str;
                     AppSt.Default.Save();
                 }
-                else
-                {
-                    await projectorHub.Load(AppSt.Default.cl_moncha_path);
-                }
+                await projectorHub.Load(AppSt.Default.cl_moncha_path);
             }
             catch
             {

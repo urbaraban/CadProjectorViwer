@@ -273,7 +273,11 @@ namespace CadProjectorViewer.CanvasObj
             this.Uid = Guid.NewGuid().ToString();
             this.ActiveObject = ActiveObject;
             this.Cursor = Cursors.Hand;
+
+            this.CadObject.RenderUpdated += CadObject_RenderUpdated;
         }
+
+        private void CadObject_RenderUpdated(object sender, EventArgs e) => Update();
 
         protected override void OnMouseLeftButtonUp(System.Windows.Input.MouseButtonEventArgs e)
         {
@@ -465,8 +469,7 @@ namespace CadProjectorViewer.CanvasObj
                         Drawing(uid, deviceModel, IsSelected, MouseOver, ParentRender && uid.IsRender, drawingContext);
                 }
             }
-            else if (uidObject.Renders.ContainsKey(deviceModel.RenderingDisplay) == true
-                && uidObject.Renders[deviceModel.RenderingDisplay] is IEnumerable<IRenderedObject> linesCollection)
+            else if (uidObject.GetRender(deviceModel.RenderingDisplay) is IEnumerable<IRenderedObject> linesCollection)
             {
                 DrawingIRenderableObjects(linesCollection, drawingContext, deviceModel, brush, pen);
             }

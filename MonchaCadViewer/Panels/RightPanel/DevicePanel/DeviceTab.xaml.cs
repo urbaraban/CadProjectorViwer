@@ -75,6 +75,18 @@ namespace CadProjectorViewer.Panels
             sceneSettingWindow.Show();
         }
 
+        private void EllipseSettingBtn_Click(object sender, RoutedEventArgs e)
+        {
+            if (sender is Button button)
+            {
+                EllipsoidSettingDialog ellipsoidSettingDialog = new EllipsoidSettingDialog()
+                {
+                    DataContext = button.DataContext
+                };
+                ellipsoidSettingDialog.Show();
+            }
+        }
+
 
         private void MeshSettingBtn_Click(object sender, RoutedEventArgs e)
         {

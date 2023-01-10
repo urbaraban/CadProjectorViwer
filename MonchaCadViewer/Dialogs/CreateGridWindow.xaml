@@ -48,20 +48,6 @@
             <converters:CadObjectConverter x:Key="CadObjectConverter"/>
             <cadprojectorviewer:ToSceneObjConverter x:Key="ToSceneConverter"/>
             <panels:ItemConverter x:Key="ItemConverter"/>
-            
-            <HierarchicalDataTemplate
-                x:Key="CorrectUpDn">
-                <Controls:NumericUpDown
-                d:DataContext = "{d:DesignInstance Type=mesh:DoubleValue}"
-                    Value="{Binding Value, Mode=TwoWay}"
-                    Maximum="1"
-                    Minimum="-1"
-                    Interval="0.001"
-                    ValueChanged="NumericUpDown_ValueChanged"
-                    GotFocus="NumericUpDown_GotFocus"
-                    />
-            </HierarchicalDataTemplate>
-
         </ResourceDictionary>
 
     </Window.Resources>
@@ -100,39 +86,6 @@
                     </ItemsControl>
                 </Grid>
             </Viewbox>
-            <ItemsControl  
-                Grid.Column="1"
-                Grid.Row="0"
-                ItemsSource="{Binding StrokeCorrect}"
-                ItemTemplate="{StaticResource CorrectUpDn}">
-                <ItemsControl.ItemsPanel>
-                    <ItemsPanelTemplate>
-                        <StackPanel Orientation="Vertical" />
-                    </ItemsPanelTemplate>
-                </ItemsControl.ItemsPanel>
-            </ItemsControl>
-
-            <ItemsControl  
-                Grid.Column="0"
-                Grid.Row="1"
-                ItemsSource="{Binding ColumnCorrect}"
-                ItemTemplate="{StaticResource CorrectUpDn}">
-                <ItemsControl.ItemsPanel>
-                    <ItemsPanelTemplate>
-                        <StackPanel Orientation="Horizontal">
-                            <StackPanel.Resources>
-                                <Style TargetType="Controls:NumericUpDown">
-                                    <Setter Property="LayoutTransform">
-                                        <Setter.Value>
-                                            <RotateTransform Angle="-90"/>
-                                        </Setter.Value>
-                                    </Setter>
-                                </Style>
-                            </StackPanel.Resources>
-                        </StackPanel>
-                    </ItemsPanelTemplate>
-                </ItemsControl.ItemsPanel>
-            </ItemsControl>
         </Grid>
     <StackPanel Orientation="Vertical" Width="180" Margin="5">
             <TextBox Text="{Binding Name}"/>

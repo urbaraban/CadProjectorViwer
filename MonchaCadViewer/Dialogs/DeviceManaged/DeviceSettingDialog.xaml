@@ -130,43 +130,8 @@
         </DockPanel>
 
         <Separator/>
-        <DockPanel>
-            <CheckBox Content="Use Ellipsoid" IsChecked="{Binding UseEllipsoid}"/>
-        </DockPanel>
-        <DockPanel>
-            <Label  
-                Content="AngleX"/>
-            <Controls:NumericUpDown
-                Value="{Binding Ellipsoid.AngleX, Mode=TwoWay}"
-                Interval="0.01"
-                Minimum="-3"
-                MinWidth="150"
-                ValueChanged="NumericUpDown_ValueChanged"/>
-            <Controls:NumericUpDown
-                Value="{Binding Ellipsoid.AngleOffsetX, Mode=TwoWay}"
-                Interval="0.01"
-                Minimum="-3"
-                MinWidth="150"
-                ValueChanged="NumericUpDown_ValueChanged"/>
-        </DockPanel>
 
-        <DockPanel>
-            <Label  
-                Content="AngleY"/>
-            <Controls:NumericUpDown
-                Value="{Binding Ellipsoid.AngleY, Mode=TwoWay}"
-                Interval="0.01"
-                Minimum="-3"
-                MinWidth="150"
-                ValueChanged="NumericUpDown_ValueChanged"/>
-            <Controls:NumericUpDown
-                Value="{Binding Ellipsoid.AngleOffsetY, Mode=TwoWay}"
-                Interval="0.01"
-                Minimum="-3"
-                MinWidth="150"
-                ValueChanged="NumericUpDown_ValueChanged"/>
-        </DockPanel>
-
+    
         <DockPanel>
             <Label  
                 Content="GrSteps"/>

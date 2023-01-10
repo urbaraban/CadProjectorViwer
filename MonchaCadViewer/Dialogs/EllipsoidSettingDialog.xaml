@@ -1,0 +1,115 @@
+﻿<Window x:Class="CadProjectorViewer.Dialogs.EllipsoidSettingDialog"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:CadProjectorViewer.Dialogs" xmlns:Controls="http://metro.mahapps.com/winfx/xaml/controls"
+        xmlns:dvc="clr-namespace:CadProjectorSDK.Device;assembly=CadProjectorSDK"
+        mc:Ignorable="d"
+        d:DataContext="{d:DesignInstance Type=dvc:LProjector}"
+        Title="EllipsoidSettingDialog"
+        SizeToContent="WidthAndHeight">
+    <Window.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Controls.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Fonts.xaml" />
+                <!-- Theme setting -->
+                <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Themes/Light.Blue.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+            <Style TargetType="DockPanel">
+                <Setter Property="LastChildFill" Value="True"/>
+                <Setter Property="Margin" Value="5"/>
+            </Style>
+            <Style TargetType="TextBox">
+                <Setter Property="MinWidth" Value="45"/>
+                <Setter Property="Margin" Value="3,0"/>
+                <Setter Property="Padding" Value="3"/>
+            </Style>
+            <Style TargetType="Button">
+                <Setter Property="Height" Value="30"/>
+            </Style>
+            <Style TargetType="Label">
+                <Setter Property="Width" Value="50"/>
+            </Style>
+            <Style TargetType="ComboBox">
+                <Setter Property="MinWidth" Value="90"/>
+            </Style>
+            <HierarchicalDataTemplate
+                x:Key="CorrectUpDn">
+                <Controls:NumericUpDown Maximum="1"
+                                        Minimum="-1"
+                                        Interval="0.001"
+                                        HideUpDownButtons="True"
+                                        ValueChanged="NumericUpDown_ValueChanged"
+                                        Value="{Binding Value}"/>
+            </HierarchicalDataTemplate>
+        </ResourceDictionary>
+    </Window.Resources>
+    <Grid>
+        <StackPanel Orientation="Vertical">
+            <DockPanel>
+                <Controls:ToggleSwitch Content="Use Ellipsoid" IsOn="{Binding UseEllipsoid}"/>
+            </DockPanel>
+            <DockPanel>
+                <Label  
+                Content="AngleX"/>
+                <Controls:NumericUpDown Interval="0.01"
+                                        Minimum="-3"
+                                        MinWidth="150"
+                                        Value="{Binding Ellipsoid.AngleX, Mode=TwoWay}"
+                                        ValueChanged="NumericUpDown_ValueChanged"/>
+                <Controls:NumericUpDown Interval="0.01"
+                                        Minimum="-3"
+                                        MinWidth="150"
+                                        Value="{Binding Ellipsoid.AngleY, Mode=TwoWay}"
+                                        ValueChanged="NumericUpDown_ValueChanged"/>
+            </DockPanel>
+
+            <DockPanel>
+                <Label  
+                Content="AngleY"/>
+                <Controls:NumericUpDown
+                Value="{Binding Ellipsoid.AngleY, Mode=TwoWay}"
+                Interval="0.01"
+                Minimum="-3"
+                MinWidth="150"
+                    ValueChanged="NumericUpDown_ValueChanged"/>
+                <Controls:NumericUpDown
+                Value="{Binding Ellipsoid.AngleOffsetY, Mode=TwoWay}"
+                Interval="0.01"
+                Minimum="-3"
+                MinWidth="150"
+                    ValueChanged="NumericUpDown_ValueChanged"/>
+            </DockPanel>
+            <StackPanel Orientation="Horizontal"
+                        Margin="5">
+                <Label Content="Cor X:"/>
+                <ItemsControl Grid.Column="0"
+                              Grid.Row="1"
+                              ItemsSource="{Binding Ellipsoid.XAxisCorrect, UpdateSourceTrigger=PropertyChanged}"
+                              ItemTemplate="{StaticResource CorrectUpDn}">
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <StackPanel Orientation="Horizontal"/>
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                </ItemsControl>
+            </StackPanel>
+            <StackPanel Orientation="Horizontal"
+                        Margin="5">
+                <Label Content="Cor Y:"/>
+                <ItemsControl Grid.Column="0"
+                              Grid.Row="1"
+                              ItemsSource="{Binding Ellipsoid.YAxisCorrect, UpdateSourceTrigger=PropertyChanged}"
+                              ItemTemplate="{StaticResource CorrectUpDn}">
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <StackPanel Orientation="Horizontal"/>
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                </ItemsControl>
+            </StackPanel>
+        </StackPanel>
+    </Grid>
+</Window>

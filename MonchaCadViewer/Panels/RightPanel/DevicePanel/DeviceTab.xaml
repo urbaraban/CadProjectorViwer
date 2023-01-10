@@ -49,6 +49,7 @@
                 Content="{DynamicResource dvc_Device}" />
             <DockPanel HorizontalAlignment="Stretch" LastChildFill="True">
                 <Controls:ToggleSwitch
+                    Visibility="Collapsed"
                     DockPanel.Dock="Right"
                     DataContext="{Binding SelectedItem, ElementName=DeviceCombo}"
                     IsOn="{Binding OwnedSetting}"
@@ -72,9 +73,19 @@
                         FontFamily="Segoe MDL2 Assets"
                         FontSize="14"
                         Width="{Binding ActualHeight, RelativeSource={RelativeSource Self}}" />
+                <Button DockPanel.Dock="Right"
+                        Margin="5,0,0,0"
+                        Click="EllipseSettingBtn_Click"
+                        Content="&#xE774;"
+                        Padding="0"
+                        FontFamily="Segoe MDL2 Assets"
+                        FontSize="14"
+                        DataContext="{Binding SelectedItem, ElementName=DeviceCombo}"
+                        Width="{Binding ActualHeight, RelativeSource={RelativeSource Self}}" />
                 <ComboBox
                     x:Name="DeviceCombo"  
                     DockPanel.Dock="Left"
+                    HorizontalContentAlignment="Right"
                     SelectedValuePath="NameID"
                     SelectedItem="{Binding SelectedItem}"
                     ItemsSource="{Binding .}">

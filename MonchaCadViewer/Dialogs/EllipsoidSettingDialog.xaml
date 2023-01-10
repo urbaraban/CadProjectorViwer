@@ -62,7 +62,7 @@
                 <Controls:NumericUpDown Interval="0.01"
                                         Minimum="-3"
                                         MinWidth="150"
-                                        Value="{Binding Ellipsoid.AngleY, Mode=TwoWay}"
+                                        Value="{Binding Ellipsoid.AngleOffsetX, Mode=TwoWay}"
                                         ValueChanged="NumericUpDown_ValueChanged"/>
             </DockPanel>
 

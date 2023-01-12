@@ -36,17 +36,17 @@ namespace CadProjectorViewer.Dialogs
                 double widthstep = 1d / (projector.Ellipsoid.XAxisCorrect.Count - 1);
                 double heightstep = 1d / (projector.Ellipsoid.YAxisCorrect.Count - 1);
 
-                VectorLinesCollection dot = new VectorLinesCollection(CadProjectorSDK.Device.Mesh.MeshType.NONE);
-                dot.Add(new VectorLine(0.5, 0.5, 0.5, 0.5, false));
-                elements.Add(dot);
+                //VectorLinesCollection dot = new VectorLinesCollection(CadProjectorSDK.Device.Mesh.MeshType.NONE);
+                //dot.Add(new VectorLine(0.5, 0.5, 0.5, 0.5, false));
+                //elements.Add(dot);
 
-                for (int i = 0; i < 5; i += 1)
+                for (int i = 0; i < projector.Ellipsoid.XAxisCorrect.Count; i += 1)
                 {
                     VectorLinesCollection line = new VectorLinesCollection(CadProjectorSDK.Device.Mesh.MeshType.NONE)
                     {
                         new VectorLine(
-                            new RenderPoint(i * 0.25, 0.1),
-                            new RenderPoint(i * 0.25, 0.99), false)
+                            new RenderPoint(i * widthstep, 0.1),
+                            new RenderPoint(i * widthstep, 0.99), false)
                     };
                     elements.Add(line);
                 }

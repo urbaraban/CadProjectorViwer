@@ -35,6 +35,7 @@ using Cursors = System.Windows.Input.Cursors;
 using CadProjectorViewer.Dialogs;
 using CadProjectorSDK.CadObjects.Interfaces;
 using CadProjectorSDK.Tools;
+using System.Linq;
 
 namespace CadProjectorViewer.CanvasObj
 {
@@ -463,7 +464,10 @@ namespace CadProjectorViewer.CanvasObj
 
             if (uidObject is CadGroup group)
             {
-                foreach (UidObject uid in group)
+                IEnumerable<UidObject> VisualSorted = 
+                    group.Children.OrderBy(e => e.IsRender == true || e.IsSelected == true);
+
+                foreach (UidObject uid in VisualSorted)
                 {
                     if (uid.IsRender == true || deviceModel.ShowHide == true)
                         Drawing(uid, deviceModel, IsSelected, MouseOver, ParentRender && uid.IsRender, drawingContext);

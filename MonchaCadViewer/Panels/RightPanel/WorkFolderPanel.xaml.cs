@@ -82,9 +82,10 @@ namespace CadProjectorViewer.Panels.RightPanel
             }
             else if (e.Key == Key.Enter)
             {
-                if (WorkFolderListBox.SelectedItem is FileSystemInfo fileInfo)
+                if (this.DataContext is WorkFolderList workFolderList && 
+                    WorkFolderListBox.SelectedItem is FileSystemInfo fileInfo)
                 {
-
+                    workFolderList.SelectPathSendCommand(fileInfo).Execute(sender);
                 }
             }
         }

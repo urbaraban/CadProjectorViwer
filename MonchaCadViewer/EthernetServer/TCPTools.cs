@@ -1,14 +1,16 @@
-﻿using OpenCvSharp.WpfExtensions;
-using QRCoder;
+﻿using QRCoder;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Drawing.Imaging;
 using System.Linq;
 using System.Net;
 using System.Net.NetworkInformation;
 using System.Net.Sockets;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
+using System.Windows.Media;
 using System.Windows.Media.Imaging;
 
 namespace CadProjectorViewer.EthernetServer
@@ -47,8 +49,19 @@ namespace CadProjectorViewer.EthernetServer
             string message = $"{iPAddress}:{port}";
             QRCodeData qrCodeData = qrGenerator.CreateQrCode(message, QRCodeGenerator.ECCLevel.Q);
             QRCode qrCode = new QRCode(qrCodeData);
-            Bitmap qrCodeImage = qrCode.GetGraphic(20);
-            return qrCodeImage.ToBitmapSource();
+
+            System.Drawing.Bitmap bitmap = qrCode.GetGraphic(20);
+
+            return ConvertBitmap(bitmap);
+        }
+
+        public static BitmapSource ConvertBitmap(Bitmap source)
+        {
+            return System.Windows.Interop.Imaging.CreateBitmapSourceFromHBitmap(
+                          source.GetHbitmap(),
+                          IntPtr.Zero,
+                          Int32Rect.Empty,
+                          BitmapSizeOptions.FromEmptyOptions());
         }
 
         public static byte[] GetBytes(string message)

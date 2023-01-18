@@ -263,6 +263,7 @@ namespace CadProjectorViewer.CanvasObj
             ContextMenuLib.AddItem("common_Remove", RemoveCommand, this.ContextMenu);
             ContextMenuLib.AddItem("obj_Render", RenderCommand, this.ContextMenu);
             ContextMenuLib.AddItem("common_MasksGrid", MasksCommand, this.ContextMenu);
+            ContextMenuLib.AddItem("obj_RoundCentre", MasksCommand, this.ContextMenu);
 
             if (uidObject is CadGroup group)
             {
@@ -427,6 +428,13 @@ namespace CadProjectorViewer.CanvasObj
         });
 
         public ICommand MasksCommand => new ActionCommand(() =>
+        {
+            Rect bounds = this.CadObject.Bounds;
+            MakeMeshSplitDialog makeMeshSplitDialog = new MakeMeshSplitDialog(bounds, this.CadObject.GetScene?.Invoke());
+            makeMeshSplitDialog.Show();
+        });
+
+        public ICommand RoundCentreCommand => new ActionCommand(() =>
         {
             Rect bounds = this.CadObject.Bounds;
             MakeMeshSplitDialog makeMeshSplitDialog = new MakeMeshSplitDialog(bounds, this.CadObject.GetScene?.Invoke());

@@ -33,12 +33,12 @@ namespace CadProjectorViewer.StaticTools
             new SVG(),
             new DXF(),
             new GCODE(),
-            //new DEXCeil(),
+            // new DEXCeil(),
             new STL(),
-            //new MetaFile(),
-            //new JSON(),
-            new GCFormat("Компас 3D", new string[2] { ".frw" , ".cdw"}) { ReadFile = GetKompas },
-            //new GCFormat("JPG Image", new string[2] { "jpg" , "jpeg"}) { ReadFile = GetImage },
+            // new MetaFile(),
+            // new JSON(),
+            // new GCFormat("Компас 3D", new string[2] { ".frw" , ".cdw"}) { ReadFile = GetKompas },
+            // new GCFormat("JPG Image", new string[2] { "jpg" , "jpeg"}) { ReadFile = GetImage },
             new GCFormat("ILDA", new string[1] { ".ild" }){ ReadFile = GetILDA },
             new GCFormat("2CUT", new string[1] { ".2scn" }){ ReadFile = Get2CUT }
         };

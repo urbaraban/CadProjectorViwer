@@ -36,6 +36,9 @@ using CadProjectorViewer.Dialogs;
 using CadProjectorSDK.CadObjects.Interfaces;
 using CadProjectorSDK.Tools;
 using System.Linq;
+using Size = System.Windows.Size;
+using OpenCvSharp;
+using Rect = System.Windows.Rect;
 
 namespace CadProjectorViewer.CanvasObj
 {
@@ -263,7 +266,8 @@ namespace CadProjectorViewer.CanvasObj
             ContextMenuLib.AddItem("common_Remove", RemoveCommand, this.ContextMenu);
             ContextMenuLib.AddItem("obj_Render", RenderCommand, this.ContextMenu);
             ContextMenuLib.AddItem("common_MasksGrid", MasksCommand, this.ContextMenu);
-            ContextMenuLib.AddItem("obj_RoundCentre", MasksCommand, this.ContextMenu);
+            ContextMenuLib.AddItem("obj_AddProjectivePoint", AddProjectivePointCommand, this.ContextMenu);
+            ContextMenuLib.AddItem("obj_RoundCentre", RoundCentreCommand, this.ContextMenu);
 
             if (uidObject is CadGroup group)
             {
@@ -304,7 +308,12 @@ namespace CadProjectorViewer.CanvasObj
         protected override void OnInitialized(EventArgs e)
         {
             base.OnInitialized(e);
-            adornerLayer = AdornerLayer.GetAdornerLayer(this);
+            if ((this is CanvasAnchor) == false)
+            {
+                adornerLayer = AdornerLayer.GetAdornerLayer(this);
+                ProjectiveAdorner projective = new ProjectiveAdorner(this);
+                adornerLayer.Add(projective);
+            }
         }
 
         protected override void OnMouseMove(MouseEventArgs e)
@@ -427,6 +436,13 @@ namespace CadProjectorViewer.CanvasObj
             }
         });
 
+        public ICommand AddProjectivePointCommand => new ActionCommand(() =>
+        {
+            Point tPoint = Mouse.GetPosition(this);
+            CadAnchor cadAnchor = new CadAnchor(tPoint.X, tPoint.Y, 0);
+            this.CadObject.AddProjectionPoint(cadAnchor);
+        });
+
         public ICommand MasksCommand => new ActionCommand(() =>
         {
             Rect bounds = this.CadObject.Bounds;
@@ -524,25 +540,100 @@ namespace CadProjectorViewer.CanvasObj
                 drawingContext.DrawGeometry(brush, pen, streamGeometry);
             }
         }
-
-        //protected void DrawSize(DrawingContext drawingContext, Point point1, Point point2)
-        //{
-        //    double thinkess = this.GetThinkess() / 3d / Math.Abs(this.CadObject.Scale.ScaleX * Math.Max(this.CadObject.ScaleX, this.CadObject.ScaleY));
-        //    thinkess = thinkess <= 0 ? 1 : thinkess;
-
-        //    //drawingContext.DrawLine(new Pen(Brushes.DarkGray, thinkess), point1, point2);
-
-        //    Vector vector = point1 - point2;
-
-        //    drawingContext.DrawText(
-        //        new FormattedText(Math.Round(vector.Length, 1).ToString(),
-        //        new System.Globalization.CultureInfo("ru-RU"), 
-        //        FlowDirection.LeftToRight,
-        //            new Typeface("Segoe UI"), 
-        //            (int)thinkess * 3,
-        //            Brushes.Gray), 
-        //        new Point((point1.X + point2.X)/2, (point1.Y + point2.Y) / 2));
-
-        //}
     }
+
+    public class ProjectiveAdorner : Adorner
+    {
+        private VisualCollection _Visuals;
+
+        private List<CanvasAnchor> _Anchors { get; } = new List<CanvasAnchor>();
+
+        private CanvasObject canvasObject;
+
+        public ProjectiveAdorner(CanvasObject canvasObject) : base(canvasObject)
+        {
+            this.canvasObject = canvasObject;
+
+            _Visuals = new VisualCollection(this);
+            _Anchors = new List<CanvasAnchor>();
+
+            if (this.canvasObject.CadObject.ProjectionPoint.Count > 0)
+            {
+                foreach ((Point2d, CadAnchor) point in this.canvasObject.CadObject.ProjectionPoint)
+                {
+                    AddAnchor(point.Item2);
+                }
+            }
+
+            this.canvasObject.CadObject.ProjectionPoint.CollectionChanged += ProjectionPoint_CollectionChanged;
+
+        }
+
+        private void ProjectionPoint_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        {
+            if (e.NewItems != null)
+            {
+                foreach((Point2d, CadAnchor) anch in e.NewItems)
+                {
+                    AddAnchor(anch.Item2);
+                }
+            }
+            if (e.OldItems != null)
+            {
+                foreach ((Point2d, CadAnchor) anch in e.NewItems)
+                {
+                    RemoveAnchor(anch.Item2);
+                }
+            }
+        }
+
+        private void AddAnchor(CadAnchor anchor)
+        {
+            CanvasAnchor CanvAnchor = new CanvasAnchor(anchor);
+            CanvAnchor.GetViewModel = this.canvasObject.GetViewModel;
+            this._Anchors.Add(CanvAnchor);
+            anchor.PropertyChanged += Point_PropertyChanged;
+            _Visuals.Add(CanvAnchor);
+            this.InvalidateVisual();
+        }
+
+        private void RemoveAnchor(CadAnchor cadAnchor)
+        {
+            for (int i = 0; i < this._Anchors.Count; i += 1)
+            {
+                if (this._Anchors[i].CadObject.Uid == cadAnchor.Uid)
+                {
+                    this._Anchors[i].PropertyChanged -= Point_PropertyChanged;
+                    _Visuals.Remove(_Anchors[i]);
+                    this._Anchors.RemoveAt(i);
+                }
+            }
+            this.InvalidateVisual();
+        }
+
+        private void Point_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            this.InvalidateVisual();
+        }
+
+        protected override Size ArrangeOverride(Size finalSize)
+        {
+            foreach (CanvasAnchor anchor in _Anchors)
+            {
+                anchor.Arrange(new Rect(finalSize));
+            }
+            return this.canvasObject.Bounds.Size;
+        }
+
+        // A common way to implement an adorner's rendering behavior is to override the OnRender
+        // method, which is called by the layout system as part of a rendering pass.
+
+        protected override int VisualChildrenCount { get { return _Visuals.Count; } }
+        protected override Visual GetVisualChild(int index) { return _Visuals[index]; }
+        protected override void OnRender(DrawingContext drawingContext)
+        {
+            base.OnRender(drawingContext);
+        }
+    }
+
 }

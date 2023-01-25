@@ -30,6 +30,8 @@
     <v:String x:Key="obj_ParallelMargin">Strokes margin</v:String>
     <v:String x:Key="obj_Transform">Transform</v:String>
     <v:String x:Key="obj_Thinkess">Thinkess</v:String>
+    <v:String x:Key="obj_AddProjectivePoint">Add projective point</v:String>
+    <v:String x:Key="obj_RoundCentre">Round centre</v:String>
 
     <v:String x:Key="gr_Ungroup">Ungroup</v:String>
 
@@ -59,6 +61,7 @@
     <v:String x:Key="dvc_polymesh">Poly mesh</v:String>
     <v:String x:Key="dvc_ProjectionSetting">Projection</v:String>
     <v:String x:Key="dvc_ShowScreen">Show projection</v:String>
+    
 
 
     <v:String x:Key="dvc_ProjectMain">Main</v:String>

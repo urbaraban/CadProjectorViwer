@@ -45,6 +45,7 @@ namespace CadProjectorViewer.ViewModel
             set
             {
                 _adminclick = value;
+                OnPropertyChanged(nameof(AdminMode));
             }
         }
         private int _adminclick = 0;

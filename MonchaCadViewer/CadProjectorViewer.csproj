@@ -36,7 +36,7 @@
     <SuiteName>Viwer</SuiteName>
     <WebPage>publish.htm</WebPage>
     <OpenBrowserOnPublish>false</OpenBrowserOnPublish>
-    <ApplicationRevision>146</ApplicationRevision>
+    <ApplicationRevision>147</ApplicationRevision>
     <ApplicationVersion>0.8.1.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <CreateDesktopShortcut>true</CreateDesktopShortcut>
@@ -296,6 +296,7 @@
     <Compile Include="ViewModel\AppMainModel.cs" />
     <Compile Include="ViewModel\CanvasObj\CanvasLine.cs" />
     <Compile Include="ViewModel\CanvasObj\CanvasMesh.cs" />
+    <Compile Include="ViewModel\CanvasObj\IAnchoredObject.cs" />
     <Compile Include="ViewModel\CanvasObj\ImagePreview.cs" />
     <Compile Include="Dialogs\DeviceManaged\ProjectorView.xaml.cs">
       <DependentUpon>ProjectorView.xaml</DependentUpon>

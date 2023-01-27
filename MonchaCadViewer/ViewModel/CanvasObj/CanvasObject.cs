@@ -39,11 +39,25 @@ using System.Linq;
 using Size = System.Windows.Size;
 using OpenCvSharp;
 using Rect = System.Windows.Rect;
+using CadProjectorViewer.ViewModel.CanvasObj;
 
 namespace CadProjectorViewer.CanvasObj
 {
-    public class CanvasObject : FrameworkElement, INotifyPropertyChanged
+    public class CanvasObject : FrameworkElement, INotifyPropertyChanged, IAnchoredObject
     {
+        public IEnumerable<CadAnchor> Anchors {
+            get
+            {
+                CadAnchor[] cadAnchors = new CadAnchor[cadobject.ProjectionPoint.Count];
+                for (int i = 0; i < cadAnchors.Length; i += 1)
+                {
+                    cadAnchors[i] = cadobject.ProjectionPoint[i].Item2;
+                }
+                return cadAnchors;
+            }
+        }
+        public event EventHandler UpdateAnchorPoints;
+
         public virtual GetScaleDelegate GetFrameTransform { get; set; }
         public delegate ScaleTransform GetScaleDelegate();
 
@@ -170,7 +184,6 @@ namespace CadProjectorViewer.CanvasObj
         }
         #endregion
 
-
         public LProjectionSetting ProjectionSetting
         {
             get => cadobject.ProjectionSetting;
@@ -215,7 +228,6 @@ namespace CadProjectorViewer.CanvasObj
             }
         }
         #endregion
-
 
         #region Variable
 
@@ -308,11 +320,11 @@ namespace CadProjectorViewer.CanvasObj
         protected override void OnInitialized(EventArgs e)
         {
             base.OnInitialized(e);
-            if ((this is CanvasAnchor) == false)
+            if (this is IAnchoredObject anchoredObject)
             {
                 adornerLayer = AdornerLayer.GetAdornerLayer(this);
-                ProjectiveAdorner projective = new ProjectiveAdorner(this);
-                adornerLayer.Add(projective);
+                AnchorAdorner anchor = new AnchorAdorner(anchoredObject, this);
+                adornerLayer.Add(anchor);
             }
         }
 
@@ -438,9 +450,19 @@ namespace CadProjectorViewer.CanvasObj
 
         public ICommand AddProjectivePointCommand => new ActionCommand(() =>
         {
-            Point tPoint = Mouse.GetPosition(this);
-            CadAnchor cadAnchor = new CadAnchor(tPoint.X, tPoint.Y, 0);
-            this.CadObject.AddProjectionPoint(cadAnchor);
+            Point TL = this.Bounds.TopLeft;
+            Point TR = this.Bounds.TopRight;
+            Point BL = this.Bounds.BottomLeft;
+            Point BR = this.Bounds.BottomRight;
+            CadAnchor TLAnchor = new CadAnchor(TL.X, TL.Y, 0);
+            CadAnchor TRAnchor = new CadAnchor(TR.X, TR.Y, 0);
+            CadAnchor BLAnchor = new CadAnchor(BL.X, BL.Y, 0);
+            CadAnchor BRAnchor = new CadAnchor(BR.X, BR.Y, 0);
+            this.CadObject.AddProjectionPoint(TLAnchor);
+            this.CadObject.AddProjectionPoint(TRAnchor);
+            this.CadObject.AddProjectionPoint(BLAnchor);
+            this.CadObject.AddProjectionPoint(BRAnchor);
+            UpdateAnchorPoints?.Invoke(this, null);
         });
 
         public ICommand MasksCommand => new ActionCommand(() =>
@@ -456,7 +478,6 @@ namespace CadProjectorViewer.CanvasObj
             MakeMeshSplitDialog makeMeshSplitDialog = new MakeMeshSplitDialog(bounds, this.CadObject.GetScene?.Invoke());
             makeMeshSplitDialog.Show();
         });
-
 
         private void ProjectionSetting_PropertyChanged(object sender, PropertyChangedEventArgs e) => this.Update();
 
@@ -542,71 +563,64 @@ namespace CadProjectorViewer.CanvasObj
         }
     }
 
-    public class ProjectiveAdorner : Adorner
+    internal class AnchorAdorner : Adorner
     {
         private VisualCollection _Visuals;
 
         private List<CanvasAnchor> _Anchors { get; } = new List<CanvasAnchor>();
 
-        private CanvasObject canvasObject;
+        private IAnchoredObject AnchoredObject;
 
-        public ProjectiveAdorner(CanvasObject canvasObject) : base(canvasObject)
+        public AnchorAdorner(IAnchoredObject canvasObject, UIElement uIElement) : base(uIElement)
         {
-            this.canvasObject = canvasObject;
+            this.AnchoredObject = canvasObject;
 
             _Visuals = new VisualCollection(this);
             _Anchors = new List<CanvasAnchor>();
 
-            if (this.canvasObject.CadObject.ProjectionPoint.Count > 0)
+            if (this.AnchoredObject.Anchors.Count() > 0)
             {
-                foreach ((Point2d, CadAnchor) point in this.canvasObject.CadObject.ProjectionPoint)
+                foreach (CadAnchor point in this.AnchoredObject.Anchors)
                 {
-                    AddAnchor(point.Item2);
+                    AddAnchor(point);
                 }
             }
 
-            this.canvasObject.CadObject.ProjectionPoint.CollectionChanged += ProjectionPoint_CollectionChanged;
+            this.AnchoredObject.UpdateAnchorPoints += AnchoredObject_UpdatePoints;
 
         }
 
-        private void ProjectionPoint_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        private void AnchoredObject_UpdatePoints(object sender, EventArgs e) => UpdatePoint();
+
+        private void UpdatePoint()
         {
-            if (e.NewItems != null)
+            RemoveAnchors();
+            foreach (CadAnchor anchor in this.AnchoredObject.Anchors)
             {
-                foreach((Point2d, CadAnchor) anch in e.NewItems)
-                {
-                    AddAnchor(anch.Item2);
-                }
-            }
-            if (e.OldItems != null)
-            {
-                foreach ((Point2d, CadAnchor) anch in e.NewItems)
-                {
-                    RemoveAnchor(anch.Item2);
-                }
+                AddAnchor(anchor);
             }
         }
 
         private void AddAnchor(CadAnchor anchor)
         {
             CanvasAnchor CanvAnchor = new CanvasAnchor(anchor);
-            CanvAnchor.GetViewModel = this.canvasObject.GetViewModel;
+            CanvAnchor.GetViewModel = this.AnchoredObject.GetViewModel;
             this._Anchors.Add(CanvAnchor);
             anchor.PropertyChanged += Point_PropertyChanged;
             _Visuals.Add(CanvAnchor);
             this.InvalidateVisual();
         }
 
-        private void RemoveAnchor(CadAnchor cadAnchor)
+        private void RemoveAnchors()
         {
-            for (int i = 0; i < this._Anchors.Count; i += 1)
+            for (int i = 1; i < _Visuals.Count; i += 1)
             {
-                if (this._Anchors[i].CadObject.Uid == cadAnchor.Uid)
+                if (_Visuals[i] is CanvasAnchor cadAnchor)
                 {
-                    this._Anchors[i].PropertyChanged -= Point_PropertyChanged;
-                    _Visuals.Remove(_Anchors[i]);
-                    this._Anchors.RemoveAt(i);
+                    cadAnchor.PropertyChanged -= Point_PropertyChanged;
+                    this._Anchors.Remove(cadAnchor);
                 }
+                _Visuals.RemoveAt(i);   
             }
             this.InvalidateVisual();
         }
@@ -622,7 +636,7 @@ namespace CadProjectorViewer.CanvasObj
             {
                 anchor.Arrange(new Rect(finalSize));
             }
-            return this.canvasObject.Bounds.Size;
+            return this.AnchoredObject.Bounds.Size;
         }
 
         // A common way to implement an adorner's rendering behavior is to override the OnRender

@@ -302,7 +302,7 @@ namespace CadProjectorViewer.CanvasObj
                         Binding binding = new Binding()
                         {
                             Source = this.CadObject,
-                            Path = new PropertyPath("IsSelected"),
+                            Path = new PropertyPath("IsInit"),
                             Converter = new InitVisible()
                         };
                         anchorAdorner.SetBinding(Adorner.VisibilityProperty, binding);

@@ -109,25 +109,12 @@ namespace CadProjectorViewer.Converters
                 && values[1] is RenderDeviceModel renderingDevice
                 && values[2] is ScaleTransform transform)
             {
-                if (CanvasObjectSwitch(uidObject) is CanvasObject canvasObject)
-                {
-                    canvasObject.GetFrameTransform = () => transform;
-                    canvasObject.GetViewModel = () => renderingDevice;
-                    //canvasPanel.SizeChange += canvasObject.ParentChangeSize;
-                    return canvasObject;
-                }
-
+                CanvasObject canvasObject = new CanvasObject(uidObject, true);
+                canvasObject.GetFrameTransform = () => transform;
+                canvasObject.GetViewModel = () => renderingDevice;
+                return canvasObject;
             }
             return values;
-
-            CanvasObject CanvasObjectSwitch(UidObject uidObject)
-            {
-                if (uidObject is ProjectorMesh mesh) return new CanvasMesh(mesh);
-                else if (uidObject is CadLine cadLine) return new CanvasLine(cadLine);
-                else if (uidObject is CadRect3D cadRectangle) return new CanvasRectangle(cadRectangle, cadRectangle.NameID);
-                else return new CanvasObject(uidObject, true);
-                return null;
-            }
         }
         public object[] ConvertBack(object value, Type[] targetTypes, object parameter, CultureInfo culture)
         {

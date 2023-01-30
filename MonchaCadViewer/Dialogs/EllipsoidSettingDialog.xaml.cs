@@ -43,7 +43,7 @@ namespace CadProjectorViewer.Dialogs
                 {
                     for (int i = 0; i < projector.Ellipsoid.XAxisCorrect.Count; i += 1)
                     {
-                        VectorLinesCollection line = new VectorLinesCollection(CadProjectorSDK.Device.Mesh.MeshType.NONE)
+                        VectorLinesCollection line = new VectorLinesCollection(CadProjectorSDK.Device.Mesh.MeshTypes.NONE)
                     {
                         new VectorLine(
                             new RenderPoint(i * widthstep, 0.4),
@@ -57,7 +57,7 @@ namespace CadProjectorViewer.Dialogs
                 {
                     for (int i = 0; i < projector.Ellipsoid.YAxisCorrect.Count; i += 1)
                     {
-                        VectorLinesCollection line = new VectorLinesCollection(CadProjectorSDK.Device.Mesh.MeshType.NONE)
+                        VectorLinesCollection line = new VectorLinesCollection(CadProjectorSDK.Device.Mesh.MeshTypes.NONE)
                     {
                         new VectorLine(
                             new RenderPoint(0.4, i * heightstep),

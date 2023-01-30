@@ -39,23 +39,15 @@ using System.Linq;
 using Size = System.Windows.Size;
 using OpenCvSharp;
 using Rect = System.Windows.Rect;
-using CadProjectorViewer.ViewModel.CanvasObj;
+using CadProjectorViewer.ViewModel;
+using System.Windows.Data;
+using System.Globalization;
+using static CadProjectorViewer.CanvasObj.CanvasObject;
 
 namespace CadProjectorViewer.CanvasObj
 {
-    public class CanvasObject : FrameworkElement, INotifyPropertyChanged, IAnchoredObject
+    public class CanvasObject : FrameworkElement, INotifyPropertyChanged
     {
-        public IEnumerable<CadAnchor> Anchors {
-            get
-            {
-                CadAnchor[] cadAnchors = new CadAnchor[cadobject.ProjectionPoint.Count];
-                for (int i = 0; i < cadAnchors.Length; i += 1)
-                {
-                    cadAnchors[i] = cadobject.ProjectionPoint[i].Item2;
-                }
-                return cadAnchors;
-            }
-        }
         public event EventHandler UpdateAnchorPoints;
 
         public virtual GetScaleDelegate GetFrameTransform { get; set; }
@@ -100,7 +92,7 @@ namespace CadProjectorViewer.CanvasObj
         public AdornerLayer adornerLayer 
         {
             get => _alayer;
-            private set
+            protected set
             {
                 _alayer = value;
             } 
@@ -141,7 +133,7 @@ namespace CadProjectorViewer.CanvasObj
             }
             else if (Selected == true)
             {
-                return new Pen(Brushes.Black, StrThink);
+                return new Pen(Brushes.MediumPurple, StrThink);
             }
             else if (Render == false)
             {
@@ -172,30 +164,6 @@ namespace CadProjectorViewer.CanvasObj
         }
         private string name = string.Empty;
 
-        public MeshType MeshType { get; set; } = MeshType.SELECT;
-
-        #region OnPropertyChanged
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        public void OnPropertyChanged([CallerMemberName] string prop = "")
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(prop));
-            this.Update();
-        }
-        #endregion
-
-        public LProjectionSetting ProjectionSetting
-        {
-            get => cadobject.ProjectionSetting;
-            set
-            {
-                if (value != cadobject.ProjectionSetting)
-                {
-                    cadobject.ProjectionSetting = value;
-                    OnPropertyChanged("ProjectionSetting");
-                }
-            }
-        }
         protected Point MousePos = new Point();
         protected Point BasePos = new Point();
 
@@ -264,7 +232,6 @@ namespace CadProjectorViewer.CanvasObj
                 OnPropertyChanged("IsBlank");
             }
         }
-
         #endregion
 
         public CanvasObject(UidObject uidObject, bool ActiveObject)
@@ -278,8 +245,12 @@ namespace CadProjectorViewer.CanvasObj
             ContextMenuLib.AddItem("common_Remove", RemoveCommand, this.ContextMenu);
             ContextMenuLib.AddItem("obj_Render", RenderCommand, this.ContextMenu);
             ContextMenuLib.AddItem("common_MasksGrid", MasksCommand, this.ContextMenu);
-            ContextMenuLib.AddItem("obj_AddProjectivePoint", AddProjectivePointCommand, this.ContextMenu);
-            ContextMenuLib.AddItem("obj_RoundCentre", RoundCentreCommand, this.ContextMenu);
+            if (uidObject is IAnchoredObject anchoredObject && anchoredObject.CanAddPoint == true)
+            {
+                ContextMenuLib.AddItem("obj_AddProjectivePoint", AddProjectivePointCommand, this.ContextMenu);
+                ContextMenuLib.AddItem("obj_RoundCentre", RoundCentreCommand, this.ContextMenu);
+            }
+
 
             if (uidObject is CadGroup group)
             {
@@ -320,11 +291,24 @@ namespace CadProjectorViewer.CanvasObj
         protected override void OnInitialized(EventArgs e)
         {
             base.OnInitialized(e);
-            if (this is IAnchoredObject anchoredObject)
+            if (this.CadObject is IAnchoredObject anchoredObject)
             {
                 adornerLayer = AdornerLayer.GetAdornerLayer(this);
-                AnchorAdorner anchor = new AnchorAdorner(anchoredObject, this);
-                adornerLayer.Add(anchor);
+                if (adornerLayer != null)
+                {
+                    AnchorAdorner anchorAdorner = new AnchorAdorner(anchoredObject, this);
+                    if (anchoredObject.AlwaysShowAnchor == false)
+                    {
+                        Binding binding = new Binding()
+                        {
+                            Source = this.CadObject,
+                            Path = new PropertyPath("IsSelected"),
+                            Converter = new InitVisible()
+                        };
+                        anchorAdorner.SetBinding(Adorner.VisibilityProperty, binding);
+                    }
+                    adornerLayer.Add(anchorAdorner);
+                }
             }
         }
 
@@ -450,18 +434,25 @@ namespace CadProjectorViewer.CanvasObj
 
         public ICommand AddProjectivePointCommand => new ActionCommand(() =>
         {
-            Point TL = this.Bounds.TopLeft;
-            Point TR = this.Bounds.TopRight;
-            Point BL = this.Bounds.BottomLeft;
-            Point BR = this.Bounds.BottomRight;
-            CadAnchor TLAnchor = new CadAnchor(TL.X, TL.Y, 0);
-            CadAnchor TRAnchor = new CadAnchor(TR.X, TR.Y, 0);
-            CadAnchor BLAnchor = new CadAnchor(BL.X, BL.Y, 0);
-            CadAnchor BRAnchor = new CadAnchor(BR.X, BR.Y, 0);
-            this.CadObject.AddProjectionPoint(TLAnchor);
-            this.CadObject.AddProjectionPoint(TRAnchor);
-            this.CadObject.AddProjectionPoint(BLAnchor);
-            this.CadObject.AddProjectionPoint(BRAnchor);
+            if (this.CadObject.ProjectionMat == null)
+            {
+                Point TL = this.Bounds.TopLeft;
+                Point TR = this.Bounds.TopRight;
+                Point BL = this.Bounds.BottomLeft;
+                Point BR = this.Bounds.BottomRight;
+                CadAnchor TLAnchor = new CadAnchor(TL.X, TL.Y, 0);
+                CadAnchor TRAnchor = new CadAnchor(TR.X, TR.Y, 0);
+                CadAnchor BLAnchor = new CadAnchor(BL.X, BL.Y, 0);
+                CadAnchor BRAnchor = new CadAnchor(BR.X, BR.Y, 0);
+                this.CadObject.AddProjectionPoint(TLAnchor);
+                this.CadObject.AddProjectionPoint(TRAnchor);
+                this.CadObject.AddProjectionPoint(BLAnchor);
+                this.CadObject.AddProjectionPoint(BRAnchor);
+            } 
+            else
+            {
+                this.CadObject.ClearProjectionPoint();
+            }
             UpdateAnchorPoints?.Invoke(this, null);
         });
 
@@ -544,11 +535,7 @@ namespace CadProjectorViewer.CanvasObj
                 using (StreamGeometryContext ctx = streamGeometry.Open())
                 {
                     Point point = renderDevice.GetPoint(vectorLines[0].P1.X, vectorLines[0].P1.Y);
-
-                    ctx.BeginFigure(
-                        point,
-                        vectorLines.IsClosed,
-                        vectorLines.IsClosed);
+                    ctx.BeginFigure(point, vectorLines.IsClosed, vectorLines.IsClosed);
 
                     for (int i = 0; i < vectorLines.Count; i += 1)
                     {
@@ -561,22 +548,34 @@ namespace CadProjectorViewer.CanvasObj
                 drawingContext.DrawGeometry(brush, pen, streamGeometry);
             }
         }
+
+        #region OnPropertyChanged
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        public void OnPropertyChanged([CallerMemberName] string prop = "")
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(prop));
+            this.Update();
+        }
+        #endregion
     }
 
     internal class AnchorAdorner : Adorner
     {
         private VisualCollection _Visuals;
 
-        private List<CanvasAnchor> _Anchors { get; } = new List<CanvasAnchor>();
+        private GetViewDelegate GetViewModel { get; set; }
+
+        private IEnumerable<CadAnchor> _Anchors => AnchoredObject.Anchors;
 
         private IAnchoredObject AnchoredObject;
 
-        public AnchorAdorner(IAnchoredObject canvasObject, UIElement uIElement) : base(uIElement)
+        public AnchorAdorner(IAnchoredObject canvasObject, CanvasObject uIElement) : base(uIElement)
         {
             this.AnchoredObject = canvasObject;
+            this.GetViewModel = uIElement.GetViewModel;
 
             _Visuals = new VisualCollection(this);
-            _Anchors = new List<CanvasAnchor>();
 
             if (this.AnchoredObject.Anchors.Count() > 0)
             {
@@ -587,7 +586,6 @@ namespace CadProjectorViewer.CanvasObj
             }
 
             this.AnchoredObject.UpdateAnchorPoints += AnchoredObject_UpdatePoints;
-
         }
 
         private void AnchoredObject_UpdatePoints(object sender, EventArgs e) => UpdatePoint();
@@ -603,24 +601,25 @@ namespace CadProjectorViewer.CanvasObj
 
         private void AddAnchor(CadAnchor anchor)
         {
-            CanvasAnchor CanvAnchor = new CanvasAnchor(anchor);
-            CanvAnchor.GetViewModel = this.AnchoredObject.GetViewModel;
-            this._Anchors.Add(CanvAnchor);
-            anchor.PropertyChanged += Point_PropertyChanged;
-            _Visuals.Add(CanvAnchor);
-            this.InvalidateVisual();
+            if (anchor != null)
+            {
+                CanvasAnchor CanvAnchor = new CanvasAnchor(anchor);
+                CanvAnchor.GetViewModel = this.GetViewModel;
+                anchor.PropertyChanged += Point_PropertyChanged;
+                _Visuals.Add(CanvAnchor);
+                this.InvalidateVisual();
+            }
         }
 
         private void RemoveAnchors()
         {
-            for (int i = 1; i < _Visuals.Count; i += 1)
+            for (int i = _Visuals.Count - 1; i > -1; i -= 1)
             {
                 if (_Visuals[i] is CanvasAnchor cadAnchor)
                 {
                     cadAnchor.PropertyChanged -= Point_PropertyChanged;
-                    this._Anchors.Remove(cadAnchor);
+                    _Visuals.RemoveAt(i);
                 }
-                _Visuals.RemoveAt(i);   
             }
             this.InvalidateVisual();
         }
@@ -632,9 +631,12 @@ namespace CadProjectorViewer.CanvasObj
 
         protected override Size ArrangeOverride(Size finalSize)
         {
-            foreach (CanvasAnchor anchor in _Anchors)
+            foreach (object obj in _Visuals)
             {
-                anchor.Arrange(new Rect(finalSize));
+                if (obj is CanvasAnchor anchor)
+                {
+                    anchor.Arrange(new Rect(finalSize));
+                }
             }
             return this.AnchoredObject.Bounds.Size;
         }
@@ -647,6 +649,20 @@ namespace CadProjectorViewer.CanvasObj
         protected override void OnRender(DrawingContext drawingContext)
         {
             base.OnRender(drawingContext);
+        }
+    }
+
+    public class InitVisible : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            if (value is bool b && b == true) return Visibility.Visible;
+            else return Visibility.Hidden;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            return null;
         }
     }
 

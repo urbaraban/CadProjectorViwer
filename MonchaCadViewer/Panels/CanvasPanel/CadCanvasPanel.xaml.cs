@@ -26,7 +26,6 @@ using CadProjectorSDK.Interfaces;
 using System.Collections.ObjectModel;
 using CadProjectorSDK.Tools;
 using Microsoft.Xaml.Behaviors.Core;
-using CadProjectorSDK.Scenes.Actions;
 using CadProjectorSDK.CadObjects.Interfaces;
 using CadProjectorSDK.Render;
 using System.ComponentModel;
@@ -35,6 +34,7 @@ using CadProjectorSDK.Scenes.Commands;
 using CadProjectorViewer.ViewModel;
 using CadProjectorViewer.EthernetServer;
 using CadProjectorViewer.Dialogs;
+using CadProjectorViewer.ViewModel.Scenes;
 
 namespace CadProjectorViewer.Panels.CanvasPanel
 {
@@ -140,7 +140,7 @@ namespace CadProjectorViewer.Panels.CanvasPanel
                 this.StartMovePoint = new Point(this.Translate.X, this.Translate.Y);
             }
             else if (
-                ViewModel.RenderingDisplay is ProjectionScene scene &&
+                ViewModel is SceneModel scene &&
                 scene.AlreadyAction != null)
             {
                 Point point = e.GetPosition(this.CanvasGrid);
@@ -150,7 +150,7 @@ namespace CadProjectorViewer.Panels.CanvasPanel
 
         protected override void OnMouseMove(MouseEventArgs e)
         {
-            if (ViewModel.RenderingDisplay is ProjectionScene scene)
+            if (ViewModel is SceneModel scene)
             {
                 Point m_point = e.GetPosition(this.CanvasGrid);
                 scene.MousePosition.MX = m_point.X;
@@ -239,22 +239,6 @@ namespace CadProjectorViewer.Panels.CanvasPanel
 
         }
 
-
-
-
-
-        public ICommand RefreshFrameCommand => new ActionCommand(() => {
-            if (ViewModel.RenderingDisplay is ProjectionScene scene)
-            {
-                scene.RefreshScene();
-            }
-        });
-        public ICommand CancelActionCommand => new ActionCommand(() => {
-            if (ViewModel.RenderingDisplay is ProjectionScene scene)
-            {
-                scene.Break();
-            }
-        });
         public ICommand CancelSizeChange => new ActionCommand(() => {
             this.ScaleValue = 1;
         });

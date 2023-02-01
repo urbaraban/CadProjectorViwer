@@ -27,6 +27,7 @@ using CadProjectorSDK.Interfaces;
 using CadProjectorViewer.ViewModel;
 using System.Xml.Linq;
 using System.ComponentModel;
+using CadProjectorViewer.ViewModel.Scenes;
 
 namespace CadProjectorViewer.Panels
 {

@@ -16,7 +16,6 @@ using Microsoft.Xaml.Behaviors.Core;
 using System.Windows;
 using System.Windows.Input;
 using CadProjectorSDK.Scenes.Commands;
-using CadProjectorSDK.Scenes.Actions;
 using System.IO;
 using Microsoft.Win32;
 using CadProjectorSDK.Config;
@@ -31,6 +30,8 @@ using static MonchaNETDll.MNetStructs;
 using WatsonTcp;
 using System.Windows.Threading;
 using CadProjectorViewer.EthernetServer.Servers;
+using CadProjectorViewer.ViewModel.Scenes.Actions;
+using CadProjectorViewer.ViewModel.Scenes;
 
 namespace CadProjectorViewer.ViewModel
 {
@@ -60,6 +61,8 @@ namespace CadProjectorViewer.ViewModel
             }
         }
         private ProjectorHub projectorHub = new ProjectorHub(AppSt.Default.cl_moncha_path);
+
+        public SceneModelCollection Scenes { get; } = new SceneModelCollection();
 
         public WorkFolderList WorkFolder { get; } = new WorkFolderList();
 
@@ -91,6 +94,7 @@ namespace CadProjectorViewer.ViewModel
             {
                 projectorHub.UDPLaserListener.Run(AppSt.Default.ether_udp_port);
             }
+
 
             WorkFolder.PathSelected += WorkFolder_PathSelected;
 
@@ -131,6 +135,169 @@ namespace CadProjectorViewer.ViewModel
         public ICommand SaveCommand => new ActionCommand(() => SaveConfiguration(false));
 
         public ICommand SaveAsCommand => new ActionCommand(() => SaveConfiguration(true));
+
+        public ICommand UDPToggleCommand => new ActionCommand(() =>
+        {
+            if (ProjectorHub.UDPLaserListener.Status == false)
+            {
+                ProjectorHub.UDPLaserListener.Run(AppSt.Default.ether_udp_port);
+            }
+            else
+            {
+                ProjectorHub.UDPLaserListener.Stop();
+            }
+        });
+
+        public ICommand LoadMWSCommand => new ActionCommand(() => FileLoad.LoadMoncha(ProjectorHub, true));
+
+        public ICommand Clear => new ActionCommand(() => {
+            Scenes.SelectedScene.Clear();
+        });
+
+        public ICommand SelectNextCommand => new ActionCommand(() => {
+            Scenes.SelectedScene.ProjectScene.HistoryCommands.Add(
+                        new SelectNextCommand(true, Scenes.SelectedScene.ProjectScene));
+        });
+
+        public ICommand SelectPreviousCommand => new ActionCommand(() => {
+            Scenes.SelectedScene.ProjectScene.HistoryCommands.Add(
+                        new SelectNextCommand(false, Scenes.SelectedScene.ProjectScene));
+        });
+
+        public ICommand DeleteCommand => new ActionCommand(() => {
+            Scenes.SelectedScene.ProjectScene.RemoveRange(Scenes.SelectedScene.ProjectScene.SelectedObjects);
+        });
+
+        public ICommand UndoCommand => new ActionCommand(() => {
+            Scenes.SelectedScene.ProjectScene.HistoryCommands.UndoLast();
+        });
+
+        public ICommand ShowLicenceCommand => new ActionCommand(() => {
+            RequestLicenseCode requestLicenseCode = new RequestLicenseCode() { DataContext = ProjectorHub.LockKey };
+            requestLicenseCode.ShowDialog();
+        });
+
+        public ICommand RemoveOtherAppCommand => new ActionCommand(App.RemoveOtherApp);
+
+        public ICommand PasteCommand => new ActionCommand(Paste);
+
+        private async void Paste()
+        {
+            try
+            {
+                SceneTask sceneTask = new SceneTask()
+                {
+                    TableID = this.Scenes.SelectedScene.TableID,
+                    Object = await FileLoad.GetCliboard()
+                };
+                this.Scenes.LoadedObjects.Add(sceneTask);
+            }
+            catch
+            {
+                App.Log?.Invoke("Clipboard is not geometry", "APP");
+            }
+        }
+
+        public ICommand PlayCommand => new ActionCommand(() => {
+            if (Keyboard.Modifiers == ModifierKeys.None)
+            {
+                this.Scenes.SelectedScene.Play = !this.Scenes.SelectedScene.Play;
+            }
+            else
+            {
+                PlayAllCommand.Execute(null);
+            }
+        });
+
+        public ICommand PlayAllCommand => new ActionCommand(() =>
+        {
+            bool stat = !this.Scenes.Any(sc => sc.Play);
+            foreach (SceneModel scene in this.Scenes)
+            {
+                scene.Play = stat;
+            }
+        });
+
+        public ICommand SaveSceneCommand => new ActionCommand(() => {
+            SaveFileDialog saveFileDialog = new SaveFileDialog();
+            saveFileDialog.Filter = "2CUT Scene (*.2scn)|*.2scn";
+            if (saveFileDialog.ShowDialog() == true)
+            {
+                FileSave.SaveScene(this.Scenes.SelectedScene.ProjectScene, saveFileDialog.FileName);
+                //SaveScene.WriteXML(projectorHub.ScenesCollection.SelectedScene, saveFileDialog.FileName);
+            }
+
+        });
+
+        public ICommand OpenSceneCommand => new ActionCommand(() => {
+            OpenFileDialog fileDialog = new OpenFileDialog();
+            fileDialog.Filter = "Moncha (.2scn)|*.2scn|All Files (*.*)|*.*";
+            if (fileDialog.ShowDialog() == true)
+            {
+                this.Scenes.AddTask(new SceneTask(SaveScene.ReadXML(fileDialog.FileName)));
+            }
+        });
+
+        public ICommand MakeNewWorkPlaceCommand => new ActionCommand(() => {
+            this.ProjectorHub.Disconnect();
+            this.ProjectorHub = new ProjectorHub(string.Empty);
+            GC.Collect();
+        });
+
+        public ICommand OpenCommand => new ActionCommand(Open);
+
+        public ICommand ShowTCPDialogCommand => new ActionCommand(() => {
+            ManipulatorTCPDialog manipulatorTCP = new ManipulatorTCPDialog()
+            {
+                DataContext = this
+            };
+            manipulatorTCP.Show();
+        });
+
+        private async void Open()
+        {
+            OpenFileDialog openFile = new OpenFileDialog();
+            string filter = FileLoad.GetFilter();
+            openFile.Filter = filter;
+            if (AppSt.Default.save_work_folder == string.Empty)
+            {
+                System.Windows.Forms.FolderBrowserDialog folderDialog = new System.Windows.Forms.FolderBrowserDialog();
+
+                if (folderDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+                {
+                    AppSt.Default.save_work_folder = folderDialog.SelectedPath;
+                    AppSt.Default.Save();
+                }
+            }
+
+            openFile.InitialDirectory = AppSt.Default.save_work_folder;
+            openFile.FileName = null;
+            if (openFile.ShowDialog() == true)
+            {
+                OpenGeometryFile(openFile.FileName);
+            }
+        }
+
+        public async void OpenGeometryFile(string path)
+        {
+            dispatcher.Invoke(async() => {
+                double step = this.Scenes.SelectedScene.ProjectScene.ProjectionSetting.PointStep.Value;
+                if (await FileLoad.GetFilePath(path, step) is UidObject uidObject)
+                {
+                    SceneTask sceneTask = new SceneTask()
+                    {
+                        Object = uidObject,
+                        TableID = this.Scenes.SelectedScene.TableID,
+                    };
+                    this.Scenes.AddTask(sceneTask);
+                }
+            });
+        }
+
+        public async Task Break()
+        {
+
+        }
 
         private bool SaveConfiguration(bool saveas)
         {
@@ -181,171 +348,6 @@ namespace CadProjectorViewer.ViewModel
 
             ProgressPanel.End();
             return false;
-        }
-
-        public ICommand MaskCommand => new ActionCommand(() => {
-            ProjectorHub.ScenesCollection.SelectedScene.AlreadyAction = new DrawMaskAction(ProjectorHub.ScenesCollection.SelectedScene.Size);
-        });
-
-        public ICommand LineCommand => new ActionCommand(() => {
-            ProjectorHub.ScenesCollection.SelectedScene.AlreadyAction = new DrawLineAction();
-        });
-
-        public ICommand UDPToggleCommand => new ActionCommand(() =>
-        {
-            if (ProjectorHub.UDPLaserListener.Status == false)
-            {
-                ProjectorHub.UDPLaserListener.Run(AppSt.Default.ether_udp_port);
-            }
-            else
-            {
-                ProjectorHub.UDPLaserListener.Stop();
-            }
-        });
-
-        public ICommand LoadMWSCommand => new ActionCommand(() => FileLoad.LoadMoncha(ProjectorHub, true));
-
-        public ICommand Clear => new ActionCommand(() => {
-            ProjectorHub.ScenesCollection.SelectedScene.Clear();
-        });
-
-        public ICommand SelectNextCommand => new ActionCommand(() => {
-            ProjectorHub.ScenesCollection.SelectedScene.HistoryCommands.Add(
-                        new SelectNextCommand(true, ProjectorHub.ScenesCollection.SelectedScene));
-        });
-
-        public ICommand SelectPreviousCommand => new ActionCommand(() => {
-            ProjectorHub.ScenesCollection.SelectedScene.HistoryCommands.Add(
-                        new SelectNextCommand(false, ProjectorHub.ScenesCollection.SelectedScene));
-        });
-
-        public ICommand DeleteCommand => new ActionCommand(() => {
-            ProjectorHub.ScenesCollection.SelectedScene.RemoveRange(ProjectorHub.ScenesCollection.SelectedScene.SelectedObjects);
-        });
-
-        public ICommand UndoCommand => new ActionCommand(() => {
-            ProjectorHub.ScenesCollection.SelectedScene.HistoryCommands.UndoLast();
-        });
-
-        public ICommand ShowLicenceCommand => new ActionCommand(() => {
-            RequestLicenseCode requestLicenseCode = new RequestLicenseCode() { DataContext = ProjectorHub.LockKey };
-            requestLicenseCode.ShowDialog();
-        });
-
-        public ICommand RemoveOtherAppCommand => new ActionCommand(App.RemoveOtherApp);
-
-        public ICommand PasteCommand => new ActionCommand(Paste);
-
-        private async void Paste()
-        {
-            try
-            {
-                SceneTask sceneTask = new SceneTask()
-                {
-                    TableID = this.ProjectorHub.ScenesCollection.SelectedScene.TableID,
-                    Object = await FileLoad.GetCliboard()
-                };
-                ProjectorHub.ScenesCollection.LoadedObjects.Add(sceneTask);
-            }
-            catch
-            {
-                App.Log?.Invoke("Clipboard is not geometry", "APP");
-            }
-        }
-
-        public ICommand PlayCommand => new ActionCommand(() => {
-            if (Keyboard.Modifiers == ModifierKeys.None)
-            {
-                this.projectorHub.ScenesCollection.SelectedScene.Play = !this.projectorHub.ScenesCollection.SelectedScene.Play;
-            }
-            else
-            {
-                PlayAllCommand.Execute(null);
-            }
-        });
-
-        public ICommand PlayAllCommand => new ActionCommand(() =>
-        {
-            bool stat = !this.projectorHub.ScenesCollection.Any(sc => sc.Play);
-            foreach (ProjectionScene scene in this.projectorHub.ScenesCollection)
-            {
-                scene.Play = stat;
-            }
-        });
-
-        public ICommand SaveSceneCommand => new ActionCommand(() => {
-            SaveFileDialog saveFileDialog = new SaveFileDialog();
-            saveFileDialog.Filter = "2CUT Scene (*.2scn)|*.2scn";
-            if (saveFileDialog.ShowDialog() == true)
-            {
-                FileSave.SaveScene(projectorHub.ScenesCollection.SelectedScene, saveFileDialog.FileName);
-                //SaveScene.WriteXML(projectorHub.ScenesCollection.SelectedScene, saveFileDialog.FileName);
-            }
-
-        });
-
-        public ICommand OpenSceneCommand => new ActionCommand(() => {
-            OpenFileDialog fileDialog = new OpenFileDialog();
-            fileDialog.Filter = "Moncha (.2scn)|*.2scn|All Files (*.*)|*.*";
-            if (fileDialog.ShowDialog() == true)
-            {
-                projectorHub.ScenesCollection.AddTask(new SceneTask(SaveScene.ReadXML(fileDialog.FileName)));
-            }
-        });
-
-        public ICommand MakeNewWorkPlaceCommand => new ActionCommand(() => {
-            this.ProjectorHub.Disconnect();
-            this.ProjectorHub = new ProjectorHub(string.Empty);
-            GC.Collect();
-        });
-
-        public ICommand OpenCommand => new ActionCommand(Open);
-
-        public ICommand ShowTCPDialogCommand => new ActionCommand(() => {
-            ManipulatorTCPDialog manipulatorTCP = new ManipulatorTCPDialog()
-            {
-                DataContext = this
-            };
-            manipulatorTCP.Show();
-        });
-
-        private async void Open()
-        {
-            OpenFileDialog openFile = new OpenFileDialog();
-            string filter = FileLoad.GetFilter();
-            openFile.Filter = filter;
-            if (AppSt.Default.save_work_folder == string.Empty)
-            {
-                System.Windows.Forms.FolderBrowserDialog folderDialog = new System.Windows.Forms.FolderBrowserDialog();
-
-                if (folderDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
-                {
-                    AppSt.Default.save_work_folder = folderDialog.SelectedPath;
-                    AppSt.Default.Save();
-                }
-            }
-
-            openFile.InitialDirectory = AppSt.Default.save_work_folder;
-            openFile.FileName = null;
-            if (openFile.ShowDialog() == true)
-            {
-                OpenGeometryFile(openFile.FileName);
-            }
-        }
-
-        public async void OpenGeometryFile(string path)
-        {
-            dispatcher.Invoke(async() => { 
-                if (await FileLoad.GetFilePath(path, this.ProjectorHub.ScenesCollection.SelectedScene.ProjectionSetting.PointStep.Value) is UidObject uidObject)
-                {
-                    SceneTask sceneTask = new SceneTask()
-                    {
-                        Object = uidObject,
-                        TableID = projectorHub.ScenesCollection.SelectedScene.TableID,
-                    };
-                    this.ProjectorHub.ScenesCollection.AddTask(sceneTask);
-                }
-            });
         }
 
         #region INotifyPropertyChanged

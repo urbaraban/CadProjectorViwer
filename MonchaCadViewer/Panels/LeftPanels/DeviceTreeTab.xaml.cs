@@ -49,7 +49,7 @@ namespace CadProjectorViewer.Panels
             {
                 if (DeviceTree.DataContext is LProjector device && BaseMeshItem.DataContext is ProjectorMesh mesh)
                 {
-                    //projectorHub.Scene.AddRange(CadCanvas.GetMesh(mesh, ProjectorHub.GetThinkess * AppSt.Default.anchor_size, false, MeshType.NONE).ToArray());
+                    //projectorHub.ProjectScene.AddRange(CadCanvas.GetMesh(mesh, ProjectorHub.GetThinkess * AppSt.Default.anchor_size, false, MeshType.NONE).ToArray());
                 }
             }
         }

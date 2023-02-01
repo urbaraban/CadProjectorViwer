@@ -270,6 +270,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Configurations\Config.cs" />
     <Compile Include="Dialogs\EllipsoidSettingDialog.xaml.cs">
       <DependentUpon>EllipsoidSettingDialog.xaml</DependentUpon>
     </Compile>
@@ -375,10 +376,17 @@
     <Compile Include="ViewModel\Devices\DeviceItem.xaml.cs">
       <DependentUpon>DeviceItem.xaml</DependentUpon>
     </Compile>
+    <Compile Include="ViewModel\Devices\ProjectorModel.cs" />
     <Compile Include="ViewModel\Modules\LogList.cs" />
     <Compile Include="ViewModel\Modules\WorkFolderList.cs" />
     <Compile Include="ViewModel\RenderDeviceModel.cs" />
-    <Compile Include="ViewModel\SceneModel.cs" />
+    <Compile Include="ViewModel\Scenes\Actions\ComplexAction.cs" />
+    <Compile Include="ViewModel\Scenes\Actions\DrawLineAction.cs" />
+    <Compile Include="ViewModel\Scenes\Actions\DrawMaskAction.cs" />
+    <Compile Include="ViewModel\Scenes\Actions\ISceneAction.cs" />
+    <Compile Include="ViewModel\Scenes\Actions\UnitAnchorAction.cs" />
+    <Compile Include="ViewModel\Scenes\SceneModel.cs" />
+    <Compile Include="ViewModel\Scenes\SceneModelCollection.cs" />
     <Page Include="Dialogs\DeviceManaged\ProjectorView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

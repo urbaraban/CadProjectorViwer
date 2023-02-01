@@ -6,7 +6,8 @@
              xmlns:local="clr-namespace:CadProjectorViewer.Panels.CanvasPanel" 
              xmlns:Scenes="clr-namespace:CadProjectorSDK.Scenes;assembly=CadProjectorSDK"
              xmlns:CadProjectorViewer="clr-namespace:CadProjectorViewer.Converters"
-             d:DataContext="{d:DesignInstance Type={x:Type Scenes:ScenesCollection}}"
+             xmlns:viewmodel="clr-namespace:CadProjectorViewer.ViewModel" 
+             d:DataContext="{d:DesignInstance Type=viewmodel:AppMainModel}"
              x:Name="Main"
              mc:Ignorable="d" 
              d:DesignHeight="400" d:DesignWidth="400">
@@ -16,7 +17,7 @@
     <DockPanel>
         <TabControl 
             x:Name="Tabs"
-            ItemsSource="{Binding .}" 
+            ItemsSource="{Binding ProjectorHub.ScenesCollection}" 
             TabStripPlacement="Bottom"
             SelectedItem="{Binding SelectedScene}"
             SelectedIndex="0">

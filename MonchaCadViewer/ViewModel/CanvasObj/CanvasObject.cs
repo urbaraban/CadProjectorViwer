@@ -83,12 +83,6 @@ namespace CadProjectorViewer.CanvasObj
             });
         }
 
-        public void ParentChangeSize()
-        {
-            this.InvalidateVisual();
-            SizeChange?.Invoke();
-        }
-
         public AdornerLayer adornerLayer 
         {
             get => _alayer;
@@ -105,52 +99,6 @@ namespace CadProjectorViewer.CanvasObj
         public virtual Rect Bounds => this.CadObject.Bounds;
 
         public bool ActiveObject { get; private set; }
-
-        public virtual Pen GetPen(bool parentRender = true)
-        {
-            double thinkess = GetViewModel?.Invoke().Thinkess ?? 1;
-
-            return GetPen(
-                thinkess,
-                this.IsMouseOver,
-                this.IsSelected,
-                parentRender,
-                this.IsBlank,
-                GetViewModel?.Invoke().RenderingDisplay.ProjectionSetting.GetBrush);
-        }
-
-        public virtual Pen GetPen(
-            double StrThink,
-            bool MouseOver, 
-            bool Selected,
-            bool Render,
-            bool Blank,
-            SolidColorBrush DefBrush)
-        {
-            if (MouseOver == true)
-            {
-                return new Pen(Brushes.Orange, StrThink * 1.5);
-            }
-            else if (Selected == true)
-            {
-                return new Pen(Brushes.MediumPurple, StrThink);
-            }
-            else if (Render == false)
-            {
-                return new Pen(Brushes.DarkGray, StrThink);
-            }
-            else if (Blank == true)
-            {
-                return new Pen(Brushes.LightBlue, StrThink);
-            }
-            else return new Pen(DefBrush, StrThink);
-
-            return null;
-        }
-
-        public static Brush GetBrush(UidObject uidObject) => Brushes.Transparent;
-
-        public virtual Brush myBack => GetBrush(this.CadObject);
 
         public virtual string NameID
         {
@@ -487,15 +435,11 @@ namespace CadProjectorViewer.CanvasObj
             }
         }
 
-        internal void Drawing (
-            UidObject uidObject, RenderDeviceModel deviceModel,
-            bool IsSelected, bool MouseOver, bool ParentRender,
-            DrawingContext drawingContext)
+        internal void Drawing (UidObject uidObject, RenderDeviceModel deviceModel,
+            bool IsSelected, bool MouseOver, bool ParentRender, DrawingContext drawingContext)
         {
             double thinkess = deviceModel.Thinkess;
-
             Pen pen = this.GetPen(ParentRender);
-
             Brush brush = GetBrush(uidObject);
 
             if (uidObject is CadGroup group)
@@ -548,6 +492,48 @@ namespace CadProjectorViewer.CanvasObj
                 drawingContext.DrawGeometry(brush, pen, streamGeometry);
             }
         }
+
+        public virtual Pen GetPen(bool parentRender = true)
+        {
+            double thinkess = GetViewModel?.Invoke().Thinkess ?? 1;
+
+            return GetPen(
+                thinkess,
+                this.IsMouseOver,
+                this.IsSelected,
+                parentRender,
+                this.IsBlank,
+                GetViewModel?.Invoke().RenderingDisplay.ProjectionSetting.GetBrush);
+        }
+
+        public virtual Pen GetPen(double StrThink, bool MouseOver, bool Selected,
+            bool Render, bool Blank, SolidColorBrush DefBrush)
+        {
+            if (MouseOver == true)
+            {
+                return new Pen(Brushes.Orange, StrThink * 1.5);
+            }
+            else if (Selected == true)
+            {
+                return new Pen(Brushes.MediumPurple, StrThink);
+            }
+            else if (Render == false)
+            {
+                return new Pen(Brushes.DarkGray, StrThink);
+            }
+            else if (Blank == true)
+            {
+                return new Pen(Brushes.LightBlue, StrThink);
+            }
+            else return new Pen(DefBrush, StrThink);
+
+            return null;
+        }
+
+        public static Brush GetBrush(UidObject uidObject) => Brushes.Transparent;
+
+        public virtual Brush myBack => GetBrush(this.CadObject);
+
 
         #region OnPropertyChanged
         public event PropertyChangedEventHandler PropertyChanged;
@@ -650,6 +636,7 @@ namespace CadProjectorViewer.CanvasObj
         {
             base.OnRender(drawingContext);
         }
+
     }
 
     public class InitVisible : IValueConverter

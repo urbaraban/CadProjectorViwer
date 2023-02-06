@@ -6,6 +6,7 @@ using CadProjectorViewer.Interfaces;
 using CadProjectorViewer.ToCommands;
 using CadProjectorViewer.ToCommands.MainAppCommand;
 using CadProjectorViewer.ViewModel;
+using CadProjectorViewer.ViewModel.Scene;
 using Microsoft.Xaml.Behaviors.Core;
 using System;
 using System.Collections.Generic;

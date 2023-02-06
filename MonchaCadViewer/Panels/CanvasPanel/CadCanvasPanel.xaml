@@ -5,9 +5,9 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:converters="clr-namespace:CadProjectorViewer.Converters"
              xmlns:canvaspanel="clr-namespace:CadProjectorViewer.Panels.CanvasPanel"
-             xmlns:render="clr-namespace:CadProjectorViewer.ViewModel"
+             xmlns:scene="clr-namespace:CadProjectorViewer.ViewModel.Scene"
              xmlns:Controls="http://metro.mahapps.com/winfx/xaml/controls"
-             d:DataContext="{d:DesignInstance Type=render:SceneModel}"
+             d:DataContext="{d:DesignInstance Type=scene:SceneModel}"
              x:Name="CanvasPanel"
              mc:Ignorable="d"
              d:DesignHeight="400" d:DesignWidth="400">
@@ -31,8 +31,8 @@
                     Width="{Binding ActualHeight, RelativeSource={RelativeSource Self}}"
                     Margin="3"
                     Panel.ZIndex="999" FontSize="18"
-                    Command="{Binding ElementName=CanvasPanel, Path=RefreshFrameCommand}" />
-            <TextBlock Text="{Binding Scene.AlreadyAction}"
+                    Command="{Binding RefreshFrameCommand}" />
+            <TextBlock Text="{Binding AlreadyAction}"
                        Width="80"
                        Margin="3"
                        TextAlignment="Right"
@@ -41,7 +41,7 @@
                     Background="Transparent"
                     BorderBrush="Transparent"
                     Foreground="Red"
-                    Command="{Binding ElementName=CanvasPanel, Path=CancelActionCommand}"
+                    Command="{Binding CancelActionCommand}"
                      Width="{Binding ActualHeight, RelativeSource={RelativeSource Self}}" />
             <StackPanel
                 Orientation="Horizontal" FlowDirection="RightToLeft">
@@ -55,6 +55,11 @@
                 <Button x:Name="ShowDeviceRect"
                         FontFamily="Segoe MDL2 Assets"
                         Content="&#xe773;"
+                        Width="{Binding ActualHeight, RelativeSource={RelativeSource Self}}"
+                        Margin="3" 
+                        Click="ShowDeviceRect_Click" Panel.ZIndex="999" FontSize="20" />
+                <Button FontFamily="Segoe MDL2 Assets"
+                        Content="&#xe722;"
                         Width="{Binding ActualHeight, RelativeSource={RelativeSource Self}}"
                         Margin="3" 
                         Click="ShowDeviceRect_Click" Panel.ZIndex="999" FontSize="20" />
@@ -73,8 +78,10 @@
               Margin="10"
               Stretch="Uniform" StretchDirection="Both">
                 <Grid x:Name="CanvasGrid" Background="Red"
-                  Cursor="{Binding Scene.AlreadyAction, Converter={StaticResource CursorAction}}">
-                    <Rectangle Fill="White" />
+                  Cursor="{Binding AlreadyAction, Converter={StaticResource CursorAction}}">
+                    <Rectangle Fill="White" 
+                               Width="{Binding Width}" 
+                               Height="{Binding Height}"/>
                     <Canvas
                     x:Name="BackCanvas"
                     IsHitTestVisible="False"
@@ -95,7 +102,7 @@
                             </DrawingBrush>
                         </Canvas.Background>
                     </Canvas>
-                    <ItemsControl ItemsSource="{Binding Masks}">
+                    <ItemsControl ItemsSource="{Binding Scene.Masks}">
                         <ItemsControl.ItemsPanel>
                             <ItemsPanelTemplate>
                                 <Canvas/>
@@ -116,15 +123,14 @@
                         </ItemsControl.ItemTemplate>
                     </ItemsControl>
                     <ItemsControl
-                        ItemsSource="{Binding uidObjects}">
+                        ItemsSource="{Binding Scene}">
                         <ItemsControl.ItemsPanel>
                             <ItemsPanelTemplate>
-                                <Canvas 
-                                    x:Name="ObjCanvas"
+                                <Canvas x:Name="ObjCanvas"
                                     DataContext="{Binding ElementName=ObjCanvas, Path=DataContext}"
-                                    d:DataContext="{d:DesignInstance Type=render:SceneModel}"
-                                    Width="{Binding Scene.Size.Width}"
-                                    Height="{Binding Scene.Size.Height}"/>
+                                    d:DataContext="{d:DesignInstance Type=scene:SceneModel}"
+                                    Width="{Binding Width}"
+                                    Height="{Binding Height}"/>
                             </ItemsPanelTemplate>
                         </ItemsControl.ItemsPanel>
                         <ItemsControl.ItemTemplate>

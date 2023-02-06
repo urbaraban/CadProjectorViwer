@@ -1,6 +1,7 @@
 ﻿using CadProjectorSDK.CadObjects;
 using CadProjectorSDK.CadObjects.Abstract;
 using CadProjectorSDK.CadObjects.Interfaces;
+using CadProjectorSDK.Device;
 using CadProjectorSDK.Interfaces;
 using CadProjectorSDK.Render;
 using CadProjectorSDK.Scenes;
@@ -27,15 +28,25 @@ using System.Windows.Input;
 using System.Windows.Threading;
 using AppSt = CadProjectorViewer.Properties.Settings;
 
-namespace CadProjectorViewer.ViewModel
+namespace CadProjectorViewer.ViewModel.Scene
 {
-    public class SceneModel : RenderDeviceModel, IToCutCommandObject
+    internal class SceneModel : RenderDeviceModel, IToCutCommandObject
     {
         #region IToCutCommandObject
         public event EventHandler<ReceivedCookies> CommandDummyIncomming;
 
         public string Name => this.Scene.DisplayName;
         #endregion
+
+        public ComplexAction AlreadyAction
+        {
+            get => this.Scene.AlreadyAction;
+            set
+            {
+                this.Scene.AlreadyAction = value;
+                OnPropertyChanged(nameof(AlreadyAction));
+            }
+        }
 
         private Dispatcher dispatcher { get; }
         public CadAnchor MousePosition => Scene.MousePosition;
@@ -52,6 +63,8 @@ namespace CadProjectorViewer.ViewModel
 
         public ObservableCollection<CadRect3D> Masks => Scene.Masks;
 
+        public ObservableCollection<LProjector> Projectors => Scene.Projectors;
+
         public ProjectionScene Scene { get; set; }
 
         public int TableID => this.Scene.TableID;
@@ -66,6 +79,13 @@ namespace CadProjectorViewer.ViewModel
             this.dispatcher = Dispatcher.CurrentDispatcher;
             this.Scene = scene;
         }
+
+        public ICommand RefreshFrameCommand => new ActionCommand(() => {
+            Scene.RefreshScene();
+        });
+        public ICommand CancelActionCommand => new ActionCommand(() => {
+            Scene.Break();
+        });
 
         private List<IToCommand> toCommands { get; } = new List<IToCommand>()
         {

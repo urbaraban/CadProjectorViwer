@@ -12,7 +12,7 @@ using System.Windows.Media.Imaging;
 
 namespace CadProjectorViewer.CanvasObj
 {
-    public class ImagePreview : CanvasObject
+    internal class ImagePreview : CanvasObject
     {
         public IPixelObject CadImage 
         {

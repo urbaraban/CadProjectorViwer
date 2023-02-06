@@ -15,7 +15,7 @@ using CadProjectorSDK.CadObjects.Interfaces;
 
 namespace CadProjectorViewer.CanvasObj
 {
-    public class CanvasAnchor : CanvasObject
+    internal class CanvasAnchor : CanvasObject
     {
         private RectangleGeometry rectangle;
 

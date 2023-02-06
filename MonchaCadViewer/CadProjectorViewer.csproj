@@ -377,8 +377,9 @@
     </Compile>
     <Compile Include="ViewModel\Modules\LogList.cs" />
     <Compile Include="ViewModel\Modules\WorkFolderList.cs" />
+    <Compile Include="ViewModel\NotifyModel.cs" />
     <Compile Include="ViewModel\RenderDeviceModel.cs" />
-    <Compile Include="ViewModel\SceneModel.cs" />
+    <Compile Include="ViewModel\Scene\SceneModel.cs" />
     <Page Include="Dialogs\DeviceManaged\ProjectorView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

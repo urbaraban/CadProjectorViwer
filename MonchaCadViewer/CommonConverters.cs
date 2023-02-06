@@ -18,6 +18,7 @@ using AppSt = CadProjectorViewer.Properties.Settings;
 using System.Windows;
 using CadProjectorViewer.ViewModel;
 using System.Windows.Media;
+using CadProjectorViewer.ViewModel.Scene;
 
 namespace CadProjectorViewer.Converters
 {

@@ -34,7 +34,7 @@ using CadProjectorViewer.EthernetServer.Servers;
 
 namespace CadProjectorViewer.ViewModel
 {
-    public class AppMainModel : INotifyPropertyChanged
+    internal class AppMainModel : NotifyModel
     { 
         private Dispatcher dispatcher { get; }
 
@@ -347,14 +347,5 @@ namespace CadProjectorViewer.ViewModel
                 }
             });
         }
-
-        #region INotifyPropertyChanged
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        public void OnPropertyChanged([CallerMemberName] string prop = "")
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(prop));
-        }
-        #endregion
     }
 }

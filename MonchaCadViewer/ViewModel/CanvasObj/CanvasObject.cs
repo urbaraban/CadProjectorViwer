@@ -46,7 +46,7 @@ using static CadProjectorViewer.CanvasObj.CanvasObject;
 
 namespace CadProjectorViewer.CanvasObj
 {
-    public class CanvasObject : FrameworkElement, INotifyPropertyChanged
+    internal class CanvasObject : FrameworkElement, INotifyPropertyChanged
     {
         public event EventHandler UpdateAnchorPoints;
 
@@ -56,8 +56,8 @@ namespace CadProjectorViewer.CanvasObj
         public virtual ChangeSizeDelegate SizeChange { get; set; }
         public delegate void ChangeSizeDelegate();
 
-        public GetViewDelegate GetViewModel { get; set; }
-        public delegate RenderDeviceModel GetViewDelegate();
+        internal GetViewDelegate GetViewModel { get; set; }
+        internal delegate RenderDeviceModel GetViewDelegate();
 
         public UidObject CadObject
         {

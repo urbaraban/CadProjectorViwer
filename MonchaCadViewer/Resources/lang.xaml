@@ -31,6 +31,7 @@
     <v:String x:Key="obj_Transform">Transform</v:String>
     <v:String x:Key="obj_Thinkess">Thinkess</v:String>
     <v:String x:Key="obj_AddProjectivePoint">Add projective point</v:String>
+    <v:String x:Key="obj_RectProjectivePoint">Rect projective point</v:String>
     <v:String x:Key="obj_RoundCentre">Round centre</v:String>
 
     <v:String x:Key="gr_Ungroup">Ungroup</v:String>

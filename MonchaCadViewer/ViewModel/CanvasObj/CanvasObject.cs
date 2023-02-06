@@ -43,12 +43,15 @@ using CadProjectorViewer.ViewModel;
 using System.Windows.Data;
 using System.Globalization;
 using static CadProjectorViewer.CanvasObj.CanvasObject;
+using CadProjectorSDK.Scenes.Actions;
 
 namespace CadProjectorViewer.CanvasObj
 {
     internal class CanvasObject : FrameworkElement, INotifyPropertyChanged
     {
         public event EventHandler UpdateAnchorPoints;
+        public virtual event EventHandler<bool> OnObject;
+        public virtual event EventHandler<CanvasObject> Opening;
 
         public virtual GetScaleDelegate GetFrameTransform { get; set; }
         public delegate ScaleTransform GetScaleDelegate();
@@ -92,9 +95,6 @@ namespace CadProjectorViewer.CanvasObj
             } 
         }
         private AdornerLayer _alayer;
-
-        public virtual event EventHandler<bool> OnObject;
-        public virtual event EventHandler<CanvasObject> Opening;
 
         public virtual Rect Bounds => this.CadObject.Bounds;
 
@@ -196,6 +196,7 @@ namespace CadProjectorViewer.CanvasObj
             if (uidObject is IAnchoredObject anchoredObject && anchoredObject.CanAddPoint == true)
             {
                 ContextMenuLib.AddItem("obj_AddProjectivePoint", AddProjectivePointCommand, this.ContextMenu);
+                ContextMenuLib.AddItem("obj_RectProjectivePoint", RectProjectivePointCommand, this.ContextMenu);
                 ContextMenuLib.AddItem("obj_RoundCentre", RoundCentreCommand, this.ContextMenu);
             }
 
@@ -380,7 +381,7 @@ namespace CadProjectorViewer.CanvasObj
             }
         });
 
-        public ICommand AddProjectivePointCommand => new ActionCommand(() =>
+        public ICommand RectProjectivePointCommand => new ActionCommand(() =>
         {
             if (this.CadObject.ProjectionMat == null)
             {
@@ -397,6 +398,19 @@ namespace CadProjectorViewer.CanvasObj
                 this.CadObject.AddProjectionPoint(BLAnchor);
                 this.CadObject.AddProjectionPoint(BRAnchor);
             } 
+            else
+            {
+                this.CadObject.ClearProjectionPoint();
+            }
+            UpdateAnchorPoints?.Invoke(this, null);
+        });
+
+        public ICommand AddProjectivePointCommand => new ActionCommand(() =>
+        {
+            if (this.CadObject.ProjectionMat == null)
+            {
+                this.CadObject.SendCommand(new AddProjectPointAction(this.CadObject));
+            }
             else
             {
                 this.CadObject.ClearProjectionPoint();

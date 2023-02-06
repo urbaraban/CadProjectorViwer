@@ -139,12 +139,19 @@ namespace CadProjectorViewer.Panels.CanvasPanel
                 this.StartMousePoint = e.GetPosition(this.CanvasBox);
                 this.StartMovePoint = new Point(this.Translate.X, this.Translate.Y);
             }
-            else if (
-                ViewModel.RenderingDisplay is ProjectionScene scene &&
+            else if (ViewModel.RenderingDisplay is ProjectionScene scene &&
                 scene.AlreadyAction != null)
             {
                 Point point = e.GetPosition(this.CanvasGrid);
-                scene.AlreadyAction.NextAction(point);
+                if (scene.AlreadyAction.CanAction == false)
+                {
+                    scene.AlreadyAction.Run(point);
+                }
+                else
+                {
+                    scene.AlreadyAction.NextAction(point);
+                }
+
             }
         }
 
@@ -278,8 +285,8 @@ namespace CadProjectorViewer.Panels.CanvasPanel
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            if (value == null) return Cursors.Arrow;
-            else return Cursors.Cross;
+            if (value != null) 
+                return Cursors.Cross;
             return Cursors.Arrow;
         }
 

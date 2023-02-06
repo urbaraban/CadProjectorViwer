@@ -32,7 +32,7 @@
                     Margin="3"
                     Panel.ZIndex="999" FontSize="18"
                     Command="{Binding RefreshFrameCommand}" />
-            <TextBlock Text="{Binding AlreadyAction}"
+            <TextBlock Text="{Binding Scene.AlreadyAction.Name}"
                        Width="80"
                        Margin="3"
                        TextAlignment="Right"
@@ -78,10 +78,10 @@
               Margin="10"
               Stretch="Uniform" StretchDirection="Both">
                 <Grid x:Name="CanvasGrid" Background="Red"
-                  Cursor="{Binding AlreadyAction, Converter={StaticResource CursorAction}}">
+                  Cursor="{Binding Scene.AlreadyAction, Converter={StaticResource CursorAction}}">
                     <Rectangle Fill="White" 
-                               Width="{Binding Width}" 
-                               Height="{Binding Height}"/>
+                               Width="{Binding Scene.Size.Width}" 
+                               Height="{Binding Scene.Size.Height}"/>
                     <Canvas
                     x:Name="BackCanvas"
                     IsHitTestVisible="False"
@@ -129,8 +129,8 @@
                                 <Canvas x:Name="ObjCanvas"
                                     DataContext="{Binding ElementName=ObjCanvas, Path=DataContext}"
                                     d:DataContext="{d:DesignInstance Type=scene:SceneModel}"
-                                    Width="{Binding Width}"
-                                    Height="{Binding Height}"/>
+                                    Width="{Binding Scene.Size.Width}"
+                                    Height="{Binding Scene.Size.Height}"/>
                             </ItemsPanelTemplate>
                         </ItemsControl.ItemsPanel>
                         <ItemsControl.ItemTemplate>

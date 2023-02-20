@@ -666,5 +666,4 @@ namespace CadProjectorViewer.CanvasObj
             return null;
         }
     }
-
 }

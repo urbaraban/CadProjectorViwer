@@ -70,8 +70,6 @@ namespace CadProjectorViewer
         public static Logging Log;
         private AppMainModel mainModel { get; } = new AppMainModel();
 
-        private KmpsAppl kmpsAppl;
-
         public MainWindow()
         {
             InitializeComponent();
@@ -85,12 +83,13 @@ namespace CadProjectorViewer
                 GetAction = mainModel.ProjectorHub.ScenesCollection.SelectedScene.Break
             });
 
-            if (this.Height > SystemParameters.FullPrimaryScreenHeight * 0.9) this.Height = SystemParameters.FullPrimaryScreenHeight * 0.9;
-            if (this.Width > SystemParameters.FullPrimaryScreenWidth * 0.9) this.Width = SystemParameters.FullPrimaryScreenWidth * 0.9;
+            if (this.Height > SystemParameters.FullPrimaryScreenHeight * 0.9) 
+                this.Height = SystemParameters.FullPrimaryScreenHeight * 0.9;
+            if (this.Width > SystemParameters.FullPrimaryScreenWidth * 0.9) 
+                this.Width = SystemParameters.FullPrimaryScreenWidth * 0.9;
 
             Version version = Assembly.GetExecutingAssembly().GetName().Version;
             this.Title = $"CUT — Viewer v{version.Build.ToString()}.{version.MinorRevision.ToString()}";
-
 
             App.SetProgress?.Invoke(1, 1, "Loaded");
         }
@@ -149,100 +148,6 @@ namespace CadProjectorViewer
             GC.Collect();
             GC.WaitForPendingFinalizers();
         }
-
-        #region Kompas3D
-        private void kmpsConnectToggle_Toggled(object sender, RoutedEventArgs e)
-        {
-            if (KmpsAppl.KompasAPI == null)
-            {
-                kmpsAppl = new KmpsAppl();
-
-                if (kmpsAppl.Connect())
-                {
-                    kmpsAppl.ConnectBoolEvent += KmpsAppl_ConnectBoolEvent;
-
-                    kmpsAppl.AppEvent.DocumentOpened += KmpsAppl_OpenedDoc;
-
-                    kmpsConnectToggle.IsOn = KmpsAppl.KompasAPI != null;
-                }
-
-            }
-        }
-
-        private void KmpsAppl_OpenedDoc(object newDoc, int docType)
-        {
-            KmpsNameLbl.Invoke(() => { 
-            if (newDoc is KmpsDoc kmpsDoc)
-            {
-                if (kmpsDoc.D7.Name != null)
-                {
-                    KmpsNameLbl.Content = kmpsDoc.D7.Name;
-                }
-                else
-                {
-                    KmpsNameLbl.Content = "Пустой";
-                }
-            }
-            });
-        }
-
-        private void KmpsAppl_ChangeDoc(object sender, KmpsDoc e)
-        {
-            KmpsNameLbl.Invoke(new Action(() => {
-                if (e.D7 != null)
-                    KmpsNameLbl.Content = e.D7.Name;
-            }));
-        }
-
-        private void KmpsAppl_ConnectBoolEvent(object sender, bool e)
-        {
-            kmpsConnectToggle.IsOn = e;
-        }
-
-        private async void kmpsSelectBtn_Click(object sender, RoutedEventArgs e)
-        {
-            if (KmpsAppl.KompasAPI != null)
-            {
-                KmpsDoc doc = new KmpsDoc(KmpsAppl.Appl.ActiveDocument);
-
-                CadGroup cadGeometries = 
-                    new CadGroup(
-                        await ContourCalc.GetGeometry(doc, mainModel.ProjectorHub.ScenesCollection.SelectedScene.ProjectionSetting.PointStep.Value, false, true),
-                        doc.D7.Name);
-
-                SceneTask sceneTask = new SceneTask()
-                {
-                    Object = cadGeometries,
-                    TableID = mainModel.ProjectorHub.ScenesCollection.SelectedScene.TableID,
-                };
-                mainModel.ProjectorHub.ScenesCollection.AddTask(sceneTask);
-            }
-        }
-
-        private async void kmpsAddBtn_Click(object sender, RoutedEventArgs e)
-        {
-           if (KmpsAppl.KompasAPI != null)
-            {
-                KmpsDoc doc = new KmpsDoc(KmpsAppl.Appl.ActiveDocument);
-
-                GCCollection gCObjects = new GCCollection(doc.D7.Name);
-
-                gCObjects.Add(new GeometryElement(await ContourCalc.GetGeometry(doc, mainModel.ProjectorHub.ScenesCollection.SelectedScene.ProjectionSetting.PointStep.Value, true, true), "Kompas"));
-
-                CadGroup cadGeometries =
-                      new CadGroup(
-                          await ContourCalc.GetGeometry(doc, mainModel.ProjectorHub.ScenesCollection.SelectedScene.ProjectionSetting.PointStep.Value, true, true),
-                          doc.D7.Name);
-
-                SceneTask sceneTask = new SceneTask()
-                {
-                    Object = cadGeometries,
-                    TableID = mainModel.ProjectorHub.ScenesCollection.SelectedScene.TableID,
-                };
-                mainModel.ProjectorHub.ScenesCollection.AddTask(sceneTask);
-            }
-        }
-        #endregion
 
         protected override void OnKeyUp(KeyEventArgs e)
         {
@@ -383,32 +288,7 @@ namespace CadProjectorViewer
         /// <param name="e"></param>
         private async void ILDASaveBtn_Click(object sender, RoutedEventArgs e)
         {
-            SaveFileDialog saveFileDialog = new SaveFileDialog();
-            saveFileDialog.Filter = "(*.ild)|*.ild| All Files (*.*)|*.*";
-            saveFileDialog.FileName = "export";
-            saveFileDialog.ShowDialog();
-            IldaWriter ildaWriter = new IldaWriter();
-            
-            if (saveFileDialog.FileName != string.Empty)
-            {
-                LProjector[] devices = mainModel.ProjectorHub.ScenesCollection.SelectedScene.Projectors.ToArray();
-                for (int i = 0; i < devices.Length; i += 1)
-                {
-                    IList<IRenderedObject> elements = GraphExtensions.SolidVectors(devices[i].RenderObjects, devices[i]);
-                    if (devices[i].Optimized == true && elements.Count > 0)
-                    {
-                        //vectorLines = VectorLinesCollection.Optimize(vectorLines);
-                        elements = GraphExtensions.FindShortestCollection(
-                            elements, devices[i].ProjectionSetting.PathFindDeep, devices[i].ProjectionSetting.FindSolidElement);
-                    }
-                    var vectorLine = GraphExtensions.GetVectorLines(elements);
-
-                    ildaWriter.Write(($"{saveFileDialog.FileName.Replace(".ild", string.Empty)}_{i}_{devices[i].IPAddress}.ild"), 
-                        new List<LFrame>() { 
-                            LFrameConverter.SolidLFrame(vectorLine, devices[i]) 
-                        ?? new LFrame() } , 5);
-                }
-            }
+            FileSave.ILDASave(this.mainModel.ProjectorHub.ScenesCollection.SelectedScene.Projectors.ToArray());
         }
 
         public ICommand HideToTray => new ActionCommand(() => {
@@ -505,7 +385,27 @@ namespace CadProjectorViewer
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            return (bool)value == true ? parameter : AppSt.Default.Attach;
+            return null;
+        }
+    }
+
+    public class GetKompasPageConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            if (value is AppMainModel mainModel)
+            {
+                return new KompasPage()
+                {
+                    DataContext = mainModel
+                };
+            }
+            return null;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            return null;
         }
     }
 

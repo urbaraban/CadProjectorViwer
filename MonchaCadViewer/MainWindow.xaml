@@ -80,6 +80,7 @@
             <CadProjectorViewer:MultiObjectList x:Key="MultiList" />
             <CadProjectorViewer:LicenceColor x:Key="LicenceKey" />
             <CadProjectorViewer:GetHubPageConverter x:Key="GetHubPage" />
+            <CadProjectorViewer:GetKompasPageConverter x:Key="GetKompasPage" />
             <HierarchicalDataTemplate 
                 x:Key="DeviceTree" 
                 DataType ="{x:Type device:LProjector}">
@@ -301,34 +302,8 @@
                     <Grid Background="#FFE5E5E5">
                         <TabControl x:Name="TabItem">
                             <TabItem Header="Компас" FontSize="14">
-                                <StackPanel Background="#FFE5E5E5">
-                                    <Label
-                                        x:Name="KmpsNameLbl"
-                                        Margin="5"
-                                        Content="{DynamicResource common_Empty}" />
-                                    <Controls:ToggleSwitch
-                                        x:Name="kmpsConnectToggle"
-                                        Margin="5"
-                                        Content="{DynamicResource common_Connect}"
-                                        Toggled="kmpsConnectToggle_Toggled">
-                                        <Controls:ToggleSwitch.DataContext>
-                                            <Properties:Settings />
-                                        </Controls:ToggleSwitch.DataContext>
-                                    </Controls:ToggleSwitch>
-                                    <DockPanel LastChildFill="True" Margin="5">
-                                        <Button
-                                            x:Name="kmpsSelectBtn"
-                                            Content="{DynamicResource common_Select}"
-                                            Width="125" Height="50"
-                                            Click="kmpsSelectBtn_Click" />
-                                        <Button
-                                            Margin="3,0"
-                                            x:Name="kmpsAddBtn"
-                                            Content="{DynamicResource common_ADDIN}"
-                                            Height="50"
-                                            Click="kmpsAddBtn_Click" />
-                                    </DockPanel>
-                                </StackPanel>
+                                <Frame Content="{Binding .,
+                                    Converter={StaticResource GetKompasPage}}"/>
                             </TabItem>
                             <TabItem Header="ILDA" FontSize="14">
                                 <Grid Background="#FFE5E5E5">

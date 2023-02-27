@@ -273,6 +273,9 @@
     <Compile Include="Dialogs\EllipsoidSettingDialog.xaml.cs">
       <DependentUpon>EllipsoidSettingDialog.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Dialogs\IpCamDialog.xaml.cs">
+      <DependentUpon>IpCamDialog.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Dialogs\ManipulatorTCPDialog.xaml.cs">
       <DependentUpon>ManipulatorTCPDialog.xaml</DependentUpon>
     </Compile>
@@ -404,6 +407,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Dialogs\EllipsoidSettingDialog.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Dialogs\IpCamDialog.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

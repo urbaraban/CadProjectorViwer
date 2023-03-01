@@ -15,6 +15,7 @@
                      DockPanel.Dock="Left"
                      FontSize="18"/>
         </DockPanel>
-        <Image DockPanel.Dock="Bottom"/>
+        <Image x:Name="ImageBox"
+               DockPanel.Dock="Bottom"/>
     </DockPanel>
 </Window>

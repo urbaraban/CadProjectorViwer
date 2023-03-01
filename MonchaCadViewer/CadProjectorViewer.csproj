@@ -181,6 +181,9 @@
     <Reference Include="QRCoder, Version=1.4.3.0, Culture=neutral, PublicKeyToken=c4ed5b9ae8358a28, processorArchitecture=MSIL">
       <HintPath>..\packages\QRCoder.1.4.3\lib\net40\QRCoder.dll</HintPath>
     </Reference>
+    <Reference Include="RtspClientSharp, Version=1.3.3.0, Culture=neutral, PublicKeyToken=af963665c791e92e, processorArchitecture=MSIL">
+      <HintPath>..\packages\RtspClientSharp.1.3.3\lib\netstandard2.0\RtspClientSharp.dll</HintPath>
+    </Reference>
     <Reference Include="SimpleUdp, Version=1.2.1.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\SimpleUdp.1.2.1\lib\net461\SimpleUdp.dll</HintPath>
     </Reference>

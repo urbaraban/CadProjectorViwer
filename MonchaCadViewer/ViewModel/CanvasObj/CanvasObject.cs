@@ -102,7 +102,15 @@ namespace CadProjectorViewer.CanvasObj
 
         public virtual string NameID
         {
-            get => name;
+            get
+            {
+                string ret = name;
+                if (string.IsNullOrEmpty(ret) == true)
+                {
+                    ret = this.CadObject.ToString().Split('.').Last();
+                }
+                return ret;
+            }
             set
             {
                 name = value;
@@ -389,14 +397,14 @@ namespace CadProjectorViewer.CanvasObj
                 Point TR = this.Bounds.TopRight;
                 Point BL = this.Bounds.BottomLeft;
                 Point BR = this.Bounds.BottomRight;
-                CadAnchor TLAnchor = new CadAnchor(TL.X, TL.Y, 0);
-                CadAnchor TRAnchor = new CadAnchor(TR.X, TR.Y, 0);
-                CadAnchor BLAnchor = new CadAnchor(BL.X, BL.Y, 0);
-                CadAnchor BRAnchor = new CadAnchor(BR.X, BR.Y, 0);
-                this.CadObject.AddProjectionPoint(TLAnchor);
-                this.CadObject.AddProjectionPoint(TRAnchor);
-                this.CadObject.AddProjectionPoint(BLAnchor);
-                this.CadObject.AddProjectionPoint(BRAnchor);
+                CadAnchor[] anchors = new CadAnchor[]
+                {
+                    new CadAnchor(TL.X, TL.Y, 0),
+                    new CadAnchor(TR.X, TR.Y, 0),
+                    new CadAnchor(BL.X, BL.Y, 0),
+                    new CadAnchor(BR.X, BR.Y, 0)
+                };
+                this.CadObject.AddProjectionPoints(anchors);
             } 
             else
             {
@@ -427,9 +435,7 @@ namespace CadProjectorViewer.CanvasObj
 
         public ICommand RoundCentreCommand => new ActionCommand(() =>
         {
-            Rect bounds = this.CadObject.Bounds;
-            MakeMeshSplitDialog makeMeshSplitDialog = new MakeMeshSplitDialog(bounds, this.CadObject.GetScene?.Invoke());
-            makeMeshSplitDialog.Show();
+
         });
 
         private void ProjectionSetting_PropertyChanged(object sender, PropertyChangedEventArgs e) => this.Update();

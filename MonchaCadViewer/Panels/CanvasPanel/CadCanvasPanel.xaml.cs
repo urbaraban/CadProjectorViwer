@@ -22,19 +22,12 @@ using CadProjectorSDK.Device.Mesh;
 using CadProjectorSDK.Scenes;
 using CadProjectorViewer.StaticTools;
 using System.IO;
-using CadProjectorSDK.Interfaces;
 using System.Collections.ObjectModel;
 using CadProjectorSDK.Tools;
 using Microsoft.Xaml.Behaviors.Core;
-using CadProjectorSDK.Scenes.Actions;
-using CadProjectorSDK.CadObjects.Interfaces;
-using CadProjectorSDK.Render;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
-using CadProjectorSDK.Scenes.Commands;
 using CadProjectorViewer.ViewModel;
-using CadProjectorViewer.EthernetServer;
-using CadProjectorViewer.Dialogs;
 
 namespace CadProjectorViewer.Panels.CanvasPanel
 {
@@ -48,9 +41,7 @@ namespace CadProjectorViewer.Panels.CanvasPanel
 
         private Point StartMovePoint;
         private Point StartMousePoint;
-        private bool WasMove = false;
-
-        private Visibility _showadorner = Visibility.Hidden;
+        private bool WasMove;
 
         private RenderDeviceModel ViewModel => (RenderDeviceModel)this.DataContext;
 
@@ -78,9 +69,14 @@ namespace CadProjectorViewer.Panels.CanvasPanel
             if (transformGroup != null)
             {
                 CanvasGrid.RenderTransform = TransformGroup;
-                this.Scale = this.TransformGroup.Children[0] != null ? (ScaleTransform)this.TransformGroup.Children[0] : new ScaleTransform();
-                this.Rotate = this.TransformGroup.Children[1] != null ? (RotateTransform)this.TransformGroup.Children[1] : new RotateTransform();
-                this.Translate = this.TransformGroup.Children[2] != null ? (TranslateTransform)this.TransformGroup.Children[2] : new TranslateTransform();
+                this.Scale = this.TransformGroup.Children[0] != null ? 
+                    (ScaleTransform)this.TransformGroup.Children[0] : new ScaleTransform();
+
+                this.Rotate = this.TransformGroup.Children[1] != null ? 
+                    (RotateTransform)this.TransformGroup.Children[1] : new RotateTransform();
+
+                this.Translate = this.TransformGroup.Children[2] != null ? 
+                    (TranslateTransform)this.TransformGroup.Children[2] : new TranslateTransform();
             }
             else ResetTransform();
         }
@@ -245,10 +241,6 @@ namespace CadProjectorViewer.Panels.CanvasPanel
             }
 
         }
-
-
-
-
 
         public ICommand RefreshFrameCommand => new ActionCommand(() => {
             if (ViewModel.RenderingDisplay is ProjectionScene scene)

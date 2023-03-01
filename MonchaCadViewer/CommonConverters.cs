@@ -106,13 +106,17 @@ namespace CadProjectorViewer.Converters
     {
         public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
         {
-            if (values[0] is UidObject uidObject
-                && values[1] is RenderDeviceModel renderingDevice
-                && values[2] is ScaleTransform transform)
+            if (values[0] is UidObject uidObject)
             {
                 CanvasObject canvasObject = new CanvasObject(uidObject, true);
-                canvasObject.GetFrameTransform = () => transform;
-                canvasObject.GetViewModel = () => renderingDevice;
+                if (values[1] is RenderDeviceModel renderDeviceModel)
+                {
+                    canvasObject.GetViewModel = () => renderDeviceModel;
+                }
+                if (values[2] is ScaleTransform scaleTransform)
+                {
+                    canvasObject.GetFrameTransform = () => scaleTransform;
+                }
                 return canvasObject;
             }
             return values;

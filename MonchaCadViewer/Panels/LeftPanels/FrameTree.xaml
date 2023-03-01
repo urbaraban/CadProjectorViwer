@@ -7,15 +7,19 @@
              xmlns:device="clr-namespace:CadProjectorSDK.Device;assembly=CadProjectorSDK" 
              mc:Ignorable="d" 
              d:DesignHeight="350" d:DesignWidth="130"
-             xmlns:scene="clr-namespace:CadProjectorSDK.Scenes;assembly=CadProjectorSDK" xmlns:h="QQ:908293466" xmlns:Controls="http://metro.mahapps.com/winfx/xaml/controls" xmlns:devices="clr-namespace:CadProjectorViewer.ViewModel.Devices"
+             xmlns:scene="clr-namespace:CadProjectorSDK.Scenes;assembly=CadProjectorSDK"  
+             xmlns:Controls="http://metro.mahapps.com/winfx/xaml/controls"
+             xmlns:devices="clr-namespace:CadProjectorViewer.ViewModel.Devices"
+             xmlns:converters="clr-namespace:CadProjectorViewer.Converters" xmlns:canvasobj="clr-namespace:CadProjectorViewer.CanvasObj"
              d:DataContext="{d:DesignInstance Type=scene:ProjectionScene}"
              x:Name="FrameTreePage">
     <UserControl.Resources>
+        <converters:CadObjectConverter x:Key="CadObjectConverter" />
         <Style TargetType="TextBlock">
-            <Setter Property="Margin" Value="3"/>
+            <Setter Property="Margin" Value="3" />
         </Style>
         <Style TargetType="GridViewColumnHeader">
-            <Setter Property="Background" Value="Gray"/>
+            <Setter Property="Background" Value="Gray" />
         </Style>
         <Style x:Key="ConnectedStyle" TargetType="{x:Type TextBlock}">
             <Setter Property="Foreground" Value="Black" />
@@ -26,43 +30,44 @@
             </Style.Triggers>
         </Style>
         <Style x:Key="ObjectTreeMainStyle" TargetType="TreeView">
-            <Setter Property="TreeViewItem.IsExpanded" Value="True"/>
+            <Setter Property="TreeViewItem.IsExpanded" Value="True" />
         </Style>
 
-        <HierarchicalDataTemplate 
-                x:Key="ObjectTree"
-                ItemsSource="{Binding Children}">
-            <Border>
-                <DockPanel 
-                     VerticalAlignment="Center">
+        <HierarchicalDataTemplate
+            x:Key="ObjectTree"
+            ItemsSource="{Binding Children}">
+            <Border d:DataContext="{d:DesignInstance Type=canvasobj:CanvasObject}"
+                    ContextMenu="{Binding ContextMenu}">
+                <Border.DataContext>
+                    <MultiBinding Converter="{StaticResource CadObjectConverter}">
+                        <Binding Path="" />
+                        <Binding ElementName="CanvasPanel" Path="DataContext"/>
+                        <Binding ElementName="CanvasPanel" Path="Scale"/>
+                    </MultiBinding>
+                </Border.DataContext>
+                <DockPanel VerticalAlignment="Center">
                     <CheckBox IsChecked="{Binding IsRender}"/>
                     <Label Content="{Binding NameID}" VerticalAlignment="Center" MouseDoubleClick="Label_MouseDoubleClick"/>
                 </DockPanel>
             </Border>
         </HierarchicalDataTemplate>
-
-        <HierarchicalDataTemplate 
-                x:Key="MasksTree" 
-                ItemsSource="{Binding Children}">
+        <HierarchicalDataTemplate x:Key="MasksTree" 
+                                  ItemsSource="{Binding Children}">
             <Border>
-                <DockPanel 
-                      VerticalAlignment="Center">
+                <DockPanel VerticalAlignment="Center">
                     <CheckBox IsChecked="{Binding IsRender}"/>
                     <Label Content="{Binding NameID}" VerticalAlignment="Center" MouseDoubleClick="Label_MouseDoubleClick"/>
                 </DockPanel>
             </Border>
         </HierarchicalDataTemplate>
-
         <HierarchicalDataTemplate
                 x:Key="MeshTree">
-            <Border
-                    d:DataContext="{d:DesignInstance Type=mesh:ProjectorMesh}">
+            <Border d:DataContext="{d:DesignInstance Type=mesh:ProjectorMesh}">
                 <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Margin="5">
                     <CheckBox IsChecked="{Binding IsRender}"/>
-                    <TextBlock 
-                            VerticalAlignment="Center"
-                            Text="&#xE809;"
-                            FontFamily="Segoe MDL2 Assets"/>
+                    <TextBlock VerticalAlignment="Center"
+                               Text="&#xE809;"
+                               FontFamily="Segoe MDL2 Assets"/>
                     <TextBlock Margin="5,0,0,0" Text="{Binding Name}" VerticalAlignment="Center"/>
                     <TextBlock Margin="5,0,0,0" Text="M:" VerticalAlignment="Center"/>
                     <Label Margin="0,0,0,0" Content="{Binding Morph}" Padding="0" VerticalAlignment="Center"/>

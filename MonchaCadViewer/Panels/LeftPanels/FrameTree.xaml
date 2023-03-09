@@ -47,7 +47,9 @@
                 </Border.DataContext>
                 <DockPanel VerticalAlignment="Center">
                     <CheckBox IsChecked="{Binding IsRender}"/>
-                    <Label Content="{Binding NameID}" VerticalAlignment="Center" MouseDoubleClick="Label_MouseDoubleClick"/>
+                    <Label Content="{Binding NameID}" 
+                           VerticalAlignment="Center" 
+                           MouseDoubleClick="Label_MouseDoubleClick"/>
                 </DockPanel>
             </Border>
         </HierarchicalDataTemplate>

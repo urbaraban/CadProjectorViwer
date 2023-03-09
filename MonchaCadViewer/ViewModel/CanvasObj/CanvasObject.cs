@@ -572,7 +572,6 @@ namespace CadProjectorViewer.CanvasObj
 
         private GetViewDelegate GetViewModel { get; set; }
 
-        private IEnumerable<CadAnchor> _Anchors => AnchoredObject.Anchors;
 
         private IAnchoredObject AnchoredObject;
 

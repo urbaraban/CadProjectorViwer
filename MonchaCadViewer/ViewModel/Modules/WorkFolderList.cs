@@ -102,6 +102,7 @@ namespace CadProjectorViewer.ViewModel.Modules
             List<FileSystemInfo> fileSystemInfos = GetFolderItems(Path);
             CollectionView view = CollectionViewSource.GetDefaultView(fileSystemInfos) as CollectionView;
             FilInfosCollection = view;
+            FilInfosCollection.Filter = new Predicate<object>(Contains);
         }
 
         public List<FileSystemInfo> GetFolderItems(string Path)

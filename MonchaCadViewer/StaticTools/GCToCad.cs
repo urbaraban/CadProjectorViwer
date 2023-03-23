@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Media;
 using ToGeometryConverter.Object;
 using ToGeometryConverter.Object.Elements;
 using AppSt = CadProjectorViewer.Properties.Settings;
@@ -29,12 +30,11 @@ namespace CadProjectorViewer.StaticTools
             }
             else if (gCObject is PointsElement point3Ds)
             {
-                CadPointsObject cadPoints = new CadPointsObject();
-                foreach (GCPoint3D point in point3Ds)
-                {
-                    cadPoints.Add(new CadPoint3D(point.X, point.Y, point.Z));
-                }
-                return cadPoints;
+                LineGeometry lineGeometry = new LineGeometry(
+                    new System.Windows.Point(point3Ds[0].X, point3Ds[0].Y),
+                    new System.Windows.Point(point3Ds[1].X, point3Ds[1].Y)
+                    );
+                return new CadGeometry(lineGeometry);
             }
             else if (gCObject is GCCollection collection)
             {

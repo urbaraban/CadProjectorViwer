@@ -40,8 +40,14 @@ namespace CadProjectorViewer.StaticTools
             // new GCFormat("Компас 3D", new string[2] { ".frw" , ".cdw"}) { ReadFile = GetKompas },
             // new GCFormat("JPG Image", new string[2] { "jpg" , "jpeg"}) { ReadFile = GetImage },
             new GCFormat("ILDA", new string[1] { ".ild" }){ ReadFile = GetILDA },
-            new GCFormat("2CUT", new string[1] { ".2scn" }){ ReadFile = Get2CUT }
+            new GCFormat("2CUT", new string[1] { ".2scn" }){ ReadFile = Get2CUT },
+            new GCFormat("Arculator", new string[1] { ".glc"}) { ReadFile = GetArculator }
         };
+
+        private static Task<object> GetArculator(string filepath, double RoundStep)
+        {
+            return Arculator.Parse(filepath);
+        }
 
         private static string BrowseMWS()
         {
@@ -123,9 +129,14 @@ namespace CadProjectorViewer.StaticTools
             {
                 if (await ConvertObject(obj) is UidObject uidObject)
                 {
+                    uidObject.SetCentre();
                     uidObject.Mirror = AppSt.Default.default_mirror;
-                    uidObject.ScaleX = AppSt.Default.default_scale_x;
-                    uidObject.ScaleY = AppSt.Default.default_scale_y;
+                    if (uidObject.ScaleX == 1 && uidObject.ScaleY == 1)
+                    {
+                        uidObject.ScaleX = AppSt.Default.default_scale_x;
+                        uidObject.ScaleY = AppSt.Default.default_scale_y;
+                    }
+
                     return uidObject;
                 }
             }
@@ -143,6 +154,8 @@ namespace CadProjectorViewer.StaticTools
             {
                 if (await GCToCad.GetGroup(gCObjects) is CadGroup cadGroup)
                 {
+                    //cadGroup.ScaleX = gCObjects.XScale;
+                    //cadGroup.ScaleY = gCObjects.YScale;
                     return cadGroup;
                 }
                 return null;
@@ -281,7 +294,5 @@ namespace CadProjectorViewer.StaticTools
             }
             return $"{format.Name}({formatstr}) | {formatstr}";
         }
-
-
     }
 }

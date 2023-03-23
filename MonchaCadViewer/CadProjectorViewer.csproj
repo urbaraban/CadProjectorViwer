@@ -20,7 +20,7 @@
     <TargetFrameworkProfile />
     <LangVersion>10.0</LangVersion>
     <RunAnalyzersDuringBuild>false</RunAnalyzersDuringBuild>
-    <PublishUrl>Z:\soft\LaserCat\</PublishUrl>
+    <PublishUrl>C:\2CUT\</PublishUrl>
     <Install>true</Install>
     <InstallFrom>Disk</InstallFrom>
     <UpdateEnabled>false</UpdateEnabled>
@@ -36,7 +36,7 @@
     <SuiteName>Viwer</SuiteName>
     <WebPage>publish.htm</WebPage>
     <OpenBrowserOnPublish>false</OpenBrowserOnPublish>
-    <ApplicationRevision>149</ApplicationRevision>
+    <ApplicationRevision>152</ApplicationRevision>
     <ApplicationVersion>0.8.1.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <CreateDesktopShortcut>true</CreateDesktopShortcut>
@@ -293,6 +293,7 @@
     <Compile Include="Panels\RightPanel\KompasPage.xaml.cs">
       <DependentUpon>KompasPage.xaml</DependentUpon>
     </Compile>
+    <Compile Include="StaticTools\Arculator.cs" />
     <Compile Include="StaticTools\FileSave.cs" />
     <Compile Include="EthernetServer\TCPTools.cs" />
     <Compile Include="EthernetServer\ToCutEthernetHub.cs" />

@@ -164,6 +164,16 @@ namespace CadProjectorViewer.Panels.RightPanel.Configuration
             }
         }
 
+        public bool Show_hide_object
+        {
+            get => AppSt.Default.show_hide_object;
+            set
+            {
+                AppSt.Default.show_hide_object = value;
+                AppSt.Default.Save();
+            }
+        }
+
         public AppDefaultSettingPanel()
         {
             InitializeComponent();

@@ -77,6 +77,9 @@
                 <CheckBox
                     Content="{DynamicResource setting_selectableshow}"
                     IsChecked="{Binding SelectableShowFlag, Mode=TwoWay}"/>
+                <CheckBox
+                    Content="{DynamicResource setting_showhideobject}"
+                    IsChecked="{Binding Show_hide_object, Mode=TwoWay}"/>
                 <Separator/>
                 <!-- Attach panel-->
                 <Label 

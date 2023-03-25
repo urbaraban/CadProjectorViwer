@@ -102,6 +102,7 @@
     <v:String x:Key="setting_solidobject">Цельный объект</v:String>
     <v:String x:Key="setting_attach">Присоеденить</v:String>
     <v:String x:Key="setting_selectableshow">Показать выбранное</v:String>
+    <v:String x:Key="setting_showhideobject">Показать скрытые объекты</v:String>
 
     <v:String x:Key="mesh_Affine">Аффинные</v:String>
     <v:String x:Key="mesh_Morph">Морф</v:String>

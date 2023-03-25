@@ -34,7 +34,6 @@ namespace CadProjectorViewer.StaticTools
             new DXF(),
             new GCODE(),
             // new DEXCeil(),
-            new STL(),
             // new MetaFile(),
             // new JSON(),
             // new GCFormat("Компас 3D", new string[2] { ".frw" , ".cdw"}) { ReadFile = GetKompas },

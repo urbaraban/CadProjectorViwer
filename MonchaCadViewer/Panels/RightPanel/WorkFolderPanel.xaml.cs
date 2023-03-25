@@ -7,6 +7,8 @@ using Microsoft.WindowsAPICodePack.Dialogs;
 using Microsoft.Xaml.Behaviors.Core;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
+using System.Data;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -99,6 +101,37 @@ namespace CadProjectorViewer.Panels.RightPanel
                     workFolderList.SelectPathSendCommand(systemInfo).Execute(sender);
                 }
             }
+        }
+
+        private void GridViewColumnHeader_Click(object sender, RoutedEventArgs e)
+        {
+            if (e.OriginalSource is GridViewColumnHeader columnHeader)
+            {
+                var columnBinding = columnHeader.Column.DisplayMemberBinding as Binding;
+                var sortBy = columnBinding?.Path.Path ?? columnHeader.Column.Header as string;
+                if (sortBy != null)
+                {
+                    SortList(sortBy);
+                }
+            }
+        }
+
+        private void SortList(string HeaderName)
+        {
+            ListSortDirection listSortDirection = ListSortDirection.Ascending;
+            ICollectionView dataView = CollectionViewSource.GetDefaultView(WorkFolderListBox.ItemsSource);
+            if (dataView.SortDescriptions.Count > 0 &&
+                dataView.SortDescriptions[0].PropertyName == HeaderName &&
+                dataView.SortDescriptions[0].Direction == ListSortDirection.Ascending)
+            {
+                listSortDirection = ListSortDirection.Descending;
+            }
+
+            dataView.SortDescriptions.Clear();
+            SortDescription sd = new SortDescription(HeaderName, listSortDirection);
+            dataView.SortDescriptions.Add(sd);
+            dataView.Refresh();
+
         }
     }
 

@@ -10,7 +10,8 @@
              xmlns:scene="clr-namespace:CadProjectorSDK.Scenes;assembly=CadProjectorSDK"  
              xmlns:Controls="http://metro.mahapps.com/winfx/xaml/controls"
              xmlns:devices="clr-namespace:CadProjectorViewer.ViewModel.Devices"
-             xmlns:converters="clr-namespace:CadProjectorViewer.Converters" xmlns:canvasobj="clr-namespace:CadProjectorViewer.CanvasObj"
+             xmlns:converters="clr-namespace:CadProjectorViewer.Converters" 
+             xmlns:canvasobj="clr-namespace:CadProjectorViewer.CanvasObj"
              d:DataContext="{d:DesignInstance Type=scene:ProjectionScene}"
              x:Name="FrameTreePage">
     <UserControl.Resources>

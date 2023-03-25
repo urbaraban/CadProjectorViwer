@@ -19,6 +19,8 @@ using System.Windows.Input;
 using ToGeometryConverter;
 using Microsoft.WindowsAPICodePack.Dialogs;
 using System.Reflection;
+using System.Data;
+using System.Globalization;
 
 namespace CadProjectorViewer.ViewModel.Modules
 {
@@ -79,12 +81,15 @@ namespace CadProjectorViewer.ViewModel.Modules
         } 
         private string _stringfilter = string.Empty;
 
-        private DirectoryInfo AlreadyDirectory
+        public DirectoryInfo AlreadyDirectory
         {
             get => directoryInfo;
             set
             {
                 directoryInfo = value;
+                AppSt.Default.save_work_folder = value.FullName;
+                AppSt.Default.Save();
+                OnPropertyChanged(nameof(AlreadyDirectory));
                 RefreshWorkFolderList(directoryInfo.FullName);
             }
         }
@@ -144,10 +149,10 @@ namespace CadProjectorViewer.ViewModel.Modules
             {
                 if (Directory.Exists(dialog.FileName) == true)
                 {
-                    AppSt.Default.save_work_folder = dialog.FileName;
-                    AppSt.Default.Save();
+                    AlreadyDirectory = new DirectoryInfo(dialog.FileName);
                 }
             }
+            RefreshWorkFolderList();
         });
 
         public ICommand SelectPathSendCommand (FileSystemInfo fileSystemInfo) => new ActionCommand(() =>

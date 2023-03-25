@@ -3,7 +3,8 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:Properties="clr-namespace:CadProjectorViewer.Properties"
+             xmlns:s="clr-namespace:System.Collections;assembly=mscorlib"
+             xmlns:p="clr-namespace:System;assembly=mscorlib"
              xmlns:rightpanel="clr-namespace:CadProjectorViewer.Panels.RightPanel"
              xmlns:modul="clr-namespace:CadProjectorViewer.ViewModel.Modules"
              mc:Ignorable="d"
@@ -27,16 +28,21 @@
             <RowDefinition/>
         </Grid.RowDefinitions>
 
-        <Button 
-            Command="{Binding SelectWorkFolderCommand}"
-            Content="{DynamicResource m_Browse}" 
-            Margin="3,0,5,10" VerticalAlignment="Bottom"
-            Height="20" Grid.Column="1"/>
-        <Label x:Name="WorkFolderLabel" Content="{Binding save_work_folder, Mode=OneWay}" Margin="32,7,10,3">
-            <Label.DataContext>
-                <Properties:Settings/>
-            </Label.DataContext>
-        </Label>
+        <DockPanel Grid.ColumnSpan="2">
+            <Button DockPanel.Dock="Left"
+                    Margin="5"
+                    FontFamily="Segoe MDL2 Assets" 
+                    Content="&#xEDAB;" 
+                    VerticalAlignment="Center"
+                    Width="{Binding ActualHeight, RelativeSource={RelativeSource Self}}" 
+                    Command="{Binding RefreshListCommand}"/>
+            <Button DockPanel.Dock="Right" 
+                    Command="{Binding SelectWorkFolderCommand}"
+                    Content="{DynamicResource m_Browse}" VerticalAlignment="Center" Grid.Column="1"/>
+            <Label Content="{Binding AlreadyDirectory.FullName, Mode=OneWay}"
+                   VerticalContentAlignment="Center"/>
+        </DockPanel>
+
         <ListView
             ItemsSource="{Binding FilInfosCollection}"
             x:Name="WorkFolderListBox"
@@ -46,16 +52,23 @@
             KeyUp="WorkFolderListBox_KeyUp">
             <ListView.View>
                 <GridView>
-                    <GridViewColumn Header="ic" Width="30">
+                    <GridViewColumn Width="30">
                         <GridViewColumn.CellTemplate>
                             <DataTemplate>
                                 <TextBlock FontFamily="Segoe MDL2 Assets" Text="{Binding Path=Extension, Converter={StaticResource IconConverter}}"/>
                             </DataTemplate>
                         </GridViewColumn.CellTemplate>
+                        <GridViewColumnHeader Content="ic" Click="GridViewColumnHeader_Click"/>
                     </GridViewColumn>
-                    <GridViewColumn Header="Name" DisplayMemberBinding="{Binding Path=Name}" Width="120"/>
-                    <GridViewColumn Header="Format" DisplayMemberBinding="{Binding Path=Extension}" Width="40"/>
-                    <GridViewColumn Header="Edit Date" DisplayMemberBinding="{Binding Path=LastWriteTime, StringFormat=HH:MM d.m.yy}" Width="Auto"/>
+                    <GridViewColumn DisplayMemberBinding="{Binding Path=Name}" Width="120">
+                        <GridViewColumnHeader Content="Name" Click="GridViewColumnHeader_Click"/>
+                    </GridViewColumn>
+                    <GridViewColumn DisplayMemberBinding="{Binding Path=Extension}" Width="40">
+                        <GridViewColumnHeader Content="Format" Click="GridViewColumnHeader_Click"/>
+                    </GridViewColumn>
+                    <GridViewColumn DisplayMemberBinding="{Binding Path=LastWriteTime, StringFormat=HH:MM d.m.yy}" Width="Auto">
+                        <GridViewColumnHeader Content="Date" Click="GridViewColumnHeader_Click"/>
+                    </GridViewColumn>
                 </GridView>
             </ListView.View>
             <ListView.ItemContainerStyle>
@@ -66,14 +79,6 @@
                 </Style>
             </ListView.ItemContainerStyle>
         </ListView>
-        <Button 
-            FontFamily="Segoe MDL2 Assets" 
-            Content="&#xEDAB;" 
-            HorizontalAlignment="Left" 
-            Margin="5,10,0,10"
-            VerticalAlignment="Center"
-            Width="{Binding ActualHeight, RelativeSource={RelativeSource Self}}" 
-            Command="{Binding RefreshListCommand}"/>
         <DockPanel 
             Grid.Row="1">
             <Button

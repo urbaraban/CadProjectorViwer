@@ -242,10 +242,6 @@
     <Reference Include="System.Xaml">
       <RequiredTargetFramework>4.0</RequiredTargetFramework>
     </Reference>
-    <Reference Include="VCHATCHLib">
-      <HintPath>..\..\KompasLib\KompasLib\Lib16.15\VCHATCHLib.dll</HintPath>
-      <EmbedInteropTypes>True</EmbedInteropTypes>
-    </Reference>
     <Reference Include="WatsonTcp, Version=5.1.1.0, Culture=neutral, PublicKeyToken=c61f5f04303a13b3, processorArchitecture=MSIL">
       <HintPath>..\packages\WatsonTcp.5.1.1\lib\net48\WatsonTcp.dll</HintPath>
     </Reference>

@@ -59,6 +59,7 @@ namespace CadProjectorViewer.StaticTools
                     if (line == "NPLine")
                     {
                         points.Add(ParsePoint(room_str[i + 1]));
+                        points.Add(ParsePoint(room_str[i + 2]));
                     }
                     else if (line.Split(' ')[0] == "StretchParamPer")
                     {
@@ -81,9 +82,17 @@ namespace CadProjectorViewer.StaticTools
                         IsClosed = true,
                         StartPoint = points[0]
                     };
-                    for (int i = 1; i < points.Count; i += 1)
+                    for (int i = 1; i < points.Count; i += 2)
                     {
-                        path.Segments.Add(new LineSegment(points[i], true));
+                        if (points[i + 1].X == 0 && points[i + 1].Y == 0)
+                        {
+                            path.Segments.Add(new LineSegment(points[i], true));
+                        } 
+                        else
+                        {
+                            path.Segments.Add(new LineSegment(points[i], false));
+                        }
+                        
                     }
                     pathGeometry.Figures.Add(path);
                     pathGeometry.Transform = new ScaleTransform(scaleX, scaleY);

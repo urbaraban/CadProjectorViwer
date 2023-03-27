@@ -104,7 +104,7 @@ namespace CadProjectorViewer.ViewModel.Modules
 
         private void RefreshWorkFolderList(string Path)
         {
-            SortDescriptionCollection sortDescriptions = FilInfosCollection.SortDescriptions
+            SortDescriptionCollection sortDescriptions = FilInfosCollection.SortDescriptions;
             List<FileSystemInfo> fileSystemInfos = GetFolderItems(Path);
             CollectionView view = CollectionViewSource.GetDefaultView(fileSystemInfos) as CollectionView;
             FilInfosCollection = view;
@@ -113,8 +113,6 @@ namespace CadProjectorViewer.ViewModel.Modules
             {
                 FilInfosCollection.SortDescriptions.Add(sortDescription);
             }
-
-;
         }
 
         public List<FileSystemInfo> GetFolderItems(string Path)

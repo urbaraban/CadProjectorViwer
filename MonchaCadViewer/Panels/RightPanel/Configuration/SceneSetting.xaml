@@ -164,16 +164,47 @@
                     </Grid>
                 </StackPanel>
                 <DockPanel>
-                    <Label Content="{DynamicResource setting_xscale}" />
+                    <Label Content="{DynamicResource setting_xpadding}" />
                     <Controls:NumericUpDown
                     Maximum="9999" Minimum="-9999"
                     Background="White" Value="{Binding AttachDistanceX}"/>
                 </DockPanel>
                 <DockPanel>
-                    <Label Content="{DynamicResource setting_yscale}" />
+                    <Label Content="{DynamicResource setting_ypadding}" />
                     <Controls:NumericUpDown
                     Maximum="9999" Minimum="-9999"
                     Background="White" Value="{Binding AttachDistanceY}"/>
+                </DockPanel>
+
+                <Separator/>
+                <Label 
+                    Content="{DynamicResource setting_mainlabel}" 
+                    Width="auto"
+                    HorizontalAlignment="Stretch"
+                    VerticalAlignment="Top"  />
+                <CheckBox
+                    Content="{DynamicResource obj_Mirror}" 
+                    IsChecked="{Binding DefaultMirror, Mode=TwoWay}"/>
+                <DockPanel>
+                    <Label Content="{DynamicResource setting_xscale}" />
+                    <Controls:NumericUpDown
+                    x:Name="SizeXUpDn"
+                    Maximum="999" Minimum="0"
+                    Background="White" Value="{Binding DefaultScaleX}"/>
+                </DockPanel>
+
+                <DockPanel>
+                    <Label Content="{DynamicResource setting_yscale}"/>
+                    <Controls:NumericUpDown
+                    Maximum="999" Minimum="0" 
+                    Background="White" Value="{Binding DefaultScaleY, Mode=TwoWay}"/>
+                </DockPanel>
+
+                <DockPanel>
+                    <Label Content="{DynamicResource obj_Angle}"/>
+                    <Controls:NumericUpDown 
+                    Maximum="360" Minimum="0" 
+                    Background="White"  Value="{Binding DefaultAngle, Mode=TwoWay}"/>
                 </DockPanel>
                 <Separator/>
                 <DockPanel>
@@ -182,6 +213,7 @@
                 <DockPanel>
                     <CheckBox Content="Cursor Mask Activated" IsChecked="{Binding CursorMaskActivated}"/>
                 </DockPanel>
+                <Separator/>
             </StackPanel>
         </Grid>
     </ScrollViewer>

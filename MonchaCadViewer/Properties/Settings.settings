@@ -32,18 +32,6 @@
     <Setting Name="save_base_folder" Type="System.String" Scope="User">
       <Value Profile="(Default)">base folder</Value>
     </Setting>
-    <Setting Name="default_scale_x" Type="System.Double" Scope="User">
-      <Value Profile="(Default)">1</Value>
-    </Setting>
-    <Setting Name="default_scale_y" Type="System.Double" Scope="User">
-      <Value Profile="(Default)">1</Value>
-    </Setting>
-    <Setting Name="default_mirror" Type="System.Boolean" Scope="User">
-      <Value Profile="(Default)">False</Value>
-    </Setting>
-    <Setting Name="default_angle" Type="System.Double" Scope="User">
-      <Value Profile="(Default)">0</Value>
-    </Setting>
     <Setting Name="defailt_tesselate" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">False</Value>
     </Setting>
@@ -73,9 +61,6 @@
     </Setting>
     <Setting Name="default_thinkess_percent" Type="System.Double" Scope="User">
       <Value Profile="(Default)">0.01</Value>
-    </Setting>
-    <Setting Name="Attach" Type="System.String" Scope="User">
-      <Value Profile="(Default)">Down%Left</Value>
     </Setting>
     <Setting Name="udp_auto_run" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">False</Value>

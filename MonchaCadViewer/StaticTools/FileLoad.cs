@@ -128,15 +128,6 @@ namespace CadProjectorViewer.StaticTools
             {
                 if (await ConvertObject(obj) is UidObject uidObject)
                 {
-                    uidObject.Mirror = AppSt.Default.default_mirror;
-                    uidObject.SetCentre();
-                    
-                    //if (uidObject.ScaleX == 1 && uidObject.ScaleY == 1)
-                    //{
-                    //    uidObject.ScaleX = AppSt.Default.default_scale_x;
-                    //    uidObject.ScaleY = AppSt.Default.default_scale_y;
-                    //}
-
                     return uidObject;
                 }
             }

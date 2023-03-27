@@ -24,46 +24,6 @@ namespace CadProjectorViewer.Panels.RightPanel.Configuration
     /// </summary>
     public partial class AppDefaultSettingPanel : UserControl
     {
-        public double SizeX
-        {
-            get => AppSt.Default.default_scale_x * 100;
-            set
-            {
-                AppSt.Default.default_scale_x = (value) / 100;
-                AppSt.Default.Save();
-            }
-        }
-
-        public double SizeY
-        {
-            get => AppSt.Default.default_scale_y * 100;
-            set
-            {
-                AppSt.Default.default_scale_y = value / 100;
-                AppSt.Default.Save();
-            }
-        }
-
-        public double Angle
-        {
-            get => AppSt.Default.default_angle;
-            set
-            {
-                AppSt.Default.default_angle = value;
-                AppSt.Default.Save();
-            }
-        }
-
-        public bool Mirror
-        {
-            get => AppSt.Default.default_mirror;
-            set
-            {
-                AppSt.Default.default_mirror = value;
-                AppSt.Default.Save();
-            }
-        }
-
         public bool PercentFlag
         {
             get => AppSt.Default.stg_scale_percent;
@@ -110,17 +70,6 @@ namespace CadProjectorViewer.Panels.RightPanel.Configuration
             set
             {
                 AppSt.Default.stg_selectable_show = value;
-                AppSt.Default.Save();
-            }
-        }
-
-        public string Attach
-        {
-            get => AppSt.Default.Attach;
-            set
-            {
-                AppSt.Default.Attach = value;
-                OnPropertyChanged("Attach");
                 AppSt.Default.Save();
             }
         }

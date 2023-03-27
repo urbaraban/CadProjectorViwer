@@ -105,6 +105,8 @@
     <v:String x:Key="setting_mainlabel">Default object setting</v:String>
     <v:String x:Key="setting_xscale">X scale</v:String>
     <v:String x:Key="setting_yscale">Y scale</v:String>
+    <v:String x:Key="setting_xpadding">X padding</v:String>
+    <v:String x:Key="setting_ypadding">Y padding</v:String>
     <v:String x:Key="setting_percent">Percent</v:String>
     <v:String x:Key="setting_showname">Show name</v:String>
     <v:String x:Key="setting_invertscale">Invert scale</v:String>

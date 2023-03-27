@@ -365,7 +365,7 @@ namespace CadProjectorViewer
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            return (bool)value == true ? parameter : AppSt.Default.Attach;
+            return parameter;
         }
     }
 

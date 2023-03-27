@@ -96,6 +96,8 @@
     <v:String x:Key="setting_mainlabel">Default object setting</v:String>
     <v:String x:Key="setting_xscale">X размер</v:String>
     <v:String x:Key="setting_yscale">Y размер</v:String>
+    <v:String x:Key="setting_xpadding">X отступ</v:String>
+    <v:String x:Key="setting_ypadding">Y отступ</v:String>
     <v:String x:Key="setting_percent">Процент</v:String>
     <v:String x:Key="setting_showname">Показать имя</v:String>
     <v:String x:Key="setting_invertscale">Инвертировать размер</v:String>

@@ -529,7 +529,7 @@ namespace CadProjectorViewer.CanvasObj
         public virtual Pen GetPen(double StrThink, bool MouseOver, bool Selected,
             bool Render, bool Blank, SolidColorBrush DefBrush)
         {
-            if (Render == true || AppSt.Default.show_hide_object == false)
+            if (Render == true || AppSt.Default.show_hide_object == true)
             {
                 if (MouseOver == true)
                 {

@@ -31,37 +31,6 @@
                 </StackPanel.Resources>
                 <Controls:ToggleSwitch Content="UDP auto start" IsOn="{Binding Udp_auto_start}"/>
                 <Separator/>
-                <Label 
-                    Content="{DynamicResource setting_mainlabel}" 
-                    Width="auto"
-                    HorizontalAlignment="Stretch"
-                    VerticalAlignment="Top"  />
-                <DockPanel>
-                    <Label Content="{DynamicResource setting_xscale}" />
-                    <Controls:NumericUpDown
-                    x:Name="SizeXUpDn"
-                    Maximum="999" Minimum="1"
-                    Background="White" Value="{Binding SizeX}"/>
-                </DockPanel>
-                
-                <DockPanel>
-                    <Label Content="{DynamicResource setting_yscale}"/>
-                    <Controls:NumericUpDown
-                    Maximum="999" Minimum="1" 
-                    Background="White" Value="{Binding SizeY, Mode=TwoWay}"/>
-                </DockPanel>
-                
-                <DockPanel>
-                    <Label Content="{DynamicResource obj_Angle}"/>
-                    <Controls:NumericUpDown 
-                    Maximum="360" Minimum="0" 
-                    Background="White"  Value="{Binding Angle, Mode=TwoWay}"/>
-                </DockPanel>
-
-                <Separator/>
-                <CheckBox
-                    Content="{DynamicResource obj_Mirror}" 
-                    IsChecked="{Binding Mirror, Mode=TwoWay}"/>
                 <CheckBox 
                     Content="{DynamicResource setting_percent}" 
                     IsChecked="{Binding PercentFlag, Mode=TwoWay}"/>

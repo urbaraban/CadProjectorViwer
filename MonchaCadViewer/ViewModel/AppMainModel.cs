@@ -335,17 +335,15 @@ namespace CadProjectorViewer.ViewModel
 
         public async void OpenGeometryFile(string path)
         {
-            dispatcher.Invoke(async() => { 
-                if (await FileLoad.GetFilePath(path, this.ProjectorHub.ScenesCollection.SelectedScene.ProjectionSetting.PointStep.Value) is UidObject uidObject)
+            if (await FileLoad.GetFilePath(path, this.ProjectorHub.ScenesCollection.SelectedScene.ProjectionSetting.PointStep.Value) is UidObject uidObject)
+            {
+                SceneTask sceneTask = new SceneTask()
                 {
-                    SceneTask sceneTask = new SceneTask()
-                    {
-                        Object = uidObject,
-                        TableID = projectorHub.ScenesCollection.SelectedScene.TableID,
-                    };
-                    this.ProjectorHub.ScenesCollection.AddTask(sceneTask);
-                }
-            });
+                    Object = uidObject,
+                    TableID = projectorHub.ScenesCollection.SelectedScene.TableID,
+                };
+                await this.ProjectorHub.ScenesCollection.AddTask(sceneTask);
+            }
         }
     }
 }

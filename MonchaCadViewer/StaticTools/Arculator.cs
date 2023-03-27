@@ -60,6 +60,7 @@ namespace CadProjectorViewer.StaticTools
                     {
                         points.Add(ParsePoint(room_str[i + 1]));
                         points.Add(ParsePoint(room_str[i + 2]));
+                        points.Add(ParsePoint(room_str[i + 3]));
                     }
                     else if (line.Split(' ')[0] == "StretchParamPer")
                     {
@@ -75,22 +76,23 @@ namespace CadProjectorViewer.StaticTools
                         }
                     }
                 }
-                if (points.Count > 0)
+                if (points != null && points.Count > 0)
                 {
                     PathFigure path = new PathFigure()
                     {
                         IsClosed = true,
                         StartPoint = points[0]
                     };
-                    for (int i = 1; i < points.Count; i += 2)
+                    for (int i = 0; i < points.Count; i += 3)
                     {
-                        if (points[i + 1].X == 0 && points[i + 1].Y == 0)
+                        if (points[i + 2].X == 0 && points[i + 2].Y == 0)
                         {
-                            path.Segments.Add(new LineSegment(points[i], true));
+                            path.Segments.Add(new LineSegment(points[i + 1], true));
                         } 
                         else
                         {
-                            path.Segments.Add(new LineSegment(points[i], false));
+                            // Arc
+                            path.Segments.Add(new LineSegment(points[i + 1], false));
                         }
                         
                     }

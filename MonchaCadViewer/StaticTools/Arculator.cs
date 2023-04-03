@@ -1,17 +1,11 @@
 ﻿using CadProjectorSDK.CadObjects;
 using CadProjectorSDK.CadObjects.Abstract;
-using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Media;
-using System.Windows.Shapes;
-using ToGeometryConverter.Object;
-using ToGeometryConverter.Object.Elements;
-using static StclLibrary.WPF.GUI.AdvancedMsgBox;
+using ToGeometryConverter;
 
 namespace CadProjectorViewer.StaticTools
 {
@@ -59,8 +53,8 @@ namespace CadProjectorViewer.StaticTools
                     if (line == "NPLine")
                     {
                         points.Add(ParsePoint(room_str[i + 1]));
-                        points.Add(ParsePoint(room_str[i + 2]));
                         points.Add(ParsePoint(room_str[i + 3]));
+                        points.Add(ParsePoint(room_str[i + 2]));
                     }
                     else if (line.Split(' ')[0] == "StretchParamPer")
                     {
@@ -85,16 +79,18 @@ namespace CadProjectorViewer.StaticTools
                     };
                     for (int i = 0; i < points.Count; i += 3)
                     {
-                        if (points[i + 2].X == 0 && points[i + 2].Y == 0)
+                        //Arc
+                        if ((points[i + 1].X != 0 || points[i + 1].Y != 0) && 
+                            GCTools.GetArcSegmentFromList(points.Skip(i).Take(3)) is ArcSegment arcSegment)
                         {
-                            path.Segments.Add(new LineSegment(points[i + 1], true));
-                        } 
+                            path.Segments.Add(arcSegment);
+                        }
+                        // Line
                         else
                         {
-                            // Arc
-                            path.Segments.Add(new LineSegment(points[i + 1], false));
+                            path.Segments.Add(new LineSegment(points[i + 2], false));
                         }
-                        
+
                     }
                     pathGeometry.Figures.Add(path);
                     pathGeometry.Transform = new ScaleTransform(scaleX, scaleY);

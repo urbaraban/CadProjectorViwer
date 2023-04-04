@@ -93,7 +93,8 @@ namespace CadProjectorViewer.StaticTools
 
                     }
                     pathGeometry.Figures.Add(path);
-                    pathGeometry.Transform = new ScaleTransform(scaleX, scaleY);
+                    ScaleTransform scaleTransform = new ScaleTransform(scaleX, scaleY);
+                    pathGeometry.Transform = scaleTransform;
                     room.Add(new CadGeometry(pathGeometry));
                 }
                 return room;

@@ -79,8 +79,9 @@ namespace CadProjectorViewer.StaticTools
                     };
                     for (int i = 0; i < points.Count; i += 3)
                     {
+                        Point cp = points[i + 1];
                         //Arc
-                        if ((points[i + 1].X != 0 || points[i + 1].Y != 0) && 
+                        if ((cp.X != 0 || cp.Y != 0) && 
                             GCTools.GetArcSegmentFromList(points.Skip(i).Take(3)) is ArcSegment arcSegment)
                         {
                             path.Segments.Add(arcSegment);

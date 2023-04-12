@@ -21,7 +21,6 @@ using System.Xml.Linq;
 using ToGeometryConverter;
 using ToGeometryConverter.Format;
 using ToGeometryConverter.Object;
-using static System.Drawing.Graphics;
 using AppSt = CadProjectorViewer.Properties.Settings;
 
 namespace CadProjectorViewer.StaticTools

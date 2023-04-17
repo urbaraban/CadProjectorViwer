@@ -10,6 +10,7 @@ using CadProjectorSDK.Scenes.Commands;
 using CadProjectorViewer.Dialogs;
 using CadProjectorViewer.EthernetServer;
 using CadProjectorViewer.EthernetServer.Servers;
+using CadProjectorViewer.Opening;
 using CadProjectorViewer.StaticTools;
 using CadProjectorViewer.ToCommands;
 using CadProjectorViewer.ToCommands.MainAppCommand;

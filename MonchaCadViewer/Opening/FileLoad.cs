@@ -1,19 +1,13 @@
 ﻿using CadProjectorSDK;
 using CadProjectorSDK.CadObjects;
 using CadProjectorSDK.CadObjects.Abstract;
-using CadProjectorSDK.Scenes;
 using CadProjectorSDK.Tools.ILDA;
-using CadProjectorSDK.UDP;
-using CadProjectorViewer.CanvasObj;
-using CadProjectorViewer.Panels;
-using KompasLib.Tools;
+using CadProjectorViewer.Opening.Formats;
 using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Media.Imaging;
@@ -23,7 +17,7 @@ using ToGeometryConverter.Format;
 using ToGeometryConverter.Object;
 using AppSt = CadProjectorViewer.Properties.Settings;
 
-namespace CadProjectorViewer.StaticTools
+namespace CadProjectorViewer.Opening
 {
     public static class FileLoad
     {

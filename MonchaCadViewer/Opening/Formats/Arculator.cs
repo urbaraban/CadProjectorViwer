@@ -7,7 +7,7 @@ using System.Windows;
 using System.Windows.Media;
 using ToGeometryConverter;
 
-namespace CadProjectorViewer.StaticTools
+namespace CadProjectorViewer.Opening.Formats
 {
     internal class Arculator
     {

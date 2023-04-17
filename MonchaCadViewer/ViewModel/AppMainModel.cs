@@ -31,6 +31,7 @@ using static MonchaNETDll.MNetStructs;
 using WatsonTcp;
 using System.Windows.Threading;
 using CadProjectorViewer.EthernetServer.Servers;
+using CadProjectorViewer.Opening;
 
 namespace CadProjectorViewer.ViewModel
 {

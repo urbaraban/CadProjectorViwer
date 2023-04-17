@@ -1,16 +1,12 @@
 ﻿using CadProjectorSDK.CadObjects;
 using CadProjectorSDK.CadObjects.Abstract;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Media;
 using ToGeometryConverter.Object;
 using ToGeometryConverter.Object.Elements;
 using AppSt = CadProjectorViewer.Properties.Settings;
 
-namespace CadProjectorViewer.StaticTools
+namespace CadProjectorViewer.Opening
 {
     public static class GCToCad
     {

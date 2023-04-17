@@ -1,26 +1,17 @@
-﻿using CadProjectorSDK.CadObjects.Abstract;
-using CadProjectorSDK.Scenes;
-using CadProjectorSDK;
-using CadProjectorViewer.StaticTools;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Data;
 using AppSt = CadProjectorViewer.Properties.Settings;
-using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using Microsoft.Xaml.Behaviors.Core;
 using System.Windows.Input;
 using ToGeometryConverter;
 using Microsoft.WindowsAPICodePack.Dialogs;
-using System.Reflection;
-using System.Data;
-using System.Globalization;
+using CadProjectorViewer.Opening;
 
 namespace CadProjectorViewer.ViewModel.Modules
 {

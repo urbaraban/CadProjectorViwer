@@ -1,6 +1,7 @@
 ﻿using CadProjectorSDK;
 using CadProjectorSDK.CadObjects.Abstract;
 using CadProjectorSDK.Scenes;
+using CadProjectorViewer.Opening;
 using CadProjectorViewer.StaticTools;
 using CadProjectorViewer.ViewModel;
 using Microsoft.Xaml.Behaviors.Core;

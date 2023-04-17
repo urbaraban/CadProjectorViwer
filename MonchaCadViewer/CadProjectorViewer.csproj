@@ -289,7 +289,7 @@
     <Compile Include="Panels\RightPanel\KompasPage.xaml.cs">
       <DependentUpon>KompasPage.xaml</DependentUpon>
     </Compile>
-    <Compile Include="StaticTools\Arculator.cs" />
+    <Compile Include="Opening\Formats\Arculator.cs" />
     <Compile Include="StaticTools\FileSave.cs" />
     <Compile Include="EthernetServer\TCPTools.cs" />
     <Compile Include="EthernetServer\ToCutEthernetHub.cs" />
@@ -375,8 +375,8 @@
       <DependentUpon>RequestLicenseCode.xaml</DependentUpon>
     </Compile>
     <Compile Include="Settings.cs" />
-    <Compile Include="StaticTools\FileLoad.cs" />
-    <Compile Include="StaticTools\GCToCad.cs" />
+    <Compile Include="Opening\FileLoad.cs" />
+    <Compile Include="Opening\GCToCad.cs" />
     <Compile Include="StaticTools\HotKeysManager.cs" />
     <Compile Include="ViewModel\Devices\DeviceItem.xaml.cs">
       <DependentUpon>DeviceItem.xaml</DependentUpon>

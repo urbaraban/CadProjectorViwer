@@ -152,7 +152,7 @@
                 <TreeView
                     Style="{StaticResource ObjectTreeMainStyle}"
                     ItemsSource="{Binding .}" 
-                          ItemTemplate="{StaticResource ResourceKey=ObjectTree}">
+                    ItemTemplate="{StaticResource ResourceKey=ObjectTree}">
                 </TreeView>
 
             </Expander>

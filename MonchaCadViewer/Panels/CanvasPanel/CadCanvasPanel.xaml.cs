@@ -1,27 +1,14 @@
-﻿using CadProjectorViewer.CanvasObj;
-using CadProjectorSDK;
-using CadProjectorSDK.Device;
-using CadProjectorSDK.CadObjects;
+﻿using CadProjectorSDK.Device;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
 using AppSt = CadProjectorViewer.Properties.Settings;
 using System.Globalization;
-using CadProjectorSDK.CadObjects.Abstract;
 using CadProjectorSDK.Device.Mesh;
 using CadProjectorSDK.Scenes;
-using CadProjectorViewer.StaticTools;
-using System.IO;
 using System.Collections.ObjectModel;
 using CadProjectorSDK.Tools;
 using Microsoft.Xaml.Behaviors.Core;
@@ -41,7 +28,6 @@ namespace CadProjectorViewer.Panels.CanvasPanel
 
         private Point StartMovePoint;
         private Point StartMousePoint;
-        private bool WasMove;
 
         private RenderDeviceModel ViewModel => (RenderDeviceModel)this.DataContext;
 
@@ -161,7 +147,6 @@ namespace CadProjectorViewer.Panels.CanvasPanel
 
                 if (e.LeftButton == MouseButtonState.Pressed && Keyboard.Modifiers == ModifierKeys.Control)
                 {
-                    this.WasMove = true;
                     Point tPoint = e.GetPosition(CanvasBox);
 
                     //double prop = Math.Min(CanvasGrid.ActualWidth / CanvasGrid.ActualWidth, CanvasGrid.ActualHeight / CanvasGrid.ActualHeight);

@@ -104,7 +104,7 @@ namespace CadProjectorViewer.CanvasObj
         {
             get
             {
-                string ret = name;
+                string ret = this.CadObject.NameID;
                 if (string.IsNullOrEmpty(ret) == true)
                 {
                     ret = this.CadObject.ToString().Split('.').Last();

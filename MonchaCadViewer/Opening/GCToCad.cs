@@ -4,7 +4,6 @@ using System.Threading.Tasks;
 using System.Windows.Media;
 using ToGeometryConverter.Object;
 using ToGeometryConverter.Object.Elements;
-using AppSt = CadProjectorViewer.Properties.Settings;
 
 namespace CadProjectorViewer.Opening
 {
@@ -21,15 +20,13 @@ namespace CadProjectorViewer.Opening
                 return new CadText(
                     textElement.Text,
                     new CadAnchor(textElement.Point.X, textElement.Point.Y, textElement.Point.Z),
-                    textElement.Size
-                    );
+                    textElement.Size);
             }
             else if (gCObject is PointsElement point3Ds)
             {
                 LineGeometry lineGeometry = new LineGeometry(
                     new System.Windows.Point(point3Ds[0].X, point3Ds[0].Y),
-                    new System.Windows.Point(point3Ds[1].X, point3Ds[1].Y)
-                    );
+                    new System.Windows.Point(point3Ds[1].X, point3Ds[1].Y));
                 return new CadGeometry(lineGeometry);
             }
             else if (gCObject is GCCollection collection)
@@ -47,7 +44,10 @@ namespace CadProjectorViewer.Opening
             foreach (IGCObject obj in gCObjects)
             {
                 UidObject uidObject = await GCToCad.GetUid(obj);
-                if (uidObject != null) group.Add(uidObject);
+                if (uidObject != null)
+                {
+                    group.Add(uidObject);
+                }
             }
             return group.Count > 0 ? group : null;
         }

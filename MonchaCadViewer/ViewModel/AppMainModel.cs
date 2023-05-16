@@ -341,7 +341,6 @@ namespace CadProjectorViewer.ViewModel
                 SceneTask sceneTask = new SceneTask()
                 {
                     Object = uidObject,
-                    TableID = projectorHub.ScenesCollection.SelectedScene.TableID,
                 };
                 await this.ProjectorHub.ScenesCollection.AddTask(sceneTask);
             }

@@ -127,7 +127,6 @@
                         <ItemsControl.ItemsPanel>
                             <ItemsPanelTemplate>
                                 <Canvas x:Name="ObjCanvas"
-                                    DataContext="{Binding ElementName=ObjCanvas, Path=DataContext}"
                                     d:DataContext="{d:DesignInstance Type=scene:SceneModel}"
                                     Width="{Binding Scene.Size.Width}"
                                     Height="{Binding Scene.Size.Height}"/>

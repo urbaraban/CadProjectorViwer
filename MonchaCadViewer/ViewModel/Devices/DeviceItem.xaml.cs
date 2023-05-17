@@ -32,6 +32,14 @@ namespace CadProjectorViewer.ViewModel.Devices
             InitializeComponent();
         }
 
+        public ICommand ShowRectCommand => new ActionCommand(() =>
+        {
+            if (this.DataContext is LProjector device)
+            {
+
+            }
+        });
+
         public ICommand ReconnectCommand => new ActionCommand(async () => {
             if (this.DataContext is IConnected device)
             {

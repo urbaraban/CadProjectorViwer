@@ -585,6 +585,10 @@
       <Project>{BE456A82-4E1A-45F9-89DB-74E4924FC4B6}</Project>
       <Name>CadProjectorSDK</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\ToCutCrypt\ToCutCrypt.csproj">
+      <Project>{FC96FEE9-0FE5-42D0-8A87-FF8B2EB2634E}</Project>
+      <Name>ToCutCrypt</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\ToGeometryConverter\GeometryConverter.csproj">
       <Project>{5A574092-3854-4F62-BFC4-A1336C16B564}</Project>
       <Name>GeometryConverter</Name>

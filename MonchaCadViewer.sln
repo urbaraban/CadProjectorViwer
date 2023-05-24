@@ -24,6 +24,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "formats", "formats", "{2722
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LaserProjectionFormat", "..\LaserProjectionFormat\LaserProjectionFormat.csproj", "{759B770D-10EC-464D-96C2-9CE40E7B9283}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ToCutCrypt", "..\ToCutCrypt\ToCutCrypt.csproj", "{FC96FEE9-0FE5-42D0-8A87-FF8B2EB2634E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -94,6 +96,18 @@ Global
 		{759B770D-10EC-464D-96C2-9CE40E7B9283}.Release|x64.Build.0 = Release|Any CPU
 		{759B770D-10EC-464D-96C2-9CE40E7B9283}.Release|x86.ActiveCfg = Release|Any CPU
 		{759B770D-10EC-464D-96C2-9CE40E7B9283}.Release|x86.Build.0 = Release|Any CPU
+		{FC96FEE9-0FE5-42D0-8A87-FF8B2EB2634E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FC96FEE9-0FE5-42D0-8A87-FF8B2EB2634E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FC96FEE9-0FE5-42D0-8A87-FF8B2EB2634E}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{FC96FEE9-0FE5-42D0-8A87-FF8B2EB2634E}.Debug|x64.Build.0 = Debug|Any CPU
+		{FC96FEE9-0FE5-42D0-8A87-FF8B2EB2634E}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{FC96FEE9-0FE5-42D0-8A87-FF8B2EB2634E}.Debug|x86.Build.0 = Debug|Any CPU
+		{FC96FEE9-0FE5-42D0-8A87-FF8B2EB2634E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FC96FEE9-0FE5-42D0-8A87-FF8B2EB2634E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FC96FEE9-0FE5-42D0-8A87-FF8B2EB2634E}.Release|x64.ActiveCfg = Release|Any CPU
+		{FC96FEE9-0FE5-42D0-8A87-FF8B2EB2634E}.Release|x64.Build.0 = Release|Any CPU
+		{FC96FEE9-0FE5-42D0-8A87-FF8B2EB2634E}.Release|x86.ActiveCfg = Release|Any CPU
+		{FC96FEE9-0FE5-42D0-8A87-FF8B2EB2634E}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -104,6 +118,7 @@ Global
 		{5A574092-3854-4F62-BFC4-A1336C16B564} = {EB901549-C11B-49D1-A223-C777D7587A15}
 		{25CE4066-36A4-40BD-A38F-EC08E7AA509F} = {EB901549-C11B-49D1-A223-C777D7587A15}
 		{759B770D-10EC-464D-96C2-9CE40E7B9283} = {27221DB1-C81F-4A92-9CA6-0436BD15CD7D}
+		{FC96FEE9-0FE5-42D0-8A87-FF8B2EB2634E} = {EB901549-C11B-49D1-A223-C777D7587A15}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {8020A374-08BC-474A-829F-9A0845419AEC}

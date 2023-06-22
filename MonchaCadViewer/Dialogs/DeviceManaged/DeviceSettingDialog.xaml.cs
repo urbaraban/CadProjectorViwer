@@ -167,8 +167,8 @@ namespace CadProjectorViewer.Panels.DevicePanel
 
 
                     VectorLine Line4 = new VectorLine(
-                            new RenderPoint(0.5 - alreadywstep, 0.5 + alreadyhstep),
-                            new RenderPoint(0.5 - alreadywstep, 0.5 - alreadyhstep));
+                            new RenderPoint(0.5 - alreadywstep, 0),
+                            new RenderPoint(0.5 - alreadywstep, 1));
                     rect.Add(Line4);
                     /*
                     VectorLine Line1 = new VectorLine(

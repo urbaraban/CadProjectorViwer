@@ -2,19 +2,9 @@
 using CadProjectorSDK.Device.Mesh;
 using CadProjectorSDK.Render;
 using MahApps.Metro.Controls;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 
 namespace CadProjectorViewer.Dialogs
 {
@@ -67,7 +57,31 @@ namespace CadProjectorViewer.Dialogs
                     }
                 }
 
+                projector.RefreshFrame?.Invoke(elements);
+            }
 
+        }
+
+        private void NumericUpDown_ValueChanged_1(object sender, RoutedPropertyChangedEventArgs<double?> e)
+        {
+            if (this.DataContext is LProjector projector)
+            {
+                IList<IRenderedObject> elements = new List<IRenderedObject>();
+
+                double widthstep = 1d / (10);
+                double heightstep = 1d / (10);
+
+
+                for (int i = 0; i < projector.Ellipsoid.XAxisCorrect.Count; i += 1)
+                {
+                    VectorLinesCollection line = new VectorLinesCollection(CadProjectorSDK.Device.Mesh.MeshTypes.NONE)
+                    {
+                        new VectorLine(
+                            new RenderPoint(i * widthstep, 0.2),
+                            new RenderPoint(i * widthstep, 0.8), false)
+                    };
+                    elements.Add(line);
+                }
 
                 projector.RefreshFrame?.Invoke(elements);
             }

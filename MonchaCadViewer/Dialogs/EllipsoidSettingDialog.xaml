@@ -58,7 +58,7 @@
                                         Minimum="-3"
                                         MinWidth="150"
                                         Value="{Binding Ellipsoid.AngleX, Mode=TwoWay}"
-                                        ValueChanged="NumericUpDown_ValueChanged"/>
+                                        ValueChanged="NumericUpDown_ValueChanged_1"/>
                 <Controls:NumericUpDown Interval="0.01"
                                         Minimum="-3"
                                         MinWidth="150"
@@ -74,7 +74,7 @@
                 Interval="0.01"
                 Minimum="-3"
                 MinWidth="150"
-                    ValueChanged="NumericUpDown_ValueChanged"/>
+                    ValueChanged="NumericUpDown_ValueChanged_1"/>
                 <Controls:NumericUpDown
                 Value="{Binding Ellipsoid.AngleOffsetY, Mode=TwoWay}"
                 Interval="0.01"
@@ -84,6 +84,9 @@
             </DockPanel>
             <DockPanel>
                 <Controls:ToggleSwitch Content="Use Axis correction" IsOn="{Binding Ellipsoid.UseAxisCorrection}"/>
+                <Controls:NumericUpDown Value="{Binding Ellipsoid.KoeffX}"
+                                        Interval="0.001"
+                                        ValueChanged="NumericUpDown_ValueChanged_1"/>
             </DockPanel>
             <StackPanel Orientation="Horizontal"
                         Margin="5">

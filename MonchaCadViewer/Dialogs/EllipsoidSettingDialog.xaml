@@ -54,12 +54,12 @@
             <DockPanel>
                 <Label  
                 Content="AngleX"/>
-                <Controls:NumericUpDown Interval="0.01"
+                <Controls:NumericUpDown Interval="0.001"
                                         Minimum="-3"
                                         MinWidth="150"
                                         Value="{Binding Ellipsoid.AngleX, Mode=TwoWay}"
                                         ValueChanged="NumericUpDown_ValueChanged_1"/>
-                <Controls:NumericUpDown Interval="0.01"
+                <Controls:NumericUpDown Interval="0.001"
                                         Minimum="-3"
                                         MinWidth="150"
                                         Value="{Binding Ellipsoid.AngleOffsetX, Mode=TwoWay}"
@@ -71,13 +71,13 @@
                 Content="AngleY"/>
                 <Controls:NumericUpDown
                 Value="{Binding Ellipsoid.AngleY, Mode=TwoWay}"
-                Interval="0.01"
+                Interval="0.001"
                 Minimum="-3"
                 MinWidth="150"
                     ValueChanged="NumericUpDown_ValueChanged_1"/>
                 <Controls:NumericUpDown
                 Value="{Binding Ellipsoid.AngleOffsetY, Mode=TwoWay}"
-                Interval="0.01"
+                Interval="0.001"
                 Minimum="-3"
                 MinWidth="150"
                     ValueChanged="NumericUpDown_ValueChanged"/>

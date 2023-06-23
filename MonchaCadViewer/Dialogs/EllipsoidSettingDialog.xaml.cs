@@ -3,7 +3,6 @@ using CadProjectorSDK.Device.Mesh;
 using CadProjectorSDK.Render;
 using MahApps.Metro.Controls;
 using System.Collections.Generic;
-using System.Linq;
 using System.Windows;
 
 namespace CadProjectorViewer.Dialogs
@@ -24,41 +23,47 @@ namespace CadProjectorViewer.Dialogs
                 && sender is NumericUpDown upDown
                 && upDown.DataContext is DoubleValue doubleValue)
             {
-
-                IList<IRenderedObject> elements = new List<IRenderedObject>();
-
-                double widthstep = 1d / (projector.Ellipsoid.XAxisCorrect.Count - 1);
-                double heightstep = 1d / (projector.Ellipsoid.YAxisCorrect.Count - 1);
-
-                if (projector.Ellipsoid.XAxisCorrect.Contains(doubleValue) == true)
+                if (projector.RenderObjects.Count == 0)
                 {
-                    for (int i = 0; i < projector.Ellipsoid.XAxisCorrect.Count; i += 1)
+                    IList<IRenderedObject> elements = new List<IRenderedObject>();
+
+                    double widthstep = 1d / (projector.Ellipsoid.XAxisCorrect.Count - 1);
+                    double heightstep = 1d / (projector.Ellipsoid.YAxisCorrect.Count - 1);
+
+                    if (projector.Ellipsoid.XAxisCorrect.Contains(doubleValue) == true)
                     {
-                        VectorLinesCollection line = new VectorLinesCollection(CadProjectorSDK.Device.Mesh.MeshTypes.NONE)
+                        for (int i = 0; i < projector.Ellipsoid.XAxisCorrect.Count; i += 1)
+                        {
+                            VectorLinesCollection line = new VectorLinesCollection(CadProjectorSDK.Device.Mesh.MeshTypes.NONE)
                     {
                         new VectorLine(
                             new RenderPoint(i * widthstep, 0.4),
                             new RenderPoint(i * widthstep, 0.6), false)
                     };
-                        elements.Add(line);
+                            elements.Add(line);
+                        }
                     }
-                }
 
-                if (projector.Ellipsoid.YAxisCorrect.Contains(doubleValue) == true)
-                {
-                    for (int i = 0; i < projector.Ellipsoid.YAxisCorrect.Count; i += 1)
+                    if (projector.Ellipsoid.YAxisCorrect.Contains(doubleValue) == true)
                     {
-                        VectorLinesCollection line = new VectorLinesCollection(CadProjectorSDK.Device.Mesh.MeshTypes.NONE)
+                        for (int i = 0; i < projector.Ellipsoid.YAxisCorrect.Count; i += 1)
+                        {
+                            VectorLinesCollection line = new VectorLinesCollection(CadProjectorSDK.Device.Mesh.MeshTypes.NONE)
                     {
                         new VectorLine(
                             new RenderPoint(0.4, i * heightstep),
                             new RenderPoint(0.6, i * heightstep), false)
                     };
-                        elements.Add(line);
+                            elements.Add(line);
+                        }
                     }
-                }
 
-                projector.RefreshFrame?.Invoke(elements);
+                    projector.RefreshFrame?.Invoke(elements);
+                } 
+                else
+                {
+                    projector.RefreshObjects();
+                }
             }
 
         }

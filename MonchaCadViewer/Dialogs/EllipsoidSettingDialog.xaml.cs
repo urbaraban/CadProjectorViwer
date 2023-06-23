@@ -24,6 +24,7 @@ namespace CadProjectorViewer.Dialogs
                 && sender is NumericUpDown upDown
                 && upDown.DataContext is DoubleValue doubleValue)
             {
+
                 IList<IRenderedObject> elements = new List<IRenderedObject>();
 
                 double widthstep = 1d / (projector.Ellipsoid.XAxisCorrect.Count - 1);
@@ -66,24 +67,27 @@ namespace CadProjectorViewer.Dialogs
         {
             if (this.DataContext is LProjector projector)
             {
-                IList<IRenderedObject> elements = new List<IRenderedObject>();
-
-                double widthstep = 1d / (10);
-                double heightstep = 1d / (10);
-
-
-                for (int i = 0; i < projector.Ellipsoid.XAxisCorrect.Count; i += 1)
+                if (projector.RenderObjects.Count == 0)
                 {
-                    VectorLinesCollection line = new VectorLinesCollection(CadProjectorSDK.Device.Mesh.MeshTypes.NONE)
+                    IList<IRenderedObject> elements = new List<IRenderedObject>();
+
+                    double widthstep = 1d / (10);
+                    double heightstep = 1d / (10);
+
+
+                    for (int i = 0; i < projector.Ellipsoid.XAxisCorrect.Count; i += 1)
+                    {
+                        VectorLinesCollection line = new VectorLinesCollection(CadProjectorSDK.Device.Mesh.MeshTypes.NONE)
                     {
                         new VectorLine(
                             new RenderPoint(i * widthstep, 0.2),
                             new RenderPoint(i * widthstep, 0.8), false)
                     };
-                    elements.Add(line);
-                }
+                        elements.Add(line);
+                    }
 
-                projector.RefreshFrame?.Invoke(elements);
+                    projector.RefreshFrame?.Invoke(elements);
+                }
             }
         }
     }

@@ -3,14 +3,16 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:CadProjectorViewer.Dialogs" 
-        xmlns:cadprojectorsdk="clr-namespace:CadProjectorSDK;assembly=CadProjectorSDK" xmlns:Controls="http://metro.mahapps.com/winfx/xaml/controls"
-        d:DataContext="{d:DesignInstance Type=cadprojectorsdk:ProjectorHub}"
+        xmlns:Controls="http://metro.mahapps.com/winfx/xaml/controls"
+        xmlns:viewmodel="clr-namespace:CadProjectorViewer.ViewModel"
+        d:DataContext="{d:DesignInstance Type=viewmodel:ScenesDeviceManagmentVM}"
         mc:Ignorable="d"
         ResizeMode="CanResizeWithGrip"
         x:Name="SceneSetting"
         Title="SceneSettingWindow"
         SizeToContent="WidthAndHeight"
+        MinHeight="250"
+        MinWidth="350"
         d:Height="150"
         d:Width="250">
     <Window.Resources>
@@ -40,17 +42,17 @@
             <Button 
                 DockPanel.Dock="Left"
                 Content="+"
-                Command="{Binding ElementName=SceneSetting, Path=AddSceneCommand}"
+                Command="{Binding AddSceneCommand}"
                 Width="{Binding ActualHeight, RelativeSource={RelativeSource Self}}"/>
             <Button 
                 DockPanel.Dock="Right"
                 Content="-"
-                Command="{Binding ElementName=SceneSetting, Path=RemoveSceneCommand}"
+                Command="{Binding RemoveSceneCommand}"
                 Width="{Binding ActualHeight, RelativeSource={RelativeSource Self}}"/>
             
             <Controls:NumericUpDown                 
                 DockPanel.Dock="Right"
-                DataContext="{Binding ElementName=SceneTabs, Path=SelectedItem}"
+                DataContext="{Binding SelectedScene}"
                 Value="{Binding TableID, Mode=TwoWay}"/>
             <Label
                 FontSize="18"
@@ -59,7 +61,7 @@
                 Content="ID:"/>
             <TextBox
                 DockPanel.Dock="Left"
-                DataContext="{Binding ElementName=SceneTabs, Path=SelectedItem}"
+                DataContext="{Binding SelectedScene}"
                 Text="{Binding NameID}"
                 VerticalContentAlignment="Center"
                 VerticalAlignment="Center"
@@ -68,10 +70,10 @@
         </DockPanel>
         <TabControl
             x:Name="SceneTabs"
-            ItemsSource="{Binding ScenesCollection}"
+            ItemsSource="{Binding Scenes}"
             DisplayMemberPath="NameID"
             SelectedIndex="0"
-            SelectedItem="{Binding ScenesCollection.SelectedScene}">
+            SelectedItem="{Binding SelectedScene}">
         <TabControl.ContentTemplate>
             <DataTemplate>
                     <DockPanel>
@@ -83,9 +85,8 @@
                             </Grid.ColumnDefinitions>
                             <Border Grid.Column="0">
                                 <ListBox
-                                    DataContext="{Binding ElementName=SceneSetting, Path=DataContext}"
                                     ItemsSource="{Binding Projectors}"
-                                    SelectedItem="{Binding Projectors.SelectedItem}"
+                                    SelectedItem="{Binding SelectedItem}"
                                     DisplayMemberPath="NameID">
                                     <ListBox.ItemTemplate>
                                         <DataTemplate>

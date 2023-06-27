@@ -5,9 +5,10 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
     xmlns:device="clr-namespace:CadProjectorSDK.Device;assembly=CadProjectorSDK" 
-    xmlns:cadprojectorsdk="clr-namespace:CadProjectorSDK;assembly=CadProjectorSDK" 
-    xmlns:mesh="clr-namespace:CadProjectorSDK.Device.Mesh;assembly=CadProjectorSDK" xmlns:devices="clr-namespace:CadProjectorViewer.ViewModel.Devices"
-    d:DataContext="{d:DesignInstance Type=cadprojectorsdk:ProjectorHub}"
+    xmlns:mesh="clr-namespace:CadProjectorSDK.Device.Mesh;assembly=CadProjectorSDK"
+    xmlns:viewmodels="clr-namespace:CadProjectorViewer.ViewModel" 
+    xmlns:devices="clr-namespace:CadProjectorViewer.ViewModel.Devices"
+    d:DataContext="{d:DesignInstance Type=viewmodels:DeviceManagmentVM}"
     d:DesignHeight="450"
     d:DesignWidth="200"
     mc:Ignorable="d">
@@ -81,7 +82,6 @@
                 ItemTemplate="{StaticResource MeshTree}">
                 <devices:DeviceItem/>
             </HierarchicalDataTemplate>
-            
         </ResourceDictionary>
     </UserControl.Resources>
     <DockPanel LastChildFill="True">
@@ -89,6 +89,14 @@
             DockPanel.Dock="Top"
                     x:Name="TreeHead"
                     HorizontalAlignment="Left" Margin="3">
+            <Button DockPanel.Dock="Left"
+                Margin="5,0,10,0"
+                Content="&#xF0B5;"
+                Padding="0"
+                FontFamily="Segoe MDL2 Assets"
+                FontSize="14"
+                Command="{Binding ShowSceneManagerCommand}"
+                Width="{Binding ActualHeight, RelativeSource={RelativeSource Self}}" />
             <Button
                         x:Name="AddLaser"
                         Width="25"
@@ -98,7 +106,7 @@
                         VerticalAlignment="Top"
                         Background="{x:Null}"
                         BorderBrush="{x:Null}"
-                        Click="AddLaser_Click"
+                        Command="{Binding ShowSearchCommand}"
                         Content="&#xE948;"
                         FontFamily="Segoe MDL2 Assets" />
             <Button
@@ -110,7 +118,7 @@
                         VerticalAlignment="Top"
                         Background="{x:Null}"
                         BorderBrush="{x:Null}"
-                        Click="RemoveLaser_Click"
+                        Command="{Binding RemoveCommand}"
                         Content="&#xE947;"
                         FontFamily="Segoe MDL2 Assets" />
         </DockPanel>

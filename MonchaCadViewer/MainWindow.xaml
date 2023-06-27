@@ -15,8 +15,8 @@
     xmlns:Properties="clr-namespace:CadProjectorViewer.Properties"
     xmlns:device="clr-namespace:CadProjectorSDK.Device;assembly=CadProjectorSDK" 
     xmlns:devices="clr-namespace:CadProjectorViewer.ViewModel.Devices" 
-    xmlns:viewmodel="clr-namespace:CadProjectorViewer.ViewModel" 
-    d:DataContext="{d:DesignInstance Type=viewmodel:AppMainModel}"
+    xmlns:modeles="clr-namespace:CadProjectorViewer.Modeles" xmlns:viewmodel="clr-namespace:CadProjectorViewer.ViewModel"
+                      d:DataContext="{d:DesignInstance Type=modeles:AppMainModel}"
     x:Name="MainWin"
     mc:Ignorable="d"
     Title="CUT - Viwer" 
@@ -179,6 +179,8 @@
     <Border>
         <Border.Resources>
             <convert:NotNullBool x:Key="NotNullBool" />
+            <viewmodel:ConvertModelToDeviceManagment x:Key="ModelToDeviceManagment" />
+            
         </Border.Resources>
         <Grid>
             <Grid.ColumnDefinitions>
@@ -231,14 +233,14 @@
 
                         Grid.Column="1" Grid.Row="0">
                 <TabItem Header="{DynamicResource obj_Transform}" FontSize="12">
-                    <panels:CadObjectPanel DataContext="{Binding ProjectorHub.ScenesCollection.SelectedScene.SelectedObjects.LastSelectObject}"
+                    <panels:CadObjectPanel DataContext="{Binding Scenes.SelectedScene.SelectedObjects.LastSelectObject}"
                         IsEnabled="{Binding DataContext, Converter={StaticResource NotNullBool}, RelativeSource={RelativeSource Self}}" />
                 </TabItem>
             </TabControl>
             <Button x:Name="PlayBtn" Content="{DynamicResource m_Play}"
                     Margin="5,20,5,0"
                     Command="{Binding Path=PlayCommand}"
-                    Background="{Binding ProjectorHub.ScenesCollection.SelectedScene.Play, Converter={StaticResource PlayBackConverter}}"
+                    Background="{Binding Scenes.SelectedScene.Play, Converter={StaticResource PlayBackConverter}}"
                     Grid.Column="2"
                     Grid.Row="0" />
 
@@ -265,24 +267,23 @@
                 <TabItem Header="{DynamicResource scene_Scene}">
                     <Border  Style="{StaticResource Border}">
                         <leftpanels:FrameTree 
-                            DataContext="{Binding ProjectorHub.ScenesCollection.SelectedScene}" />
+                            DataContext="{Binding Scenes.SelectedScene}" />
                     </Border>
                 </TabItem>
                 <TabItem 
                     Visibility="{Binding AdminMode, Converter={StaticResource BoolVisibleConverter}}"
                     Header="{DynamicResource dvc_Devices}">
                     <Border Style="{StaticResource Border}">
-                        <panels:DeviceTreeTab
-                        DataContext="{Binding ProjectorHub}"
-                        x:Name="DeviceTree"
-                        Focusable="False"
-                        Margin="0" Grid.ColumnSpan="2" Grid.Row="2" />
+                        <panels:DeviceTreeTab DataContext="{Binding ., Converter={StaticResource ModelToDeviceManagment}}"
+                                              Focusable="False" 
+                                              Margin="0" 
+                                              Grid.ColumnSpan="2" Grid.Row="2" />
                     </Border>
                 </TabItem>
             </TabControl>
             <Border Grid.Column="1" Grid.Row="1" Style="{StaticResource Border}" Margin="0,3,0,0">
                 <canvaspanel:CanvasCollection 
-                    DataContext="{Binding ProjectorHub.ScenesCollection}" />
+                    DataContext="{Binding Scenes}" />
             </Border>
 
             <panels:ScrollPanel x:Name="ContourScrollPanel" Margin="0,5,0,0" Grid.Column="1" Grid.Row="2" />
@@ -291,10 +292,10 @@
                 <TabItem Header="{DynamicResource scene_Scene}" FontSize="12">
                     <TabControl>
                         <TabItem Header="{DynamicResource dvc_Device}">
-                            <panels:DeviceTab DataContext="{Binding ProjectorHub}"/>
+                            <panels:DeviceTab DataContext="{Binding Scenes.SelectedScene}"/>
                         </TabItem>
                         <TabItem Header="{DynamicResource setting_setting}">
-                            <configuration:SceneSetting DataContext="{Binding ProjectorHub.ScenesCollection.SelectedScene}"/>
+                            <configuration:SceneSetting DataContext="{Binding Scenes.SelectedScene}"/>
                         </TabItem>
                     </TabControl>
                 </TabItem>
@@ -384,9 +385,9 @@
                                 Visibility="Collapsed"
                                 Content="{DynamicResource m_Play}"
                                 Command="{Binding Path=PlayAllCommand}"
-                                Background="{Binding ProjectorHub.ScenesCollection.SelectedScene.Play, Converter={StaticResource PlayBackConverter}}"
+                                Background="{Binding Scenes.SelectedScene.Play, Converter={StaticResource PlayBackConverter}}"
                                 Height="30" />
-                            <ItemsControl ItemsSource="{Binding ProjectorHub.Projectors}">
+                            <ItemsControl ItemsSource="{Binding Projectors}">
                                 <ItemsControl.ItemsPanel>
                                     <ItemsPanelTemplate>
                                         <StackPanel/>

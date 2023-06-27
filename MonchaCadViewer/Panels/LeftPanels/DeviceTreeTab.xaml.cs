@@ -1,28 +1,16 @@
-﻿using CadProjectorViewer.CanvasObj;
-using CadProjectorViewer.DeviceManaged;
-using CadProjectorSDK;
+﻿using CadProjectorSDK;
 using CadProjectorSDK.Device;
-using CadProjectorSDK.CadObjects;
 using System;
-using System.Collections.Generic;
 using System.ComponentModel;
-using System.Globalization;
-using System.Linq;
 using System.Runtime.CompilerServices;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using AppSt = CadProjectorViewer.Properties.Settings;
 using CadProjectorSDK.Device.Mesh;
 using CadProjectorSDK.Device.Controllers;
 using CadProjectorSDK.Interfaces;
+using CadProjectorViewer.Modeles;
 
 namespace CadProjectorViewer.Panels
 {
@@ -34,8 +22,7 @@ namespace CadProjectorViewer.Panels
         public event EventHandler<bool> NeedRefresh;
         public event EventHandler<LProjector> DeviceChange;
 
-
-        ProjectorHub projectorHub => (ProjectorHub)this.DataContext;
+        private AppMainModel appMain => (AppMainModel)this.DataContext;
 
         public DeviceTreeTab()
         {
@@ -82,7 +69,7 @@ namespace CadProjectorViewer.Panels
 
         private void AddLaser_Click(object sender, RoutedEventArgs e)
         {
-            LaserSearcher DeviceManaged = new LaserSearcher(projectorHub);
+            LaserSearcher DeviceManaged = new LaserSearcher(appMain);
             DeviceManaged.Show();
         }
 
@@ -126,7 +113,7 @@ namespace CadProjectorViewer.Panels
                                 mesh.ReturnPoint();
                                 break;
                             case "mesh_showrect":
-                                projectorHub.ScenesCollection.SelectedScene.Add(mesh.Size);
+                                appMain.Scenes.SelectedScene.Add(mesh.Size);
                                 break;
                         }
                         element.ContextMenu.DataContext = null;
@@ -144,8 +131,8 @@ namespace CadProjectorViewer.Panels
                 {
                     if (frameworkElement.DataContext is ProjectorMesh mesh)
                     {
-                        if (Keyboard.Modifiers != ModifierKeys.Shift) projectorHub.ScenesCollection.SelectedScene.Clear();
-                        projectorHub.ScenesCollection.SelectedScene.Add(mesh);
+                        if (Keyboard.Modifiers != ModifierKeys.Shift) appMain.Scenes.SelectedScene.Clear();
+                        appMain.Scenes.SelectedScene.Add(mesh);
                     }
                 }
             }

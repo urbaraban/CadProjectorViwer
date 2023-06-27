@@ -5,9 +5,6 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Text;
-using System.Threading.Tasks;
 using AppSt = CadProjectorViewer.Properties.Settings;
 using CadProjectorViewer.StaticTools;
 using CadProjectorSDK.CadObjects.Abstract;
@@ -27,13 +24,15 @@ using CadProjectorViewer.EthernetServer;
 using CadProjectorViewer.Dialogs;
 using CadProjectorViewer.ToCommands;
 using CadProjectorViewer.ToCommands.MainAppCommand;
-using static MonchaNETDll.MNetStructs;
-using WatsonTcp;
 using System.Windows.Threading;
 using CadProjectorViewer.EthernetServer.Servers;
 using CadProjectorViewer.Opening;
+using CadProjectorSDK.Device;
+using CadProjectorSDK.Device.Controllers;
+using CadProjectorSDK.Interfaces;
+using System.Net;
 
-namespace CadProjectorViewer.ViewModel
+namespace CadProjectorViewer.Modeles
 {
     internal class AppMainModel : NotifyModel
     { 
@@ -62,9 +61,13 @@ namespace CadProjectorViewer.ViewModel
         }
         private ProjectorHub projectorHub = new ProjectorHub(AppSt.Default.cl_moncha_path);
 
-        public WorkFolderList WorkFolder { get; } = new WorkFolderList();
+        public ProjectorCollection Projectors { get; } = new ProjectorCollection();
 
-        public LogList Logs { get; } = new LogList(string.Empty);
+        public ScenesCollection Scenes { get; } = new ScenesCollection();
+
+        public TaskCollection Tasks { get; } = TaskCollection.Instance;
+
+        public WorkFolderList WorkFolder { get; } = new WorkFolderList();
 
         public ToCutEthernetHub EthernetHub { get; } = new ToCutEthernetHub();
 
@@ -75,15 +78,17 @@ namespace CadProjectorViewer.ViewModel
 
         public AppMainModel()
         {
+            LogList.Instance.PostLog("Start working", "App");
+
             dispatcher = Dispatcher.CurrentDispatcher;
 
-            App.Log = Logs.PostLog;
+            App.Log = LogList.Instance.PostLog;
             App.SetProgress = ProgressPanel.SetProgressBar;
 
-            ProjectorHub.Log = Logs.PostLog;
+            ProjectorHub.Log = LogList.Instance.PostLog;
             ProjectorHub.SetProgress = ProgressPanel.SetProgressBar;
 
-            GCTools.Log = Logs.PostLog;
+            GCTools.Log = LogList.Instance.PostLog;
             GCTools.SetProgress = ProgressPanel.SetProgressBar;
 
             projectorHub.UDPLaserListener.OutFilePathWorker = FileLoad.GetUDPString;
@@ -132,6 +137,31 @@ namespace CadProjectorViewer.ViewModel
         public ICommand SaveCommand => new ActionCommand(() => SaveConfiguration(false));
 
         public ICommand SaveAsCommand => new ActionCommand(() => SaveConfiguration(true));
+
+        public bool CheckDeviceInHub(IPAddress iPAddress)
+        {
+            foreach (LProjector device in Projectors)
+            {
+                if (device is IConnected connected)
+                {
+                    if (connected.IPAddress.Address.Equals(iPAddress.Address))
+                    {
+                        return true;
+                    }
+                }
+            }
+
+            //foreach (VLTLaserMeters laser in LMeters)
+            //    if (laser != null)
+            //    {
+            //        if (laser.IP.Address.Equals(iPAddress.Address))
+            //        {
+            //            return true;
+            //        }
+            //    }
+
+            return false;
+        }
 
         private bool SaveConfiguration(bool saveas)
         {
@@ -185,11 +215,11 @@ namespace CadProjectorViewer.ViewModel
         }
 
         public ICommand MaskCommand => new ActionCommand(() => {
-            ProjectorHub.ScenesCollection.SelectedScene.AlreadyAction = new DrawMaskAction(ProjectorHub.ScenesCollection.SelectedScene.Size);
+            Scenes.SelectedScene.AlreadyAction = new DrawMaskAction(Scenes.SelectedScene.Size);
         });
 
         public ICommand LineCommand => new ActionCommand(() => {
-            ProjectorHub.ScenesCollection.SelectedScene.AlreadyAction = new DrawLineAction();
+            Scenes.SelectedScene.AlreadyAction = new DrawLineAction();
         });
 
         public ICommand UDPToggleCommand => new ActionCommand(() =>
@@ -207,25 +237,25 @@ namespace CadProjectorViewer.ViewModel
         public ICommand LoadMWSCommand => new ActionCommand(() => FileLoad.LoadMoncha(ProjectorHub, true));
 
         public ICommand Clear => new ActionCommand(() => {
-            ProjectorHub.ScenesCollection.SelectedScene.Clear();
+            Scenes.SelectedScene.Clear();
         });
 
         public ICommand SelectNextCommand => new ActionCommand(() => {
-            ProjectorHub.ScenesCollection.SelectedScene.HistoryCommands.Add(
-                        new SelectNextCommand(true, ProjectorHub.ScenesCollection.SelectedScene));
+            Scenes.SelectedScene.HistoryCommands.Add(
+                        new SelectNextCommand(true, Scenes.SelectedScene));
         });
 
         public ICommand SelectPreviousCommand => new ActionCommand(() => {
-            ProjectorHub.ScenesCollection.SelectedScene.HistoryCommands.Add(
-                        new SelectNextCommand(false, ProjectorHub.ScenesCollection.SelectedScene));
+            Scenes.SelectedScene.HistoryCommands.Add(
+                        new SelectNextCommand(false, Scenes.SelectedScene));
         });
 
         public ICommand DeleteCommand => new ActionCommand(() => {
-            ProjectorHub.ScenesCollection.SelectedScene.RemoveRange(ProjectorHub.ScenesCollection.SelectedScene.SelectedObjects);
+            Scenes.SelectedScene.RemoveRange(Scenes.SelectedScene.SelectedObjects);
         });
 
         public ICommand UndoCommand => new ActionCommand(() => {
-            ProjectorHub.ScenesCollection.SelectedScene.HistoryCommands.UndoLast();
+            Scenes.SelectedScene.HistoryCommands.UndoLast();
         });
 
         public ICommand ShowLicenceCommand => new ActionCommand(() => {
@@ -243,10 +273,10 @@ namespace CadProjectorViewer.ViewModel
             {
                 SceneTask sceneTask = new SceneTask()
                 {
-                    TableID = this.ProjectorHub.ScenesCollection.SelectedScene.TableID,
+                    TableID = this.Scenes.SelectedScene.TableID,
                     Object = await FileLoad.GetCliboard()
                 };
-                ProjectorHub.ScenesCollection.LoadedObjects.Add(sceneTask);
+                this.Tasks.Add(sceneTask);
             }
             catch
             {
@@ -257,7 +287,7 @@ namespace CadProjectorViewer.ViewModel
         public ICommand PlayCommand => new ActionCommand(() => {
             if (Keyboard.Modifiers == ModifierKeys.None)
             {
-                this.projectorHub.ScenesCollection.SelectedScene.Play = !this.projectorHub.ScenesCollection.SelectedScene.Play;
+                this.Scenes.SelectedScene.Play = !this.Scenes.SelectedScene.Play;
             }
             else
             {
@@ -267,8 +297,8 @@ namespace CadProjectorViewer.ViewModel
 
         public ICommand PlayAllCommand => new ActionCommand(() =>
         {
-            bool stat = !this.projectorHub.ScenesCollection.Any(sc => sc.Play);
-            foreach (ProjectionScene scene in this.projectorHub.ScenesCollection)
+            bool stat = !this.Scenes.Any(sc => sc.Play);
+            foreach (ProjectionScene scene in this.Scenes)
             {
                 scene.Play = stat;
             }
@@ -279,7 +309,7 @@ namespace CadProjectorViewer.ViewModel
             saveFileDialog.Filter = "2CUT Scene (*.2scn)|*.2scn";
             if (saveFileDialog.ShowDialog() == true)
             {
-                FileSave.SaveScene(projectorHub.ScenesCollection.SelectedScene, saveFileDialog.FileName);
+                FileSave.SaveScene(Scenes.SelectedScene, saveFileDialog.FileName);
                 //SaveScene.WriteXML(projectorHub.ScenesCollection.SelectedScene, saveFileDialog.FileName);
             }
 
@@ -290,7 +320,7 @@ namespace CadProjectorViewer.ViewModel
             fileDialog.Filter = "Moncha (.2scn)|*.2scn|All Files (*.*)|*.*";
             if (fileDialog.ShowDialog() == true)
             {
-                projectorHub.ScenesCollection.AddTask(new SceneTask(SaveScene.ReadXML(fileDialog.FileName)));
+                Tasks.AddTask(new SceneTask(SaveScene.ReadXML(fileDialog.FileName)));
             }
         });
 
@@ -336,13 +366,13 @@ namespace CadProjectorViewer.ViewModel
 
         public async void OpenGeometryFile(string path)
         {
-            if (await FileLoad.GetFilePath(path, this.ProjectorHub.ScenesCollection.SelectedScene.ProjectionSetting.PointStep.Value) is UidObject uidObject)
+            if (await FileLoad.GetFilePath(path, this.Scenes.SelectedScene.ProjectionSetting.PointStep.Value) is UidObject uidObject)
             {
                 SceneTask sceneTask = new SceneTask()
                 {
                     Object = uidObject,
                 };
-                await this.ProjectorHub.ScenesCollection.AddTask(sceneTask);
+                await this.Tasks.AddTask(sceneTask);
             }
         }
     }

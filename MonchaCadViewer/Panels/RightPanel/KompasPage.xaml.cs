@@ -4,22 +4,11 @@ using KompasLib.KompasTool;
 using KompasLib.Tools;
 using MahApps.Metro.Controls;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 using ToGeometryConverter.Object.Elements;
 using ToGeometryConverter.Object;
-using CadProjectorViewer.ViewModel;
+using CadProjectorViewer.Modeles;
 
 namespace CadProjectorViewer.Panels.RightPanel
 {
@@ -93,15 +82,15 @@ namespace CadProjectorViewer.Panels.RightPanel
 
                 CadGroup cadGeometries =
                     new CadGroup(
-                        await ContourCalc.GetGeometry(doc, MainModel.ProjectorHub.ScenesCollection.SelectedScene.ProjectionSetting.PointStep.Value, false, true),
+                        await ContourCalc.GetGeometry(doc, MainModel.Scenes.SelectedScene.ProjectionSetting.PointStep.Value, false, true),
                         doc.D7.Name);
 
                 SceneTask sceneTask = new SceneTask()
                 {
                     Object = cadGeometries,
-                    TableID = MainModel.ProjectorHub.ScenesCollection.SelectedScene.TableID,
+                    TableID = MainModel.Scenes.SelectedScene.TableID,
                 };
-                MainModel.ProjectorHub.ScenesCollection.AddTask(sceneTask);
+                MainModel.Tasks.AddTask(sceneTask);
             }
         }
 
@@ -113,19 +102,19 @@ namespace CadProjectorViewer.Panels.RightPanel
 
                 GCCollection gCObjects = new GCCollection(doc.D7.Name);
 
-                gCObjects.Add(new GeometryElement(await ContourCalc.GetGeometry(doc, MainModel.ProjectorHub.ScenesCollection.SelectedScene.ProjectionSetting.PointStep.Value, true, true), "Kompas"));
+                gCObjects.Add(new GeometryElement(await ContourCalc.GetGeometry(doc, MainModel.Scenes.SelectedScene.ProjectionSetting.PointStep.Value, true, true), "Kompas"));
 
                 CadGroup cadGeometries =
                       new CadGroup(
-                          await ContourCalc.GetGeometry(doc, MainModel.ProjectorHub.ScenesCollection.SelectedScene.ProjectionSetting.PointStep.Value, true, true),
+                          await ContourCalc.GetGeometry(doc, MainModel.Scenes.SelectedScene.ProjectionSetting.PointStep.Value, true, true),
                           doc.D7.Name);
 
                 SceneTask sceneTask = new SceneTask()
                 {
                     Object = cadGeometries,
-                    TableID = MainModel.ProjectorHub.ScenesCollection.SelectedScene.TableID,
+                    TableID = MainModel.Scenes.SelectedScene.TableID,
                 };
-                MainModel.ProjectorHub.ScenesCollection.AddTask(sceneTask);
+                MainModel.Tasks.AddTask(sceneTask);
             }
         }
         #endregion

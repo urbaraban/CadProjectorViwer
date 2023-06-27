@@ -1,24 +1,13 @@
-﻿using CadProjectorSDK;
-using CadProjectorSDK.CadObjects.Abstract;
+﻿using CadProjectorSDK.CadObjects.Abstract;
 using CadProjectorSDK.Scenes;
+using CadProjectorViewer.Modeles;
 using CadProjectorViewer.Opening;
-using CadProjectorViewer.StaticTools;
-using CadProjectorViewer.ViewModel;
 using Microsoft.Xaml.Behaviors.Core;
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 namespace CadProjectorViewer.Panels.CanvasPanel
 {
@@ -39,14 +28,14 @@ namespace CadProjectorViewer.Panels.CanvasPanel
             {
                 if (await FileLoad.GetDrop(e, scenecollection.SelectedScene.ProjectionSetting.PointStep.Value) is UidObject Obj)
                 {
-                    if (scenecollection.LoadedObjects.Contains(Obj) == false)
+                    if (TaskCollection.Instance.Contains(Obj) == false)
                     {
                         SceneTask sceneTask = new SceneTask()
                         {
                             Object = Obj,
                             TableID = scenecollection.SelectedScene.TableID,
                         };
-                        scenecollection.AddTask(sceneTask);
+                        TaskCollection.Instance.AddTask(sceneTask);
                     }
                     else
                     {

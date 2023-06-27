@@ -3,13 +3,11 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:sdk="clr-namespace:CadProjectorSDK;assembly=CadProjectorSDK"
-    xmlns:dvc="clr-namespace:CadProjectorSDK.Device;assembly=CadProjectorSDK"
     xmlns:Controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
-    xmlns:cadprojectorsdk="clr-namespace:CadProjectorSDK;assembly=CadProjectorSDK" 
     xmlns:converters="clr-namespace:CadProjectorViewer.Converters"
+    xmlns:scenes="clr-namespace:CadProjectorSDK.Scenes;assembly=CadProjectorSDK"
     x:Class="CadProjectorViewer.Panels.DeviceTab"
-    d:DataContext="{d:DesignInstance Type={x:Type sdk:ProjectorHub}}"
+    d:DataContext="{d:DesignInstance Type={x:Type scenes:ProjectionScene}}"
     Padding="0"
     d:DesignHeight="550"
     d:DesignWidth="300"
@@ -59,14 +57,6 @@
                     Content=""
                     Grid.Row="3" Grid.ColumnSpan="2" />
                 <Button DockPanel.Dock="Right"
-                        Margin="5,0,10,0"
-                        Click="SceneSettingBtn_Click"
-                        Content="&#xF0B5;"
-                        Padding="0"
-                        FontFamily="Segoe MDL2 Assets"
-                        FontSize="14"
-                        Width="{Binding ActualHeight, RelativeSource={RelativeSource Self}}" />
-                <Button DockPanel.Dock="Right"
                         Margin="5,0,0,0"
                         Click="DeviceSettingBtn_Click"
                         Content="&#xE713;"
@@ -88,8 +78,8 @@
                     DockPanel.Dock="Left"
                     HorizontalContentAlignment="Right"
                     SelectedValuePath="NameID"
-                    SelectedItem="{Binding ScenesCollection.SelectedScene.Projectors.SelectedItem}"
-                    ItemsSource="{Binding ScenesCollection.SelectedScene.Projectors}">
+                    SelectedItem="{Binding Projectors.SelectedItem}"
+                    ItemsSource="{Binding Projectors}">
                     <ComboBox.ItemTemplate>
                         <DataTemplate>
                             <TextBlock>

@@ -7,9 +7,9 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Net;
 using System.Windows;
-using System.Net.NetworkInformation;
 using CadProjectorSDK.Tools;
 using CadProjectorSDK.Interfaces;
+using CadProjectorViewer.Modeles;
 
 namespace CadProjectorViewer
 {
@@ -18,17 +18,17 @@ namespace CadProjectorViewer
     /// </summary>
     public partial class LaserSearcher : Window
     {
-        private ProjectorHub ProjectorHub { get; set; }
+        private AppMainModel AppMain { get; set; }
 
         private List<BroadcastReply2> iPs = new List<BroadcastReply2>();
         public List<IpSelect> OldDevices = new List<IpSelect>();
         public List<IpSelect> NewDevices = new List<IpSelect>();
 
-        public LaserSearcher(ProjectorHub ProjectorHub)
+        internal LaserSearcher(AppMainModel appMain)
         {
             InitializeComponent();
-            this.ProjectorHub = ProjectorHub;
-            this.DataContext = ProjectorHub;
+            this.AppMain = appMain;
+            this.DataContext = appMain;
             RefreshList();
         }
 
@@ -46,7 +46,7 @@ namespace CadProjectorViewer
                         DvcType = DeviceType.MonchaNET,
                         IsSelected = false
                     };
-                    if (ProjectorHub.CheckDeviceInHub(ipSelect.iPAddress) == false)
+                    if (AppMain.CheckDeviceInHub(ipSelect.iPAddress) == false)
                     {
                         this.NewDevices.Add(ipSelect);
                     }
@@ -58,7 +58,7 @@ namespace CadProjectorViewer
             }
 
             this.OldDevices.Clear();
-            foreach (LProjector monchaDevice in ProjectorHub.Projectors)
+            foreach (LProjector monchaDevice in AppMain.Projectors)
             {
                 if (monchaDevice is IConnected connected)
                 {
@@ -77,7 +77,7 @@ namespace CadProjectorViewer
             {
                 if (device != null && device.IsSelected == true)
                 {
-                    ProjectorHub.Projectors.Add(await DevicesMg.GetDeviceAsync(device.iPAddress, device.DvcType, ProjectorHub.Projectors.Count));
+                    AppMain.Projectors.Add(await DevicesMg.GetDeviceAsync(device.iPAddress, device.DvcType, AppMain.Projectors.Count));
                 }
             }
 
@@ -85,7 +85,7 @@ namespace CadProjectorViewer
             {
                 if (device != null && device.IsSelected == false)
                 {
-                    ProjectorHub.Projectors.RemoveDevice(device.iPAddress);
+                    AppMain.Projectors.RemoveDevice(device.iPAddress);
                 }
             }
         }
@@ -97,7 +97,7 @@ namespace CadProjectorViewer
 
         private void AddVirtualBtn_Click(object sender, RoutedEventArgs e)
         {
-            ProjectorHub.Projectors.Add(new VirtualProjector());
+            AppMain.Projectors.Add(new VirtualProjector());
         }
 
         private void SearchBtn_Click(object sender, RoutedEventArgs e)

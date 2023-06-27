@@ -14,7 +14,7 @@ using System.Reflection;
 using Microsoft.Xaml.Behaviors.Core;
 using CadProjectorViewer.Panels.RightPanel;
 using CadProjectorSDK.Scenes.Commands;
-using CadProjectorViewer.ViewModel;
+using CadProjectorViewer.Modeles;
 
 namespace CadProjectorViewer
 {
@@ -37,7 +37,7 @@ namespace CadProjectorViewer
             HotKeysManager.KeyActions.Add(new KeyAction()
             {
                 Keys = new Key[] { Key.Escape },
-                GetAction = mainModel.ProjectorHub.ScenesCollection.SelectedScene.Break
+                GetAction = mainModel.Scenes.SelectedScene.Break
             });
 
             if (this.Height > SystemParameters.FullPrimaryScreenHeight * 0.9) 
@@ -113,34 +113,34 @@ namespace CadProjectorViewer
            // HotKeysManager.RunAsync(new Key[] { e.Key });
 
             double _mult = Keyboard.Modifiers == ModifierKeys.Shift ? 10 : 1;
-            double step = mainModel.ProjectorHub.ScenesCollection.SelectedScene.Movespeed;
+            double step = mainModel.Scenes.SelectedScene.Movespeed;
 
             switch (e.Key)
             {
                 case Key.W:
-                    mainModel.ProjectorHub.ScenesCollection.SelectedScene.HistoryCommands.Add(
-                        new MovingCommand(mainModel.ProjectorHub.ScenesCollection.SelectedScene.SelectedObjects,
+                    mainModel.Scenes.SelectedScene.HistoryCommands.Add(
+                        new MovingCommand(mainModel.Scenes.SelectedScene.SelectedObjects,
                         0, -step * _mult));
                     break;
                 case Key.S:
-                    mainModel.ProjectorHub.ScenesCollection.SelectedScene.HistoryCommands.Add(
-                        new MovingCommand(mainModel.ProjectorHub.ScenesCollection.SelectedScene.SelectedObjects,
+                    mainModel.Scenes.SelectedScene.HistoryCommands.Add(
+                        new MovingCommand(mainModel.Scenes.SelectedScene.SelectedObjects,
                         0, step * _mult));
                     break;
                 case Key.A:
-                    mainModel.ProjectorHub.ScenesCollection.SelectedScene.HistoryCommands.Add(
-                        new MovingCommand(mainModel.ProjectorHub.ScenesCollection.SelectedScene.SelectedObjects,
+                    mainModel.Scenes.SelectedScene.HistoryCommands.Add(
+                        new MovingCommand(mainModel.Scenes.SelectedScene.SelectedObjects,
                         -step * _mult, 0));
                     break;
                 case Key.D:
-                    mainModel.ProjectorHub.ScenesCollection.SelectedScene.HistoryCommands.Add(
-                        new MovingCommand(mainModel.ProjectorHub.ScenesCollection.SelectedScene.SelectedObjects,
+                    mainModel.Scenes.SelectedScene.HistoryCommands.Add(
+                        new MovingCommand(mainModel.Scenes.SelectedScene.SelectedObjects,
                         step * _mult, 0));
                     break;
                 case Key.Z:
                     if (Keyboard.Modifiers == ModifierKeys.Control)
                     {
-                        mainModel.ProjectorHub.ScenesCollection.SelectedScene.HistoryCommands.UndoLast();
+                        mainModel.Scenes.SelectedScene.HistoryCommands.UndoLast();
                     }
                     break;
                 case Key.Q:
@@ -154,42 +154,42 @@ namespace CadProjectorViewer
                     break;
                 case Key.D1:
                     if (Keyboard.Modifiers == ModifierKeys.Control)
-                        mainModel.ProjectorHub.ScenesCollection.SelectedScene.Projectors.SelectedItem.DeviceBright(2);
+                        mainModel.Scenes.SelectedScene.Projectors.SelectedItem.DeviceBright(2);
                     break;
                 case Key.D2:
                     if (Keyboard.Modifiers == ModifierKeys.Control)
-                        mainModel.ProjectorHub.ScenesCollection.SelectedScene.Projectors.SelectedItem.DeviceBright(3);
+                        mainModel.Scenes.SelectedScene.Projectors.SelectedItem.DeviceBright(3);
                     break;
                 case Key.D3:
                     if (Keyboard.Modifiers == ModifierKeys.Control)
-                        mainModel.ProjectorHub.ScenesCollection.SelectedScene.Projectors.SelectedItem.DeviceBright(4);
+                        mainModel.Scenes.SelectedScene.Projectors.SelectedItem.DeviceBright(4);
                     break;
                 case Key.D4:
                     if (Keyboard.Modifiers == ModifierKeys.Control)
-                        mainModel.ProjectorHub.ScenesCollection.SelectedScene.Projectors.SelectedItem.DeviceBright(5);
+                        mainModel.Scenes.SelectedScene.Projectors.SelectedItem.DeviceBright(5);
                     break;
                 case Key.D5:
                     if (Keyboard.Modifiers == ModifierKeys.Control)
-                        mainModel.ProjectorHub.ScenesCollection.SelectedScene.Projectors.SelectedItem.DeviceBright(6);
+                        mainModel.Scenes.SelectedScene.Projectors.SelectedItem.DeviceBright(6);
                     break;
                 case Key.D6:
                     if (Keyboard.Modifiers == ModifierKeys.Control)
-                        mainModel.ProjectorHub.ScenesCollection.SelectedScene.Projectors.SelectedItem.DeviceBright(7);
+                        mainModel.Scenes.SelectedScene.Projectors.SelectedItem.DeviceBright(7);
                     break;
                 case Key.D7:
                     if (Keyboard.Modifiers == ModifierKeys.Control)
-                        mainModel.ProjectorHub.ScenesCollection.SelectedScene.Projectors.SelectedItem.DeviceBright(8);
+                        mainModel.Scenes.SelectedScene.Projectors.SelectedItem.DeviceBright(8);
                     break;
                 case Key.D8:
                     if (Keyboard.Modifiers == ModifierKeys.Control)
-                        mainModel.ProjectorHub.ScenesCollection.SelectedScene.Projectors.SelectedItem.DeviceBright(9);
+                        mainModel.Scenes.SelectedScene.Projectors.SelectedItem.DeviceBright(9);
                     break;
                 case Key.D9:
                     if (Keyboard.Modifiers == ModifierKeys.Control)
-                        mainModel.ProjectorHub.ScenesCollection.SelectedScene.Projectors.SelectedItem.DeviceBright(10);
+                        mainModel.Scenes.SelectedScene.Projectors.SelectedItem.DeviceBright(10);
                     break;
                 case Key.Escape:
-                    mainModel.ProjectorHub.ScenesCollection.SelectedScene.Break();
+                    mainModel.Scenes.SelectedScene.Break();
                     break;
             }
         }
@@ -245,7 +245,7 @@ namespace CadProjectorViewer
         /// <param name="e"></param>
         private async void ILDASaveBtn_Click(object sender, RoutedEventArgs e)
         {
-            FileSave.ILDASave(this.mainModel.ProjectorHub.ScenesCollection.SelectedScene.Projectors.ToArray());
+            FileSave.ILDASave(this.mainModel.Scenes.SelectedScene.Projectors.ToArray());
         }
 
         public ICommand HideToTray => new ActionCommand(() => {

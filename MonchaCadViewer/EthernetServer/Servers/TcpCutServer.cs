@@ -1,4 +1,5 @@
 ﻿using CadProjectorViewer.ToCommands;
+using CadProjectorViewer.ViewModel.Modules;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -48,9 +49,15 @@ namespace CadProjectorViewer.EthernetServer.Servers
 
         public void Start()
         {
+            server.Events.ClientConnected += Events_ClientConnected;
             server.Events.MessageReceived += Events_MessageReceived;
             server.Start();
             Thread.Sleep(100);
+        }
+
+        private void Events_ClientConnected(object sender, ConnectionEventArgs e)
+        {
+            LogList.Instance.PostLog(e.Client.IpPort, "tcpServer");
         }
 
         private void Events_MessageReceived(object sender, MessageReceivedEventArgs e)

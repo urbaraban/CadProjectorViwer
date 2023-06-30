@@ -68,77 +68,64 @@
             Padding="5,0"
                 Height="40"/>
         </DockPanel>
+        <DockPanel>
+            <Button DockPanel.Dock="Right"
+                    Content="&#xe76c;"
+                    Command="{Binding MigrateDeviceCommand}"
+                    FontFamily="Segoe MDL2 Assets"
+                    FontSize="14" />
+            <Button Content="&#xe76b;"
+                    Command="{Binding RemoveDeviceCommand}"
+                    FontFamily="Segoe MDL2 Assets"
+                    FontSize="14"
+                    DockPanel.Dock="Right"/>
+            <Border Grid.Column="0">
+                <ListBox ItemsSource="{Binding Projectors}"
+                         SelectedItem="{Binding SelectedProjector}">
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+                            <TextBlock>
+                                <TextBlock.Text>
+                                    <MultiBinding StringFormat="{}{0}: {1}">
+                                        <Binding Path="NameID"/>
+                                        <Binding Path="IPAddress"/>
+                                    </MultiBinding>
+                                </TextBlock.Text>
+                            </TextBlock>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
+            </Border>
+        </DockPanel>
         <TabControl
             x:Name="SceneTabs"
             ItemsSource="{Binding Scenes}"
             DisplayMemberPath="NameID"
+            FontSize="12"
             SelectedIndex="0"
             SelectedItem="{Binding SelectedScene}">
         <TabControl.ContentTemplate>
             <DataTemplate>
                     <DockPanel>
-                        <Grid Margin="20">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="10*"/>
-                                <ColumnDefinition Width="2*"/>
-                                <ColumnDefinition Width="10*"/>
-                            </Grid.ColumnDefinitions>
-                            <Border Grid.Column="0">
-                                <ListBox
+                        <Border Grid.Column="2">
+                            <ListBox
                                     ItemsSource="{Binding Projectors}"
-                                    SelectedItem="{Binding SelectedItem}"
-                                    DisplayMemberPath="NameID">
-                                    <ListBox.ItemTemplate>
-                                        <DataTemplate>
-                                            <TextBlock>
-                                                <TextBlock.Text>
-                                                    <MultiBinding StringFormat="{}{0}: {1}">
-                                                        <Binding Path="NameID"/>
-                                                        <Binding Path="IPAddress"/>
-                                                    </MultiBinding>
-                                                </TextBlock.Text>
-                                            </TextBlock>
-                                        </DataTemplate>
-                                    </ListBox.ItemTemplate>
-                                </ListBox>
-                            </Border>
-                            <DockPanel 
-                                Grid.Column="1"
-                                VerticalAlignment="Center">
-                                <Button 
-                                    Content="&#xe76c;"
-                                    Command="{Binding ElementName=SceneSetting, Path=MigrateDeviceCommand}"
-                                    FontFamily="Segoe MDL2 Assets"
-                                    FontSize="14"
-                                    DockPanel.Dock="Top"/>
-                                            <Button 
-                                    Content="&#xe76b;"
-                                    Command="{Binding ElementName=SceneSetting, Path=RemoveDeviceCommand}"
-                                    FontFamily="Segoe MDL2 Assets"
-                                    FontSize="14"
-                                    DockPanel.Dock="Bottom"/>
-                        </DockPanel>
-                            <Border Grid.Column="2">
-                                <ListBox
-                                    ItemsSource="{Binding Projectors}"
-                                    SelectedItem="{Binding Projectors.SelectedItem}"
-                                    DisplayMemberPath="NameID">
-                                    <ListBox.ItemTemplate>
-                                        <DataTemplate>
-                                            <TextBlock>
-                                                <TextBlock.Text>
-                                                    <MultiBinding StringFormat="{}{0}: {1}">
-                                                        <Binding Path="NameID"/>
-                                                        <Binding Path="IPAddress"/>
-                                                    </MultiBinding>
-                                                </TextBlock.Text>
-                                            </TextBlock>
-                                        </DataTemplate>
-                                    </ListBox.ItemTemplate>
-                                    </ListBox>
-                            </Border>
-                        </Grid>
-                </DockPanel>
+                                    SelectedItem="{Binding Projectors.SelectedItem}">
+                                <ListBox.ItemTemplate>
+                                    <DataTemplate>
+                                        <TextBlock>
+                                            <TextBlock.Text>
+                                                <MultiBinding StringFormat="{}{0}: {1}">
+                                                    <Binding Path="NameID"/>
+                                                    <Binding Path="IPAddress"/>
+                                                </MultiBinding>
+                                            </TextBlock.Text>
+                                        </TextBlock>
+                                    </DataTemplate>
+                                </ListBox.ItemTemplate>
+                            </ListBox>
+                        </Border>
+                    </DockPanel>
             </DataTemplate>
         </TabControl.ContentTemplate>
     </TabControl>

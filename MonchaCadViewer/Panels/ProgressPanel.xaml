@@ -5,19 +5,20 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:local="clr-namespace:CadProjectorViewer.Panels"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:services="clr-namespace:CadProjectorViewer.Services" 
+    d:DataContext="{d:DesignInstance Type=services:Progress}"
     d:DesignHeight="150"
     d:DesignWidth="400"
     mc:Ignorable="d">
     <Grid>
-        <ProgressBar x:Name="BarLine" />
+        <ProgressBar Maximum="{Binding MaxValue}" Value="{Binding StatValue}" />
         <Label
-            x:Name="BarLabel"
             HorizontalAlignment="Stretch"
             VerticalAlignment="Stretch"
             HorizontalContentAlignment="Center"
             VerticalContentAlignment="Center"
             Panel.ZIndex="99"
-            Content=""
+            Content="{Binding Label}"
             FontSize="14"
             Padding="0"
             Margin="0"/>

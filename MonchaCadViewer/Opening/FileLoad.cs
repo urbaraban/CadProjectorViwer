@@ -1,7 +1,7 @@
 ﻿using CadProjectorSDK;
 using CadProjectorSDK.CadObjects;
 using CadProjectorSDK.CadObjects.Abstract;
-using CadProjectorSDK.Tools.ILDA;
+using CadProjectorViewer.Modeles;
 using CadProjectorViewer.Opening.Formats;
 using Microsoft.Win32;
 using System;
@@ -56,7 +56,7 @@ namespace CadProjectorViewer.Opening
             return obj;
         }
 
-        private static string BrowseMWS()
+        public static string BrowseMWS()
         {
             OpenFileDialog fileDialog = new OpenFileDialog();
             fileDialog.Filter = "Moncha (.mws)|*.mws|All Files (*.*)|*.*";
@@ -67,27 +67,6 @@ namespace CadProjectorViewer.Opening
             return string.Empty;
         }
 
-        public static async void LoadMoncha(ProjectorHub projectorHub, bool browse)
-        {
-            //send path to hub class
-            try
-            {
-                projectorHub.Disconnect();
-
-                //check path to setting file
-                if (File.Exists(AppSt.Default.cl_moncha_path) == false || browse == true)
-                {
-                    string str = FileLoad.BrowseMWS(); //select if not\
-                    AppSt.Default.cl_moncha_path = str;
-                    AppSt.Default.Save();
-                }
-                await projectorHub.Load(AppSt.Default.cl_moncha_path);
-            }
-            catch
-            {
-                MessageBox.Show("Ошибка конфигурации!");
-            }
-        }
 
         public static async Task<UidObject> GetCliboard()
         {
@@ -208,7 +187,7 @@ namespace CadProjectorViewer.Opening
 
         private async static Task<object> GetILDA(string Filepath, double step)
         {
-            return await IldaReader.ReadFile(Filepath);
+            return null; // await IldaReader.ReadFile(Filepath);
         }
 
         private async static Task<object> Get2CUT(string Filepath, double step)

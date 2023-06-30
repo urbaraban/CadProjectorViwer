@@ -9,7 +9,7 @@ using System.Windows.Input;
 
 namespace CadProjectorViewer.ViewModel
 {
-    internal class ScenesDeviceManagmentVM : NotifyModel
+    internal class ScenesDeviceManagmentVM : ViewModelBase
     {
         public ProjectorCollection Projectors => AppMain.Projectors;
         public LProjector SelectedProjector { get; set; }
@@ -26,7 +26,7 @@ namespace CadProjectorViewer.ViewModel
             }
         }
 
-        private AppMainModel AppMain { get; }
+        public AppMainModel AppMain { get; }
 
         public ScenesDeviceManagmentVM(AppMainModel model)
         {

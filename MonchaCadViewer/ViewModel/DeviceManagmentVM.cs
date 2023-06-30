@@ -9,7 +9,7 @@ using System.Windows.Input;
 
 namespace CadProjectorViewer.ViewModel
 {
-    internal class DeviceManagmentVM : NotifyModel
+    internal class DeviceManagmentVM : ViewModelBase
     {
         public ProjectorCollection Projectors => AppMain.Projectors;
 
@@ -23,7 +23,8 @@ namespace CadProjectorViewer.ViewModel
             }
         }
 
-        private AppMainModel AppMain { get; }
+        public AppMainModel AppMain { get; }
+
         internal DeviceManagmentVM(AppMainModel appMain)
         {
             this.AppMain = appMain;

@@ -1,11 +1,9 @@
-﻿using CadProjectorViewer.ToCommands;
-using CadProjectorViewer.ViewModel.Modules;
+﻿using CadProjectorSDK.Services;
+using CadProjectorViewer.ToCommands;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
 using WatsonTcp;
 
 namespace CadProjectorViewer.EthernetServer.Servers
@@ -57,7 +55,7 @@ namespace CadProjectorViewer.EthernetServer.Servers
 
         private void Events_ClientConnected(object sender, ConnectionEventArgs e)
         {
-            LogList.Instance.PostLog(e.Client.IpPort, "tcpServer");
+            LogList.Instance.Post(e.Client.IpPort, "tcpServer");
         }
 
         private void Events_MessageReceived(object sender, MessageReceivedEventArgs e)

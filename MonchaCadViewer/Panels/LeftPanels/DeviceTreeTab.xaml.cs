@@ -10,7 +10,8 @@ using System.Windows.Media;
 using CadProjectorSDK.Device.Mesh;
 using CadProjectorSDK.Device.Controllers;
 using CadProjectorSDK.Interfaces;
-using CadProjectorViewer.Modeles;
+using CadProjectorSDK.Scenes;
+using CadProjectorViewer.ViewModel;
 
 namespace CadProjectorViewer.Panels
 {
@@ -22,7 +23,7 @@ namespace CadProjectorViewer.Panels
         public event EventHandler<bool> NeedRefresh;
         public event EventHandler<LProjector> DeviceChange;
 
-        private AppMainModel appMain => (AppMainModel)this.DataContext;
+        private DeviceManagmentVM deviceManagment => (DeviceManagmentVM)this.DataContext;
 
         public DeviceTreeTab()
         {
@@ -69,7 +70,7 @@ namespace CadProjectorViewer.Panels
 
         private void AddLaser_Click(object sender, RoutedEventArgs e)
         {
-            LaserSearcher DeviceManaged = new LaserSearcher(appMain);
+            LaserSearcher DeviceManaged = new LaserSearcher(deviceManagment.AppMain);
             DeviceManaged.Show();
         }
 
@@ -113,7 +114,7 @@ namespace CadProjectorViewer.Panels
                                 mesh.ReturnPoint();
                                 break;
                             case "mesh_showrect":
-                                appMain.Scenes.SelectedScene.Add(mesh.Size);
+                                deviceManagment.AppMain.Scenes.SelectedScene.Add(mesh.Size);
                                 break;
                         }
                         element.ContextMenu.DataContext = null;
@@ -131,8 +132,16 @@ namespace CadProjectorViewer.Panels
                 {
                     if (frameworkElement.DataContext is ProjectorMesh mesh)
                     {
-                        if (Keyboard.Modifiers != ModifierKeys.Shift) appMain.Scenes.SelectedScene.Clear();
-                        appMain.Scenes.SelectedScene.Add(mesh);
+                        var task = new SceneTask(mesh);
+                        task.Command.Add("PLAY");
+                        task.Command.Add("SHOW");
+
+                        if (Keyboard.Modifiers != ModifierKeys.Shift)
+                        {
+                            task.Command.Add("CLEAR");
+                        }
+
+                        deviceManagment.AppMain.Scenes.RunTask(task);
                     }
                 }
             }

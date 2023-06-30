@@ -1,26 +1,27 @@
 ﻿using CadProjectorSDK.Scenes;
-using CadProjectorViewer.ViewModel.Modules;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
-using System.Threading.Tasks;
 
 namespace CadProjectorViewer.Modeles
 {
     public class ScenesCollection : ObservableCollection<ProjectionScene>, INotifyPropertyChanged
     {
-
         public ProjectionScene SelectedScene 
         {
             get
             {
+                if (_selectedscene == null && this.Count > 0)
+                {
+                    _selectedscene = this[0];
+                }
                 return _selectedscene;
             }
             set
             {
                 _selectedscene = value;
-                OnPropertyChanged("SelectedScene");
+                OnPropertyChanged(nameof(SelectedScene));
             }
         }
         private ProjectionScene _selectedscene = new ProjectionScene();
@@ -37,6 +38,24 @@ namespace CadProjectorViewer.Modeles
                 if (scene.TableID == ID) return scene;
             }
             return this.SelectedScene;
+        }
+
+        public async void RunTask(SceneTask sceneTask)
+        {
+            if (sceneTask.TableID < 0)
+            {
+                await SelectedScene.RunTask(sceneTask, true);
+            }
+            else
+            {
+                foreach(ProjectionScene scene in this)
+                {
+                    if (scene.TableID == sceneTask.TableID)
+                    {
+                        await scene.RunTask(sceneTask, true);
+                    }
+                }
+            }
         }
 
         protected override void RemoveItem(int index)
@@ -60,11 +79,6 @@ namespace CadProjectorViewer.Modeles
             }
         }
 
-
-        protected async void SelectLoaded(SceneTask sceneTask)
-        {
-            await SelectedScene.RunTask(sceneTask, true);
-        }
 
         protected override void ClearItems()
         {

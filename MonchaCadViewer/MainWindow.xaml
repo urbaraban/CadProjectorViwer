@@ -15,8 +15,9 @@
     xmlns:Properties="clr-namespace:CadProjectorViewer.Properties"
     xmlns:device="clr-namespace:CadProjectorSDK.Device;assembly=CadProjectorSDK" 
     xmlns:devices="clr-namespace:CadProjectorViewer.ViewModel.Devices" 
-    xmlns:modeles="clr-namespace:CadProjectorViewer.Modeles" xmlns:viewmodel="clr-namespace:CadProjectorViewer.ViewModel"
-                      d:DataContext="{d:DesignInstance Type=modeles:AppMainModel}"
+    xmlns:modeles="clr-namespace:CadProjectorViewer.Modeles" 
+    xmlns:viewmodel="clr-namespace:CadProjectorViewer.ViewModel"
+    d:DataContext="{d:DesignInstance Type=modeles:AppMainModel}"
     x:Name="MainWin"
     mc:Ignorable="d"
     Title="CUT - Viwer" 
@@ -95,10 +96,10 @@
                     <MenuItem Header="{DynamicResource common_File}">
                         <MenuItem 
                             Header="New Workplace"
-                            Command="{Binding MakeNewWorkPlaceCommand}" />
+                            Click="NewWorkSpaceItem_Click" />
                         <MenuItem
-                            Header="Browse MWS"
-                            Command="{Binding LoadMWSCommand}" />
+                            Header="Open Workplace"
+                            Click="OpenWorkSpaceItem_Click" />
                         <Separator />
                         <MenuItem
                             Header="{DynamicResource m_Save}"
@@ -152,28 +153,25 @@
             <Ellipse
                 Height="15"
                 Width="15"
-                Fill="{Binding ProjectorHub.LockKey.IsLicensed, Converter={StaticResource LicenceKey}}"
+                Fill="{Binding LockKey.IsLicensed, Converter={StaticResource LicenceKey}}"
                 ToolTip="{Binding StringFormat= Licensed: {0},
                 Path=ProjectorHub.LockKey.IsLicensed}"
                 Margin="5,0">
             </Ellipse>
 
-            <Controls:ToggleSwitch
-                        IsOn="{Binding ProjectorHub.UDPLaserListener.Status, Mode=OneWay}"
-                OffContent="Ethernet"
-                OnContent="Listing"
-                VerticalAlignment="Center"
-                Command="{Binding UDPToggleCommand}"
-                MinWidth="0"
-                Margin="3,0,3,0" />
-            <Button
-                    Content="&#xE703;"
+            <Controls:ToggleSwitch IsOn="{Binding UDPLaserListener.Status, Mode=OneWay}"
+                                   OffContent="Ethernet"
+                                   OnContent="Listing"
+                                   VerticalAlignment="Center"
+                                   Command="{Binding UDPToggleCommand}"
+                                   MinWidth="0"
+                                   Margin="3,0,3,0" />
+            <Button Content="&#xE703;"
                     FontFamily="Segoe MDL2 Assets"
                     Width="{Binding ActualHeight, RelativeSource={RelativeSource Self}}"
                     Command="{Binding ShowTCPDialogCommand}"/>
-            <Button
-                Content="T"
-                Command="{Binding ElementName=MainWin, Path=HideToTray}" />
+            <Button Content="T"
+                    Command="{Binding ElementName=MainWin, Path=HideToTray}" />
         </Controls:WindowCommands>
     </Controls:MetroWindow.RightWindowCommands>
     <Border>
@@ -201,31 +199,30 @@
                 Grid.Row="1" Grid.RowSpan="2"
                 HorizontalAlignment="Right" />
 
-            <DockPanel Margin="5" Grid.Row="0" LastChildFill="True">
-                <DockPanel
-                    DockPanel.Dock="Right"
-                    Margin="0,0,0,0" MinWidth="80">
-                    <Button
-                        DockPanel.Dock="Top"
-                        Content="{DynamicResource edit_Clear}"
-                         Command="{Binding Path=Clear}"
-                        HorizontalAlignment="Stretch" />
-                    <Button
-                        DockPanel.Dock="Top"
-                        x:Name="Line"
-                        Content="{DynamicResource edit_Line}"
-                        Command="{Binding Path=LineCommand}" />
-                    <Button
-                        DockPanel.Dock="Top"
-                        x:Name="RectBtn"
-                        Content="{DynamicResource edit_Mask}"
-                        Command="{Binding Path=MaskCommand}" />
+            <DockPanel Margin="5" 
+                       Grid.Row="0" 
+                       LastChildFill="True">
+                <DockPanel DockPanel.Dock="Right" 
+                           Margin="0,0,0,0" 
+                           MinWidth="80">
+                    <Button DockPanel.Dock="Top" 
+                            Content="{DynamicResource edit_Clear}"
+                            Command="{Binding Path=Clear}"
+                            HorizontalAlignment="Stretch" />
+                    <Button DockPanel.Dock="Top"
+                            x:Name="Line"
+                            Content="{DynamicResource edit_Line}"
+                            Command="{Binding Path=LineCommand}" />
+                    <Button DockPanel.Dock="Top"
+                            x:Name="RectBtn"
+                            Content="{DynamicResource edit_Mask}"
+                            Command="{Binding Path=MaskCommand}" />
                 </DockPanel>
-                <Button
-                    DockPanel.Dock="Left"
-                    Content="{DynamicResource m_Open}"
-                    Command="{Binding OpenCommand}"
-                    MinWidth="99" VerticalAlignment="Stretch" />
+                <Button DockPanel.Dock="Left"
+                        Content="{DynamicResource m_Open}"
+                        Command="{Binding OpenCommand}"
+                        MinWidth="99"
+                        VerticalAlignment="Stretch" />
             </DockPanel>
 
             <TabControl x:Name="tabControl1"

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using CadProjectorViewer.Services;
+using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Diagnostics;
@@ -15,12 +16,6 @@ namespace CadProjectorViewer
     /// </summary>
     public partial class App : Application
     {
-        public delegate void Logging(string message, string sender);
-        public static Logging Log;
-
-        public delegate void Progress(int position, int max, string message);
-        public static Progress SetProgress;
-
         private static List<CultureInfo> m_Languages = new List<CultureInfo>();
 
 		public static List<CultureInfo> Languages
@@ -120,7 +115,7 @@ namespace CadProjectorViewer
             var CUTOtherProcesses = Process.GetProcesses().
             Where(pr => pr.ProcessName == Name && pr.Id != current.Id); // without '.exe'
 
-            Log?.Invoke($"Find {CUTOtherProcesses.Count()} run process", "APP");
+            LogList.Instance.PostLog($"Find {CUTOtherProcesses.Count()} run process", "APP");
 
             if (CUTOtherProcesses.Count() > 0)
             {
@@ -128,7 +123,7 @@ namespace CadProjectorViewer
                 {
                     foreach (var process in CUTOtherProcesses)
                     {
-                        Log?.Invoke($"kill process {process.Id}", "APP");
+                        LogList.Instance.PostLog($"kill process {process.Id}", "APP");
                         process.Kill();
                     }
                 }

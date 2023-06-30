@@ -266,6 +266,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Configurations\MWS.cs" />
     <Compile Include="Dialogs\EllipsoidSettingDialog.xaml.cs">
       <DependentUpon>EllipsoidSettingDialog.xaml</DependentUpon>
     </Compile>
@@ -289,9 +290,10 @@
       <DependentUpon>KompasPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="Opening\Formats\Arculator.cs" />
-    <Compile Include="StaticTools\FileSave.cs" />
+    <Compile Include="Services\FileSave.cs" />
     <Compile Include="EthernetServer\TCPTools.cs" />
     <Compile Include="EthernetServer\ToCutEthernetHub.cs" />
+    <Compile Include="Services\Progress.cs" />
     <Compile Include="ToCommands\IToCutCommandObject.cs" />
     <Compile Include="ToCommands\MainAppCommand\ClearSceneCommand.cs" />
     <Compile Include="ToCommands\MainAppCommand\FilePathCommand.cs" />
@@ -377,17 +379,18 @@
     <Compile Include="Settings.cs" />
     <Compile Include="Opening\FileLoad.cs" />
     <Compile Include="Opening\GCToCad.cs" />
-    <Compile Include="StaticTools\HotKeysManager.cs" />
+    <Compile Include="Services\HotKeysManager.cs" />
     <Compile Include="ViewModel\DeviceManagmentVM.cs" />
     <Compile Include="ViewModel\Devices\DeviceItem.xaml.cs">
       <DependentUpon>DeviceItem.xaml</DependentUpon>
     </Compile>
-    <Compile Include="ViewModel\Modules\LogList.cs" />
-    <Compile Include="ViewModel\Modules\WorkFolderList.cs" />
-    <Compile Include="Modeles\NotifyModel.cs" />
+    <Compile Include="Services\LogList.cs" />
+    <Compile Include="Services\WorkFolderList.cs" />
+    <Compile Include="ViewModel\ViewModelBase.cs" />
     <Compile Include="ViewModel\RenderDeviceModel.cs" />
     <Compile Include="ViewModel\ScenesDeviceManagmentVM.cs" />
     <Compile Include="ViewModel\Scene\SceneModel.cs" />
+    <Compile Include="ViewModel\SearchProjectorVM.cs" />
     <Page Include="Dialogs\DeviceManaged\ProjectorView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

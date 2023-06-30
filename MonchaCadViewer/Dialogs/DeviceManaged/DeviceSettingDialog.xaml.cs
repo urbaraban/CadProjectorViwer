@@ -22,7 +22,6 @@ using System.Runtime.CompilerServices;
 using System.ComponentModel;
 using CadProjectorSDK.Render;
 using CadProjectorSDK.Render.Graph;
-using CadProjectorSDK.Tools.ILDA;
 using CadProjectorSDK.Tools;
 using StclLibrary.Laser;
 
@@ -90,13 +89,13 @@ namespace CadProjectorViewer.Panels.DevicePanel
 
         private void CheckBtn_Click(object sender, RoutedEventArgs e)
         {
-            CheckLabel.IsChecked = ProjectorHub.CheckDeviceIP(new IPAddress(new byte[]
-            {
-                byte.Parse(IP1.Text),
-                byte.Parse(IP2.Text),
-                byte.Parse(IP3.Text),
-                byte.Parse(IP4.Text)
-            }));
+            //CheckLabel.IsChecked = ProjectorHub.CheckDeviceIP(new IPAddress(new byte[]
+            //{
+            //    byte.Parse(IP1.Text),
+            //    byte.Parse(IP2.Text),
+            //    byte.Parse(IP3.Text),
+            //    byte.Parse(IP4.Text)
+            //}));
         }
 
         private void CheckIsNumeric(TextCompositionEventArgs e)

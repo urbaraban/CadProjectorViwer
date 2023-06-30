@@ -9,23 +9,28 @@ using AppSt = CadProjectorViewer.Properties.Settings;
 using System.Linq;
 using System.Globalization;
 using System.Windows.Data;
-using CadProjectorViewer.StaticTools;
 using System.Reflection;
 using Microsoft.Xaml.Behaviors.Core;
 using CadProjectorViewer.Panels.RightPanel;
 using CadProjectorSDK.Scenes.Commands;
 using CadProjectorViewer.Modeles;
+using CadProjectorViewer.Services;
+using CadProjectorViewer.Opening;
+using CadProjectorViewer.Configurations;
+using System.Runtime.CompilerServices;
+using System.ComponentModel;
 
 namespace CadProjectorViewer
 {
     /// <summary>
     /// Логика взаимодействия для MainWindow.xaml
     /// </summary>
-    public partial class MainWindow : MetroWindow
+    public partial class MainWindow : MetroWindow, INotifyPropertyChanged
     {
         public delegate void Logging(string message, string sender);
         public static Logging Log;
-        private AppMainModel mainModel { get; } = new AppMainModel();
+
+        private AppMainModel mainModel { get; } = mws.Open(AppSt.Default.cl_moncha_path);
 
         public MainWindow()
         {
@@ -48,7 +53,7 @@ namespace CadProjectorViewer
             Version version = Assembly.GetExecutingAssembly().GetName().Version;
             this.Title = $"CUT — Viewer v{version.Build.ToString()}.{version.MinorRevision.ToString()}";
 
-            App.SetProgress?.Invoke(1, 1, "Loaded");
+            Progress.Instance.SetProgress(1, 1, "Loaded");
         }
 
         #region Language
@@ -101,7 +106,7 @@ namespace CadProjectorViewer
 
         private void Window_Closed(object sender, System.EventArgs e)
         {
-            mainModel.ProjectorHub.Disconnect();
+            mainModel.Disconnect();
             GC.Collect();
             GC.WaitForPendingFinalizers();
         }
@@ -226,7 +231,7 @@ namespace CadProjectorViewer
         protected override void OnClosed(EventArgs e)
         {
             this.ShowInTaskbar = false;
-            mainModel.ProjectorHub.Disconnect();
+            mainModel.Disconnect();
             GC.Collect();
             GC.WaitForPendingFinalizers();
             base.OnClosed(e);
@@ -264,14 +269,50 @@ namespace CadProjectorViewer
         });
 
         public ICommand ClosedCommand => new ActionCommand(() => {
-            mainModel.ProjectorHub.Disconnect();
+            mainModel.Disconnect();
             this.Close();
         });
+
+
+        private void NewWorkSpace()
+        {
+            if (this.DataContext is AppMainModel model)
+            {
+                model.Disconnect();
+            }
+            this.DataContext = new AppMainModel();
+        }
+
+        private void OpenWorkSpace()
+        {
+            string filepath = FileLoad.BrowseMWS();
+            if (mws.Open(filepath) is AppMainModel newMainModel)
+            {
+                if (this.DataContext is AppMainModel oldmodel)
+                {
+                    oldmodel.Disconnect();
+                }
+                this.DataContext = newMainModel;
+            }
+        }
 
         private void ProgressPanel_MouseDown(object sender, MouseButtonEventArgs e)
         {
             this.mainModel.Adminclick += 1;
         }
+
+        private void NewWorkSpaceItem_Click(object sender, RoutedEventArgs e) => NewWorkSpace();
+
+        private void OpenWorkSpaceItem_Click(object sender, RoutedEventArgs e) => OpenWorkSpace();
+
+        #region INotifyPropertyChanged
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        public void OnPropertyChanged([CallerMemberName] string prop = "")
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(prop));
+        }
+        #endregion
     }
 
     public class MultiObjectList : IMultiValueConverter

@@ -2,7 +2,7 @@
 using System.Collections.ObjectModel;
 using System.Windows.Threading;
 
-namespace CadProjectorViewer.ViewModel.Modules
+namespace CadProjectorViewer.Services
 {
     public class LogList : ObservableCollection<LogMessage>
     {
@@ -39,19 +39,15 @@ namespace CadProjectorViewer.ViewModel.Modules
 
     public struct LogMessage
     {
-        private string message;
-        private string sender;
-        private DateTime time;
+        public string Message { get; }
+        public string Sender { get; }
+        public DateTime Time { get; }
 
         public LogMessage(string Message, string Sender)
         {
-            this.message = Message;
-            this.sender = Sender;
-            this.time = DateTime.UtcNow;
+            this.Message = Message;
+            this.Sender = Sender;
+            this.Time = DateTime.UtcNow;
         }
-
-        public string Message => message;
-        public string Sender => sender;
-        public DateTime Time => time;
     }
 }

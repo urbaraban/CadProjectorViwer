@@ -1,7 +1,9 @@
 ﻿using CadProjectorSDK.CadObjects.Abstract;
 using CadProjectorSDK.Interfaces;
 using CadProjectorSDK.Scenes;
+using CadProjectorViewer.Services;
 using CadProjectorViewer.ViewModel.Modules;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
@@ -17,8 +19,7 @@ namespace CadProjectorViewer.Modeles
     {
         public static TaskCollection Instance = new TaskCollection();
 
-        public delegate void SelectedDelegate(SceneTask Scene);
-        public SelectedDelegate Selected;
+        public event EventHandler<SceneTask> SelectedTask;
 
         public bool StreamAdd
         {
@@ -54,7 +55,7 @@ namespace CadProjectorViewer.Modeles
 
             if (NewTsk.Command.Contains("SHOW") == true)
             {
-                Selected?.Invoke(NewTsk);
+                SelectedTask?.Invoke(this, NewTsk);
             }
             LogList.Instance.PostLog($"End load task:{NewTsk.TaskInfo}", "Tasks");
         }
@@ -134,7 +135,7 @@ namespace CadProjectorViewer.Modeles
                 uidObject.FileInfo = sender.TaskInfo;
             }
 
-               Selected?.Invoke(sender);
+               SelectedTask?.Invoke(this, sender);
         }
 
         internal SceneTask GetTaskID(int taskID)

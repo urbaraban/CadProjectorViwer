@@ -4,7 +4,7 @@
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
       mc:Ignorable="d"
-      xmlns:viewmodel="clr-namespace:CadProjectorViewer.ViewModel" 
+      xmlns:viewmodel="clr-namespace:CadProjectorViewer.Modeles" 
       xmlns:converters="clr-namespace:CadProjectorViewer.Converters"
       xmlns:rightpanel="clr-namespace:CadProjectorViewer.Panels.RightPanel"
       d:DataContext="{d:DesignInstance Type=viewmodel:AppMainModel}"
@@ -55,7 +55,7 @@
                     </ListView.ItemContainerStyle>
                 </ListView>
                 <Label Content="Scene"/>
-                <ComboBox ItemsSource="{Binding ProjectorHub.ScenesCollection}"
+                <ComboBox ItemsSource="{Binding Scenes}"
                       SelectedItem="{Binding EthernetHub.SelectedScene}"
                       SelectedIndex="0"
                       DisplayMemberPath="DisplayName"/>

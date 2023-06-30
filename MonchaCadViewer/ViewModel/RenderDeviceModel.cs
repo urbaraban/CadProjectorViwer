@@ -14,7 +14,7 @@ using AppSt = CadProjectorViewer.Properties.Settings;
 
 namespace CadProjectorViewer.ViewModel
 {
-    internal class RenderDeviceModel : NotifyModel
+    internal class RenderDeviceModel : ViewModelBase
     {
         public IRenderingDisplay RenderingDisplay { get; }
 

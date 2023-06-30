@@ -1,5 +1,5 @@
 ﻿using CadProjectorViewer.Panels.RightPanel.Logs;
-using CadProjectorViewer.ViewModel.Modules;
+using CadProjectorViewer.Services;
 using System.Windows.Controls;
 using System.Windows.Input;
 
@@ -10,7 +10,7 @@ namespace CadProjectorViewer.Panels.RightPanel
     /// </summary>
     public partial class LogPanel : UserControl
     {
-        public LogList Logs { get; } = LogList.Instance;
+        public LogList LogList => LogList.Instance;
 
         public LogPanel()
         {

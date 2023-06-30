@@ -6,21 +6,19 @@
              xmlns:local="clr-namespace:CadProjectorViewer.Panels.CanvasPanel" 
              xmlns:CadProjectorViewer="clr-namespace:CadProjectorViewer.Converters"
              xmlns:modeles="clr-namespace:CadProjectorViewer.Modeles"
-             d:DataContext="{d:DesignInstance Type=modeles:AppMainModel}"
+             d:DataContext="{d:DesignInstance Type=modeles:ScenesCollection}"
              x:Name="Main"
              mc:Ignorable="d" 
              d:DesignHeight="400" d:DesignWidth="400">
     <UserControl.Resources>
         <CadProjectorViewer:GetViewModel x:Key="GetViewModel" />
     </UserControl.Resources>
-
-
     <DockPanel>
         <TabControl 
             DockPanel.Dock="Top"
             ItemsSource="{Binding .}" 
             TabStripPlacement="Bottom"
-            SelectedItem="{Binding Scenes.SelectedScene}"
+            SelectedItem="{Binding SelectedScene}"
             SelectedIndex="0">
             <TabControl.ContentTemplate>
                 <DataTemplate>

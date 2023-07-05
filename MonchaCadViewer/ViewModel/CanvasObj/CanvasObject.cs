@@ -470,14 +470,14 @@ namespace CadProjectorViewer.CanvasObj
         {
             foreach(IRenderedObject obj in objects)
             {
-                if (obj is VectorLinesCollection vectorLines)
+                if (obj is LinesCollection vectorLines)
                 {
                     DrawVectorLines(vectorLines, drawingContext, renderDevice, brush, pen);
                 }
             }
         }
 
-        private void DrawVectorLines(VectorLinesCollection vectorLines, DrawingContext drawingContext, RenderDeviceModel renderDevice, Brush brush, Pen pen)
+        private void DrawVectorLines(LinesCollection vectorLines, DrawingContext drawingContext, RenderDeviceModel renderDevice, Brush brush, Pen pen)
         {
             if (vectorLines.Count > 0)
             {

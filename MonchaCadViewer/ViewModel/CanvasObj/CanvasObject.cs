@@ -20,7 +20,6 @@ using CadProjectorViewer.ViewModel;
 using Microsoft.Xaml.Behaviors.Core;
 using Cursors = System.Windows.Input.Cursors;
 using CadProjectorViewer.Dialogs;
-using CadProjectorSDK.CadObjects.Interfaces;
 using System.Linq;
 using Size = System.Windows.Size;
 using Rect = System.Windows.Rect;
@@ -28,6 +27,7 @@ using System.Windows.Data;
 using System.Globalization;
 using static CadProjectorViewer.CanvasObj.CanvasObject;
 using CadProjectorSDK.Scenes.Actions;
+using CadProjectorSDK.Interfaces;
 
 namespace CadProjectorViewer.CanvasObj
 {
@@ -185,12 +185,12 @@ namespace CadProjectorViewer.CanvasObj
             ContextMenuLib.AddItem("common_Remove", RemoveCommand, this.ContextMenu);
             ContextMenuLib.AddItem("obj_Render", RenderCommand, this.ContextMenu);
             ContextMenuLib.AddItem("common_MasksGrid", MasksCommand, this.ContextMenu);
-            if (uidObject is IAnchoredObject anchoredObject && anchoredObject.CanAddPoint == true)
-            {
-                ContextMenuLib.AddItem("obj_AddProjectivePoint", AddProjectivePointCommand, this.ContextMenu);
-                ContextMenuLib.AddItem("obj_RectProjectivePoint", RectProjectivePointCommand, this.ContextMenu);
-                ContextMenuLib.AddItem("obj_RoundCentre", RoundCentreCommand, this.ContextMenu);
-            }
+            //if (uidObject is IAnchoredObject anchoredObject && anchoredObject.CanAddPoint == true)
+            //{
+            //    ContextMenuLib.AddItem("obj_AddProjectivePoint", AddProjectivePointCommand, this.ContextMenu);
+            //    ContextMenuLib.AddItem("obj_RectProjectivePoint", RectProjectivePointCommand, this.ContextMenu);
+            //    ContextMenuLib.AddItem("obj_RoundCentre", RoundCentreCommand, this.ContextMenu);
+            //}
 
 
             if (uidObject is CadGroup group)
@@ -232,25 +232,25 @@ namespace CadProjectorViewer.CanvasObj
         protected override void OnInitialized(EventArgs e)
         {
             base.OnInitialized(e);
-            if (this.CadObject is IAnchoredObject anchoredObject)
-            {
-                adornerLayer = AdornerLayer.GetAdornerLayer(this);
-                if (adornerLayer != null)
-                {
-                    AnchorAdorner anchorAdorner = new AnchorAdorner(anchoredObject, this);
-                    if (anchoredObject.AlwaysShowAnchor == false)
-                    {
-                        Binding binding = new Binding()
-                        {
-                            Source = this.CadObject,
-                            Path = new PropertyPath("IsInit"),
-                            Converter = new InitVisible()
-                        };
-                        anchorAdorner.SetBinding(Adorner.VisibilityProperty, binding);
-                    }
-                    adornerLayer.Add(anchorAdorner);
-                }
-            }
+            //if (this.CadObject is IAnchoredObject anchoredObject)
+            //{
+            //    adornerLayer = AdornerLayer.GetAdornerLayer(this);
+            //    if (adornerLayer != null)
+            //    {
+            //        AnchorAdorner anchorAdorner = new AnchorAdorner(anchoredObject, this);
+            //        if (anchoredObject.AlwaysShowAnchor == false)
+            //        {
+            //            Binding binding = new Binding()
+            //            {
+            //                Source = this.CadObject,
+            //                Path = new PropertyPath("IsInit"),
+            //                Converter = new InitVisible()
+            //            };
+            //            anchorAdorner.SetBinding(Adorner.VisibilityProperty, binding);
+            //        }
+            //        adornerLayer.Add(anchorAdorner);
+            //    }
+            //}
         }
 
         protected override void OnMouseMove(MouseEventArgs e)
@@ -460,15 +460,15 @@ namespace CadProjectorViewer.CanvasObj
                         Drawing(uid, deviceModel, IsSelected, MouseOver, ParentRender && uid.IsRender, drawingContext);
                 }
             }
-            else if (uidObject.GetRender(deviceModel.RenderingDisplay) is IEnumerable<IRenderedObject> linesCollection)
+            else if (uidObject.GetRender(deviceModel.RenderingDisplay) is IEnumerable<LinesCollection> linesCollection)
             {
                 DrawingIRenderableObjects(linesCollection, drawingContext, deviceModel, brush, pen);
             }
         }
 
-        private void DrawingIRenderableObjects(IEnumerable<IRenderedObject> objects, DrawingContext drawingContext, RenderDeviceModel renderDevice, Brush brush, Pen pen)
+        private void DrawingIRenderableObjects(IEnumerable<LinesCollection> objects, DrawingContext drawingContext, RenderDeviceModel renderDevice, Brush brush, Pen pen)
         {
-            foreach(IRenderedObject obj in objects)
+            foreach(LinesCollection obj in objects)
             {
                 if (obj is LinesCollection vectorLines)
                 {
@@ -506,14 +506,14 @@ namespace CadProjectorViewer.CanvasObj
         public virtual Pen GetPen(bool parentRender = true)
         {
             double thinkess = GetViewModel?.Invoke().Thinkess ?? 1;
-
-            return GetPen(
-                thinkess,
-                this.IsMouseOver,
-                this.IsSelected,
-                parentRender,
-                this.IsBlank,
-                GetViewModel?.Invoke().RenderingDisplay.ProjectionSetting.GetBrush);
+            return new Pen(Brushes.Orange, 10 * 1.5);
+            //return GetPen(
+            //    thinkess,
+            //    this.IsMouseOver,
+            //    this.IsSelected,
+            //    parentRender,
+            //    this.IsBlank,
+            //    GetViewModel?.Invoke().RenderingDisplay);
         }
 
         public virtual Pen GetPen(double StrThink, bool MouseOver, bool Selected,
@@ -569,7 +569,6 @@ namespace CadProjectorViewer.CanvasObj
 
         private GetViewDelegate GetViewModel { get; set; }
 
-
         private IAnchoredObject AnchoredObject;
 
         public AnchorAdorner(IAnchoredObject canvasObject, CanvasObject uIElement) : base(uIElement)
@@ -586,8 +585,6 @@ namespace CadProjectorViewer.CanvasObj
                     AddAnchor(point);
                 }
             }
-
-            this.AnchoredObject.UpdateAnchorPoints += AnchoredObject_UpdatePoints;
         }
 
         private void AnchoredObject_UpdatePoints(object sender, EventArgs e) => UpdatePoint();

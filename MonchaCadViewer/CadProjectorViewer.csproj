@@ -267,9 +267,6 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Configurations\MWS.cs" />
-    <Compile Include="Dialogs\EllipsoidSettingDialog.xaml.cs">
-      <DependentUpon>EllipsoidSettingDialog.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Dialogs\IpCamDialog.xaml.cs">
       <DependentUpon>IpCamDialog.xaml</DependentUpon>
     </Compile>
@@ -306,9 +303,6 @@
     <Compile Include="Dialogs\DeviceManaged\ProjectorView.xaml.cs">
       <DependentUpon>ProjectorView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Dialogs\DotEdit.xaml.cs">
-      <DependentUpon>DotEdit.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Dialogs\MakeMeshSplitDialog.xaml.cs">
       <DependentUpon>MakeMeshSplitDialog.xaml</DependentUpon>
     </Compile>
@@ -333,9 +327,6 @@
     </Compile>
     <Compile Include="Panels\LeftPanels\FrameTree.xaml.cs">
       <DependentUpon>FrameTree.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Dialogs\DeviceManaged\DeviceSettingDialog.xaml.cs">
-      <DependentUpon>DeviceSettingDialog.xaml</DependentUpon>
     </Compile>
     <Compile Include="Panels\LeftPanels\DeviceTreeTab.xaml.cs">
       <DependentUpon>DeviceTreeTab.xaml</DependentUpon>
@@ -399,19 +390,11 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Dialogs\DotEdit.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
     <Page Include="Dialogs\DeviceManaged\LaserSearcher.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Dialogs\DeviceManaged\LaserMeterWindows.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Dialogs\EllipsoidSettingDialog.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -507,10 +490,6 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Panels\CanvasPanel\CadCanvasPanel.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Dialogs\DeviceManaged\DeviceSettingDialog.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

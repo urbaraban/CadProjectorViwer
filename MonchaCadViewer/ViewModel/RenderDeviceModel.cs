@@ -2,7 +2,6 @@
 using CadProjectorSDK.CadObjects.Abstract;
 using CadProjectorSDK.Interfaces;
 using CadProjectorSDK.Scenes;
-using CadProjectorViewer.Modeles;
 using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
@@ -32,8 +31,6 @@ namespace CadProjectorViewer.ViewModel
                 return null;
             }
         }
-
-        public CadRect3D Size => RenderingDisplay.Size;
 
         public virtual bool ShowHide
         {
@@ -87,12 +84,6 @@ namespace CadProjectorViewer.ViewModel
                 Y * this.Height);
         }
 
-        public System.Windows.Point GetProportion(double X, double Y)
-        {
-            return new System.Windows.Point(
-                (X - this.Size.MX) / this.Size.MWidth, 
-                (Y - this.Size.MX) / this.Size.MHeight);
-        }
 
         #region INotifyPropertyChanged
         public event PropertyChangedEventHandler PropertyChanged;
@@ -103,7 +94,7 @@ namespace CadProjectorViewer.ViewModel
         #endregion
     }
 
-    public class ViewDisplaySetting : INotifyPropertyChanged
+    public class ViewDisplaySetting
     {
         public bool ShowMass { get; set; } = false;
         public bool ShowBlank { get; set; } = false;
@@ -131,13 +122,5 @@ namespace CadProjectorViewer.ViewModel
 
             return out_setting;
         }
-
-        #region INotifyPropertyChanged
-        public event PropertyChangedEventHandler PropertyChanged;
-        public void OnPropertyChanged([CallerMemberName] string prop = "")
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(prop));
-        }
-        #endregion
     }
 }

@@ -59,8 +59,8 @@ namespace CadProjectorViewer.ViewModel.Scene
         public int TableID => this.Scene.TableID;
 
         public override bool ShowHide => true;
-        public override double Width => Size.Width;
-        public override double Height => Size.Height;
+        public override double Width { get; set; } = 3000;
+        public override double Height { get; set; } = 3000;
         public override double Thinkess => Math.Max(Width, Height) * AppSt.Default.default_thinkess_percent;
 
         public SceneModel(ProjectionScene scene) : base(scene)
@@ -92,7 +92,7 @@ namespace CadProjectorViewer.ViewModel.Scene
             if (result == true)
             {
 
-                if (FileLoad.GetFilePath(path, this.Scene.ProjectionSetting.PointStep.Value).Result is UidObject uidObject)
+                if (FileLoad.GetFilePath(path).Result is UidObject uidObject)
                 {
                     uidObject.UpdateTransform(uidObject.Bounds, false, String.Empty);
 

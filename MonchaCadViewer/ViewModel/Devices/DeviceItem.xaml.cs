@@ -47,20 +47,6 @@ namespace CadProjectorViewer.ViewModel.Devices
             }
         });
 
-        public ICommand PolyMeshCommand => new ActionCommand(async () => {
-            if (this.DataContext is LProjector device)
-            {
-                device.PolyMeshUsed = !device.PolyMeshUsed;
-            }
-        });
-
-        public ICommand ShowZoneRectCommand => new ActionCommand(() =>
-        {
-            if (this.DataContext is LProjector device && device.GetParentScene?.Invoke() is ProjectionScene Scene)
-            {
-                Scene.Add(device.Size);
-            }
-        });
 
         public ICommand ProjectorViewCommand => new ActionCommand(() =>
         {

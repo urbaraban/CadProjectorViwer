@@ -101,7 +101,7 @@ namespace CadProjectorViewer.Panels
             {
                 if (gCFormat.ShortName.Contains(this.SceneTsk.TaskInfo.Extension) == true)
                 {
-                    object obj = await gCFormat.ReadFile?.Invoke(this.SceneTsk.TaskInfo.FullName, 35);
+                    object obj = await gCFormat.ReadFile?.Invoke(this.SceneTsk.TaskInfo.FullName);
                     this.SceneTsk.Object = await FileLoad.ConvertObject(obj);
                     this.SceneTsk.Selecting();
                 }

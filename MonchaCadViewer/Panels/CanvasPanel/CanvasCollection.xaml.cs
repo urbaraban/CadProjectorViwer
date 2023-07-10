@@ -26,7 +26,7 @@ namespace CadProjectorViewer.Panels.CanvasPanel
             base.OnDrop(e);
             if (this.DataContext is ScenesCollection scenecollection)
             {
-                if (await FileLoad.GetDrop(e, scenecollection.SelectedScene.ProjectionSetting.PointStep.Value) is UidObject Obj)
+                if (await FileLoad.GetDrop(e) is UidObject Obj)
                 {
                     if (TaskCollection.Instance.Contains(Obj) == false)
                     {

@@ -40,9 +40,6 @@ namespace CadProjectorViewer.CanvasObj
         public virtual GetScaleDelegate GetFrameTransform { get; set; }
         public delegate ScaleTransform GetScaleDelegate();
 
-        public virtual ChangeSizeDelegate SizeChange { get; set; }
-        public delegate void ChangeSizeDelegate();
-
         internal GetViewDelegate GetViewModel { get; set; }
         internal delegate RenderDeviceModel GetViewDelegate();
 
@@ -84,7 +81,7 @@ namespace CadProjectorViewer.CanvasObj
 
         public bool ActiveObject { get; private set; }
 
-        public virtual string NameID
+        public virtual string Name
         {
             get
             {

@@ -332,7 +332,7 @@ namespace CadProjectorViewer.Modeles
 
         public async void OpenGeometryFile(string path)
         {
-            if (await FileLoad.GetFilePath(path, this.Scenes.SelectedScene.ProjectionSetting.PointStep.Value) is UidObject uidObject)
+            if (await FileLoad.GetFilePath(path) is UidObject uidObject)
             {
                 SceneTask sceneTask = new SceneTask()
                 {
@@ -346,7 +346,7 @@ namespace CadProjectorViewer.Modeles
         {
             foreach (LProjector device in Projectors)
             {
-                if (device is ILProjector projector)
+                if (device is LProjector projector)
                 {
                     projector.Disconnect();
                 }

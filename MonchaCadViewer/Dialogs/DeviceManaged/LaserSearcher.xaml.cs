@@ -77,7 +77,7 @@ namespace CadProjectorViewer
             {
                 if (device != null && device.IsSelected == true)
                 {
-                    AppMain.Projectors.Add(await DevicesMg.GetDeviceAsync(device.iPAddress, device.DvcType, AppMain.Projectors.Count));
+                    // AppMain.Projectors.Add(await DevicesMg.GetDeviceAsync(device.iPAddress, device.DvcType, AppMain.Projectors.Count));
                 }
             }
 

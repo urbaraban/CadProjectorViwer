@@ -299,7 +299,6 @@
     <Compile Include="ToCommands\MainAppCommand\MoveCommand.cs" />
     <Compile Include="ToCommands\ToCommand.cs" />
     <Compile Include="Modeles\AppMainModel.cs" />
-    <Compile Include="ViewModel\CanvasObj\ImagePreview.cs" />
     <Compile Include="Dialogs\DeviceManaged\ProjectorView.xaml.cs">
       <DependentUpon>ProjectorView.xaml</DependentUpon>
     </Compile>
@@ -330,9 +329,6 @@
     </Compile>
     <Compile Include="Panels\LeftPanels\DeviceTreeTab.xaml.cs">
       <DependentUpon>DeviceTreeTab.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Dialogs\MeshesDialog.xaml.cs">
-      <DependentUpon>MeshesDialog.xaml</DependentUpon>
     </Compile>
     <Compile Include="Panels\ObjectPanel\CadObjectPanel.xaml.cs">
       <DependentUpon>CadObjectPanel.xaml</DependentUpon>
@@ -434,10 +430,6 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Panels\LeftPanels\FrameTree.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Dialogs\MeshesDialog.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

@@ -157,42 +157,42 @@ namespace CadProjectorViewer
                     break;
                 case Key.OemPlus:
                     break;
-                case Key.D1:
-                    if (Keyboard.Modifiers == ModifierKeys.Control)
-                        mainModel.Scenes.SelectedScene.Projectors.SelectedItem.DeviceBright(2);
-                    break;
-                case Key.D2:
-                    if (Keyboard.Modifiers == ModifierKeys.Control)
-                        mainModel.Scenes.SelectedScene.Projectors.SelectedItem.DeviceBright(3);
-                    break;
-                case Key.D3:
-                    if (Keyboard.Modifiers == ModifierKeys.Control)
-                        mainModel.Scenes.SelectedScene.Projectors.SelectedItem.DeviceBright(4);
-                    break;
-                case Key.D4:
-                    if (Keyboard.Modifiers == ModifierKeys.Control)
-                        mainModel.Scenes.SelectedScene.Projectors.SelectedItem.DeviceBright(5);
-                    break;
-                case Key.D5:
-                    if (Keyboard.Modifiers == ModifierKeys.Control)
-                        mainModel.Scenes.SelectedScene.Projectors.SelectedItem.DeviceBright(6);
-                    break;
-                case Key.D6:
-                    if (Keyboard.Modifiers == ModifierKeys.Control)
-                        mainModel.Scenes.SelectedScene.Projectors.SelectedItem.DeviceBright(7);
-                    break;
-                case Key.D7:
-                    if (Keyboard.Modifiers == ModifierKeys.Control)
-                        mainModel.Scenes.SelectedScene.Projectors.SelectedItem.DeviceBright(8);
-                    break;
-                case Key.D8:
-                    if (Keyboard.Modifiers == ModifierKeys.Control)
-                        mainModel.Scenes.SelectedScene.Projectors.SelectedItem.DeviceBright(9);
-                    break;
-                case Key.D9:
-                    if (Keyboard.Modifiers == ModifierKeys.Control)
-                        mainModel.Scenes.SelectedScene.Projectors.SelectedItem.DeviceBright(10);
-                    break;
+                //case Key.D1:
+                //    if (Keyboard.Modifiers == ModifierKeys.Control)
+                //        mainModel.Scenes.SelectedScene.Projectors.SelectedItem.DeviceBright(2);
+                //    break;
+                //case Key.D2:
+                //    if (Keyboard.Modifiers == ModifierKeys.Control)
+                //        mainModel.Scenes.SelectedScene.Projectors.SelectedItem.DeviceBright(3);
+                //    break;
+                //case Key.D3:
+                //    if (Keyboard.Modifiers == ModifierKeys.Control)
+                //        mainModel.Scenes.SelectedScene.Projectors.SelectedItem.DeviceBright(4);
+                //    break;
+                //case Key.D4:
+                //    if (Keyboard.Modifiers == ModifierKeys.Control)
+                //        mainModel.Scenes.SelectedScene.Projectors.SelectedItem.DeviceBright(5);
+                //    break;
+                //case Key.D5:
+                //    if (Keyboard.Modifiers == ModifierKeys.Control)
+                //        mainModel.Scenes.SelectedScene.Projectors.SelectedItem.DeviceBright(6);
+                //    break;
+                //case Key.D6:
+                //    if (Keyboard.Modifiers == ModifierKeys.Control)
+                //        mainModel.Scenes.SelectedScene.Projectors.SelectedItem.DeviceBright(7);
+                //    break;
+                //case Key.D7:
+                //    if (Keyboard.Modifiers == ModifierKeys.Control)
+                //        mainModel.Scenes.SelectedScene.Projectors.SelectedItem.DeviceBright(8);
+                //    break;
+                //case Key.D8:
+                //    if (Keyboard.Modifiers == ModifierKeys.Control)
+                //        mainModel.Scenes.SelectedScene.Projectors.SelectedItem.DeviceBright(9);
+                //    break;
+                //case Key.D9:
+                //    if (Keyboard.Modifiers == ModifierKeys.Control)
+                //        mainModel.Scenes.SelectedScene.Projectors.SelectedItem.DeviceBright(10);
+                //    break;
                 case Key.Escape:
                     mainModel.Scenes.SelectedScene.Break();
                     break;

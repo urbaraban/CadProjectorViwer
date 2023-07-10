@@ -49,8 +49,7 @@ namespace CadProjectorViewer.Panels
         {
             if (DeviceCombo.SelectedItem != null)
             {
-                DeviceSettingDialog deviceSettingDialog = new DeviceSettingDialog() { DataContext = (LProjector)DeviceCombo.SelectedItem };
-                deviceSettingDialog.Show();
+
             }
         }
 
@@ -58,28 +57,19 @@ namespace CadProjectorViewer.Panels
         {
             if (sender is Button button)
             {
-                EllipsoidSettingDialog ellipsoidSettingDialog = new EllipsoidSettingDialog()
-                {
-                    DataContext = button.DataContext
-                };
-                ellipsoidSettingDialog.Show();
+
             }
         }
 
 
         private void MeshSettingBtn_Click(object sender, RoutedEventArgs e)
         {
-            if (this.device.SelectMesh != null)
-            {
-                CreateGridWindow createGridWindow = new CreateGridWindow(this.device.SelectMesh);
-                createGridWindow.Show();
-            }
+
         }
 
         private void MeshListBtn_Click(object sender, RoutedEventArgs e)
         {
-            MeshesDialog meshesDialog = new MeshesDialog() { DataContext = this.device };
-            meshesDialog.Show();
+
         }
     }
 }

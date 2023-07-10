@@ -102,7 +102,6 @@ namespace CadProjectorViewer.Panels
                                 createGridWindow.ShowDialog();
                                 break;
                             case "convert_on_ellipsoid":
-                                mesh.ConvertOnEllipsoid();
                                 break;
                             case "mesh_inverse":
                                 mesh.InverseYPosition();

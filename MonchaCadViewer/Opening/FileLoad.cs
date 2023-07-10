@@ -39,19 +39,19 @@ namespace CadProjectorViewer.Opening
             new GCFormat("Crypt", new string[1] {".2crp"}) { ReadFile = GetCrypt }
         };
 
-        private static Task<object> GetArculator(string filepath, double RoundStep)
+        private static Task<object> GetArculator(string filepath)
         {
             return Arculator.Parse(filepath);
         }
 
-        private static Task<object> GetCrypt(string filepath, double RoundeStep)
+        private static Task<object> GetCrypt(string filepath)
         {
             RSACryptoServiceProvider rSA = new RSACryptoServiceProvider();
             rSA.FromXmlString(ToCrypt.ReadXmlStringFile("key.xml"));
             FileInfo fileinfo = new FileInfo(filepath);
             string removepath = Path.ChangeExtension(fileinfo.FullName, "dxf");
             ToCrypt.DecryptFile(fileinfo, rSA);
-            var obj = GetObject(removepath, RoundeStep);
+            var obj = GetObject(removepath);
             File.Delete(removepath);
             return obj;
         }
@@ -85,7 +85,7 @@ namespace CadProjectorViewer.Opening
             return null;
         }
 
-        public static async Task<UidObject> GetDrop(object obj, double step)
+        public static async Task<UidObject> GetDrop(object obj)
         {
             if (obj is DragEventArgs dragEvent)
             {
@@ -96,7 +96,7 @@ namespace CadProjectorViewer.Opening
                         {
                             if (File.Exists(fileLoc))
                             {
-                                return await GetFilePath(fileLoc, step);
+                                return await GetFilePath(fileLoc);
                             }
                         }
                     }
@@ -109,9 +109,9 @@ namespace CadProjectorViewer.Opening
             return await Task.FromResult<UidObject>(null);
         }
 
-        public static async Task<UidObject> GetFilePath(string FilePath, double step)
+        public static async Task<UidObject> GetFilePath(string FilePath)
         {
-            if (await FileLoad.GetObject(FilePath, step) is object obj)
+            if (await FileLoad.GetObject(FilePath) is object obj)
             {
                 if (await ConvertObject(obj) is UidObject uidObject)
                 {
@@ -121,9 +121,9 @@ namespace CadProjectorViewer.Opening
             return null;
         }
 
-        public static async Task<UidObject> GetUDPString(string Filepath, bool Filename, double step)
+        public static async Task<UidObject> GetUDPString(string Filepath, bool Filename)
         {
-            return await GetFilePath(Filename == true ? $"{AppSt.Default.save_work_folder}\\{Filepath}" : Filepath, step);
+            return await GetFilePath(Filename == true ? $"{AppSt.Default.save_work_folder}\\{Filepath}" : Filepath);
         }
 
         public static async Task<UidObject> ConvertObject(object obj)
@@ -147,14 +147,14 @@ namespace CadProjectorViewer.Opening
             return await Task.FromResult<UidObject>(null);
         }
 
-        private async static Task<object> GetObject(string Filename, double step)
+        private async static Task<object> GetObject(string Filename)
         {
             GCFormat gCFormat = GCTools.GetConverter(Filename, MyFormat);
             object outobj = null;
 
             if (gCFormat != null)
             {
-                outobj = await gCFormat.ReadFile?.Invoke(Filename, step);
+                outobj = await gCFormat.ReadFile?.Invoke(Filename);
             }
 
             if (outobj != null) 
@@ -169,7 +169,7 @@ namespace CadProjectorViewer.Opening
         /// <param name="Filepath"></param>
         /// <param name="step"></param>
         /// <returns></returns>
-        private static Task<object> GetKompas(string Filepath, double step)
+        private static Task<object> GetKompas(string Filepath)
         {
             Process.Start(Filepath);
             return Task.FromResult<object>(null);
@@ -180,17 +180,17 @@ namespace CadProjectorViewer.Opening
         /// <param name="Filepath"></param>
         /// <param name="step"></param>
         /// <returns></returns>
-        private async static Task<object> GetImage(string Filepath, double step)
+        private async static Task<object> GetImage(string Filepath)
         {
             return new BitmapImage(new Uri(Filepath));
         }
 
-        private async static Task<object> GetILDA(string Filepath, double step)
+        private async static Task<object> GetILDA(string Filepath)
         {
             return null; // await IldaReader.ReadFile(Filepath);
         }
 
-        private async static Task<object> Get2CUT(string Filepath, double step)
+        private async static Task<object> Get2CUT(string Filepath)
         {
             FileInfo fileInfo = new FileInfo(Filepath);
             XDocument xDocument = XDocument.Load(Filepath);
@@ -202,7 +202,7 @@ namespace CadProjectorViewer.Opening
             {
                 string item_path = XObject.Element("Path").Value;
 
-                if (await FileLoad.GetObject(item_path, step) is GCCollection collection)
+                if (await FileLoad.GetObject(item_path) is GCCollection collection)
                 {
                     if (await ConvertObject(collection) is UidObject uidObject)
                     {

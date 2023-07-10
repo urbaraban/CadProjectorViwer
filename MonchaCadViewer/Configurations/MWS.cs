@@ -9,17 +9,15 @@ using System.Linq;
 using System.Net;
 using System.Xml.Linq;
 using CadProjectorSDK.Device.Mesh;
-using System.Threading.Tasks;
 using CadProjectorSDK.Scenes;
 using System.IO;
 using CadProjectorSDK.CadObjects.Abstract;
-using CadProjectorSDK.CadObjects.Variable;
 using CadProjectorViewer.Modeles;
 using CadProjectorViewer.Services;
 using AppSt = CadProjectorViewer.Properties.Settings;
 using CadProjectorViewer.Opening;
 using System.Windows;
-
+using CadProjectorSDK.Device.Modules.Transformers;
 
 namespace CadProjectorViewer.Configurations
 {
@@ -98,7 +96,7 @@ namespace CadProjectorViewer.Configurations
             XDevices.Elements("Device");
             foreach (LProjector device in appMain.Projectors)
             {
-                XDevices.Add(WriteXDeviceSett(device));
+               // XDevices.Add(WriteXDeviceSett(device));
                 Progress.Instance.SetProgress(appMain.Projectors.IndexOf(device), appMain.Projectors.Count - 1, $"MWS: Devices {appMain.Projectors.IndexOf(device) + 1}/{appMain.Projectors.Count}");
             }
 
@@ -145,7 +143,6 @@ namespace CadProjectorViewer.Configurations
             XScene.Add(new XElement("DefaultScaleY", scene.DefaultScaleY));
             XScene.Add(new XElement("DefaultAngle", scene.DefaultAngle));
 
-            XScene.Add(WriteXProjectionSetting(scene.ProjectionSetting));
 
             XScene.Elements("Objects").Remove();
             XElement XObjects = new XElement("Objects");
@@ -177,129 +174,13 @@ namespace CadProjectorViewer.Configurations
             return XScene;
         }
 
-        private static XElement WriteXDeviceSett(LProjector _device)
-        {
-            XElement XDevice = new XElement("Device", new XAttribute("Name", _device.NameID));
-            XDevice.Add(new XAttribute("Type", ((int)_device.DeviceType).ToString(CultureInfo.InvariantCulture)));
-            XDevice.Add(new XAttribute("IP", _device.IPAddress.ToString()));
-            XDevice.Add(new XAttribute("Uid", _device.Uid.ToString()));
-
-            SetOrMakeValue(XDevice, "TimeColorShift", _device.TimeColorShift.ToString(CultureInfo.InvariantCulture));
-
-            SetOrMakeValue(XDevice, "Alpha", _device.Alpha.ToString(CultureInfo.InvariantCulture));
-
-            SetOrMakeValue(XDevice, "ScanRate", _device.ScanRate.ToString(CultureInfo.InvariantCulture));
-            SetOrMakeValue(XDevice, "FPS", _device.FPS.ToString(CultureInfo.InvariantCulture));                                           
-
-            SetOrMakeValue(XDevice, "InvertedX", _device.InvertedX.ToString(CultureInfo.InvariantCulture));                            
-            SetOrMakeValue(XDevice, "InvertedY", _device.InvertedY.ToString(CultureInfo.InvariantCulture));                           
-
-            SetOrMakeValue(XDevice, "HeightResolution", _device.HeightResolution.ToString(CultureInfo.InvariantCulture));
-            SetOrMakeValue(XDevice, "WidthResolutuon", _device.WidthResolutuon.ToString(CultureInfo.InvariantCulture));
-
-            SetOrMakeValue(XDevice, "OnlySelectMesh", _device.OnlySelectMesh.ToString(CultureInfo.InvariantCulture));
-
-            XDevice.Descendants("Size").Remove();
-            if (_device.Size != null)
-            {
-                XDevice.Add(WriteXSize(_device.Size, "Size"));
-            }
-
-            SetOrMakeValue(XDevice, "PolyMeshUsed", _device.PolyMeshUsed.ToString(CultureInfo.InvariantCulture));
-
-            ///
-            /// write mesh
-            ///
-
-            SetOrMakeValue(XDevice, "UseEllipsoid", _device.UseEllipsoid.ToString(CultureInfo.InvariantCulture));
-            XDevice.Descendants("Ellipsoid").Remove();
-            XDevice.Add(WriteEllisoidSetting(_device.Ellipsoid));
-
-            if (_device.SelectMesh != null) SetOrMakeValue(XDevice, "SelectMesh", _device.SelectMesh.Uid.ToString());
-
-            XElement XSelectMesh = new XElement("SelectMeshes");
-            foreach (ProjectorMesh mesh in _device.SelectedMeshes)
-            {
-                SetOrMakeValue(XSelectMesh, "Uid", mesh.Uid.ToString());
-            }
-            XDevice.Add(XSelectMesh);
-
-            XDevice.Descendants("Meshes").Remove();
-            XElement Xmeshes = GetOrMakeElement(XDevice, "Meshes", string.Empty);
-            foreach (ProjectorMesh lDeviceMesh in _device.Meshes)
-            {
-                Xmeshes.Add(WriteXMesh(lDeviceMesh));
-            }
-
-
-            ///
-            /// write ProjectionSetting
-            ///
-            SetOrMakeValue(XDevice, "OwnedSetting", _device.OwnedSetting.ToString(CultureInfo.InvariantCulture));
-
-            if (_device.OwnedSetting == true)
-            {
-                XDevice.Add(WriteXProjectionSetting(_device.ProjectionSetting));
-            }
-
-            return XDevice;
-        }
-
-        private static XElement WriteEllisoidSetting(CorrectionEllipsoid ellipsoid)
+        private static XElement WriteEllisoidSetting(EllipsoideCorrector ellipsoid)
         {
             XElement XEllipsoid = new XElement("Ellipsoid");
             SetOrMakeValue(XEllipsoid, "AngleX", ellipsoid.AngleX.ToString(CultureInfo.InvariantCulture));
             SetOrMakeValue(XEllipsoid, "AngleY", ellipsoid.AngleY.ToString(CultureInfo.InvariantCulture));
-            SetOrMakeValue(XEllipsoid, "KoeffX", ellipsoid.KoeffX.ToString(CultureInfo.InvariantCulture));
-            SetOrMakeValue(XEllipsoid, "UseAxisCorrection", ellipsoid.UseAxisCorrection.ToString(CultureInfo.InvariantCulture));
-
-            //XElement XAxisCor = new XElement("XAxisCorrect");
-            //for (int i = 0; i < ellipsoid.XAxisCorrect.Count; i += 1)
-            //{
-            //    XAxisCor.Add(
-            //        new XElement("Correction", 
-            //        new XAttribute("Value", ellipsoid.XAxisCorrect[i].Value.ToString(CultureInfo.InvariantCulture))));
-            //}
-            //XElement YAxisCor = new XElement("YAxisCorrect");
-            //for (int i = 0; i < ellipsoid.YAxisCorrect.Count; i += 1)
-            //{
-            //    YAxisCor.Add(
-            //        new XElement("Correction",
-            //        new XAttribute("Value", ellipsoid.YAxisCorrect[i].Value.ToString(CultureInfo.InvariantCulture))));
-            //}
-
-            //XEllipsoid.Add(XAxisCor);
-            //XEllipsoid.Add(YAxisCor);
 
             return XEllipsoid;
-        }
-
-        private static XElement WriteXProjectionSetting(LProjectionSetting ProjectionSetting)
-        {
-            XElement XProjectionSetting = new XElement("ProjectionSetting");
-
-
-            SetOrMakeValue(XProjectionSetting, "FindSolidElement", ProjectionSetting.FindSolidElement.ToString(CultureInfo.InvariantCulture));                                               //Red
-            SetOrMakeValue(XProjectionSetting, "PathFindDeep", ProjectionSetting.PathFindDeep.ToString(CultureInfo.InvariantCulture));
-
-            SetOrMakeValue(XProjectionSetting, "Red", ProjectionSetting.Red.ToString(CultureInfo.InvariantCulture));                                               //Red
-            SetOrMakeValue(XProjectionSetting, "RedOn", ProjectionSetting.RedOn.ToString(CultureInfo.InvariantCulture));
-            SetOrMakeValue(XProjectionSetting, "Green", ProjectionSetting.Green.ToString(CultureInfo.InvariantCulture));                                         //Green
-            SetOrMakeValue(XProjectionSetting, "GreenOn", ProjectionSetting.GreenOn.ToString(CultureInfo.InvariantCulture));
-            SetOrMakeValue(XProjectionSetting, "Blue", ProjectionSetting.Blue.ToString(CultureInfo.InvariantCulture));                                            //Blue
-            SetOrMakeValue(XProjectionSetting, "BlueOn", ProjectionSetting.BlueOn.ToString(CultureInfo.InvariantCulture));
-
-            SetOrMakeValue(XProjectionSetting, "BlankWait", ProjectionSetting.BlankWait.ToString(CultureInfo.InvariantCulture));                 //EndBlanckWait
-            SetOrMakeValue(XProjectionSetting, "LineWait", ProjectionSetting.LineWait.ToString(CultureInfo.InvariantCulture));                 //StartLineWait
-            SetOrMakeValue(XProjectionSetting, "BlankTail", ProjectionSetting.BlankTail.ToString(CultureInfo.InvariantCulture));
-            SetOrMakeValue(XProjectionSetting, "LineTail", ProjectionSetting.LineTail.ToString(CultureInfo.InvariantCulture));
-
-            SetOrMakeValue(XProjectionSetting, "ParallelLineCount", ProjectionSetting.ParallelLineCount.ToString(CultureInfo.InvariantCulture));
-            SetOrMakeValue(XProjectionSetting, "ParallelLineMargin", ProjectionSetting.ParallelLineMargin.ToString(CultureInfo.InvariantCulture));
-
-            SetOrMakeValue(XProjectionSetting, "CRS", ProjectionSetting.PointStep.Value.ToString());
-
-            return XProjectionSetting;
         }
 
         private static XElement WriteXLaserMeter(VLTLaserMeters _lmeter)
@@ -395,9 +276,9 @@ namespace CadProjectorViewer.Configurations
                 {
                     Guid Uid = Guid.Parse(dvs.Attribute("Uid").Value);
                     DeviceType deviceType = (DeviceType)int.Parse(dvs.Attribute("Type").Value);
-                    LProjector lProjector = GetDevice(dvs, appMainModel.Projectors.Count, deviceType);
-                    lProjector.GetLicenseStatus = appMainModel.LockKey.GetLicense;
-                    appMainModel.Projectors.Add(lProjector);
+                    //LProjector lProjector = GetDevice(dvs, appMainModel.Projectors.Count, deviceType);
+                    //lProjector.GetLicenseStatus = appMainModel.LockKey.GetLicense;
+                    //appMainModel.Projectors.Add(lProjector);
                 }
                 catch
                 {
@@ -436,8 +317,7 @@ namespace CadProjectorViewer.Configurations
                 DefaultScaleY = double.Parse(GetOrMakeValue(XScene, "DefaultScaleY", "1")),
                 Size = new CadRect3D(
                     new CadAnchor(CadPoint3D.Parse(GetOrMakeValue(XSize, "Point1", "0;0;0"))),
-                    new CadAnchor(CadPoint3D.Parse(GetOrMakeValue(XSize, "Point2", "3000;3000;3000")))),
-                ProjectionSetting = GetProjectionSetting(XScene, true)
+                    new CadAnchor(CadPoint3D.Parse(GetOrMakeValue(XSize, "Point2", "3000;3000;3000"))))
             };
 
             XElement XMasks = GetOrMakeElement(XScene, "Masks", string.Empty);
@@ -484,151 +364,17 @@ namespace CadProjectorViewer.Configurations
         }
 
 
-        private static LProjector GetDevice(XElement XDevice, int Number, DeviceType deviceType)
+        private static EllipsoideCorrector GetEllipsoid(XElement XEllipsoid)
         {
-            if (XDevice != null)
-            {
-                if (XDevice != null)
-                {
-                    IPAddress iPAddress = IPAddress.Parse(XDevice.Attribute("IP").Value);
-                    LProjector _device = DevicesMg.GetDeviceAsync(iPAddress, deviceType, Number).Result;
-                    _device.Uid = Guid.Parse(GetOrMakeAttributeValue(XDevice, "Uid", deviceType.ToString()));
-
-                    _device.NameID = GetOrMakeAttributeValue(XDevice, "Name", deviceType.ToString());
-                    _device.TimeColorShift = double.Parse(GetOrMakeValue(XDevice, "TimeColorShift", _device.TimeColorShift.ToString(CultureInfo.InvariantCulture)), CultureInfo.InvariantCulture);
-
-                    _device.Alpha = double.Parse(GetOrMakeValue(XDevice, "Alpha", _device.Alpha.ToString(CultureInfo.InvariantCulture)), CultureInfo.InvariantCulture);
-                    _device.FPS = int.Parse(GetOrMakeValue(XDevice, "FPS", _device.FPS.ToString(CultureInfo.InvariantCulture)));
-                    _device.ScanRate = int.Parse(GetOrMakeValue(XDevice, "ScanRate", _device.ScanRate.ToString(CultureInfo.InvariantCulture)));                    //ScanRateRealc
-
-                    _device.HeightResolution = double.Parse(GetOrMakeValue(XDevice, "HeightResolution", _device.HeightResolution.ToString(CultureInfo.InvariantCulture)));
-                    _device.WidthResolutuon = double.Parse(GetOrMakeValue(XDevice, "WidthResolutuon", _device.WidthResolutuon.ToString(CultureInfo.InvariantCulture)));
-
-                    _device.InvertedX = bool.Parse(GetOrMakeValue(XDevice, "InvertedX", _device.InvertedX.ToString(CultureInfo.InvariantCulture)));                             //InvertedX
-                    _device.InvertedY = bool.Parse(GetOrMakeValue(XDevice, "InvertedY", _device.InvertedY.ToString(CultureInfo.InvariantCulture)));
-                    _device.OnlySelectMesh = bool.Parse(GetOrMakeValue(XDevice, "OnlySelectMesh", "False"));
-
-                    _device.OwnedSetting = bool.Parse(GetOrMakeValue(XDevice, "OwnedSetting", "False"));
-                    _device.PolyMeshUsed = bool.Parse(GetOrMakeValue(XDevice, "PolyMeshUsed", "False"));
-
-                    XElement XSize = GetOrMakeElement(XDevice, "Size", string.Empty);
-                    _device.Size = new CadRect3D
-                        (CadAnchor.Parse(GetOrMakeValue(XSize, "Point1", "0; 0; 0")),
-                        CadAnchor.Parse(GetOrMakeValue(XSize, "Point2", "1; 1; 1")),
-                        true);
-
-                    if (_device.OwnedSetting == true) _device.ProjectionSetting = GetProjectionSetting(XDevice, false);
-
-                    ///
-                    /// Meshes
-                    ///
-
-                    _device.UseEllipsoid = bool.Parse(GetOrMakeValue(XDevice, "UseEllipsoid", _device.UseEllipsoid.ToString(CultureInfo.InvariantCulture)));
-                    XElement XEllipsoid = GetOrMakeElement(XDevice, "Ellipsoid", string.Empty);
-                    _device.Ellipsoid = GetEllipsoid(XEllipsoid);
-
-                    XElement XMeshes = GetOrMakeElement(XDevice, "Meshes", string.Empty);
-
-                    foreach(XElement XMesh in XMeshes.Elements())
-                    {
-                        _device.Meshes.Add(GetDeviceMesh(XMesh, _device));
-                    }
-
-                    XElement XSMeshes = GetOrMakeElement(XDevice, "SelectMeshes", string.Empty);
-                    foreach (XElement XUid in XSMeshes.Elements())
-                    {
-                       if (_device.GetMeshByID(Guid.Parse(XUid.Value)) is ProjectorMesh mesh)
-                        {
-                            _device.AddSelectMesh(mesh);
-                        }
-                    }
-                    _device.SelectMesh = _device.GetMeshByID(Guid.Parse(GetOrMakeValue(XDevice, "SelectMesh", Guid.Empty.ToString())));
-
-                    return _device;
-                }               
-            }
-            return null;
-        }
-
-        private static CorrectionEllipsoid GetEllipsoid(XElement XEllipsoid)
-        {
-            CorrectionEllipsoid ellipsoid = new CorrectionEllipsoid()
+            EllipsoideCorrector ellipsoid = new EllipsoideCorrector()
             {
                 AngleX = double.Parse(GetOrMakeValue(XEllipsoid, "AngleX", (Math.PI * 0.25).ToString(CultureInfo.InvariantCulture)), CultureInfo.InvariantCulture),
-                AngleY = double.Parse(GetOrMakeValue(XEllipsoid, "AngleY", (Math.PI * 0.25).ToString(CultureInfo.InvariantCulture)), CultureInfo.InvariantCulture),
-                KoeffX = double.Parse(GetOrMakeValue(XEllipsoid, "KoeffX", "0"), CultureInfo.InvariantCulture),
-                UseAxisCorrection = bool.Parse(GetOrMakeValue(XEllipsoid, "UseAxisCorrection", "false"))
+                AngleY = double.Parse(GetOrMakeValue(XEllipsoid, "AngleY", (Math.PI * 0.25).ToString(CultureInfo.InvariantCulture)), CultureInfo.InvariantCulture)
             };
-
-            
-            //XElement XAxisCor = XEllipsoid.Element("XAxisCorrect");
-            //if (XAxisCor != null)
-            //{
-            //    ellipsoid.XAxisCorrect.Clear();
-            //    for (int i = 0; i < XAxisCor.Elements().Count(); i += 1)
-            //    {
-            //        XAttribute attribute = XAxisCor.Elements().ElementAt(i).Attribute("Value");
-            //        ellipsoid.XAxisCorrect.Add(new DoubleValue(double.Parse(attribute.Value, CultureInfo.InvariantCulture)));
-            //    }
-            //}
-
-            
-            //XElement YAxisCor = XEllipsoid.Element("YAxisCorrect");
-            //if (YAxisCor != null)
-            //{
-            //    ellipsoid.YAxisCorrect.Clear();
-            //    for (int i = 0; i < YAxisCor.Elements().Count(); i += 1)
-            //    {
-            //        XAttribute attribute = YAxisCor.Elements().ElementAt(i).Attribute("Value");
-            //        ellipsoid.YAxisCorrect.Add(new DoubleValue(double.Parse(attribute.Value, CultureInfo.InvariantCulture)));
-            //    }
-            //}
 
             return ellipsoid;
         }
 
-        private static LProjectionSetting GetProjectionSetting(XElement ObjectElement, bool force = false)
-        {
-            if (ObjectElement.Element("ProjectionSetting") != null)
-            {
-                XElement XProjectionSetting = ObjectElement.Element("ProjectionSetting");
-
-                LProjectionSetting lProjectionSetting = new LProjectionSetting();
-
-                lProjectionSetting.FindSolidElement = bool.Parse(GetOrMakeValue(XProjectionSetting, "FindSolidElement", false.ToString(CultureInfo.InvariantCulture)));
-                lProjectionSetting.PathFindDeep = int.Parse(GetOrMakeValue(XProjectionSetting, "PathFindDeep", 1.ToString(CultureInfo.InvariantCulture)));
-
-                //Red
-                lProjectionSetting.Red = byte.Parse(GetOrMakeValue(XProjectionSetting, "Red", 255.ToString(CultureInfo.InvariantCulture)));
-                lProjectionSetting.RedOn = bool.Parse(GetOrMakeValue(XProjectionSetting, "RedOn", true.ToString(CultureInfo.InvariantCulture)));
-                //Green
-                lProjectionSetting.Green = byte.Parse(GetOrMakeValue(XProjectionSetting, "Green", 255.ToString(CultureInfo.InvariantCulture)));
-                lProjectionSetting.GreenOn = bool.Parse(GetOrMakeValue(XProjectionSetting, "GreenOn", true.ToString(CultureInfo.InvariantCulture)));
-                //Blue
-                lProjectionSetting.Blue = byte.Parse(GetOrMakeValue(XProjectionSetting, "Blue", 255.ToString(CultureInfo.InvariantCulture)));
-                lProjectionSetting.BlueOn = bool.Parse(GetOrMakeValue(XProjectionSetting, "BlueOn", true.ToString(CultureInfo.InvariantCulture)));
-
-
-                lProjectionSetting.BlankWait = byte.Parse(GetOrMakeValue(XProjectionSetting, "BlankWait", 4.ToString(CultureInfo.InvariantCulture)));               //EndBlanckWait
-                lProjectionSetting.LineWait = byte.Parse(GetOrMakeValue(XProjectionSetting, "LineWait", 4.ToString(CultureInfo.InvariantCulture)));             //StartLineWai
-                lProjectionSetting.BlankTail = double.Parse(GetOrMakeValue(XProjectionSetting, "BlankTail", 0.5.ToString(CultureInfo.InvariantCulture)), CultureInfo.InvariantCulture);
-                lProjectionSetting.LineTail = double.Parse(GetOrMakeValue(XProjectionSetting, "LineTail", 0.5.ToString(CultureInfo.InvariantCulture)), CultureInfo.InvariantCulture);
-
-                lProjectionSetting.ParallelLineCount = int.Parse(GetOrMakeValue(XProjectionSetting, "ParallelLineCount", 0.ToString(CultureInfo.InvariantCulture)));
-                lProjectionSetting.ParallelLineMargin = int.Parse(GetOrMakeValue(XProjectionSetting, "ParallelLineMargin", 10.ToString(CultureInfo.InvariantCulture)));
-
-
-                lProjectionSetting.PointStep = MDouble.Parse(GetOrMakeValue(XProjectionSetting, "CRS", "35"));
-
-                return lProjectionSetting;
-            }
-            else if (force == true)
-            {
-                return new LProjectionSetting();
-            }
-
-            else return null;
-        }
 
         public static ProjectorMesh GetDeviceMesh(XElement XMesh, LProjector device)
         {
@@ -642,10 +388,7 @@ namespace CadProjectorViewer.Configurations
                 XElement XSize = GetOrMakeElement(XMesh, "Size", string.Empty);
                 mesh.Size = new CadRect3D(
                     new CadAnchor(CadPoint3D.Parse(GetOrMakeValue(XSize, "Point1", "0;0;0"))),
-                    new CadAnchor(CadPoint3D.Parse(GetOrMakeValue(XSize, "Point2", "1;1;1"))))
-                    { 
-                        Multiply = device.GetSize
-                    };
+                    new CadAnchor(CadPoint3D.Parse(GetOrMakeValue(XSize, "Point2", "1;1;1"))));
                 ;
 
                 if (XMesh.Descendants("Point").Count() > 0)
@@ -661,10 +404,7 @@ namespace CadProjectorViewer.Configurations
                             CadAnchor anchor = new CadAnchor(
                                 double.Parse(Xpoint.Attribute("X").Value.Trim('"'), CultureInfo.InvariantCulture),
                                 double.Parse(Xpoint.Attribute("Y").Value.Trim('"'), CultureInfo.InvariantCulture),
-                                0)
-                            {
-                                Multiply = device.GetSize
-                            };
+                                0);
 
                             newPoints[i, j] = anchor;
 
@@ -681,7 +421,7 @@ namespace CadProjectorViewer.Configurations
                 return mesh;
             }
 
-            return new ProjectorMesh(ProjectorMesh.MakeMeshPoint(5, 5, device.GetSize), XMesh.Name.LocalName, MeshTypes.NONE);
+            return new ProjectorMesh(ProjectorMesh.MakeMeshPoint(5, 5), XMesh.Name.LocalName, MeshTypes.NONE);
         }
         #endregion
 

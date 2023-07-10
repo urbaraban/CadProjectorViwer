@@ -1,17 +1,11 @@
-﻿using System;
-using System.Threading.Tasks;
+﻿
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Media.Media3D;
-using CadProjectorViewer.Calibration;
-using CadProjectorSDK;
-using CadProjectorSDK.Device;
 using CadProjectorSDK.CadObjects;
 using AppSt = CadProjectorViewer.Properties.Settings;
 using CadProjectorViewer.ViewModel;
-using CadProjectorSDK.CadObjects.Interfaces;
 
 namespace CadProjectorViewer.CanvasObj
 {
@@ -103,10 +97,6 @@ namespace CadProjectorViewer.CanvasObj
                     case "common_Remove":
                         this.CadObject.Remove();
                         break;
-                    case "common_Edit":
-                        DotEdit dotEdit = new DotEdit() { DataContext = this };
-                        dotEdit.Show();
-                        break;
                 }
             }
         }
@@ -116,14 +106,14 @@ namespace CadProjectorViewer.CanvasObj
             RenderDeviceModel deviceModel = this.GetViewModel?.Invoke();
             double _size = deviceModel.Thinkess * 4;
 
-            Point ProportionPoint = deviceModel.GetProportion(this.Point.MX, this.Point.MY);
-            Point RenderPoint = deviceModel.GetPoint(ProportionPoint.X, ProportionPoint.Y);
+            //Point ProportionPoint = deviceModel.GetProportion(this.Point.MX, this.Point.MY);
+            //Point RenderPoint = deviceModel.GetPoint(ProportionPoint.X, ProportionPoint.Y);
 
-            drawingContext.PushTransform(new TranslateTransform(RenderPoint.X, RenderPoint.Y));
-            drawingContext.DrawGeometry(
-                myBack, 
-                new Pen(Brushes.Black, _size * 0.1), 
-                new RectangleGeometry(new Rect(-_size / 2, -_size / 2, _size, _size)));
+            //drawingContext.PushTransform(new TranslateTransform(RenderPoint.X, RenderPoint.Y));
+            //drawingContext.DrawGeometry(
+            //    myBack, 
+            //    new Pen(Brushes.Black, _size * 0.1), 
+            //    new RectangleGeometry(new Rect(-_size / 2, -_size / 2, _size, _size)));
         }
     }
 }

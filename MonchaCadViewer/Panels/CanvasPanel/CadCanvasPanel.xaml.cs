@@ -210,19 +210,19 @@ namespace CadProjectorViewer.Panels.CanvasPanel
         {
             if (ViewModel.RenderingDisplay is ProjectionScene scene)
             {
-                Random rnd = new Random();
-                foreach (LProjector monchaDevice in scene.Projectors)
-                {
-                    SolidColorBrush ColorBrush = new SolidColorBrush();
-                    ColorBrush.Color = Colors.Azure;
-                    scene.Clear();
-                    scene.Add(monchaDevice.Size);
+                //Random rnd = new Random();
+                //foreach (LProjector monchaDevice in scene.Projectors)
+                //{
+                //    SolidColorBrush ColorBrush = new SolidColorBrush();
+                //    ColorBrush.Color = Colors.Azure;
+                //    scene.Clear();
+                //    scene.Add(monchaDevice.Size);
 
-                    foreach (ProjectorMesh mesh in monchaDevice.SelectedMeshes)
-                    {
-                        scene.Add(mesh.Size);
-                    }
-                }
+                //    foreach (ProjectorMesh mesh in monchaDevice.SelectedMeshes)
+                //    {
+                //        scene.Add(mesh.Size);
+                //    }
+                //}
             }
 
         }
@@ -302,7 +302,7 @@ namespace CadProjectorViewer.Panels.CanvasPanel
                     {
                         if (lDevice.RenderObjects.Count > 0)
                         {
-                            outstring += $"\n {lDevice.NameID}: {LFrameConverter.GetAlreadyScan(lDevice.RenderObjects) * lDevice.FPS * 1.3} pts";
+                            outstring += $"\n {lDevice.Name}: {LFrameConverter.GetAlreadyScan(lDevice.RenderObjects)} pts";
                         }
                     }
                 }

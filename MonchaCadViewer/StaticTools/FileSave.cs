@@ -14,6 +14,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Linq;
 using Microsoft.Win32;
+using CadProjectorSDK.Device.Controllers;
 
 namespace CadProjectorViewer.StaticTools
 {
@@ -60,11 +61,13 @@ namespace CadProjectorViewer.StaticTools
                         elements = GraphExtensions.FindShortestCollection(
                             elements, lProjectors[i].ProjectionSetting.PathFindDeep, lProjectors[i].ProjectionSetting.FindSolidElement);
                     }
-                    var vectorLine = GraphExtensions.GetVectorLines(elements);
+                    var vectorLines = GraphExtensions.GetVectorLines(elements);
+
+                    VectorLinesCollection solid = LFrameConverter.SolidFrame(vectorLines, lProjectors[i]);
 
                     ildaWriter.Write(($"{saveFileDialog.FileName.Replace(".ild", string.Empty)}_{i}_{lProjectors[i].IPAddress}.ild"),
                         new List<LFrame>() {
-                            LFrameConverter.SolidLFrame(vectorLine, lProjectors[i])
+                            MonchaProjector.GetLFrame(lProjectors[i], solid)
                         ?? new LFrame() }, 5);
                 }
             }

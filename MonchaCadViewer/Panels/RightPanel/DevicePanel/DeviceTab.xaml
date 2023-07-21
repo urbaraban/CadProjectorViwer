@@ -154,13 +154,12 @@
                                                 Maximum="60"
                                                 Minimum="10" />
                     </DockPanel>
-                    <Label x:Name="ScanRateLabel"
-                           Width="auto"
+                    <Label Width="auto"
                            Content="{DynamicResource dvc_SRC}"/>
 
                     <Slider DataContext="{Binding SelectedItem, ElementName=DeviceCombo}"
                             Value="{Binding ScanRate, Mode=TwoWay}"
-                            Maximum="60000"
+                            Maximum="40000"
                             Minimum="500"
                             PreviewMouseDown="ScanRateRealSlider_PreviewMouseDown"
                             SmallChange="1" />
@@ -178,7 +177,7 @@
                     Minimum="-1"
                     Interval="0.00001" />
                 </DockPanel>
-
+                <Separator />
             </StackPanel>
             
         </DockPanel>

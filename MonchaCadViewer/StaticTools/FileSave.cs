@@ -63,7 +63,7 @@ namespace CadProjectorViewer.StaticTools
                     }
                     var vectorLines = GraphExtensions.GetVectorLines(elements);
 
-                    VectorLinesCollection solid = LFrameConverter.SolidFrame(vectorLines, lProjectors[i]);
+                    VectorLinesCollection solid = LFrameConverter.SolidFrame(vectorLines);
 
                     ildaWriter.Write(($"{saveFileDialog.FileName.Replace(".ild", string.Empty)}_{i}_{lProjectors[i].IPAddress}.ild"),
                         new List<LFrame>() {

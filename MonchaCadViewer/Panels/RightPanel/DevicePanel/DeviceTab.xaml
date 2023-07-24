@@ -159,8 +159,9 @@
 
                     <Slider DataContext="{Binding SelectedItem, ElementName=DeviceCombo}"
                             Value="{Binding ScanRate, Mode=TwoWay}"
-                            Maximum="40000"
+                            Maximum="{Binding MaxScanRate}"
                             Minimum="500"
+                            ToolTip="{Binding ScanRate, Mode=TwoWay}"
                             PreviewMouseDown="ScanRateRealSlider_PreviewMouseDown"
                             SmallChange="1" />
 

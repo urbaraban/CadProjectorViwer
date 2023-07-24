@@ -269,6 +269,9 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Dialogs\DeviceManaged\AddDeviceByIpDialog.xaml.cs">
+      <DependentUpon>AddDeviceByIpDialog.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Dialogs\EllipsoidSettingDialog.xaml.cs">
       <DependentUpon>EllipsoidSettingDialog.xaml</DependentUpon>
     </Compile>
@@ -386,6 +389,10 @@
     <Compile Include="ViewModel\NotifyModel.cs" />
     <Compile Include="ViewModel\RenderDeviceModel.cs" />
     <Compile Include="ViewModel\Scene\SceneModel.cs" />
+    <Page Include="Dialogs\DeviceManaged\AddDeviceByIpDialog.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Dialogs\DeviceManaged\ProjectorView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

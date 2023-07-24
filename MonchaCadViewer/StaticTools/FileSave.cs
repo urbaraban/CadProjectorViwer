@@ -1,20 +1,10 @@
 ﻿using CadProjectorSDK.CadObjects.Abstract;
-using CadProjectorSDK.Config;
 using CadProjectorSDK.Device;
-using CadProjectorSDK.Render.Graph;
-using CadProjectorSDK.Render;
 using CadProjectorSDK.Scenes;
 using CadProjectorSDK.Tools.ILDA;
-using CadProjectorSDK.Tools;
-using StclLibrary.Laser;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Xml.Linq;
 using Microsoft.Win32;
-using CadProjectorSDK.Device.Controllers;
+using System.Collections.Generic;
+using System.Xml.Linq;
 
 namespace CadProjectorViewer.StaticTools
 {
@@ -54,21 +44,10 @@ namespace CadProjectorViewer.StaticTools
             {
                 for (int i = 0; i < lProjectors.Length; i += 1)
                 {
-                    IList<IRenderedObject> elements = GraphExtensions.SolidVectors(lProjectors[i].RenderObjects, lProjectors[i]);
-                    if (lProjectors[i].Optimized == true && elements.Count > 0)
-                    {
-                        //vectorLines = VectorLinesCollection.Optimize(vectorLines);
-                        elements = GraphExtensions.FindShortestCollection(
-                            elements, lProjectors[i].ProjectionSetting.PathFindDeep, lProjectors[i].ProjectionSetting.FindSolidElement);
-                    }
-                    var vectorLines = GraphExtensions.GetVectorLines(elements);
-
-                    VectorLinesCollection solid = LFrameConverter.SolidFrame(vectorLines);
-
                     ildaWriter.Write(($"{saveFileDialog.FileName.Replace(".ild", string.Empty)}_{i}_{lProjectors[i].IPAddress}.ild"),
-                        new List<LFrame>() {
-                            MonchaProjector.GetLFrame(lProjectors[i], solid)
-                        ?? new LFrame() }, 5);
+                        new List<IldaFrame>() {
+                            lProjectors[i].IldFrame
+                        ?? new IldaFrame() }, 5);
                 }
             }
         }

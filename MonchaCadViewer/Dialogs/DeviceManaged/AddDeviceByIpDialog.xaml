@@ -70,7 +70,7 @@
             Content="Cancel"
             HorizontalAlignment="Stretch"
             Grid.Row="3" 
-            VerticalAlignment="Stretch"/>
+            VerticalAlignment="Stretch" Click="Button_Click"/>
         <ComboBox Grid.Column="3"
                   ItemsSource="{Binding DeviceTypes}"
                   SelectedItem="{Binding SelectType}"

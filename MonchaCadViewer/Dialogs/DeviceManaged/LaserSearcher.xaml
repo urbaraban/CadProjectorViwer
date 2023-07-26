@@ -62,7 +62,7 @@
                     HorizontalAlignment="Left"
                     Click="SearchBtn_Click"/>
             <Button x:Name="AddVirtualBtn" 
-                    Content="Add Virtual" 
+                    Content="Add Manual" 
                     HorizontalAlignment="Left"
                     Click="AddVirtualBtn_Click"/>
         </DockPanel>

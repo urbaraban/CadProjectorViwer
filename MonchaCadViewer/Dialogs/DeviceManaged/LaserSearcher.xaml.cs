@@ -10,6 +10,8 @@ using System.Windows;
 using System.Net.NetworkInformation;
 using CadProjectorSDK.Tools;
 using CadProjectorSDK.Interfaces;
+using CadProjectorViewer.Dialogs.DeviceManaged;
+using CadProjectorViewer.ViewModel.Devices;
 
 namespace CadProjectorViewer
 {
@@ -97,7 +99,9 @@ namespace CadProjectorViewer
 
         private void AddVirtualBtn_Click(object sender, RoutedEventArgs e)
         {
-            ProjectorHub.Projectors.Add(new VirtualProjector());
+            var dialog = new AddDeviceByIpDialog();
+            dialog.DataContext = new AddDeviceViewModel(ProjectorHub);
+            dialog.Show();
         }
 
         private void SearchBtn_Click(object sender, RoutedEventArgs e)

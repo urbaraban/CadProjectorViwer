@@ -307,9 +307,6 @@
     <Compile Include="Dialogs\DeviceManaged\ProjectorView.xaml.cs">
       <DependentUpon>ProjectorView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Dialogs\DotEdit.xaml.cs">
-      <DependentUpon>DotEdit.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Dialogs\MakeMeshSplitDialog.xaml.cs">
       <DependentUpon>MakeMeshSplitDialog.xaml</DependentUpon>
     </Compile>
@@ -400,10 +397,6 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Dialogs\CreateGridWindow.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Dialogs\DotEdit.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

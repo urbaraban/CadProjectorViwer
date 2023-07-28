@@ -6,7 +6,6 @@
              xmlns:converters="clr-namespace:CadProjectorViewer.Converters"
              xmlns:canvaspanel="clr-namespace:CadProjectorViewer.Panels.CanvasPanel"
              xmlns:scene="clr-namespace:CadProjectorViewer.ViewModel.Scene"
-             xmlns:Controls="http://metro.mahapps.com/winfx/xaml/controls"
              d:DataContext="{d:DesignInstance Type=scene:SceneModel}"
              x:Name="CanvasPanel"
              mc:Ignorable="d"
@@ -122,8 +121,7 @@
                             </DataTemplate>
                         </ItemsControl.ItemTemplate>
                     </ItemsControl>
-                    <ItemsControl
-                        ItemsSource="{Binding Scene}">
+                    <ItemsControl ItemsSource="{Binding Scene}">
                         <ItemsControl.ItemsPanel>
                             <ItemsPanelTemplate>
                                 <Canvas x:Name="ObjCanvas"

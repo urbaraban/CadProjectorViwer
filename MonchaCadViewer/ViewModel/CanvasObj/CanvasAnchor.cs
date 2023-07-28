@@ -1,17 +1,10 @@
-﻿using System;
-using System.Threading.Tasks;
+﻿using CadProjectorSDK.CadObjects;
+using CadProjectorViewer.ViewModel;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Media.Media3D;
-using CadProjectorViewer.Calibration;
-using CadProjectorSDK;
-using CadProjectorSDK.Device;
-using CadProjectorSDK.CadObjects;
 using AppSt = CadProjectorViewer.Properties.Settings;
-using CadProjectorViewer.ViewModel;
-using CadProjectorSDK.CadObjects.Interfaces;
 
 namespace CadProjectorViewer.CanvasObj
 {
@@ -103,10 +96,6 @@ namespace CadProjectorViewer.CanvasObj
                     case "common_Remove":
                         this.CadObject.Remove();
                         break;
-                    case "common_Edit":
-                        DotEdit dotEdit = new DotEdit() { DataContext = this };
-                        dotEdit.Show();
-                        break;
                 }
             }
         }
@@ -114,10 +103,15 @@ namespace CadProjectorViewer.CanvasObj
         protected override void OnRender(DrawingContext drawingContext)
         {
             RenderDeviceModel deviceModel = this.GetViewModel?.Invoke();
-            double _size = deviceModel.Thinkess * 4;
-
-            Point ProportionPoint = deviceModel.GetProportion(this.Point.MX, this.Point.MY);
-            Point RenderPoint = deviceModel.GetPoint(ProportionPoint.X, ProportionPoint.Y);
+            double _size = 1;
+            var ProportionPoint = new Point(0, 0);
+            var RenderPoint = new Point(0, 0);
+            if (deviceModel != null)
+            {
+                _size = deviceModel.Thinkess * 4;
+                ProportionPoint = deviceModel.GetProportion(this.Point.MX, this.Point.MY);
+                RenderPoint = deviceModel.GetPoint(ProportionPoint.X, ProportionPoint.Y);
+            }
 
             drawingContext.PushTransform(new TranslateTransform(RenderPoint.X, RenderPoint.Y));
             drawingContext.DrawGeometry(

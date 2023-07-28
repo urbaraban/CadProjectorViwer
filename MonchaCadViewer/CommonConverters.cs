@@ -99,6 +99,7 @@ namespace CadProjectorViewer.Converters
             if (values[0] is UidObject uidObject)
             {
                 CanvasObject canvasObject = new CanvasObject(uidObject, true);
+
                 if (values[1] is RenderDeviceModel renderDeviceModel)
                 {
                     canvasObject.GetViewModel = () => renderDeviceModel;

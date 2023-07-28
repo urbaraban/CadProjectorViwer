@@ -29,7 +29,6 @@ namespace CadProjectorViewer.Panels
             InitializeComponent();
         }
 
-
         private void TreeBaseMesh(object sender, MouseButtonEventArgs e)
         {
             if (sender is TreeViewItem BaseMeshItem && BaseMeshItem.Parent is TreeViewItem DeviceTree)

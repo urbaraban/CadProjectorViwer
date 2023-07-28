@@ -1,20 +1,16 @@
-﻿using CadProjectorViewer.CanvasObj;
-using CadProjectorSDK;
-using CadProjectorSDK.Device;
-using System;
-using System.ComponentModel;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Media;
-using AppSt = CadProjectorViewer.Properties.Settings;
-using CadProjectorSDK.CadObjects;
+﻿using CadProjectorSDK.CadObjects;
+using CadProjectorSDK.CadObjects.Abstract;
 using CadProjectorSDK.Device.Mesh;
 using CadProjectorSDK.Scenes;
-using System.Windows.Data;
-using System.Globalization;
-using CadProjectorSDK.CadObjects.Abstract;
-using System.Windows.Input;
+using CadProjectorViewer.ViewModel.Scene;
 using Microsoft.Xaml.Behaviors.Core;
+using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Globalization;
+using System.Windows;
+using System.Windows.Data;
+using System.Windows.Input;
 
 namespace CadProjectorViewer
 {
@@ -81,11 +77,14 @@ namespace CadProjectorViewer
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
+            var scene = new ProjectionScene() { Size = new CadRect3D(1000, 1000, 0) };
             if (value is UidObject obj)
             {
-                return new ProjectionScene(obj) { Size = new CadRect3D(1000, 1000, 0) };
+                scene.Size.Width = obj.Bounds.Width;
+                scene.Size.Height = obj.Bounds.Height;
+                scene.Add(obj);
             }
-            return new ProjectionScene() { Size = new CadRect3D(1000, 1000, 0) };
+            return new SceneModel(scene);
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)

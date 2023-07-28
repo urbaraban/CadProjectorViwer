@@ -42,13 +42,11 @@ namespace CadProjectorViewer.Panels.CanvasPanel
             set => this.Translate.Y = value;
         }
 
-
         public CadCanvasPanel()
         {
             InitializeComponent();
             UpdateTransform(null, true);
         }
-
 
         public void UpdateTransform(TransformGroup transformGroup, bool ResetPosition)
         {

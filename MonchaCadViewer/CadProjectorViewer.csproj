@@ -382,6 +382,7 @@
     <Compile Include="Opening\GCToCad.cs" />
     <Compile Include="StaticTools\HotKeysManager.cs" />
     <Compile Include="ViewModel\Devices\AddDeviceViewModel.cs" />
+    <Compile Include="ViewModel\Devices\DeviceFinderViewModel.cs" />
     <Compile Include="ViewModel\Devices\DeviceItem.xaml.cs">
       <DependentUpon>DeviceItem.xaml</DependentUpon>
     </Compile>

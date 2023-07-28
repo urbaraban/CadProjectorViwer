@@ -1,5 +1,6 @@
 ﻿using CadProjectorSDK;
 using CadProjectorSDK.Device.Controllers;
+using CadProjectorSDK.Tools;
 using Microsoft.Xaml.Behaviors.Core;
 using System.Windows.Input;
 
@@ -7,7 +8,7 @@ namespace CadProjectorViewer.ViewModel.Devices
 {
     internal class AddDeviceViewModel
     {
-        private ProjectorHub mainModel { get; }
+        private DeviceFinderViewModel mainModel { get; }
 
         public byte ip_1 { get; set; } = 127;
         public byte ip_2 { get; set; } = 0;
@@ -20,23 +21,26 @@ namespace CadProjectorViewer.ViewModel.Devices
 
         public DeviceType[] DeviceTypes => DevicesMg.deviceTypes;
 
-        public AddDeviceViewModel(ProjectorHub model)
+        public AddDeviceViewModel(DeviceFinderViewModel model)
         {
             this.mainModel = model;
         }
 
         public ICommand AddDeviceCommand => new ActionCommand( async () => {
-            var projector = await DevicesMg.GetDeviceAsync(
-                new System.Net.IPAddress(new byte[]
+            var projector = new IpDeviceInfo()
+            {
+                iPAddress = new System.Net.IPAddress(new byte[]
                 {
                     this.ip_1,
                     this.ip_2,
                     this.ip_3,
                     this.ip_4
-                }), 
-                SelectType, 
-                this.Port);
-            this.mainModel.Projectors.Add(projector);
+                }),
+                DvcType = SelectType,
+                IsSelected = true
+            };
+
+            this.mainModel.FindedDevices.Add(projector);
         });
 
     }

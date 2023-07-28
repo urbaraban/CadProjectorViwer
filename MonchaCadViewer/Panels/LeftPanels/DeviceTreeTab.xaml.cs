@@ -1,28 +1,16 @@
-﻿using CadProjectorViewer.CanvasObj;
-using CadProjectorViewer.DeviceManaged;
-using CadProjectorSDK;
+﻿using CadProjectorSDK;
 using CadProjectorSDK.Device;
-using CadProjectorSDK.CadObjects;
+using CadProjectorSDK.Device.Controllers;
+using CadProjectorSDK.Device.Mesh;
+using CadProjectorSDK.Interfaces;
+using CadProjectorViewer.ViewModel.Devices;
 using System;
-using System.Collections.Generic;
 using System.ComponentModel;
-using System.Globalization;
-using System.Linq;
 using System.Runtime.CompilerServices;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using AppSt = CadProjectorViewer.Properties.Settings;
-using CadProjectorSDK.Device.Mesh;
-using CadProjectorSDK.Device.Controllers;
-using CadProjectorSDK.Interfaces;
 
 namespace CadProjectorViewer.Panels
 {
@@ -33,7 +21,6 @@ namespace CadProjectorViewer.Panels
     {
         public event EventHandler<bool> NeedRefresh;
         public event EventHandler<LProjector> DeviceChange;
-
 
         ProjectorHub projectorHub => (ProjectorHub)this.DataContext;
 
@@ -60,7 +47,7 @@ namespace CadProjectorViewer.Panels
             if (sender is TreeViewItem viewItem)
             {
                 if (viewItem.ContextMenu.DataContext is MenuItem cmindex && sender is TreeViewItem treeView)
-
+                {
                     switch (cmindex.Tag)
                     {
                         case "common_ADD":
@@ -68,6 +55,7 @@ namespace CadProjectorViewer.Panels
                             laserMeterWindows.ShowDialog();
                             break;
                     }
+                }
             }
         }
 
@@ -82,7 +70,8 @@ namespace CadProjectorViewer.Panels
 
         private void AddLaser_Click(object sender, RoutedEventArgs e)
         {
-            LaserSearcher DeviceManaged = new LaserSearcher(projectorHub);
+            LaserSearcher DeviceManaged = new LaserSearcher();
+            DeviceManaged.DataContext = new DeviceFinderViewModel(this.projectorHub);
             DeviceManaged.Show();
         }
 

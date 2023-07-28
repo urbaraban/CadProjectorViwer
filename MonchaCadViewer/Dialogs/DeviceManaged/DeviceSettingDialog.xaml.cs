@@ -88,17 +88,6 @@ namespace CadProjectorViewer.Panels.DevicePanel
             }
         }
 
-        private void CheckBtn_Click(object sender, RoutedEventArgs e)
-        {
-            CheckLabel.IsChecked = ProjectorHub.CheckDeviceIP(new IPAddress(new byte[]
-            {
-                byte.Parse(IP1.Text),
-                byte.Parse(IP2.Text),
-                byte.Parse(IP3.Text),
-                byte.Parse(IP4.Text)
-            }));
-        }
-
         private void CheckIsNumeric(TextCompositionEventArgs e)
         {
             char c = Convert.ToChar(e.Text);

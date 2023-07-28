@@ -55,10 +55,7 @@
                 HorizontalContentAlignment="Center"
                 HorizontalAlignment="Center"
                     Margin="3"/>
-            <Button
-                    x:Name="CheckBtn"
-                    Content="Chek"
-                    Click="CheckBtn_Click"
+            <Button Content="Chek"
                     LostFocus="IP_LostFocus"/>
         </DockPanel>
         <DockPanel>

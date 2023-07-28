@@ -1,16 +1,14 @@
 ﻿<Window x:Name="DeviceManagedForm" x:Class="CadProjectorViewer.LaserSearcher"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:CadProjectorViewer" 
-        xmlns:CadProjectorSDK="clr-namespace:CadProjectorSDK;assembly=CadProjectorSDK" 
-        d:DataContext="{d:DesignInstance Type=CadProjectorSDK:ProjectorHub}"
+        xmlns:devices="clr-namespace:CadProjectorViewer.ViewModel.Devices"
+        d:DataContext="{d:DesignInstance Type=devices:DeviceFinderViewModel}"
         mc:Ignorable="d"
         Title="DeviceManaged" 
         SizeToContent="WidthAndHeight"
-        ResizeMode="NoResize"
-        Closing="DeviceManagedForm_Closing">
+        ResizeMode="NoResize">
     <Window.Resources>
         <ResourceDictionary>
             <Style TargetType="Button">
@@ -25,28 +23,29 @@
         </ResourceDictionary>
     </Window.Resources>
     <StackPanel Orientation="Vertical" Margin="15">
-        <ListView x:Name="FoundDeviceList">
+        <ListView ItemsSource="{Binding FindedDevices}">
             <ListView.View>
                 <GridView>
                     <GridViewColumn Header="Name" DisplayMemberBinding="{Binding GetIpString}" />
                     <GridViewColumn Header="Select">
                         <GridViewColumn.CellTemplate>
                             <DataTemplate>
-                                <CheckBox IsChecked="{Binding IsSelected, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"></CheckBox>
+                                <CheckBox IsChecked="{Binding IsSelected}"></CheckBox>
                             </DataTemplate>
                         </GridViewColumn.CellTemplate>
                     </GridViewColumn>
                 </GridView>
             </ListView.View>
         </ListView>
-        <ListView x:Name="MonchaDeviceList">
+        <ListView x:Name="MonchaDeviceList"
+                  ItemsSource="{Binding OldDevices}">
             <ListView.View>
                 <GridView>
                     <GridViewColumn Header="Name" DisplayMemberBinding="{Binding GetIpString}" />
                     <GridViewColumn Header="Select">
                         <GridViewColumn.CellTemplate>
                             <DataTemplate>
-                                <CheckBox IsChecked="{Binding IsSelected, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                                <CheckBox IsChecked="{Binding IsSelected}"/>
                             </DataTemplate>
                         </GridViewColumn.CellTemplate>
                     </GridViewColumn>
@@ -54,17 +53,14 @@
             </ListView.View>
         </ListView>
         <DockPanel>
-            <Button x:Name="OkBtn"
-                    Content="Ok" 
-                    Click="OkBtn_Click"/>
-            <Button x:Name="SearchBtn" 
-                    Content="Search" 
+            <Button Content="Ok" 
+                    Command="{Binding OkCommand}"/>
+            <Button Content="Search" 
                     HorizontalAlignment="Left"
-                    Click="SearchBtn_Click"/>
-            <Button x:Name="AddVirtualBtn" 
-                    Content="Add Manual" 
+                    Command="{Binding SearchCommand}"/>
+            <Button Content="Add Manual" 
                     HorizontalAlignment="Left"
-                    Click="AddVirtualBtn_Click"/>
+                    Command="{Binding ManualAddCommand}"/>
         </DockPanel>
 
     </StackPanel>

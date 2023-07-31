@@ -133,7 +133,7 @@ namespace CadProjectorViewer.Panels.DevicePanel
                 double widthstep = 1d / (GradientSteps * 2);
                 double heightstep = 1d / (GradientSteps * 2);
 
-                VectorLinesCollection dot = new VectorLinesCollection(CadProjectorSDK.Device.Mesh.MeshTypes.NONE);
+                LinesCollection dot = new LinesCollection(CadProjectorSDK.Device.Mesh.MeshTypes.NONE);
                 dot.Add(new VectorLine(0.5, 0.5, 0.5, 0.5, false));
                 elements.Add(dot);
 
@@ -141,7 +141,7 @@ namespace CadProjectorViewer.Panels.DevicePanel
                 {
                     double alreadywstep = Math.Abs(widthstep * (this.GradientStep + i));
                     double alreadyhstep = Math.Abs(heightstep * (this.GradientStep + i));
-                    VectorLinesCollection rect = new VectorLinesCollection(CadProjectorSDK.Device.Mesh.MeshTypes.NONE);
+                    LinesCollection rect = new LinesCollection(CadProjectorSDK.Device.Mesh.MeshTypes.NONE);
 
                     /*
                     VectorLine Line2 = new VectorLine(

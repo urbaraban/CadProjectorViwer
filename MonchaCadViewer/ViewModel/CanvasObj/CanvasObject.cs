@@ -107,7 +107,6 @@ namespace CadProjectorViewer.CanvasObj
         protected Point MousePos = new Point();
         protected Point BasePos = new Point();
 
-        #region TranformObject
         public virtual double X 
         { 
             get => this.CadObject.MX;
@@ -135,14 +134,9 @@ namespace CadProjectorViewer.CanvasObj
                 OnPropertyChanged("Z");
             }
         }
-        #endregion
-
-        #region Variable
 
         public bool ShowName { get; set; } = true;
-
         public bool WasMove { get; set; } = false;
-
         public bool Editing { get; set; } = true;
 
         public bool IsSelected 
@@ -172,7 +166,6 @@ namespace CadProjectorViewer.CanvasObj
                 OnPropertyChanged("IsBlank");
             }
         }
-        #endregion
 
         public CanvasObject(UidObject uidObject, bool ActiveObject)
         {
@@ -467,14 +460,14 @@ namespace CadProjectorViewer.CanvasObj
         {
             foreach(IRenderedObject obj in objects)
             {
-                if (obj is VectorLinesCollection vectorLines)
+                if (obj is LinesCollection vectorLines)
                 {
                     DrawVectorLines(vectorLines, drawingContext, renderDevice, brush, pen);
                 }
             }
         }
 
-        private void DrawVectorLines(VectorLinesCollection vectorLines, DrawingContext drawingContext, RenderDeviceModel renderDevice, Brush brush, Pen pen)
+        private void DrawVectorLines(LinesCollection vectorLines, DrawingContext drawingContext, RenderDeviceModel renderDevice, Brush brush, Pen pen)
         {
             if (vectorLines.Count > 0)
             {

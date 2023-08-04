@@ -70,82 +70,119 @@
                            IsChecked="{Binding ShowCursor}" />
             </StackPanel>
         </DockPanel>
-        <Grid Margin="0" Background="Gray" ClipToBounds="True">
-            <Viewbox 
-              x:Name="CanvasBox"
-              Grid.Row="1" Grid.RowSpan="3"
-              Margin="10"
-              Stretch="Uniform" StretchDirection="Both">
-                <Grid x:Name="CanvasGrid" Background="Red"
-                  Cursor="{Binding Scene.AlreadyAction, Converter={StaticResource CursorAction}}">
-                    <Rectangle Fill="White" 
+        <Grid Margin="0" Background="Gray" >
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="40" />
+                <ColumnDefinition />
+                <ColumnDefinition Width="40" />
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="40" />
+                <RowDefinition />
+                <RowDefinition Height="40" />
+            </Grid.RowDefinitions>
+            <Button Content="Center"
+                    Grid.Column="0"
+                    Grid.Row="0"
+                    Command="{Binding CentertAttachCommand}"/>
+            <Button Content="left"
+                    Grid.Column="0"
+                    Grid.Row="1"
+                    Command="{Binding LeftAttachCommand}"/>
+            <Button Content="right"
+                    Grid.Column="2"
+                    Grid.Row="1"
+                    Command="{Binding RightAttachCommand}"/>
+            <Button Content="top"
+                    Grid.Column="1"
+                    Grid.Row="0"
+                    Command="{Binding TopAttachCommand}"/>
+            <Button Content="bottom"
+                    Grid.Column="1"
+                    Grid.Row="2"
+                    Command="{Binding DownAttachCommand}"/>
+            <Button Content="90"
+                    Grid.Column="2"
+                    Grid.Row="0" 
+                    Command="{Binding RotateCommand}"/>
+            <Grid ClipToBounds="True"
+                  Grid.Row="1"
+                  Grid.Column="1">
+                <Viewbox x:Name="CanvasBox"
+                         Stretch="Uniform" 
+                         StretchDirection="Both"
+                         Margin="5">
+                    <Grid x:Name="CanvasGrid" Background="Red"
+                      Cursor="{Binding Scene.AlreadyAction, Converter={StaticResource CursorAction}}">
+                        <Rectangle Fill="White" 
                                Width="{Binding Scene.Size.Width}" 
                                Height="{Binding Scene.Size.Height}"/>
-                    <Canvas
+                        <Canvas
                     x:Name="BackCanvas"
                     IsHitTestVisible="False"
                     SizeChanged="Canvas_SizeChanged">
-                        <Canvas.Background>
-                            <DrawingBrush TileMode="Tile" Viewport="0,0,200,200"
+                            <Canvas.Background>
+                                <DrawingBrush TileMode="Tile" Viewport="0,0,200,200"
                                      ViewportUnits="Absolute">
-                                <DrawingBrush.Drawing>
-                                    <GeometryDrawing>
-                                        <GeometryDrawing.Geometry>
-                                            <RectangleGeometry Rect="0,0,200,200" />
-                                        </GeometryDrawing.Geometry>
-                                        <GeometryDrawing.Pen>
-                                            <Pen Brush="LightSlateGray" Thickness="3" />
-                                        </GeometryDrawing.Pen>
-                                    </GeometryDrawing>
-                                </DrawingBrush.Drawing>
-                            </DrawingBrush>
-                        </Canvas.Background>
-                    </Canvas>
-                    <ItemsControl ItemsSource="{Binding Scene.Masks}">
-                        <ItemsControl.ItemsPanel>
-                            <ItemsPanelTemplate>
-                                <Canvas/>
-                            </ItemsPanelTemplate>
-                        </ItemsControl.ItemsPanel>
-                        <ItemsControl.ItemTemplate>
-                            <DataTemplate>
-                                <ContentPresenter>
-                                    <ContentPresenter.Content>
-                                        <MultiBinding Converter="{StaticResource CadObjectConverter}">
-                                            <Binding Path="" />
-                                            <Binding ElementName="CanvasPanel" Path="DataContext"/>
-                                            <Binding ElementName="CanvasPanel" Path="Scale"/>
-                                        </MultiBinding>
-                                    </ContentPresenter.Content>
-                                </ContentPresenter>
-                            </DataTemplate>
-                        </ItemsControl.ItemTemplate>
-                    </ItemsControl>
-                    <ItemsControl ItemsSource="{Binding Scene}">
-                        <ItemsControl.ItemsPanel>
-                            <ItemsPanelTemplate>
-                                <Canvas x:Name="ObjCanvas"
+                                    <DrawingBrush.Drawing>
+                                        <GeometryDrawing>
+                                            <GeometryDrawing.Geometry>
+                                                <RectangleGeometry Rect="0,0,200,200" />
+                                            </GeometryDrawing.Geometry>
+                                            <GeometryDrawing.Pen>
+                                                <Pen Brush="LightSlateGray" Thickness="3" />
+                                            </GeometryDrawing.Pen>
+                                        </GeometryDrawing>
+                                    </DrawingBrush.Drawing>
+                                </DrawingBrush>
+                            </Canvas.Background>
+                        </Canvas>
+                        <ItemsControl ItemsSource="{Binding Scene.Masks}">
+                            <ItemsControl.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <Canvas/>
+                                </ItemsPanelTemplate>
+                            </ItemsControl.ItemsPanel>
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <ContentPresenter>
+                                        <ContentPresenter.Content>
+                                            <MultiBinding Converter="{StaticResource CadObjectConverter}">
+                                                <Binding Path="" />
+                                                <Binding ElementName="CanvasPanel" Path="DataContext"/>
+                                                <Binding ElementName="CanvasPanel" Path="Scale"/>
+                                            </MultiBinding>
+                                        </ContentPresenter.Content>
+                                    </ContentPresenter>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                        <ItemsControl ItemsSource="{Binding Scene}">
+                            <ItemsControl.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <Canvas x:Name="ObjCanvas"
                                     d:DataContext="{d:DesignInstance Type=scene:SceneModel}"
                                     Width="{Binding Scene.Size.Width}"
                                     Height="{Binding Scene.Size.Height}"/>
-                            </ItemsPanelTemplate>
-                        </ItemsControl.ItemsPanel>
-                        <ItemsControl.ItemTemplate>
-                            <DataTemplate>
-                                <ContentPresenter>
-                                    <ContentPresenter.Content>
-                                        <MultiBinding Converter="{StaticResource CadObjectConverter}">
-                                            <Binding Path="" />
-                                            <Binding ElementName="ObjCanvas" Path="DataContext"/>
-                                            <Binding ElementName="CanvasPanel" Path="Scale"/>
-                                        </MultiBinding>
-                                    </ContentPresenter.Content>
-                                </ContentPresenter>
-                            </DataTemplate>
-                        </ItemsControl.ItemTemplate>
-                    </ItemsControl>
-                </Grid>
-            </Viewbox>
+                                </ItemsPanelTemplate>
+                            </ItemsControl.ItemsPanel>
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <ContentPresenter>
+                                        <ContentPresenter.Content>
+                                            <MultiBinding Converter="{StaticResource CadObjectConverter}">
+                                                <Binding Path="" />
+                                                <Binding ElementName="ObjCanvas" Path="DataContext"/>
+                                                <Binding ElementName="CanvasPanel" Path="Scale"/>
+                                            </MultiBinding>
+                                        </ContentPresenter.Content>
+                                    </ContentPresenter>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </Grid>
+                </Viewbox>
+            </Grid>
             <Label x:Name="CoordinateLabel"
                Grid.RowSpan="3"
                VerticalContentAlignment="Bottom"
@@ -160,9 +197,10 @@
                     </MultiBinding>
                 </Label.Content>
             </Label>
-            <DockPanel
-                VerticalAlignment="Bottom"
-                HorizontalAlignment="Left">
+            <DockPanel VerticalAlignment="Bottom"
+                       HorizontalAlignment="Left"
+                       Grid.Column="0"
+                       Grid.Row="2">
                 <Label 
                     Content="{Binding ElementName=CanvasPanel, Path=ScaleValue, Converter={StaticResource ScaleConverter}}"/>
                 <Button 

@@ -9,6 +9,7 @@ using CadProjectorViewer.ToCommands;
 using CadProjectorViewer.ToCommands.MainAppCommand;
 using Microsoft.Xaml.Behaviors.Core;
 using System;
+using System.CodeDom;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
@@ -75,6 +76,87 @@ namespace CadProjectorViewer.ViewModel.Scene
         public ICommand CancelActionCommand => new ActionCommand(() => {
             Scene.Break();
         });
+
+        public ICommand CentertAttachCommand => new ActionCommand(() =>
+        {
+            this.Scene.DefAttach = this.GetNewAttach("middle%middle");
+            AttachObjects(this.Scene.DefAttach);
+        });
+
+        public ICommand LeftAttachCommand => new ActionCommand(() =>
+        {   
+            this.Scene.DefAttach = this.GetNewAttach("empty%left");
+            AttachObjects(this.Scene.DefAttach);
+        });
+
+        public ICommand RightAttachCommand => new ActionCommand(() =>
+        {
+            this.Scene.DefAttach = this.GetNewAttach("empty%right");
+            AttachObjects(this.Scene.DefAttach);
+        });
+
+
+        public ICommand TopAttachCommand => new ActionCommand(() =>
+        {
+            this.Scene.DefAttach = this.GetNewAttach("top%empty");
+            AttachObjects(this.Scene.DefAttach);
+        });
+
+        public ICommand DownAttachCommand => new ActionCommand(() =>
+        {
+            this.Scene.DefAttach = this.GetNewAttach("down%empty");
+            AttachObjects(this.Scene.DefAttach);
+        });
+
+        public ICommand RotateCommand => new ActionCommand(() => {
+            IEnumerable<UidObject> objects = GetSelectOrNotObjects();
+            foreach (UidObject obj in objects)
+            {
+                obj.AngleZ += 90;
+            }
+            AttachObjects(this.Scene.DefAttach);
+        });
+
+        private void AttachObjects(string new_attach)
+        {
+            IEnumerable<UidObject> objects = GetSelectOrNotObjects();
+            foreach (UidObject obj in objects)
+            {
+                obj.MagnetToEdge(
+                    this.Size.Bounds,
+                    this.Scene.DefAttach,
+                    this.Scene.AttachDistanceX,
+                    this.Scene.AttachDistanceY);
+            }
+        }
+
+        private string GetNewAttach(string NewAttach)
+        {
+            if (string.IsNullOrEmpty(NewAttach) == false)
+            {
+                string[] new_strings = NewAttach.Split('%');
+                string[] old_strings = this.Scene.DefAttach.Split('%');
+                for (int i = 0; i < new_strings.Length; i += 1)
+                {
+                    if (new_strings[i].ToLower() != "empty")
+                    {
+                        old_strings[i] = new_strings[i];
+                    }
+                }
+                return string.Join("%", old_strings);
+            }
+            return string.Empty;
+        }
+
+        private IEnumerable<UidObject> GetSelectOrNotObjects()
+        {
+            ObservableCollection<UidObject> objects = this.Scene.SelectedObjects;
+            if (objects.Count == 0)
+            {
+                objects = this.Scene;
+            }
+            return objects;
+        }
 
         private List<IToCommand> toCommands { get; } = new List<IToCommand>()
         {

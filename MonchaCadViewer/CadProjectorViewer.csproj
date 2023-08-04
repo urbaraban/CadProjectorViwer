@@ -20,7 +20,7 @@
     <TargetFrameworkProfile />
     <LangVersion>10.0</LangVersion>
     <RunAnalyzersDuringBuild>false</RunAnalyzersDuringBuild>
-    <PublishUrl>Z:\soft\LaserCat\</PublishUrl>
+    <PublishUrl>C:\2CUT\</PublishUrl>
     <Install>true</Install>
     <InstallFrom>Disk</InstallFrom>
     <UpdateEnabled>false</UpdateEnabled>
@@ -36,7 +36,7 @@
     <SuiteName>Viwer</SuiteName>
     <WebPage>publish.htm</WebPage>
     <OpenBrowserOnPublish>false</OpenBrowserOnPublish>
-    <ApplicationRevision>159</ApplicationRevision>
+    <ApplicationRevision>160</ApplicationRevision>
     <ApplicationVersion>0.8.1.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <CreateDesktopShortcut>true</CreateDesktopShortcut>

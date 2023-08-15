@@ -155,7 +155,6 @@ namespace CadProjectorViewer.Opening
                 {
                     return cadGroup;
                 }
-                return null;
             }
             else if (obj is BitmapSource imageSource)
             {

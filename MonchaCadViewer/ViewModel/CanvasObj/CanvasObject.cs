@@ -487,6 +487,9 @@ namespace CadProjectorViewer.CanvasObj
                     ctx.Close();
                 }
                 drawingContext.DrawGeometry(brush, pen, streamGeometry);
+
+                //Geometry rect = new RectangleGeometry(this.Bounds);
+                //drawingContext.DrawGeometry(brush, pen, rect);
             }
         }
 

@@ -480,16 +480,16 @@ namespace CadProjectorViewer.CanvasObj
 
                     for (int i = 0; i < vectorLines.Count; i += 1)
                     {
+                        point = renderDevice.GetPoint(vectorLines[i].P1.X, vectorLines[i].P1.Y);
+                        ctx.BeginFigure(point, vectorLines.IsClosed, vectorLines.IsClosed);
+
                         Point point_second = renderDevice.GetPoint(vectorLines[i].P2.X, vectorLines[i].P2.Y);
-                        ctx.LineTo(point_second, true, false);
+                        ctx.LineTo(point_second, true, true);
                     }
 
                     ctx.Close();
                 }
                 drawingContext.DrawGeometry(brush, pen, streamGeometry);
-
-                //Geometry rect = new RectangleGeometry(this.Bounds);
-                //drawingContext.DrawGeometry(brush, pen, rect);
             }
         }
 

@@ -161,16 +161,12 @@ namespace CadProjectorViewer.ViewModel
                     AppSt.Default.Save();
                     ProgressPanel.End();
                     return false;
-                    break;
                 case MessageBoxResult.No:
                     ProgressPanel.End();
                     return false;
-                    break;
                 case MessageBoxResult.Cancel:
                     ProgressPanel.End();
                     return true;
-                    break;
-
             }
             ProgressPanel.SetProgressBar(2, 2, "Save Setting");
 

@@ -5,7 +5,9 @@ using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Windows;
+using static Microsoft.WindowsAPICodePack.Shell.PropertySystem.SystemProperties.System;
 using AppSt = CadProjectorViewer.Properties.Settings;
 
 namespace CadProjectorViewer
@@ -133,6 +135,12 @@ namespace CadProjectorViewer
                     }
                 }
             }
+        }
+
+        private void PART_TextBox_PreviewTextInput(object sender, System.Windows.Input.TextCompositionEventArgs e)
+        {
+            Regex regex = new Regex("[^0-9]+");
+            e.Handled = regex.IsMatch(e.Text);
         }
     }
 }

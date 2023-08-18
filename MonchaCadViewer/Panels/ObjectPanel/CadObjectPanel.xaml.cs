@@ -20,19 +20,6 @@ namespace CadProjectorViewer.Panels
         }
     }
 
-    /*public class RoundDoubleConverter : IValueConverter
-    {
-        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
-        {
-            return Math.Round((double)value, 3);
-        }
-
-        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
-        {
-            return value;
-        }
-    }*/
-
     public class ScaleConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)

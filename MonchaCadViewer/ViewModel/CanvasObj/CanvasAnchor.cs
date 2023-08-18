@@ -10,8 +10,6 @@ namespace CadProjectorViewer.CanvasObj
 {
     internal class CanvasAnchor : CanvasObject
     {
-        private RectangleGeometry rectangle;
-
         public override Pen GetPen(double StrThink, bool MouseOver, bool Selected, bool Render, bool Blank, SolidColorBrush DefBrush)
         {
             return new Pen(null, 1);

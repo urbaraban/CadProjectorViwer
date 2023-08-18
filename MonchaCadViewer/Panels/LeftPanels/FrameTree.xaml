@@ -91,7 +91,9 @@
             <DockPanel DockPanel.Dock="Top">
                 <Controls:ToggleSwitch Content="MaskActivated" IsOn="{Binding CursorMaskActivated}"/>
             </DockPanel>
-            <Expander DockPanel.Dock="Top" Header ="{DynamicResource dvc_Devices}">
+            <Expander DockPanel.Dock="Top" 
+                      Header ="{DynamicResource dvc_Devices}"
+                      IsExpanded="True">
                 <Expander.HeaderTemplate>
                     <DataTemplate>
                         <StackPanel
@@ -110,6 +112,7 @@
                 </Expander.HeaderTemplate>
                 <StackPanel>
                     <TreeView ItemsSource="{Binding Projectors}"
+                              d:ItemsSource="{d:SampleData ItemCount=2}"
                           SelectedValuePath="{Binding Projectors.SelectedItem}"
                           ItemTemplate="{StaticResource ResourceKey=DeviceTree}"/>
                 </StackPanel>
@@ -152,8 +155,9 @@
                 <TreeView
                     Style="{StaticResource ObjectTreeMainStyle}"
                     ItemsSource="{Binding .}" 
-                    ItemTemplate="{StaticResource ResourceKey=ObjectTree}">
-                </TreeView>
+                    ItemTemplate="{StaticResource ResourceKey=ObjectTree}"
+                    d:ItemsSource="{d:SampleData ItemCount=2}" />
+
 
             </Expander>
 

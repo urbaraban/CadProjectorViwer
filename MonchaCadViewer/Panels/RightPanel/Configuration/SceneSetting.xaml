@@ -26,6 +26,12 @@
                 <Setter Property="Background" Value="LightGray"/>
                 <Setter Property="Margin" Value="5"/>
             </Style>
+            <Style TargetType="Controls:NumericUpDown">
+                <Setter Property="VerticalAlignment" Value="Center" />
+                <Setter Property="NumericInputMode" Value="Decimal" />
+                <Setter Property="Culture" Value="ru-RU" />
+                <EventSetter Event="PreviewTextInput" Handler="NumericUpDown_PreviewTextInput" />
+            </Style>
             <local:Splitter x:Key="Splitter"/>
             <converters:RoundDoubleConverter x:Key="RoundDouble"/>
             <local:AttachConverter x:Key="AttachConverter"/>

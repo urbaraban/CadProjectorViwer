@@ -13,13 +13,26 @@
     d:DesignWidth="490"
     mc:Ignorable="d">
     <UserControl.Resources>
-        <converters:RoundDoubleConverter x:Key="RoundValue"/>
-        <panels:ScaleConverter x:Key="ScaleConverter"/>
-        <Style TargetType="mah:NumericUpDown">
-            <Setter Property="VerticalAlignment" Value="Center" />
-            <Setter Property="NumericInputMode" Value="Decimal" />
-            <Setter Property="Culture" Value="ru-RU" />
-        </Style>
+        <ResourceDictionary>
+            <converters:RoundDoubleConverter x:Key="RoundValue"/>
+            <panels:ScaleConverter x:Key="ScaleConverter"/>
+            <Style TargetType="{x:Type mah:NumericUpDown}">
+                <Setter Property="VerticalAlignment" Value="Center" />
+                <Setter Property="NumericInputMode" Value="Decimal" />
+                <Setter Property="Culture" Value="ru-RU" />
+                <EventSetter Event="PreviewTextInput" Handler="NumericUpDown_PreviewTextInput" />
+                <Style.Triggers>
+                    <Trigger Property="IsFocused" Value="True">
+                        <Setter Property="BorderBrush" Value="Red" />
+                        <Setter Property="BorderThickness" Value="1" />
+                    </Trigger>
+                    <Trigger Property="IsFocused" Value="False">
+                        <Setter Property="BorderBrush" Value="Transparent" />
+                        <Setter Property="BorderThickness" Value="1" />
+                    </Trigger>
+                </Style.Triggers>
+            </Style>
+        </ResourceDictionary>
     </UserControl.Resources>
     <Grid>
         <Grid.RowDefinitions>
@@ -83,7 +96,7 @@
             Value="{Binding ScaleX, Mode=TwoWay, Converter={StaticResource ScaleConverter}}"
             Grid.Column="5" />
         <mah:NumericUpDown Value="{Binding ScaleY, Mode=TwoWay, Converter={StaticResource ScaleConverter}}"
-                           StringFormat="0.00" Grid.Column="5" Grid.Row="1" />
+                           Grid.Column="5" Grid.Row="1" />
         <Label
             VerticalAlignment="Center"
             Content="Z:" Grid.Column="1" Grid.Row="2" />

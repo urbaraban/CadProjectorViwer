@@ -295,6 +295,7 @@
       <DependentUpon>KompasPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="Opening\Formats\Arculator.cs" />
+    <Compile Include="Services\InputValidation.cs" />
     <Compile Include="StaticTools\FileSave.cs" />
     <Compile Include="EthernetServer\TCPTools.cs" />
     <Compile Include="EthernetServer\ToCutEthernetHub.cs" />

@@ -1,10 +1,10 @@
-﻿using MahApps.Metro.Controls;
-using CadProjectorViewer.CanvasObj;
+﻿using CadProjectorViewer.Services;
+using MahApps.Metro.Controls;
 using System;
 using System.Globalization;
-using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
+using System.Windows.Input;
 using AppSt = CadProjectorViewer.Properties.Settings;
 
 namespace CadProjectorViewer.Panels
@@ -17,6 +17,11 @@ namespace CadProjectorViewer.Panels
         public CadObjectPanel()
         {
             InitializeComponent();
+        }
+
+        private void NumericUpDown_PreviewTextInput(object sender, System.Windows.Input.TextCompositionEventArgs e)
+        {
+            InputValidation.NumberPerDotValidationTextBox(sender, e);
         }
     }
 

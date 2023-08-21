@@ -1,5 +1,6 @@
 ﻿using CadProjectorSDK.Device.Mesh;
 using CadProjectorSDK.Scenes;
+using CadProjectorViewer.Services;
 using MahApps.Metro.Controls;
 using System;
 using System.Collections.Generic;
@@ -82,6 +83,15 @@ namespace CadProjectorViewer.Panels.RightPanel.Configuration
             if (CalibrationFormCombo.SelectedValue != null)
             {
                 ProjectorMesh.ClbrForm = (CalibrationForm)CalibrationFormCombo.SelectedValue;
+            }
+        }
+
+        private void NumericUpDown_PreviewTextInput(object sender, System.Windows.Input.TextCompositionEventArgs e)
+        {
+            InputValidation.NumberPerDotValidationTextBox(sender, e);
+            if (sender is NumericUpDown && e.Handled == true)
+            {
+                Keyboard.ClearFocus();
             }
         }
     }

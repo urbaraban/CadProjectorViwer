@@ -6,6 +6,8 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using CadProjectorSDK.Device.Controllers;
 using CadProjectorViewer.Dialogs;
+using CadProjectorViewer.Services;
+using MahApps.Metro.Controls;
 
 namespace CadProjectorViewer.Panels
 {
@@ -87,6 +89,11 @@ namespace CadProjectorViewer.Panels
         {
             MeshesDialog meshesDialog = new MeshesDialog() { DataContext = this.device };
             meshesDialog.Show();
+        }
+
+        private void NumericUpDown_PreviewTextInput(object sender, System.Windows.Input.TextCompositionEventArgs e)
+        {
+            InputValidation.NumberPerDotValidationTextBox(sender, e);
         }
     }
 }

@@ -1,16 +1,4 @@
-﻿using CadProjectorSDK.CadObjects.Abstract;
-using CadProjectorSDK.Scenes;
-using CadProjectorSDK;
-using CadProjectorViewer.StaticTools;
-using CadProjectorViewer.ViewModel;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Shapes;
-using CadProjectorViewer.ViewModel.Scene;
+﻿using CadProjectorViewer.ViewModel.Scene;
 
 namespace CadProjectorViewer.ToCommands.MainAppCommand
 {

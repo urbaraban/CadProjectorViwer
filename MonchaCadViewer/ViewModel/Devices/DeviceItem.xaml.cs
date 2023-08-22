@@ -1,24 +1,14 @@
 ﻿using CadProjectorSDK.Device;
+using CadProjectorSDK.Device.Modules;
 using CadProjectorSDK.Interfaces;
 using CadProjectorSDK.Scenes;
-using CadProjectorViewer.CanvasObj;
 using CadProjectorViewer.DeviceManaged;
+using CadProjectorViewer.Dialogs;
 using Microsoft.Xaml.Behaviors.Core;
-using System;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 namespace CadProjectorViewer.ViewModel.Devices
 {
@@ -80,8 +70,19 @@ namespace CadProjectorViewer.ViewModel.Devices
             {
                 Process.Start(new ProcessStartInfo
                 {
-                    FileName = $"http://{connected.IPAddress.ToString()}"
+                    FileName = $"http://{connected.IPAddress}"
                 });
+            }
+        });
+
+        public ICommand ShowModulesSettingCommand => new ActionCommand(() =>
+        {
+            if (this.DataContext is ModulesGroup group)
+            {
+                var dialog = new DeviceModulesDialog();
+                var context = new AddDeviceModule(group);
+                dialog.DataContext = context;
+                dialog.ShowDialog();
             }
         });
 

@@ -130,9 +130,8 @@
                 x:Name="DeviceTree"
                 ItemsSource="{Binding Projectors}"
                 SelectedValuePath="{Binding Projectors.SelectedItem}"
-                ItemTemplate="{StaticResource ResourceKey=DeviceTree}"
-                          />
-
+                ItemTemplate="{StaticResource ResourceKey=DeviceTree}" 
+                d:ItemsSource="{d:SampleData ItemCount=3}"/>
         </TreeView>
     </DockPanel>
 </UserControl>

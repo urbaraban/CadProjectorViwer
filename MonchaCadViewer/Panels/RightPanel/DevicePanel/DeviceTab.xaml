@@ -40,6 +40,9 @@
                 <Setter Property="Culture" Value="ru-RU" />
                 <EventSetter Event="PreviewTextInput" Handler="NumericUpDown_PreviewTextInput" />
             </Style>
+            <Style TargetType="Button">
+                <Setter Property="Width" Value="{Binding ActualHeight, RelativeSource={RelativeSource Self}}" />
+            </Style>
             <converters:RoundDoubleConverter x:Key="RoundValue"/>
         </ResourceDictionary>
     </UserControl.Resources>
@@ -68,16 +71,14 @@
                         Content="&#xF0B5;"
                         Padding="0"
                         FontFamily="Segoe MDL2 Assets"
-                        FontSize="14"
-                        Width="{Binding ActualHeight, RelativeSource={RelativeSource Self}}" />
+                        FontSize="14" />
                     <Button DockPanel.Dock="Right"
                         Margin="5,0,0,0"
                         Click="DeviceSettingBtn_Click"
                         Content="&#xE713;"
                         Padding="0"
                         FontFamily="Segoe MDL2 Assets"
-                        FontSize="14"
-                        Width="{Binding ActualHeight, RelativeSource={RelativeSource Self}}" />
+                        FontSize="14" />
                     <Button DockPanel.Dock="Right"
                         Margin="5,0,0,0"
                         Click="EllipseSettingBtn_Click"
@@ -85,8 +86,7 @@
                         Padding="0"
                         FontFamily="Segoe MDL2 Assets"
                         FontSize="14"
-                        DataContext="{Binding SelectedItem, ElementName=DeviceCombo}"
-                        Width="{Binding ActualHeight, RelativeSource={RelativeSource Self}}" />
+                        DataContext="{Binding SelectedItem, ElementName=DeviceCombo}" />
                     <ComboBox
                     x:Name="DeviceCombo"  
                     DockPanel.Dock="Left"
@@ -117,7 +117,7 @@
                 <DockPanel LastChildFill="True">
                     <Button
                     DockPanel.Dock="Right"
-                     Width="{Binding ActualHeight, RelativeSource={RelativeSource Self}}"
+                    
                     Margin="3,0"
                     Padding="0"
                     Content="&#xF0B5;"
@@ -126,7 +126,6 @@
                     Click="MeshListBtn_Click" />
                     <Button
                     DockPanel.Dock="Right"
-                     Width="{Binding ActualHeight, RelativeSource={RelativeSource Self}}"
                     Margin="3,0"
                     Padding="0"
                     Content="&#xEB7E;"

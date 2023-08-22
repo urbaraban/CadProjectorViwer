@@ -6,7 +6,7 @@ using Microsoft.Win32;
 using System.Collections.Generic;
 using System.Xml.Linq;
 
-namespace CadProjectorViewer.StaticTools
+namespace CadProjectorViewer.Services
 {
     internal static class FileSave
     {

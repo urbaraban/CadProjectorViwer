@@ -1,13 +1,12 @@
-﻿using CadProjectorViewer.Panels.DevicePanel;
-using CadProjectorSDK;
+﻿using CadProjectorSDK;
 using CadProjectorSDK.Device;
+using CadProjectorSDK.Device.Controllers;
+using CadProjectorViewer.Dialogs;
+using CadProjectorViewer.Panels.DevicePanel;
+using CadProjectorViewer.Services;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
-using CadProjectorSDK.Device.Controllers;
-using CadProjectorViewer.Dialogs;
-using CadProjectorViewer.Services;
-using MahApps.Metro.Controls;
 
 namespace CadProjectorViewer.Panels
 {

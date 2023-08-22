@@ -1,20 +1,20 @@
-﻿using MahApps.Metro.Controls;
+﻿using CadProjectorSDK.Scenes.Commands;
+using CadProjectorViewer.Panels.RightPanel;
+using CadProjectorViewer.Services;
+using CadProjectorViewer.ViewModel;
+using MahApps.Metro.Controls;
+using Microsoft.Xaml.Behaviors.Core;
 using System;
+using System.Globalization;
 using System.IO;
+using System.Linq;
+using System.Reflection;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Media;
 using AppSt = CadProjectorViewer.Properties.Settings;
-using System.Linq;
-using System.Globalization;
-using System.Windows.Data;
-using CadProjectorViewer.StaticTools;
-using System.Reflection;
-using Microsoft.Xaml.Behaviors.Core;
-using CadProjectorViewer.Panels.RightPanel;
-using CadProjectorSDK.Scenes.Commands;
-using CadProjectorViewer.ViewModel;
 
 namespace CadProjectorViewer
 {

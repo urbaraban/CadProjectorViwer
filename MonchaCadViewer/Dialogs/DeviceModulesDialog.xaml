@@ -1,0 +1,76 @@
+﻿<Window x:Class="CadProjectorViewer.Dialogs.DeviceModulesDialog"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:devices="clr-namespace:CadProjectorViewer.ViewModel.Devices"
+        d:DataContext="{d:DesignInstance Type=devices:AddDeviceModule}"
+        mc:Ignorable="d"
+        Title="DeviceModulesDialog" 
+        Height="450" Width="400"
+        FontSize="16">
+    <Window.Resources>
+        <Style TargetType="MenuItem">
+            <Setter Property="Header" Value="{Binding Name}" />
+            <Setter Property="Command" Value="{Binding DataContext.AddModuleCommand, RelativeSource={RelativeSource FindAncestor, AncestorType=Window}}"/>
+            <Setter Property="CommandParameter" Value="{Binding .}" />
+        </Style>
+    </Window.Resources>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="auto"/>
+            <RowDefinition />
+            <RowDefinition Height="auto"/>
+        </Grid.RowDefinitions>
+        <DockPanel Grid.Row="0" LastChildFill="False">
+            <DockPanel.Resources>
+                <Style TargetType="Button">
+                    <Setter Property="Margin" Value="3" />
+                </Style>
+            </DockPanel.Resources>
+            <Label Content="Test form:" />
+            <Button Content="Rect" />
+            <Button Content="Grid" />
+            <Button Content="HLines" />
+            <Button Content="WLines" />
+        </DockPanel>
+        <Border Margin="3"
+                BorderThickness="1"
+                BorderBrush="Black"
+                Grid.Row="1">
+            <ListView AllowDrop="True"
+                      ItemsSource="{Binding DeviceModules}"
+                      SelectedItem="{Binding SelectModule}"
+                      d:ItemsSource="{d:SampleData ItemCount=3}">
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <StackPanel Orientation="Horizontal"
+                                    Drop="StackPanel_Drop">
+                            <Label Content=":::"
+                                   VerticalContentAlignment="Center"
+                                   VerticalAlignment="Center"
+                                   Cursor="SizeNS"
+                                   MouseDown="Label_MouseDown"/>
+                            <CheckBox IsChecked="{Binding IsOn}"/>
+                            <TextBlock Text="{Binding Name}" 
+                                       VerticalAlignment="Center"/>
+                        </StackPanel>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
+
+        </Border>
+
+        <DockPanel Grid.Row="2"
+                   LastChildFill="False">
+            <Button Content="Remove"
+                    Command="{Binding RemoveModuleCommand}"/>
+            <mah:DropDownButton DockPanel.Dock="Right"
+                                Content="Add"
+                                ItemsSource="{Binding AvailableType}" />
+
+        </DockPanel>
+
+    </Grid>
+</Window>

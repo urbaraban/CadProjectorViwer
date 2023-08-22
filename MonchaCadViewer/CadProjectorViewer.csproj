@@ -274,6 +274,9 @@
     <Compile Include="Dialogs\DeviceManaged\AddDeviceByIpDialog.xaml.cs">
       <DependentUpon>AddDeviceByIpDialog.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Dialogs\DeviceModulesDialog.xaml.cs">
+      <DependentUpon>DeviceModulesDialog.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Dialogs\EllipsoidSettingDialog.xaml.cs">
       <DependentUpon>EllipsoidSettingDialog.xaml</DependentUpon>
     </Compile>
@@ -295,8 +298,9 @@
       <DependentUpon>KompasPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="Opening\Formats\Arculator.cs" />
+    <Compile Include="Services\DraggingClass.cs" />
     <Compile Include="Services\InputValidation.cs" />
-    <Compile Include="StaticTools\FileSave.cs" />
+    <Compile Include="Services\FileSave.cs" />
     <Compile Include="EthernetServer\TCPTools.cs" />
     <Compile Include="EthernetServer\ToCutEthernetHub.cs" />
     <Compile Include="ToCommands\IToCutCommandObject.cs" />
@@ -380,7 +384,8 @@
     <Compile Include="Settings.cs" />
     <Compile Include="Opening\FileLoad.cs" />
     <Compile Include="Opening\GCToCad.cs" />
-    <Compile Include="StaticTools\HotKeysManager.cs" />
+    <Compile Include="Services\HotKeysManager.cs" />
+    <Compile Include="ViewModel\Devices\AddDeviceModule.cs" />
     <Compile Include="ViewModel\Devices\AddDeviceViewModel.cs" />
     <Compile Include="ViewModel\Devices\DeviceFinderViewModel.cs" />
     <Compile Include="ViewModel\Devices\DeviceItem.xaml.cs">
@@ -408,6 +413,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Dialogs\DeviceManaged\LaserMeterWindows.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Dialogs\DeviceModulesDialog.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

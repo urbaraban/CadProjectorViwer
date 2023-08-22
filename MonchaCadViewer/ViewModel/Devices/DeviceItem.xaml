@@ -43,7 +43,7 @@
             <TextBlock  
                 d:Text="Device"
                 Style="{StaticResource ConnectedStyle}"
-                VerticalAlignment="Center" Margin="5,0,0,0">
+                VerticalAlignment="Center" Margin="5,0,5,0">
                 <TextBlock.Text>
                     <MultiBinding StringFormat="{}{0}_{1}">
                         <Binding Path="NameID"/>
@@ -51,6 +51,10 @@
                     </MultiBinding>
                 </TextBlock.Text>
             </TextBlock>
+            <Button Content="s" 
+                    Background="Transparent"
+                    BorderThickness="0"
+                    Command="{Binding ElementName=DeviceItemBlock, Path=ShowModulesSettingCommand}"/>
         </StackPanel>
     </Border>
 </UserControl>

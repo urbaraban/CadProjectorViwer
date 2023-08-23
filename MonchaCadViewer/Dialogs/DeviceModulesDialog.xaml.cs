@@ -1,5 +1,4 @@
 ﻿using CadProjectorSDK.Device.Modules;
-using CadProjectorSDK.Device.Modules.Transforming;
 using CadProjectorViewer.Services;
 using CadProjectorViewer.ViewModel.Devices;
 using System.Windows;

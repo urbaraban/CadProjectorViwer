@@ -4,8 +4,8 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:sdk="clr-namespace:CadProjectorSDK;assembly=CadProjectorSDK"
-    xmlns:Controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
     xmlns:converters="clr-namespace:CadProjectorViewer.Converters"
+    xmlns:Controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
     x:Class="CadProjectorViewer.Panels.DeviceTab"
     d:DataContext="{d:DesignInstance Type={x:Type sdk:ProjectorHub}}"
     Padding="0"
@@ -23,8 +23,12 @@
             <Style TargetType="{x:Type DockPanel}">
                 <Setter Property="Margin" Value="5,2" />
             </Style>
-            <Style x:Key="ColorToggle" TargetType="{x:Type Controls:ToggleSwitch}">
+            <Style TargetType="{x:Type Controls:ToggleSwitch}">
                 <Setter Property="Width" Value="100" />
+                <Setter Property="HorizontalAlignment" Value="Left" />
+                <Setter Property="VerticalAlignment" Value="Top" />
+                <Setter Property="HorizontalContentAlignment" Value="Center" />
+                <Setter Property="Margin" Value="5, 0" />
             </Style>
             <Style TargetType="{x:Type Label}">
                 <Setter Property="FontSize" Value="10" />
@@ -200,19 +204,18 @@
             Margin="4,17,9,0"
             VerticalAlignment="Top"
             Grid.Row="2" />
-                    <Controls:ToggleSwitch
-            x:Name="LaserMeterToggle"
-            Grid.Column="4"
-            HorizontalAlignment="Right"
-            VerticalAlignment="Top"
-            HorizontalContentAlignment="Center"
-            Content=""
-            MinWidth="0"
-            IsOn="False"
-            Toggled="LaserMeterToggle_Toggled"
-            Grid.Row="2"
-            Controls:HeaderedControlHelper.HeaderHorizontalContentAlignment="Center"
-            Margin="0,14,1,0">
+                    <Controls:ToggleSwitch x:Name="LaserMeterToggle"
+                                           Grid.Column="4"
+                                           HorizontalAlignment="Right"
+                                           VerticalAlignment="Top"
+                                           HorizontalContentAlignment="Center"
+                                           Content=""
+                                           MinWidth="0"
+                                           IsOn="False"
+                                           Toggled="LaserMeterToggle_Toggled"
+                                           Grid.Row="2"
+                                           Controls:HeaderedControlHelper.HeaderHorizontalContentAlignment="Center"
+                                           Margin="0,14,1,0">
                         <Controls:ToggleSwitch.RenderTransform>
                             <TransformGroup>
                                 <ScaleTransform />
@@ -236,15 +239,10 @@
                 <!--Red-->
                 <DockPanel LastChildFill="True">
                     <Controls:ToggleSwitch
-                    Style="{StaticResource ColorToggle}"
                     DataContext="{Binding SelectedItem, ElementName=DeviceCombo}"
                     IsOn="{Binding ProjectionSetting.RedOn, Mode=TwoWay}"
                     Content="{DynamicResource dvc_RED}"
-                    MinWidth="0"
-                    Margin="5,0"
-                    HorizontalAlignment="Left"
-                    VerticalAlignment="Top"
-                    HorizontalContentAlignment="Center"/>
+                    MinWidth="0"/>
                     <Controls:NumericUpDown
                     DataContext="{Binding SelectedItem, ElementName=DeviceCombo}"
                     Value="{Binding ProjectionSetting.Red, Mode=TwoWay}"
@@ -255,9 +253,7 @@
                 <!--Green-->
                 <DockPanel LastChildFill="True">
                     <Controls:ToggleSwitch
-                    Style="{StaticResource ColorToggle}"
                     DockPanel.Dock="Left"
-                    Margin="5,0"
                     MinWidth="0"
                     DataContext="{Binding SelectedItem, ElementName=DeviceCombo}"
                     IsOn="{Binding ProjectionSetting.GreenOn, Mode=TwoWay}"
@@ -273,9 +269,7 @@
 
                 <DockPanel LastChildFill="True">
                     <Controls:ToggleSwitch
-                    Style="{StaticResource ColorToggle}"
                     DockPanel.Dock="Left"
-                    Margin="5,0"
                     DataContext="{Binding SelectedItem, ElementName=DeviceCombo}"
                     IsOn="{Binding ProjectionSetting.BlueOn, Mode=TwoWay}"
                     MinWidth="0"

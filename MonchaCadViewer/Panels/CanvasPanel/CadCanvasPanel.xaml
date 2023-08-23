@@ -199,18 +199,27 @@
                     </MultiBinding>
                 </Label.Content>
             </Label>
-            <DockPanel VerticalAlignment="Bottom"
-                       HorizontalAlignment="Left"
-                       Grid.Column="0"
-                       Grid.Row="2">
-                <Label 
-                    Content="{Binding ElementName=CanvasPanel, Path=ScaleValue, Converter={StaticResource ScaleConverter}}"/>
-                <Button 
-                    Content="X"
-                    Command="{Binding ElementName=CanvasPanel, Path=CancelSizeChange}"
-                    Width="{Binding ActualHeight, RelativeSource={RelativeSource Self}}"
-                    Background="Transparent"/>
-            </DockPanel>
+            <Button VerticalAlignment="Center"
+                        HorizontalAlignment="Center"
+                        Background="Transparent"
+                        BorderThickness="0"
+                    Grid.Row="2"
+                    d:Content="100"
+                        MinWidth="{Binding ActualHeight, RelativeSource={RelativeSource Self}}"
+                        Command="{Binding ElementName=CanvasPanel, Path=CancelSizeChange}" >
+                <Button.Resources>
+                    <Style TargetType="Button">
+                        <Style.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Content" Value="X"  />
+                            </Trigger>
+                            <Trigger Property="IsMouseOver" Value="False">
+                                <Setter Property="Content" Value="{Binding ElementName=CanvasPanel, Path=ScaleValue, Converter={StaticResource ScaleConverter}}" />
+                            </Trigger>
+                        </Style.Triggers>
+                    </Style>
+                </Button.Resources>
+            </Button>
         </Grid>
     </DockPanel>
 </UserControl>

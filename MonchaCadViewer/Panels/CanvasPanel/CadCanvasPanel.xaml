@@ -9,6 +9,7 @@
              d:DataContext="{d:DesignInstance Type=scene:SceneModel}"
              x:Name="CanvasPanel"
              mc:Ignorable="d"
+             Focusable="True"
              d:DesignHeight="400" d:DesignWidth="400">
     <UserControl.Resources>
         <ResourceDictionary>
@@ -111,7 +112,8 @@
                 <Viewbox x:Name="CanvasBox"
                          Stretch="Uniform" 
                          StretchDirection="Both"
-                         Margin="5">
+                         Margin="5"
+                         MouseEnter="CanvasBox_MouseEnter">
                     <Grid x:Name="CanvasGrid" Background="Red"
                       Cursor="{Binding Scene.AlreadyAction, Converter={StaticResource CursorAction}}">
                         <Rectangle Fill="White" 

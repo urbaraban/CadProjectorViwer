@@ -15,6 +15,7 @@ using Microsoft.Xaml.Behaviors.Core;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using CadProjectorViewer.ViewModel;
+using System.Web.UI.WebControls;
 
 namespace CadProjectorViewer.Panels.CanvasPanel
 {
@@ -246,6 +247,11 @@ namespace CadProjectorViewer.Panels.CanvasPanel
             return Math.Max(CanvasGrid.Width, CanvasGrid.Height) / this.Scale.ScaleX * 0.01;
         }
 
+        private void CanvasBox_MouseEnter(object sender, MouseEventArgs e)
+        {
+            this.Focus();
+        }
+
         #region INotifyPropertyChanged
         public event PropertyChangedEventHandler PropertyChanged;
 
@@ -254,6 +260,8 @@ namespace CadProjectorViewer.Panels.CanvasPanel
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(prop));
         }
         #endregion
+
+
     }
 
     public class CursorActionConverter : IValueConverter

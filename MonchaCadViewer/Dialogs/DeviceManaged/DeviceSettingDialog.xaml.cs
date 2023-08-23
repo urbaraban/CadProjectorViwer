@@ -128,7 +128,7 @@ namespace CadProjectorViewer.Panels.DevicePanel
         {
             if (this._device != null)
             {
-                IList<IRenderedObject> elements = new List<IRenderedObject>();
+                var elements = new List<LinesCollection>();
 
                 double widthstep = 1d / (GradientSteps * 2);
                 double heightstep = 1d / (GradientSteps * 2);

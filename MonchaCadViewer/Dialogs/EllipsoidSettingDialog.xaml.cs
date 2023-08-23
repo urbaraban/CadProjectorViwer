@@ -25,7 +25,7 @@ namespace CadProjectorViewer.Dialogs
             {
                 if (projector.RenderObjects.Count == 0)
                 {
-                    IList<IRenderedObject> elements = new List<IRenderedObject>();
+                    var elements = new List<LinesCollection>();
 
                     double widthstep = 1d / (projector.Ellipsoid.XAxisCorrect.Count - 1);
                     double heightstep = 1d / (projector.Ellipsoid.YAxisCorrect.Count - 1);
@@ -74,7 +74,7 @@ namespace CadProjectorViewer.Dialogs
             {
                 if (projector.RenderObjects.Count == 0)
                 {
-                    IList<IRenderedObject> elements = new List<IRenderedObject>();
+                    var elements = new List<LinesCollection>();
 
                     double widthstep = 1d / (10);
                     double heightstep = 1d / (10);

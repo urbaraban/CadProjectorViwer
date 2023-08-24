@@ -165,13 +165,13 @@
                     <Label Width="auto"
                            Content="{DynamicResource dvc_SRC}"/>
 
-                    <Slider DataContext="{Binding SelectedItem, ElementName=DeviceCombo}"
+                    <Controls:NumericUpDown DataContext="{Binding SelectedItem, ElementName=DeviceCombo}"
                             Value="{Binding ScanRate, Mode=TwoWay}"
                             Maximum="{Binding MaxScanRate}"
-                            Minimum="500"
+                            Minimum="10000"
                             ToolTip="{Binding ScanRate, Mode=TwoWay}"
                             PreviewMouseDown="ScanRateRealSlider_PreviewMouseDown"
-                            SmallChange="1" />
+                            Interval="1000" NumericInputMode="Numbers" />
 
                 </DockPanel>
                 <DockPanel LastChildFill="True">
@@ -295,28 +295,28 @@
                 Minimum="1" />
                 </DockPanel>
                 <DockPanel>
-                    <Controls:ToggleSwitch
-                DataContext="{Binding SelectedItem, ElementName=DeviceCombo}"
-                IsOn="{Binding InvertedX}"
-                Grid.Row="5"
-                MinWidth="0"
-                FlowDirection="RightToLeft"
-                HorizontalContentAlignment="Right"
-                Content="{DynamicResource dvc_InvX}"
-                FontSize="12" Grid.ColumnSpan="2" Margin="45,0,0,7" Grid.Column="1" HorizontalAlignment="Stretch" VerticalAlignment="Bottom" />
-                    <Controls:ToggleSwitch
-                DataContext="{Binding SelectedItem, ElementName=DeviceCombo}"
-                IsOn="{Binding InvertedY, Mode=TwoWay}"
-                Grid.Row="5"
-                Grid.Column="3"
-                Grid.ColumnSpan="2"
-                Margin="24,0,0,7"
-                MinWidth="0"
-                VerticalAlignment="Bottom"
-                HorizontalContentAlignment="Right"
-                Content="{DynamicResource dvc_InvY}"
-                FlowDirection="RightToLeft"
-                FontSize="12" HorizontalAlignment="Left" Width="96" />
+                    <Controls:ToggleSwitch DataContext="{Binding SelectedItem, ElementName=DeviceCombo}"
+                                           IsOn="{Binding InvertedX}"
+                                           MinWidth="0"
+                                           FlowDirection="RightToLeft"
+                                           HorizontalContentAlignment="Right"
+                                           Content="{DynamicResource dvc_InvX}"
+                                           FontSize="12"
+                                           Grid.Row="5"
+                                           Grid.ColumnSpan="2" 
+                                           Grid.Column="1" 
+                                           VerticalAlignment="Center" />
+                    <Controls:ToggleSwitch DataContext="{Binding SelectedItem, ElementName=DeviceCombo}"
+                                           IsOn="{Binding InvertedY, Mode=TwoWay}"
+                                           Grid.Row="5"
+                                           Grid.Column="3"
+                                           Grid.ColumnSpan="2"
+                                           MinWidth="0"
+                                           VerticalAlignment="Center"
+                                           HorizontalContentAlignment="Right"
+                                           Content="{DynamicResource dvc_InvY}"
+                                           FlowDirection="RightToLeft"
+                                           FontSize="12" HorizontalAlignment="Right"/>
                 </DockPanel>
 
 

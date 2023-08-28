@@ -100,7 +100,7 @@ namespace CadProjectorViewer.Panels.RightPanel.Configuration
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            return (string)value == (string)parameter;
+            return ((string)value).ToLower() == ((string)parameter).ToLower();
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)

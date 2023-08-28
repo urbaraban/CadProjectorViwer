@@ -10,7 +10,7 @@
              x:Name="CanvasPanel"
              mc:Ignorable="d"
              Focusable="True"
-             MouseEnter="CanvasBox_MouseEnter"
+             MouseDown="CanvasBox_MouseDown"
              d:DesignHeight="400" d:DesignWidth="400">
     <UserControl.Resources>
         <ResourceDictionary>

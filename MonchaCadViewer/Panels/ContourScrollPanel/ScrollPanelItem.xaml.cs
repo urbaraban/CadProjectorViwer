@@ -41,7 +41,7 @@ namespace CadProjectorViewer.Panels
 
         private string filepath = string.Empty;
 
-        public string FileName => SceneTsk.TaskInfo.Name;
+        public string FileName => SceneTsk.TaskFileInfo.Name;
 
         public ScaleTransform Scale { get; set; } = new ScaleTransform();
 
@@ -99,9 +99,9 @@ namespace CadProjectorViewer.Panels
         {
             foreach(GCFormat gCFormat in FileLoad.MyFormat)
             {
-                if (gCFormat.ShortName.Contains(this.SceneTsk.TaskInfo.Extension) == true)
+                if (gCFormat.ShortName.Contains(this.SceneTsk.TaskFileInfo.Extension) == true)
                 {
-                    object obj = await gCFormat.ReadFile?.Invoke(this.SceneTsk.TaskInfo.FullName);
+                    object obj = await gCFormat.ReadFile?.Invoke(this.SceneTsk.TaskFileInfo.FullName);
                     this.SceneTsk.Object = await FileLoad.ConvertObject(obj);
                     this.SceneTsk.Selecting();
                 }

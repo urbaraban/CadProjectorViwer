@@ -96,27 +96,6 @@ namespace CadProjectorViewer.Panels.DevicePanel.LeftPanels
             }
         }
 
-        private void SendLayer(object sender, RoutedEventArgs e)
-        {
-            if (this.DataContext is ProjectionScene scene)
-            {
-                byte[] layers = new byte[scene.Count];
-                for(int i = 0; i < layers.Length; i += 1)
-                {
-                    layers[i] = (byte)(i % 2);
-                }
-
-                SceneTask sceneTask = new SceneTask()
-                {
-                    Object = layers,
-                    TableID = Scene.TableID,
-                    TaskID = -1,
-                    TaskInfo = new System.IO.FileInfo("Layers")
-                };
-
-                scene.RunTask(sceneTask, false);
-            }
-        }
 
         private async void ReconnectButton_Click(object sender, RoutedEventArgs e)
         {

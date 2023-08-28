@@ -247,7 +247,7 @@ namespace CadProjectorViewer.Panels.CanvasPanel
             return Math.Max(CanvasGrid.Width, CanvasGrid.Height) / this.Scale.ScaleX * 0.01;
         }
 
-        private void CanvasBox_MouseEnter(object sender, MouseEventArgs e)
+        private void CanvasBox_MouseDown(object sender, MouseEventArgs e)
         {
             this.Focus();
         }

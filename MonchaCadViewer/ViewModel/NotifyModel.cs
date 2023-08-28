@@ -3,7 +3,7 @@ using System.Runtime.CompilerServices;
 
 namespace CadProjectorViewer.ViewModel
 {
-    internal abstract class NotifyModel : INotifyPropertyChanged
+    public abstract class NotifyModel : INotifyPropertyChanged
     {
         #region INotifyPropertyChanged
         public event PropertyChangedEventHandler PropertyChanged;

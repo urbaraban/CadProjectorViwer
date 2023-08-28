@@ -9,6 +9,7 @@ using CadProjectorViewer.EthernetServer;
 using CadProjectorViewer.EthernetServer.Servers;
 using CadProjectorViewer.Opening;
 using CadProjectorViewer.Panels;
+using CadProjectorViewer.Properties;
 using CadProjectorViewer.Services;
 using CadProjectorViewer.ToCommands;
 using CadProjectorViewer.ToCommands.MainAppCommand;
@@ -23,12 +24,13 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Threading;
+using System.Xml.Serialization;
 using ToGeometryConverter;
 using AppSt = CadProjectorViewer.Properties.Settings;
 
 namespace CadProjectorViewer.ViewModel
 {
-    internal class AppMainModel : NotifyModel
+    public class AppMainModel : NotifyModel
     { 
         private Dispatcher dispatcher { get; }
 
@@ -44,6 +46,7 @@ namespace CadProjectorViewer.ViewModel
         }
         private int _adminclick = 0;
 
+        [XmlElement(ElementName = "ProjectorHub")]
         public ProjectorHub ProjectorHub
         {
             get => projectorHub;
@@ -268,7 +271,7 @@ namespace CadProjectorViewer.ViewModel
             saveFileDialog.Filter = "2CUT Scene (*.2scn)|*.2scn";
             if (saveFileDialog.ShowDialog() == true)
             {
-                FileSave.SaveScene(projectorHub.ScenesCollection.SelectedScene, saveFileDialog.FileName);
+                // FileSave.SaveScene(projectorHub.ScenesCollection.SelectedScene, saveFileDialog.FileName);
                 //SaveScene.WriteXML(projectorHub.ScenesCollection.SelectedScene, saveFileDialog.FileName);
             }
 
@@ -297,6 +300,14 @@ namespace CadProjectorViewer.ViewModel
                 DataContext = this
             };
             manipulatorTCP.Show();
+        });
+
+        public ICommand SaveConfig => new ActionCommand(() =>
+        {
+            var xmls = new XmlSerializer(this.GetType());
+            var writer = new StreamWriter("D:\\Программы\\test.xml");
+            xmls.Serialize(writer, this);
+            writer.Close();
         });
 
         private async void Open()

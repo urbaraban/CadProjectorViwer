@@ -224,7 +224,7 @@ namespace CadProjectorViewer.Opening
 
                 if (await FileLoad.GetObject(item_path) is GCCollection collection)
                 {
-                    if (await ConvertObject(collection) is UidObject uidObject)
+                    if (await ConvertObject(collection) is CadGeometry uidObject)
                     {
                         uidObject.UpdateTransform(uidObject.Bounds, false, String.Empty);
                         uidObject.FileInfo = new FileInfo(item_path);

@@ -20,7 +20,7 @@
     </UserControl.Resources>
     <Border 
        Margin="5"
-       ToolTip="{Binding IPAddress}">
+       ToolTip="{Binding IpAddress}">
         <Border.ContextMenu>
             <ContextMenu Opened="ContextMenu_Opened">
                 <MenuItem Header = "{DynamicResource dvc_showzone}" Tag="1" Command="{Binding ShowZoneRectCommand}"/>
@@ -47,7 +47,7 @@
                 <TextBlock.Text>
                     <MultiBinding StringFormat="{}{0}_{1}">
                         <Binding Path="NameID"/>
-                        <Binding Path="IPAddress"/>
+                        <Binding Path="IpAddress"/>
                     </MultiBinding>
                 </TextBlock.Text>
             </TextBlock>

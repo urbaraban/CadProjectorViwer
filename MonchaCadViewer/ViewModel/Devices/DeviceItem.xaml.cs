@@ -70,7 +70,7 @@ namespace CadProjectorViewer.ViewModel.Devices
             {
                 Process.Start(new ProcessStartInfo
                 {
-                    FileName = $"http://{connected.IPAddress}"
+                    FileName = $"http://{connected.IpAddress}"
                 });
             }
         });

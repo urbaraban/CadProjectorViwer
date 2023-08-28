@@ -63,16 +63,16 @@
         </DockPanel>
         <DockPanel>
             <TextBox x:Name="IP1" 
-                     Text="{Binding IPAddress, Converter={StaticResource IPAdressConverter}, ConverterParameter=0, Mode=OneWay}" 
+                     Text="{Binding IpAddress, Converter={StaticResource IPAdressConverter}, ConverterParameter=0, Mode=OneWay}" 
                      TextInput="IP_TextInput" LostFocus="IP_LostFocus"/>
             <TextBox x:Name="IP2" 
-                     Text="{Binding IPAddress, Converter={StaticResource IPAdressConverter}, ConverterParameter=1, Mode=OneWay}" 
+                     Text="{Binding IpAddress, Converter={StaticResource IPAdressConverter}, ConverterParameter=1, Mode=OneWay}" 
                      TextInput="IP_TextInput" LostFocus="IP_LostFocus"/>
             <TextBox x:Name="IP3"
-                     Text="{Binding IPAddress, Converter={StaticResource IPAdressConverter}, ConverterParameter=2, Mode=OneWay}"
+                     Text="{Binding IpAddress, Converter={StaticResource IPAdressConverter}, ConverterParameter=2, Mode=OneWay}"
                      TextInput="IP_TextInput" LostFocus="IP_LostFocus"/>
             <TextBox x:Name="IP4" 
-                     Text="{Binding IPAddress, Converter={StaticResource IPAdressConverter}, ConverterParameter=3, Mode=OneWay}"  
+                     Text="{Binding IpAddress, Converter={StaticResource IPAdressConverter}, ConverterParameter=3, Mode=OneWay}"  
                      TextInput="IP_TextInput" LostFocus="IP_LostFocus"/>
         </DockPanel>
         <DockPanel>

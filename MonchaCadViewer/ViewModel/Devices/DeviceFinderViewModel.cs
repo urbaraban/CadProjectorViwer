@@ -4,6 +4,7 @@ using CadProjectorSDK.Tools;
 using CadProjectorViewer.Dialogs.DeviceManaged;
 using Microsoft.Xaml.Behaviors.Core;
 using System.Collections.ObjectModel;
+using System.Net;
 using System.Windows.Input;
 
 namespace CadProjectorViewer.ViewModel.Devices
@@ -24,7 +25,7 @@ namespace CadProjectorViewer.ViewModel.Devices
             {
                 OldDevices.Add(new IpDeviceInfo()
                 {
-                    iPAddress = item.IPAddress,
+                    iPAddress = IPAddress.Parse(item.IpAddress),
                     DvcType = item.DeviceType,
                     IsSelected = true
                 });

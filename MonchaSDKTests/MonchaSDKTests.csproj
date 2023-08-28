@@ -60,6 +60,10 @@
       <Project>{9032f8ba-4f50-4a00-b79c-d6058584fccc}</Project>
       <Name>CadProjectorSDK</Name>
     </ProjectReference>
+    <ProjectReference Include="..\MonchaCadViewer\CadProjectorViewer.csproj">
+      <Project>{cc54cc3c-ef08-49d2-b5f6-50cb3e585185}</Project>
+      <Name>CadProjectorViewer</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets" Condition="Exists('$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets')" />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

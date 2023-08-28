@@ -78,13 +78,7 @@ namespace CadProjectorViewer.Panels.DevicePanel
             //ProjectorHub.CanPlay = false;
             if (this._device is IConnected connected)
             {
-                connected.IPAddress = new System.Net.IPAddress(new byte[]
-                {
-                    byte.Parse(IP1.Text),
-                    byte.Parse(IP2.Text),
-                    byte.Parse(IP3.Text),
-                    byte.Parse(IP4.Text)
-                });
+                connected.IpAddress = $"{IP1.Text}.{IP2.Text}.{IP3.Text}.{IP4.Text}"; 
             }
         }
 

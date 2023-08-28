@@ -34,7 +34,7 @@
             <RowDefinition />
             <RowDefinition />
         </Grid.RowDefinitions>
-        <Label Content="IPAddress" 
+        <Label Content="IpAddress" 
                HorizontalAlignment="Center"
                VerticalAlignment="Center"/>
         <TextBox Grid.Row="1" 

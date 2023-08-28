@@ -104,7 +104,7 @@
                                     <TextBlock.Text>
                                         <MultiBinding StringFormat="{}{0}: {1}">
                                             <Binding Path="NameID"/>
-                                            <Binding Path="IPAddress"/>
+                                            <Binding Path="IpAddress"/>
                                         </MultiBinding>
                                     </TextBlock.Text>
                                 </TextBlock>

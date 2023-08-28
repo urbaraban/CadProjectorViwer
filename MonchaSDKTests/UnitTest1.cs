@@ -1,5 +1,5 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System;
+﻿using CadProjectorViewer.ViewModel;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace MonchaSDKTests
 {
@@ -7,9 +7,10 @@ namespace MonchaSDKTests
     public class UnitTest1
     {
         [TestMethod]
-        public void ZCorrectorTest()
+        public void SerializiableTest()
         {
-            ModulesGroup
+            AppMainModel model = new AppMainModel();
+            model.SaveSceneCommand.Execute(null);
         }
     }
 }

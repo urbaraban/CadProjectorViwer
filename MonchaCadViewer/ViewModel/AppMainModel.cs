@@ -32,7 +32,7 @@ namespace CadProjectorViewer.ViewModel
 {
     public class AppMainModel : NotifyModel
     { 
-        private Dispatcher dispatcher { get; }
+        private Dispatcher Dispatcher { get; }
 
         public bool AdminMode => Debugger.IsAttached == true || Adminclick > 9;
         public int Adminclick 
@@ -71,7 +71,7 @@ namespace CadProjectorViewer.ViewModel
 
         public AppMainModel()
         {
-            dispatcher = Dispatcher.CurrentDispatcher;
+            Dispatcher = Dispatcher.CurrentDispatcher;
 
             App.Log = Logs.PostLog;
             App.SetProgress = ProgressPanel.SetProgressBar;

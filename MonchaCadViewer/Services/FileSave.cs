@@ -19,7 +19,7 @@ namespace CadProjectorViewer.Services
             {
                 for (int i = 0; i < lProjectors.Length; i += 1)
                 {
-                    ildaWriter.Write(($"{saveFileDialog.FileName.Replace(".ild", string.Empty)}_{i}_{lProjectors[i].IPAddress}.ild"),
+                    ildaWriter.Write(($"{saveFileDialog.FileName.Replace(".ild", string.Empty)}_{i}_{lProjectors[i].IpAddress}.ild"),
                         new List<IldaFrame>() {
                             lProjectors[i].IldFrame
                         ?? new IldaFrame() }, 5);

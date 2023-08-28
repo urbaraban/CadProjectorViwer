@@ -1,12 +1,7 @@
-﻿using MahApps.Metro.Controls;
-using CadProjectorSDK;
-using CadProjectorSDK.Device;
-using CadProjectorSDK.Setting;
+﻿using CadProjectorSDK.Device.Controllers;
 using System.Net;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Media;
-using CadProjectorSDK.Device.Controllers;
 
 namespace CadProjectorViewer.DeviceManaged
 {
@@ -24,9 +19,9 @@ namespace CadProjectorViewer.DeviceManaged
 
             this.LMeter = vLTLaserMeters;
 
-            if (this.LMeter.IP != null)
+            if (this.LMeter.IpAddress != null)
             {
-                string[] iparr = this.LMeter.IP.ToString().Split('.');
+                string[] iparr = this.LMeter.IpAddress.Split('.');
 
                 for (int k = 0; k < iparr.Length; k++)
                 {

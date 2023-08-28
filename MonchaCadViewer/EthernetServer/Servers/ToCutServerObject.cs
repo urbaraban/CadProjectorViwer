@@ -1,21 +1,22 @@
 ﻿using CadProjectorViewer.Interfaces;
 using CadProjectorViewer.ToCommands;
+using CadProjectorViewer.ViewModel;
 using Microsoft.Xaml.Behaviors.Core;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Input;
+using System.Xml.Serialization;
 using static CadProjectorViewer.Interfaces.IToRemoveObject;
 
 namespace CadProjectorViewer.EthernetServer.Servers
 {
-    public class ToCutServerObject : INotifyPropertyChanged, IToRemoveObject
+    public class ToCutServerObject : NotifyModel, IToRemoveObject
     {
         public event EventHandler<ReceivedCookies> CommandDummyIncomming;
+
+        [XmlIgnore]
+        public RemoveDelegate Remove { get; set; }
+        public Guid Guid { get; } = Guid.NewGuid();
 
         public string ObjectName => commandObject.Name;
         public int Port => server.Port;
@@ -27,6 +28,7 @@ namespace CadProjectorViewer.EthernetServer.Servers
         private IToCUTServer server { get; }
         private IToCutCommandObject commandObject { get; }
 
+        public ToCutServerObject() { }
         public ToCutServerObject(IToCUTServer server, IToCutCommandObject commandObject)
         {
             this.server = server;
@@ -88,21 +90,5 @@ namespace CadProjectorViewer.EthernetServer.Servers
         {
             this.server.SendMessage(message, receivedCookies.ClientIp, receivedCookies.ClientPort);
         }
-
-
-        #region IToRemoveObject
-        public RemoveDelegate Remove { get; set; }
-        public Guid Guid { get; } = Guid.NewGuid();
-
-        #endregion
-
-        #region INotifyPropertyChanged
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        public void OnPropertyChanged([CallerMemberName] string prop = "")
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(prop));
-        }
-        #endregion
     }
 }

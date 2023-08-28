@@ -30,23 +30,10 @@ using AppSt = CadProjectorViewer.Properties.Settings;
 
 namespace CadProjectorViewer.ViewModel
 {
+    [XmlRoot]
     public class AppMainModel : NotifyModel
-    { 
-        private Dispatcher Dispatcher { get; }
-
-        public bool AdminMode => Debugger.IsAttached == true || Adminclick > 9;
-        public int Adminclick 
-        {
-            get => _adminclick;
-            set
-            {
-                _adminclick = value;
-                OnPropertyChanged(nameof(AdminMode));
-            }
-        }
-        private int _adminclick = 0;
-
-        [XmlElement(ElementName = "ProjectorHub")]
+    {
+        [XmlElement]
         public ProjectorHub ProjectorHub
         {
             get => projectorHub;
@@ -58,11 +45,28 @@ namespace CadProjectorViewer.ViewModel
         }
         private ProjectorHub projectorHub = new ProjectorHub(AppSt.Default.cl_moncha_path);
 
-        public WorkFolderList WorkFolder { get; } = new WorkFolderList();
+        public ToCutEthernetHub EthernetHub { get; } = new ToCutEthernetHub();
 
+        [XmlIgnore]
+        public int Adminclick
+        {
+            get => _adminclick;
+            set
+            {
+                _adminclick = value;
+                OnPropertyChanged(nameof(AdminMode));
+            }
+        }
+        private int _adminclick = 0;
+        public bool AdminMode => Debugger.IsAttached == true || Adminclick > 9;
+
+        [XmlIgnore]
         public LogList Logs { get; } = new LogList(string.Empty);
 
-        public ToCutEthernetHub EthernetHub { get; } = new ToCutEthernetHub();
+        [XmlIgnore]
+        public WorkFolderList WorkFolder { get; } = new WorkFolderList();
+
+        private Dispatcher Dispatcher { get; }
 
         private List<IToCommand> toCommands { get; } = new List<IToCommand>()
         {

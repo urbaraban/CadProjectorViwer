@@ -10,7 +10,6 @@ namespace CadProjectorViewer.DeviceManaged
     /// </summary>
     public partial class LaserMeterWindows : Window
     {
-        private IPAddress _address;
         private VLTLaserMeters LMeter;
 
         public LaserMeterWindows(VLTLaserMeters vLTLaserMeters)
@@ -42,12 +41,9 @@ namespace CadProjectorViewer.DeviceManaged
             AutoPlayCheck.SetBinding(CheckBox.IsCheckedProperty, "AutoPlay");
         }
     
-
         private void DimBtn_Click(object sender, RoutedEventArgs e) => DimLbl.Content = this.LMeter.GetDim();
 
-
         private void CancelBtn_Click(object sender, RoutedEventArgs e) => this.Close();
-
 
         private void OkBtn_Click(object sender, RoutedEventArgs e)
         {

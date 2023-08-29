@@ -138,7 +138,7 @@
                 Width="25" Height="25" 
                 Margin="2" Padding="0,-1,0,0" FontSize="18" 
                 BorderBrush="{x:Null}" Background="{x:Null}" 
-                Command="{Binding SaveCommand}" />
+                Command="{Binding SaveConfig}" />
         </Controls:WindowCommands>
     </Controls:MetroWindow.LeftWindowCommands>
     <Controls:MetroWindow.RightWindowCommands>

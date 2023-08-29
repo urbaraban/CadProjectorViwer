@@ -45,6 +45,7 @@ namespace CadProjectorViewer.ViewModel
         }
         private ProjectorHub projectorHub = new ProjectorHub(AppSt.Default.cl_moncha_path);
 
+
         public ToCutEthernetHub EthernetHub { get; } = new ToCutEthernetHub();
 
         [XmlIgnore]

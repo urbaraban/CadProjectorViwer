@@ -447,7 +447,9 @@ namespace CadProjectorViewer.CanvasObj
                 foreach (UidObject uid in VisualSorted)
                 {
                     if (uid.IsRender == true || deviceModel.ShowHide == true)
+                    {
                         Drawing(uid, deviceModel, IsSelected, MouseOver, ParentRender && uid.IsRender, drawingContext);
+                    }  
                 }
             }
             else if (uidObject.GetRender(deviceModel.RenderingDisplay) is IEnumerable<IRenderedObject> linesCollection)

@@ -168,7 +168,7 @@
                     <Controls:NumericUpDown DataContext="{Binding SelectedItem, ElementName=DeviceCombo}"
                             Value="{Binding ScanRate, Mode=TwoWay}"
                             Maximum="{Binding MaxScanRate}"
-                            Minimum="10000"
+                            Minimum="1000"
                             ToolTip="{Binding ScanRate, Mode=TwoWay}"
                             PreviewMouseDown="ScanRateRealSlider_PreviewMouseDown"
                             Interval="1000" NumericInputMode="Numbers" />

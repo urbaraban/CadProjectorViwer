@@ -28,6 +28,7 @@ using System.Windows.Data;
 using System.Globalization;
 using static CadProjectorViewer.CanvasObj.CanvasObject;
 using CadProjectorSDK.Scenes.Actions;
+using System.Diagnostics;
 
 namespace CadProjectorViewer.CanvasObj
 {
@@ -474,6 +475,7 @@ namespace CadProjectorViewer.CanvasObj
             if (vectorLines.Count > 0)
             {
                 StreamGeometry streamGeometry = new StreamGeometry();
+                streamGeometry.FillRule = FillRule.EvenOdd;
 
                 using (StreamGeometryContext ctx = streamGeometry.Open())
                 {
@@ -482,13 +484,9 @@ namespace CadProjectorViewer.CanvasObj
 
                     for (int i = 0; i < vectorLines.Count; i += 1)
                     {
-                        point = renderDevice.GetPoint(vectorLines[i].P1.X, vectorLines[i].P1.Y);
-                        ctx.BeginFigure(point, vectorLines.IsClosed, vectorLines.IsClosed);
-
                         Point point_second = renderDevice.GetPoint(vectorLines[i].P2.X, vectorLines[i].P2.Y);
                         ctx.LineTo(point_second, true, true);
                     }
-
                     ctx.Close();
                 }
                 drawingContext.DrawGeometry(brush, pen, streamGeometry);

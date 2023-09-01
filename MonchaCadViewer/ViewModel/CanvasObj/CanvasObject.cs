@@ -36,7 +36,6 @@ namespace CadProjectorViewer.CanvasObj
     {
         public event EventHandler UpdateAnchorPoints;
         public virtual event EventHandler<bool> OnObject;
-        public virtual event EventHandler<CanvasObject> Opening;
 
         public virtual GetScaleDelegate GetFrameTransform { get; set; }
         public delegate ScaleTransform GetScaleDelegate();

@@ -96,14 +96,6 @@ namespace CadProjectorViewer.ViewModel
                 (X - this.Size.MX) / this.Size.MWidth, 
                 (Y - this.Size.MX) / this.Size.MHeight);
         }
-
-        #region INotifyPropertyChanged
-        public event PropertyChangedEventHandler PropertyChanged;
-        public void OnPropertyChanged([CallerMemberName] string prop = "")
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(prop));
-        }
-        #endregion
     }
 
     public class ViewDisplaySetting : INotifyPropertyChanged

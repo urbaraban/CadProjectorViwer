@@ -1,17 +1,17 @@
-﻿using System;
+﻿using CadProjectorViewer.Opening;
+using Microsoft.WindowsAPICodePack.Dialogs;
+using Microsoft.Xaml.Behaviors.Core;
+using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.IO;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Windows.Data;
-using AppSt = CadProjectorViewer.Properties.Settings;
-using System.ComponentModel;
-using System.Runtime.CompilerServices;
-using Microsoft.Xaml.Behaviors.Core;
 using System.Windows.Input;
 using ToGeometryConverter;
-using Microsoft.WindowsAPICodePack.Dialogs;
-using CadProjectorViewer.Opening;
+using AppSt = CadProjectorViewer.Properties.Settings;
 
 namespace CadProjectorViewer.ViewModel.Modules
 {
@@ -206,7 +206,7 @@ namespace CadProjectorViewer.ViewModel.Modules
             this.FullPath = path;
         }
 
-        public string FullName => this.FullPath;
+        public override string FullName => this.FullPath;
 
         public override string Name => Path.GetFileNameWithoutExtension(FullName);
 

@@ -31,7 +31,7 @@ namespace CadProjectorViewer.Opening
             // new DEXCeil(),
             // new MetaFile(),
             // new JSON(),
-            // new GCFormat("Компас 3D", new string[2] { ".frw" , ".cdw"}) { ReadFile = GetKompas },
+             new GCFormat("Компас 3D", new string[2] { ".frw" , ".cdw"}) { ReadFile = GetKompas },
             // new GCFormat("JPG Image", new string[2] { "jpg" , "jpeg"}) { ReadFile = GetImage },
             new GCFormat("ILDA", new string[1] { ".ild" }){ ReadFile = GetILDA },
             new GCFormat("2CUT", new string[1] { ".2scn" }){ ReadFile = Get2CUT },
@@ -189,7 +189,7 @@ namespace CadProjectorViewer.Opening
         /// <param name="Filepath"></param>
         /// <param name="step"></param>
         /// <returns></returns>
-        private static Task<object> GetKompas(string Filepath, double step)
+        private static Task<object> GetKompas(string Filepath)
         {
             Process.Start(Filepath);
             return Task.FromResult<object>(null);

@@ -2,15 +2,12 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace CadProjectorViewer.ToCommands.MainAppCommand
 {
     internal class FileListCommand : ToCommand, IToCommand
     {
-        public string Name => "FILESLIST";
+        public override string Name => "FILESLIST";
 
         public bool ReturnRequest => true;
 

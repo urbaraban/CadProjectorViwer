@@ -1,25 +1,14 @@
 ﻿using CadProjectorSDK.CadObjects;
 using CadProjectorSDK.Scenes;
+using CadProjectorViewer.ViewModel;
 using KompasLib.KompasTool;
 using KompasLib.Tools;
 using MahApps.Metro.Controls;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
-using ToGeometryConverter.Object.Elements;
 using ToGeometryConverter.Object;
-using CadProjectorViewer.ViewModel;
+using ToGeometryConverter.Object.Elements;
 
 namespace CadProjectorViewer.Panels.RightPanel
 {
@@ -34,25 +23,6 @@ namespace CadProjectorViewer.Panels.RightPanel
         public KompasPage()
         {
             InitializeComponent();
-        }
-
-        #region Kompas3D
-        private void kmpsConnectToggle_Toggled(object sender, RoutedEventArgs e)
-        {
-            if (KmpsAppl.KompasAPI == null)
-            {
-                kmpsAppl = new KmpsAppl();
-
-                if (kmpsAppl.Connect())
-                {
-                    kmpsAppl.ConnectBoolEvent += KmpsAppl_ConnectBoolEvent;
-
-                    kmpsAppl.AppEvent.DocumentOpened += KmpsAppl_OpenedDoc;
-
-                    kmpsConnectToggle.IsOn = KmpsAppl.KompasAPI != null;
-                }
-
-            }
         }
 
         private void KmpsAppl_OpenedDoc(object newDoc, int docType)
@@ -128,6 +98,23 @@ namespace CadProjectorViewer.Panels.RightPanel
                 MainModel.ProjectorHub.ScenesCollection.AddTask(sceneTask);
             }
         }
-        #endregion
+
+        private void kmpsConnectToggle_Toggled(object sender, RoutedEventArgs e)
+        {
+            if (KmpsAppl.KompasAPI == null)
+            {
+                kmpsAppl = new KmpsAppl();
+
+                if (kmpsAppl.Connect())
+                {
+                    kmpsAppl.ConnectBoolEvent += KmpsAppl_ConnectBoolEvent;
+
+                    kmpsAppl.AppEvent.DocumentOpened += KmpsAppl_OpenedDoc;
+
+                    kmpsConnectToggle.IsOn = KmpsAppl.KompasAPI != null;
+                }
+
+            }
+        }
     }
 }

@@ -20,7 +20,6 @@ namespace CadProjectorViewer.Panels
     public partial class DeviceTreeTab : UserControl, INotifyPropertyChanged
     {
         public event EventHandler<bool> NeedRefresh;
-        public event EventHandler<LProjector> DeviceChange;
 
         ProjectorHub projectorHub => (ProjectorHub)this.DataContext;
 

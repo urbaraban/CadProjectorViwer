@@ -4,7 +4,7 @@ namespace CadProjectorViewer.ToCommands.MainAppCommand
 {
     internal class FilePathCommand : ToCommand, IToCommand
     {
-        public string Name => "FILEPATH";
+        public override string Name => "FILEPATH";
 
         public bool ReturnRequest => false;
 

@@ -13,7 +13,6 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Media.Imaging;
 using System.Xml.Linq;
-using ToCutCrypt;
 using ToGeometryConverter;
 using ToGeometryConverter.Format;
 using ToGeometryConverter.Object;
@@ -28,7 +27,7 @@ namespace CadProjectorViewer.Opening
             new SVG(),
             new DXF(),
             new GCODE(),
-            new STL(),
+            //new STL(),
             // new DEXCeil(),
             // new MetaFile(),
             // new JSON(),
@@ -37,7 +36,7 @@ namespace CadProjectorViewer.Opening
             new GCFormat("ILDA", new string[1] { ".ild" }){ ReadFile = GetILDA },
             new GCFormat("2CUT", new string[1] { ".2scn" }){ ReadFile = Get2CUT },
             new GCFormat("Arculator", new string[1] { ".glc"}) { ReadFile = GetArculator },
-            new GCFormat("Crypt", new string[1] {".2crp"}) { ReadFile = GetCrypt }
+            //new GCFormat("Crypt", new string[1] {".2crp"}) { ReadFile = GetCrypt }
         };
 
         private static Task<object> GetArculator(string filepath)
@@ -45,17 +44,17 @@ namespace CadProjectorViewer.Opening
             return Arculator.Parse(filepath);
         }
 
-        private static Task<object> GetCrypt(string filepath)
-        {
-            RSACryptoServiceProvider rSA = new RSACryptoServiceProvider();
-            rSA.FromXmlString(ToCrypt.ReadXmlStringFile("key.xml"));
-            FileInfo fileinfo = new FileInfo(filepath);
-            string removepath = Path.ChangeExtension(fileinfo.FullName, "dxf");
-            ToCrypt.DecryptFile(fileinfo, rSA);
-            var obj = GetObject(removepath);
-            File.Delete(removepath);
-            return obj;
-        }
+        //private static Task<object> GetCrypt(string filepath)
+        //{
+        //    RSACryptoServiceProvider rSA = new RSACryptoServiceProvider();
+        //    rSA.FromXmlString(ToCrypt.ReadXmlStringFile("key.xml"));
+        //    FileInfo fileinfo = new FileInfo(filepath);
+        //    string removepath = Path.ChangeExtension(fileinfo.FullName, "dxf");
+        //    ToCrypt.DecryptFile(fileinfo, rSA);
+        //    var obj = GetObject(removepath);
+        //    File.Delete(removepath);
+        //    return obj;
+        //}
 
         private static string BrowseMWS()
         {

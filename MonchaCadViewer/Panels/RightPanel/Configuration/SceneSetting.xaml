@@ -28,7 +28,7 @@
             </Style>
             <Style TargetType="Controls:NumericUpDown">
                 <Setter Property="VerticalAlignment" Value="Center" />
-                <Setter Property="NumericInputMode" Value="Decimal" />
+                <Setter Property="NumericInputMode" Value="All" />
                 <Setter Property="Culture" Value="ru-RU" />
                 <EventSetter Event="PreviewTextInput" Handler="NumericUpDown_PreviewTextInput" />
             </Style>

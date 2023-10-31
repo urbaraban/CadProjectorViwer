@@ -220,6 +220,9 @@
                     <CheckBox Content="Cursor Mask Activated" IsChecked="{Binding CursorMaskActivated}"/>
                 </DockPanel>
                 <Separator/>
+                <CheckBox Content="Подменять флаги"
+                          IsChecked="{Binding ChangeFlags}" />
+                <TextBox Text="{Binding Flags}" Margin="3"/>
             </StackPanel>
         </Grid>
     </ScrollViewer>

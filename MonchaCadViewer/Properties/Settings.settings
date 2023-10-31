@@ -71,5 +71,11 @@
     <Setting Name="show_hide_object" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">True</Value>
     </Setting>
+    <Setting Name="ChangeFlag" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">False</Value>
+    </Setting>
+    <Setting Name="Flags" Type="System.String" Scope="User">
+      <Value Profile="(Default)">CLEAR&amp;SHOW&amp;ALIGN&amp;PLAY</Value>
+    </Setting>
   </Settings>
 </SettingsFile>

@@ -123,19 +123,12 @@ namespace CadProjectorViewer.Panels.RightPanel.Configuration
             }
         }
 
+
         public AppDefaultSettingPanel()
         {
             InitializeComponent();
         }
 
-        #region INotifyPropertyChanged
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        public void OnPropertyChanged([CallerMemberName] string prop = "DeviceFrame")
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(prop));
-        }
-        #endregion
     }
 
     public class AppSettingSave : IValueConverter

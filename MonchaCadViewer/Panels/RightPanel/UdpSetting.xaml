@@ -1,0 +1,47 @@
+﻿<UserControl
+    x:Class="CadProjectorViewer.Panels.RightPanel.UdpSetting"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:Controls="http://metro.mahapps.com/winfx/xaml/controls"
+    xmlns:Properties="clr-namespace:CadProjectorViewer.Properties"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="clr-namespace:CadProjectorViewer.Panels.RightPanel"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:udp="clr-namespace:CadProjectorSDK.UDP;assembly=CadProjectorSDK"
+    d:DataContext="{d:DesignInstance Type=udp:UdpLaserListener}"
+    mc:Ignorable="d">
+    <StackPanel Margin="5">
+        <DockPanel LastChildFill="True">
+            <Label
+                Margin="3"
+                HorizontalAlignment="Left"
+                Content="UDP Port:"
+                DockPanel.Dock="Left" />
+
+            <Controls:NumericUpDown
+                x:Name="PortUpDn"
+                Background="White"
+                DockPanel.Dock="Right"
+                Maximum="49151"
+                Minimum="1024"
+                ValueChanged="PortUpDn_ValueChanged"
+                Value="{Binding ether_udp_port}">
+                <Controls:NumericUpDown.DataContext>
+                    <Properties:Settings />
+                </Controls:NumericUpDown.DataContext>
+            </Controls:NumericUpDown>
+        </DockPanel>
+        <Button
+            x:Name="TcpListenBtn"
+            Height="50"
+            Margin="15"
+            Command="{Binding }"
+            Content="Listen" />
+        <Controls:ToggleSwitch
+            Margin="5"
+            Content="Save UDP packet"
+            IsOn="{Binding SaveUdpPacket}" />
+        <TextBox x:Name="ByteBox" />
+        <Button Click="Button_Click" Content="Read" />
+    </StackPanel>
+</UserControl>

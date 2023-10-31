@@ -1,47 +1,49 @@
-﻿<Controls:MetroWindow x:Class="CadProjectorViewer.MainWindow"
-                      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-                      xmlns:Controls="http://metro.mahapps.com/winfx/xaml/controls"
-                      xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-                      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-                      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-                      xmlns:tb="http://www.hardcodet.net/taskbar"
-                      xmlns:device="clr-namespace:CadProjectorSDK.Device;assembly=CadProjectorSDK"
-                      xmlns:CadProjectorViewer="clr-namespace:CadProjectorViewer"
-                      xmlns:convert="clr-namespace:CadProjectorViewer.Converters"
-                      xmlns:panels="clr-namespace:CadProjectorViewer.Panels"
-                      xmlns:canvaspanel="clr-namespace:CadProjectorViewer.Panels.CanvasPanel"
-                      xmlns:leftpanels="clr-namespace:CadProjectorViewer.Panels.DevicePanel.LeftPanels"
-                      xmlns:rightpanel="clr-namespace:CadProjectorViewer.Panels.RightPanel"
-                      xmlns:configuration="clr-namespace:CadProjectorViewer.Panels.RightPanel.Configuration"
-                      xmlns:Properties="clr-namespace:CadProjectorViewer.Properties"
-                      xmlns:viewmodel="clr-namespace:CadProjectorViewer.ViewModel"
-                      xmlns:devices="clr-namespace:CadProjectorViewer.ViewModel.Devices"
-                      d:DataContext="{d:DesignInstance Type=viewmodel:AppMainModel}"
-                      x:Name="MainWin"
-                      mc:Ignorable="d"
-                      Title="CUT - Viwer" 
-                      KeyboardNavigation.TabNavigation="None"
-                      AllowDrop="True"
-                      Height="700" Width="999"
-                      MinHeight="700" MinWidth="700"
-                      WindowStartupLocation="CenterScreen"
-                      Icon="logo.png"
-                      ResizeMode="CanResizeWithGrip"
-                      ShowInTaskbar ="True">
+﻿<Controls:MetroWindow
+    x:Class="CadProjectorViewer.MainWindow"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:CadProjectorViewer="clr-namespace:CadProjectorViewer"
+    xmlns:Controls="http://metro.mahapps.com/winfx/xaml/controls"
+    xmlns:Properties="clr-namespace:CadProjectorViewer.Properties"
+    xmlns:canvaspanel="clr-namespace:CadProjectorViewer.Panels.CanvasPanel"
+    xmlns:configuration="clr-namespace:CadProjectorViewer.Panels.RightPanel.Configuration"
+    xmlns:convert="clr-namespace:CadProjectorViewer.Converters"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:device="clr-namespace:CadProjectorSDK.Device;assembly=CadProjectorSDK"
+    xmlns:devices="clr-namespace:CadProjectorViewer.ViewModel.Devices"
+    xmlns:leftpanels="clr-namespace:CadProjectorViewer.Panels.DevicePanel.LeftPanels"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:panels="clr-namespace:CadProjectorViewer.Panels"
+    xmlns:rightpanel="clr-namespace:CadProjectorViewer.Panels.RightPanel"
+    xmlns:tb="http://www.hardcodet.net/taskbar"
+    xmlns:viewmodel="clr-namespace:CadProjectorViewer.ViewModel"
+    x:Name="MainWin"
+    Title="CUT - Viwer"
+    Width="999"
+    Height="700"
+    MinWidth="700"
+    MinHeight="700"
+    d:DataContext="{d:DesignInstance Type=viewmodel:AppMainModel}"
+    AllowDrop="True"
+    Icon="logo.png"
+    KeyboardNavigation.TabNavigation="None"
+    ResizeMode="CanResizeWithGrip"
+    ShowInTaskbar="True"
+    WindowStartupLocation="CenterScreen"
+    mc:Ignorable="d">
     <Controls:MetroWindow.InputBindings>
         <KeyBinding
-            Modifiers="Ctrl" Key="V"
-            Command="{Binding PasteCommand}" />
-        <KeyBinding
-            Key="Delete"
-            Command="{Binding DeleteCommand}" />
+            Key="V"
+            Command="{Binding PasteCommand}"
+            Modifiers="Ctrl" />
+        <KeyBinding Key="Delete" Command="{Binding DeleteCommand}" />
     </Controls:MetroWindow.InputBindings>
     <Controls:MetroWindow.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Controls.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Fonts.xaml" />
-                <!-- Theme setting -->
+                <!--  Theme setting  -->
                 <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Themes/Light.Blue.xaml" />
             </ResourceDictionary.MergedDictionaries>
             <Style x:Key="Border" TargetType="{x:Type Border}">
@@ -72,110 +74,93 @@
                 </Style.Triggers>
             </Style>
 
-            <Style TargetType="{x:Type TabItem}" BasedOn="{StaticResource {x:Type TabItem}}">
+            <Style BasedOn="{StaticResource {x:Type TabItem}}" TargetType="{x:Type TabItem}">
                 <Setter Property="Controls:HeaderedControlHelper.HeaderFontSize" Value="14" />
             </Style>
 
             <CadProjectorViewer:PlayBackConverter x:Key="PlayBackConverter" />
-            <convert:BoolVisibleConverter x:Key="BoolVisibleConverter"/>
+            <convert:BoolVisibleConverter x:Key="BoolVisibleConverter" />
             <CadProjectorViewer:MultiObjectList x:Key="MultiList" />
             <CadProjectorViewer:LicenceColor x:Key="LicenceKey" />
             <CadProjectorViewer:GetHubPageConverter x:Key="GetHubPage" />
             <CadProjectorViewer:GetKompasPageConverter x:Key="GetKompasPage" />
-            <HierarchicalDataTemplate 
-                x:Key="DeviceTree" 
-                DataType ="{x:Type device:LProjector}">
-                <devices:DeviceItem/>
+            <HierarchicalDataTemplate x:Key="DeviceTree" DataType="{x:Type device:LProjector}">
+                <devices:DeviceItem />
             </HierarchicalDataTemplate>
         </ResourceDictionary>
     </Controls:MetroWindow.Resources>
     <Controls:MetroWindow.LeftWindowCommands>
         <Controls:WindowCommands>
             <Menu>
-                <MenuItem Header="▼" Focusable="True">
+                <MenuItem Focusable="True" Header="▼">
                     <MenuItem Header="{DynamicResource common_File}">
-                        <MenuItem 
-                            Header="New Workplace"
-                            Command="{Binding MakeNewWorkPlaceCommand}" />
-                        <MenuItem
-                            Header="Browse MWS"
-                            Command="{Binding LoadMWSCommand}" />
+                        <MenuItem Command="{Binding MakeNewWorkPlaceCommand}" Header="New Workplace" />
+                        <MenuItem Command="{Binding LoadMWSCommand}" Header="Browse MWS" />
                         <Separator />
-                        <MenuItem
-                            Header="{DynamicResource m_Save}"
-                            Command="{Binding Path=SaveCommand}" />
-                        <MenuItem
-                            Header="{DynamicResource m_SaveConfigAs}"
-                            Command="{Binding SaveAsCommand}" />
-                        <Separator/>
-                        <MenuItem
-                            Header="Save Scene"
-                            Command="{Binding SaveSceneCommand}"/>
-                        <MenuItem 
-                            Header="Open Scene" 
-                            Command="{Binding OpenSceneCommand}"/>
-                        <Separator/>
-                        <MenuItem
-                            Header="License"
-                            Command="{Binding ShowLicenceCommand}" />
+                        <MenuItem Command="{Binding Path=SaveCommand}" Header="{DynamicResource m_Save}" />
+                        <MenuItem Command="{Binding SaveAsCommand}" Header="{DynamicResource m_SaveConfigAs}" />
                         <Separator />
-                        <MenuItem Header="{DynamicResource common_Close}" 
-                                  Command="{Binding ElementName=MainWin, Path=ClosedCommand}" />
+                        <MenuItem Command="{Binding SaveSceneCommand}" Header="Save Scene" />
+                        <MenuItem Command="{Binding OpenSceneCommand}" Header="Open Scene" />
+                        <Separator />
+                        <MenuItem Command="{Binding ShowLicenceCommand}" Header="License" />
+                        <Separator />
+                        <MenuItem Command="{Binding ElementName=MainWin, Path=ClosedCommand}" Header="{DynamicResource common_Close}" />
                     </MenuItem>
                     <MenuItem Header="Services">
-                        <MenuItem
-                                Command="{Binding RemoveOtherAppCommand}"
-                                Header="Remove other process" />
+                        <MenuItem Command="{Binding RemoveOtherAppCommand}" Header="Remove other process" />
                     </MenuItem>
-                    <MenuItem x:Name="menuLanguage" Header="Language">
-                    </MenuItem>
+                    <MenuItem x:Name="menuLanguage" Header="Language" />
                 </MenuItem>
             </Menu>
-            <Button 
-                x:Name="MenuSaveBtn" 
-                FontFamily="Segoe MDL2 Assets"
+            <Button
+                x:Name="MenuSaveBtn"
+                Width="25"
+                Height="25"
+                Margin="2"
+                Padding="0,-1,0,0"
+                Background="{x:Null}"
+                BorderBrush="{x:Null}"
+                Command="{Binding SaveCommand}"
                 Content="&#xE792;"
-                Width="25" Height="25" 
-                Margin="2" Padding="0,-1,0,0" FontSize="18" 
-                BorderBrush="{x:Null}" Background="{x:Null}" 
-                Command="{Binding SaveCommand}" />
+                FontFamily="Segoe MDL2 Assets"
+                FontSize="18" />
         </Controls:WindowCommands>
     </Controls:MetroWindow.LeftWindowCommands>
     <Controls:MetroWindow.RightWindowCommands>
         <Controls:WindowCommands>
-            <Label Margin="3" Content="{Binding cl_moncha_path}" 
-                   VerticalAlignment="Top" Grid.ColumnSpan="3" 
-                   HorizontalContentAlignment="Right" 
-                   FontSize="10">
+            <Label
+                Grid.ColumnSpan="3"
+                Margin="3"
+                VerticalAlignment="Top"
+                HorizontalContentAlignment="Right"
+                Content="{Binding cl_moncha_path}"
+                FontSize="10">
                 <Label.DataContext>
                     <Properties:Settings />
                 </Label.DataContext>
             </Label>
             <Ellipse
-                Height="15"
                 Width="15"
+                Height="15"
+                Margin="5,0"
                 Fill="{Binding ProjectorHub.LockKey.IsLicensed, Converter={StaticResource LicenceKey}}"
-                ToolTip="{Binding StringFormat= Licensed: {0},
-                Path=ProjectorHub.LockKey.IsLicensed}"
-                Margin="5,0">
-            </Ellipse>
+                ToolTip="{Binding StringFormat=Licensed: {0}, Path=ProjectorHub.LockKey.IsLicensed}" />
 
             <Controls:ToggleSwitch
-                        IsOn="{Binding ProjectorHub.UDPLaserListener.Status, Mode=OneWay}"
-                OffContent="Ethernet"
-                OnContent="Listing"
+                MinWidth="0"
+                Margin="3,0,3,0"
                 VerticalAlignment="Center"
                 Command="{Binding UDPToggleCommand}"
-                MinWidth="0"
-                Margin="3,0,3,0" />
+                IsOn="{Binding ProjectorHub.UDPLaserListener.Status, Mode=OneWay}"
+                OffContent="Ethernet"
+                OnContent="Listing" />
             <Button
-                    Content="&#xE703;"
-                    FontFamily="Segoe MDL2 Assets"
-                    Width="{Binding ActualHeight, RelativeSource={RelativeSource Self}}"
-                    Command="{Binding ShowTCPDialogCommand}"/>
-            <Button
-                Content="T"
-                Command="{Binding ElementName=MainWin, Path=HideToTray}" />
+                Width="{Binding ActualHeight, RelativeSource={RelativeSource Self}}"
+                Command="{Binding ShowTCPDialogCommand}"
+                Content="&#xE703;"
+                FontFamily="Segoe MDL2 Assets" />
+            <Button Command="{Binding ElementName=MainWin, Path=HideToTray}" Content="T" />
         </Controls:WindowCommands>
     </Controls:MetroWindow.RightWindowCommands>
     <Border>
@@ -184,70 +169,88 @@
         </Border.Resources>
         <Grid>
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="2*" MinWidth="150" MaxWidth="400" />
+                <ColumnDefinition
+                    Width="2*"
+                    MinWidth="150"
+                    MaxWidth="400" />
                 <ColumnDefinition Width="4*" />
-                <ColumnDefinition Width="3*" MinWidth="250" MaxWidth="400"/>
+                <ColumnDefinition
+                    Width="3*"
+                    MinWidth="250"
+                    MaxWidth="400" />
             </Grid.ColumnDefinitions>
             <Grid.RowDefinitions>
                 <RowDefinition Height="100" />
                 <RowDefinition Height="450*" />
-                <RowDefinition Height="140*" MinHeight="140" MaxHeight="300"/>
+                <RowDefinition
+                    Height="140*"
+                    MinHeight="140"
+                    MaxHeight="300" />
                 <RowDefinition Height="30" />
             </Grid.RowDefinitions>
             <GridSplitter
-                Style="{StaticResource GridSplitter}"
+                Grid.Row="1"
+                Grid.RowSpan="2"
                 Width="3"
                 Margin="0,3"
-                Grid.Row="1" Grid.RowSpan="2"
-                HorizontalAlignment="Right" />
+                HorizontalAlignment="Right"
+                Style="{StaticResource GridSplitter}" />
 
-            <DockPanel Margin="5" Grid.Row="0" LastChildFill="True">
+            <DockPanel
+                Grid.Row="0"
+                Margin="5"
+                LastChildFill="True">
                 <DockPanel
-                    DockPanel.Dock="Right"
-                    Margin="0,0,0,0" MinWidth="80">
+                    MinWidth="80"
+                    Margin="0,0,0,0"
+                    DockPanel.Dock="Right">
                     <Button
-                        DockPanel.Dock="Top"
+                        HorizontalAlignment="Stretch"
+                        Command="{Binding Path=Clear}"
                         Content="{DynamicResource edit_Clear}"
-                         Command="{Binding Path=Clear}"
-                        HorizontalAlignment="Stretch" />
+                        DockPanel.Dock="Top" />
                     <Button
-                        DockPanel.Dock="Top"
                         x:Name="Line"
+                        Command="{Binding Path=LineCommand}"
                         Content="{DynamicResource edit_Line}"
-                        Command="{Binding Path=LineCommand}" />
+                        DockPanel.Dock="Top" />
                     <Button
-                        DockPanel.Dock="Top"
                         x:Name="RectBtn"
+                        Command="{Binding Path=MaskCommand}"
                         Content="{DynamicResource edit_Mask}"
-                        Command="{Binding Path=MaskCommand}" />
+                        DockPanel.Dock="Top" />
                 </DockPanel>
                 <Button
-                    DockPanel.Dock="Left"
-                    Content="{DynamicResource m_Open}"
+                    MinWidth="99"
+                    VerticalAlignment="Stretch"
                     Command="{Binding OpenCommand}"
-                    MinWidth="99" VerticalAlignment="Stretch" />
+                    Content="{DynamicResource m_Open}"
+                    DockPanel.Dock="Left" />
             </DockPanel>
 
-            <TabControl x:Name="tabControl1"
-                        Margin="0,0,0,0"
-
-                        Grid.Column="1" Grid.Row="0">
-                <TabItem Header="{DynamicResource obj_Transform}" FontSize="12">
-                    <panels:CadObjectPanel DataContext="{Binding ProjectorHub.ScenesCollection.SelectedScene.SelectedObjects.LastSelectObject}"
-                        IsEnabled="{Binding DataContext, Converter={StaticResource NotNullBool}, RelativeSource={RelativeSource Self}}" />
+            <TabControl
+                x:Name="tabControl1"
+                Grid.Row="0"
+                Grid.Column="1"
+                Margin="0,0,0,0">
+                <TabItem FontSize="12" Header="{DynamicResource obj_Transform}">
+                    <panels:CadObjectPanel DataContext="{Binding ProjectorHub.ScenesCollection.SelectedScene.SelectedObjects.LastSelectObject}" IsEnabled="{Binding DataContext, Converter={StaticResource NotNullBool}, RelativeSource={RelativeSource Self}}" />
                 </TabItem>
             </TabControl>
-            <Button x:Name="PlayBtn" Content="{DynamicResource m_Play}"
-                    Margin="5,20,5,0"
-                    Command="{Binding Path=PlayCommand}"
-                    Background="{Binding ProjectorHub.ScenesCollection.SelectedScene.Play, Converter={StaticResource PlayBackConverter}}"
-                    Grid.Column="2"
-                    Grid.Row="0" />
+            <Button
+                x:Name="PlayBtn"
+                Grid.Row="0"
+                Grid.Column="2"
+                Margin="5,20,5,0"
+                Background="{Binding ProjectorHub.ScenesCollection.SelectedScene.Play, Converter={StaticResource PlayBackConverter}}"
+                Command="{Binding Path=PlayCommand}"
+                Content="{DynamicResource m_Play}" />
 
             <TabControl
-                TabStripPlacement="Left"
-                Grid.Row="1" Grid.RowSpan="2"
-                Margin="3,0">
+                Grid.Row="1"
+                Grid.RowSpan="2"
+                Margin="3,0"
+                TabStripPlacement="Left">
                 <TabControl.Resources>
                     <Style TargetType="{x:Type TabItem}">
                         <Setter Property="HeaderTemplate">
@@ -265,66 +268,89 @@
                     </Style>
                 </TabControl.Resources>
                 <TabItem Header="{DynamicResource scene_Scene}">
-                    <Border  Style="{StaticResource Border}">
-                        <leftpanels:FrameTree 
-                            DataContext="{Binding ProjectorHub.ScenesCollection.SelectedScene}" />
+                    <Border Style="{StaticResource Border}">
+                        <leftpanels:FrameTree DataContext="{Binding ProjectorHub.ScenesCollection.SelectedScene}" />
                     </Border>
                 </TabItem>
-                <TabItem 
-                    Visibility="{Binding AdminMode, Converter={StaticResource BoolVisibleConverter}}"
-                    Header="{DynamicResource dvc_Devices}">
+                <TabItem Header="{DynamicResource dvc_Devices}" Visibility="{Binding AdminMode, Converter={StaticResource BoolVisibleConverter}}">
                     <Border Style="{StaticResource Border}">
                         <panels:DeviceTreeTab
-                        DataContext="{Binding ProjectorHub}"
-                        x:Name="DeviceTree"
-                        Focusable="False"
-                        Margin="0" Grid.ColumnSpan="2" Grid.Row="2" />
+                            x:Name="DeviceTree"
+                            Grid.Row="2"
+                            Grid.ColumnSpan="2"
+                            Margin="0"
+                            DataContext="{Binding ProjectorHub}"
+                            Focusable="False" />
                     </Border>
                 </TabItem>
             </TabControl>
-            <Border Grid.Column="1" Grid.Row="1" Style="{StaticResource Border}" Margin="0,3,0,0">
-                <canvaspanel:CanvasCollection 
-                    DataContext="{Binding ProjectorHub.ScenesCollection}" />
+            <Border
+                Grid.Row="1"
+                Grid.Column="1"
+                Margin="0,3,0,0"
+                Style="{StaticResource Border}">
+                <canvaspanel:CanvasCollection DataContext="{Binding ProjectorHub.ScenesCollection}" />
             </Border>
 
-            <panels:ScrollPanel x:Name="ContourScrollPanel" Margin="0,5,0,0" Grid.Column="1" Grid.Row="2" />
+            <panels:ScrollPanel
+                x:Name="ContourScrollPanel"
+                Grid.Row="2"
+                Grid.Column="1"
+                Margin="0,5,0,0" />
 
-            <TabControl DockPanel.Dock="Right" Grid.Column="2" Grid.Row="1" Grid.RowSpan="2" Margin="5,3,5,0">
-                <TabItem Header="{DynamicResource scene_Scene}" FontSize="12">
+            <TabControl
+                Grid.Row="1"
+                Grid.RowSpan="2"
+                Grid.Column="2"
+                Margin="5,3,5,0"
+                DockPanel.Dock="Right">
+                <TabItem FontSize="12" Header="{DynamicResource scene_Scene}">
                     <TabControl>
                         <TabItem Header="{DynamicResource dvc_Device}">
-                            <panels:DeviceTab DataContext="{Binding ProjectorHub}"/>
+                            <panels:DeviceTab DataContext="{Binding ProjectorHub}" />
                         </TabItem>
                         <TabItem Header="{DynamicResource setting_setting}">
-                            <configuration:SceneSetting DataContext="{Binding ProjectorHub.ScenesCollection.SelectedScene}"/>
+                            <configuration:SceneSetting DataContext="{Binding ProjectorHub.ScenesCollection.SelectedScene}" />
                         </TabItem>
                     </TabControl>
                 </TabItem>
-                <TabItem Header="{DynamicResource common_Source}" FontSize="18">
+                <TabItem FontSize="18" Header="{DynamicResource common_Source}">
                     <Grid Background="#FFE5E5E5">
                         <TabControl x:Name="TabItem">
-                            <TabItem Header="Компас" FontSize="14">
-                                <Frame Content="{Binding .,
-                                    Converter={StaticResource GetKompasPage}}"/>
+                            <TabItem FontSize="14" Header="Компас">
+                                <Frame Content="{Binding ., Converter={StaticResource GetKompasPage}}" />
                             </TabItem>
-                            <TabItem Header="ILDA" FontSize="14">
+                            <TabItem FontSize="14" Header="ILDA">
                                 <Grid Background="#FFE5E5E5">
-                                    <Controls:ToggleSwitch x:Name="UsedMeshToggle" Margin="10,10,0,0" IsOn="True" Content="Used device mesh" VerticalAlignment="Top" />
-                                    <Button x:Name="ILDASaveBtn" Content="{DynamicResource m_Save}" HorizontalAlignment="Left" Margin="10,40,0,0" VerticalAlignment="Top" Width="248" Height="29" Click="ILDASaveBtn_Click" />
+                                    <Controls:ToggleSwitch
+                                        x:Name="UsedMeshToggle"
+                                        Margin="10,10,0,0"
+                                        VerticalAlignment="Top"
+                                        Content="Used device mesh"
+                                        IsOn="True" />
+                                    <Button
+                                        x:Name="ILDASaveBtn"
+                                        Width="248"
+                                        Height="29"
+                                        Margin="10,40,0,0"
+                                        HorizontalAlignment="Left"
+                                        VerticalAlignment="Top"
+                                        Click="ILDASaveBtn_Click"
+                                        Content="{DynamicResource m_Save}" />
                                 </Grid>
                             </TabItem>
                             <TabItem Header="Ethernet">
-                                <Frame Content="{Binding .,
-                                    Converter={StaticResource GetHubPage}}"/>
+                                <Frame Content="{Binding ., Converter={StaticResource GetHubPage}}" />
+                            </TabItem>
+                            <TabItem Header="oldUDP">
+                                <rightpanel:UdpSetting DataContext="{Binding ProjectorHub.UDPLaserListener}" />
                             </TabItem>
                         </TabControl>
                     </Grid>
                 </TabItem>
-                <TabItem 
-                    Visibility="{Binding AdminMode, Converter={StaticResource BoolVisibleConverter}}"
-                    Header="{DynamicResource common_Configuration}">
+                <TabItem Header="{DynamicResource common_Configuration}" Visibility="{Binding AdminMode, Converter={StaticResource BoolVisibleConverter}}">
                     <TabControl>
-                        <TabItem Header="Setting" FontSize="14">
+                        <TabItem FontSize="14" Header="Setting">
                             <configuration:AppDefaultSettingPanel />
                         </TabItem>
                     </TabControl>
@@ -332,49 +358,55 @@
                 <TabItem Header="{DynamicResource common_Workfolder}">
                     <rightpanel:WorkFolderPanel DataContext="{Binding WorkFolder}" />
                 </TabItem>
-                <TabItem Header="Log" FontSize="12">
+                <TabItem FontSize="12" Header="Log">
                     <rightpanel:LogPanel DataContext="{Binding Logs}" />
                 </TabItem>
             </TabControl>
 
-            <panels:ProgressPanel 
-                
-                Grid.Column="0" 
-                Grid.ColumnSpan="3" 
-                Margin="5" Grid.Row="3" MouseDown="ProgressPanel_MouseDown" />
-            <Label 
-                x:Name="pBarLabel" 
-                Visibility="Hidden" 
-                Content="Label"
-                Grid.Row="1" Grid.Column="2" 
+            <panels:ProgressPanel
+                Grid.Row="3"
+                Grid.Column="0"
+                Grid.ColumnSpan="3"
+                Margin="5"
+                MouseDown="ProgressPanel_MouseDown" />
+            <Label
+                x:Name="pBarLabel"
+                Grid.Row="1"
+                Grid.Column="2"
+                Width="38"
+                Height="26"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center"
                 HorizontalContentAlignment="Center"
-                VerticalAlignment="Center" 
-                HorizontalAlignment="Center" 
-                Height="26" 
-                Width="38" />
+                Content="Label"
+                Visibility="Hidden" />
             <GridSplitter
-                 Style="{StaticResource GridSplitter}"
-                Grid.Row="1" Grid.RowSpan="2"
-                Grid.Column="2" HorizontalAlignment="Left"
+                Grid.Row="1"
+                Grid.RowSpan="2"
+                Grid.Column="2"
                 Width="3"
-                Margin="0,3" />
-            <GridSplitter Style="{StaticResource GridSplitter}"
-                          Height="3"
-                          Grid.Column="1"
-                          HorizontalAlignment="Stretch"
-                          Grid.Row="2" VerticalAlignment="Top" />
+                Margin="0,3"
+                HorizontalAlignment="Left"
+                Style="{StaticResource GridSplitter}" />
+            <GridSplitter
+                Grid.Row="2"
+                Grid.Column="1"
+                Height="3"
+                HorizontalAlignment="Stretch"
+                VerticalAlignment="Top"
+                Style="{StaticResource GridSplitter}" />
 
             <tb:TaskbarIcon
-                ToolTipText="2CUT"
+                x:Name="ttip"
                 Grid.Row="3"
-                x:Name ="ttip"
-                IconSource="logo.ico"
                 DoubleClickCommand="{Binding ElementName=MainWin, Path=ShowFromTray}"
-                LeftClickCommand="{Binding ElementName=CanvasCollection, Path=RefreshFrameCommand}">
+                IconSource="logo.ico"
+                LeftClickCommand="{Binding ElementName=CanvasCollection, Path=RefreshFrameCommand}"
+                ToolTipText="2CUT">
                 <!--
-    We can use arbitrary UI elements as Popups.
-    Popups stay open if the user moves away from the tray area
-  -->
+                    We can use arbitrary UI elements as Popups.
+                    Popups stay open if the user moves away from the tray area
+                -->
                 <tb:TaskbarIcon.TrayPopup>
                     <Border
                         Background="White"
@@ -382,21 +414,21 @@
                         BorderThickness="2"
                         CornerRadius="1">
                         <StackPanel>
-                            <Button 
-                                Visibility="Collapsed"
-                                Content="{DynamicResource m_Play}"
-                                Command="{Binding Path=PlayAllCommand}"
+                            <Button
+                                Height="30"
                                 Background="{Binding ProjectorHub.ScenesCollection.SelectedScene.Play, Converter={StaticResource PlayBackConverter}}"
-                                Height="30" />
+                                Command="{Binding Path=PlayAllCommand}"
+                                Content="{DynamicResource m_Play}"
+                                Visibility="Collapsed" />
                             <ItemsControl ItemsSource="{Binding ProjectorHub.Projectors}">
                                 <ItemsControl.ItemsPanel>
                                     <ItemsPanelTemplate>
-                                        <StackPanel/>
+                                        <StackPanel />
                                     </ItemsPanelTemplate>
                                 </ItemsControl.ItemsPanel>
                                 <ItemsControl.ItemTemplate>
                                     <DataTemplate>
-                                        <devices:DeviceItem/>
+                                        <devices:DeviceItem />
                                     </DataTemplate>
                                 </ItemsControl.ItemTemplate>
                             </ItemsControl>
@@ -406,7 +438,7 @@
                 <tb:TaskbarIcon.ContextMenu>
                     <ContextMenu DataContext="{Binding Path=(tb:TaskbarIcon.ParentTaskbarIcon).Tag, RelativeSource={RelativeSource Self}}">
                         <MenuItem Header="Выключить/Включить" />
-                        <MenuItem Header="Закрыть" Command="{Binding ElementName=MainWin, Path=ClosedCommand}"/>
+                        <MenuItem Command="{Binding ElementName=MainWin, Path=ClosedCommand}" Header="Закрыть" />
                     </ContextMenu>
                 </tb:TaskbarIcon.ContextMenu>
             </tb:TaskbarIcon>

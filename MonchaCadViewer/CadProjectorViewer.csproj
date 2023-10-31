@@ -283,6 +283,9 @@
       <DependentUpon>KompasPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="Opening\Formats\Arculator.cs" />
+    <Compile Include="Panels\RightPanel\UdpSetting.xaml.cs">
+      <DependentUpon>UdpSetting.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Services\DraggingClass.cs" />
     <Compile Include="Services\InputValidation.cs" />
     <Compile Include="Services\FileSave.cs" />
@@ -477,6 +480,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Panels\RightPanel\Logs\LogInfo.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Panels\RightPanel\UdpSetting.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

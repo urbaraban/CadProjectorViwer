@@ -38,7 +38,7 @@ namespace CadProjectorViewer
 
         private List<UnicastIPAddressInformation> IPAddressInformation { get; } = new ();
 
-        private LockKey LKey => (LockKey)this.DataContext;
+        private LockKeys LKey => (LockKeys)this.DataContext;
 
         public RequestLicenseCode()
         {

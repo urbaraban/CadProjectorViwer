@@ -478,11 +478,11 @@ namespace CadProjectorViewer.CanvasObj
 
                 using (StreamGeometryContext ctx = streamGeometry.Open())
                 {
-                    Point point = renderDevice.GetPoint(vectorLines[0].P1.X, vectorLines[0].P1.Y);
-                    ctx.BeginFigure(point, vectorLines.IsClosed, vectorLines.IsClosed);
-
                     for (int i = 0; i < vectorLines.Count; i += 1)
                     {
+                        Point point = renderDevice.GetPoint(vectorLines[i].P1.X, vectorLines[i].P1.Y);
+                        ctx.BeginFigure(point, vectorLines.IsClosed, vectorLines.IsClosed);
+
                         Point point_second = renderDevice.GetPoint(vectorLines[i].P2.X, vectorLines[i].P2.Y);
                         ctx.LineTo(point_second, true, true);
                     }

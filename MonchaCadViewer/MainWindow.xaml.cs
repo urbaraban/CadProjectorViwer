@@ -311,9 +311,9 @@ namespace CadProjectorViewer
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            if (value is LockKeysManager keysManager && keysManager.IsLicensed == true)
+            if (value is LockKeysManager keysManager && keysManager.SelectMashineKey() is LockKey lockKey)
             {
-                return keysManager.SelectMashineKey().DaysLeft < 30 ? Brushes.Yellow : Brushes.Green;
+                return lockKey.DaysLeft < 30 ? Brushes.Yellow : Brushes.Green;
             }
             else return Brushes.Red;
         }

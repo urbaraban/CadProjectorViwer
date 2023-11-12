@@ -12,15 +12,23 @@
         <ProgressBar x:Name="BarLine" />
         <Label
             x:Name="BarLabel"
+            Margin="0"
+            Padding="0"
             HorizontalAlignment="Stretch"
             VerticalAlignment="Stretch"
             HorizontalContentAlignment="Center"
             VerticalContentAlignment="Center"
             Panel.ZIndex="99"
             Content=""
-            FontSize="14"
-            Padding="0"
-            Margin="0"/>
-        <Button Foreground="Red" Background="Transparent" BorderThickness="0" FontFamily="Segoe MDL2 Assets" Content="&#xE8BB;" Width="50" HorizontalAlignment="Right" Margin="0,0,0,0"/>
+            FontSize="14" />
+        <Button
+            Width="50"
+            Margin="0,0,0,0"
+            HorizontalAlignment="Right"
+            Background="Transparent"
+            BorderThickness="0"
+            Content="&#xE8BB;"
+            FontFamily="Segoe MDL2 Assets"
+            Foreground="Red" />
     </Grid>
 </UserControl>

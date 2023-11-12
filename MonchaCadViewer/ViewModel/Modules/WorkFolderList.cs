@@ -219,20 +219,11 @@ namespace CadProjectorViewer.ViewModel.Modules
             
         }
 
-        [DllImport("shell32.dll", CharSet = CharSet.Unicode)]
-        private static extern IntPtr ILCreateFromPathW(string pszPath);
 
-        [DllImport("shell32.dll")]
-        private static extern int SHOpenFolderAndSelectItems(IntPtr pidlFolder, int cild, IntPtr apidl, int dwFlags);
-
-        [DllImport("shell32.dll")]
-        private static extern void ILFree(IntPtr pidl);
 
         public ICommand OpenFolderCommand => new ActionCommand(() =>
         {
-            IntPtr pidl = ILCreateFromPathW(this.FullName);
-            SHOpenFolderAndSelectItems(pidl, 0, IntPtr.Zero, 0);
-            ILFree(pidl);
+            FileLoad.OpenFolderAndFocusFile(this.FullPath);
         });
 
         public ICommand OpenEditorCommand => new ActionCommand(() =>

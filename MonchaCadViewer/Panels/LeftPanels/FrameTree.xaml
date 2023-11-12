@@ -1,19 +1,21 @@
-﻿<UserControl x:Class="CadProjectorViewer.Panels.DevicePanel.LeftPanels.FrameTree"
-             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             xmlns:mesh="clr-namespace:CadProjectorSDK.Device.Mesh;assembly=CadProjectorSDK"
-             xmlns:device="clr-namespace:CadProjectorSDK.Device;assembly=CadProjectorSDK" 
-             mc:Ignorable="d" 
-             d:DesignHeight="350" d:DesignWidth="130"
-             xmlns:scene="clr-namespace:CadProjectorSDK.Scenes;assembly=CadProjectorSDK"  
-             xmlns:Controls="http://metro.mahapps.com/winfx/xaml/controls"
-             xmlns:devices="clr-namespace:CadProjectorViewer.ViewModel.Devices"
-             xmlns:converters="clr-namespace:CadProjectorViewer.Converters" 
-             xmlns:canvasobj="clr-namespace:CadProjectorViewer.CanvasObj"
-             d:DataContext="{d:DesignInstance Type=scene:ProjectionScene}"
-             x:Name="FrameTreePage">
+﻿<UserControl
+    x:Class="CadProjectorViewer.Panels.DevicePanel.LeftPanels.FrameTree"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:Controls="http://metro.mahapps.com/winfx/xaml/controls"
+    xmlns:canvasobj="clr-namespace:CadProjectorViewer.CanvasObj"
+    xmlns:converters="clr-namespace:CadProjectorViewer.Converters"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:device="clr-namespace:CadProjectorSDK.Device;assembly=CadProjectorSDK"
+    xmlns:devices="clr-namespace:CadProjectorViewer.ViewModel.Devices"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:mesh="clr-namespace:CadProjectorSDK.Device.Mesh;assembly=CadProjectorSDK"
+    xmlns:scene="clr-namespace:CadProjectorSDK.Scenes;assembly=CadProjectorSDK"
+    x:Name="FrameTreePage"
+    d:DataContext="{d:DesignInstance Type=scene:ProjectionScene}"
+    d:DesignHeight="350"
+    d:DesignWidth="130"
+    mc:Ignorable="d">
     <UserControl.Resources>
         <converters:CadObjectConverter x:Key="CadObjectConverter" />
         <Style TargetType="TextBlock">
@@ -34,129 +36,145 @@
             <Setter Property="TreeViewItem.IsExpanded" Value="True" />
         </Style>
 
-        <HierarchicalDataTemplate
-            x:Key="ObjectTree"
-            ItemsSource="{Binding Children}">
-            <Border d:DataContext="{d:DesignInstance Type=canvasobj:CanvasObject}"
-                    ContextMenu="{Binding ContextMenu}">
+        <HierarchicalDataTemplate x:Key="ObjectTree" ItemsSource="{Binding Children}">
+            <Border d:DataContext="{d:DesignInstance Type=canvasobj:CanvasObject}" ContextMenu="{Binding ContextMenu}">
                 <Border.DataContext>
                     <MultiBinding Converter="{StaticResource CadObjectConverter}">
                         <Binding Path="" />
-                        <Binding ElementName="CanvasPanel" Path="DataContext"/>
-                        <Binding ElementName="CanvasPanel" Path="Scale"/>
+                        <Binding ElementName="CanvasPanel" Path="DataContext" />
+                        <Binding ElementName="CanvasPanel" Path="Scale" />
                     </MultiBinding>
                 </Border.DataContext>
                 <DockPanel VerticalAlignment="Center">
-                    <CheckBox IsChecked="{Binding IsRender}"/>
-                    <Label Content="{Binding NameID}" 
-                           VerticalAlignment="Center" 
-                           MouseDoubleClick="Label_MouseDoubleClick"/>
+                    <CheckBox IsChecked="{Binding IsRender}" />
+                    <Label
+                        VerticalAlignment="Center"
+                        Content="{Binding NameID}"
+                        MouseDoubleClick="Label_MouseDoubleClick" />
                 </DockPanel>
             </Border>
         </HierarchicalDataTemplate>
-        <HierarchicalDataTemplate x:Key="MasksTree" 
-                                  ItemsSource="{Binding Children}">
+        <HierarchicalDataTemplate x:Key="MasksTree" ItemsSource="{Binding Children}">
             <Border>
                 <DockPanel VerticalAlignment="Center">
-                    <CheckBox IsChecked="{Binding IsRender}"/>
-                    <Label Content="{Binding NameID}" VerticalAlignment="Center" MouseDoubleClick="Label_MouseDoubleClick"/>
+                    <CheckBox IsChecked="{Binding IsRender}" />
+                    <Label
+                        VerticalAlignment="Center"
+                        Content="{Binding NameID}"
+                        MouseDoubleClick="Label_MouseDoubleClick" />
                 </DockPanel>
             </Border>
         </HierarchicalDataTemplate>
-        <HierarchicalDataTemplate
-                x:Key="MeshTree">
+        <HierarchicalDataTemplate x:Key="MeshTree">
             <Border d:DataContext="{d:DesignInstance Type=mesh:ProjectorMesh}">
-                <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Margin="5">
-                    <CheckBox IsChecked="{Binding IsRender}"/>
-                    <TextBlock VerticalAlignment="Center"
-                               Text="&#xE809;"
-                               FontFamily="Segoe MDL2 Assets"/>
-                    <TextBlock Margin="5,0,0,0" Text="{Binding Name}" VerticalAlignment="Center"/>
-                    <TextBlock Margin="5,0,0,0" Text="M:" VerticalAlignment="Center"/>
-                    <Label Margin="0,0,0,0" Content="{Binding Morph}" Padding="0" VerticalAlignment="Center"/>
+                <StackPanel
+                    Margin="5"
+                    VerticalAlignment="Center"
+                    Orientation="Horizontal">
+                    <CheckBox IsChecked="{Binding IsRender}" />
+                    <TextBlock
+                        VerticalAlignment="Center"
+                        FontFamily="Segoe MDL2 Assets"
+                        Text="&#xE809;" />
+                    <TextBlock
+                        Margin="5,0,0,0"
+                        VerticalAlignment="Center"
+                        Text="{Binding Name}" />
+                    <TextBlock
+                        Margin="5,0,0,0"
+                        VerticalAlignment="Center"
+                        Text="M:" />
+                    <Label
+                        Margin="0,0,0,0"
+                        Padding="0"
+                        VerticalAlignment="Center"
+                        Content="{Binding Morph}" />
                 </StackPanel>
             </Border>
         </HierarchicalDataTemplate>
-        <HierarchicalDataTemplate 
-                x:Key="DeviceTree" 
-                DataType ="{x:Type device:LProjector}" 
-                ItemsSource="{Binding SelectedMeshes}"
-                ItemTemplate="{StaticResource MeshTree}">
-            <devices:DeviceItem/>
+        <HierarchicalDataTemplate
+            x:Key="DeviceTree"
+            DataType="{x:Type device:LProjector}"
+            ItemTemplate="{StaticResource MeshTree}"
+            ItemsSource="{Binding SelectedMeshes}">
+            <devices:DeviceItem />
         </HierarchicalDataTemplate>
 
     </UserControl.Resources>
     <ScrollViewer VerticalScrollBarVisibility="Auto">
         <DockPanel LastChildFill="True">
             <DockPanel DockPanel.Dock="Top">
-                <Controls:ToggleSwitch Content="MaskActivated" IsOn="{Binding CursorMaskActivated}"/>
+                <Controls:ToggleSwitch Content="MaskActivated" IsOn="{Binding CursorMaskActivated}" />
             </DockPanel>
-            <Expander DockPanel.Dock="Top" 
-                      Header ="{DynamicResource dvc_Devices}"
-                      IsExpanded="True">
+            <Expander
+                DockPanel.Dock="Top"
+                Header="{DynamicResource dvc_Devices}"
+                IsExpanded="True">
                 <Expander.HeaderTemplate>
                     <DataTemplate>
-                        <StackPanel
-                            Orientation="Horizontal">
-                            <TextBlock Text="{Binding}" Margin="4"/>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Margin="4" Text="{Binding}" />
                             <Button
-                                Content="&#xEDAB;"
-                                FontFamily="Segoe MDL2 Assets"
-                                FontSize="16"
+                                Width="{Binding ActualHeight, RelativeSource={RelativeSource Self}}"
                                 Height="25"
                                 Padding="0"
-                                Width="{Binding ActualHeight, RelativeSource={RelativeSource Self}}"
-                                Command="{Binding ElementName=FrameTreePage, Path=RefreshAllDevicesCommand}"/>
+                                Command="{Binding ElementName=FrameTreePage, Path=RefreshAllDevicesCommand}"
+                                Content="&#xEDAB;"
+                                FontFamily="Segoe MDL2 Assets"
+                                FontSize="16" />
                         </StackPanel>
                     </DataTemplate>
                 </Expander.HeaderTemplate>
                 <StackPanel>
-                    <TreeView ItemsSource="{Binding Projectors}"
-                              d:ItemsSource="{d:SampleData ItemCount=2}"
-                          SelectedValuePath="{Binding Projectors.SelectedItem}"
-                          ItemTemplate="{StaticResource ResourceKey=DeviceTree}"/>
+                    <TreeView
+                        d:ItemsSource="{d:SampleData ItemCount=2}"
+                        ItemTemplate="{StaticResource ResourceKey=DeviceTree}"
+                        ItemsSource="{Binding Projectors}"
+                        SelectedValuePath="{Binding Projectors.SelectedItem}" />
                 </StackPanel>
 
             </Expander>
 
-            <Expander Header="{DynamicResource edit_Mask}" DockPanel.Dock="Top" IsExpanded="True">
+            <Expander
+                DockPanel.Dock="Top"
+                Header="{DynamicResource edit_Mask}"
+                IsExpanded="True">
                 <Expander.HeaderTemplate>
                     <DataTemplate>
                         <StackPanel Orientation="Horizontal">
-                            <TextBlock Text="{Binding}" Margin="5"/>
-                            <Button 
-                                DockPanel.Dock="Right"
-                                Width="{Binding ActualHeight, RelativeSource={RelativeSource Self}}" 
+                            <TextBlock Margin="5" Text="{Binding}" />
+                            <Button
+                                Width="{Binding ActualHeight, RelativeSource={RelativeSource Self}}"
+                                Padding="0"
+                                Command="{Binding ElementName=FrameTreePage, Path=MaskSplitCommand}"
                                 Content="&#xF0E2;"
-                                Padding="0"
-                                FontFamily="Segoe MDL2 Assets"
-                                FontSize="16"
-                                Command="{Binding ElementName=FrameTreePage, Path=MaskSplitCommand}"/>
-                            <Button 
                                 DockPanel.Dock="Right"
-                                Width="{Binding ActualHeight, RelativeSource={RelativeSource Self}}" 
-                                Content="&#xE74D;"
-                                Padding="0"
                                 FontFamily="Segoe MDL2 Assets"
-                                FontSize="16" Command="{Binding ElementName=FrameTreePage, Path=ClearMasks}"/>
+                                FontSize="16" />
+                            <Button
+                                Width="{Binding ActualHeight, RelativeSource={RelativeSource Self}}"
+                                Padding="0"
+                                Command="{Binding ElementName=FrameTreePage, Path=ClearMasks}"
+                                Content="&#xE74D;"
+                                DockPanel.Dock="Right"
+                                FontFamily="Segoe MDL2 Assets"
+                                FontSize="16" />
                         </StackPanel>
                     </DataTemplate>
                 </Expander.HeaderTemplate>
-                <TreeView ItemsSource="{Binding Masks}"
-                          ItemTemplate="{StaticResource ResourceKey=MasksTree}">
-                </TreeView>
+                <TreeView ItemTemplate="{StaticResource ResourceKey=MasksTree}" ItemsSource="{Binding Masks}" />
 
             </Expander>
 
-            <Expander 
-                Header="{DynamicResource obj_Objects}" 
-                IsExpanded="True"
-                DockPanel.Dock="Top">
+            <Expander
+                DockPanel.Dock="Top"
+                Header="{DynamicResource obj_Objects}"
+                IsExpanded="True">
                 <TreeView
-                    Style="{StaticResource ObjectTreeMainStyle}"
-                    ItemsSource="{Binding .}" 
+                    d:ItemsSource="{d:SampleData ItemCount=2}"
                     ItemTemplate="{StaticResource ResourceKey=ObjectTree}"
-                    d:ItemsSource="{d:SampleData ItemCount=2}" />
+                    ItemsSource="{Binding .}"
+                    Style="{StaticResource ObjectTreeMainStyle}" />
 
 
             </Expander>

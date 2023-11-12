@@ -8,6 +8,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Runtime.InteropServices;
 using System.Security.Cryptography;
 using System.Threading.Tasks;
 using System.Windows;
@@ -289,6 +290,22 @@ namespace CadProjectorViewer.Opening
                 formatstr += $"*{frm};";
             }
             return $"{format.Name}({formatstr}) | {formatstr}";
+        }
+
+        [DllImport("shell32.dll", CharSet = CharSet.Unicode)]
+        private static extern IntPtr ILCreateFromPathW(string pszPath);
+
+        [DllImport("shell32.dll")]
+        private static extern int SHOpenFolderAndSelectItems(IntPtr pidlFolder, int cild, IntPtr apidl, int dwFlags);
+
+        [DllImport("shell32.dll")]
+        private static extern void ILFree(IntPtr pidl);
+
+        public static void OpenFolderAndFocusFile(string filepath)
+        {
+            IntPtr pidl = FileLoad.ILCreateFromPathW(filepath);
+            FileLoad.SHOpenFolderAndSelectItems(pidl, 0, IntPtr.Zero, 0);
+            FileLoad.ILFree(pidl);
         }
     }
 }

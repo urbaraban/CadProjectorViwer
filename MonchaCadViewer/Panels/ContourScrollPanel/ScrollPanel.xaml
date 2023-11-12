@@ -1,8 +1,8 @@
 ﻿<UserControl
     x:Class="CadProjectorViewer.Panels.ScrollPanel"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:panels="clr-namespace:CadProjectorViewer.Panels"
     xmlns:viewmodel="clr-namespace:CadProjectorViewer.ViewModel"
@@ -41,30 +41,27 @@
                     FontSize="18"
                     Foreground="Green" />
                 <CheckBox
-                DockPanel.Dock="Top"
-                Margin="5"
-                ToolTip="Stream Add" 
-                IsChecked="{Binding ProjectorHub.ScenesCollection.StreamAdd}"/>
+                    Margin="5"
+                    DockPanel.Dock="Top"
+                    IsChecked="{Binding ProjectorHub.ScenesCollection.StreamAdd}"
+                    ToolTip="Stream Add" />
             </StackPanel>
-            <ScrollViewer
-                HorizontalScrollBarVisibility="Visible"
-                VerticalScrollBarVisibility="Disabled">
+            <ScrollViewer HorizontalScrollBarVisibility="Visible" VerticalScrollBarVisibility="Disabled">
                 <ItemsControl ItemsSource="{Binding ProjectorHub.ScenesCollection.LoadedObjects}">
                     <ItemsControl.ItemsPanel>
                         <ItemsPanelTemplate>
-                            <WrapPanel  
-                                Orientation="Vertical"/>
+                            <WrapPanel Orientation="Vertical" />
                         </ItemsPanelTemplate>
                     </ItemsControl.ItemsPanel>
                     <ItemsControl.ItemTemplate>
                         <DataTemplate>
                             <UniformGrid Rows="1">
-                                <panels:ScrollPanelItem Width="100" Height="100"/>
+                                <panels:ScrollPanelItem Width="100" Height="100" />
                             </UniformGrid>
                         </DataTemplate>
                     </ItemsControl.ItemTemplate>
                 </ItemsControl>
-                
+
             </ScrollViewer>
         </DockPanel>
 

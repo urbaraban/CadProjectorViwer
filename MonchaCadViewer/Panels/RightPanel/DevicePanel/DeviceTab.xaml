@@ -1,14 +1,14 @@
 ﻿<UserControl
+    x:Class="CadProjectorViewer.Panels.DeviceTab"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:Controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
+    xmlns:converters="clr-namespace:CadProjectorViewer.Converters"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:sdk="clr-namespace:CadProjectorSDK;assembly=CadProjectorSDK"
-    xmlns:converters="clr-namespace:CadProjectorViewer.Converters"
-    xmlns:Controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
-    x:Class="CadProjectorViewer.Panels.DeviceTab"
-    d:DataContext="{d:DesignInstance Type={x:Type sdk:ProjectorHub}}"
     Padding="0"
+    d:DataContext="{d:DesignInstance Type={x:Type sdk:ProjectorHub}}"
     d:DesignHeight="550"
     d:DesignWidth="300"
     mc:Ignorable="d">
@@ -17,7 +17,7 @@
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Controls.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Fonts.xaml" />
-                <!-- Theme setting -->
+                <!--  Theme setting  -->
                 <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Themes/Light.Blue.xaml" />
             </ResourceDictionary.MergedDictionaries>
             <Style TargetType="{x:Type DockPanel}">
@@ -28,7 +28,7 @@
                 <Setter Property="HorizontalAlignment" Value="Left" />
                 <Setter Property="VerticalAlignment" Value="Top" />
                 <Setter Property="HorizontalContentAlignment" Value="Center" />
-                <Setter Property="Margin" Value="5, 0" />
+                <Setter Property="Margin" Value="5,0" />
             </Style>
             <Style TargetType="{x:Type Label}">
                 <Setter Property="FontSize" Value="10" />
@@ -47,64 +47,68 @@
             <Style TargetType="Button">
                 <Setter Property="Width" Value="{Binding ActualHeight, RelativeSource={RelativeSource Self}}" />
             </Style>
-            <converters:RoundDoubleConverter x:Key="RoundValue"/>
+            <converters:RoundDoubleConverter x:Key="RoundValue" />
         </ResourceDictionary>
     </UserControl.Resources>
     <DockPanel>
         <DockPanel DockPanel.Dock="Top">
             <StackPanel>
                 <Label
-                Width="auto"
-                Padding="0"
-                HorizontalAlignment="Stretch"
-                VerticalAlignment="Bottom"
-                Content="{DynamicResource dvc_Device}" />
+                    Width="auto"
+                    Padding="0"
+                    HorizontalAlignment="Stretch"
+                    VerticalAlignment="Bottom"
+                    Content="{DynamicResource dvc_Device}" />
                 <DockPanel HorizontalAlignment="Stretch" LastChildFill="True">
                     <Controls:ToggleSwitch
-                    Visibility="Collapsed"
-                    DockPanel.Dock="Right"
-                    DataContext="{Binding SelectedItem, ElementName=DeviceCombo}"
-                    IsOn="{Binding OwnedSetting}"
-                    AutomationProperties.HelpText="Common setting toggle"
-                    MinWidth="0"
-                    Content=""
-                    Grid.Row="3" Grid.ColumnSpan="2" />
-                    <Button DockPanel.Dock="Right"
+                        Grid.Row="3"
+                        Grid.ColumnSpan="2"
+                        MinWidth="0"
+                        AutomationProperties.HelpText="Common setting toggle"
+                        Content=""
+                        DataContext="{Binding SelectedItem, ElementName=DeviceCombo}"
+                        DockPanel.Dock="Right"
+                        IsOn="{Binding OwnedSetting}"
+                        Visibility="Collapsed" />
+                    <Button
                         Margin="5,0,10,0"
+                        Padding="0"
                         Click="SceneSettingBtn_Click"
                         Content="&#xF0B5;"
-                        Padding="0"
+                        DockPanel.Dock="Right"
                         FontFamily="Segoe MDL2 Assets"
                         FontSize="14" />
-                    <Button DockPanel.Dock="Right"
+                    <Button
                         Margin="5,0,0,0"
+                        Padding="0"
                         Click="DeviceSettingBtn_Click"
                         Content="&#xE713;"
-                        Padding="0"
+                        DockPanel.Dock="Right"
                         FontFamily="Segoe MDL2 Assets"
                         FontSize="14" />
-                    <Button DockPanel.Dock="Right"
+                    <Button
                         Margin="5,0,0,0"
+                        Padding="0"
                         Click="EllipseSettingBtn_Click"
                         Content="&#xE774;"
-                        Padding="0"
+                        DataContext="{Binding SelectedItem, ElementName=DeviceCombo}"
+                        DockPanel.Dock="Right"
                         FontFamily="Segoe MDL2 Assets"
-                        FontSize="14"
-                        DataContext="{Binding SelectedItem, ElementName=DeviceCombo}" />
+                        FontSize="14" />
                     <ComboBox
-                    x:Name="DeviceCombo"  
-                    DockPanel.Dock="Left"
-                    HorizontalContentAlignment="Right"
-                    SelectedValuePath="NameID"
-                    SelectedItem="{Binding ScenesCollection.SelectedScene.Projectors.SelectedItem}"
-                    ItemsSource="{Binding ScenesCollection.SelectedScene.Projectors}">
+                        x:Name="DeviceCombo"
+                        HorizontalContentAlignment="Right"
+                        DockPanel.Dock="Left"
+                        ItemsSource="{Binding ScenesCollection.SelectedScene.Projectors}"
+                        SelectedItem="{Binding ScenesCollection.SelectedScene.Projectors.SelectedItem}"
+                        SelectedValuePath="NameID">
                         <ComboBox.ItemTemplate>
                             <DataTemplate>
                                 <TextBlock>
                                     <TextBlock.Text>
                                         <MultiBinding StringFormat="{}{0}: {1}">
-                                            <Binding Path="NameID"/>
-                                            <Binding Path="IpAddress"/>
+                                            <Binding Path="NameID" />
+                                            <Binding Path="IpAddress" />
                                         </MultiBinding>
                                     </TextBlock.Text>
                                 </TextBlock>
@@ -113,109 +117,110 @@
                     </ComboBox>
                 </DockPanel>
                 <Label
-                Width="auto"
-                Padding="0"
-                HorizontalAlignment="Stretch"
-                VerticalAlignment="Top"
-                Content="{DynamicResource dvc_Mesh}" />
+                    Width="auto"
+                    Padding="0"
+                    HorizontalAlignment="Stretch"
+                    VerticalAlignment="Top"
+                    Content="{DynamicResource dvc_Mesh}" />
                 <DockPanel LastChildFill="True">
                     <Button
-                    DockPanel.Dock="Right"
-                    
-                    Margin="3,0"
-                    Padding="0"
-                    Content="&#xF0B5;"
-                    FontFamily="Segoe MDL2 Assets"
-                    FontSize="14"
-                    Click="MeshListBtn_Click" />
+                        Margin="3,0"
+                        Padding="0"
+                        Click="MeshListBtn_Click"
+                        Content="&#xF0B5;"
+                        DockPanel.Dock="Right"
+                        FontFamily="Segoe MDL2 Assets"
+                        FontSize="14" />
                     <Button
-                    DockPanel.Dock="Right"
-                    Margin="3,0"
-                    Padding="0"
-                    Content="&#xEB7E;"
-                    FontFamily="Segoe MDL2 Assets"
-                    FontSize="14"
-                    Click="MeshSettingBtn_Click" />
+                        Margin="3,0"
+                        Padding="0"
+                        Click="MeshSettingBtn_Click"
+                        Content="&#xEB7E;"
+                        DockPanel.Dock="Right"
+                        FontFamily="Segoe MDL2 Assets"
+                        FontSize="14" />
                     <CheckBox
-                    DockPanel.Dock="Right"
-                    Margin="9,0,0,0"
-                    DataContext="{Binding SelectedItem, ElementName=DeviceCombo}"
-                    IsChecked="{Binding OnlySelectMesh, Mode=TwoWay}" />
+                        Margin="9,0,0,0"
+                        DataContext="{Binding SelectedItem, ElementName=DeviceCombo}"
+                        DockPanel.Dock="Right"
+                        IsChecked="{Binding OnlySelectMesh, Mode=TwoWay}" />
 
                     <ComboBox
-                    DockPanel.Dock="Left"
-                    SelectedIndex="0"
-                    DataContext="{Binding SelectedItem, ElementName=DeviceCombo}"
-                    ItemsSource="{Binding SelectedMeshes}"
-                    SelectedItem="{Binding SelectMesh, Mode=TwoWay}"
-                    DisplayMemberPath="Name" />
+                        DataContext="{Binding SelectedItem, ElementName=DeviceCombo}"
+                        DisplayMemberPath="Name"
+                        DockPanel.Dock="Left"
+                        ItemsSource="{Binding SelectedMeshes}"
+                        SelectedIndex="0"
+                        SelectedItem="{Binding SelectMesh, Mode=TwoWay}" />
                 </DockPanel>
                 <DockPanel>
-                    <DockPanel LastChildFill="True" DockPanel.Dock="Right">
-                        <Label Width="auto"
-                               AutomationProperties.HelpText="Кадров в секунду"
-                               Content="{DynamicResource dvc_FPS}"/>
-                        <Controls:NumericUpDown DataContext="{Binding SelectedItem, ElementName=DeviceCombo}"
-                                                Value="{Binding FPS}"
-                                                Background="White"
-                                                MinWidth="80"
-                                                Maximum="60"
-                                                Minimum="10" />
+                    <DockPanel DockPanel.Dock="Right" LastChildFill="True">
+                        <Label
+                            Width="auto"
+                            AutomationProperties.HelpText="Кадров в секунду"
+                            Content="{DynamicResource dvc_FPS}" />
+                        <Controls:NumericUpDown
+                            MinWidth="80"
+                            Background="White"
+                            DataContext="{Binding SelectedItem, ElementName=DeviceCombo}"
+                            Maximum="60"
+                            Minimum="10"
+                            Value="{Binding FPS}" />
                     </DockPanel>
-                    <Label Width="auto"
-                           Content="{DynamicResource dvc_SRC}"/>
+                    <Label Width="auto" Content="{DynamicResource dvc_SRC}" />
 
-                    <Controls:NumericUpDown DataContext="{Binding SelectedItem, ElementName=DeviceCombo}"
-                            Value="{Binding ScanRate, Mode=TwoWay}"
-                            Maximum="{Binding MaxScanRate}"
-                            Minimum="1000"
-                            ToolTip="{Binding ScanRate, Mode=TwoWay}"
-                            PreviewMouseDown="ScanRateRealSlider_PreviewMouseDown"
-                            Interval="1000" NumericInputMode="Numbers" />
+                    <Controls:NumericUpDown
+                        DataContext="{Binding SelectedItem, ElementName=DeviceCombo}"
+                        Interval="1000"
+                        Maximum="{Binding MaxScanRate}"
+                        Minimum="1000"
+                        NumericInputMode="Numbers"
+                        PreviewMouseDown="ScanRateRealSlider_PreviewMouseDown"
+                        ToolTip="{Binding ScanRate, Mode=TwoWay}"
+                        Value="{Binding ScanRate, Mode=TwoWay}" />
 
                 </DockPanel>
                 <DockPanel LastChildFill="True">
-                    <Label
-                    DockPanel.Dock="Left"
-                    Content="Offset" />
+                    <Label Content="Offset" DockPanel.Dock="Left" />
                     <Controls:NumericUpDown
-                    DataContext="{Binding SelectedItem, ElementName=DeviceCombo}"
-                    Value="{Binding TimeColorShift}"
-                    VerticalAlignment="Bottom"
-                    Maximum="1"
-                    Minimum="-1"
-                    Interval="0.00001" />
+                        VerticalAlignment="Bottom"
+                        DataContext="{Binding SelectedItem, ElementName=DeviceCombo}"
+                        Interval="0.00001"
+                        Maximum="1"
+                        Minimum="-1"
+                        Value="{Binding TimeColorShift}" />
                 </DockPanel>
                 <Separator />
             </StackPanel>
-            
+
         </DockPanel>
         <ScrollViewer VerticalScrollBarVisibility="Auto">
             <StackPanel>
                 <DockPanel Visibility="Collapsed">
                     <Controls:NumericUpDown
-            x:Name="DistanceUpDn"
-            Background="White"
-            Value="0" />
+                        x:Name="DistanceUpDn"
+                        Background="White"
+                        Value="0" />
                     <ComboBox
-            x:Name="LaserMetersCombo"
-            Grid.Column="1"
-            Height="26"
-            Margin="4,17,9,0"
-            VerticalAlignment="Top"
-            Grid.Row="2" />
-                    <Controls:ToggleSwitch x:Name="LaserMeterToggle"
-                                           Grid.Column="4"
-                                           HorizontalAlignment="Right"
-                                           VerticalAlignment="Top"
-                                           HorizontalContentAlignment="Center"
-                                           Content=""
-                                           MinWidth="0"
-                                           IsOn="False"
-                                           Toggled="LaserMeterToggle_Toggled"
-                                           Grid.Row="2"
-                                           Controls:HeaderedControlHelper.HeaderHorizontalContentAlignment="Center"
-                                           Margin="0,14,1,0">
+                        x:Name="LaserMetersCombo"
+                        Grid.Row="2"
+                        Grid.Column="1"
+                        Height="26"
+                        Margin="4,17,9,0"
+                        VerticalAlignment="Top" />
+                    <Controls:ToggleSwitch
+                        x:Name="LaserMeterToggle"
+                        Grid.Row="2"
+                        Grid.Column="4"
+                        MinWidth="0"
+                        Margin="0,14,1,0"
+                        HorizontalAlignment="Right"
+                        VerticalAlignment="Top"
+                        HorizontalContentAlignment="Center"
+                        Controls:HeaderedControlHelper.HeaderHorizontalContentAlignment="Center"
+                        Content=""
+                        IsOn="False"
+                        Toggled="LaserMeterToggle_Toggled">
                         <Controls:ToggleSwitch.RenderTransform>
                             <TransformGroup>
                                 <ScaleTransform />
@@ -226,236 +231,219 @@
                         </Controls:ToggleSwitch.RenderTransform>
                     </Controls:ToggleSwitch>
                     <Label
-            Grid.Column="1"
-            Width="74"
-            Height="16"
-            Padding="0"
-            HorizontalAlignment="Left"
-            VerticalAlignment="Top"
-            Content="{DynamicResource dvc_Dimmer}" Margin="4,0,0,0" Grid.Row="2" />
+                        Grid.Row="2"
+                        Grid.Column="1"
+                        Width="74"
+                        Height="16"
+                        Margin="4,0,0,0"
+                        Padding="0"
+                        HorizontalAlignment="Left"
+                        VerticalAlignment="Top"
+                        Content="{DynamicResource dvc_Dimmer}" />
                 </DockPanel>
 
-                <Separator/>
-                <!--Red-->
+                <Separator />
+                <!--  Red  -->
                 <DockPanel LastChildFill="True">
                     <Controls:ToggleSwitch
-                    DataContext="{Binding SelectedItem, ElementName=DeviceCombo}"
-                    IsOn="{Binding ProjectionSetting.RedOn, Mode=TwoWay}"
-                    Content="{DynamicResource dvc_RED}"
-                    MinWidth="0"/>
+                        MinWidth="0"
+                        Content="{DynamicResource dvc_RED}"
+                        DataContext="{Binding SelectedItem, ElementName=DeviceCombo}"
+                        IsOn="{Binding ProjectionSetting.RedOn, Mode=TwoWay}" />
                     <Controls:NumericUpDown
-                    DataContext="{Binding SelectedItem, ElementName=DeviceCombo}"
-                    Value="{Binding ProjectionSetting.Red, Mode=TwoWay}"
-                    Background="White"
-                    Maximum="255"
-                    Minimum="1" />
+                        Background="White"
+                        DataContext="{Binding SelectedItem, ElementName=DeviceCombo}"
+                        Maximum="255"
+                        Minimum="1"
+                        Value="{Binding ProjectionSetting.Red, Mode=TwoWay}" />
                 </DockPanel>
-                <!--Green-->
+                <!--  Green  -->
                 <DockPanel LastChildFill="True">
                     <Controls:ToggleSwitch
-                    DockPanel.Dock="Left"
-                    MinWidth="0"
-                    DataContext="{Binding SelectedItem, ElementName=DeviceCombo}"
-                    IsOn="{Binding ProjectionSetting.GreenOn, Mode=TwoWay}"
-                    Content="{DynamicResource dvc_GREEN}" />
+                        MinWidth="0"
+                        Content="{DynamicResource dvc_GREEN}"
+                        DataContext="{Binding SelectedItem, ElementName=DeviceCombo}"
+                        DockPanel.Dock="Left"
+                        IsOn="{Binding ProjectionSetting.GreenOn, Mode=TwoWay}" />
                     <Controls:NumericUpDown
-                    DockPanel.Dock="Right"
-                    DataContext="{Binding SelectedItem, ElementName=DeviceCombo}"
-                    Value="{Binding ProjectionSetting.Green, Mode=TwoWay}"
-                    Background="White"
-                    Maximum="255"
-                    Minimum="1" />
+                        Background="White"
+                        DataContext="{Binding SelectedItem, ElementName=DeviceCombo}"
+                        DockPanel.Dock="Right"
+                        Maximum="255"
+                        Minimum="1"
+                        Value="{Binding ProjectionSetting.Green, Mode=TwoWay}" />
                 </DockPanel>
 
                 <DockPanel LastChildFill="True">
                     <Controls:ToggleSwitch
-                    DockPanel.Dock="Left"
-                    DataContext="{Binding SelectedItem, ElementName=DeviceCombo}"
-                    IsOn="{Binding ProjectionSetting.BlueOn, Mode=TwoWay}"
-                    MinWidth="0"
-                    Content="{DynamicResource dvc_Blue}" />
+                        MinWidth="0"
+                        Content="{DynamicResource dvc_Blue}"
+                        DataContext="{Binding SelectedItem, ElementName=DeviceCombo}"
+                        DockPanel.Dock="Left"
+                        IsOn="{Binding ProjectionSetting.BlueOn, Mode=TwoWay}" />
                     <Controls:NumericUpDown
-                    DockPanel.Dock="Right"
-                    DataContext="{Binding SelectedItem, ElementName=DeviceCombo}"
-                    Value="{Binding ProjectionSetting.Blue, Mode=TwoWay}"
-                    Background="White"
-                    Maximum="255"
-                    Minimum="1" />
+                        Background="White"
+                        DataContext="{Binding SelectedItem, ElementName=DeviceCombo}"
+                        DockPanel.Dock="Right"
+                        Maximum="255"
+                        Minimum="1"
+                        Value="{Binding ProjectionSetting.Blue, Mode=TwoWay}" />
                 </DockPanel>
                 <DockPanel LastChildFill="True">
                     <Label
-                HorizontalContentAlignment="Center"
-                Content="{DynamicResource dvc_Brightness}"
-                VerticalAlignment="Bottom"/>
+                        VerticalAlignment="Bottom"
+                        HorizontalContentAlignment="Center"
+                        Content="{DynamicResource dvc_Brightness}" />
                     <Slider
-                DataContext="{Binding SelectedItem, ElementName=DeviceCombo}"
-                Value="{Binding Alpha, Mode=TwoWay}"
-                VerticalAlignment="Bottom"
-                Maximum="255"
-                Minimum="1" />
+                        VerticalAlignment="Bottom"
+                        DataContext="{Binding SelectedItem, ElementName=DeviceCombo}"
+                        Maximum="255"
+                        Minimum="1"
+                        Value="{Binding Alpha, Mode=TwoWay}" />
                 </DockPanel>
                 <DockPanel>
-                    <Controls:ToggleSwitch DataContext="{Binding SelectedItem, ElementName=DeviceCombo}"
-                                           IsOn="{Binding InvertedX}"
-                                           MinWidth="0"
-                                           FlowDirection="RightToLeft"
-                                           HorizontalContentAlignment="Right"
-                                           Content="{DynamicResource dvc_InvX}"
-                                           FontSize="12"
-                                           Grid.Row="5"
-                                           Grid.ColumnSpan="2" 
-                                           Grid.Column="1" 
-                                           VerticalAlignment="Center" />
-                    <Controls:ToggleSwitch DataContext="{Binding SelectedItem, ElementName=DeviceCombo}"
-                                           IsOn="{Binding InvertedY, Mode=TwoWay}"
-                                           Grid.Row="5"
-                                           Grid.Column="3"
-                                           Grid.ColumnSpan="2"
-                                           MinWidth="0"
-                                           VerticalAlignment="Center"
-                                           HorizontalContentAlignment="Right"
-                                           Content="{DynamicResource dvc_InvY}"
-                                           FlowDirection="RightToLeft"
-                                           FontSize="12" HorizontalAlignment="Right"/>
-                </DockPanel>
-
-
-                <Separator/>
-
-                <DockPanel LastChildFill="True">
-                    <Label
-                    DockPanel.Dock="Left"
-                    Content="{DynamicResource dvc_Optimize}"/>
                     <Controls:ToggleSwitch
-                    DockPanel.Dock="Right"
-                    OffContent="{DynamicResource common_OFF}"
-                    OnContent="{DynamicResource common_ON}"
-                    DataContext="{Binding SelectedItem, ElementName=DeviceCombo}"
-                    IsOn="{Binding Optimized}"/>
+                        Grid.Row="5"
+                        Grid.Column="1"
+                        Grid.ColumnSpan="2"
+                        MinWidth="0"
+                        VerticalAlignment="Center"
+                        HorizontalContentAlignment="Right"
+                        Content="{DynamicResource dvc_InvX}"
+                        DataContext="{Binding SelectedItem, ElementName=DeviceCombo}"
+                        FlowDirection="RightToLeft"
+                        FontSize="12"
+                        IsOn="{Binding InvertedX}" />
+                    <Controls:ToggleSwitch
+                        Grid.Row="5"
+                        Grid.Column="3"
+                        Grid.ColumnSpan="2"
+                        MinWidth="0"
+                        HorizontalAlignment="Right"
+                        VerticalAlignment="Center"
+                        HorizontalContentAlignment="Right"
+                        Content="{DynamicResource dvc_InvY}"
+                        DataContext="{Binding SelectedItem, ElementName=DeviceCombo}"
+                        FlowDirection="RightToLeft"
+                        FontSize="12"
+                        IsOn="{Binding InvertedY, Mode=TwoWay}" />
+                </DockPanel>
+
+
+                <Separator />
+
+                <DockPanel LastChildFill="True">
+                    <Label Content="{DynamicResource dvc_Optimize}" DockPanel.Dock="Left" />
+                    <Controls:ToggleSwitch
+                        DataContext="{Binding SelectedItem, ElementName=DeviceCombo}"
+                        DockPanel.Dock="Right"
+                        IsOn="{Binding Optimized}"
+                        OffContent="{DynamicResource common_OFF}"
+                        OnContent="{DynamicResource common_ON}" />
                 </DockPanel>
 
                 <DockPanel LastChildFill="True">
-                    <Label
-                    DockPanel.Dock="Left"
-                    Content="Path Find Deep"/>
+                    <Label Content="Path Find Deep" DockPanel.Dock="Left" />
                     <Controls:NumericUpDown
-                    DockPanel.Dock="Right"
-                    DataContext="{Binding SelectedItem, ElementName=DeviceCombo}"
-                    Value="{Binding ProjectionSetting.PathFindDeep}"
-                    Background="White"
-                    Maximum="999"
-                    Minimum="0.0001" />
+                        Background="White"
+                        DataContext="{Binding SelectedItem, ElementName=DeviceCombo}"
+                        DockPanel.Dock="Right"
+                        Maximum="999"
+                        Minimum="0.0001"
+                        Value="{Binding ProjectionSetting.PathFindDeep}" />
                 </DockPanel>
 
                 <DockPanel LastChildFill="True">
-                    <Label
-                    DockPanel.Dock="Left"
-                    Content="{DynamicResource dvc_StepPoint}"/>
+                    <Label Content="{DynamicResource dvc_StepPoint}" DockPanel.Dock="Left" />
                     <Controls:NumericUpDown
-                    DockPanel.Dock="Right"
-                    DataContext="{Binding SelectedItem, ElementName=DeviceCombo}"
-                    Value="{Binding ProjectionSetting.PointStep.Value}"
-                    Background="White"
-                    Interval="0.1"
-                    Maximum="999"
-                    Minimum="0.0001" />
+                        Background="White"
+                        DataContext="{Binding SelectedItem, ElementName=DeviceCombo}"
+                        DockPanel.Dock="Right"
+                        Interval="0.1"
+                        Maximum="999"
+                        Minimum="0.0001"
+                        Value="{Binding ProjectionSetting.PointStep.Value}" />
                 </DockPanel>
 
                 <DockPanel LastChildFill="True">
-                    <Label
-                    DockPanel.Dock="Left"
-                    Content="{DynamicResource dvc_WaintPoint}" />
+                    <Label Content="{DynamicResource dvc_WaintPoint}" DockPanel.Dock="Left" />
                     <Controls:NumericUpDown
-            DataContext="{Binding SelectedItem, ElementName=DeviceCombo}"
-            Value="{Binding ProjectionSetting.LineWait, Mode=TwoWay}"
-            VerticalAlignment="Bottom"
-            Maximum="30"
-            Minimum="1" />
+                        VerticalAlignment="Bottom"
+                        DataContext="{Binding SelectedItem, ElementName=DeviceCombo}"
+                        Maximum="30"
+                        Minimum="1"
+                        Value="{Binding ProjectionSetting.LineWait, Mode=TwoWay}" />
                 </DockPanel>
 
                 <DockPanel LastChildFill="True">
-                    <Label
-                    DockPanel.Dock="Left"
-                    Content="{DynamicResource dvc_WaintPointBlank}" />
+                    <Label Content="{DynamicResource dvc_WaintPointBlank}" DockPanel.Dock="Left" />
                     <Controls:NumericUpDown
-            DataContext="{Binding SelectedItem, ElementName=DeviceCombo}"
-            Value="{Binding ProjectionSetting.BlankWait, Mode=TwoWay}"
-            VerticalAlignment="Bottom"
-            Maximum="30"
-            Minimum="1" />
+                        VerticalAlignment="Bottom"
+                        DataContext="{Binding SelectedItem, ElementName=DeviceCombo}"
+                        Maximum="30"
+                        Minimum="1"
+                        Value="{Binding ProjectionSetting.BlankWait, Mode=TwoWay}" />
                 </DockPanel>
 
                 <DockPanel LastChildFill="True">
-                    <Label
-                    DockPanel.Dock="Left"
-                    Content="Start tail" />
+                    <Label Content="Start tail" DockPanel.Dock="Left" />
                     <Controls:NumericUpDown
-                    DataContext="{Binding SelectedItem, ElementName=DeviceCombo}"
-                    Value="{Binding ProjectionSetting.StartTail, Mode=TwoWay, Converter={StaticResource RoundValue}}"
-                    VerticalAlignment="Bottom"
-                    Maximum="0.1"
-                    Minimum="0"
-                    Interval="0.001" 
-                    />
+                        VerticalAlignment="Bottom"
+                        DataContext="{Binding SelectedItem, ElementName=DeviceCombo}"
+                        Interval="0.001"
+                        Maximum="0.1"
+                        Minimum="0"
+                        Value="{Binding ProjectionSetting.StartTail, Mode=TwoWay, Converter={StaticResource RoundValue}}" />
                 </DockPanel>
                 <DockPanel LastChildFill="True">
-                    <Label
-                    DockPanel.Dock="Left"
-                    Content="Blank tail" />
+                    <Label Content="Blank tail" DockPanel.Dock="Left" />
                     <Controls:NumericUpDown
-                    DataContext="{Binding SelectedItem, ElementName=DeviceCombo}"
-                    Value="{Binding ProjectionSetting.BlankTail, Mode=TwoWay, Converter={StaticResource RoundValue}}"
-                    VerticalAlignment="Bottom"
-                    Maximum="0.5"
-                    Minimum="0.01"
-                    Interval="0.01" 
-                    />
+                        VerticalAlignment="Bottom"
+                        DataContext="{Binding SelectedItem, ElementName=DeviceCombo}"
+                        Interval="0.01"
+                        Maximum="0.5"
+                        Minimum="0.01"
+                        Value="{Binding ProjectionSetting.BlankTail, Mode=TwoWay, Converter={StaticResource RoundValue}}" />
                 </DockPanel>
 
                 <DockPanel LastChildFill="True">
-                    <Label
-                    DockPanel.Dock="Left"
-                    Content="Line tail" />
+                    <Label Content="Line tail" DockPanel.Dock="Left" />
                     <Controls:NumericUpDown
-                    DataContext="{Binding SelectedItem, ElementName=DeviceCombo}"
-                    Value="{Binding ProjectionSetting.LineTail, Mode=TwoWay, Converter={StaticResource RoundValue}}"
-                    VerticalAlignment="Bottom"
-                    Maximum="0.5"
-                    Minimum="0.01"
-                    Interval="0.01" />
+                        VerticalAlignment="Bottom"
+                        DataContext="{Binding SelectedItem, ElementName=DeviceCombo}"
+                        Interval="0.01"
+                        Maximum="0.5"
+                        Minimum="0.01"
+                        Value="{Binding ProjectionSetting.LineTail, Mode=TwoWay, Converter={StaticResource RoundValue}}" />
                 </DockPanel>
 
 
-                <Separator/>
+                <Separator />
                 <DockPanel>
-                    <Label
-                    DockPanel.Dock="Left"
-                    Content="{DynamicResource obj_ParallelCount}" />
+                    <Label Content="{DynamicResource obj_ParallelCount}" DockPanel.Dock="Left" />
                     <Controls:NumericUpDown
-                    DockPanel.Dock="Right"
-                    DataContext="{Binding SelectedItem, ElementName=DeviceCombo}"
-                    Value="{Binding ProjectionSetting.ParallelLineCount}"
-                    Background="White"
-                    Maximum="999"
-                    Interval="1"
-                    Minimum="0" />
+                        Background="White"
+                        DataContext="{Binding SelectedItem, ElementName=DeviceCombo}"
+                        DockPanel.Dock="Right"
+                        Interval="1"
+                        Maximum="999"
+                        Minimum="0"
+                        Value="{Binding ProjectionSetting.ParallelLineCount}" />
                 </DockPanel>
                 <DockPanel>
-                    <Label
-                    DockPanel.Dock="Left"
-                    Content="{DynamicResource obj_ParallelMargin}" />
+                    <Label Content="{DynamicResource obj_ParallelMargin}" DockPanel.Dock="Left" />
                     <Controls:NumericUpDown
-                    DockPanel.Dock="Right"
-                    DataContext="{Binding SelectedItem, ElementName=DeviceCombo}"
-                    Value="{Binding ProjectionSetting.ParallelLineMargin}"
-                    Background="White"
-                    Maximum="999"
-                    Interval="1"
-                    Minimum="-999" />
+                        Background="White"
+                        DataContext="{Binding SelectedItem, ElementName=DeviceCombo}"
+                        DockPanel.Dock="Right"
+                        Interval="1"
+                        Maximum="999"
+                        Minimum="-999"
+                        Value="{Binding ProjectionSetting.ParallelLineMargin}" />
                 </DockPanel>
 
             </StackPanel>
         </ScrollViewer>
     </DockPanel>
-   
+
 </UserControl>

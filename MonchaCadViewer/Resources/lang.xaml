@@ -62,7 +62,7 @@
     <v:String x:Key="dvc_polymesh">Poly mesh</v:String>
     <v:String x:Key="dvc_ProjectionSetting">Projection</v:String>
     <v:String x:Key="dvc_ShowScreen">Show projection</v:String>
-    
+
 
 
     <v:String x:Key="dvc_ProjectMain">Main</v:String>
@@ -114,7 +114,7 @@
     <v:String x:Key="setting_attach">Attach</v:String>
     <v:String x:Key="setting_selectableshow">Selectable Show</v:String>
     <v:String x:Key="setting_showhideobject">Show hide object</v:String>
-    
+
 
     <v:String x:Key="mesh_Affine">Affine</v:String>
     <v:String x:Key="mesh_Morph">Morph</v:String>

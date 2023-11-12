@@ -38,7 +38,7 @@ namespace CadProjectorViewer
 
         private List<UnicastIPAddressInformation> IPAddressInformation { get; } = new ();
 
-        private LockKeys LKey => (LockKeys)this.DataContext;
+        private LockKeysManager LKey => (LockKeysManager)this.DataContext;
 
         public RequestLicenseCode()
         {
@@ -68,7 +68,14 @@ namespace CadProjectorViewer
 
         private void Pate_Click(object sender, RoutedEventArgs e)
         {
-            LKey.LicenseKey = Clipboard.GetText();
+            try
+            {
+                LKey.LicenseKey = Clipboard.GetText();
+            }
+            catch
+            {
+                MessageBox.Show("This is not key");
+            }
         }
 
         private async void StartTCP(IPAddress iPAddress)

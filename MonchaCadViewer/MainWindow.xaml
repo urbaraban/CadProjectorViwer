@@ -134,6 +134,7 @@
                 Margin="3"
                 VerticalAlignment="Top"
                 HorizontalContentAlignment="Right"
+                MouseDoubleClick="Label_MouseDoubleClick"
                 Content="{Binding cl_moncha_path}"
                 FontSize="10">
                 <Label.DataContext>
@@ -144,8 +145,11 @@
                 Width="15"
                 Height="15"
                 Margin="5,0"
-                Fill="{Binding ProjectorHub.LockKey.IsLicensed, Converter={StaticResource LicenceKey}}"
-                ToolTip="{Binding StringFormat=Licensed: {0}, Path=ProjectorHub.LockKey.IsLicensed}" />
+                Fill="{Binding ProjectorHub.LockKey, Converter={StaticResource LicenceKey}}">
+                <Ellipse.ToolTip>
+                    <TextBlock Text="{Binding ProjectorHub.LockKey.DaysLeft, StringFormat={}{0} days}" />
+                </Ellipse.ToolTip>
+            </Ellipse>
 
             <Controls:ToggleSwitch
                 MinWidth="0"

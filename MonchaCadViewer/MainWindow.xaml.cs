@@ -1,4 +1,6 @@
 ﻿using CadProjectorSDK.Scenes.Commands;
+using CadProjectorSDK.Tools;
+using CadProjectorViewer.Opening;
 using CadProjectorViewer.Panels.RightPanel;
 using CadProjectorViewer.Services;
 using CadProjectorViewer.ViewModel;
@@ -272,6 +274,11 @@ namespace CadProjectorViewer
         {
             this.mainModel.Adminclick += 1;
         }
+
+        private void Label_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+        {
+            FileLoad.OpenFolderAndFocusFile(AppSt.Default.cl_moncha_path);
+        }
     }
 
     public class MultiObjectList : IMultiValueConverter
@@ -304,7 +311,10 @@ namespace CadProjectorViewer
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            if (value is bool b && b == true) return Brushes.Green;
+            if (value is LockKeysManager keysManager && keysManager.IsLicensed == true)
+            {
+                return keysManager.SelectMashineKey().DaysLeft < 30 ? Brushes.Yellow : Brushes.Green;
+            }
             else return Brushes.Red;
         }
 

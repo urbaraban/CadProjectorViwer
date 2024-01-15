@@ -2,20 +2,19 @@
     x:Class="CadProjectorViewer.Panels.DeviceTreeTab"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:cadprojectorsdk="clr-namespace:CadProjectorSDK;assembly=CadProjectorSDK"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-    xmlns:device="clr-namespace:CadProjectorSDK.Device;assembly=CadProjectorSDK" 
-    xmlns:cadprojectorsdk="clr-namespace:CadProjectorSDK;assembly=CadProjectorSDK" 
-    xmlns:mesh="clr-namespace:CadProjectorSDK.Device.Mesh;assembly=CadProjectorSDK" xmlns:devices="clr-namespace:CadProjectorViewer.ViewModel.Devices"
+    xmlns:device="clr-namespace:CadProjectorSDK.Device;assembly=CadProjectorSDK"
+    xmlns:devices="clr-namespace:CadProjectorViewer.ViewModel.Devices"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:mesh="clr-namespace:CadProjectorSDK.Device.Mesh;assembly=CadProjectorSDK"
     d:DataContext="{d:DesignInstance Type=cadprojectorsdk:ProjectorHub}"
     d:DesignHeight="450"
     d:DesignWidth="200"
     mc:Ignorable="d">
     <UserControl.Resources>
         <ResourceDictionary>
-            <ResourceDictionary.MergedDictionaries>
-
-            </ResourceDictionary.MergedDictionaries>
+            <ResourceDictionary.MergedDictionaries />
             <Style x:Key="Border" TargetType="{x:Type Border}">
                 <Setter Property="BorderBrush" Value="DarkGray" />
                 <Setter Property="BorderThickness" Value="0" />
@@ -43,95 +42,135 @@
                 </Style.Triggers>
             </Style>
 
-            <HierarchicalDataTemplate
-                x:Key="MeshTree">
+            <HierarchicalDataTemplate x:Key="MeshTree">
                 <Border
                     d:DataContext="{d:DesignInstance Type=mesh:ProjectorMesh}"
                     ContextMenuClosing="MeshBorder_ContextMenuClosing"
                     MouseLeftButtonDown="MeshBorder_MouseLeftButtonDown">
                     <Border.ContextMenu>
                         <ContextMenu>
-                            <MenuItem Header = "{DynamicResource mesh_Morph}" Tag="mesh_morph" IsCheckable="True"
-                                      IsChecked="{Binding Morph}"/>
-                            <MenuItem Header = "{DynamicResource common_Create}" Tag="mesh_create" Click="MenuItem_Click"/>
-                            <MenuItem Header = "{DynamicResource mesh_Inverse}" Tag="mesh_inverse" Click="MenuItem_Click"/>
-                            <MenuItem Header = "YMirror" Tag="mesh_YMirror" Click="MenuItem_Click"/>
-                            <MenuItem Header = "{DynamicResource mesh_Returnpoint}" Tag="mesh_returnpoint" Click="MenuItem_Click"/>
-                            <MenuItem Header = "{DynamicResource dvc_showrect}" Tag="mesh_showrect" Click="MenuItem_Click"/>
-                            <MenuItem Header = "Vertical" Tag="mesh_Vertical" IsCheckable="True" IsChecked="{Binding VerticalFlag}"/>
-                            <MenuItem Header= "Convert on ellipsoid" Tag="convert_on_ellipsoid" Click="MenuItem_Click"/>
+                            <MenuItem Header="{DynamicResource mesh_Morph}">
+                                <MenuItem Command="{Binding SetFullMorph}" Header="Full" />
+                                <MenuItem Command="{Binding SetHorizontalMorph}" Header="Horizontal" />
+                                <MenuItem Command="{Binding SetVerticalMorph}" Header="Vertical" />
+                                <MenuItem Command="{Binding SetSingleMorph}" Header="None" />
+                            </MenuItem>
+                            <MenuItem
+                                Click="MenuItem_Click"
+                                Header="{DynamicResource common_Create}"
+                                Tag="mesh_create" />
+                            <MenuItem
+                                Click="MenuItem_Click"
+                                Header="{DynamicResource mesh_Inverse}"
+                                Tag="mesh_inverse" />
+                            <MenuItem
+                                Click="MenuItem_Click"
+                                Header="YMirror"
+                                Tag="mesh_YMirror" />
+                            <MenuItem
+                                Click="MenuItem_Click"
+                                Header="{DynamicResource mesh_Returnpoint}"
+                                Tag="mesh_returnpoint" />
+                            <MenuItem
+                                Click="MenuItem_Click"
+                                Header="{DynamicResource dvc_showrect}"
+                                Tag="mesh_showrect" />
+                            <MenuItem
+                                Header="Vertical"
+                                IsCheckable="True"
+                                IsChecked="{Binding VerticalFlag}"
+                                Tag="mesh_Vertical" />
+                            <MenuItem
+                                Click="MenuItem_Click"
+                                Header="Convert on ellipsoid"
+                                Tag="convert_on_ellipsoid" />
                         </ContextMenu>
                     </Border.ContextMenu>
 
-                    <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Margin="5">
-                        <TextBlock 
+                    <StackPanel
+                        Margin="5"
+                        VerticalAlignment="Center"
+                        Orientation="Horizontal">
+                        <TextBlock
                             VerticalAlignment="Center"
-                            Text="&#xE809;"
-                            FontFamily="Segoe MDL2 Assets"/>
-                        <TextBlock Margin="5,0,0,0" Text="{Binding Name}" VerticalAlignment="Center"/>
-                        <TextBlock Margin="5,0,0,0" Text="M:" VerticalAlignment="Center"/>
-                        <Label Margin="0,0,0,0" Content="{Binding Morph}" Padding="0" VerticalAlignment="Center"/>
+                            FontFamily="Segoe MDL2 Assets"
+                            Text="&#xE809;" />
+                        <TextBlock
+                            Margin="5,0,0,0"
+                            VerticalAlignment="Center"
+                            Text="{Binding Name}" />
+                        <TextBlock
+                            Margin="5,0,0,0"
+                            VerticalAlignment="Center"
+                            Text="M:" />
+                        <Label
+                            Margin="0,0,0,0"
+                            Padding="0"
+                            VerticalAlignment="Center"
+                            Content="{Binding Morph}" />
                     </StackPanel>
                 </Border>
             </HierarchicalDataTemplate>
-            <HierarchicalDataTemplate 
-                x:Key="DeviceTree" 
-                DataType ="{x:Type device:LProjector}" 
-                ItemsSource="{Binding SelectedMeshes}"
-                ItemTemplate="{StaticResource MeshTree}">
-                <devices:DeviceItem/>
+            <HierarchicalDataTemplate
+                x:Key="DeviceTree"
+                DataType="{x:Type device:LProjector}"
+                ItemTemplate="{StaticResource MeshTree}"
+                ItemsSource="{Binding SelectedMeshes}">
+                <devices:DeviceItem />
             </HierarchicalDataTemplate>
-            
+
         </ResourceDictionary>
     </UserControl.Resources>
     <DockPanel LastChildFill="True">
         <DockPanel
-            DockPanel.Dock="Top"
-                    x:Name="TreeHead"
-                    HorizontalAlignment="Left" Margin="3">
+            x:Name="TreeHead"
+            Margin="3"
+            HorizontalAlignment="Left"
+            DockPanel.Dock="Top">
             <Button
-                        x:Name="AddLaser"
-                        Width="25"
-                        Height="26"
-                        Margin="0,0,5,0"
-                        HorizontalAlignment="Right"
-                        VerticalAlignment="Top"
-                        Background="{x:Null}"
-                        BorderBrush="{x:Null}"
-                        Click="AddLaser_Click"
-                        Content="&#xE948;"
-                        FontFamily="Segoe MDL2 Assets" />
+                x:Name="AddLaser"
+                Width="25"
+                Height="26"
+                Margin="0,0,5,0"
+                HorizontalAlignment="Right"
+                VerticalAlignment="Top"
+                Background="{x:Null}"
+                BorderBrush="{x:Null}"
+                Click="AddLaser_Click"
+                Content="&#xE948;"
+                FontFamily="Segoe MDL2 Assets" />
             <Button
-                        x:Name="RemoveLaser"
-                        Width="25"
-                        Height="26"
-                        Margin="0,0,5,0"
-                        HorizontalAlignment="Right"
-                        VerticalAlignment="Top"
-                        Background="{x:Null}"
-                        BorderBrush="{x:Null}"
-                        Click="RemoveLaser_Click"
-                        Content="&#xE947;"
-                        FontFamily="Segoe MDL2 Assets" />
+                x:Name="RemoveLaser"
+                Width="25"
+                Height="26"
+                Margin="0,0,5,0"
+                HorizontalAlignment="Right"
+                VerticalAlignment="Top"
+                Background="{x:Null}"
+                BorderBrush="{x:Null}"
+                Click="RemoveLaser_Click"
+                Content="&#xE947;"
+                FontFamily="Segoe MDL2 Assets" />
         </DockPanel>
 
         <TreeView
+            Grid.Row="1"
+            Margin="0,0,0,0"
             DockPanel.Dock="Top"
-                Margin="0,0,0,0"
-                KeyboardNavigation.DirectionalNavigation="None"
-                KeyboardNavigation.TabNavigation="None" Grid.Row="1"
+            KeyboardNavigation.DirectionalNavigation="None"
+            KeyboardNavigation.TabNavigation="None"
             SelectedItemChanged="treeView_SelectedItemChanged">
             <TreeView.ItemContainerStyle>
                 <Style TargetType="TreeViewItem">
-                    <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+                    <Setter Property="HorizontalContentAlignment" Value="Stretch" />
                 </Style>
             </TreeView.ItemContainerStyle>
-            <TreeView 
+            <TreeView
                 x:Name="DeviceTree"
+                d:ItemsSource="{d:SampleData ItemCount=3}"
+                ItemTemplate="{StaticResource ResourceKey=DeviceTree}"
                 ItemsSource="{Binding Projectors}"
-                SelectedValuePath="{Binding Projectors.SelectedItem}"
-                ItemTemplate="{StaticResource ResourceKey=DeviceTree}" 
-                d:ItemsSource="{d:SampleData ItemCount=3}"/>
+                SelectedValuePath="{Binding Projectors.SelectedItem}" />
         </TreeView>
     </DockPanel>
 </UserControl>

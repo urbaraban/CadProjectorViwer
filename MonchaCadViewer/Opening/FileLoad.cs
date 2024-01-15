@@ -45,17 +45,6 @@ namespace CadProjectorViewer.Opening
             return Arculator.Parse(filepath);
         }
 
-        //private static Task<object> GetCrypt(string filepath)
-        //{
-        //    RSACryptoServiceProvider rSA = new RSACryptoServiceProvider();
-        //    rSA.FromXmlString(ToCrypt.ReadXmlStringFile("key.xml"));
-        //    FileInfo fileinfo = new FileInfo(filepath);
-        //    string removepath = Path.ChangeExtension(fileinfo.FullName, "dxf");
-        //    ToCrypt.DecryptFile(fileinfo, rSA);
-        //    var obj = GetObject(removepath);
-        //    File.Delete(removepath);
-        //    return obj;
-        //}
 
         private static string BrowseMWS()
         {

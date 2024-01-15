@@ -95,8 +95,7 @@
         <HierarchicalDataTemplate
             x:Key="DeviceTree"
             DataType="{x:Type device:LProjector}"
-            ItemTemplate="{StaticResource MeshTree}"
-            ItemsSource="{Binding SelectedMeshes}">
+            ItemTemplate="{StaticResource MeshTree}">
             <devices:DeviceItem />
         </HierarchicalDataTemplate>
 

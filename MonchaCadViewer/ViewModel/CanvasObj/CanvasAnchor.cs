@@ -116,6 +116,7 @@ namespace CadProjectorViewer.CanvasObj
                 myBack, 
                 new Pen(Brushes.Black, _size * 0.1), 
                 new RectangleGeometry(new Rect(-_size / 2, -_size / 2, _size, _size)));
+
         }
     }
 }

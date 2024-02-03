@@ -17,11 +17,12 @@ namespace CadProjectorViewer.Services
 
             if (saveFileDialog.FileName != string.Empty)
             {
-                for (int i = 0; i < lProjectors.Length; i += 1)
+                foreach(var projector in lProjectors)
                 {
-                    ildaWriter.Write(($"{saveFileDialog.FileName.Replace(".ild", string.Empty)}_{i}_{lProjectors[i].IpAddress}.ild"),
-                        new List<IldaFrame>() {
-                            lProjectors[i].IldFrame
+                    var filename = saveFileDialog.FileName.Replace(".ild", string.Empty);
+                    ildaWriter.Write(($"{filename}_{projector.IpAddress}.ild"),
+                    new List<IldaFrame>() {
+                            projector.IldFrame
                         ?? new IldaFrame() }, 5);
                 }
             }

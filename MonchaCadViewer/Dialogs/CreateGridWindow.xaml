@@ -1,24 +1,20 @@
 ﻿<Window
+    x:Class="CadProjectorViewer.CreateGridWindow"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-    xmlns:Controls="http://metro.mahapps.com/winfx/xaml/controls"
-    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:Controls="http://metro.mahapps.com/winfx/xaml/controls"
+    xmlns:cadprojectorviewer="clr-namespace:CadProjectorViewer"
+    xmlns:canvaspanel="clr-namespace:CadProjectorViewer.Panels.CanvasPanel"
+    xmlns:converters="clr-namespace:CadProjectorViewer.Converters"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:mesh="clr-namespace:CadProjectorSDK.Device.Mesh;assembly=CadProjectorSDK"
-    xmlns:cadprojectorviewer="clr-namespace:CadProjectorViewer"
-    xmlns:converters="clr-namespace:CadProjectorViewer.Converters"
-    xmlns:panels="clr-namespace:CadProjectorViewer.Panels" xmlns:canvaspanel="clr-namespace:CadProjectorViewer.Panels.CanvasPanel"
+    xmlns:panels="clr-namespace:CadProjectorViewer.Panels"
+    x:Name="ThisWindow"
+    Title="CreateGridWindow"
     d:DataContext="{d:DesignInstance Type=mesh:ProjectorMesh}"
-    x:Class="CadProjectorViewer.CreateGridWindow"
-        mc:Ignorable="d"
-        Title="CreateGridWindow"
     SizeToContent="WidthAndHeight"
-    x:Name="ThisWindow">
-    <Window.InputBindings>
-        <KeyBinding
-            Key="Q"
-            Command="{Binding ElementName=ThisWindow, Path=SelectNextCommand}"/>
-    </Window.InputBindings>
+    mc:Ignorable="d">
     <Window.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -27,91 +23,101 @@
                 <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Themes/Light.Blue.xaml" />
             </ResourceDictionary.MergedDictionaries>
             <Style TargetType="Border">
-                <Setter Property="BorderBrush" Value="DarkGray"/>
-                <Setter Property="BorderThickness" Value="1"/>
+                <Setter Property="BorderBrush" Value="DarkGray" />
+                <Setter Property="BorderThickness" Value="1" />
                 <Style.Triggers>
                     <Trigger Property="IsMouseOver" Value="true">
-                        <Setter Property="BorderBrush" Value="CadetBlue"/>
+                        <Setter Property="BorderBrush" Value="CadetBlue" />
                     </Trigger>
                 </Style.Triggers>
             </Style>
             <Style TargetType="DockPanel">
-                <Setter Property="Margin" Value="5"/>
-                <Setter Property="LastChildFill" Value="True"/>
+                <Setter Property="Margin" Value="5" />
+                <Setter Property="LastChildFill" Value="True" />
             </Style>
             <Style TargetType="Label">
-                <Setter Property="MinWidth" Value="60"/>
-                <Setter Property="HorizontalContentAlignment" Value="Center"/>
+                <Setter Property="MinWidth" Value="60" />
+                <Setter Property="HorizontalContentAlignment" Value="Center" />
             </Style>
-            <converters:CadObjectConverter x:Key="CadObjectConverter"/>
-            <cadprojectorviewer:ToSceneObjConverter x:Key="ToSceneConverter"/>
-            <panels:ItemConverter x:Key="ItemConverter"/>
+            <converters:CadObjectConverter x:Key="CadObjectConverter" />
+            <cadprojectorviewer:ToSceneObjConverter x:Key="ToSceneConverter" />
+            <panels:ItemConverter x:Key="ItemConverter" />
         </ResourceDictionary>
 
     </Window.Resources>
     <DockPanel Margin="5">
-        <Grid DockPanel.Dock="Left" >
+        <Grid DockPanel.Dock="Left">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition/>
-                <ColumnDefinition/>
+                <ColumnDefinition />
+                <ColumnDefinition />
             </Grid.ColumnDefinitions>
             <Grid.RowDefinitions>
-                <RowDefinition/>
-                <RowDefinition/>
+                <RowDefinition />
+                <RowDefinition />
             </Grid.RowDefinitions>
-            <Viewbox Stretch="Uniform" StretchDirection="Both"
-                     MaxHeight="300"
-                     MaxWidth="300">
+            <Viewbox
+                MaxWidth="300"
+                MaxHeight="300"
+                Stretch="Uniform"
+                StretchDirection="Both">
                 <Grid Background="White">
-                    <Rectangle Fill="LightGray" 
-                       HorizontalAlignment="Stretch"
-                       VerticalAlignment="Stretch" />
-                    <canvaspanel:CadCanvasPanel DataContext="{Binding ., Converter={StaticResource ToSceneConverter}}"/>
+                    <Rectangle
+                        HorizontalAlignment="Stretch"
+                        VerticalAlignment="Stretch"
+                        Fill="LightGray" />
+                    <canvaspanel:CadCanvasPanel DataContext="{Binding ., Converter={StaticResource ToSceneConverter}}" />
                 </Grid>
             </Viewbox>
         </Grid>
-    <StackPanel Orientation="Vertical" Width="180" Margin="5">
-            <TextBox Text="{Binding Name}"/>
+        <StackPanel
+            Width="180"
+            Margin="5"
+            Orientation="Vertical">
+            <TextBox Text="{Binding Name}" />
             <DockPanel>
-                <Label Content="Ширина"/>
-                <Label Content="{Binding Size.Width}" HorizontalContentAlignment="Right"/>
+                <Label Content="Ширина" />
+                <Label HorizontalContentAlignment="Right" Content="{Binding Size.Width}" />
             </DockPanel>
             <DockPanel>
 
                 <Label
-                    DockPanel.Dock="Left"
-                    x:Name="WidthStepLabel" Content="(0.0)"/>
+                    x:Name="WidthStepLabel"
+                    Content="(0.0)"
+                    DockPanel.Dock="Left" />
 
-                <Controls:NumericUpDown                     
-                    Maximum="50" 
-                    Minimum="2" 
-                    Value="{Binding ColumnCount}"
-                    Background="White"/>
+                <Controls:NumericUpDown
+                    Background="White"
+                    Maximum="50"
+                    Minimum="2"
+                    Value="{Binding ColumnCount}" />
             </DockPanel>
 
             <DockPanel>
-                <Label Content="Высота"/>
-                <Label Content="{Binding Size.Height}" HorizontalContentAlignment="Right"/>
+                <Label Content="Высота" />
+                <Label HorizontalContentAlignment="Right" Content="{Binding Size.Height}" />
             </DockPanel>
 
             <DockPanel>
-                <Label 
-                    DockPanel.Dock="Left"
-                    x:Name="HeightStepLabel" 
-                       Content="(0.0)"/>
-                <Controls:NumericUpDown 
-                    Maximum="50" 
-                    Minimum="2" 
-                    Value="{Binding StrokeCount}"
-                    Background="White"/>
+                <Label
+                    x:Name="HeightStepLabel"
+                    Content="(0.0)"
+                    DockPanel.Dock="Left" />
+                <Controls:NumericUpDown
+                    Background="White"
+                    Maximum="50"
+                    Minimum="2"
+                    Value="{Binding StrokeCount}" />
             </DockPanel>
 
             <DockPanel>
-                <Label Content="Каждые"/>
-                <Controls:NumericUpDown 
-                   x:Name="StepUpDn"
-                   Maximum="9999" Value="300" Minimum="2" Background="White" 
-                   ValueChanged="StepUpDn_ValueChanged" />
+                <Label Content="Каждые" />
+                <Controls:NumericUpDown
+                    x:Name="StepUpDn"
+                    Background="White"
+                    Maximum="9999"
+                    Minimum="2"
+                    ValueChanged="StepUpDn_ValueChanged"
+                    Value="300" />
             </DockPanel>
         </StackPanel>
 

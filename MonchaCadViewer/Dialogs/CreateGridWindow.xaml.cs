@@ -71,7 +71,7 @@ namespace CadProjectorViewer
             }
         }
 
-        public ICommand SelectNextCommand => _mesh != null ? new ActionCommand(_mesh.SelectNext) : null;
+        //public ICommand SelectNextCommand => _mesh != null ? new ActionCommand(_mesh.SelectNext) : null;
     }
     public class ToSceneObjConverter : IValueConverter
     {

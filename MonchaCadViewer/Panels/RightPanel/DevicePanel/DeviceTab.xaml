@@ -349,7 +349,8 @@
                         DataContext="{Binding SelectedItem, ElementName=DeviceCombo}"
                         DockPanel.Dock="Right"
                         Maximum="999"
-                        Minimum="0.0001"
+                        Minimum="1"
+                        NumericInputMode="Numbers"
                         Value="{Binding ProjectionSetting.PathFindDeep}" />
                 </DockPanel>
 

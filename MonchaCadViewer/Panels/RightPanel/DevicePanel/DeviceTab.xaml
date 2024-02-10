@@ -387,16 +387,6 @@
                 </DockPanel>
 
                 <DockPanel LastChildFill="True">
-                    <Label Content="Start tail" DockPanel.Dock="Left" />
-                    <Controls:NumericUpDown
-                        VerticalAlignment="Bottom"
-                        DataContext="{Binding SelectedItem, ElementName=DeviceCombo}"
-                        Interval="0.001"
-                        Maximum="0.1"
-                        Minimum="0"
-                        Value="{Binding ProjectionSetting.StartTail, Mode=TwoWay, Converter={StaticResource RoundValue}}" />
-                </DockPanel>
-                <DockPanel LastChildFill="True">
                     <Label Content="Blank tail" DockPanel.Dock="Left" />
                     <Controls:NumericUpDown
                         VerticalAlignment="Bottom"

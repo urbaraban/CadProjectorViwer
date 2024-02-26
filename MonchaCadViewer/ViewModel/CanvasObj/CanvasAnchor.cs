@@ -2,6 +2,7 @@
 using CadProjectorViewer.ViewModel;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Forms;
 using System.Windows.Input;
 using System.Windows.Media;
 using AppSt = CadProjectorViewer.Properties.Settings;
@@ -63,14 +64,14 @@ namespace CadProjectorViewer.CanvasObj
 
         public CanvasAnchor(CadAnchor Point) : base(Point, true)
         {
-            this.Cursor = Cursors.SizeAll;
+            this.Cursor = System.Windows.Input.Cursors.SizeAll;
             CommonSetting();
         }
 
         private void CommonSetting()
         {
             this.ShowName = false;
-            ContextMenuLib.DotContextMenu(this.ContextMenu);
+            //ContextMenuLib.DotContextMenu(this.ContextMenu);
             Canvas.SetZIndex(this, 999);
             this.RenderTransformOrigin = new Point(1, 1);
 
@@ -78,7 +79,11 @@ namespace CadProjectorViewer.CanvasObj
             this.CadObject.Translate.OffsetY = this.Point.MY;
 
             this.ContextMenuClosing += DotShape_ContextMenuClosing;
+
+            ContextMenu.Items.Add(new Separator());
+            ContextMenuLib.AddItem("common_Edit", RenderCommand, this.ContextMenu);
         }
+
 
         protected override void OnMouseDown(MouseButtonEventArgs e)
         {
@@ -87,7 +92,7 @@ namespace CadProjectorViewer.CanvasObj
 
         private void DotShape_ContextMenuClosing(object sender, ContextMenuEventArgs e)
         {
-            if (this.ContextMenu.DataContext is MenuItem cmindex)
+            if (this.ContextMenu.DataContext is System.Windows.Controls.MenuItem cmindex)
             {
                 switch (cmindex.Tag)
                 {

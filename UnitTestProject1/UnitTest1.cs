@@ -15,7 +15,7 @@ namespace UnitTestProject1
             var line = new VectorLine(rnd.Next() % 1000 - 500, 0, rnd.Next() % 1000 - 500, 0, true);
             Debug.WriteLine(line.ToString());
 
-            var lines = line.SplitGradient(8, 3);
+            var lines = line.SplitGradient(8);
 
             Debug.WriteLine(lines.P1.ToString());
 
@@ -33,7 +33,7 @@ namespace UnitTestProject1
             var rnd = new Random();
             var line = new VectorLine(79, 0, 54, 0, true);
             Debug.WriteLine(line.ToString());
-            var lines = line.SplitGradient(8, 1);
+            var lines = line.SplitGradient(8);
             Debug.WriteLine(lines.P1.ToString());
             foreach (var item in lines)
             {

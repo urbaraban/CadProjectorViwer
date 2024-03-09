@@ -200,6 +200,17 @@
                         Minimum="-1"
                         Value="{Binding TimeColorShift}" />
                 </DockPanel>
+
+                <DockPanel LastChildFill="True">
+                    <Label VerticalAlignment="Bottom" Content="{DynamicResource dvc_Brightness}" />
+                    <Slider
+                        VerticalAlignment="Bottom"
+                        DataContext="{Binding SelectedItem, ElementName=DeviceCombo}"
+                        Maximum="255"
+                        Minimum="1"
+                        Value="{Binding Alpha, Mode=TwoWay}" />
+                </DockPanel>
+
                 <Separator />
             </StackPanel>
 
@@ -252,6 +263,89 @@
                         Content="{DynamicResource dvc_Dimmer}" />
                 </DockPanel>
 
+
+
+
+                <Separator />
+
+
+                <DockPanel LastChildFill="True">
+                    <Label Content="{DynamicResource dvc_WaintPoint}" DockPanel.Dock="Left" />
+                    <Controls:NumericUpDown
+                        VerticalAlignment="Bottom"
+                        DataContext="{Binding SelectedItem, ElementName=DeviceCombo}"
+                        Maximum="255"
+                        Minimum="1"
+                        Value="{Binding ProjectionSetting.LineWait, Mode=TwoWay}" />
+                </DockPanel>
+
+                <DockPanel LastChildFill="True">
+                    <Label Content="{DynamicResource dvc_WaintPointBlank}" DockPanel.Dock="Left" />
+                    <Controls:NumericUpDown
+                        VerticalAlignment="Bottom"
+                        DataContext="{Binding SelectedItem, ElementName=DeviceCombo}"
+                        Maximum="255"
+                        Minimum="1"
+                        Value="{Binding ProjectionSetting.BlankWait, Mode=TwoWay}" />
+                </DockPanel>
+
+                <DockPanel LastChildFill="True">
+                    <Label Content="{DynamicResource dvc_Optimize}" DockPanel.Dock="Left" />
+                    <Controls:ToggleSwitch
+                        DataContext="{Binding SelectedItem, ElementName=DeviceCombo}"
+                        DockPanel.Dock="Right"
+                        IsOn="{Binding Optimized}"
+                        OffContent="{DynamicResource common_OFF}"
+                        OnContent="{DynamicResource common_ON}" />
+                </DockPanel>
+
+                <DockPanel LastChildFill="True">
+                    <Label Content="Path Find Deep" DockPanel.Dock="Left" />
+                    <Controls:NumericUpDown
+                        Background="White"
+                        DataContext="{Binding SelectedItem, ElementName=DeviceCombo}"
+                        DockPanel.Dock="Right"
+                        Maximum="999"
+                        Minimum="1"
+                        NumericInputMode="Numbers"
+                        Value="{Binding ProjectionSetting.PathFindDeep}" />
+                </DockPanel>
+
+                <DockPanel LastChildFill="True">
+                    <Label Content="{DynamicResource dvc_StepPoint}" DockPanel.Dock="Left" />
+                    <Controls:NumericUpDown
+                        Background="White"
+                        DataContext="{Binding SelectedItem, ElementName=DeviceCombo}"
+                        DockPanel.Dock="Right"
+                        Interval="0.1"
+                        Maximum="999"
+                        Minimum="0.0001"
+                        Value="{Binding ProjectionSetting.PointStep.Value}" />
+                </DockPanel>
+
+
+                <DockPanel LastChildFill="True">
+                    <Label Content="Blank tail" DockPanel.Dock="Left" />
+                    <Controls:NumericUpDown
+                        VerticalAlignment="Bottom"
+                        DataContext="{Binding SelectedItem, ElementName=DeviceCombo}"
+                        Interval="0.01"
+                        Maximum="0.5"
+                        Minimum="0.01"
+                        Value="{Binding ProjectionSetting.BlankTail, Mode=TwoWay, Converter={StaticResource RoundValue}}" />
+                </DockPanel>
+
+                <DockPanel LastChildFill="True">
+                    <Label Content="Line tail" DockPanel.Dock="Left" />
+                    <Controls:NumericUpDown
+                        VerticalAlignment="Bottom"
+                        DataContext="{Binding SelectedItem, ElementName=DeviceCombo}"
+                        Interval="0.01"
+                        Maximum="0.5"
+                        Minimum="0.01"
+                        Value="{Binding ProjectionSetting.LineTail, Mode=TwoWay, Converter={StaticResource RoundValue}}" />
+                </DockPanel>
+
                 <Separator />
                 <!--  Red  -->
                 <DockPanel LastChildFill="True">
@@ -299,18 +393,6 @@
                         Minimum="1"
                         Value="{Binding ProjectionSetting.Blue, Mode=TwoWay}" />
                 </DockPanel>
-                <DockPanel LastChildFill="True">
-                    <Label
-                        VerticalAlignment="Bottom"
-                        HorizontalContentAlignment="Center"
-                        Content="{DynamicResource dvc_Brightness}" />
-                    <Slider
-                        VerticalAlignment="Bottom"
-                        DataContext="{Binding SelectedItem, ElementName=DeviceCombo}"
-                        Maximum="255"
-                        Minimum="1"
-                        Value="{Binding Alpha, Mode=TwoWay}" />
-                </DockPanel>
                 <DockPanel>
                     <Controls:ToggleSwitch
                         Grid.Row="5"
@@ -339,87 +421,8 @@
                         IsOn="{Binding InvertedY, Mode=TwoWay}" />
                 </DockPanel>
 
-
                 <Separator />
 
-                <DockPanel LastChildFill="True">
-                    <Label Content="{DynamicResource dvc_Optimize}" DockPanel.Dock="Left" />
-                    <Controls:ToggleSwitch
-                        DataContext="{Binding SelectedItem, ElementName=DeviceCombo}"
-                        DockPanel.Dock="Right"
-                        IsOn="{Binding Optimized}"
-                        OffContent="{DynamicResource common_OFF}"
-                        OnContent="{DynamicResource common_ON}" />
-                </DockPanel>
-
-                <DockPanel LastChildFill="True">
-                    <Label Content="Path Find Deep" DockPanel.Dock="Left" />
-                    <Controls:NumericUpDown
-                        Background="White"
-                        DataContext="{Binding SelectedItem, ElementName=DeviceCombo}"
-                        DockPanel.Dock="Right"
-                        Maximum="999"
-                        Minimum="1"
-                        NumericInputMode="Numbers"
-                        Value="{Binding ProjectionSetting.PathFindDeep}" />
-                </DockPanel>
-
-                <DockPanel LastChildFill="True">
-                    <Label Content="{DynamicResource dvc_StepPoint}" DockPanel.Dock="Left" />
-                    <Controls:NumericUpDown
-                        Background="White"
-                        DataContext="{Binding SelectedItem, ElementName=DeviceCombo}"
-                        DockPanel.Dock="Right"
-                        Interval="0.1"
-                        Maximum="999"
-                        Minimum="0.0001"
-                        Value="{Binding ProjectionSetting.PointStep.Value}" />
-                </DockPanel>
-
-                <DockPanel LastChildFill="True">
-                    <Label Content="{DynamicResource dvc_WaintPoint}" DockPanel.Dock="Left" />
-                    <Controls:NumericUpDown
-                        VerticalAlignment="Bottom"
-                        DataContext="{Binding SelectedItem, ElementName=DeviceCombo}"
-                        Maximum="100"
-                        Minimum="1"
-                        Value="{Binding ProjectionSetting.LineWait, Mode=TwoWay}" />
-                </DockPanel>
-
-                <DockPanel LastChildFill="True">
-                    <Label Content="{DynamicResource dvc_WaintPointBlank}" DockPanel.Dock="Left" />
-                    <Controls:NumericUpDown
-                        VerticalAlignment="Bottom"
-                        DataContext="{Binding SelectedItem, ElementName=DeviceCombo}"
-                        Maximum="100"
-                        Minimum="1"
-                        Value="{Binding ProjectionSetting.BlankWait, Mode=TwoWay}" />
-                </DockPanel>
-
-                <DockPanel LastChildFill="True">
-                    <Label Content="Blank tail" DockPanel.Dock="Left" />
-                    <Controls:NumericUpDown
-                        VerticalAlignment="Bottom"
-                        DataContext="{Binding SelectedItem, ElementName=DeviceCombo}"
-                        Interval="0.01"
-                        Maximum="0.5"
-                        Minimum="0.01"
-                        Value="{Binding ProjectionSetting.BlankTail, Mode=TwoWay, Converter={StaticResource RoundValue}}" />
-                </DockPanel>
-
-                <DockPanel LastChildFill="True">
-                    <Label Content="Line tail" DockPanel.Dock="Left" />
-                    <Controls:NumericUpDown
-                        VerticalAlignment="Bottom"
-                        DataContext="{Binding SelectedItem, ElementName=DeviceCombo}"
-                        Interval="0.01"
-                        Maximum="0.5"
-                        Minimum="0.01"
-                        Value="{Binding ProjectionSetting.LineTail, Mode=TwoWay, Converter={StaticResource RoundValue}}" />
-                </DockPanel>
-
-
-                <Separator />
                 <DockPanel>
                     <Label Content="{DynamicResource obj_ParallelCount}" DockPanel.Dock="Left" />
                     <Controls:NumericUpDown

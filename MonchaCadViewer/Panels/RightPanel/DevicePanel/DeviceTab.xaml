@@ -381,7 +381,7 @@
                     <Controls:NumericUpDown
                         VerticalAlignment="Bottom"
                         DataContext="{Binding SelectedItem, ElementName=DeviceCombo}"
-                        Maximum="30"
+                        Maximum="100"
                         Minimum="1"
                         Value="{Binding ProjectionSetting.LineWait, Mode=TwoWay}" />
                 </DockPanel>
@@ -391,7 +391,7 @@
                     <Controls:NumericUpDown
                         VerticalAlignment="Bottom"
                         DataContext="{Binding SelectedItem, ElementName=DeviceCombo}"
-                        Maximum="30"
+                        Maximum="100"
                         Minimum="1"
                         Value="{Binding ProjectionSetting.BlankWait, Mode=TwoWay}" />
                 </DockPanel>

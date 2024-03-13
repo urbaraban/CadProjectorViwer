@@ -1,4 +1,5 @@
-﻿using CadProjectorSDK.Device;
+﻿using CadProjectorSDK.CadObjects;
+using CadProjectorSDK.Device;
 using CadProjectorSDK.Device.Modules;
 using CadProjectorSDK.Interfaces;
 using CadProjectorSDK.Scenes;
@@ -49,6 +50,17 @@ namespace CadProjectorViewer.ViewModel.Devices
             if (this.DataContext is LProjector device && device.GetParentScene?.Invoke() is ProjectionScene Scene)
             {
                 Scene.Add(device.Size);
+            }
+        });
+
+        public ICommand ShowCenterCommand => new ActionCommand(() =>
+        {
+            if (this.DataContext is LProjector device && device.GetParentScene?.Invoke() is ProjectionScene Scene)
+            {
+                Scene.Add(new CadAnchor(device.Center)
+                {
+                    Multiply = Scene.GetSize
+                });
             }
         });
 

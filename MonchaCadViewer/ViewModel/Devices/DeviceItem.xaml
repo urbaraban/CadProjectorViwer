@@ -23,6 +23,10 @@
         <Border.ContextMenu>
             <ContextMenu Opened="ContextMenu_Opened">
                 <MenuItem
+                    Command="{Binding ShowCenterCommand}"
+                    Header="{DynamicResource dvc_showcenter}"
+                    Tag="1" />
+                <MenuItem
                     Command="{Binding ShowZoneRectCommand}"
                     Header="{DynamicResource dvc_showzone}"
                     Tag="1" />

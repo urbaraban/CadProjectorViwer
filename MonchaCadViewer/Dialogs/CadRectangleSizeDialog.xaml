@@ -1,16 +1,19 @@
-﻿<Window x:Class="CadProjectorViewer.Panels.ObjectPanel.CadRectangleSizePanel"
-        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:CadProjectorViewer.Panels.ObjectPanel"
-        xmlns:Controls="http://metro.mahapps.com/winfx/xaml/controls" 
-        xmlns:cadobjects="clr-namespace:CadProjectorSDK.CadObjects;assembly=CadProjectorSDK" 
-        xmlns:converters="clr-namespace:CadProjectorViewer.Converters" 
-        xmlns:canvasobj="clr-namespace:CadProjectorViewer.CanvasObj" d:DataContext="{d:DesignInstance Type=canvasobj:CanvasRectangle}"
-        mc:Ignorable="d"
-        Title="{Binding ToolTip}" WindowStyle="ToolWindow" 
-        SizeToContent="WidthAndHeight">
+﻿<Window
+    x:Class="CadProjectorViewer.Panels.ObjectPanel.CadRectangleSizePanel"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:Controls="http://metro.mahapps.com/winfx/xaml/controls"
+    xmlns:cadobjects="clr-namespace:CadProjectorSDK.CadObjects;assembly=CadProjectorSDK"
+    xmlns:canvasobj="clr-namespace:CadProjectorViewer.CanvasObj"
+    xmlns:converters="clr-namespace:CadProjectorViewer.Converters"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="clr-namespace:CadProjectorViewer.Panels.ObjectPanel"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    Title="{Binding ToolTip}"
+    d:DataContext="{d:DesignInstance Type=canvasobj:CanvasRectangle}"
+    SizeToContent="WidthAndHeight"
+    WindowStyle="ToolWindow"
+    mc:Ignorable="d">
     <Window.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -18,17 +21,17 @@
                 <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Themes/Light.Blue.xaml" />
             </ResourceDictionary.MergedDictionaries>
             <Style TargetType="Controls:NumericUpDown">
-                <Setter Property="Width" Value="100"/>
+                <Setter Property="Width" Value="100" />
             </Style>
-            <converters:RoundDoubleConverter x:Key="RoundValue"/>
+            <converters:RoundDoubleConverter x:Key="RoundValue" />
         </ResourceDictionary>
     </Window.Resources>
     <StackPanel Margin="20,5,20,10">
         <Label Content="Width" />
-        <Controls:NumericUpDown Value="{Binding LRect.MWidth, Converter={StaticResource RoundValue}}"/>
-        <Label Content="Height"/>
-        <Controls:NumericUpDown  Value="{Binding LRect.MHeight, Converter={StaticResource RoundValue}}"/>
-        <Label Content="Depth"/>
-        <Controls:NumericUpDown  Value="{Binding LRect.MDepth, Converter={StaticResource RoundValue}}"/>
+        <Controls:NumericUpDown Value="{Binding LRect.MWidth, Converter={StaticResource RoundValue}}" />
+        <Label Content="Height" />
+        <Controls:NumericUpDown Value="{Binding LRect.MHeight, Converter={StaticResource RoundValue}}" />
+        <Label Content="Depth" />
+        <Controls:NumericUpDown Value="{Binding LRect.MDepth, Converter={StaticResource RoundValue}}" />
     </StackPanel>
 </Window>

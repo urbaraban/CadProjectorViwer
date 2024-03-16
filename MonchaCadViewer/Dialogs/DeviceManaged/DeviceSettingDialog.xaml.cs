@@ -183,10 +183,10 @@ namespace CadProjectorViewer.Panels.DevicePanel
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            if (value is IPAddress address)
+            if (value is string address)
             {
                 int index = int.Parse(parameter.ToString());
-                return address.GetAddressBytes()[index].ToString();
+                return address.Split('.')[index].ToString();
             }
             return value;
         }

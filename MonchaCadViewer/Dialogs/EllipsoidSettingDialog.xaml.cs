@@ -17,6 +17,14 @@ namespace CadProjectorViewer.Dialogs
             InitializeComponent();
         }
 
+        private void NumericUpDown_ValueChanged_R(object sender, RoutedPropertyChangedEventArgs<double?> e)
+        {
+            if (this.DataContext is LProjector projector)
+            {
+                        projector.RefreshObjects();
+            }
+        }
+
         private void NumericUpDown_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double?> e)
         {
             //if (this.DataContext is LProjector projector

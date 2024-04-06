@@ -43,7 +43,7 @@
                     Interval="0.001"
                     Maximum="1"
                     Minimum="-1"
-                    ValueChanged="NumericUpDown_ValueChanged"
+                    ValueChanged="NumericUpDown_ValueChanged_R"
                     Value="{Binding Value}" />
             </HierarchicalDataTemplate>
         </ResourceDictionary>
@@ -54,8 +54,15 @@
                 MinWidth="150"
                 Interval="0.001"
                 Minimum="0"
-                ValueChanged="NumericUpDown_ValueChanged"
-                Value="{Binding Claude.Koeff, Mode=TwoWay}" />
+                ValueChanged="NumericUpDown_ValueChanged_R"
+                Value="{Binding Claude.KoeffX, Mode=TwoWay}" />
+            <Controls:NumericUpDown
+                MinWidth="150"
+                Interval="0.01"
+                Maximum="2"
+                Minimum="-2"
+                ValueChanged="NumericUpDown_ValueChanged_R"
+                Value="{Binding Claude.KoeffY, Mode=TwoWay}" />
             <DockPanel>
                 <Controls:ToggleSwitch Content="Use Ellipsoid" IsOn="{Binding UseEllipsoid}" />
             </DockPanel>

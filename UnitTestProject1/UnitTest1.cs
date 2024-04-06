@@ -11,36 +11,20 @@ namespace UnitTestProject1
         [TestMethod]
         public void LineTestMesth_0()
         {
-            var rnd = new Random();
-            var line = new VectorLine(rnd.Next() % 1000 - 500, 0, rnd.Next() % 1000 - 500, 0, true);
-            Debug.WriteLine(line.ToString());
+            float KoeffY = -1.0f;
 
-            var lines = line.SplitGradient(8);
-
-            Debug.WriteLine(lines.P1.ToString());
-
-            foreach(var item in lines)
+            for (float y = -0.5f; y <= 0.5f; y += 0.1f)
             {
-                Debug.WriteLine(item.P2.ToString());
+                float y_new = TransformY(y, KoeffY)/TransformY(0.5f, KoeffY) * 0.5f;
+                Console.WriteLine($"y = {y}, y' = {y_new}");
             }
 
             Assert.IsTrue(true);
         }
 
-        [TestMethod]
-        public void LineTestMesth_1()
+        static float TransformY(float y, float KoeffY)
         {
-            var rnd = new Random();
-            var line = new VectorLine(79, 0, 54, 0, true);
-            Debug.WriteLine(line.ToString());
-            var lines = line.SplitGradient(8);
-            Debug.WriteLine(lines.P1.ToString());
-            foreach (var item in lines)
-            {
-                Debug.WriteLine(item.P2.ToString());
-            }
-
-            Assert.IsTrue(true);
+            return KoeffY * (float)Math.Pow(y, 3) + y;
         }
 
     }

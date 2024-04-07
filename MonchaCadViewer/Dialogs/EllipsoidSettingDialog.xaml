@@ -55,6 +55,12 @@
                 Interval="0.001"
                 Minimum="0"
                 ValueChanged="NumericUpDown_ValueChanged_R"
+                Value="{Binding Claude.KoeffC, Mode=TwoWay}" />
+            <Controls:NumericUpDown
+                MinWidth="150"
+                Interval="0.01"
+                Minimum="-2"
+                ValueChanged="NumericUpDown_ValueChanged_R"
                 Value="{Binding Claude.KoeffX, Mode=TwoWay}" />
             <Controls:NumericUpDown
                 MinWidth="150"

@@ -9,6 +9,31 @@ namespace UnitTestProject1
     public class UnitTest1
     {
         [TestMethod]
+        public void LineTestMesth_1()
+        {
+            var rnd = new Random();
+
+            var point1 = new RenderPoint(rnd.NextDouble() * 100, rnd.NextDouble() * 100, rnd.NextDouble() * 100);
+            var point2 = new RenderPoint(rnd.NextDouble() * 100, rnd.NextDouble() * 100, rnd.NextDouble() * 100);
+            var line = new VectorLine(point1, point2)
+            {
+                T1 = 70,
+                T2 = 70
+            };
+
+            Console.WriteLine(line.ToString());
+            Console.WriteLine($"{line.T1} {line.T2}");
+
+            foreach(var item in line.SplitGradient(10))
+            {
+                //Console.WriteLine($"{item.P1.X.ToString()} {item.P1.Y.ToString()}");
+            }
+
+            Assert.IsTrue(true);
+        }
+
+
+        [TestMethod]
         public void LineTestMesth_0()
         {
             float KoeffY = -1.0f;

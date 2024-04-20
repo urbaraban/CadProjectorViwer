@@ -12,6 +12,8 @@
     xmlns:panels="clr-namespace:CadProjectorViewer.Panels"
     x:Name="ThisWindow"
     Title="CreateGridWindow"
+    MaxWidth="800"
+    MaxHeight="600"
     d:DataContext="{d:DesignInstance Type=mesh:ProjectorMesh}"
     SizeToContent="WidthAndHeight"
     mc:Ignorable="d">
@@ -46,32 +48,10 @@
 
     </Window.Resources>
     <DockPanel Margin="5">
-        <Grid DockPanel.Dock="Left">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition />
-                <ColumnDefinition />
-            </Grid.ColumnDefinitions>
-            <Grid.RowDefinitions>
-                <RowDefinition />
-                <RowDefinition />
-            </Grid.RowDefinitions>
-            <Viewbox
-                MaxWidth="300"
-                MaxHeight="300"
-                Stretch="Uniform"
-                StretchDirection="Both">
-                <Grid Background="White">
-                    <Rectangle
-                        HorizontalAlignment="Stretch"
-                        VerticalAlignment="Stretch"
-                        Fill="LightGray" />
-                    <canvaspanel:CadCanvasPanel DataContext="{Binding ., Converter={StaticResource ToSceneConverter}}" />
-                </Grid>
-            </Viewbox>
-        </Grid>
         <StackPanel
             Width="180"
             Margin="5"
+            DockPanel.Dock="Right"
             Orientation="Vertical">
             <TextBox Text="{Binding Name}" />
             <DockPanel>
@@ -119,8 +99,10 @@
                     ValueChanged="StepUpDn_ValueChanged"
                     Value="300" />
             </DockPanel>
+
         </StackPanel>
-
-
+        <Border>
+            <canvaspanel:CadCanvasPanel DataContext="{Binding ., Converter={StaticResource ToSceneConverter}}" />
+        </Border>
     </DockPanel>
 </Window>

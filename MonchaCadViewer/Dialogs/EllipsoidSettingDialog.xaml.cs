@@ -1,8 +1,4 @@
 ﻿using CadProjectorSDK.Device;
-using CadProjectorSDK.Device.Mesh;
-using CadProjectorSDK.Render;
-using MahApps.Metro.Controls;
-using System.Collections.Generic;
 using System.Windows;
 
 namespace CadProjectorViewer.Dialogs
@@ -17,11 +13,11 @@ namespace CadProjectorViewer.Dialogs
             InitializeComponent();
         }
 
-        private void NumericUpDown_ValueChanged_R(object sender, RoutedPropertyChangedEventArgs<double?> e)
+        private async void NumericUpDown_ValueChanged_R(object sender, RoutedPropertyChangedEventArgs<double?> e)
         {
             if (this.DataContext is LProjector projector)
             {
-                        projector.RefreshObjects();
+                await projector.RefreshObjects();
             }
         }
 

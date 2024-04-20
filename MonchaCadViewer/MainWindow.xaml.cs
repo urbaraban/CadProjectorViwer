@@ -115,6 +115,7 @@ namespace CadProjectorViewer
            // HotKeysManager.RunAsync(new Key[] { e.Key });
 
             double _mult = Keyboard.Modifiers == ModifierKeys.Shift ? 10 : 1;
+            _mult = Keyboard.Modifiers == ModifierKeys.Control ? 0.1 : _mult;
             double step = mainModel.ProjectorHub.ScenesCollection.SelectedScene.Movespeed;
 
             switch (e.Key)

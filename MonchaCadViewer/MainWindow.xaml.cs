@@ -120,21 +120,25 @@ namespace CadProjectorViewer
 
             switch (e.Key)
             {
+                case Key.NumPad8:
                 case Key.W:
                     mainModel.ProjectorHub.ScenesCollection.SelectedScene.HistoryCommands.Add(
                         new MovingCommand(mainModel.ProjectorHub.ScenesCollection.SelectedScene.SelectedObjects,
                         0, -step * _mult));
                     break;
+                case Key.NumPad5:
                 case Key.S:
                     mainModel.ProjectorHub.ScenesCollection.SelectedScene.HistoryCommands.Add(
                         new MovingCommand(mainModel.ProjectorHub.ScenesCollection.SelectedScene.SelectedObjects,
                         0, step * _mult));
                     break;
+                case Key.NumPad4:
                 case Key.A:
                     mainModel.ProjectorHub.ScenesCollection.SelectedScene.HistoryCommands.Add(
                         new MovingCommand(mainModel.ProjectorHub.ScenesCollection.SelectedScene.SelectedObjects,
                         -step * _mult, 0));
                     break;
+                case Key.NumPad6:
                 case Key.D:
                     mainModel.ProjectorHub.ScenesCollection.SelectedScene.HistoryCommands.Add(
                         new MovingCommand(mainModel.ProjectorHub.ScenesCollection.SelectedScene.SelectedObjects,
@@ -146,10 +150,11 @@ namespace CadProjectorViewer
                         mainModel.ProjectorHub.ScenesCollection.SelectedScene.HistoryCommands.UndoLast();
                     }
                     break;
+                case Key.NumPad7:
                 case Key.Q:
-;
                     mainModel.SelectNextCommand.Execute(this);
                     break;
+                case Key.NumPad9:
                 case Key.E:
                     mainModel.SelectPreviousCommand.Execute(this);
                     break;

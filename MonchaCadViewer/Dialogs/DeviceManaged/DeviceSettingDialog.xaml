@@ -105,12 +105,11 @@
         </DockPanel>
 
         <DockPanel>
-            <Label Content="Koeff" />
+            <Label Content="Port" />
             <Controls:NumericUpDown
-                Interval="0.01"
-                Maximum="1"
-                Minimum="-1"
-                Value="{Binding DistKoefX, Mode=TwoWay}" />
+                Interval="1"
+                Minimum="0"
+                Value="{Binding SendingPort, Mode=TwoWay}" />
         </DockPanel>
         <Separator />
         <DockPanel>

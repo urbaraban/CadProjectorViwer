@@ -14,6 +14,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
+using System.Windows;
 using System.Windows.Input;
 using System.Windows.Threading;
 using AppSt = CadProjectorViewer.Properties.Settings;
@@ -120,13 +121,27 @@ namespace CadProjectorViewer.ViewModel.Scene
         private void AttachObjects(string new_attach)
         {
             IEnumerable<UidObject> objects = GetSelectOrNotObjects();
-            foreach (UidObject obj in objects)
+            
+            if (objects.Any() == true)
             {
-                obj.MagnetToEdge(
+                var commonBounds = objects.ElementAt(0).Bounds;
+                foreach (UidObject obj in objects)
+                {
+                    commonBounds.Union(obj.Bounds);
+                }
+
+                var delta = TransformObject.DeltaToEdge(
+                    commonBounds,
                     this.Size.Bounds,
                     this.Scene.DefAttach,
                     this.Scene.AttachDistanceX,
                     this.Scene.AttachDistanceY);
+
+                foreach (UidObject obj in objects)
+                {
+                    obj.MX += delta.dX;
+                    obj.MY += delta.dY;
+                }
             }
         }
 

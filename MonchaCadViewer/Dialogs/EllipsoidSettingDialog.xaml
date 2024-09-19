@@ -55,26 +55,30 @@
                 <Controls:NumericUpDown
                     MinWidth="250"
                     Interval="0.001"
-                    Minimum="0"
+                    Maximum="2"
+                    Minimum="-2"
                     ValueChanged="NumericUpDown_ValueChanged_R"
                     Value="{Binding Claude.KoeffC, Mode=TwoWay}" />
             </DockPanel>
             <DockPanel>
-                <Label Content="Сжатие X" DockPanel.Dock="Left" />
+                <Label Content="Угол X" DockPanel.Dock="Left" />
                 <Controls:NumericUpDown
                     MinWidth="250"
                     Interval="0.01"
-                    Minimum="-2"
+                    Maximum="2"
+                    Minimum="0"
+                    StringFormat="0.0000"
                     ValueChanged="NumericUpDown_ValueChanged_R"
                     Value="{Binding Claude.KoeffX, Mode=TwoWay}" />
             </DockPanel>
             <DockPanel>
-                <Label Content="Сжатие Y" DockPanel.Dock="Left" />
+                <Label Content="Угол Y" DockPanel.Dock="Left" />
                 <Controls:NumericUpDown
                     MinWidth="150"
                     Interval="0.01"
                     Maximum="2"
-                    Minimum="-2"
+                    Minimum="0"
+                    StringFormat="0.0000"
                     ValueChanged="NumericUpDown_ValueChanged_R"
                     Value="{Binding Claude.KoeffY, Mode=TwoWay}" />
             </DockPanel>

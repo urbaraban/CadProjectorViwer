@@ -54,8 +54,8 @@
                 <Label Content="Дуга" DockPanel.Dock="Left" />
                 <Controls:NumericUpDown
                     MinWidth="250"
-                    Interval="0.001"
-                    Maximum="2"
+                    Interval="0.01"
+                    Maximum="5"
                     Minimum="-2"
                     ValueChanged="NumericUpDown_ValueChanged_R"
                     Value="{Binding Claude.KoeffC, Mode=TwoWay}" />

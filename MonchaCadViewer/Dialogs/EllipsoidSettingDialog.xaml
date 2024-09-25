@@ -55,8 +55,8 @@
                 <Controls:NumericUpDown
                     MinWidth="250"
                     Interval="0.01"
-                    Maximum="5"
-                    Minimum="-2"
+                    Maximum="1"
+                    Minimum="0"
                     ValueChanged="NumericUpDown_ValueChanged_R"
                     Value="{Binding Claude.KoeffC, Mode=TwoWay}" />
             </DockPanel>

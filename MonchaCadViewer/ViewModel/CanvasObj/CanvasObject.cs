@@ -448,7 +448,14 @@ namespace CadProjectorViewer.CanvasObj
                 {
                     if (uid.IsRender == true || deviceModel.ShowHide == true)
                     {
-                        Drawing(uid, deviceModel, IsSelected, MouseOver, ParentRender && uid.IsRender, drawingContext);
+                        if (uid is CadText text)
+                        {
+                            DrawingText(text, drawingContext, thinkess * 10);
+                        }
+                        else
+                        {
+                            Drawing(uid, deviceModel, IsSelected, MouseOver, ParentRender && uid.IsRender, drawingContext);
+                        }
                     }  
                 }
             }
@@ -456,6 +463,22 @@ namespace CadProjectorViewer.CanvasObj
             {
                 DrawingIRenderableObjects(linesCollection, drawingContext, deviceModel, brush, pen);
             }
+        }
+
+        private void DrawingText(CadText text, DrawingContext drawingContext, double emSize)
+        {
+            var point = text.TransformGroup.Transform(
+                new System.Windows.Media.Media3D.Point3D(text.Point.X, text.Point.Y, 0));
+
+            drawingContext.DrawText(
+                new FormattedText(
+                    text.Text, 
+                    System.Globalization.CultureInfo.CurrentCulture, 
+                    FlowDirection.LeftToRight, 
+                    new Typeface("Verdana"),
+                    emSize,
+                    Brushes.Black), 
+                new Point(point.X, point.Y));
         }
 
         private void DrawingIRenderableObjects(IEnumerable<IRenderedObject> objects, DrawingContext drawingContext, RenderDeviceModel renderDevice, Brush brush, Pen pen)

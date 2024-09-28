@@ -32,9 +32,9 @@ namespace CadProjectorViewer.Opening
             // new DEXCeil(),
             // new MetaFile(),
             // new JSON(),
-             new GCFormat("Компас 3D", new string[2] { ".frw" , ".cdw"}) { ReadFile = GetKompas },
+             //new GCFormat("Компас 3D", new string[2] { ".frw" , ".cdw"}) { ReadFile = GetKompas },
             // new GCFormat("JPG Image", new string[2] { "jpg" , "jpeg"}) { ReadFile = GetImage },
-            new GCFormat("ILDA", new string[1] { ".ild" }){ ReadFile = GetILDA },
+            //new GCFormat("ILDA", new string[1] { ".ild" }){ ReadFile = GetILDA },
             new GCFormat("2CUT", new string[1] { ".2scn" }){ ReadFile = Get2CUT },
             new GCFormat("Arculator", new string[1] { ".glc"}) { ReadFile = GetArculator },
             //new GCFormat("Crypt", new string[1] {".2crp"}) { ReadFile = GetCrypt }

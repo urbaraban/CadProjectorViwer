@@ -476,7 +476,7 @@ namespace CadProjectorViewer.CanvasObj
                     System.Globalization.CultureInfo.CurrentCulture, 
                     FlowDirection.LeftToRight, 
                     new Typeface("Verdana"),
-                    emSize,
+                    double.IsNaN(emSize) ? 10 : emSize,
                     Brushes.Black), 
                 new Point(point.X, point.Y));
         }

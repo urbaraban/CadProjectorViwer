@@ -450,7 +450,7 @@ namespace CadProjectorViewer.CanvasObj
                     {
                         if (uid is CadText text)
                         {
-                            DrawingText(text, drawingContext, thinkess * 10);
+                            DrawingText(text, drawingContext, thinkess * 5);
                         }
                         else
                         {

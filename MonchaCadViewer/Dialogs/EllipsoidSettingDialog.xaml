@@ -51,6 +51,10 @@
     <Grid>
         <StackPanel Orientation="Vertical">
             <DockPanel>
+                <Label Content="Круг стабилизации" DockPanel.Dock="Left" />
+                <Controls:ToggleSwitch IsOn="{Binding DrawBlankCircle}" />
+            </DockPanel>
+            <DockPanel>
                 <Label Content="Дуга" DockPanel.Dock="Left" />
                 <Controls:NumericUpDown
                     MinWidth="250"

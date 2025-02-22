@@ -100,10 +100,10 @@
                 <ListView.View>
                     <GridView>
                         <GridViewColumn DisplayMemberBinding="{Binding DaysLeft}" Header="Days" />
+                        <GridViewColumn DisplayMemberBinding="{Binding DeadLineDate}" Header="Days" />
                         <GridViewColumn DisplayMemberBinding="{Binding PublicKey}" Header="Key" />
                     </GridView>
                 </ListView.View>
-
             </ListView>
         </StackPanel>
 

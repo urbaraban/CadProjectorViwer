@@ -418,8 +418,8 @@ namespace CadProjectorViewer.CanvasObj
         private void ProjectionSetting_PropertyChanged(object sender, PropertyChangedEventArgs e) => this.Update();
 
         private void Transform_Changed(object sender, EventArgs e) => this.Update();
-        
-        public async void Update()
+
+        public void Update()
         {
             this.Dispatcher.Invoke(() => this.InvalidateVisual());
         }

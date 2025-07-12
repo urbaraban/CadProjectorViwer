@@ -83,7 +83,6 @@
             <CadProjectorViewer:MultiObjectList x:Key="MultiList" />
             <CadProjectorViewer:LicenceColor x:Key="LicenceKey" />
             <CadProjectorViewer:GetHubPageConverter x:Key="GetHubPage" />
-            <CadProjectorViewer:GetKompasPageConverter x:Key="GetKompasPage" />
             <HierarchicalDataTemplate x:Key="DeviceTree" DataType="{x:Type device:LProjector}">
                 <devices:DeviceItem />
             </HierarchicalDataTemplate>
@@ -321,9 +320,6 @@
                 <TabItem FontSize="18" Header="{DynamicResource common_Source}">
                     <Grid Background="#FFE5E5E5">
                         <TabControl x:Name="TabItem">
-                            <TabItem FontSize="14" Header="Компас">
-                                <Frame Content="{Binding ., Converter={StaticResource GetKompasPage}}" />
-                            </TabItem>
                             <TabItem FontSize="14" Header="ILDA">
                                 <Grid Background="#FFE5E5E5">
                                     <Controls:ToggleSwitch

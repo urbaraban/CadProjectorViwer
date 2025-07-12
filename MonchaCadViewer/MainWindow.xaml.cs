@@ -361,25 +361,4 @@ namespace CadProjectorViewer
             return null;
         }
     }
-
-    public class GetKompasPageConverter : IValueConverter
-    {
-        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
-        {
-            if (value is AppMainModel mainModel)
-            {
-                return new KompasPage()
-                {
-                    DataContext = mainModel
-                };
-            }
-            return null;
-        }
-
-        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
-        {
-            return null;
-        }
-    }
-
 }

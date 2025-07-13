@@ -1,21 +1,19 @@
 ﻿using CadProjectorSDK.Device;
+using CadProjectorSDK.Device.Mesh;
+using CadProjectorSDK.Scenes;
+using CadProjectorSDK.Tools;
+using CadProjectorViewer.ViewModel;
+using Microsoft.Xaml.Behaviors.Core;
 using System;
+using System.Collections.ObjectModel;
+using System.ComponentModel;
+using System.Globalization;
+using System.Runtime.CompilerServices;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Media;
-using AppSt = CadProjectorViewer.Properties.Settings;
-using System.Globalization;
-using CadProjectorSDK.Device.Mesh;
-using CadProjectorSDK.Scenes;
-using System.Collections.ObjectModel;
-using CadProjectorSDK.Tools;
-using Microsoft.Xaml.Behaviors.Core;
-using System.ComponentModel;
-using System.Runtime.CompilerServices;
-using CadProjectorViewer.ViewModel;
-using System.Web.UI.WebControls;
 
 namespace CadProjectorViewer.Panels.CanvasPanel
 {

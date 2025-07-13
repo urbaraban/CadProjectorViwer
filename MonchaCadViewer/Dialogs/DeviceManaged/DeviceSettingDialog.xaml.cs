@@ -1,30 +1,15 @@
-﻿using MahApps.Metro.Controls;
-using CadProjectorViewer.CanvasObj;
-using CadProjectorSDK;
-using CadProjectorSDK.Device;
+﻿using CadProjectorSDK.Device;
+using CadProjectorSDK.Interfaces;
+using CadProjectorSDK.Render;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.ComponentModel;
+using System.Globalization;
+using System.Runtime.CompilerServices;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using AppSt = CadProjectorViewer.Properties.Settings;
-using CadProjectorSDK.Interfaces;
-using System.Globalization;
-using System.Net;
-using System.Runtime.CompilerServices;
-using System.ComponentModel;
-using CadProjectorSDK.Render;
-using CadProjectorSDK.Render.Graph;
-using CadProjectorSDK.Tools.ILDA;
-using CadProjectorSDK.Tools;
-using StclLibrary.Laser;
 
 namespace CadProjectorViewer.Panels.DevicePanel
 {

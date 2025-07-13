@@ -40,12 +40,6 @@
     </Controls:MetroWindow.InputBindings>
     <Controls:MetroWindow.Resources>
         <ResourceDictionary>
-            <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Controls.xaml" />
-                <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Fonts.xaml" />
-                <!--  Theme setting  -->
-                <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Themes/Light.Blue.xaml" />
-            </ResourceDictionary.MergedDictionaries>
             <Style x:Key="Border" TargetType="{x:Type Border}">
                 <Setter Property="BorderBrush" Value="DarkGray" />
                 <Setter Property="BorderThickness" Value="1" />
@@ -83,9 +77,6 @@
             <CadProjectorViewer:MultiObjectList x:Key="MultiList" />
             <CadProjectorViewer:LicenceColor x:Key="LicenceKey" />
             <CadProjectorViewer:GetHubPageConverter x:Key="GetHubPage" />
-            <HierarchicalDataTemplate x:Key="DeviceTree" DataType="{x:Type device:LProjector}">
-                <devices:DeviceItem />
-            </HierarchicalDataTemplate>
         </ResourceDictionary>
     </Controls:MetroWindow.Resources>
     <Controls:MetroWindow.LeftWindowCommands>
@@ -133,9 +124,9 @@
                 Margin="3"
                 VerticalAlignment="Top"
                 HorizontalContentAlignment="Right"
-                MouseDoubleClick="Label_MouseDoubleClick"
                 Content="{Binding cl_moncha_path}"
-                FontSize="10">
+                FontSize="10"
+                MouseDoubleClick="Label_MouseDoubleClick">
                 <Label.DataContext>
                     <Properties:Settings />
                 </Label.DataContext>

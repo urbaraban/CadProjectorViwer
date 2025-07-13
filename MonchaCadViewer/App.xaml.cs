@@ -113,10 +113,9 @@ namespace CadProjectorViewer
 			}
 		}
 
-        public static async void RemoveOtherApp()
+        public static void RemoveOtherApp()
         {
             string Name = AppDomain.CurrentDomain.FriendlyName;
-            Name = Name.Substring(0, Name.LastIndexOf('.'));
             Process current = Process.GetCurrentProcess();
 
             var CUTOtherProcesses = Process.GetProcesses().

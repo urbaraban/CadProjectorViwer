@@ -51,15 +51,6 @@ namespace CadProjectorViewer.ViewModel.Devices
             }
         });
 
-        public ICommand SearchCommand => new ActionCommand(() =>
-        {
-            FindedDevices.Clear();
-            foreach(var item in ProjectorSearcher.GetMonchaBroadcastReplies())
-            {
-                FindedDevices.Add(item);
-            }
-        });
-
         public ICommand ManualAddCommand => new ActionCommand(() =>
         {
             var dialog = new AddDeviceByIpDialog();

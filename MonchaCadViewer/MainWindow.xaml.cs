@@ -251,7 +251,7 @@ namespace CadProjectorViewer
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private async void ILDASaveBtn_Click(object sender, RoutedEventArgs e)
+        private void ILDASaveBtn_Click(object sender, RoutedEventArgs e)
         {
             FileSave.ILDASave(this.mainModel.ProjectorHub.ScenesCollection.SelectedScene.Projectors.ToArray());
         }

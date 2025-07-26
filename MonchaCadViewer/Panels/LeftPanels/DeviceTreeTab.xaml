@@ -118,7 +118,6 @@
                 ItemsSource="{Binding SelectedMeshes}">
                 <devices:DeviceItem />
             </HierarchicalDataTemplate>
-
         </ResourceDictionary>
     </UserControl.Resources>
     <DockPanel LastChildFill="True">

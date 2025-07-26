@@ -56,4 +56,7 @@
   <ItemGroup>
     <Resource Include="logo.jpg" />
   </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Models\" />
+  </ItemGroup>
 </Project>

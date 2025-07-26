@@ -15,6 +15,7 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:panels="clr-namespace:CadProjectorViewer.Panels"
     xmlns:rightpanel="clr-namespace:CadProjectorViewer.Panels.RightPanel"
+    xmlns:sources="clr-namespace:CadProjectorViewer.Panels.RightPanel.Sources"
     xmlns:tb="http://www.hardcodet.net/taskbar"
     xmlns:viewmodel="clr-namespace:CadProjectorViewer.ViewModel"
     x:Name="MainWin"
@@ -77,6 +78,7 @@
             <CadProjectorViewer:MultiObjectList x:Key="MultiList" />
             <CadProjectorViewer:LicenceColor x:Key="LicenceKey" />
             <CadProjectorViewer:GetHubPageConverter x:Key="GetHubPage" />
+            <convert:DxCeilParserConverter x:Key="DxCeilParserConverter" />
         </ResourceDictionary>
     </Controls:MetroWindow.Resources>
     <Controls:MetroWindow.LeftWindowCommands>
@@ -311,6 +313,9 @@
                 <TabItem FontSize="18" Header="{DynamicResource common_Source}">
                     <Grid Background="#FFE5E5E5">
                         <TabControl x:Name="TabItem">
+                            <TabItem Header="DxCeil">
+                                <sources:DxCeilParserPanel DataContext="{Binding ProjectorHub.ScenesCollection, Converter={StaticResource DxCeilParserConverter}}" />
+                            </TabItem>
                             <TabItem FontSize="14" Header="ILDA">
                                 <Grid Background="#FFE5E5E5">
                                     <Controls:ToggleSwitch

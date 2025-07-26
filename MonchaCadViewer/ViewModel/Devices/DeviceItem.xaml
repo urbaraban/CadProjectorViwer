@@ -9,16 +9,6 @@
     x:Name="DeviceItemBlock"
     d:DataContext="{d:DesignInstance Type=device:LProjector}"
     mc:Ignorable="d">
-    <UserControl.Resources>
-        <Style x:Key="ConnectedStyle" TargetType="{x:Type TextBlock}">
-            <Setter Property="Foreground" Value="Black" />
-            <Style.Triggers>
-                <DataTrigger Binding="{Binding IsConnected}" Value="False">
-                    <Setter Property="Foreground" Value="Gray" />
-                </DataTrigger>
-            </Style.Triggers>
-        </Style>
-    </UserControl.Resources>
     <Border Margin="5" ToolTip="{Binding IpAddress}">
         <Border.ContextMenu>
             <ContextMenu Opened="ContextMenu_Opened">
@@ -39,6 +29,21 @@
             </ContextMenu>
         </Border.ContextMenu>
         <StackPanel VerticalAlignment="Center" Orientation="Horizontal">
+            <Border
+                Width="{Binding ActualHeight, RelativeSource={RelativeSource Self}}"
+                Margin="3"
+                CornerRadius="10">
+                <Border.Style>
+                    <Style TargetType="{x:Type Border}">
+                        <Setter Property="Background" Value="Tomato" />
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding IsConnected}" Value="True">
+                                <Setter Property="Background" Value="ForestGreen" />
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </Border.Style>
+            </Border>
             <CheckBox IsChecked="{Binding IsOn}" />
             <Button
                 Width="{Binding ActualHeight, RelativeSource={RelativeSource Self}}"
@@ -49,14 +54,23 @@
             <TextBlock
                 Margin="5,0,5,0"
                 VerticalAlignment="Center"
-                d:Text="Device"
-                Style="{StaticResource ConnectedStyle}">
+                d:Text="Device">
                 <TextBlock.Text>
                     <MultiBinding StringFormat="{}{0}_{1}">
                         <Binding Path="NameID" />
                         <Binding Path="IpAddress" />
                     </MultiBinding>
                 </TextBlock.Text>
+                <TextBlock.Style>
+                    <Style TargetType="{x:Type TextBlock}">
+                        <Setter Property="Foreground" Value="Black" />
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding IsConnected}" Value="False">
+                                <Setter Property="Foreground" Value="Gray" />
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </TextBlock.Style>
             </TextBlock>
             <Button
                 Background="Transparent"

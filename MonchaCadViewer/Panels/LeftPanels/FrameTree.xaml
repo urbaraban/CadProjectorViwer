@@ -131,9 +131,7 @@
                         ItemsSource="{Binding Projectors}"
                         SelectedValuePath="{Binding Projectors.SelectedItem}" />
                 </StackPanel>
-
             </Expander>
-
             <Expander
                 DockPanel.Dock="Top"
                 Header="{DynamicResource edit_Mask}"

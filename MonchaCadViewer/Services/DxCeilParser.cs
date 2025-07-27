@@ -22,7 +22,7 @@ namespace CadProjectorViewer.Services
                 IsClosed = true,
                 StartPoint = new Point(points[0].X, points[0].Y)
             };
-            for (int i = 1; i < points.Count; i += 3)
+            for (int i = 1; i < points.Count; i += 1)
             {
                 Point cp = new Point(points[i].X, points[i].Y);
                 path.Segments.Add(new LineSegment(cp, true));   
@@ -40,13 +40,19 @@ namespace CadProjectorViewer.Services
             var entries = input.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
             foreach (var entry in entries)
             {
-                var parts = entry.Split(new[] { '(', ';', ')' }, StringSplitOptions.RemoveEmptyEntries);
+                var parts = entry.Replace("\r\n", string.Empty)
+                    .Split(new[] { '(', ';', ')' }, StringSplitOptions.RemoveEmptyEntries);
+
                 if (parts.Length == 3)
                 {
                     string name = parts[0];
                     double x = double.Parse(parts[1].Replace('.', ','));
                     double y = double.Parse(parts[2].Replace('.', ','));
                     result.Add((name, x, y));
+                }
+                else
+                {
+
                 }
             }
             return result;

@@ -151,7 +151,7 @@
                         DockPanel.Dock="Left"
                         ItemsSource="{Binding SelectedMeshes}"
                         SelectedIndex="0"
-                        SelectedItem="{Binding SelectMesh, Mode=TwoWay}" />
+                        SelectedItem="{Binding SelectedMesh, Mode=TwoWay}" />
                 </DockPanel>
                 <DockPanel>
                     <DockPanel DockPanel.Dock="Right" LastChildFill="True">

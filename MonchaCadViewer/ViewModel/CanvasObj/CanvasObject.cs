@@ -421,7 +421,11 @@ namespace CadProjectorViewer.CanvasObj
 
         public void Update()
         {
-            this.Dispatcher.Invoke(() => this.InvalidateVisual());
+            this.Dispatcher.Invoke(() => 
+            {
+                this.InvalidateVisual();
+                this.adornerLayer?.InvalidateVisual();
+            });
         }
 
         protected override void OnRender(DrawingContext drawingContext)
@@ -602,6 +606,11 @@ namespace CadProjectorViewer.CanvasObj
             this.AnchoredObject.UpdateAnchorPoints += AnchoredObject_UpdatePoints;
         }
 
+        public void OnInvalidateVisual()
+        {
+            this.InvalidateVisual();
+        }
+
         private void AnchoredObject_UpdatePoints(object sender, EventArgs e) => UpdatePoint();
 
         private void UpdatePoint()
@@ -621,7 +630,7 @@ namespace CadProjectorViewer.CanvasObj
                 CanvAnchor.GetViewModel = this.GetViewModel;
                 anchor.PropertyChanged += Point_PropertyChanged;
                 _Visuals.Add(CanvAnchor);
-                this.InvalidateVisual();
+                this.OnInvalidateVisual();
             }
         }
 
@@ -635,12 +644,13 @@ namespace CadProjectorViewer.CanvasObj
                     _Visuals.RemoveAt(i);
                 }
             }
-            this.InvalidateVisual();
+            this.OnInvalidateVisual();
+
         }
 
         private void Point_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
-            this.InvalidateVisual();
+            this.OnInvalidateVisual();
         }
 
         protected override Size ArrangeOverride(Size finalSize)

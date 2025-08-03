@@ -90,7 +90,7 @@ namespace CadProjectorViewer.Panels.DevicePanel
 
         private void MinusSelectBtn_Click(object sender, RoutedEventArgs e)
         {
-            this._device.SelectMesh = null;
+            this._device.SelectedMesh = null;
         }
 
 

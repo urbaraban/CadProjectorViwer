@@ -77,9 +77,9 @@ namespace CadProjectorViewer.Panels
 
         private void MeshSettingBtn_Click(object sender, RoutedEventArgs e)
         {
-            if (this.device.SelectMesh != null)
+            if (this.device.SelectedMesh != null)
             {
-                CreateGridWindow createGridWindow = new CreateGridWindow(this.device.SelectMesh);
+                CreateGridWindow createGridWindow = new CreateGridWindow(this.device.SelectedMesh);
                 createGridWindow.Show();
             }
         }

@@ -80,10 +80,18 @@ namespace CadProjectorViewer.ViewModel.Devices
         {
             if (this.DataContext is IConnected connected)
             {
-                Process.Start(new ProcessStartInfo
+                try
                 {
-                    FileName = $"http://{connected.IpAddress}"
-                });
+                    Process.Start(new ProcessStartInfo
+                    {
+                        FileName = $"http://{connected.IpAddress}"
+                    });
+                }
+                catch
+                {
+                    MessageBox.Show("Не удалось открыть страницу", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
+                }
+
             }
         });
 

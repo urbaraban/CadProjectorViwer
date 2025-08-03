@@ -2,7 +2,6 @@
 using CadProjectorViewer.ViewModel;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Forms;
 using System.Windows.Input;
 using System.Windows.Media;
 using AppSt = CadProjectorViewer.Properties.Settings;
@@ -20,7 +19,6 @@ namespace CadProjectorViewer.CanvasObj
             get
             {
                 if (this.CadObject.IsSelected == true) return Brushes.Red;
-                else if (this.CadObject.IsFix == true) return Brushes.Black;
                 return Brushes.DarkGray;
             }
         }

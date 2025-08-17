@@ -1,20 +1,22 @@
-﻿<Window x:Class="CadProjectorViewer.Dialogs.DeviceManaged.AddDeviceByIpDialog"
-        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:CadProjectorViewer.Dialogs.DeviceManaged" 
-        xmlns:vmd="clr-namespace:CadProjectorViewer.ViewModel.Devices"
-        d:DataContext="{d:DesignInstance Type=vmd:AddDeviceViewModel}"
-        mc:Ignorable="d"
-        SizeToContent="WidthAndHeight"
-        Title="AddDeviceByIpDialog" 
-        d:Height="150" d:Width="400"
-        MinWidth="300"
-        MinHeight="150">
+﻿<Window
+    x:Class="CadProjectorViewer.Dialogs.DeviceManaged.AddDeviceByIpDialog"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="clr-namespace:CadProjectorViewer.Dialogs.DeviceManaged"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:vmd="clr-namespace:CadProjectorViewer.ViewModel.Devices"
+    Title="AddDeviceByIpDialog"
+    MinWidth="300"
+    MinHeight="150"
+    d:DataContext="{d:DesignInstance Type=vmd:AddDeviceViewModel}"
+    d:Height="150"
+    d:Width="400"
+    SizeToContent="WidthAndHeight"
+    mc:Ignorable="d">
     <Window.Resources>
         <ResourceDictionary>
-            <Style TargetType="TextBox" >
+            <Style TargetType="TextBox">
                 <Setter Property="TextWrapping" Value="NoWrap" />
                 <Setter Property="VerticalAlignment" Value="Center" />
                 <Setter Property="HorizontalAlignment" Value="Stretch" />
@@ -34,52 +36,65 @@
             <RowDefinition />
             <RowDefinition />
         </Grid.RowDefinitions>
-        <Label Content="IpAddress" 
-               HorizontalAlignment="Center"
-               VerticalAlignment="Center"/>
-        <TextBox Grid.Row="1" 
-                 Text="{Binding ip_1}"
-                 d:Text="127" />
-        <TextBox Grid.Row="1" 
-                 Text="{Binding ip_2}"
-                 d:Text="0"
-                 Grid.Column="1"/>
-        <TextBox Grid.Row="1" 
-                 Text="{Binding ip_3}"
-                 d:Text="0"
-                 Grid.Column="2"/>
-        <TextBox Grid.Row="1" 
-                 Text="{Binding ip_4}"
-                 d:Text="1" 
-                 Grid.Column="3"/>
-        <Label Content="Port" 
-               HorizontalAlignment="Center"
-               VerticalAlignment="Center" 
-               Grid.Row="2"/>
-        <Label Content="Type" 
+        <Label
             HorizontalAlignment="Center"
-            VerticalAlignment="Center" 
-            Grid.Row="2" Grid.Column="2"/>
-        <Button Grid.Column="2" 
-                Content="Add"
-                HorizontalAlignment="Stretch"
-                Grid.Row="3" 
-                VerticalAlignment="Stretch"
-                Command="{Binding AddDeviceCommand}"/>
-        <Button Grid.Column="3" 
-            Content="Cancel"
+            VerticalAlignment="Center"
+            Content="IpAddress" />
+        <TextBox
+            Grid.Row="1"
+            d:Text="127"
+            Text="{Binding ip_1}" />
+        <TextBox
+            Grid.Row="1"
+            Grid.Column="1"
+            d:Text="0"
+            Text="{Binding ip_2}" />
+        <TextBox
+            Grid.Row="1"
+            Grid.Column="2"
+            d:Text="0"
+            Text="{Binding ip_3}" />
+        <TextBox
+            Grid.Row="1"
+            Grid.Column="3"
+            d:Text="1"
+            Text="{Binding ip_4}" />
+        <Label
+            Grid.Row="2"
+            HorizontalAlignment="Center"
+            VerticalAlignment="Center"
+            Content="Port" />
+        <Label
+            Grid.Row="2"
+            Grid.Column="2"
+            HorizontalAlignment="Center"
+            VerticalAlignment="Center"
+            Content="Type" />
+        <Button
+            Grid.Row="3"
+            Grid.Column="2"
             HorizontalAlignment="Stretch"
-            Grid.Row="3" 
-            VerticalAlignment="Stretch" Click="Button_Click"/>
-        <ComboBox Grid.Column="3"
-                  ItemsSource="{Binding DeviceTypes}"
-                  SelectedItem="{Binding SelectType}"
-                  HorizontalAlignment="Stretch"
-                  Grid.Row="2" />
-        <TextBox Grid.Row="2" 
-                 Text="{Binding Port}"
-                 d:Text="5011"
-                 Grid.Column="1" 
-                 VerticalAlignment="Center"/>
+            VerticalAlignment="Stretch"
+            Command="{Binding AddDeviceCommand}"
+            Content="Add" />
+        <Button
+            Grid.Row="3"
+            Grid.Column="3"
+            HorizontalAlignment="Stretch"
+            VerticalAlignment="Stretch"
+            Click="Button_Click"
+            Content="Cancel" />
+        <ComboBox
+            Grid.Row="2"
+            Grid.Column="3"
+            HorizontalAlignment="Stretch"
+            ItemsSource="{Binding DeviceTypes}"
+            SelectedItem="{Binding SelectType}" />
+        <TextBox
+            Grid.Row="2"
+            Grid.Column="1"
+            VerticalAlignment="Center"
+            d:Text="5011"
+            Text="{Binding Port}" />
     </Grid>
 </Window>

@@ -131,34 +131,6 @@
 
         <Separator />
 
-
-        <DockPanel>
-            <Label Content="RotationX" />
-            <Controls:NumericUpDown
-                Maximum="360"
-                Minimum="0"
-                ValueChanged="NumericUpDown_ValueChanged"
-                Value="{Binding Size.AngleX}" />
-        </DockPanel>
-
-        <DockPanel>
-            <Label Content="RotationY" />
-            <Controls:NumericUpDown
-                Maximum="360"
-                Minimum="0"
-                ValueChanged="NumericUpDown_ValueChanged"
-                Value="{Binding Size.AngleY}" />
-        </DockPanel>
-
-        <DockPanel>
-            <Label Content="RotationZ" />
-            <Controls:NumericUpDown
-                Maximum="360"
-                Minimum="0"
-                ValueChanged="NumericUpDown_ValueChanged"
-                Value="{Binding Size.AngleZ}" />
-        </DockPanel>
-
         <DockPanel>
             <Button
                 x:Name="SaveBtn"

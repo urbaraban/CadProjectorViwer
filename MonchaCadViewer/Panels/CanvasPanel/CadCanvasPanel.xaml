@@ -1,17 +1,19 @@
-﻿<UserControl x:Class="CadProjectorViewer.Panels.CanvasPanel.CadCanvasPanel"
-             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             xmlns:converters="clr-namespace:CadProjectorViewer.Converters"
-             xmlns:canvaspanel="clr-namespace:CadProjectorViewer.Panels.CanvasPanel"
-             xmlns:scene="clr-namespace:CadProjectorViewer.ViewModel.Scene"
-             d:DataContext="{d:DesignInstance Type=scene:SceneModel}"
-             x:Name="CanvasPanel"
-             mc:Ignorable="d"
-             Focusable="True"
-             MouseDown="CanvasBox_MouseDown"
-             d:DesignHeight="400" d:DesignWidth="400">
+﻿<UserControl
+    x:Class="CadProjectorViewer.Panels.CanvasPanel.CadCanvasPanel"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:canvaspanel="clr-namespace:CadProjectorViewer.Panels.CanvasPanel"
+    xmlns:converters="clr-namespace:CadProjectorViewer.Converters"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:scene="clr-namespace:CadProjectorViewer.ViewModel.Scene"
+    x:Name="CanvasPanel"
+    d:DataContext="{d:DesignInstance Type=scene:SceneModel}"
+    d:DesignHeight="400"
+    d:DesignWidth="400"
+    Focusable="True"
+    MouseDown="CanvasBox_MouseDown"
+    mc:Ignorable="d">
     <UserControl.Resources>
         <ResourceDictionary>
             <canvaspanel:CursorActionConverter x:Key="CursorAction" />
@@ -22,57 +24,70 @@
     </UserControl.Resources>
     <DockPanel>
         <DockPanel
-            DockPanel.Dock="Top"
             Grid.Row="0"
             Panel.ZIndex="99"
-            Background="LightGray">
-            <Button x:Name="RefreshBtn"
-                    FontFamily="Segoe MDL2 Assets"
-                    Content="&#xE72C;"
+            Background="LightGray"
+            DockPanel.Dock="Top">
+            <Button
+                x:Name="RefreshBtn"
+                Width="{Binding ActualHeight, RelativeSource={RelativeSource Self}}"
+                Margin="3"
+                Panel.ZIndex="999"
+                Command="{Binding RefreshFrameCommand}"
+                Content="&#xE72C;"
+                FontFamily="Segoe MDL2 Assets"
+                FontSize="18" />
+            <TextBlock
+                Width="80"
+                Margin="3"
+                VerticalAlignment="Center"
+                Text="{Binding Scene.AlreadyAction.Name}"
+                TextAlignment="Right" />
+            <Button
+                Width="{Binding ActualHeight, RelativeSource={RelativeSource Self}}"
+                Background="Transparent"
+                BorderBrush="Transparent"
+                Command="{Binding CancelActionCommand}"
+                Content="X"
+                Foreground="Red" />
+            <StackPanel FlowDirection="RightToLeft" Orientation="Horizontal">
+
+                <Button
+                    x:Name="AdornerShowBtn"
                     Width="{Binding ActualHeight, RelativeSource={RelativeSource Self}}"
                     Margin="3"
-                    Panel.ZIndex="999" FontSize="18"
-                    Command="{Binding RefreshFrameCommand}" />
-            <TextBlock Text="{Binding Scene.AlreadyAction.Name}"
-                       Width="80"
-                       Margin="3"
-                       TextAlignment="Right"
-                       VerticalAlignment="Center" />
-            <Button Content="X"
-                    Background="Transparent"
-                    BorderBrush="Transparent"
-                    Foreground="Red"
-                    Command="{Binding CancelActionCommand}"
-                     Width="{Binding ActualHeight, RelativeSource={RelativeSource Self}}" />
-            <StackPanel
-                Orientation="Horizontal" FlowDirection="RightToLeft">
-
-                <Button x:Name="AdornerShowBtn"
-                        FontFamily="Segoe MDL2 Assets"
-                        Content="&#xE7F0;"
-                        Width="{Binding ActualHeight, RelativeSource={RelativeSource Self}}"
-                        Margin="3"
-                        Click="AdornerShowBtn_Click" Panel.ZIndex="999" FontSize="18" />
-                <Button x:Name="ShowDeviceRect"
-                        FontFamily="Segoe MDL2 Assets"
-                        Content="&#xe773;"
-                        Width="{Binding ActualHeight, RelativeSource={RelativeSource Self}}"
-                        Margin="3" 
-                        Click="ShowDeviceRect_Click" Panel.ZIndex="999" FontSize="20" />
-                <Button FontFamily="Segoe MDL2 Assets"
-                        Content="&#xe722;"
-                        Width="{Binding ActualHeight, RelativeSource={RelativeSource Self}}"
-                        Margin="3" 
-                        Click="ShowDeviceRect_Click" Panel.ZIndex="999" FontSize="20" />
-                <ToggleButton  Width="{Binding ActualHeight, RelativeSource={RelativeSource Self}}"
-                           Content="&#xe8b0;"
-                           FontSize="18"
-                           FontFamily="Segoe MDL2 Assets"
-                           Margin="3"
-                           IsChecked="{Binding ShowCursor}" />
+                    Panel.ZIndex="999"
+                    Click="AdornerShowBtn_Click"
+                    Content="&#xE7F0;"
+                    FontFamily="Segoe MDL2 Assets"
+                    FontSize="18" />
+                <Button
+                    x:Name="ShowDeviceRect"
+                    Width="{Binding ActualHeight, RelativeSource={RelativeSource Self}}"
+                    Margin="3"
+                    Panel.ZIndex="999"
+                    Click="ShowDeviceRect_Click"
+                    Content="&#xe773;"
+                    FontFamily="Segoe MDL2 Assets"
+                    FontSize="20" />
+                <Button
+                    Width="{Binding ActualHeight, RelativeSource={RelativeSource Self}}"
+                    Margin="3"
+                    Panel.ZIndex="999"
+                    Click="ShowDeviceRect_Click"
+                    Content="&#xe722;"
+                    FontFamily="Segoe MDL2 Assets"
+                    FontSize="20" />
+                <ToggleButton
+                    Width="{Binding ActualHeight, RelativeSource={RelativeSource Self}}"
+                    Margin="3"
+                    Content="&#xe8b0;"
+                    FontFamily="Segoe MDL2 Assets"
+                    FontSize="18"
+                    IsChecked="{Binding ShowCursor}" />
             </StackPanel>
         </DockPanel>
-        <Grid Margin="0" Background="Gray" >
+        <Grid Margin="0" Background="Gray">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="40" />
                 <ColumnDefinition />
@@ -83,49 +98,62 @@
                 <RowDefinition />
                 <RowDefinition Height="40" />
             </Grid.RowDefinitions>
-            <Button Content="Center"
-                    Grid.Column="0"
-                    Grid.Row="0"
-                    Command="{Binding CentertAttachCommand}"/>
-            <Button Content="left"
-                    Grid.Column="0"
-                    Grid.Row="1"
-                    Command="{Binding LeftAttachCommand}"/>
-            <Button Content="right"
-                    Grid.Column="2"
-                    Grid.Row="1"
-                    Command="{Binding RightAttachCommand}"/>
-            <Button Content="top"
-                    Grid.Column="1"
-                    Grid.Row="0"
-                    Command="{Binding TopAttachCommand}"/>
-            <Button Content="bottom"
-                    Grid.Column="1"
-                    Grid.Row="2"
-                    Command="{Binding DownAttachCommand}"/>
-            <Button Content="90"
-                    Grid.Column="2"
-                    Grid.Row="0" 
-                    Command="{Binding RotateCommand}"/>
-            <Grid ClipToBounds="True"
-                  Grid.Row="1"
-                  Grid.Column="1">
-                <Viewbox x:Name="CanvasBox"
-                         Stretch="Uniform" 
-                         StretchDirection="Both"
-                         Margin="5">
-                    <Grid x:Name="CanvasGrid" Background="Red"
-                      Cursor="{Binding Scene.AlreadyAction, Converter={StaticResource CursorAction}}">
-                        <Rectangle Fill="White" 
-                               Width="{Binding Scene.Size.Width}" 
-                               Height="{Binding Scene.Size.Height}"/>
+            <Button
+                Grid.Row="0"
+                Grid.Column="0"
+                Command="{Binding CentertAttachCommand}"
+                Content="Center" />
+            <Button
+                Grid.Row="1"
+                Grid.Column="0"
+                Command="{Binding LeftAttachCommand}"
+                Content="left" />
+            <Button
+                Grid.Row="1"
+                Grid.Column="2"
+                Command="{Binding RightAttachCommand}"
+                Content="right" />
+            <Button
+                Grid.Row="0"
+                Grid.Column="1"
+                Command="{Binding TopAttachCommand}"
+                Content="top" />
+            <Button
+                Grid.Row="2"
+                Grid.Column="1"
+                Command="{Binding DownAttachCommand}"
+                Content="bottom" />
+            <Button
+                Grid.Row="0"
+                Grid.Column="2"
+                Command="{Binding RotateCommand}"
+                Content="90" />
+            <Grid
+                Grid.Row="1"
+                Grid.Column="1"
+                ClipToBounds="True">
+                <Viewbox
+                    x:Name="CanvasBox"
+                    Margin="5"
+                    Stretch="Uniform"
+                    StretchDirection="Both">
+                    <Grid
+                        x:Name="CanvasGrid"
+                        Background="Red"
+                        Cursor="{Binding Scene.AlreadyAction, Converter={StaticResource CursorAction}}">
+                        <Rectangle
+                            Width="{Binding Scene.Size.Width}"
+                            Height="{Binding Scene.Size.Height}"
+                            Fill="White" />
                         <Canvas
-                    x:Name="BackCanvas"
-                    IsHitTestVisible="False"
-                    SizeChanged="Canvas_SizeChanged">
+                            x:Name="BackCanvas"
+                            IsHitTestVisible="False"
+                            SizeChanged="Canvas_SizeChanged">
                             <Canvas.Background>
-                                <DrawingBrush TileMode="Tile" Viewport="0,0,200,200"
-                                     ViewportUnits="Absolute">
+                                <DrawingBrush
+                                    TileMode="Tile"
+                                    Viewport="0,0,200,200"
+                                    ViewportUnits="Absolute">
                                     <DrawingBrush.Drawing>
                                         <GeometryDrawing>
                                             <GeometryDrawing.Geometry>
@@ -142,7 +170,7 @@
                         <ItemsControl ItemsSource="{Binding Scene.Masks}">
                             <ItemsControl.ItemsPanel>
                                 <ItemsPanelTemplate>
-                                    <Canvas/>
+                                    <Canvas />
                                 </ItemsPanelTemplate>
                             </ItemsControl.ItemsPanel>
                             <ItemsControl.ItemTemplate>
@@ -151,8 +179,8 @@
                                         <ContentPresenter.Content>
                                             <MultiBinding Converter="{StaticResource CadObjectConverter}">
                                                 <Binding Path="" />
-                                                <Binding ElementName="CanvasPanel" Path="DataContext"/>
-                                                <Binding ElementName="CanvasPanel" Path="Scale"/>
+                                                <Binding ElementName="CanvasPanel" Path="DataContext" />
+                                                <Binding ElementName="CanvasPanel" Path="Scale" />
                                             </MultiBinding>
                                         </ContentPresenter.Content>
                                     </ContentPresenter>
@@ -162,10 +190,11 @@
                         <ItemsControl ItemsSource="{Binding Scene}">
                             <ItemsControl.ItemsPanel>
                                 <ItemsPanelTemplate>
-                                    <Canvas x:Name="ObjCanvas"
-                                    d:DataContext="{d:DesignInstance Type=scene:SceneModel}"
-                                    Width="{Binding Scene.Size.Width}"
-                                    Height="{Binding Scene.Size.Height}"/>
+                                    <Canvas
+                                        x:Name="ObjCanvas"
+                                        Width="{Binding Scene.Size.Width}"
+                                        Height="{Binding Scene.Size.Height}"
+                                        d:DataContext="{d:DesignInstance Type=scene:SceneModel}" />
                                 </ItemsPanelTemplate>
                             </ItemsControl.ItemsPanel>
                             <ItemsControl.ItemTemplate>
@@ -174,8 +203,8 @@
                                         <ContentPresenter.Content>
                                             <MultiBinding Converter="{StaticResource CadObjectConverter}">
                                                 <Binding Path="" />
-                                                <Binding ElementName="ObjCanvas" Path="DataContext"/>
-                                                <Binding ElementName="CanvasPanel" Path="Scale"/>
+                                                <Binding ElementName="ObjCanvas" Path="DataContext" />
+                                                <Binding ElementName="CanvasPanel" Path="Scale" />
                                             </MultiBinding>
                                         </ContentPresenter.Content>
                                     </ContentPresenter>
@@ -185,12 +214,15 @@
                     </Grid>
                 </Viewbox>
             </Grid>
-            <Label x:Name="CoordinateLabel"
-               Grid.RowSpan="3"
-               VerticalContentAlignment="Bottom"
-               IsEnabled="False" HorizontalAlignment="Right"
-               HorizontalContentAlignment="Right"
-               Visibility="Hidden" IsHitTestVisible="False">
+            <Label
+                x:Name="CoordinateLabel"
+                Grid.RowSpan="3"
+                HorizontalAlignment="Right"
+                HorizontalContentAlignment="Right"
+                VerticalContentAlignment="Bottom"
+                IsEnabled="False"
+                IsHitTestVisible="False"
+                Visibility="Hidden">
                 <Label.Content>
                     <MultiBinding Converter="{StaticResource InfoConverter}">
                         <Binding Path="MousePosition.MX" />
@@ -199,19 +231,20 @@
                     </MultiBinding>
                 </Label.Content>
             </Label>
-            <Button VerticalAlignment="Center"
-                        HorizontalAlignment="Center"
-                        Background="Transparent"
-                        BorderThickness="0"
-                    Grid.Row="2"
-                    d:Content="100"
-                        MinWidth="{Binding ActualHeight, RelativeSource={RelativeSource Self}}"
-                        Command="{Binding ElementName=CanvasPanel, Path=CancelSizeChange}" >
+            <Button
+                Grid.Row="2"
+                MinWidth="{Binding ActualHeight, RelativeSource={RelativeSource Self}}"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center"
+                d:Content="100"
+                Background="Transparent"
+                BorderThickness="0"
+                Command="{Binding ElementName=CanvasPanel, Path=CancelSizeChange}">
                 <Button.Resources>
                     <Style TargetType="Button">
                         <Style.Triggers>
                             <Trigger Property="IsMouseOver" Value="True">
-                                <Setter Property="Content" Value="X"  />
+                                <Setter Property="Content" Value="X" />
                             </Trigger>
                             <Trigger Property="IsMouseOver" Value="False">
                                 <Setter Property="Content" Value="{Binding ElementName=CanvasPanel, Path=ScaleValue, Converter={StaticResource ScaleConverter}}" />

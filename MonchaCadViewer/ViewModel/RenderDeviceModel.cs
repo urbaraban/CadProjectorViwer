@@ -3,14 +3,10 @@ using CadProjectorSDK.CadObjects.Abstract;
 using CadProjectorSDK.Interfaces;
 using CadProjectorSDK.Scenes;
 using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.IO;
-using System.Linq;
 using System.Runtime.CompilerServices;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Media;
 using System.Xml.Linq;
 using AppSt = CadProjectorViewer.Properties.Settings;
@@ -80,6 +76,10 @@ namespace CadProjectorViewer.ViewModel
         public RenderDeviceModel(IRenderingDisplay renderingDisplay)
         {
             this.RenderingDisplay = renderingDisplay;
+            this.RenderingDisplay.FrameChanged += (s, e) =>
+            {
+                OnPropertyChanged(string.Empty);
+            };
             this.displaySetting = ViewDisplaySetting.Load(this.RenderingDisplay);
         }
 

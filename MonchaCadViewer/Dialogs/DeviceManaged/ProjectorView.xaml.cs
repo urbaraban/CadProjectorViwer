@@ -1,25 +1,9 @@
-﻿using CadProjectorViewer.CanvasObj;
-using CadProjectorSDK.Device;
-using CadProjectorSDK.CadObjects;
-using System;
-using System.Collections.Generic;
+﻿using CadProjectorViewer.ViewModel;
 using System.ComponentModel;
-using System.Globalization;
-using System.Linq;
 using System.Runtime.CompilerServices;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
-using CadProjectorSDK.CadObjects.Abstract;
-using CadProjectorSDK.Interfaces;
-using CadProjectorViewer.ViewModel;
 
 namespace CadProjectorViewer.DeviceManaged
 {
@@ -48,14 +32,16 @@ namespace CadProjectorViewer.DeviceManaged
         }
         private bool _fix = false;
 
-        public ProjectorView()
-        {
-            InitializeComponent();
-        }
 
-        private TransformGroup transform = new TransformGroup();
+        private RenderDeviceModel RenderDeviceModel => (RenderDeviceModel)this.DataContext;
 
         public ScaleTransform Scale { get; set; } = new ScaleTransform();
+
+        internal ProjectorView(RenderDeviceModel renderDeviceModel)
+        {
+            InitializeComponent();
+            this.DataContext = renderDeviceModel;
+        }
 
 
         private void CloseMenuItem_Click(object sender, RoutedEventArgs e)

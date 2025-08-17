@@ -1,106 +1,115 @@
-﻿<UserControl x:Class="CadProjectorViewer.Panels.RightPanel.WorkFolderPanel"
-             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:s="clr-namespace:System.Collections;assembly=mscorlib"
-             xmlns:p="clr-namespace:System;assembly=mscorlib"
-             xmlns:rightpanel="clr-namespace:CadProjectorViewer.Panels.RightPanel"
-             xmlns:modul="clr-namespace:CadProjectorViewer.ViewModel.Modules"
-             mc:Ignorable="d"
-             d:DataContext="{d:DesignInstance Type={x:Type modul:WorkFolderList}}"
-             d:DesignHeight="450" d:DesignWidth="200">
+﻿<UserControl
+    x:Class="CadProjectorViewer.Panels.RightPanel.WorkFolderPanel"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:modul="clr-namespace:CadProjectorViewer.ViewModel.Modules"
+    xmlns:p="clr-namespace:System;assembly=mscorlib"
+    xmlns:rightpanel="clr-namespace:CadProjectorViewer.Panels.RightPanel"
+    xmlns:s="clr-namespace:System.Collections;assembly=mscorlib"
+    d:DataContext="{d:DesignInstance Type={x:Type modul:WorkFolderList}}"
+    d:DesignHeight="450"
+    d:DesignWidth="200"
+    mc:Ignorable="d">
     <UserControl.Resources>
         <ContextMenu x:Key="itemMenu">
-            <MenuItem Header="Show folder..." Command="{Binding OpenFolderCommand}"/>
-            <MenuItem Header="Open editor" Command="{Binding OpenEditorCommand}"/>
+            <MenuItem Command="{Binding OpenFolderCommand}" Header="Show folder..." />
+            <MenuItem Command="{Binding OpenEditorCommand}" Header="Open editor" />
         </ContextMenu>
         <rightpanel:IconConverter x:Key="IconConverter" />
     </UserControl.Resources>
     <Grid>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="133*"/>
-            <ColumnDefinition Width="68*"/>
+            <ColumnDefinition Width="133*" />
+            <ColumnDefinition Width="68*" />
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
-            <RowDefinition Height="40"/>
-            <RowDefinition Height="30"/>
-            <RowDefinition/>
+            <RowDefinition Height="40" />
+            <RowDefinition Height="30" />
+            <RowDefinition />
         </Grid.RowDefinitions>
 
         <DockPanel Grid.ColumnSpan="2">
-            <Button DockPanel.Dock="Left"
-                    Margin="5"
-                    FontFamily="Segoe MDL2 Assets" 
-                    Content="&#xEDAB;" 
-                    VerticalAlignment="Center"
-                    Width="{Binding ActualHeight, RelativeSource={RelativeSource Self}}" 
-                    Command="{Binding RefreshListCommand}"/>
-            <Button DockPanel.Dock="Right" 
-                    Command="{Binding SelectWorkFolderCommand}"
-                    Content="{DynamicResource m_Browse}" VerticalAlignment="Center" Grid.Column="1"/>
-            <Label Content="{Binding AlreadyDirectory.FullName, Mode=OneWay}"
-                   VerticalContentAlignment="Center"/>
+            <Button
+                Width="{Binding ActualHeight, RelativeSource={RelativeSource Self}}"
+                Margin="5"
+                VerticalAlignment="Center"
+                Command="{Binding RefreshListCommand}"
+                Content="&#xEDAB;"
+                DockPanel.Dock="Left"
+                FontFamily="Segoe MDL2 Assets" />
+            <Button
+                Grid.Column="1"
+                VerticalAlignment="Center"
+                Command="{Binding SelectWorkFolderCommand}"
+                Content="{DynamicResource m_Browse}"
+                DockPanel.Dock="Right" />
+            <Label VerticalContentAlignment="Center" Content="{Binding AlreadyDirectory.FullName, Mode=OneWay}" />
         </DockPanel>
 
         <ListView
-            ItemsSource="{Binding FilInfosCollection}"
             x:Name="WorkFolderListBox"
-            Margin="5,5,5,5" 
-            Grid.Row="2" Grid.ColumnSpan="2"
-            BorderThickness="1" BorderBrush="LightGray"
+            Grid.Row="2"
+            Grid.ColumnSpan="2"
+            Margin="5,5,5,5"
+            BorderBrush="LightGray"
+            BorderThickness="1"
+            ItemsSource="{Binding FilInfosCollection}"
             KeyUp="WorkFolderListBox_KeyUp">
             <ListView.View>
                 <GridView>
                     <GridViewColumn Width="30">
                         <GridViewColumn.CellTemplate>
                             <DataTemplate>
-                                <TextBlock FontFamily="Segoe MDL2 Assets" Text="{Binding Path=Extension, Converter={StaticResource IconConverter}}"/>
+                                <TextBlock FontFamily="Segoe MDL2 Assets" Text="{Binding Path=Extension, Converter={StaticResource IconConverter}}" />
                             </DataTemplate>
                         </GridViewColumn.CellTemplate>
-                        <GridViewColumnHeader Content="ic" Click="GridViewColumnHeader_Click"/>
+                        <GridViewColumnHeader Click="GridViewColumnHeader_Click" Content="ic" />
                     </GridViewColumn>
-                    <GridViewColumn DisplayMemberBinding="{Binding Path=Name}" Width="120">
-                        <GridViewColumnHeader Content="Name" Click="GridViewColumnHeader_Click"/>
+                    <GridViewColumn Width="120" DisplayMemberBinding="{Binding Path=Name}">
+                        <GridViewColumnHeader Click="GridViewColumnHeader_Click" Content="Name" />
                     </GridViewColumn>
-                    <GridViewColumn DisplayMemberBinding="{Binding Path=Extension}" Width="40">
-                        <GridViewColumnHeader Content="Format" Click="GridViewColumnHeader_Click"/>
+                    <GridViewColumn Width="40" DisplayMemberBinding="{Binding Path=Extension}">
+                        <GridViewColumnHeader Click="GridViewColumnHeader_Click" Content="Format" />
                     </GridViewColumn>
-                    <GridViewColumn DisplayMemberBinding="{Binding Path=LastWriteTime, StringFormat=HH:MM d.m.yy}" Width="Auto">
-                        <GridViewColumnHeader Content="Date" Click="GridViewColumnHeader_Click"/>
+                    <GridViewColumn Width="Auto" DisplayMemberBinding="{Binding Path=LastWriteTime, StringFormat=HH:MM d.m.yy}">
+                        <GridViewColumnHeader Click="GridViewColumnHeader_Click" Content="Date" />
                     </GridViewColumn>
                 </GridView>
             </ListView.View>
             <ListView.ItemContainerStyle>
                 <Style TargetType="ListViewItem">
-                    <EventSetter Event="MouseDoubleClick" Handler="ListViewItem_MouseDoubleClick"/>
-                    <Setter Property="ToolTip" Value="{Binding Path=FullName}"/>
-                    <Setter Property="ContextMenu" Value="{StaticResource itemMenu}"/>
+                    <EventSetter Event="MouseDoubleClick" Handler="ListViewItem_MouseDoubleClick" />
+                    <Setter Property="ToolTip" Value="{Binding Path=FullName}" />
+                    <Setter Property="ContextMenu" Value="{StaticResource itemMenu}" />
                 </Style>
             </ListView.ItemContainerStyle>
         </ListView>
-        <DockPanel 
-            Grid.Row="1">
+        <DockPanel Grid.Row="1">
             <Button
-                DockPanel.Dock="Right"
-                Content="X"
+                Width="{Binding ActualHeight, RelativeSource={RelativeSource Self}}"
                 Command="{Binding ClearFilterBoxCommand}"
-                Width="{Binding ActualHeight, RelativeSource={RelativeSource Self}}" />
+                Content="X"
+                DockPanel.Dock="Right" />
             <TextBox
-                Text="{Binding StringFilter, UpdateSourceTrigger=PropertyChanged}"
                 x:Name="WorkFolderFilter"
+                Margin="5,2,1.5,2"
+                VerticalContentAlignment="Center"
                 DockPanel.Dock="Right"
-                Margin="5,2,1.5,2"  
-                TextWrapping="Wrap" 
-                VerticalContentAlignment="Center" 
-                Focusable="True" 
-                GotFocus="WorkFolderFilter_GotFocus" 
-                KeyUp="WorkFolderFilter_KeyUp"/>
+                Focusable="True"
+                GotFocus="WorkFolderFilter_GotFocus"
+                KeyUp="WorkFolderFilter_KeyUp"
+                Text="{Binding StringFilter, UpdateSourceTrigger=PropertyChanged}"
+                TextWrapping="Wrap" />
         </DockPanel>
-       <ComboBox 
-           ItemsSource="{Binding Extensions}"
-           SelectedItem="{Binding SelectExtension}"
-           Grid.Column="1" Margin="4,2,5,0" Grid.Row="1" VerticalAlignment="Center"
-                  DisplayMemberPath="Name"/>
+        <ComboBox
+            Grid.Row="1"
+            Grid.Column="1"
+            Margin="4,2,5,0"
+            VerticalAlignment="Center"
+            DisplayMemberPath="Name"
+            ItemsSource="{Binding Extensions}"
+            SelectedItem="{Binding SelectExtension}" />
     </Grid>
 </UserControl>

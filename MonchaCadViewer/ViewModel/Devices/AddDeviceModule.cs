@@ -1,4 +1,5 @@
 ﻿using CadProjectorSDK.Device.Modules;
+using CadProjectorSDK.Device.Modules.Transforming;
 using Microsoft.Xaml.Behaviors.Core;
 using System;
 using System.Collections.ObjectModel;
@@ -11,6 +12,8 @@ namespace CadProjectorViewer.ViewModel.Devices
     {
         public Type[] AvailableType { get; } = new Type[]
         {
+            typeof(HyperbolaCorrector),
+            typeof(DeepFrameCutter),
             typeof(ZCorrector),
             typeof(RectProportion),
             typeof(ModulesGroup)

@@ -16,6 +16,9 @@
         </ResourceDictionary>
     </UserControl.Resources>
     <Grid>
-        <ContentControl Content="{Binding .}" />
+        <ContentControl
+            Margin="10"
+            Content="{Binding .}"
+            ContentTemplate="{StaticResource BaseModule}" />
     </Grid>
 </UserControl>

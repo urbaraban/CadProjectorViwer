@@ -68,10 +68,7 @@ namespace CadProjectorViewer.ViewModel.Devices
         {
             if (this.DataContext is IRenderingDisplay device)
             {
-                ProjectorView projectorView = new ProjectorView()
-                {
-                    DataContext = new RenderDeviceModel(device)
-                };
+                ProjectorView projectorView = new ProjectorView(new RenderDeviceModel(device));
                 projectorView.Show();
             }
         });

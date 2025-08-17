@@ -9,7 +9,6 @@
     xmlns:sdk="clr-namespace:CadProjectorSDK;assembly=CadProjectorSDK"
     Padding="0"
     d:DataContext="{d:DesignInstance Type={x:Type sdk:ProjectorHub}}"
-    d:DesignHeight="550"
     d:DesignWidth="300"
     mc:Ignorable="d">
     <UserControl.Resources>
@@ -263,11 +262,7 @@
                         Content="{DynamicResource dvc_Dimmer}" />
                 </DockPanel>
 
-
-
-
                 <Separator />
-
 
                 <DockPanel LastChildFill="True">
                     <Label Content="{DynamicResource dvc_WaintPoint}" DockPanel.Dock="Left" />
@@ -289,15 +284,7 @@
                         Value="{Binding ProjectionSetting.BlankWait, Mode=TwoWay}" />
                 </DockPanel>
 
-                <DockPanel LastChildFill="True">
-                    <Label Content="{DynamicResource dvc_Optimize}" DockPanel.Dock="Left" />
-                    <Controls:ToggleSwitch
-                        DataContext="{Binding SelectedItem, ElementName=DeviceCombo}"
-                        DockPanel.Dock="Right"
-                        IsOn="{Binding Optimized}"
-                        OffContent="{DynamicResource common_OFF}"
-                        OnContent="{DynamicResource common_ON}" />
-                </DockPanel>
+                <Separator />
 
                 <DockPanel LastChildFill="True">
                     <Label Content="Path Find Deep" DockPanel.Dock="Left" />
@@ -422,29 +409,6 @@
                 </DockPanel>
 
                 <Separator />
-
-                <DockPanel>
-                    <Label Content="{DynamicResource obj_ParallelCount}" DockPanel.Dock="Left" />
-                    <Controls:NumericUpDown
-                        Background="White"
-                        DataContext="{Binding SelectedItem, ElementName=DeviceCombo}"
-                        DockPanel.Dock="Right"
-                        Interval="1"
-                        Maximum="999"
-                        Minimum="0"
-                        Value="{Binding ProjectionSetting.ParallelLineCount}" />
-                </DockPanel>
-                <DockPanel>
-                    <Label Content="{DynamicResource obj_ParallelMargin}" DockPanel.Dock="Left" />
-                    <Controls:NumericUpDown
-                        Background="White"
-                        DataContext="{Binding SelectedItem, ElementName=DeviceCombo}"
-                        DockPanel.Dock="Right"
-                        Interval="1"
-                        Maximum="999"
-                        Minimum="-999"
-                        Value="{Binding ProjectionSetting.ParallelLineMargin}" />
-                </DockPanel>
 
             </StackPanel>
         </ScrollViewer>

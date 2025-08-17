@@ -8,7 +8,7 @@ namespace CadProjectorViewer.ViewModel.Devices
 {
     internal class AddDeviceViewModel
     {
-        private DeviceFinderViewModel mainModel { get; }
+        private ProjectorHub mainModel { get; }
 
         public byte ip_1 { get; set; } = 127;
         public byte ip_2 { get; set; } = 0;
@@ -21,12 +21,12 @@ namespace CadProjectorViewer.ViewModel.Devices
 
         public DeviceType[] DeviceTypes => DevicesMg.deviceTypes;
 
-        public AddDeviceViewModel(DeviceFinderViewModel model)
+        public AddDeviceViewModel(ProjectorHub model)
         {
             this.mainModel = model;
         }
 
-        public ICommand AddDeviceCommand => new ActionCommand( async () => {
+        public ICommand AddDeviceCommand => new ActionCommand(async () => {
             var projector = new IpDeviceInfo()
             {
                 iPAddress = new System.Net.IPAddress(new byte[]
@@ -37,10 +37,13 @@ namespace CadProjectorViewer.ViewModel.Devices
                     this.ip_4
                 }),
                 DvcType = SelectType,
-                IsSelected = true
+                IsSelected = true,
+                Port = this.Port
             };
 
-            this.mainModel.FindedDevices.Add(projector);
+            var device = await DevicesMg.GetDeviceAsync(projector.iPAddress, projector.DvcType, projector.Port);
+
+            this.mainModel.Projectors.Add(device);
         });
 
     }

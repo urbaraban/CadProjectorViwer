@@ -3,6 +3,7 @@ using CadProjectorSDK.Device;
 using CadProjectorSDK.Device.Controllers;
 using CadProjectorSDK.Device.Mesh;
 using CadProjectorSDK.Interfaces;
+using CadProjectorViewer.Dialogs.DeviceManaged;
 using CadProjectorViewer.ViewModel.Devices;
 using System;
 using System.ComponentModel;
@@ -68,9 +69,13 @@ namespace CadProjectorViewer.Panels
 
         private void AddLaser_Click(object sender, RoutedEventArgs e)
         {
-            LaserSearcher DeviceManaged = new LaserSearcher();
-            DeviceManaged.DataContext = new DeviceFinderViewModel(this.projectorHub);
-            DeviceManaged.Show();
+            var vm = new AddDeviceViewModel(this.projectorHub);
+            var wnd = new AddDeviceByIpDialog()
+            {
+                DataContext = vm
+            };
+
+            wnd.Show();
         }
 
 

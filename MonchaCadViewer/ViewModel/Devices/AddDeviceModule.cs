@@ -1,6 +1,7 @@
 ﻿using CadProjectorSDK.Device.Modules;
+using CadProjectorSDK.Device.Modules.FrameCorrectors;
 using CadProjectorSDK.Device.Modules.Optimization;
-using CadProjectorSDK.Device.Modules.Transforming;
+using CadProjectorSDK.Device.Modules.ZCorrectors;
 using Microsoft.Xaml.Behaviors.Core;
 using System;
 using System.Collections.ObjectModel;

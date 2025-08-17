@@ -146,7 +146,7 @@ namespace CadProjectorViewer.Panels.DevicePanel
                     elements.Add(rect);
                 }
 
-                this._device.RefreshFrame?.Invoke(elements);
+                // this._device.RefreshFrame?.Invoke(elements);
 
                 /*
                 IldaWriter ildaWriter = new IldaWriter();

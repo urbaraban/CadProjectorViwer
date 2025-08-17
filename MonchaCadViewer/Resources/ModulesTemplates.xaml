@@ -37,7 +37,7 @@
                 Interval="0.01"
                 Maximum="1"
                 Minimum="0"
-                Value="{Binding X}" />
+                Value="{Binding X, StringFormat={}{0.000}}" />
             <TextBlock
                 Grid.Row="1"
                 Grid.Column="0"
@@ -48,7 +48,7 @@
                 Interval="0.01"
                 Maximum="1"
                 Minimum="0"
-                Value="{Binding Y}" />
+                Value="{Binding Y, StringFormat={}{0.000}}" />
             <TextBlock
                 Grid.Row="2"
                 Grid.Column="0"
@@ -59,7 +59,7 @@
                 Interval="0.01"
                 Maximum="1"
                 Minimum="0"
-                Value="{Binding Width}" />
+                Value="{Binding Width, StringFormat={}{0.000}}" />
             <TextBlock
                 Grid.Row="3"
                 Grid.Column="0"
@@ -70,7 +70,7 @@
                 Interval="0.01"
                 Maximum="1"
                 Minimum="0"
-                Value="{Binding Height}" />
+                Value="{Binding Height, StringFormat={}{0.000}}" />
             <TextBlock
                 Grid.Row="4"
                 Grid.Column="0"
@@ -80,7 +80,7 @@
                 Grid.Column="1"
                 Maximum="1"
                 Minimum="0"
-                Value="{Binding Depth}" />
+                Value="{Binding Depth, StringFormat={}{0.000}}" />
             <TextBlock
                 Grid.Row="5"
                 Grid.Column="0"
@@ -89,7 +89,7 @@
                 Grid.Row="5"
                 Grid.Column="1"
                 Interval="0.01"
-                Value="{Binding CenterX}" />
+                Value="{Binding CenterX, StringFormat={}{0.000}}" />
             <TextBlock
                 Grid.Row="6"
                 Grid.Column="0"
@@ -98,7 +98,7 @@
                 Grid.Row="6"
                 Grid.Column="1"
                 Interval="0.01"
-                Value="{Binding CenterY}" />
+                Value="{Binding CenterY, StringFormat={}{0.000}}" />
         </Grid>
     </DataTemplate>
     <DataTemplate DataType="{x:Type transforming:HyperbolaCorrector}">
@@ -110,7 +110,7 @@
                     Interval="0.01"
                     Maximum="1"
                     Minimum="0"
-                    Value="{Binding KoeffC, Mode=TwoWay}" />
+                    Value="{Binding KoeffC, Mode=TwoWay, StringFormat={}{0.000}}" />
             </DockPanel>
             <DockPanel>
                 <Label Content="Угол X" DockPanel.Dock="Left" />
@@ -120,7 +120,7 @@
                     Maximum="2"
                     Minimum="0"
                     StringFormat="0.0000"
-                    Value="{Binding KoeffX, Mode=TwoWay}" />
+                    Value="{Binding KoeffX, Mode=TwoWay, StringFormat={}{0.000}}" />
             </DockPanel>
             <DockPanel>
                 <Label Content="Угол Y" DockPanel.Dock="Left" />
@@ -130,7 +130,37 @@
                     Maximum="2"
                     Minimum="0"
                     StringFormat="0.0000"
-                    Value="{Binding KoeffY, Mode=TwoWay}" />
+                    Value="{Binding KoeffY, Mode=TwoWay, StringFormat={}{0.000}}" />
+            </DockPanel>
+        </StackPanel>
+    </DataTemplate>
+    <DataTemplate DataType="{x:Type transforming:ZCorrector}">
+        <StackPanel Orientation="Vertical">
+            <DockPanel>
+                <Label Content="Высота" DockPanel.Dock="Left" />
+                <mah:NumericUpDown
+                    MinWidth="250"
+                    Interval="0.01"
+                    Minimum="0"
+                    Value="{Binding Depth, Mode=TwoWay, StringFormat={}{0.000}}" />
+            </DockPanel>
+            <DockPanel>
+                <Label Content="Центр X" DockPanel.Dock="Left" />
+                <mah:NumericUpDown
+                    MinWidth="250"
+                    Interval="0.01"
+                    Maximum="2"
+                    Minimum="-2"
+                    Value="{Binding X, Mode=TwoWay, StringFormat={}{0.000}}" />
+            </DockPanel>
+            <DockPanel>
+                <Label Content="Центр Y" DockPanel.Dock="Left" />
+                <mah:NumericUpDown
+                    MinWidth="250"
+                    Interval="0.01"
+                    Maximum="2"
+                    Minimum="-2"
+                    Value="{Binding Y, Mode=TwoWay, StringFormat={}{0.000}}" />
             </DockPanel>
         </StackPanel>
     </DataTemplate>

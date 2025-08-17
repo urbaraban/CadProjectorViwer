@@ -51,10 +51,6 @@
                     <Label Content="{DynamicResource obj_Height}" />
                     <Controls:NumericUpDown Background="White" Value="{Binding Size.Height, Converter={StaticResource RoundDouble}}" />
                 </DockPanel>
-                <DockPanel>
-                    <Label Content="{DynamicResource obj_Depth}" />
-                    <Controls:NumericUpDown Background="White" Value="{Binding Size.Depth, Converter={StaticResource RoundDouble}}" />
-                </DockPanel>
                 <Separator />
                 <DockPanel Visibility="Collapsed">
                     <Label Content="{DynamicResource clb_Multiplier}" />

@@ -1,57 +1,64 @@
-﻿<Window x:Class="CadProjectorViewer.DeviceManaged.ProjectorView"
-        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:converters="clr-namespace:CadProjectorViewer.Converters" 
-        xmlns:render="clr-namespace:CadProjectorViewer.ViewModel"
-        d:DataContext="{d:DesignInstance Type=render:RenderDeviceModel}"
-        x:Name="PrewWindow"
-        mc:Ignorable="d"
-        WindowState="Normal"
-        WindowStyle="ToolWindow"
-        Height="450" Width="450"
-        KeyUp="Window_KeyUp"
-        MouseLeftButtonDown="Window_MouseLeftButtonDown"
-        SizeChanged="PrewWindow_SizeChanged"
-        Title="{Binding RenderingDisplay.DisplayName}">
+﻿<Window
+    x:Class="CadProjectorViewer.DeviceManaged.ProjectorView"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:converters="clr-namespace:CadProjectorViewer.Converters"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:render="clr-namespace:CadProjectorViewer.ViewModel"
+    x:Name="PrewWindow"
+    Title="{Binding RenderingDisplay.DisplayName}"
+    Width="450"
+    Height="450"
+    d:DataContext="{d:DesignInstance Type=render:RenderDeviceModel}"
+    KeyUp="Window_KeyUp"
+    MouseLeftButtonDown="Window_MouseLeftButtonDown"
+    SizeChanged="PrewWindow_SizeChanged"
+    WindowState="Normal"
+    WindowStyle="ToolWindow"
+    mc:Ignorable="d">
     <Window.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Controls.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Fonts.xaml" />
-                <!-- Theme setting -->
+                <!--  Theme setting  -->
                 <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Themes/Light.Blue.xaml" />
             </ResourceDictionary.MergedDictionaries>
-            <converters:CadObjectConverter x:Key="VObjectConverter"/>
+            <converters:CadObjectConverter x:Key="VObjectConverter" />
         </ResourceDictionary>
     </Window.Resources>
     <Window.ContextMenu>
         <ContextMenu>
-            <MenuItem Header="Maximezed" Click="MaxItem_Click"/>
-            <MenuItem Header="Fix" Click="FixMenuItem_Click"/>
-            <MenuItem Header="Close" Click="CloseMenuItem_Click"/>
+            <MenuItem Click="MaxItem_Click" Header="Maximezed" />
+            <MenuItem Click="FixMenuItem_Click" Header="Fix" />
+            <MenuItem Click="CloseMenuItem_Click" Header="Close" />
             <Slider
-                Value="{Binding displaySetting.Thinkess, Mode=TwoWay}"
                 Maximum="255"
-                Minimum="0" />
+                Minimum="0"
+                Value="{Binding displaySetting.Thinkess, Mode=TwoWay}" />
         </ContextMenu>
     </Window.ContextMenu>
     <Grid x:Name="MainGrid">
-        <ItemsControl 
-            Grid.Row="0" Grid.RowSpan="3"
+        <ItemsControl
+            Grid.Row="0"
+            Grid.RowSpan="3"
             Grid.ColumnSpan="5"
             ItemsSource="{Binding uidObjects, Mode=OneWay}">
             <ItemsControl.ItemsPanel>
                 <ItemsPanelTemplate>
-                    <Canvas 
+                    <Canvas
                         x:Name="ProjectorCanvas"
-                        DataContext="{Binding ElementName=ScrollCanvasBox, Path=DataContext}"
-                        d:DataContext="{d:DesignInstance Type=render:RenderDeviceModel}"
-                        Width="{Binding Width}" 
+                        Grid.RowSpan="3"
+                        Width="{Binding Width}"
                         Height="{Binding Height}"
-                        Focusable="False" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
-                        IsHitTestVisible="True" Grid.RowSpan="3" Background="Black"/>
+                        HorizontalAlignment="Stretch"
+                        VerticalAlignment="Stretch"
+                        d:DataContext="{d:DesignInstance Type=render:RenderDeviceModel}"
+                        Background="Black"
+                        DataContext="{Binding ElementName=ScrollCanvasBox, Path=DataContext}"
+                        Focusable="False"
+                        IsHitTestVisible="True" />
                 </ItemsPanelTemplate>
             </ItemsControl.ItemsPanel>
             <ItemsControl.ItemTemplate>
@@ -59,9 +66,9 @@
                     <ContentPresenter>
                         <ContentPresenter.Content>
                             <MultiBinding Converter="{StaticResource VObjectConverter}">
-                                <Binding Path=""/>
-                                <Binding ElementName="PrewWindow" Path="DataContext"/>
-                                <Binding ElementName="PrewWindow" Path="Scale"/>
+                                <Binding Path="" />
+                                <Binding ElementName="PrewWindow" Path="DataContext" />
+                                <Binding ElementName="PrewWindow" Path="Scale" />
                             </MultiBinding>
                         </ContentPresenter.Content>
                     </ContentPresenter>

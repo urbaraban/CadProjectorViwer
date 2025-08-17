@@ -1,4 +1,5 @@
 ﻿using CadProjectorSDK.Device.Modules;
+using CadProjectorSDK.Device.Modules.Optimization;
 using CadProjectorSDK.Device.Modules.Transforming;
 using Microsoft.Xaml.Behaviors.Core;
 using System;
@@ -14,9 +15,8 @@ namespace CadProjectorViewer.ViewModel.Devices
         {
             typeof(HyperbolaCorrector),
             typeof(DeepFrameCutter),
+            typeof(UnionFrame),
             typeof(ZCorrector),
-            typeof(RectProportion),
-            typeof(ModulesGroup)
         };
 
         public ObservableCollection<DeviceModule> DeviceModules => new ObservableCollection<DeviceModule>(this.MGroup.Modules);

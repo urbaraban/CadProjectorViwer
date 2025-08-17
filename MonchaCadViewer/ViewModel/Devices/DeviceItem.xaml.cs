@@ -97,12 +97,12 @@ namespace CadProjectorViewer.ViewModel.Devices
 
         public ICommand ShowModulesSettingCommand => new ActionCommand(() =>
         {
-            if (this.DataContext is ModulesGroup group)
+            if (this.DataContext is LProjector projector)
             {
                 var dialog = new DeviceModulesDialog();
-                var context = new AddDeviceModule(group);
+                var context = new AddDeviceModule(projector.ModulesGroup);
                 dialog.DataContext = context;
-                dialog.ShowDialog();
+                dialog.Show();
             }
         });
 

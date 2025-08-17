@@ -86,7 +86,6 @@
                                 Tag="convert_on_ellipsoid" />
                         </ContextMenu>
                     </Border.ContextMenu>
-
                     <StackPanel
                         Margin="5"
                         VerticalAlignment="Center"

@@ -1,0 +1,100 @@
+﻿<ResourceDictionary
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls"
+    xmlns:modules="clr-namespace:CadProjectorSDK.Device.Modules;assembly=CadProjectorSDK">
+    <DataTemplate DataType="{x:Type modules:DeepFrameCutter}">
+        <!--
+            public double X { get; set; } = 0.5;
+            public double Y { get; set; } = 0.5;
+            public double Width { get; set; } = 0.5;
+            public double Height { get; set; } = 0.5;
+            
+            public double CenterX { get; set; } = 1.25;
+            public double CenterY { get; set; } = 1.25;
+            
+            public double Depth { get; set; } = 1;
+        -->
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition />
+                <ColumnDefinition />
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition />
+                <RowDefinition />
+                <RowDefinition />
+                <RowDefinition />
+                <RowDefinition />
+                <RowDefinition />
+                <RowDefinition />
+            </Grid.RowDefinitions>
+            <TextBlock
+                Grid.Row="0"
+                Grid.Column="0"
+                Text="X" />
+            <mah:NumericUpDown
+                Grid.Row="0"
+                Grid.Column="1"
+                Maximum="1"
+                Minimum="0"
+                Value="{Binding X}" />
+            <TextBlock
+                Grid.Row="1"
+                Grid.Column="0"
+                Text="Y" />
+            <mah:NumericUpDown
+                Grid.Row="1"
+                Grid.Column="1"
+                Maximum="1"
+                Minimum="0"
+                Value="{Binding Y}" />
+            <TextBlock
+                Grid.Row="2"
+                Grid.Column="0"
+                Text="Width" />
+            <mah:NumericUpDown
+                Grid.Row="2"
+                Grid.Column="1"
+                Maximum="1"
+                Minimum="0"
+                Value="{Binding Width}" />
+            <TextBlock
+                Grid.Row="3"
+                Grid.Column="0"
+                Text="Height" />
+            <mah:NumericUpDown
+                Grid.Row="3"
+                Grid.Column="1"
+                Maximum="1"
+                Minimum="0"
+                Value="{Binding Height}" />
+            <TextBlock
+                Grid.Row="4"
+                Grid.Column="0"
+                Text="Depth" />
+            <mah:NumericUpDown
+                Grid.Row="4"
+                Grid.Column="1"
+                Maximum="1"
+                Minimum="0"
+                Value="{Binding Depth}" />
+            <TextBlock
+                Grid.Row="5"
+                Grid.Column="0"
+                Text="CenterX" />
+            <mah:NumericUpDown
+                Grid.Row="5"
+                Grid.Column="1"
+                Value="{Binding CenterX}" />
+            <TextBlock
+                Grid.Row="6"
+                Grid.Column="0"
+                Text="CenterY" />
+            <mah:NumericUpDown
+                Grid.Row="6"
+                Grid.Column="1"
+                Value="{Binding CenterY}" />
+        </Grid>
+    </DataTemplate>
+</ResourceDictionary>

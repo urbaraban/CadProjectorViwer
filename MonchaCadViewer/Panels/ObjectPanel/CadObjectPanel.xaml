@@ -78,6 +78,7 @@
             Grid.Row="2"
             Grid.Column="2"
             VerticalAlignment="Center"
+            Interval="10"
             Value="{Binding MZ, Mode=TwoWay, Converter={StaticResource RoundValue}}" />
         <CheckBox
             Grid.Row="2"
@@ -131,6 +132,7 @@
         <mah:NumericUpDown
             Grid.Row="2"
             Grid.Column="5"
+            Interval="1"
             Value="{Binding ScaleZ, Mode=TwoWay, Converter={StaticResource ScaleConverter}}" />
 
 

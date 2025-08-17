@@ -1,8 +1,8 @@
 ﻿using CadProjectorSDK.Device.Modules;
-using CadProjectorSDK.Device.Modules.Transforming;
 using Microsoft.Xaml.Behaviors.Core;
 using System;
 using System.Collections.ObjectModel;
+using System.Windows.Controls;
 using System.Windows.Input;
 
 namespace CadProjectorViewer.ViewModel.Devices
@@ -56,5 +56,10 @@ namespace CadProjectorViewer.ViewModel.Devices
                 this.RemoveModule(this.SelectModule);
             }
         });
+
+        protected void HandleDoubleClick(object sender, MouseButtonEventArgs e)
+        {
+            var track = ((ListViewItem)sender).Content as DeviceModule; //Casting back to the binded Track
+        }
     }
 }

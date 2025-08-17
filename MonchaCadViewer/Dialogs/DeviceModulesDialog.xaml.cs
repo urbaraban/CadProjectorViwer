@@ -40,5 +40,20 @@ namespace CadProjectorViewer.Dialogs
                 }
             }
         }
+
+        private void ListViewItem_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+        {
+            if (sender is ListViewItem item && item.DataContext is DeviceModule module)
+            {
+                var panel = new ModulesEditor();
+                panel.DataContext = module;
+                var wnd = new Window()
+                {
+                    Content = panel,
+                    SizeToContent = SizeToContent.WidthAndHeight
+                };
+                wnd.Show();
+            }
+        }
     }
 }

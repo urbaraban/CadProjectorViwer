@@ -91,30 +91,6 @@
                 <Controls:ToggleSwitch Content="Use Ellipsoid" IsOn="{Binding UseEllipsoid}" />
             </DockPanel>
 
-            <DockPanel>
-                <Label Content="Смещение X" DockPanel.Dock="Left" />
-                <Controls:NumericUpDown
-                    Background="White"
-                    Interval="0.001"
-                    Maximum="1"
-                    Minimum="-1"
-                    StringFormat="0.0000"
-                    ValueChanged="NumericUpDown_ValueChanged_R"
-                    Value="{Binding ShearTransform.ShearX}" />
-            </DockPanel>
-
-            <DockPanel>
-                <Label Content="Смещение Y" DockPanel.Dock="Left" />
-                <Controls:NumericUpDown
-                    Background="White"
-                    Interval="0.001"
-                    Maximum="1"
-                    Minimum="-1"
-                    StringFormat="0.0000"
-                    ValueChanged="NumericUpDown_ValueChanged_R"
-                    Value="{Binding ShearTransform.ShearY}" />
-            </DockPanel>
-
         </StackPanel>
     </Grid>
 </Window>

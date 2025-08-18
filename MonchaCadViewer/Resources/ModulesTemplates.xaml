@@ -166,4 +166,26 @@
             </DockPanel>
         </StackPanel>
     </DataTemplate>
+    <DataTemplate DataType="{x:Type framecorrectors:AxisGradient}">
+        <StackPanel>
+            <mah:ToggleSwitch IsOn="{Binding VerticalCorrect}" />
+            <ItemsControl ItemsSource="{Binding AxisCorrectors}">
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <StackPanel Orientation="Horizontal" />
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <mah:NumericUpDown
+                            Interval="0.001"
+                            Maximum="1"
+                            Minimum="0"
+                            Value="{Binding Value}" />
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+        </StackPanel>
+
+    </DataTemplate>
 </ResourceDictionary>

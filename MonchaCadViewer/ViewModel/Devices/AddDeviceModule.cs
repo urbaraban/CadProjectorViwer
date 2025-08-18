@@ -18,6 +18,7 @@ namespace CadProjectorViewer.ViewModel.Devices
             typeof(DeepFrameCutter),
             typeof(UnionFrame),
             typeof(ZCorrector),
+            typeof(AxisGradient),
         };
 
         public ObservableCollection<DeviceModule> DeviceModules => new ObservableCollection<DeviceModule>(this.MGroup.Modules);

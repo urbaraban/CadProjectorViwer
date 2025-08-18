@@ -20,10 +20,6 @@
                     Command="{Binding ShowZoneRectCommand}"
                     Header="{DynamicResource dvc_showzone}"
                     Tag="1" />
-                <MenuItem
-                    Command="{Binding PolyMeshCommand}"
-                    Header="{DynamicResource dvc_polymesh}"
-                    Tag="2" />
                 <MenuItem Command="{Binding ProjectorViewCommand}" Header="{DynamicResource dvc_ShowScreen}" />
                 <MenuItem Command="{Binding GoToWebInterface}" Header="Go web" />
             </ContextMenu>

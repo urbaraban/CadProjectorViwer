@@ -1,5 +1,6 @@
 ﻿using CadProjectorSDK.Device.Modules;
 using CadProjectorSDK.Device.Modules.Morphing;
+using CadProjectorSDK.Device.Modules.Transforming;
 using CadProjectorSDK.Device.Modules.ZCorrectors;
 using Microsoft.Xaml.Behaviors.Core;
 using System;
@@ -17,6 +18,7 @@ namespace CadProjectorViewer.ViewModel.Devices
             typeof(DeepFrameCutter),
             typeof(ZCorrector),
             typeof(AxisGradient),
+            typeof(RotateFrame2D),
         };
 
         public ObservableCollection<DeviceModule> DeviceModules => new ObservableCollection<DeviceModule>(this.MGroup.Modules);

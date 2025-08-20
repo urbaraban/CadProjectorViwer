@@ -1,9 +1,9 @@
 ﻿<ResourceDictionary
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:framecorrectors="clr-namespace:CadProjectorSDK.Device.Modules.FrameCorrectors;assembly=CadProjectorSDK"
     xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls"
     xmlns:modules="clr-namespace:CadProjectorSDK.Device.Modules;assembly=CadProjectorSDK"
+    xmlns:morphing="clr-namespace:CadProjectorSDK.Device.Modules.Morphing;assembly=CadProjectorSDK"
     xmlns:transforming="clr-namespace:CadProjectorSDK.Device.Modules.Transforming;assembly=CadProjectorSDK"
     xmlns:zcorrectors="clr-namespace:CadProjectorSDK.Device.Modules.ZCorrectors;assembly=CadProjectorSDK">
     <DataTemplate x:Key="BaseModule" DataType="{x:Type modules:DeviceModule}">
@@ -103,7 +103,7 @@
                 Value="{Binding CenterY, StringFormat={}{0.000}}" />
         </Grid>
     </DataTemplate>
-    <DataTemplate DataType="{x:Type framecorrectors:HyperbolaCorrector}">
+    <DataTemplate DataType="{x:Type morphing:HyperbolaCorrector}">
         <StackPanel Orientation="Vertical">
             <DockPanel>
                 <Label Content="Дуга" DockPanel.Dock="Left" />
@@ -166,7 +166,7 @@
             </DockPanel>
         </StackPanel>
     </DataTemplate>
-    <DataTemplate DataType="{x:Type framecorrectors:AxisGradient}">
+    <DataTemplate DataType="{x:Type morphing:AxisGradient}">
         <StackPanel>
             <mah:ToggleSwitch IsOn="{Binding VerticalCorrect}" />
             <ItemsControl ItemsSource="{Binding AxisCorrectors}">

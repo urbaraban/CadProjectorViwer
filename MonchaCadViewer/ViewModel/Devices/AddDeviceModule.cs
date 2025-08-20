@@ -1,6 +1,5 @@
 ﻿using CadProjectorSDK.Device.Modules;
-using CadProjectorSDK.Device.Modules.FrameCorrectors;
-using CadProjectorSDK.Device.Modules.Optimization;
+using CadProjectorSDK.Device.Modules.Morphing;
 using CadProjectorSDK.Device.Modules.ZCorrectors;
 using Microsoft.Xaml.Behaviors.Core;
 using System;
@@ -16,7 +15,6 @@ namespace CadProjectorViewer.ViewModel.Devices
         {
             typeof(HyperbolaCorrector),
             typeof(DeepFrameCutter),
-            typeof(UnionFrame),
             typeof(ZCorrector),
             typeof(AxisGradient),
         };

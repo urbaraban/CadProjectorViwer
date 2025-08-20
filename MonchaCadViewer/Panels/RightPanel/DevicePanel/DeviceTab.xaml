@@ -59,16 +59,6 @@
                     VerticalAlignment="Bottom"
                     Content="{DynamicResource dvc_Device}" />
                 <DockPanel HorizontalAlignment="Stretch" LastChildFill="True">
-                    <Controls:ToggleSwitch
-                        Grid.Row="3"
-                        Grid.ColumnSpan="2"
-                        MinWidth="0"
-                        AutomationProperties.HelpText="Common setting toggle"
-                        Content=""
-                        DataContext="{Binding SelectedItem, ElementName=DeviceCombo}"
-                        DockPanel.Dock="Right"
-                        IsOn="{Binding OwnedSetting}"
-                        Visibility="Collapsed" />
                     <Button
                         Margin="5,0,10,0"
                         Padding="0"

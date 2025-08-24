@@ -4,6 +4,7 @@
     xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls"
     xmlns:modules="clr-namespace:CadProjectorSDK.Device.Modules;assembly=CadProjectorSDK"
     xmlns:morphing="clr-namespace:CadProjectorSDK.Device.Modules.Morphing;assembly=CadProjectorSDK"
+    xmlns:services="clr-namespace:CadProjectorSDK.Device.Modules.Services;assembly=CadProjectorSDK"
     xmlns:transforming="clr-namespace:CadProjectorSDK.Device.Modules.Transforming;assembly=CadProjectorSDK"
     xmlns:zcorrectors="clr-namespace:CadProjectorSDK.Device.Modules.ZCorrectors;assembly=CadProjectorSDK">
     <DataTemplate x:Key="BaseModule" DataType="{x:Type modules:DeviceModule}">
@@ -186,6 +187,61 @@
                 </ItemsControl.ItemTemplate>
             </ItemsControl>
         </StackPanel>
-
+    </DataTemplate>
+    <DataTemplate DataType="{x:Type services:ScanRateDotInserter}">
+        <StackPanel>
+            <DockPanel>
+                <Label Content="FPS" DockPanel.Dock="Left" />
+                <mah:NumericUpDown
+                    MinWidth="150"
+                    Interval="1"
+                    Maximum="50"
+                    Minimum="10"
+                    NumericInputMode="Numbers"
+                    Value="{Binding FPS, Mode=TwoWay}" />
+            </DockPanel>
+            <DockPanel>
+                <Label Content="ScanRate" DockPanel.Dock="Left" />
+                <mah:NumericUpDown
+                    MinWidth="150"
+                    Interval="1"
+                    Maximum="40000"
+                    Minimum="10000"
+                    NumericInputMode="Numbers"
+                    Value="{Binding ScanRate, Mode=TwoWay}" />
+            </DockPanel>
+        </StackPanel>
+    </DataTemplate>
+    <DataTemplate DataType="{x:Type transforming:RotateFrame2D}">
+        <StackPanel>
+            <DockPanel>
+                <Label Content="Центр X" DockPanel.Dock="Left" />
+                <mah:NumericUpDown
+                    MinWidth="250"
+                    Interval="0.01"
+                    Maximum="2"
+                    Minimum="-2"
+                    Value="{Binding X, Mode=TwoWay, StringFormat={}{0.000}}" />
+            </DockPanel>
+            <DockPanel>
+                <Label Content="Центр Y" DockPanel.Dock="Left" />
+                <mah:NumericUpDown
+                    MinWidth="250"
+                    Interval="0.01"
+                    Maximum="2"
+                    Minimum="-2"
+                    Value="{Binding Y, Mode=TwoWay, StringFormat={}{0.000}}" />
+            </DockPanel>
+            <DockPanel>
+                <Label Content="Angle" DockPanel.Dock="Left" />
+                <mah:NumericUpDown
+                    MinWidth="150"
+                    Interval="1"
+                    Maximum="359"
+                    Minimum="0"
+                    NumericInputMode="Numbers"
+                    Value="{Binding Angle, Mode=TwoWay}" />
+            </DockPanel>
+        </StackPanel>
     </DataTemplate>
 </ResourceDictionary>

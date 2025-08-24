@@ -1,10 +1,9 @@
 ﻿using CadProjectorSDK.Device.Modules;
-using CadProjectorSDK.Device.Modules.Morphing;
-using CadProjectorSDK.Device.Modules.Transforming;
-using CadProjectorSDK.Device.Modules.ZCorrectors;
 using Microsoft.Xaml.Behaviors.Core;
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq;
 using System.Windows.Controls;
 using System.Windows.Input;
 
@@ -12,14 +11,16 @@ namespace CadProjectorViewer.ViewModel.Devices
 {
     internal class AddDeviceModule : NotifyModel
     {
-        public Type[] AvailableType { get; } = new Type[]
-        {
-            typeof(HyperbolaCorrector),
-            typeof(DeepFrameCutter),
-            typeof(ZCorrector),
-            typeof(AxisGradient),
-            typeof(RotateFrame2D),
-        };
+        public IEnumerable<Type> AvailableType { get; }
+        //= new Type[]
+        //{
+        //    typeof(HyperbolaCorrector),
+        //    typeof(DeepFrameCutter),
+        //    typeof(ZCorrector),
+        //    typeof(AxisGradient),
+        //    typeof(RotateFrame2D),
+        //    typeof(ScanRateDotInserter),
+        //};
 
         public ObservableCollection<DeviceModule> DeviceModules => new ObservableCollection<DeviceModule>(this.MGroup.Modules);
 
@@ -30,6 +31,8 @@ namespace CadProjectorViewer.ViewModel.Devices
         public AddDeviceModule(ModulesGroup device)
         {
             this.MGroup = device;
+            this.AvailableType = typeof(DeviceModule).Assembly.GetTypes()
+                .Where(x => x.BaseType == typeof(DeviceModule));
         }
 
         public void AddModule(Type type)

@@ -32,7 +32,8 @@ namespace CadProjectorViewer.ViewModel.Devices
         {
             this.MGroup = device;
             this.AvailableType = typeof(DeviceModule).Assembly.GetTypes()
-                .Where(x => x.BaseType == typeof(DeviceModule));
+                .Where(x => x.BaseType == typeof(DeviceModule))
+                .OrderBy(x => x.Name);
         }
 
         public void AddModule(Type type)

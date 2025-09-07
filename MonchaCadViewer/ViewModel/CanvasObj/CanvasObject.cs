@@ -1,34 +1,35 @@
-﻿using System;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Documents;
-using System.ComponentModel;
-using System.Runtime.CompilerServices;
-using System.Collections.Generic;
-using AppSt = CadProjectorViewer.Properties.Settings;
-using CadProjectorSDK.CadObjects;
+﻿using CadProjectorSDK.CadObjects;
 using CadProjectorSDK.CadObjects.Abstract;
-using CadProjectorSDK.Scenes.Commands;
+using CadProjectorSDK.CadObjects.Interfaces;
+using CadProjectorSDK.CadObjects.OCVTransforms;
 using CadProjectorSDK.Render;
-using Point = System.Windows.Point;
-using Pen = System.Windows.Media.Pen;
-using Brush = System.Windows.Media.Brush;
-using Brushes = System.Windows.Media.Brushes;
+using CadProjectorSDK.Scenes.Actions;
+using CadProjectorSDK.Scenes.Commands;
+using CadProjectorViewer.Dialogs;
 using CadProjectorViewer.ViewModel;
 using Microsoft.Xaml.Behaviors.Core;
-using Cursors = System.Windows.Input.Cursors;
-using CadProjectorViewer.Dialogs;
-using CadProjectorSDK.CadObjects.Interfaces;
-using System.Linq;
-using Size = System.Windows.Size;
-using Rect = System.Windows.Rect;
-using System.Windows.Data;
-using System.Globalization;
-using static CadProjectorViewer.CanvasObj.CanvasObject;
-using CadProjectorSDK.Scenes.Actions;
+using System;
+using System.Collections.Generic;
+using System.ComponentModel;
 using System.Diagnostics;
+using System.Globalization;
+using System.Linq;
+using System.Runtime.CompilerServices;
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Data;
+using System.Windows.Documents;
+using System.Windows.Input;
+using System.Windows.Media;
+using static CadProjectorViewer.CanvasObj.CanvasObject;
+using AppSt = CadProjectorViewer.Properties.Settings;
+using Brush = System.Windows.Media.Brush;
+using Brushes = System.Windows.Media.Brushes;
+using Cursors = System.Windows.Input.Cursors;
+using Pen = System.Windows.Media.Pen;
+using Point = System.Windows.Point;
+using Rect = System.Windows.Rect;
+using Size = System.Windows.Size;
 
 namespace CadProjectorViewer.CanvasObj
 {
@@ -180,6 +181,7 @@ namespace CadProjectorViewer.CanvasObj
             ContextMenuLib.AddItem("common_MasksGrid", MasksCommand, this.ContextMenu);
             if (uidObject is IAnchoredObject anchoredObject && anchoredObject.CanAddPoint == true)
             {
+                ContextMenuLib.AddItem("obj_AddAffine", AddAffineCommand, this.ContextMenu);
                 ContextMenuLib.AddItem("obj_AddProjectivePoint", AddProjectivePointCommand, this.ContextMenu);
                 ContextMenuLib.AddItem("obj_RectProjectivePoint", RectProjectivePointCommand, this.ContextMenu);
                 ContextMenuLib.AddItem("obj_RoundCentre", RoundCentreCommand, this.ContextMenu);
@@ -365,8 +367,10 @@ namespace CadProjectorViewer.CanvasObj
 
         public ICommand RectProjectivePointCommand => new ActionCommand(() =>
         {
-            if (this.CadObject.ProjectionMat == null)
+            if (this.CadObject.OCVTransformer == null)
             {
+                this.CadObject.OCVTransformer = new PerspectiveTransformer();
+
                 Point TL = this.Bounds.TopLeft;
                 Point TR = this.Bounds.TopRight;
                 Point BL = this.Bounds.BottomLeft;
@@ -389,8 +393,23 @@ namespace CadProjectorViewer.CanvasObj
 
         public ICommand AddProjectivePointCommand => new ActionCommand(() =>
         {
-            if (this.CadObject.ProjectionMat == null)
+            if (this.CadObject.OCVTransformer == null)
             {
+                this.CadObject.OCVTransformer = new PerspectiveTransformer();
+                this.CadObject.SendCommand(new AddProjectPointAction(this.CadObject));
+            }
+            else
+            {
+                this.CadObject.ClearProjectionPoint();
+            }
+            UpdateAnchorPoints?.Invoke(this, null);
+        });
+
+        public ICommand AddAffineCommand => new ActionCommand(() =>
+        {
+            if (this.CadObject.OCVTransformer == null)
+            {
+                this.CadObject.OCVTransformer = new Affine2dTransformer();
                 this.CadObject.SendCommand(new AddProjectPointAction(this.CadObject));
             }
             else

@@ -30,6 +30,7 @@
     <v:String x:Key="obj_ParallelMargin">Strokes margin</v:String>
     <v:String x:Key="obj_Transform">Transform</v:String>
     <v:String x:Key="obj_Thinkess">Thinkess</v:String>
+    <v:String x:Key="obj_AddAffine">Add rotate/scale point</v:String>
     <v:String x:Key="obj_AddProjectivePoint">Add projective point</v:String>
     <v:String x:Key="obj_RectProjectivePoint">Rect projective point</v:String>
     <v:String x:Key="obj_RoundCentre">Round centre</v:String>

@@ -26,6 +26,10 @@
     <v:String x:Key="obj_Type">Тип</v:String>
     <v:String x:Key="obj_Transform">Трансформация</v:String>
     <v:String x:Key="obj_Thinkess">Толщина линии</v:String>
+    <v:String x:Key="obj_AddAffine">Позиция по двум точкам</v:String>
+    <v:String x:Key="obj_AddProjectivePoint">Перспективная трасформация</v:String>
+    <v:String x:Key="obj_RectProjectivePoint">Перспектива по краям</v:String>
+    <v:String x:Key="obj_RoundCentre">Центр вращения</v:String>
 
     <v:String x:Key="gr_Ungroup">Разгруппировать</v:String>
 

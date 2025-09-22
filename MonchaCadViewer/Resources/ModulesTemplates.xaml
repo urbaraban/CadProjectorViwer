@@ -10,7 +10,7 @@
     <DataTemplate x:Key="BaseModule" DataType="{x:Type modules:DeviceModule}">
         <StackPanel>
             <DockPanel>
-                <mah:ToggleSwitch IsOn="{Binding IsOn}" />
+                <mah:ToggleSwitch Content="On/off" IsOn="{Binding IsOn}" />
             </DockPanel>
             <ContentPresenter Content="{Binding .}" />
         </StackPanel>
@@ -169,7 +169,7 @@
     </DataTemplate>
     <DataTemplate DataType="{x:Type morphing:AxisGradient}">
         <StackPanel>
-            <mah:ToggleSwitch IsOn="{Binding VerticalCorrect}" />
+            <mah:ToggleSwitch Content="Vertical" IsOn="{Binding VerticalCorrect}" />
             <ItemsControl ItemsSource="{Binding AxisCorrectors}">
                 <ItemsControl.ItemsPanel>
                     <ItemsPanelTemplate>

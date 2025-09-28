@@ -128,11 +128,6 @@
                         DockPanel.Dock="Right"
                         FontFamily="Segoe MDL2 Assets"
                         FontSize="14" />
-                    <CheckBox
-                        Margin="9,0,0,0"
-                        DataContext="{Binding SelectedItem, ElementName=DeviceCombo}"
-                        DockPanel.Dock="Right"
-                        IsChecked="{Binding OnlySelectMesh, Mode=TwoWay}" />
 
                     <ComboBox
                         DataContext="{Binding SelectedItem, ElementName=DeviceCombo}"

@@ -142,6 +142,7 @@ namespace CadProjectorViewer.ViewModel.Scene
                     obj.MX += delta.dX;
                     obj.MY += delta.dY;
                 }
+
             }
         }
 

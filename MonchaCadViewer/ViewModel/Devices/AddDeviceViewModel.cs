@@ -26,7 +26,7 @@ namespace CadProjectorViewer.ViewModel.Devices
             this.mainModel = model;
         }
 
-        public ICommand AddDeviceCommand => new ActionCommand(async () => {
+        public ICommand AddDeviceCommand => new ActionCommand(() => {
             var projector = new IpDeviceInfo()
             {
                 iPAddress = new System.Net.IPAddress(new byte[]

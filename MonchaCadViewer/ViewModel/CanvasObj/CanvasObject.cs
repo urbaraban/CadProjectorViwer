@@ -260,8 +260,8 @@ namespace CadProjectorViewer.CanvasObj
                     this.Editing = true;
                     this.CadObject.Cloning();
                     Point tPoint = e.GetPosition(this);
-                    this.X = this.BasePos.X + (tPoint.X - this.MousePos.X);
-                    this.Y = this.BasePos.Y + (tPoint.Y - this.MousePos.Y);
+                    this.CadObject.MX = this.BasePos.X + (tPoint.X - this.MousePos.X);
+                    this.CadObject.MY = this.BasePos.Y + (tPoint.Y - this.MousePos.Y);
                 }
                 else if (e.LeftButton == MouseButtonState.Pressed)
                 {
@@ -270,8 +270,8 @@ namespace CadProjectorViewer.CanvasObj
 
                     Point tPoint = e.GetPosition(this);
 
-                    this.X = this.BasePos.X + (tPoint.X - this.MousePos.X);
-                    this.Y = this.BasePos.Y + (tPoint.Y - this.MousePos.Y);
+                    this.CadObject.MX = this.BasePos.X + (tPoint.X - this.MousePos.X);
+                    this.CadObject.MY = this.BasePos.Y + (tPoint.Y - this.MousePos.Y);
 
                     this.CaptureMouse();
                     this.Cursor = Cursors.SizeAll;
@@ -282,7 +282,9 @@ namespace CadProjectorViewer.CanvasObj
                 }
             }
             else
+            {
                 this.Cursor = Cursors.Hand;
+            }
         }
 
         protected override void OnMouseLeave(MouseEventArgs e)
@@ -487,18 +489,25 @@ namespace CadProjectorViewer.CanvasObj
 
         private void DrawingText(CadText text, DrawingContext drawingContext, double emSize)
         {
-            var point = text.TransformGroup.Transform(
+            // 1. Преобразуем позицию текста с учётом TransformGroup
+            var point3D = text.TransformGroup.Transform(
                 new System.Windows.Media.Media3D.Point3D(text.Point.X, text.Point.Y, 0));
 
-            drawingContext.DrawText(
-                new FormattedText(
-                    text.Text, 
-                    System.Globalization.CultureInfo.CurrentCulture, 
-                    FlowDirection.LeftToRight, 
-                    new Typeface("Verdana"),
-                    double.IsNaN(emSize) ? 10 : emSize,
-                    Brushes.Black), 
-                new Point(point.X, point.Y));
+            // 2. Получаем pixelsPerDip для текущего визуального элемента (FrameworkElement)
+            double pixelsPerDip = System.Windows.Media.VisualTreeHelper.GetDpi(this).PixelsPerDip;
+
+            // 3. Создаём FormattedText с указанием pixelsPerDip (современная перегрузка)
+            var formattedText = new FormattedText(
+                text.Text ?? string.Empty,
+                CultureInfo.CurrentCulture,
+                FlowDirection.LeftToRight,
+                new Typeface("Verdana"),
+                double.IsNaN(emSize) ? 10.0 : emSize,
+                Brushes.Black,
+                pixelsPerDip);
+
+            // 4. Рисуем текст в нужной точке
+            drawingContext.DrawText(formattedText, new Point(point3D.X, point3D.Y));
         }
 
         private void DrawingIRenderableObjects(IEnumerable<IRenderedObject> objects, DrawingContext drawingContext, RenderDeviceModel renderDevice, Brush brush, Pen pen)

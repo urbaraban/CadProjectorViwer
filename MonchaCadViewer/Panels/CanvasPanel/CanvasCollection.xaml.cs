@@ -33,7 +33,7 @@ namespace CadProjectorViewer.Panels.CanvasPanel
                             Object = Obj,
                             TableID = scenecollection.SelectedScene.TableID,
                         };
-                        scenecollection.AddTask(sceneTask);
+                        await scenecollection.AddTask(sceneTask);
                     }
                     else
                     {
@@ -44,7 +44,7 @@ namespace CadProjectorViewer.Panels.CanvasPanel
         }
 
         public ICommand NextCommand => new ActionCommand(Next);
-        private async void Next()
+        private void Next()
         {
             if (this.DataContext is ScenesCollection scenecollection)
             {
@@ -56,7 +56,7 @@ namespace CadProjectorViewer.Panels.CanvasPanel
         }
 
         public ICommand PreviousCommand => new ActionCommand(Previous);
-        private async void Previous()
+        private void Previous()
         {
             if (this.DataContext is ScenesCollection scenecollection)
             {
@@ -67,7 +67,7 @@ namespace CadProjectorViewer.Panels.CanvasPanel
         }
 
         public ICommand RefreshFrameCommand => new ActionCommand(refresh);
-        private async void refresh()
+        private void refresh()
         {
             if (this.DataContext is ScenesCollection scenecollection)
             {

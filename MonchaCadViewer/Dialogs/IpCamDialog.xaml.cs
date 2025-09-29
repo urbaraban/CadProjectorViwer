@@ -28,7 +28,7 @@ namespace CadProjectorViewer.Dialogs
             InitializeComponent();
         }
 
-        private async void Button_Click(object sender, RoutedEventArgs e)
+        private void Button_Click(object sender, RoutedEventArgs e)
         {
             var serverUri = new Uri("rtsp://192.168.1.77:554/ucast/11");
             var credentials = new NetworkCredential("admin", "123456");

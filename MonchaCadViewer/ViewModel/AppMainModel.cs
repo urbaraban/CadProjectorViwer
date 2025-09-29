@@ -128,7 +128,7 @@ namespace CadProjectorViewer.ViewModel
             }
         }
 
-        private async void WorkFolder_PathSelected(object sender, string e) => OpenGeometryFile(e);
+        private void WorkFolder_PathSelected(object sender, string e) => OpenGeometryFile(e);
 
         public ICommand SaveCommand => new ActionCommand(() => SaveConfiguration(false));
 
@@ -282,12 +282,12 @@ namespace CadProjectorViewer.ViewModel
 
         });
 
-        public ICommand OpenSceneCommand => new ActionCommand(() => {
+        public ICommand OpenSceneCommand => new ActionCommand(async () => {
             OpenFileDialog fileDialog = new OpenFileDialog();
             fileDialog.Filter = "Moncha (.2scn)|*.2scn|All Files (*.*)|*.*";
             if (fileDialog.ShowDialog() == true)
             {
-                projectorHub.ScenesCollection.AddTask(new SceneTask(SaveScene.ReadXML(fileDialog.FileName)));
+                await projectorHub.ScenesCollection.AddTask(new SceneTask(SaveScene.ReadXML(fileDialog.FileName)));
             }
         });
 
@@ -315,7 +315,7 @@ namespace CadProjectorViewer.ViewModel
             writer.Close();
         });
 
-        private async void Open()
+        private void Open()
         {
             OpenFileDialog openFile = new OpenFileDialog();
             string filter = FileLoad.GetFilter();

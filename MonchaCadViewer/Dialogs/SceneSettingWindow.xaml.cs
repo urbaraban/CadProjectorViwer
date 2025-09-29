@@ -31,7 +31,7 @@ namespace CadProjectorViewer.Dialogs
         }
 
         public ICommand MigrateDeviceCommand => new ActionCommand(MigrateDevice);
-        private async void MigrateDevice()
+        private void MigrateDevice()
         {
             if (Hub.Projectors.SelectedItem is LProjector device)
             {
@@ -71,7 +71,7 @@ namespace CadProjectorViewer.Dialogs
         }
 
         public ICommand AddSceneCommand => new ActionCommand(AddScene);
-        private async void AddScene()
+        private void AddScene()
         {
             this.Hub.ScenesCollection.Add(new ProjectionScene());
         }

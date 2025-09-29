@@ -184,16 +184,7 @@ namespace CadProjectorViewer.Opening
             Process.Start(Filepath);
             return Task.FromResult<object>(null);
         }
-        /// <summary>
-        /// Load Jpg image
-        /// </summary>
-        /// <param name="Filepath"></param>
-        /// <param name="step"></param>
-        /// <returns></returns>
-        private async static Task<object> GetImage(string Filepath)
-        {
-            return new BitmapImage(new Uri(Filepath));
-        }
+
 
         private async static Task<object> GetILDA(string Filepath)
         {

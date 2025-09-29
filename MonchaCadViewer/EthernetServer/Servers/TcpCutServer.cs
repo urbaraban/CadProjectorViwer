@@ -43,7 +43,12 @@ namespace CadProjectorViewer.EthernetServer.Servers
 
         public void SendMessage(string message, string ip, int port)
         {
-            this.server.Send($"{ip}:{port}", message);
+            var client = server.ListClients()
+                .FirstOrDefault(c => c.IpPort == $"{ip}:{port}");
+            if (client != null)
+            {
+                server.Send(client.Guid, message);
+            }
         }
 
         public void Start()

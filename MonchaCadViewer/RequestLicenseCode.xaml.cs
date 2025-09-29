@@ -86,7 +86,7 @@ namespace CadProjectorViewer
                 int port = TCPTools.FreeTcpPort(iPAddress);
                 PortLabel.Content = port.ToString();
 
-                tcpListener = new TcpListener(port);
+                tcpListener = new TcpListener(iPAddress, port);
                 tcpListener.Start();
 
                 TcpClient client = await tcpListener.AcceptTcpClientAsync();
@@ -96,9 +96,8 @@ namespace CadProjectorViewer
                 await networkStream.WriteAsync(request, 0, request.Length);
 
                 byte[] inputbyte = new byte[100];
-                await networkStream.ReadAsync(inputbyte, 0, 100);
-
-                string key = Encoding.UTF8.GetString(inputbyte).Trim('\0');
+                int bytesRead = await networkStream.ReadAsync(inputbyte.AsMemory(0, 100));
+                string key = Encoding.UTF8.GetString(inputbyte, 0, bytesRead).Trim('\0');
                 this.LKey.Add(key);
                 Console.WriteLine(key);
 

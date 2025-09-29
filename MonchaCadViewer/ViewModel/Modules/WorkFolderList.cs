@@ -138,8 +138,10 @@ namespace CadProjectorViewer.ViewModel.Modules
 
         public ICommand SelectWorkFolderCommand => new ActionCommand(() =>
         {
-            var dialog = new CommonOpenFileDialog();
-            dialog.IsFolderPicker = true;
+            var dialog = new CommonOpenFileDialog
+            {
+                IsFolderPicker = true
+            };
             CommonFileDialogResult result = dialog.ShowDialog();
             if (result == CommonFileDialogResult.Ok)
             {
@@ -172,7 +174,7 @@ namespace CadProjectorViewer.ViewModel.Modules
 
         public bool Contains(object pt)
         {
-            bool result = false;
+            bool result;
             string FormatString = FileLoad.GetFilter();
 
             if (SelectExtension is GCFormat format)
@@ -181,11 +183,13 @@ namespace CadProjectorViewer.ViewModel.Modules
             if (pt is FileSystemInfo fileInfo)
             {
                 result =
-                    fileInfo.Name.ToLower().Contains(StringFilter.ToLower())
+                    fileInfo.Name.Contains(StringFilter, StringComparison.CurrentCultureIgnoreCase)
                     && (FormatString.Contains(fileInfo.Extension));
             }
             else
+            {
                 result = true;
+            }
             return result;
         }
 
@@ -212,7 +216,7 @@ namespace CadProjectorViewer.ViewModel.Modules
 
         public override bool Exists => File.Exists(FullName);
 
-        public string Extension => Path.GetExtension(FullName).ToLower() ?? string.Empty;
+        public new string Extension => Path.GetExtension(FullName).ToLower() ?? string.Empty;
 
         public override void Delete()
         {

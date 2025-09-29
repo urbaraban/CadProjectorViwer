@@ -41,7 +41,7 @@ namespace CadProjectorViewer.ViewModel.Devices
                 Port = this.Port
             };
 
-            var device = await DevicesMg.GetDeviceAsync(projector.iPAddress, projector.DvcType, projector.Port);
+            var device = DevicesMg.GetDevice(projector.iPAddress, projector.DvcType, projector.Port);
 
             this.mainModel.Projectors.Add(device);
         });

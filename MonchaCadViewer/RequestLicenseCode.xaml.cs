@@ -82,7 +82,7 @@ namespace CadProjectorViewer
         {
             try
             {
-                if (tcpListener != null) tcpListener.Stop();
+                tcpListener?.Stop();
                 int port = TCPTools.FreeTcpPort(iPAddress);
                 PortLabel.Content = port.ToString();
 
@@ -93,7 +93,7 @@ namespace CadProjectorViewer
                 NetworkStream networkStream = client.GetStream();
 
                 byte[] request = System.Text.Encoding.UTF8.GetBytes(LKey.RequestKey);
-                await networkStream.WriteAsync(request, 0, request.Length);
+                await networkStream.WriteAsync(request);
 
                 byte[] inputbyte = new byte[100];
                 int bytesRead = await networkStream.ReadAsync(inputbyte.AsMemory(0, 100));
@@ -112,7 +112,7 @@ namespace CadProjectorViewer
 
         private void LicenseWindow_Closing(object sender, CancelEventArgs e)
         {
-            if (tcpListener != null) tcpListener.Stop();
+            tcpListener?.Stop();
         }
     }
 

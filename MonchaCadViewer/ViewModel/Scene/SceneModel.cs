@@ -3,18 +3,15 @@ using CadProjectorSDK.CadObjects.Abstract;
 using CadProjectorSDK.Device;
 using CadProjectorSDK.Scenes;
 using CadProjectorSDK.Scenes.Actions;
-using CadProjectorViewer.EthernetServer.Servers;
 using CadProjectorViewer.Opening;
 using CadProjectorViewer.ToCommands;
 using CadProjectorViewer.ToCommands.MainAppCommand;
 using Microsoft.Xaml.Behaviors.Core;
 using System;
-using System.CodeDom;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
-using System.Windows;
 using System.Windows.Input;
 using System.Windows.Threading;
 using AppSt = CadProjectorViewer.Properties.Settings;
@@ -24,7 +21,6 @@ namespace CadProjectorViewer.ViewModel.Scene
     internal class SceneModel : RenderDeviceModel, IToCutCommandObject
     {
         #region IToCutCommandObject
-        public event EventHandler<ReceivedCookies> CommandDummyIncomming;
 
         public string Name => this.Scene.DisplayName;
         #endregion

@@ -410,12 +410,6 @@
                         BorderThickness="2"
                         CornerRadius="1">
                         <StackPanel>
-                            <Button
-                                Height="30"
-                                Background="{Binding ProjectorHub.ScenesCollection.SelectedScene.Play, Converter={StaticResource PlayBackConverter}}"
-                                Command="{Binding Path=PlayAllCommand}"
-                                Content="{DynamicResource m_Play}"
-                                Visibility="Collapsed" />
                             <ItemsControl ItemsSource="{Binding ProjectorHub.Projectors}">
                                 <ItemsControl.ItemsPanel>
                                     <ItemsPanelTemplate>

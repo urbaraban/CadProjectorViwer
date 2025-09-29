@@ -51,7 +51,7 @@ namespace CadProjectorViewer.Dialogs
         }
 
         public ICommand RemoveDeviceCommand => new ActionCommand(RemoveDevice);
-        private async void RemoveDevice()
+        private void RemoveDevice()
         {
             if (this.Hub.ScenesCollection.SelectedScene.Projectors.SelectedItem is LProjector device)
             {
@@ -60,7 +60,7 @@ namespace CadProjectorViewer.Dialogs
         }
 
         public ICommand RemoveSceneCommand => new ActionCommand(RemoveScene);
-        private async void RemoveScene()
+        private void RemoveScene()
         {
             if (this.Hub.ScenesCollection.SelectedScene is ProjectionScene scene && this.Hub.ScenesCollection.Count > 1)
             {

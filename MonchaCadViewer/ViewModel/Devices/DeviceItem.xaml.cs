@@ -46,17 +46,6 @@ namespace CadProjectorViewer.ViewModel.Devices
             }
         });
 
-        public ICommand ShowCenterCommand => new ActionCommand(() =>
-        {
-            if (this.DataContext is LProjector device && device.GetParentScene?.Invoke() is ProjectionScene Scene)
-            {
-                Scene.Add(new CadAnchor(device.Center)
-                {
-                    Multiply = Scene.GetSize
-                });
-            }
-        });
-
         public ICommand ProjectorViewCommand => new ActionCommand(() =>
         {
             if (this.DataContext is IRenderingDisplay device)
@@ -74,7 +63,8 @@ namespace CadProjectorViewer.ViewModel.Devices
                 {
                     Process.Start(new ProcessStartInfo
                     {
-                        FileName = $"http://{connected.IpAddress}"
+                        FileName = $"http://{connected.IpAddress}",
+                        UseShellExecute = true
                     });
                 }
                 catch

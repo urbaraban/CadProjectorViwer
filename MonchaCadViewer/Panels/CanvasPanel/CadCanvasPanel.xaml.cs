@@ -253,7 +253,7 @@ namespace CadProjectorViewer.Panels.CanvasPanel
         #region INotifyPropertyChanged
         public event PropertyChangedEventHandler PropertyChanged;
 
-        public async void OnPropertyChanged([CallerMemberName] string prop = "")
+        public void OnPropertyChanged([CallerMemberName] string prop = "")
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(prop));
         }

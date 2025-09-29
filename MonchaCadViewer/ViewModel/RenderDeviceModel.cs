@@ -76,10 +76,6 @@ namespace CadProjectorViewer.ViewModel
         public RenderDeviceModel(IRenderingDisplay renderingDisplay)
         {
             this.RenderingDisplay = renderingDisplay;
-            this.RenderingDisplay.FrameChanged += (s, e) =>
-            {
-                OnPropertyChanged(string.Empty);
-            };
             this.displaySetting = ViewDisplaySetting.Load(this.RenderingDisplay);
         }
 

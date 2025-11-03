@@ -27,6 +27,7 @@ namespace CadProjectorViewer.Opening
         {
             new SVG(),
             new DXF(),
+            new DWG(),
             new GCODE(),
             //new STL(),
             // new DEXCeil(),

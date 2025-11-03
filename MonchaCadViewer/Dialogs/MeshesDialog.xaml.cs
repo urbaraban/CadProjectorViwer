@@ -43,7 +43,7 @@ namespace CadProjectorViewer.Panels.DevicePanel
             ProjectorMesh mesh = 
                 new ProjectorMesh(
                     ProjectorMesh.MakeMeshPoint(5, 5, Device.GetSize),
-                    $"Mesh_{Device.Meshes.Count}", MeshTypes.NONE);
+                    $"Mesh_{Device.Meshes.Count}", ModuleTypes.NONE);
 
             Device.Meshes.Add(mesh);
             CreateGridWindow createGridWindow = new CreateGridWindow(mesh);

@@ -244,4 +244,52 @@
             </DockPanel>
         </StackPanel>
     </DataTemplate>
+    <DataTemplate DataType="{x:Type transforming:RectProportion}">
+        <StackPanel>
+            <DockPanel>
+                <Label Content="Центр X" DockPanel.Dock="Left" />
+                <mah:NumericUpDown
+                    MinWidth="250"
+                    Interval="0.01"
+                    Maximum="2"
+                    Minimum="-2"
+                    Value="{Binding X, Mode=TwoWay, StringFormat={}{0.000}}" />
+            </DockPanel>
+            <DockPanel>
+                <Label Content="Центр Y" DockPanel.Dock="Left" />
+                <mah:NumericUpDown
+                    MinWidth="250"
+                    Interval="0.01"
+                    Maximum="2"
+                    Minimum="-2"
+                    Value="{Binding Y, Mode=TwoWay, StringFormat={}{0.000}}" />
+            </DockPanel>
+            <DockPanel>
+                <TextBlock
+                    Grid.Row="2"
+                    Grid.Column="0"
+                    Text="Width" />
+                <mah:NumericUpDown
+                    Grid.Row="2"
+                    Grid.Column="1"
+                    Interval="0.01"
+                    Maximum="1"
+                    Minimum="0"
+                    Value="{Binding Width, StringFormat={}{0.000}}" />
+            </DockPanel>
+            <DockPanel>
+                <TextBlock
+                    Grid.Row="3"
+                    Grid.Column="0"
+                    Text="Height" />
+                <mah:NumericUpDown
+                    Grid.Row="3"
+                    Grid.Column="1"
+                    Interval="0.01"
+                    Maximum="1"
+                    Minimum="0"
+                    Value="{Binding Height, StringFormat={}{0.000}}" />
+            </DockPanel>
+        </StackPanel>
+    </DataTemplate>
 </ResourceDictionary>

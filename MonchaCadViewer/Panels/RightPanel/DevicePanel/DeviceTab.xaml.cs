@@ -4,6 +4,7 @@ using CadProjectorSDK.Device.Controllers;
 using CadProjectorViewer.Dialogs;
 using CadProjectorViewer.Panels.DevicePanel;
 using CadProjectorViewer.Services;
+using CadProjectorViewer.ViewModel.Devices;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -66,11 +67,13 @@ namespace CadProjectorViewer.Panels
         {
             if (sender is Button button)
             {
-                EllipsoidSettingDialog ellipsoidSettingDialog = new EllipsoidSettingDialog()
+                if (button.DataContext is LProjector projector)
                 {
-                    DataContext = button.DataContext
-                };
-                ellipsoidSettingDialog.Show();
+                    var dialog = new DeviceModulesDialog();
+                    var context = new AddDeviceModule(projector.ModulesGroup);
+                    dialog.DataContext = context;
+                    dialog.Show();
+                }
             }
         }
 

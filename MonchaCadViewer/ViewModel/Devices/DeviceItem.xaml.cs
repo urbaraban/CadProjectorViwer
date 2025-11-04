@@ -1,6 +1,4 @@
-﻿using CadProjectorSDK.CadObjects;
-using CadProjectorSDK.Device;
-using CadProjectorSDK.Device.Modules;
+﻿using CadProjectorSDK.Device;
 using CadProjectorSDK.Interfaces;
 using CadProjectorSDK.Scenes;
 using CadProjectorViewer.DeviceManaged;

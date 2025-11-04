@@ -64,6 +64,7 @@
     <v:String x:Key="dvc_polymesh">Poly mesh</v:String>
     <v:String x:Key="dvc_ProjectionSetting">Projection</v:String>
     <v:String x:Key="dvc_ShowScreen">Show projection</v:String>
+    <v:String x:Key="dvc_show_modules">Show Modules</v:String>
 
 
 

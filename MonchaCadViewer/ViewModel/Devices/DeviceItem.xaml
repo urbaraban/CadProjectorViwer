@@ -16,6 +16,7 @@
                     Command="{Binding ShowZoneRectCommand}"
                     Header="{DynamicResource dvc_showzone}"
                     Tag="1" />
+                <MenuItem Command="{Binding ShowModulesSettingCommand}" Header="{DynamicResource dvc_show_modules}" />
                 <MenuItem Command="{Binding ProjectorViewCommand}" Header="{DynamicResource dvc_ShowScreen}" />
                 <MenuItem Command="{Binding GoToWebInterface}" Header="Go web" />
             </ContextMenu>
@@ -68,7 +69,7 @@
                 Background="Transparent"
                 BorderThickness="0"
                 Command="{Binding ElementName=DeviceItemBlock, Path=ShowModulesSettingCommand}"
-                Content="s" />
+                Content="M" />
         </StackPanel>
     </Border>
 </UserControl>

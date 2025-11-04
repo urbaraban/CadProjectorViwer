@@ -136,7 +136,10 @@ namespace CadProjectorViewer.Panels
                 {
                     if (frameworkElement.DataContext is ProjectorMesh mesh)
                     {
-                        if (Keyboard.Modifiers != ModifierKeys.Shift) projectorHub.ScenesCollection.SelectedScene.Clear();
+                        if (Keyboard.Modifiers != ModifierKeys.Shift)
+                        {
+                            projectorHub.ScenesCollection.SelectedScene.Clear();
+                        }
                         projectorHub.ScenesCollection.SelectedScene.Add(mesh);
                     }
                 }

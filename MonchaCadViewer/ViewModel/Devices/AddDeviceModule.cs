@@ -12,19 +12,19 @@ namespace CadProjectorViewer.ViewModel.Devices
     internal class AddDeviceModule : NotifyModel
     {
         public IEnumerable<Type> AvailableType { get; }
-        //= new Type[]
-        //{
-        //    typeof(HyperbolaCorrector),
-        //    typeof(DeepFrameCutter),
-        //    typeof(ZCorrector),
-        //    typeof(AxisGradient),
-        //    typeof(RotateFrame2D),
-        //    typeof(ScanRateDotInserter),
-        //};
 
         public ObservableCollection<DeviceModule> DeviceModules => new ObservableCollection<DeviceModule>(this.MGroup.Modules);
 
         public DeviceModule SelectModule { get; set; }
+
+        public bool IsOn
+        {
+            get => MGroup.IsOn;
+            set
+            {
+                MGroup.IsOn = value;
+            }
+        }
 
         private ModulesGroup MGroup { get; }
 

@@ -60,6 +60,8 @@
     <v:String x:Key="dvc_polymesh">Мульти сетка</v:String>
     <v:String x:Key="dvc_ProjectionSetting">Проекция</v:String>
     <v:String x:Key="dvc_ShowScreen">Показать проекцию</v:String>
+    <v:String x:Key="dvc_show_modules">Показать модули</v:String>
+
 
     <v:String x:Key="dvc_ProjectMain">Главный</v:String>
     <v:String x:Key="dvc_ProjectOwn">Собственный</v:String>

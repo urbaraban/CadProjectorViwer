@@ -292,4 +292,32 @@
             </DockPanel>
         </StackPanel>
     </DataTemplate>
+    <DataTemplate DataType="{x:Type services:PointMassSetter}">
+        <StackPanel>
+            <DockPanel>
+                <TextBlock
+                    Grid.Row="3"
+                    Grid.Column="0"
+                    Text="LightMass" />
+                <mah:NumericUpDown
+                    Grid.Row="3"
+                    Grid.Column="1"
+                    Maximum="30"
+                    Minimum="0"
+                    Value="{Binding LightMass}" />
+            </DockPanel>
+            <DockPanel>
+                <TextBlock
+                    Grid.Row="3"
+                    Grid.Column="0"
+                    Text="BlankMass" />
+                <mah:NumericUpDown
+                    Grid.Row="3"
+                    Grid.Column="1"
+                    Maximum="30"
+                    Minimum="0"
+                    Value="{Binding BlankMass}" />
+            </DockPanel>
+        </StackPanel>
+    </DataTemplate>
 </ResourceDictionary>

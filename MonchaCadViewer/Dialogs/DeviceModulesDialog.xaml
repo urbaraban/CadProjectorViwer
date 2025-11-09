@@ -11,6 +11,7 @@
     Height="450"
     d:DataContext="{d:DesignInstance Type=devices:AddDeviceModule}"
     FontSize="16"
+    WindowStyle="ToolWindow"
     mc:Ignorable="d">
     <Window.Resources>
         <Style TargetType="MenuItem">

@@ -7,7 +7,7 @@
     xmlns:device="clr-namespace:CadProjectorSDK.Device;assembly=CadProjectorSDK"
     xmlns:devices="clr-namespace:CadProjectorViewer.ViewModel.Devices"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:mesh="clr-namespace:CadProjectorSDK.Device.Mesh;assembly=CadProjectorSDK"
+    xmlns:mesh="clr-namespace:CadProjectorSDK.Device.Mesh;assembly=CadProjectorSDK" xmlns:panels="clr-namespace:CadProjectorViewer.Panels"
     d:DataContext="{d:DesignInstance Type=cadprojectorsdk:ProjectorHub}"
     d:DesignHeight="450"
     d:DesignWidth="200"
@@ -115,7 +115,7 @@
                 DataType="{x:Type device:LProjector}"
                 ItemTemplate="{StaticResource MeshTree}"
                 ItemsSource="{Binding SelectedMeshes}">
-                <devices:DeviceItem />
+                <panels:DeviceItem />
             </HierarchicalDataTemplate>
         </ResourceDictionary>
     </UserControl.Resources>

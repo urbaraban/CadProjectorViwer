@@ -10,7 +10,7 @@
     xmlns:devices="clr-namespace:CadProjectorViewer.ViewModel.Devices"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:mesh="clr-namespace:CadProjectorSDK.Device.Mesh;assembly=CadProjectorSDK"
-    xmlns:scene="clr-namespace:CadProjectorSDK.Scenes;assembly=CadProjectorSDK"
+    xmlns:scene="clr-namespace:CadProjectorSDK.Scenes;assembly=CadProjectorSDK" xmlns:panels="clr-namespace:CadProjectorViewer.Panels"
     x:Name="FrameTreePage"
     d:DataContext="{d:DesignInstance Type=scene:ProjectionScene}"
     d:DesignHeight="350"
@@ -96,7 +96,7 @@
             x:Key="DeviceTree"
             DataType="{x:Type device:LProjector}"
             ItemTemplate="{StaticResource MeshTree}">
-            <devices:DeviceItem />
+            <panels:DeviceItem />
         </HierarchicalDataTemplate>
 
     </UserControl.Resources>

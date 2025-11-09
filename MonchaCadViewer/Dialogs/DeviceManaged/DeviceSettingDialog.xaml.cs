@@ -61,7 +61,7 @@ namespace CadProjectorViewer.Panels.DevicePanel
         private void SaveBtn_Click(object sender, RoutedEventArgs e)
         {
             //ProjectorHub.CanPlay = false;
-            if (this._device is IConnected connected)
+            if (this._device is IConnectebleDevice connected)
             {
                 connected.IpAddress = $"{IP1.Text}.{IP2.Text}.{IP3.Text}.{IP4.Text}"; 
             }

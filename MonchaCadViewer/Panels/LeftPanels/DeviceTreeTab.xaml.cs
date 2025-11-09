@@ -166,7 +166,7 @@ namespace CadProjectorViewer.Panels
 
         private async void ReconnectButton_Click(object sender, RoutedEventArgs e)
         {
-            if (sender is Button button && button.DataContext is IConnected connected)
+            if (sender is Button button && button.DataContext is IConnectebleDevice connected)
             {
                 await connected.Reconnect();
             }

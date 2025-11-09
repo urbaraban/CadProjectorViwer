@@ -204,7 +204,7 @@
                 <Label Content="ScanRate" DockPanel.Dock="Left" />
                 <mah:NumericUpDown
                     MinWidth="150"
-                    Interval="1"
+                    Interval="1000"
                     Maximum="40000"
                     Minimum="10000"
                     NumericInputMode="Numbers"

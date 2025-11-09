@@ -74,7 +74,7 @@ namespace CadProjectorViewer.Panels.DevicePanel.LeftPanels
             {
                 foreach (LProjector lProjector in scene.Projectors)
                 {
-                    if (lProjector is IConnected connected)
+                    if (lProjector is IConnectebleDevice connected)
                     {
                         await connected.Reconnect();
                     }
@@ -99,7 +99,7 @@ namespace CadProjectorViewer.Panels.DevicePanel.LeftPanels
 
         private async void ReconnectButton_Click(object sender, RoutedEventArgs e)
         {
-            if (sender is Button button && button.DataContext is IConnected connected)
+            if (sender is Button button && button.DataContext is IConnectebleDevice connected)
             {
                 await connected.Reconnect();
             }

@@ -8,6 +8,7 @@
     <UseWPF>true</UseWPF>
     <StartupObject>CadProjectorViewer.App</StartupObject>
     <ApplicationIcon>logo.ico</ApplicationIcon>
+    <AssemblyVersion>0.8.0.2</AssemblyVersion>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="Caching.dll" Version="2.0.0.1" />

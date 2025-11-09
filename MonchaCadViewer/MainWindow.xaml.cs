@@ -48,7 +48,7 @@ namespace CadProjectorViewer
                 this.Width = SystemParameters.FullPrimaryScreenWidth * 0.9;
 
             Version version = Assembly.GetExecutingAssembly().GetName().Version;
-            this.Title = $"CUT — Viewer v{version.Build.ToString()}.{version.MinorRevision.ToString()}";
+            this.Title = $"CUT — Viewer v{version.ToString()}";
 
             App.SetProgress?.Invoke(1, 1, "Loaded");
         }

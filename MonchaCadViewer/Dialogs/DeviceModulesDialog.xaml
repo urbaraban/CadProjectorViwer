@@ -26,7 +26,11 @@
             <RowDefinition />
             <RowDefinition Height="auto" />
         </Grid.RowDefinitions>
-        <DockPanel Grid.Row="0" LastChildFill="False">
+        <DockPanel
+            Grid.Row="0"
+            d:Visibility="Visible"
+            LastChildFill="False"
+            Visibility="Collapsed">
             <DockPanel.Resources>
                 <Style TargetType="Button">
                     <Setter Property="Margin" Value="3" />

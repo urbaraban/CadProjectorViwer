@@ -77,7 +77,7 @@ namespace CadProjectorViewer.Panels
             base.OnMouseRightButtonUp(e);
             if (this.DataContext is SceneTask Obj && Obj.Object is TransformObject transformObject)
             {
-                transformObject.UpdateTransform(transformObject.Bounds, false, "Middle%Middle");
+                transformObject.UpdateTransform(transformObject.Bounds, false, "Middle:Middle");
             }
         }
 

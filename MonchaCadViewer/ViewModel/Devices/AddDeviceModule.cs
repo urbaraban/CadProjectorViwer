@@ -1,4 +1,5 @@
-﻿using CadProjectorSDK.Device.Modules;
+﻿using CadProjectorSDK.Device;
+using CadProjectorSDK.Device.Modules;
 using Microsoft.Xaml.Behaviors.Core;
 using System;
 using System.Collections.Generic;
@@ -6,6 +7,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows.Controls;
 using System.Windows.Input;
+using static Microsoft.WindowsAPICodePack.Shell.PropertySystem.SystemProperties.System;
 
 namespace CadProjectorViewer.ViewModel.Devices
 {
@@ -26,11 +28,13 @@ namespace CadProjectorViewer.ViewModel.Devices
             }
         }
 
-        private ModulesGroup MGroup { get; }
+        private ModulesGroup MGroup => Projector.ModulesGroup;
 
-        public AddDeviceModule(ModulesGroup device)
+        private LProjector Projector { get; }
+
+        public AddDeviceModule(LProjector device)
         {
-            this.MGroup = device;
+            Projector = device;
             this.AvailableType = typeof(DeviceModule).Assembly.GetTypes()
                 .Where(x => x.BaseType == typeof(DeviceModule))
                 .OrderBy(x => x.Name);

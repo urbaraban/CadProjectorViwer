@@ -121,55 +121,55 @@
                             Grid.Column="0"
                             HorizontalAlignment="Center"
                             VerticalAlignment="Center"
-                            IsChecked="{Binding DefAttach, Converter={StaticResource AttachConverter}, ConverterParameter=Top%Left}" />
+                            IsChecked="{Binding DefAttach, Converter={StaticResource AttachConverter}, ConverterParameter=Top:Left}" />
                         <RadioButton
                             Grid.Row="0"
                             Grid.Column="1"
                             HorizontalAlignment="Center"
                             VerticalAlignment="Center"
-                            IsChecked="{Binding DefAttach, Converter={StaticResource AttachConverter}, ConverterParameter=Top%Middle}" />
+                            IsChecked="{Binding DefAttach, Converter={StaticResource AttachConverter}, ConverterParameter=Top:Middle}" />
                         <RadioButton
                             Grid.Row="0"
                             Grid.Column="2"
                             HorizontalAlignment="Center"
                             VerticalAlignment="Center"
-                            IsChecked="{Binding DefAttach, Converter={StaticResource AttachConverter}, ConverterParameter=Top%Right}" />
+                            IsChecked="{Binding DefAttach, Converter={StaticResource AttachConverter}, ConverterParameter=Top:Right}" />
                         <RadioButton
                             Grid.Row="1"
                             Grid.Column="0"
                             HorizontalAlignment="Center"
                             VerticalAlignment="Center"
-                            IsChecked="{Binding DefAttach, Converter={StaticResource AttachConverter}, ConverterParameter=Middle%Left}" />
+                            IsChecked="{Binding DefAttach, Converter={StaticResource AttachConverter}, ConverterParameter=Middle:Left}" />
                         <RadioButton
                             Grid.Row="1"
                             Grid.Column="1"
                             HorizontalAlignment="Center"
                             VerticalAlignment="Center"
-                            IsChecked="{Binding DefAttach, Converter={StaticResource AttachConverter}, ConverterParameter=Middle%Middle}" />
+                            IsChecked="{Binding DefAttach, Converter={StaticResource AttachConverter}, ConverterParameter=Middle:Middle}" />
                         <RadioButton
                             Grid.Row="1"
                             Grid.Column="2"
                             HorizontalAlignment="Center"
                             VerticalAlignment="Center"
-                            IsChecked="{Binding DefAttach, Converter={StaticResource AttachConverter}, ConverterParameter=Middle%Right}" />
+                            IsChecked="{Binding DefAttach, Converter={StaticResource AttachConverter}, ConverterParameter=Middle:Right}" />
                         <RadioButton
                             Grid.Row="2"
                             Grid.Column="0"
                             HorizontalAlignment="Center"
                             VerticalAlignment="Center"
-                            IsChecked="{Binding DefAttach, Converter={StaticResource AttachConverter}, ConverterParameter=Down%Left}" />
+                            IsChecked="{Binding DefAttach, Converter={StaticResource AttachConverter}, ConverterParameter=Down:Left}" />
                         <RadioButton
                             Grid.Row="2"
                             Grid.Column="1"
                             HorizontalAlignment="Center"
                             VerticalAlignment="Center"
-                            IsChecked="{Binding DefAttach, Converter={StaticResource AttachConverter}, ConverterParameter=Down%Middle}" />
+                            IsChecked="{Binding DefAttach, Converter={StaticResource AttachConverter}, ConverterParameter=Down:Middle}" />
                         <RadioButton
                             Grid.Row="2"
                             Grid.Column="2"
                             HorizontalAlignment="Center"
                             VerticalAlignment="Center"
-                            IsChecked="{Binding DefAttach, Converter={StaticResource AttachConverter}, ConverterParameter=Down%Right}" />
+                            IsChecked="{Binding DefAttach, Converter={StaticResource AttachConverter}, ConverterParameter=Down:Right}" />
                     </Grid>
                 </StackPanel>
                 <DockPanel>

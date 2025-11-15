@@ -76,32 +76,32 @@ namespace CadProjectorViewer.ViewModel.Scene
 
         public ICommand CentertAttachCommand => new ActionCommand(() =>
         {
-            this.Scene.DefAttach = this.GetNewAttach("middle%middle");
+            this.Scene.DefAttach = this.GetNewAttach("middle:middle");
             AttachObjects(this.Scene.DefAttach);
         });
 
         public ICommand LeftAttachCommand => new ActionCommand(() =>
         {   
-            this.Scene.DefAttach = this.GetNewAttach("empty%left");
+            this.Scene.DefAttach = this.GetNewAttach("empty:left");
             AttachObjects(this.Scene.DefAttach);
         });
 
         public ICommand RightAttachCommand => new ActionCommand(() =>
         {
-            this.Scene.DefAttach = this.GetNewAttach("empty%right");
+            this.Scene.DefAttach = this.GetNewAttach("empty:right");
             AttachObjects(this.Scene.DefAttach);
         });
 
 
         public ICommand TopAttachCommand => new ActionCommand(() =>
         {
-            this.Scene.DefAttach = this.GetNewAttach("top%empty");
+            this.Scene.DefAttach = this.GetNewAttach("top:empty");
             AttachObjects(this.Scene.DefAttach);
         });
 
         public ICommand DownAttachCommand => new ActionCommand(() =>
         {
-            this.Scene.DefAttach = this.GetNewAttach("down%empty");
+            this.Scene.DefAttach = this.GetNewAttach("down:empty");
             AttachObjects(this.Scene.DefAttach);
         });
 
@@ -146,8 +146,8 @@ namespace CadProjectorViewer.ViewModel.Scene
         {
             if (string.IsNullOrEmpty(NewAttach) == false)
             {
-                string[] new_strings = NewAttach.Split('%');
-                string[] old_strings = this.Scene.DefAttach.Split('%');
+                string[] new_strings = NewAttach.Split(':');
+                string[] old_strings = this.Scene.DefAttach.Split(':');
                 for (int i = 0; i < new_strings.Length; i += 1)
                 {
                     if (new_strings[i].ToLower() != "empty")
@@ -155,7 +155,7 @@ namespace CadProjectorViewer.ViewModel.Scene
                         old_strings[i] = new_strings[i];
                     }
                 }
-                return string.Join("%", old_strings);
+                return string.Join(":", old_strings);
             }
             return string.Empty;
         }

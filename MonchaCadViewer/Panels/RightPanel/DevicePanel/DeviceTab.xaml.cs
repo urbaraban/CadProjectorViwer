@@ -70,7 +70,7 @@ namespace CadProjectorViewer.Panels
                 if (button.DataContext is LProjector projector)
                 {
                     var dialog = new DeviceModulesDialog();
-                    var context = new AddDeviceModule(projector.ModulesGroup);
+                    var context = new AddDeviceModule(projector);
                     dialog.DataContext = context;
                     dialog.Show();
                 }

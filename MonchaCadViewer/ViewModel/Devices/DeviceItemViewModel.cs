@@ -37,7 +37,7 @@ namespace CadProjectorViewer.ViewModel.Devices
             p => true,
             p => {
                 var dialog = new DeviceModulesDialog();
-                var context = new AddDeviceModule(lProjector.ModulesGroup);
+                var context = new AddDeviceModule(lProjector);
                 dialog.DataContext = context;
                 dialog.Show();
             });

@@ -33,7 +33,7 @@
                 Padding="3"
                 Panel.ZIndex="99"
                 Background="LightGray"
-                Content="{Binding TaskInfo.Name}"
+                Content="{Binding TaskName}"
                 DockPanel.Dock="Bottom"
                 FontSize="11"
                 Opacity="08" />
@@ -99,17 +99,6 @@
                         FontFamily="Segoe MDL2 Assets"
                         FontSize="14"
                         Foreground="Red" />
-                    <Button
-                        x:Name="RefreshBtn"
-                        MinWidth="25"
-                        Background="Transparent"
-                        BorderThickness="0"
-                        Click="RefreshBtn_Click"
-                        Content="&#xE72C;"
-                        DockPanel.Dock="Right"
-                        FontFamily="Segoe MDL2 Assets"
-                        FontSize="14"
-                        Foreground="MediumBlue" />
                 </DockPanel>
 
             </Grid>

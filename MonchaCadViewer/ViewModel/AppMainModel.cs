@@ -346,6 +346,7 @@ namespace CadProjectorViewer.ViewModel
                 SceneTask sceneTask = new SceneTask()
                 {
                     Object = uidObject,
+                    TaskName = Path.GetFileName(path)
                 };
                 await this.ProjectorHub.ScenesCollection.AddTask(sceneTask);
             }

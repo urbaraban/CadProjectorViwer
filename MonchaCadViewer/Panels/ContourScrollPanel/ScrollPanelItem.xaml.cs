@@ -1,33 +1,13 @@
-﻿using CadProjectorViewer.CanvasObj;
-using CadProjectorViewer.Opening;
-using CadProjectorSDK;
+﻿using CadProjectorSDK.CadObjects.Abstract;
+using CadProjectorSDK.Scenes;
+using CadProjectorViewer.ViewModel.Scene;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Globalization;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Media.Media3D;
-using System.Windows.Navigation;
-using ToGeometryConverter;
-using AppSt = CadProjectorViewer.Properties.Settings;
-using ToGeometryConverter.Object;
-using CadProjectorSDK.CadObjects;
-using CadProjectorSDK.CadObjects.Abstract;
-using System.Globalization;
-using CadProjectorSDK.Scenes;
-using CadProjectorSDK.Device.Mesh;
-using CadProjectorSDK.Interfaces;
-using CadProjectorViewer.ViewModel;
-using System.Xml.Linq;
-using System.ComponentModel;
-using CadProjectorViewer.ViewModel.Scene;
 
 namespace CadProjectorViewer.Panels
 {
@@ -38,10 +18,6 @@ namespace CadProjectorViewer.Panels
     {
         public SceneTask SceneTsk => (SceneTask)this.DataContext;
 
-
-        private string filepath = string.Empty;
-
-        public string FileName => SceneTsk.TaskFileInfo.Name;
 
         public ScaleTransform Scale { get; set; } = new ScaleTransform();
 
@@ -55,21 +31,6 @@ namespace CadProjectorViewer.Panels
         {
             base.OnMouseLeftButtonUp(e);
             SceneTsk.Selecting();
-        }
-
-        protected override void OnMouseLeftButtonDown(MouseButtonEventArgs e)
-        {
-            base.OnMouseLeftButtonDown(e);
-            //DragDrop.DoDragDrop(this, this.Scene, DragDropEffects.Move);
-        }
-
-        protected override void OnMouseMove(MouseEventArgs e)
-        {
-            base.OnMouseMove(e);
-            if (e.LeftButton == MouseButtonState.Pressed)
-            {
-                DragDrop.DoDragDrop(this, this, Keyboard.Modifiers == ModifierKeys.Alt ? DragDropEffects.Copy : DragDropEffects.Move);
-            }
         }
 
         protected override void OnMouseRightButtonUp(MouseButtonEventArgs e)
@@ -91,21 +52,6 @@ namespace CadProjectorViewer.Panels
         private void SolvedToggle_Checked(object sender, RoutedEventArgs e)
         {
             //this.IsSolved = SolvedToggle.IsChecked.Value;
-        }
-
-        private void RefreshBtn_Click(object sender, RoutedEventArgs e) => Refresh();
-
-        public async void Refresh()
-        {
-            foreach(GCFormat gCFormat in FileLoad.MyFormat)
-            {
-                if (gCFormat.ShortName.Contains(this.SceneTsk.TaskFileInfo.Extension) == true)
-                {
-                    object obj = await gCFormat.ReadFile?.Invoke(this.SceneTsk.TaskFileInfo.FullName);
-                    this.SceneTsk.Object = await FileLoad.ConvertObject(obj);
-                    this.SceneTsk.Selecting();
-                }
-            }
         }
     }
 

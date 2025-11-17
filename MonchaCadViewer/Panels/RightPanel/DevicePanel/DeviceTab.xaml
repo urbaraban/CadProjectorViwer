@@ -138,19 +138,6 @@
                         SelectedItem="{Binding SelectedMesh, Mode=TwoWay}" />
                 </DockPanel>
                 <DockPanel>
-                    <DockPanel DockPanel.Dock="Right" LastChildFill="True">
-                        <Label
-                            Width="auto"
-                            AutomationProperties.HelpText="Кадров в секунду"
-                            Content="{DynamicResource dvc_FPS}" />
-                        <Controls:NumericUpDown
-                            MinWidth="80"
-                            Background="White"
-                            DataContext="{Binding SelectedItem, ElementName=DeviceCombo}"
-                            Maximum="60"
-                            Minimum="10"
-                            Value="{Binding FPS}" />
-                    </DockPanel>
                     <Label Width="auto" Content="{DynamicResource dvc_SRC}" />
 
                     <Controls:NumericUpDown
@@ -164,16 +151,7 @@
                         Value="{Binding ScanRate, Mode=TwoWay}" />
 
                 </DockPanel>
-                <DockPanel LastChildFill="True">
-                    <Label Content="Scan koeff" DockPanel.Dock="Left" />
-                    <Controls:NumericUpDown
-                        VerticalAlignment="Bottom"
-                        DataContext="{Binding SelectedItem, ElementName=DeviceCombo}"
-                        Interval="0.01"
-                        Maximum="2"
-                        Minimum="0"
-                        Value="{Binding KoeffScanRate}" />
-                </DockPanel>
+
                 <DockPanel LastChildFill="True">
                     <Label Content="Offset" DockPanel.Dock="Left" />
                     <Controls:NumericUpDown

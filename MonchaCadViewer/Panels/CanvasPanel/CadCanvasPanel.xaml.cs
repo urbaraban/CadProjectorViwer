@@ -306,7 +306,7 @@ namespace CadProjectorViewer.Panels.CanvasPanel
                     {
                         if (lDevice.RenderObjects.Count > 0)
                         {
-                            outstring += $"\n {lDevice.NameID}: {LFrameConverter.GetAlreadyScan(lDevice.RenderObjects) * lDevice.FPS * 1.3} pts";
+                            outstring += $"\n {lDevice.NameID}: {LFrameConverter.GetAlreadyScan(lDevice.RenderObjects)} pts";
                         }
                     }
                 }

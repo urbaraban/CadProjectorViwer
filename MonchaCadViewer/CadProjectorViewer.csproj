@@ -1,9 +1,9 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFramework>net9.0-windows</TargetFramework>
+    <TargetFramework>net10.0-windows</TargetFramework>
     <OutputType>WinExe</OutputType>
     <AssemblyName>2CUT-Viewer</AssemblyName>
-    <LangVersion>13.0</LangVersion>
+    <LangVersion>14.0</LangVersion>
     <UseWindowsForms>true</UseWindowsForms>
     <UseWPF>true</UseWPF>
     <StartupObject>CadProjectorViewer.App</StartupObject>

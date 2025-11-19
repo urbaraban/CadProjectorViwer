@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 17
-VisualStudioVersion = 17.2.32602.215
+# Visual Studio Version 18
+VisualStudioVersion = 18.0.11205.157 d18.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CadProjectorViewer", "MonchaCadViewer\CadProjectorViewer.csproj", "{CC54CC3C-EF08-49D2-B5F6-50CB3E585185}"
 	ProjectSection(ProjectDependencies) = postProject
@@ -45,6 +45,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CadProjector.WPF", "CadProjector.WPF\CadProjector.WPF.csproj", "{EFF434F7-48C2-4395-9F1D-DF1D5A34CC13}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CadProjector.FileFormats", "CadProjector.FileFormats\CadProjector.FileFormats.csproj", "{048A3FE8-6203-4F64-AD7D-E64529B2D77C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ILDA.net", "..\ILDA.net\src\ILDA.net\ILDA.net.csproj", "{4D361CC9-DD6E-22DF-86D6-04C00B3CC1FE}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -104,6 +106,10 @@ Global
 		{048A3FE8-6203-4F64-AD7D-E64529B2D77C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{048A3FE8-6203-4F64-AD7D-E64529B2D77C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{048A3FE8-6203-4F64-AD7D-E64529B2D77C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4D361CC9-DD6E-22DF-86D6-04C00B3CC1FE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4D361CC9-DD6E-22DF-86D6-04C00B3CC1FE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4D361CC9-DD6E-22DF-86D6-04C00B3CC1FE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4D361CC9-DD6E-22DF-86D6-04C00B3CC1FE}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -123,6 +129,7 @@ Global
 		{3622E132-69EA-49D2-9871-A0FB965C70DB} = {EB901549-C11B-49D1-A223-C777D7587A15}
 		{EFF434F7-48C2-4395-9F1D-DF1D5A34CC13} = {EB901549-C11B-49D1-A223-C777D7587A15}
 		{048A3FE8-6203-4F64-AD7D-E64529B2D77C} = {EB901549-C11B-49D1-A223-C777D7587A15}
+		{4D361CC9-DD6E-22DF-86D6-04C00B3CC1FE} = {EB901549-C11B-49D1-A223-C777D7587A15}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {8020A374-08BC-474A-829F-9A0845419AEC}

@@ -27,6 +27,7 @@
     d:DataContext="{d:DesignInstance Type=viewmodel:AppMainModel}"
     AllowDrop="True"
     Icon="logo.png"
+    IsWindowDraggable="True"
     KeyboardNavigation.TabNavigation="None"
     ResizeMode="CanResizeWithGrip"
     ShowInTaskbar="True"

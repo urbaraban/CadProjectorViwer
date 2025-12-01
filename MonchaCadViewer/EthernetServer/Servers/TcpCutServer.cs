@@ -47,7 +47,7 @@ namespace CadProjectorViewer.EthernetServer.Servers
                 .FirstOrDefault(c => c.IpPort == $"{ip}:{port}");
             if (client != null)
             {
-                server.Send(client.Guid, message);
+                server.SendAsync(client.Guid, message);
             }
         }
 

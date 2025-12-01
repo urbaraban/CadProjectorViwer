@@ -53,9 +53,9 @@ namespace CadProjectorViewer.EthernetServer.Servers
             this.autostart = autostart;
         }
 
-        public void Stop() => udpEndpoint.Stop();
+        public async void Stop() { } // => udpEndpoint.Dispose();
 
-        public void Start() => udpEndpoint.Start();
+        public async void Start() { } // => await udpEndpoint.Start();
 
         private void UdpEndpoint_DatagramReceived(object sender, Datagram e)
         {

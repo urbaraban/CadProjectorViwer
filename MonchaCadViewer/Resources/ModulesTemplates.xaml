@@ -222,7 +222,31 @@
             </ItemsControl>
         </StackPanel>
     </DataTemplate>
-    <DataTemplate DataType="{x:Type services:ScanRateDotInserter}">
+    <DataTemplate DataType="{x:Type services:ScanRateSplitDotInserter}">
+        <StackPanel>
+            <DockPanel>
+                <Label Content="FPS" DockPanel.Dock="Left" />
+                <mah:NumericUpDown
+                    MinWidth="150"
+                    Interval="1"
+                    Maximum="50"
+                    Minimum="10"
+                    NumericInputMode="Numbers"
+                    Value="{Binding FPS, Mode=TwoWay}" />
+            </DockPanel>
+            <DockPanel>
+                <Label Content="ScanRate" DockPanel.Dock="Left" />
+                <mah:NumericUpDown
+                    MinWidth="150"
+                    Interval="1000"
+                    Maximum="40000"
+                    Minimum="10000"
+                    NumericInputMode="Numbers"
+                    Value="{Binding ScanRate, Mode=TwoWay}" />
+            </DockPanel>
+        </StackPanel>
+    </DataTemplate>
+    <DataTemplate DataType="{x:Type services:ScanRateGradientDotInserter}">
         <StackPanel>
             <DockPanel>
                 <Label Content="FPS" DockPanel.Dock="Left" />

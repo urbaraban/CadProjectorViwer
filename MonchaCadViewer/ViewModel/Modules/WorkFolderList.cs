@@ -8,6 +8,7 @@ using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
+using System.Windows;
 using System.Windows.Data;
 using System.Windows.Input;
 using ToGeometryConverter;
@@ -232,7 +233,14 @@ namespace CadProjectorViewer.ViewModel.Modules
 
         public ICommand OpenEditorCommand => new ActionCommand(() =>
         {
-            System.Diagnostics.Process.Start(this.FullName);
+            try
+            {
+                System.Diagnostics.Process.Start(this.FullName);
+            }
+            catch
+            {
+                MessageBox.Show("Не нашли редактор по умолчанию для данного файла.", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
         });
     }
 }

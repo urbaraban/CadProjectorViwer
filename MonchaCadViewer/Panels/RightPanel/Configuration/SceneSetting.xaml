@@ -228,6 +228,9 @@
                     <CheckBox Content="Step By Step Add" IsChecked="{Binding StepByStep}" />
                 </DockPanel>
                 <DockPanel>
+                    <CheckBox Content="IsNotUsedLayer" IsChecked="{Binding IsNotUsedLayers}" />
+                </DockPanel>
+                <DockPanel>
                     <CheckBox Content="Cursor Mask Activated" IsChecked="{Binding CursorMaskActivated}" />
                 </DockPanel>
                 <Separator />

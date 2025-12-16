@@ -1,4 +1,3 @@
-using CadProjector.FileFormats.Geometry;
 using CadProjector.FileFormats.Geometry.Shapes;
 using IxMilia.Dxf;
 using IxMilia.Dxf.Entities;

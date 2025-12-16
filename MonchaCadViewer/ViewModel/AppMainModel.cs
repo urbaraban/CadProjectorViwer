@@ -209,12 +209,12 @@ namespace CadProjectorViewer.ViewModel
 
         public ICommand SelectNextCommand => new ActionCommand(() => {
             ProjectorHub.ScenesCollection.SelectedScene.HistoryCommands.Add(
-                        new SelectNextCommand(true, ProjectorHub.ScenesCollection.SelectedScene));
+                        new SelectNextCommand(true, ProjectorHub.ScenesCollection.SelectedScene, false));
         });
 
         public ICommand SelectPreviousCommand => new ActionCommand(() => {
             ProjectorHub.ScenesCollection.SelectedScene.HistoryCommands.Add(
-                        new SelectNextCommand(false, ProjectorHub.ScenesCollection.SelectedScene));
+                        new SelectNextCommand(false, ProjectorHub.ScenesCollection.SelectedScene, false));
         });
 
         public ICommand DeleteCommand => new ActionCommand(() => {

@@ -153,7 +153,7 @@ namespace CadProjectorViewer.CanvasObj
             get => this.CadObject.IsRender;
             set
             {
-                this.CadObject.IsRender = value;
+                this.CadObject.SetRender(value, false);
                 OnPropertyChanged("IsRender");
             }
         }
@@ -355,7 +355,7 @@ namespace CadProjectorViewer.CanvasObj
 
         public ICommand RenderCommand => new ActionCommand(() =>
         {
-            this.CadObject.IsRender = !this.CadObject.IsRender;
+            this.CadObject.SetRender(!this.CadObject.IsRender, false);
         });
 
         public ICommand UngroupCommand => new ActionCommand(() => 

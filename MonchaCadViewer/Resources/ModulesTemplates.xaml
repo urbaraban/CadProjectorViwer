@@ -378,7 +378,7 @@
             </DockPanel>
         </StackPanel>
     </DataTemplate>
-    <DataTemplate DataType="{x:Type services:LinesGroupSplitter}">
+    <DataTemplate DataType="{x:Type services:LinesSkipper}">
         <StackPanel>
             <DockPanel>
                 <TextBlock
@@ -401,6 +401,32 @@
                     Grid.Column="1"
                     Minimum="0"
                     Value="{Binding LinesPart}" />
+            </DockPanel>
+        </StackPanel>
+    </DataTemplate>
+    <DataTemplate DataType="{x:Type services:LinesGroupSplitter}">
+        <StackPanel>
+            <DockPanel>
+                <TextBlock
+                    Grid.Row="3"
+                    Grid.Column="0"
+                    Text="MaxLinesCount" />
+                <mah:NumericUpDown
+                    Grid.Row="3"
+                    Grid.Column="1"
+                    Minimum="0"
+                    Value="{Binding LinesGroupInPart}" />
+            </DockPanel>
+            <DockPanel>
+                <TextBlock
+                    Grid.Row="3"
+                    Grid.Column="0"
+                    Text="LinesPart" />
+                <mah:NumericUpDown
+                    Grid.Row="3"
+                    Grid.Column="1"
+                    Minimum="0"
+                    Value="{Binding Part}" />
             </DockPanel>
         </StackPanel>
     </DataTemplate>

@@ -172,7 +172,7 @@ namespace CadProjectorViewer.CanvasObj
             this.CadObject = uidObject;
             this.DataContext = uidObject;
             this.ToolTip = this.Name;
-            this.ContextMenu = new System.Windows.Controls.ContextMenu();
+            this.ContextMenu = new ContextMenu();
 
             ContextMenuLib.AddItem("obj_Mirror", MirrorCommand, this.ContextMenu);
             ContextMenuLib.AddItem("common_Remove", RemoveCommand, this.ContextMenu);

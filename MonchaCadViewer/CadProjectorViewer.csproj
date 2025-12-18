@@ -50,6 +50,7 @@
   <ItemGroup>
     <ProjectReference Include="..\..\MonchaSDK\MonchaSDK\CadProjectorSDK.csproj" />
     <ProjectReference Include="..\..\VLTLaserController.net\src\VLTLaserController.net.csproj" />
+    <ProjectReference Include="..\CadProjector.FileFormats\CadProjector.FileFormats.csproj" />
     <ProjectReference Include="..\MonchaSDK\MonchaSDK\CadProjectorSDK.csproj" />
     <ProjectReference Include="..\ToGeometryConverter\GeometryConverter.csproj" />
   </ItemGroup>

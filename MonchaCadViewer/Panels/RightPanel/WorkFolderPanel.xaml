@@ -108,7 +108,6 @@
             Grid.Column="1"
             Margin="4,2,5,0"
             VerticalAlignment="Center"
-            DisplayMemberPath="Name"
             ItemsSource="{Binding Extensions}"
             SelectedItem="{Binding SelectExtension}" />
     </Grid>

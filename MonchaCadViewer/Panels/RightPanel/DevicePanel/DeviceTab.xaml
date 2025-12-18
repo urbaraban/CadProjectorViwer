@@ -13,12 +13,6 @@
     mc:Ignorable="d">
     <UserControl.Resources>
         <ResourceDictionary>
-            <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Controls.xaml" />
-                <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Fonts.xaml" />
-                <!--  Theme setting  -->
-                <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Themes/Light.Blue.xaml" />
-            </ResourceDictionary.MergedDictionaries>
             <Style TargetType="{x:Type DockPanel}">
                 <Setter Property="Margin" Value="5,2" />
             </Style>
@@ -79,7 +73,7 @@
                         Margin="5,0,0,0"
                         Padding="0"
                         Click="EllipseSettingBtn_Click"
-                        Content="&#xE774;"
+                        Content="&#xE8F1;"
                         DataContext="{Binding SelectedItem, ElementName=DeviceCombo}"
                         DockPanel.Dock="Right"
                         FontFamily="Segoe MDL2 Assets"

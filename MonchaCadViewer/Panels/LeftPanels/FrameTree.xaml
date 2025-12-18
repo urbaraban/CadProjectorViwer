@@ -12,6 +12,8 @@
     xmlns:mesh="clr-namespace:CadProjectorSDK.Device.Mesh;assembly=CadProjectorSDK"
     xmlns:panels="clr-namespace:CadProjectorViewer.Panels"
     xmlns:scene="clr-namespace:CadProjectorSDK.Scenes;assembly=CadProjectorSDK"
+    xmlns:cadobj="clr-namespace:CadProjectorSDK.CadObjects;assembly=CadProjectorSDK"
+    xmlns:cadobjUid="clr-namespace:CadProjectorSDK.CadObjects.Abstract;assembly=CadProjectorSDK"
     x:Name="FrameTreePage"
     d:DataContext="{d:DesignInstance Type=scene:ProjectionScene}"
     d:DesignHeight="350"
@@ -37,7 +39,25 @@
             <Setter Property="TreeViewItem.IsExpanded" Value="True" />
         </Style>
 
-        <HierarchicalDataTemplate x:Key="ObjectTree" ItemsSource="{Binding Children}">
+        <DataTemplate DataType="{x:Type cadobjUid:UidObject}">
+            <Border d:DataContext="{d:DesignInstance Type=canvasobj:CanvasObject}" ContextMenu="{Binding ContextMenu}">
+                <Border.DataContext>
+                    <MultiBinding Converter="{StaticResource CadObjectConverter}">
+                        <Binding Path="" />
+                        <Binding ElementName="CanvasPanel" Path="DataContext" />
+                        <Binding ElementName="CanvasPanel" Path="Scale" />
+                    </MultiBinding>
+                </Border.DataContext>
+                <DockPanel VerticalAlignment="Center">
+                    <CheckBox IsChecked="{Binding IsRender}" />
+                    <Label
+             VerticalAlignment="Center"
+             Content="{Binding NameID}"
+             MouseDoubleClick="Label_MouseDoubleClick" />
+                </DockPanel>
+            </Border>
+        </DataTemplate>
+        <HierarchicalDataTemplate DataType="{x:Type cadobj:CadGroup}" ItemsSource="{Binding Children}">
             <Border d:DataContext="{d:DesignInstance Type=canvasobj:CanvasObject}" ContextMenu="{Binding ContextMenu}">
                 <Border.DataContext>
                     <MultiBinding Converter="{StaticResource CadObjectConverter}">
@@ -170,11 +190,8 @@
                 IsExpanded="True">
                 <TreeView
                     d:ItemsSource="{d:SampleData ItemCount=2}"
-                    ItemTemplate="{StaticResource ResourceKey=ObjectTree}"
                     ItemsSource="{Binding .}"
                     Style="{StaticResource ObjectTreeMainStyle}" />
-
-
             </Expander>
 
         </DockPanel>

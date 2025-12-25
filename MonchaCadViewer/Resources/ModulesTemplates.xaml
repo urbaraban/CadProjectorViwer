@@ -430,4 +430,20 @@
             </DockPanel>
         </StackPanel>
     </DataTemplate>
+    <DataTemplate DataType="{x:Type correctors:LinePartSplitter}">
+        <StackPanel>
+            <mah:ToggleSwitch Content="Vertical" IsOn="{Binding IsVertical}" />
+            <DockPanel>
+                <TextBlock
+                    Grid.Row="3"
+                    Grid.Column="0"
+                    Text="MaxLinesCount" />
+                <mah:NumericUpDown
+                    Grid.Row="3"
+                    Grid.Column="1"
+                    Minimum="0"
+                    Value="{Binding PartCount}" />
+            </DockPanel>
+        </StackPanel>
+    </DataTemplate>
 </ResourceDictionary>

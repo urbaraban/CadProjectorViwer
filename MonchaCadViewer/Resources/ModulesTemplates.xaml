@@ -3,6 +3,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:correctors="clr-namespace:CadProjectorSDK.Device.Modules.FrameCorrectors;assembly=CadProjectorSDK"
     xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls"
+    xmlns:mesh="clr-namespace:CadProjectorSDK.Device.Modules.Mesh;assembly=CadProjectorSDK"
     xmlns:modules="clr-namespace:CadProjectorSDK.Device.Modules;assembly=CadProjectorSDK"
     xmlns:services="clr-namespace:CadProjectorSDK.Device.Modules.Services;assembly=CadProjectorSDK"
     xmlns:transforming="clr-namespace:CadProjectorSDK.Device.Modules.Transforming;assembly=CadProjectorSDK"
@@ -430,7 +431,7 @@
             </DockPanel>
         </StackPanel>
     </DataTemplate>
-    <DataTemplate DataType="{x:Type correctors:LinePartSplitter}">
+    <DataTemplate DataType="{x:Type mesh:LineGridSplitter}">
         <StackPanel>
             <mah:ToggleSwitch Content="Vertical" IsOn="{Binding IsVertical}" />
             <DockPanel>

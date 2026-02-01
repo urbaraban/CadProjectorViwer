@@ -11,6 +11,7 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -108,9 +109,9 @@ namespace CadProjectorViewer
             GC.WaitForPendingFinalizers();
         }
 
-        protected override void OnKeyUp(KeyEventArgs e)
+        protected override async void OnKeyDown(KeyEventArgs e)
         {
-            base.OnKeyUp(e);
+            base.OnKeyDown(e);
 
            // HotKeysManager.RunAsync(new Key[] { e.Key });
 
@@ -122,25 +123,25 @@ namespace CadProjectorViewer
             {
                 case Key.NumPad8:
                 case Key.W:
-                    mainModel.ProjectorHub.ScenesCollection.SelectedScene.HistoryCommands.Add(
+                    await KeyUpLoopMoving(Key.W,
                         new MovingCommand(mainModel.ProjectorHub.ScenesCollection.SelectedScene.SelectedObjects,
                         0, -step * _mult));
                     break;
                 case Key.NumPad5:
                 case Key.S:
-                    mainModel.ProjectorHub.ScenesCollection.SelectedScene.HistoryCommands.Add(
+                    await KeyUpLoopMoving(Key.S,
                         new MovingCommand(mainModel.ProjectorHub.ScenesCollection.SelectedScene.SelectedObjects,
                         0, step * _mult));
                     break;
                 case Key.NumPad4:
                 case Key.A:
-                    mainModel.ProjectorHub.ScenesCollection.SelectedScene.HistoryCommands.Add(
+                    await KeyUpLoopMoving(Key.A,
                         new MovingCommand(mainModel.ProjectorHub.ScenesCollection.SelectedScene.SelectedObjects,
                         -step * _mult, 0));
                     break;
                 case Key.NumPad6:
                 case Key.D:
-                    mainModel.ProjectorHub.ScenesCollection.SelectedScene.HistoryCommands.Add(
+                    await KeyUpLoopMoving(Key.D,
                         new MovingCommand(mainModel.ProjectorHub.ScenesCollection.SelectedScene.SelectedObjects,
                         step * _mult, 0));
                     break;
@@ -197,8 +198,17 @@ namespace CadProjectorViewer
                         mainModel.ProjectorHub.ScenesCollection.SelectedScene.Projectors.SelectedItem.DeviceBright(10);
                     break;
                 case Key.Escape:
-                    mainModel.ProjectorHub.ScenesCollection.SelectedScene.Break();
+                    await mainModel.ProjectorHub.ScenesCollection.SelectedScene.Break();
                     break;
+            }
+        }
+
+        private async Task KeyUpLoopMoving(Key key, MovingCommand command)
+        {
+            while (Keyboard.IsKeyDown(key))
+            {
+                mainModel.ProjectorHub.ScenesCollection.SelectedScene.HistoryCommands.Add(command);
+                await Task.Delay(100);
             }
         }
 

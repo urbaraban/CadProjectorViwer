@@ -21,21 +21,23 @@ namespace CadProjectorViewer.Dialogs
         {
             if (sender is Label label)
             {
-                DeviceModule module = (DeviceModule)label.DataContext;
-                DragDrop.DoDragDrop(label, new DraggingClass(module), DragDropEffects.Move);
+                if (label.DataContext is DeviceModuleViewModel vm)
+                {
+                    DragDrop.DoDragDrop(label, new DraggingClass(vm.Module), DragDropEffects.Move);
+                }
             }
         }
 
         private void StackPanel_Drop(object sender, DragEventArgs e)
         {
             if (sender is StackPanel stackPanel && 
-                stackPanel.DataContext is DeviceModule module1 && 
+                stackPanel.DataContext is DeviceModuleViewModel vm1 && 
                 this.DataContext is AddDeviceModule model)
             {
                 var dc = (DraggingClass)e.Data.GetData(typeof(DraggingClass));
                 if (dc.Data is DeviceModule module2)
                 {
-                    int index = model.DeviceModules.IndexOf(module1);
+                    int index = model.DeviceModules.IndexOf(vm1);
                     model.MoveItem(module2, index);
                 }
             }
@@ -43,10 +45,10 @@ namespace CadProjectorViewer.Dialogs
 
         private void ListViewItem_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
-            if (sender is ListViewItem item && item.DataContext is DeviceModule module)
+            if (sender is ListViewItem item && item.DataContext is DeviceModuleViewModel vm)
             {
                 var panel = new ModulesEditor();
-                panel.DataContext = module;
+                panel.DataContext = vm.Module;
                 var wnd = new Window()
                 {
                     Content = panel,

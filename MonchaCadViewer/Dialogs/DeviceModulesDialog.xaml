@@ -64,11 +64,15 @@
                             <Label
                                 VerticalAlignment="Center"
                                 VerticalContentAlignment="Center"
-                                Content=":::"
+                                Content="&gt;::&gt;"
                                 Cursor="SizeNS"
                                 MouseDown="Label_MouseDown" />
                             <CheckBox IsChecked="{Binding IsOn}" />
                             <TextBlock VerticalAlignment="Center" Text="{Binding Name}" />
+                            <Button
+                                Margin="3,0,0,0"
+                                Command="{Binding ShowCommand}"
+                                Content="Show" />
                         </StackPanel>
                     </DataTemplate>
                 </ListView.ItemTemplate>

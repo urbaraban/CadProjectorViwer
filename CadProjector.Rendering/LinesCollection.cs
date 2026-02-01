@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using CadProjector.Core.Primitives;
 using System.Linq;
+using CadProjector.Core.Interfaces;
 
 namespace CadProjector.Rendering
 {

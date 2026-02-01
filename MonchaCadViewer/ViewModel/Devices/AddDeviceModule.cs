@@ -1,9 +1,11 @@
 ﻿using CadProjectorSDK.Device;
 using CadProjectorSDK.Device.Modules;
+using CadProjectorSDK.CadObjects;
 using Microsoft.Xaml.Behaviors.Core;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using System.Linq;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -11,13 +13,84 @@ using static Microsoft.WindowsAPICodePack.Shell.PropertySystem.SystemProperties.
 
 namespace CadProjectorViewer.ViewModel.Devices
 {
+    internal class DeviceModuleViewModel : NotifyModel
+    {
+        private readonly LProjector _projector;
+
+        public DeviceModule Module { get; }
+
+        public DeviceModuleViewModel(LProjector projector, DeviceModule module)
+        {
+            _projector = projector;
+            Module = module;
+        }
+
+        public string Name => Module.Name;
+
+        public bool IsOn
+        {
+            get => Module.IsOn;
+            set
+            {
+                Module.IsOn = value;
+                OnPropertyChanged(nameof(IsOn));
+            }
+        }
+
+        public bool IsShown
+        {
+            get
+            {
+                var scene = _projector.GetParentScene?.Invoke();
+                if (scene == null)
+                    return false;
+
+                return scene.OfType<CadDeviceModule>().Any(x => ReferenceEquals(x.Module, Module));
+            }
+        }
+
+        public ICommand ShowCommand => new ActionCommand(() =>
+        {
+            var scene = _projector.GetParentScene?.Invoke();
+            if (scene == null)
+                return;
+
+            var wrapper = scene.OfType<CadDeviceModule>().FirstOrDefault(x => ReferenceEquals(x.Module, Module));
+            if (wrapper != null)
+            {
+                wrapper.Remove();
+            }
+            else
+            {
+                scene.Add(new CadDeviceModule(Module));
+            }
+
+            scene.RefreshScene();
+            OnPropertyChanged(nameof(IsShown));
+        });
+
+        public void HideFromSceneIfShown()
+        {
+            var scene = _projector.GetParentScene?.Invoke();
+            if (scene == null)
+                return;
+
+            var wrapper = scene.OfType<CadDeviceModule>().FirstOrDefault(x => ReferenceEquals(x.Module, Module));
+            if (wrapper != null)
+            {
+                wrapper.Remove();
+                scene.RefreshScene();
+            }
+        }
+    }
+
     internal class AddDeviceModule : NotifyModel
     {
         public IEnumerable<Type> AvailableType { get; }
 
-        public ObservableCollection<DeviceModule> DeviceModules => new ObservableCollection<DeviceModule>(this.MGroup.Modules);
+        public ObservableCollection<DeviceModuleViewModel> DeviceModules { get; } = new ObservableCollection<DeviceModuleViewModel>();
 
-        public DeviceModule SelectModule { get; set; }
+        public DeviceModuleViewModel SelectModule { get; set; }
 
         public bool IsOn
         {
@@ -38,6 +111,24 @@ namespace CadProjectorViewer.ViewModel.Devices
             this.AvailableType = typeof(DeviceModule).Assembly.GetTypes()
                 .Where(x => x.BaseType == typeof(DeviceModule))
                 .OrderBy(x => x.Name);
+
+            SyncModules();
+            this.MGroup.Modules.CollectionChanged += Modules_CollectionChanged;
+        }
+
+        private void Modules_CollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)
+        {
+            SyncModules();
+        }
+
+        private void SyncModules()
+        {
+            DeviceModules.Clear();
+            foreach (var module in this.MGroup.Modules)
+            {
+                DeviceModules.Add(new DeviceModuleViewModel(Projector, module));
+            }
+            OnPropertyChanged(nameof(DeviceModules));
         }
 
         public void AddModule(Type type)
@@ -49,13 +140,15 @@ namespace CadProjectorViewer.ViewModel.Devices
 
         public void RemoveModule(DeviceModule module)
         {
+            DeviceModules.FirstOrDefault(x => ReferenceEquals(x.Module, module))?.HideFromSceneIfShown();
+
             this.MGroup.Modules.Remove(module);
             OnPropertyChanged(nameof(DeviceModules));
         }
 
         public void MoveItem(DeviceModule module, int newindex)
         {
-            this.RemoveModule(module);
+            this.MGroup.Modules.Remove(module);
             this.MGroup.Modules.Insert(newindex, module);
             OnPropertyChanged(nameof(DeviceModules));
         }
@@ -66,7 +159,7 @@ namespace CadProjectorViewer.ViewModel.Devices
         {
             if (this.SelectModule != null)
             {
-                this.RemoveModule(this.SelectModule);
+                this.RemoveModule(this.SelectModule.Module);
             }
         });
 

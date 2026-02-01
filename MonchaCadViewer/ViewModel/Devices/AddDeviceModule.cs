@@ -27,6 +27,8 @@ namespace CadProjectorViewer.ViewModel.Devices
 
         public string Name => Module.Name;
 
+        public bool CanShow => Module is RenderableDeviceModule;
+
         public bool IsOn
         {
             get => Module.IsOn;
@@ -51,6 +53,9 @@ namespace CadProjectorViewer.ViewModel.Devices
 
         public ICommand ShowCommand => new ActionCommand(() =>
         {
+            if (!CanShow)
+                return;
+
             var scene = _projector.GetParentScene?.Invoke();
             if (scene == null)
                 return;

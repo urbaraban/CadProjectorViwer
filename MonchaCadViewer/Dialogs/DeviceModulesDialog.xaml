@@ -14,6 +14,7 @@
     WindowStyle="ToolWindow"
     mc:Ignorable="d">
     <Window.Resources>
+        <BooleanToVisibilityConverter x:Key="BoolToVisibility" />
         <Style TargetType="MenuItem">
             <Setter Property="Header" Value="{Binding Name}" />
             <Setter Property="Command" Value="{Binding DataContext.AddModuleCommand, RelativeSource={RelativeSource FindAncestor, AncestorType=Window}}" />
@@ -72,7 +73,8 @@
                             <Button
                                 Margin="3,0,0,0"
                                 Command="{Binding ShowCommand}"
-                                Content="Show" />
+                                Content="Show"
+                                Visibility="{Binding CanShow, Converter={StaticResource BoolToVisibility}}" />
                         </StackPanel>
                     </DataTemplate>
                 </ListView.ItemTemplate>

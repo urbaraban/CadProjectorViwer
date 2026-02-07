@@ -2,12 +2,31 @@
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:correctors="clr-namespace:CadProjectorSDK.Device.Modules.FrameCorrectors;assembly=CadProjectorSDK"
+    xmlns:dat="clr-namespace:System.Windows.Data;assembly=PresentationFramework"
+    xmlns:devicemesh="clr-namespace:CadProjectorSDK.Device.Mesh;assembly=CadProjectorSDK"
     xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls"
     xmlns:mesh="clr-namespace:CadProjectorSDK.Device.Modules.Mesh;assembly=CadProjectorSDK"
     xmlns:modules="clr-namespace:CadProjectorSDK.Device.Modules;assembly=CadProjectorSDK"
     xmlns:services="clr-namespace:CadProjectorSDK.Device.Modules.Services;assembly=CadProjectorSDK"
+    xmlns:sys="clr-namespace:System;assembly=mscorlib"
     xmlns:transforming="clr-namespace:CadProjectorSDK.Device.Modules.Transforming;assembly=CadProjectorSDK"
     xmlns:zcorrectors="clr-namespace:CadProjectorSDK.Device.Modules.ZCorrectors;assembly=CadProjectorSDK">
+    <dat:ObjectDataProvider
+        x:Key="MorphTypeValues"
+        MethodName="GetValues"
+        ObjectType="{x:Type sys:Enum}">
+        <dat:ObjectDataProvider.MethodParameters>
+            <x:Type TypeName="devicemesh:MorphType" />
+        </dat:ObjectDataProvider.MethodParameters>
+    </dat:ObjectDataProvider>
+    <dat:ObjectDataProvider
+        x:Key="CalibrationFormValues"
+        MethodName="GetValues"
+        ObjectType="{x:Type sys:Enum}">
+        <dat:ObjectDataProvider.MethodParameters>
+            <x:Type TypeName="devicemesh:CalibrationForm" />
+        </dat:ObjectDataProvider.MethodParameters>
+    </dat:ObjectDataProvider>
     <DataTemplate x:Key="BaseModule" DataType="{x:Type modules:DeviceModule}">
         <StackPanel>
             <DockPanel>
@@ -444,6 +463,42 @@
                     Grid.Column="1"
                     Minimum="0"
                     Value="{Binding PartCount}" />
+            </DockPanel>
+        </StackPanel>
+    </DataTemplate>
+    <DataTemplate DataType="{x:Type mesh:MorphMeshCorrector}">
+        <StackPanel>
+            <DockPanel>
+                <Label Content="Form" DockPanel.Dock="Left" />
+                <ComboBox
+                    MinWidth="150"
+                    ItemsSource="{Binding Source={StaticResource CalibrationFormValues}}"
+                    SelectedItem="{Binding Form, Mode=TwoWay}" />
+            </DockPanel>
+            <DockPanel>
+                <Label Content="Morph" DockPanel.Dock="Left" />
+                <ComboBox
+                    MinWidth="150"
+                    ItemsSource="{Binding Source={StaticResource MorphTypeValues}}"
+                    SelectedItem="{Binding Morph, Mode=TwoWay}" />
+            </DockPanel>
+            <DockPanel>
+                <Label Content="StrokeCount" DockPanel.Dock="Left" />
+                <mah:NumericUpDown
+                    MinWidth="150"
+                    Interval="1"
+                    Minimum="2"
+                    NumericInputMode="Numbers"
+                    Value="{Binding StrokeCount, Mode=TwoWay}" />
+            </DockPanel>
+            <DockPanel>
+                <Label Content="ColumnCount" DockPanel.Dock="Left" />
+                <mah:NumericUpDown
+                    MinWidth="150"
+                    Interval="1"
+                    Minimum="2"
+                    NumericInputMode="Numbers"
+                    Value="{Binding ColumnCount, Mode=TwoWay}" />
             </DockPanel>
         </StackPanel>
     </DataTemplate>

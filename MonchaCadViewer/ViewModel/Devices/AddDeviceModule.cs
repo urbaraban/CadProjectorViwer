@@ -114,7 +114,9 @@ namespace CadProjectorViewer.ViewModel.Devices
         {
             Projector = device;
             this.AvailableType = typeof(DeviceModule).Assembly.GetTypes()
-                .Where(x => x.BaseType == typeof(DeviceModule))
+                .Where(x => typeof(DeviceModule).IsAssignableFrom(x))
+                .Where(x => x != typeof(DeviceModule) && !x.IsAbstract)
+                .Where(x => x.GetConstructor(Type.EmptyTypes) != null)
                 .OrderBy(x => x.Name);
 
             SyncModules();

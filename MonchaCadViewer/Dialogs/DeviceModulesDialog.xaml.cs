@@ -1,4 +1,4 @@
-﻿using CadProjectorSDK.Device.Modules;
+using CadProjectorSDK.Device.Modules;
 using CadProjectorViewer.Services;
 using CadProjectorViewer.ViewModel.Devices;
 using System.Windows;
@@ -43,19 +43,5 @@ namespace CadProjectorViewer.Dialogs
             }
         }
 
-        private void ListViewItem_MouseDoubleClick(object sender, MouseButtonEventArgs e)
-        {
-            if (sender is ListViewItem item && item.DataContext is DeviceModuleViewModel vm)
-            {
-                var panel = new ModulesEditor();
-                panel.DataContext = vm.Module;
-                var wnd = new Window()
-                {
-                    Content = panel,
-                    SizeToContent = SizeToContent.WidthAndHeight
-                };
-                wnd.Show();
-            }
-        }
     }
 }

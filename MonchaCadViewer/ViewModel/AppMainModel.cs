@@ -140,11 +140,27 @@ namespace CadProjectorViewer.ViewModel
             {
                 try
                 {
-                    return ProjectorHub.Save(path).GetAwaiter().GetResult();
+                    bool result = ProjectorHub.Save(path).GetAwaiter().GetResult();
+
+                    if (string.IsNullOrWhiteSpace(Mws.LastSaveMessage) == false)
+                    {
+                        MessageBox.Show(
+                            Mws.LastSaveMessage,
+                            result ? "Предупреждение сохранения" : "Ошибка сохранения",
+                            MessageBoxButton.OK,
+                            result ? MessageBoxImage.Warning : MessageBoxImage.Error);
+                    }
+
+                    return result;
                 }
                 catch (Exception ex)
                 {
                     App.Log?.Invoke($"Save error: {ex.Message}", "APP");
+                    MessageBox.Show(
+                        $"Сохранение завершилось ошибкой:\n{ex.Message}",
+                        "Ошибка сохранения",
+                        MessageBoxButton.OK,
+                        MessageBoxImage.Error);
                     return false;
                 }
             }
@@ -161,15 +177,20 @@ namespace CadProjectorViewer.ViewModel
                         {
                             ProgressPanel.SetProgressBar(1, 2, "Save Moncha");
                             bool saved = SaveToPath(saveFileDialog.FileName);
-                            if (saved == false || File.Exists(saveFileDialog.FileName) == false)
+                            if (saved == false)
                             {
                                 ProgressPanel.SetProgressBar(2, 2, "Not Save");
                                 return true;
                             }
-                            else
+
+                            if (File.Exists(saveFileDialog.FileName))
                             {
                                 ProgressPanel.SetProgressBar(2, 2, "Saved");
                                 AppSt.Default.cl_moncha_path = saveFileDialog.FileName;
+                            }
+                            else
+                            {
+                                ProgressPanel.SetProgressBar(2, 2, "Saved (recovery)");
                             }
                         }
                     }

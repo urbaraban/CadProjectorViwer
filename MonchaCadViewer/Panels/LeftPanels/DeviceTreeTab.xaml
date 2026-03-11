@@ -1,4 +1,4 @@
-﻿<UserControl
+<UserControl
     x:Class="CadProjectorViewer.Panels.DeviceTreeTab"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
@@ -68,6 +68,10 @@
                                 Click="MenuItem_Click"
                                 Header="YMirror"
                                 Tag="mesh_YMirror" />
+                            <MenuItem
+                                Click="MenuItem_Click"
+                                Header="Rotate 90°"
+                                Tag="mesh_rotate90" />
                             <MenuItem
                                 Click="MenuItem_Click"
                                 Header="{DynamicResource mesh_Returnpoint}"

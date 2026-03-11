@@ -13,19 +13,30 @@ using static Microsoft.WindowsAPICodePack.Shell.PropertySystem.SystemProperties.
 
 namespace CadProjectorViewer.ViewModel.Devices
 {
+    public enum DeviceModulesStage
+    {
+        FinalRender,
+        PreMesh
+    }
+
     internal class DeviceModuleViewModel : NotifyModel
     {
         private readonly LProjector _projector;
+        private readonly DeviceModulesStage _stage;
 
         public DeviceModule Module { get; }
+        public ModulesGroup OwnerGroup { get; }
 
-        public DeviceModuleViewModel(LProjector projector, DeviceModule module)
+        public DeviceModuleViewModel(LProjector projector, ModulesGroup ownerGroup, DeviceModule module, DeviceModulesStage stage)
         {
             _projector = projector;
+            OwnerGroup = ownerGroup;
             Module = module;
+            _stage = stage;
         }
 
         public string Name => Module.Name;
+        public string GroupDisplayName => _stage == DeviceModulesStage.PreMesh ? "Модули до сетки" : "Финальные модули";
 
         public bool CanShow => Module is RenderableDeviceModule;
 
@@ -111,7 +122,23 @@ namespace CadProjectorViewer.ViewModel.Devices
 
         public ObservableCollection<DeviceModuleViewModel> DeviceModules { get; } = new ObservableCollection<DeviceModuleViewModel>();
 
-        public DeviceModuleViewModel SelectModule { get; set; }
+        public DeviceModuleViewModel SelectModule
+        {
+            get => _selectModule;
+            set
+            {
+                if (ReferenceEquals(_selectModule, value))
+                {
+                    return;
+                }
+
+                _selectModule = value;
+                OnPropertyChanged(nameof(SelectModule));
+            }
+        }
+        private DeviceModuleViewModel _selectModule;
+
+        public string DialogTitle => $"Модули устройства: {Projector?.DisplayName}";
 
         public bool IsOn
         {
@@ -122,7 +149,27 @@ namespace CadProjectorViewer.ViewModel.Devices
             }
         }
 
-        private ModulesGroup MGroup => Projector.ModulesGroup;
+        public DeviceModulesStage SelectedStage
+        {
+            get => _selectedStage;
+            set
+            {
+                if (_selectedStage == value)
+                {
+                    return;
+                }
+
+                _selectedStage = value;
+                OnPropertyChanged(nameof(SelectedStage));
+                OnPropertyChanged(nameof(IsOn));
+                SyncModules();
+            }
+        }
+        private DeviceModulesStage _selectedStage = DeviceModulesStage.FinalRender;
+
+        private ModulesGroup MGroup => SelectedStage == DeviceModulesStage.PreMesh
+            ? Projector.PreMeshModulesGroup
+            : Projector.ModulesGroup;
 
         private LProjector Projector { get; }
 
@@ -136,7 +183,8 @@ namespace CadProjectorViewer.ViewModel.Devices
                 .OrderBy(x => x.Name);
 
             SyncModules();
-            this.MGroup.Modules.CollectionChanged += Modules_CollectionChanged;
+            this.Projector.ModulesGroup.Modules.CollectionChanged += Modules_CollectionChanged;
+            this.Projector.PreMeshModulesGroup.Modules.CollectionChanged += Modules_CollectionChanged;
         }
 
         private void Modules_CollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)
@@ -149,7 +197,18 @@ namespace CadProjectorViewer.ViewModel.Devices
             DeviceModules.Clear();
             foreach (var module in this.MGroup.Modules)
             {
-                DeviceModules.Add(new DeviceModuleViewModel(Projector, module));
+                DeviceModulesStage stage = ReferenceEquals(MGroup, Projector.PreMeshModulesGroup)
+                    ? DeviceModulesStage.PreMesh
+                    : DeviceModulesStage.FinalRender;
+                DeviceModules.Add(new DeviceModuleViewModel(Projector, MGroup, module, stage));
+            }
+            if (SelectModule == null && DeviceModules.Count > 0)
+            {
+                SelectModule = DeviceModules[0];
+            }
+            else if (SelectModule != null && DeviceModules.Contains(SelectModule) == false)
+            {
+                SelectModule = DeviceModules.FirstOrDefault();
             }
             OnPropertyChanged(nameof(DeviceModules));
         }

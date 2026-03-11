@@ -1,4 +1,4 @@
-﻿using CadProjectorSDK;
+using CadProjectorSDK;
 using CadProjectorSDK.Device;
 using CadProjectorSDK.Device.Controllers;
 using CadProjectorSDK.Device.Mesh;
@@ -106,13 +106,16 @@ namespace CadProjectorViewer.Panels
                                 createGridWindow.ShowDialog();
                                 break;
                             case "convert_on_ellipsoid":
-                                mesh.ConvertOnEllipsoid();
+                                mesh.ConvertOnEllipsoid(mesh.OnlyDevice);
                                 break;
                             case "mesh_inverse":
                                 mesh.InverseYPosition();
                                 break;
                             case "mesh_YMirror":
                                 mesh.MirrorMesh();
+                                break;
+                            case "mesh_rotate90":
+                                mesh.RotateMeshIndex90(true);
                                 break;
                             case "mesh_returnpoint":
                                 mesh.ReturnPoint();

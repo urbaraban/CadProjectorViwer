@@ -1,4 +1,4 @@
-﻿using CadProjectorSDK.Device;
+using CadProjectorSDK.Device;
 using CadProjectorSDK.Device.Modules;
 using CadProjectorSDK.CadObjects;
 using Microsoft.Xaml.Behaviors.Core;
@@ -60,19 +60,35 @@ namespace CadProjectorViewer.ViewModel.Devices
             if (scene == null)
                 return;
 
-            var wrapper = scene.OfType<CadDeviceModule>().FirstOrDefault(x => ReferenceEquals(x.Module, Module));
+            var wrapper = scene.OfType<CadDeviceModule>()
+             .FirstOrDefault(x => ReferenceEquals(x.Module, Module) && x.IsRender);
+
             if (wrapper != null)
             {
                 wrapper.Remove();
             }
             else
             {
-                scene.Add(new CadDeviceModule(Module));
+                scene.Add(new CadDeviceModule(Module)
+                {
+                    DeviceMultiply = GetProjectorLocalSize
+                });
             }
 
             scene.RefreshScene();
             OnPropertyChanged(nameof(IsShown));
         });
+
+        private CadRect3D GetProjectorLocalSize()
+        {
+            var size = _projector?.Size;
+            if (size == null)
+                return null;
+
+            return new CadRect3D(
+                new CadAnchor(size.BL.X, size.BL.Y, size.BL.Z),
+                new CadAnchor(size.TR.X, size.TR.Y, size.TR.Z));
+        }
 
         public void HideFromSceneIfShown()
         {

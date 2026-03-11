@@ -123,25 +123,25 @@ namespace CadProjectorViewer
             {
                 case Key.NumPad8:
                 case Key.W:
-                    await KeyUpLoopMoving(Key.W,
+                    await KeyUpLoopMoving(e.Key,
                         new MovingCommand(mainModel.ProjectorHub.ScenesCollection.SelectedScene.SelectedObjects,
                         0, -step * _mult));
                     break;
                 case Key.NumPad5:
                 case Key.S:
-                    await KeyUpLoopMoving(Key.S,
+                    await KeyUpLoopMoving(e.Key,
                         new MovingCommand(mainModel.ProjectorHub.ScenesCollection.SelectedScene.SelectedObjects,
                         0, step * _mult));
                     break;
                 case Key.NumPad4:
                 case Key.A:
-                    await KeyUpLoopMoving(Key.A,
+                    await KeyUpLoopMoving(e.Key,
                         new MovingCommand(mainModel.ProjectorHub.ScenesCollection.SelectedScene.SelectedObjects,
                         -step * _mult, 0));
                     break;
                 case Key.NumPad6:
                 case Key.D:
-                    await KeyUpLoopMoving(Key.D,
+                    await KeyUpLoopMoving(e.Key,
                         new MovingCommand(mainModel.ProjectorHub.ScenesCollection.SelectedScene.SelectedObjects,
                         step * _mult, 0));
                     break;

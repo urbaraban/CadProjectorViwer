@@ -1,4 +1,4 @@
-﻿using CadProjectorSDK;
+using CadProjectorSDK;
 using CadProjectorSDK.CadObjects.Abstract;
 using CadProjectorSDK.Config;
 using CadProjectorSDK.Scenes;
@@ -136,6 +136,19 @@ namespace CadProjectorViewer.ViewModel
 
         private bool SaveConfiguration(bool saveas)
         {
+            bool SaveToPath(string path)
+            {
+                try
+                {
+                    return ProjectorHub.Save(path).GetAwaiter().GetResult();
+                }
+                catch (Exception ex)
+                {
+                    App.Log?.Invoke($"Save error: {ex.Message}", "APP");
+                    return false;
+                }
+            }
+
             MessageBoxResult messageBoxResult = MessageBox.Show("Сохранить настройки?", "Внимание", MessageBoxButton.YesNoCancel, MessageBoxImage.Warning);
             switch (messageBoxResult)
             {
@@ -147,12 +160,11 @@ namespace CadProjectorViewer.ViewModel
                         if (saveFileDialog.ShowDialog() == true)
                         {
                             ProgressPanel.SetProgressBar(1, 2, "Save Moncha");
-                            ProjectorHub.Save(saveFileDialog.FileName);
-                            if (File.Exists(saveFileDialog.FileName) == false)
+                            bool saved = SaveToPath(saveFileDialog.FileName);
+                            if (saved == false || File.Exists(saveFileDialog.FileName) == false)
                             {
-                                AppSt.Default.cl_moncha_path = saveFileDialog.FileName;
                                 ProgressPanel.SetProgressBar(2, 2, "Not Save");
-                                SaveConfiguration(true);
+                                return true;
                             }
                             else
                             {
@@ -163,7 +175,12 @@ namespace CadProjectorViewer.ViewModel
                     }
                     else
                     {
-                        ProjectorHub.Save(AppSt.Default.cl_moncha_path);
+                        bool saved = SaveToPath(AppSt.Default.cl_moncha_path);
+                        ProgressPanel.SetProgressBar(2, 2, saved ? "Saved" : "Not Save");
+                        if (saved == false)
+                        {
+                            return true;
+                        }
                     }
                     AppSt.Default.Save();
                     ProgressPanel.End();

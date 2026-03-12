@@ -70,8 +70,12 @@
                                 Tag="mesh_YMirror" />
                             <MenuItem
                                 Click="MenuItem_Click"
-                                Header="Rotate 90°"
+                                Header="Rotate index 90°"
                                 Tag="mesh_rotate90" />
+                            <MenuItem
+                                Click="MenuItem_Click"
+                                Header="Rotate coords 90°"
+                                Tag="mesh_rotate_coords90" />
                             <MenuItem
                                 Click="MenuItem_Click"
                                 Header="{DynamicResource mesh_Returnpoint}"

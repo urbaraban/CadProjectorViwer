@@ -117,6 +117,9 @@ namespace CadProjectorViewer.Panels
                             case "mesh_rotate90":
                                 mesh.RotateMeshIndex90(true);
                                 break;
+                            case "mesh_rotate_coords90":
+                                mesh.RotateMeshCoordinates90(true);
+                                break;
                             case "mesh_returnpoint":
                                 mesh.ReturnPoint();
                                 break;

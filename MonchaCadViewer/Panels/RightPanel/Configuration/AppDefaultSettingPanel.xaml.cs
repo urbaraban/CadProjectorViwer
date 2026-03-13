@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Globalization;
@@ -15,6 +15,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using ToGeometryConverter;
 using AppSt = CadProjectorViewer.Properties.Settings;
 
 namespace CadProjectorViewer.Panels.RightPanel.Configuration
@@ -123,10 +124,38 @@ namespace CadProjectorViewer.Panels.RightPanel.Configuration
             }
         }
 
+        public string DxfUnitsOverride
+        {
+            get => NormalizeDxfOverride(AppSt.Default.dxf_units_override);
+            set
+            {
+                string normalized = NormalizeDxfOverride(value);
+                AppSt.Default.dxf_units_override = normalized;
+                GCTools.DxfUnitsOverride = normalized;
+                AppSt.Default.Save();
+            }
+        }
+
 
         public AppDefaultSettingPanel()
         {
             InitializeComponent();
+            GCTools.DxfUnitsOverride = NormalizeDxfOverride(AppSt.Default.dxf_units_override);
+        }
+
+        private static string NormalizeDxfOverride(string value)
+        {
+            switch ((value ?? string.Empty).Trim().ToLowerInvariant())
+            {
+                case "mm":
+                case "cm":
+                case "m":
+                case "in":
+                case "ft":
+                    return value.Trim().ToLowerInvariant();
+                default:
+                    return "auto";
+            }
         }
 
     }

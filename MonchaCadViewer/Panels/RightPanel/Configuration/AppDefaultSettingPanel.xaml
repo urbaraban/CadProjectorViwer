@@ -1,4 +1,4 @@
-﻿<UserControl x:Class="CadProjectorViewer.Panels.RightPanel.Configuration.AppDefaultSettingPanel"
+<UserControl x:Class="CadProjectorViewer.Panels.RightPanel.Configuration.AppDefaultSettingPanel"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
@@ -49,6 +49,15 @@
                 <CheckBox
                     Content="{DynamicResource setting_showhideobject}"
                     IsChecked="{Binding Show_hide_object, Mode=TwoWay}"/>
+                <Label Width="auto" Content="DXF units override"/>
+                <ComboBox SelectedValuePath="Tag" SelectedValue="{Binding DxfUnitsOverride, Mode=TwoWay}">
+                    <ComboBoxItem Content="Auto (from file/header)" Tag="auto"/>
+                    <ComboBoxItem Content="Millimeters (mm)" Tag="mm"/>
+                    <ComboBoxItem Content="Centimeters (cm)" Tag="cm"/>
+                    <ComboBoxItem Content="Meters (m)" Tag="m"/>
+                    <ComboBoxItem Content="Inches (in)" Tag="in"/>
+                    <ComboBoxItem Content="Feet (ft)" Tag="ft"/>
+                </ComboBox>
                 <Separator/>
                 <!-- Attach panel-->
                 <Label 

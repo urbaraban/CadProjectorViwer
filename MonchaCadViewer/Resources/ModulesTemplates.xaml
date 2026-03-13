@@ -49,6 +49,10 @@
                 <RowDefinition />
                 <RowDefinition />
                 <RowDefinition />
+                <RowDefinition />
+                <RowDefinition />
+                <RowDefinition />
+                <RowDefinition />
             </Grid.RowDefinitions>
             <TextBlock
                 Grid.Row="0"
@@ -122,6 +126,38 @@
                 Grid.Column="1"
                 Interval="0.01"
                 Value="{Binding CenterY, StringFormat={}{0.000}}" />
+            <TextBlock
+                Grid.Row="7"
+                Grid.Column="0"
+                Text="Cut Left" />
+            <mah:ToggleSwitch
+                Grid.Row="7"
+                Grid.Column="1"
+                IsOn="{Binding CutLeft}" />
+            <TextBlock
+                Grid.Row="8"
+                Grid.Column="0"
+                Text="Cut Right" />
+            <mah:ToggleSwitch
+                Grid.Row="8"
+                Grid.Column="1"
+                IsOn="{Binding CutRight}" />
+            <TextBlock
+                Grid.Row="9"
+                Grid.Column="0"
+                Text="Cut Top" />
+            <mah:ToggleSwitch
+                Grid.Row="9"
+                Grid.Column="1"
+                IsOn="{Binding CutTop}" />
+            <TextBlock
+                Grid.Row="10"
+                Grid.Column="0"
+                Text="Cut Bottom" />
+            <mah:ToggleSwitch
+                Grid.Row="10"
+                Grid.Column="1"
+                IsOn="{Binding CutBottom}" />
         </Grid>
     </DataTemplate>
     <DataTemplate DataType="{x:Type correctors:HyperbolaCorrector}">

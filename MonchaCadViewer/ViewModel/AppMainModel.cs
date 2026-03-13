@@ -86,6 +86,7 @@ namespace CadProjectorViewer.ViewModel
 
             GCTools.Log = Logs.PostLog;
             GCTools.SetProgress = ProgressPanel.SetProgressBar;
+            GCTools.DxfUnitsOverride = NormalizeDxfOverride(AppSt.Default.dxf_units_override);
 
             projectorHub.UDPLaserListener.OutFilePathWorker = FileLoad.GetUDPString;
 
@@ -97,6 +98,21 @@ namespace CadProjectorViewer.ViewModel
             WorkFolder.PathSelected += WorkFolder_PathSelected;
 
             this.EthernetHub.CommandDummyIncomming += CUTServer_CommandDummyIncomming;
+        }
+
+        private static string NormalizeDxfOverride(string value)
+        {
+            switch ((value ?? string.Empty).Trim().ToLowerInvariant())
+            {
+                case "mm":
+                case "cm":
+                case "m":
+                case "in":
+                case "ft":
+                    return value.Trim().ToLowerInvariant();
+                default:
+                    return "auto";
+            }
         }
 
         private void CUTServer_CommandDummyIncomming(object sender, ReceivedCookies e)

@@ -1,4 +1,4 @@
-﻿<?xml version='1.0' encoding='utf-8'?>
+<?xml version='1.0' encoding='utf-8'?>
 <SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="CadProjectorViewer.Properties" GeneratedClassName="Settings">
   <Profiles />
   <Settings>
@@ -76,6 +76,9 @@
     </Setting>
     <Setting Name="Flags" Type="System.String" Scope="User">
       <Value Profile="(Default)">CLEAR&amp;SHOW&amp;ALIGN&amp;PLAY</Value>
+    </Setting>
+    <Setting Name="dxf_units_override" Type="System.String" Scope="User">
+      <Value Profile="(Default)">auto</Value>
     </Setting>
   </Settings>
 </SettingsFile>

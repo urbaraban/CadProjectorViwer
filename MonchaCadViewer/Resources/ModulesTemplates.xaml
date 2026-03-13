@@ -11,6 +11,9 @@
     xmlns:sys="clr-namespace:System;assembly=mscorlib"
     xmlns:transforming="clr-namespace:CadProjectorSDK.Device.Modules.Transforming;assembly=CadProjectorSDK"
     xmlns:zcorrectors="clr-namespace:CadProjectorSDK.Device.Modules.ZCorrectors;assembly=CadProjectorSDK">
+    <Style TargetType="{x:Type mah:NumericUpDown}">
+        <Setter Property="StringFormat" Value="0.000" />
+    </Style>
     <dat:ObjectDataProvider
         x:Key="MorphTypeValues"
         MethodName="GetValues"
@@ -178,7 +181,6 @@
                     Interval="0.01"
                     Maximum="2"
                     Minimum="0"
-                    StringFormat="0.0000"
                     Value="{Binding KoeffX, Mode=TwoWay, StringFormat={}{0.000}}" />
             </DockPanel>
             <DockPanel>
@@ -188,7 +190,6 @@
                     Interval="0.01"
                     Maximum="2"
                     Minimum="0"
-                    StringFormat="0.0000"
                     Value="{Binding KoeffY, Mode=TwoWay, StringFormat={}{0.000}}" />
             </DockPanel>
         </StackPanel>
@@ -202,7 +203,6 @@
                     Interval="0.01"
                     Maximum="2"
                     Minimum="0"
-                    StringFormat="0.0000"
                     Value="{Binding AngleX, Mode=TwoWay, StringFormat={}{0.000}}" />
             </DockPanel>
             <DockPanel>
@@ -212,7 +212,6 @@
                     Interval="0.01"
                     Maximum="2"
                     Minimum="0"
-                    StringFormat="0.0000"
                     Value="{Binding AngleYX, Mode=TwoWay, StringFormat={}{0.000}}" />
             </DockPanel>
             <DockPanel>
@@ -222,7 +221,6 @@
                     Interval="0.01"
                     Maximum="2"
                     Minimum="0"
-                    StringFormat="0.0000"
                     Value="{Binding AngleY, Mode=TwoWay, StringFormat={}{0.000}}" />
             </DockPanel>
         </StackPanel>
@@ -233,7 +231,7 @@
                 <Label Content="Высота" DockPanel.Dock="Left" />
                 <mah:NumericUpDown
                     MinWidth="250"
-                    Interval="0.01"
+                    Interval="1"
                     Minimum="0"
                     Value="{Binding Depth, Mode=TwoWay, StringFormat={}{0.000}}" />
             </DockPanel>
@@ -260,6 +258,15 @@
     <DataTemplate DataType="{x:Type correctors:AxisGradient}">
         <StackPanel>
             <mah:ToggleSwitch Content="Vertical" IsOn="{Binding VerticalCorrect}" />
+            <DockPanel>
+                <Label Content="Points" DockPanel.Dock="Left" />
+                <mah:NumericUpDown
+                    MinWidth="150"
+                    Interval="1"
+                    Minimum="2"
+                    NumericInputMode="Numbers"
+                    Value="{Binding PointsCount, Mode=TwoWay}" />
+            </DockPanel>
             <ItemsControl ItemsSource="{Binding AxisCorrectors}">
                 <ItemsControl.ItemsPanel>
                     <ItemsPanelTemplate>

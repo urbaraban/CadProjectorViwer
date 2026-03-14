@@ -7,6 +7,7 @@
     xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls"
     xmlns:mesh="clr-namespace:CadProjectorSDK.Device.Modules.Mesh;assembly=CadProjectorSDK"
     xmlns:modules="clr-namespace:CadProjectorSDK.Device.Modules;assembly=CadProjectorSDK"
+    xmlns:optimization="clr-namespace:CadProjectorSDK.Device.Modules.Optimization;assembly=CadProjectorSDK"
     xmlns:services="clr-namespace:CadProjectorSDK.Device.Modules.Services;assembly=CadProjectorSDK"
     xmlns:sys="clr-namespace:System;assembly=mscorlib"
     xmlns:transforming="clr-namespace:CadProjectorSDK.Device.Modules.Transforming;assembly=CadProjectorSDK"
@@ -316,8 +317,8 @@
                 <mah:NumericUpDown
                     MinWidth="150"
                     Interval="1"
-                    Maximum="50"
-                    Minimum="10"
+                    Maximum="100"
+                    Minimum="1"
                     NumericInputMode="Numbers"
                     Value="{Binding FPS, Mode=TwoWay}" />
             </DockPanel>
@@ -327,7 +328,7 @@
                     MinWidth="150"
                     Interval="1000"
                     Maximum="40000"
-                    Minimum="10000"
+                    Minimum="1000"
                     NumericInputMode="Numbers"
                     Value="{Binding ScanRate, Mode=TwoWay}" />
             </DockPanel>
@@ -496,6 +497,19 @@
                     Maximum="30"
                     Minimum="0"
                     Value="{Binding BlankMass}" />
+            </DockPanel>
+        </StackPanel>
+    </DataTemplate>
+    <DataTemplate DataType="{x:Type optimization:Unduplicated}">
+        <StackPanel>
+            <DockPanel>
+                <Label Content="Погрешность" DockPanel.Dock="Left" />
+                <mah:NumericUpDown
+                    MinWidth="200"
+                    Interval="0.000001"
+                    Maximum="0.01"
+                    Minimum="0.0000000001"
+                    Value="{Binding Tolerance, Mode=TwoWay, StringFormat={}{0:G6}}" />
             </DockPanel>
         </StackPanel>
     </DataTemplate>

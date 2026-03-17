@@ -308,6 +308,14 @@
                     NumericInputMode="Numbers"
                     Value="{Binding ScanRate, Mode=TwoWay}" />
             </DockPanel>
+            <DockPanel>
+                <Label Content="Добавлять точки к обычным линиям" DockPanel.Dock="Left" />
+                <mah:ToggleSwitch IsOn="{Binding AddPointsToRegularLines, Mode=TwoWay}" />
+            </DockPanel>
+            <DockPanel>
+                <Label Content="Добавлять точки к IsBlank" DockPanel.Dock="Left" />
+                <mah:ToggleSwitch IsOn="{Binding AddPointsToIsBlank, Mode=TwoWay}" />
+            </DockPanel>
         </StackPanel>
     </DataTemplate>
     <DataTemplate DataType="{x:Type services:ScanRateGradientDotInserter}">
@@ -326,9 +334,9 @@
                 <Label Content="ScanRate" DockPanel.Dock="Left" />
                 <mah:NumericUpDown
                     MinWidth="150"
-                    Interval="1000"
+                    Interval="100"
                     Maximum="40000"
-                    Minimum="1000"
+                    Minimum="100"
                     NumericInputMode="Numbers"
                     Value="{Binding ScanRate, Mode=TwoWay}" />
             </DockPanel>

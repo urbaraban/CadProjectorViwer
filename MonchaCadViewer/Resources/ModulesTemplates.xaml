@@ -164,37 +164,6 @@
                 IsOn="{Binding CutBottom}" />
         </Grid>
     </DataTemplate>
-    <DataTemplate DataType="{x:Type correctors:HyperbolaCorrector}">
-        <StackPanel Orientation="Vertical">
-            <DockPanel>
-                <Label Content="Дуга" DockPanel.Dock="Left" />
-                <mah:NumericUpDown
-                    MinWidth="250"
-                    Interval="0.01"
-                    Maximum="1"
-                    Minimum="0"
-                    Value="{Binding KoeffC, Mode=TwoWay, StringFormat={}{0.000}}" />
-            </DockPanel>
-            <DockPanel>
-                <Label Content="Угол X" DockPanel.Dock="Left" />
-                <mah:NumericUpDown
-                    MinWidth="250"
-                    Interval="0.01"
-                    Maximum="2"
-                    Minimum="0"
-                    Value="{Binding KoeffX, Mode=TwoWay, StringFormat={}{0.000}}" />
-            </DockPanel>
-            <DockPanel>
-                <Label Content="Угол Y" DockPanel.Dock="Left" />
-                <mah:NumericUpDown
-                    MinWidth="150"
-                    Interval="0.01"
-                    Maximum="2"
-                    Minimum="0"
-                    Value="{Binding KoeffY, Mode=TwoWay, StringFormat={}{0.000}}" />
-            </DockPanel>
-        </StackPanel>
-    </DataTemplate>
     <DataTemplate DataType="{x:Type correctors:ArctanCorrector}">
         <StackPanel Orientation="Vertical">
             <DockPanel>

@@ -1,112 +1,74 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using CadProjector.Core.Primitives;
 using CadProjector.Rendering;
 
 namespace CadProjector.Devices.Modules.Optimization
 {
+    /// <summary>
+    /// Жадный алгоритм кратчайшего пути (Nearest Neighbor TSP).
+    /// На каждом шаге берётся отрезок, ближайший конец которого находится
+    /// ближе всего к текущей позиции луча. При необходимости отрезок разворачивается.
+    /// </summary>
     public class FindShortestPath : DeviceModule
     {
         public override string Name => "ShortestPath";
         public override string Description => "Path optimization to reduce rendering time";
-
-        private double maxAngle = 60;
-        public double MaxAngle
-        {
-            get => maxAngle;
-            set
-            {
-                maxAngle = Math.Max(0, Math.Min(180, value));
-                Update(this);
-            }
-        }
 
         public LinesCollection Optimize(IEnumerable<VectorLine> lines)
         {
             if (!IsEnabled || lines == null)
                 return new LinesCollection(lines ?? Array.Empty<VectorLine>());
 
-            var result = new List<VectorLine>();
-            var remainingLines = new List<VectorLine>(lines);
+            // Рабочий пул: храним индексы, удаляем через swap-with-last ? O(1)
+            var pool = new List<VectorLine>(lines);
+            int n = pool.Count;
 
-            if (remainingLines.Count == 0)
-                return new LinesCollection();
+            if (n <= 1)
+                return new LinesCollection(pool);
 
-            // Start with the first line
-            var currentLine = remainingLines[0];
-            remainingLines.RemoveAt(0);
-            result.Add(currentLine);
+            var result = new List<VectorLine>(n);
 
-            while (remainingLines.Count > 0)
+            // Стартуем с первого отрезка как есть
+            result.Add(pool[0]);
+            SwapRemove(pool, 0);
+
+            while (pool.Count > 0)
             {
-                var bestNextLine = FindBestNextLine(currentLine, remainingLines);
-                if (bestNextLine.line != null)
-                {
-                    currentLine = bestNextLine.line;
-                    remainingLines.Remove(currentLine);
+                var currentEnd = result[^1].P2;
 
-                    if (bestNextLine.shouldReverse)
-                        currentLine = currentLine.Reverse();
+                int bestIdx = 0;
+                bool bestReverse = false;
+                double bestDistSq = double.MaxValue;
 
-                    result.Add(currentLine);
-                }
-                else
+                for (int i = 0; i < pool.Count; i++)
                 {
-                    // If no suitable line found, take the first remaining one
-                    currentLine = remainingLines[0];
-                    remainingLines.RemoveAt(0);
-                    result.Add(currentLine);
+                    double d0 = DistSq(currentEnd, pool[i].P1);
+                    double d1 = DistSq(currentEnd, pool[i].P2);
+
+                    if (d0 < bestDistSq) { bestDistSq = d0; bestIdx = i; bestReverse = false; }
+                    if (d1 < bestDistSq) { bestDistSq = d1; bestIdx = i; bestReverse = true; }
                 }
+
+                var next = bestReverse ? pool[bestIdx].Reverse() : pool[bestIdx];
+                result.Add(next);
+                SwapRemove(pool, bestIdx);
             }
 
             return new LinesCollection(result);
         }
 
-        private (VectorLine line, bool shouldReverse) FindBestNextLine(VectorLine currentLine, List<VectorLine> candidates)
+        private static void SwapRemove(List<VectorLine> list, int idx)
         {
-            VectorLine? bestLineNullable = null;
-            bool bestShouldReverse = false;
-            var minDistance = double.MaxValue;
-
-            foreach (var candidate in candidates)
-            {
-                // Check distance from current end to candidate start
-                var distanceToStart = GetDistance(currentLine.P2, candidate.P1);
-                if (distanceToStart < minDistance)
-                {
-                    var angle = VectorLine.MinAngleBetween2D(currentLine.Vector, candidate.Vector);
-                    if (angle * (180 / Math.PI) <= MaxAngle)
-                    {
-                        minDistance = distanceToStart;
-                        bestLineNullable = candidate;
-                        bestShouldReverse = false;
-                    }
-                }
-
-                // Check distance from current end to candidate end (reversed)
-                var distanceToEnd = GetDistance(currentLine.P2, candidate.P2);
-                if (distanceToEnd < minDistance)
-                {
-                    var angle = VectorLine.MinAngleBetween2D(currentLine.Vector, -candidate.Vector);
-                    if (angle * (180 / Math.PI) <= MaxAngle)
-                    {
-                        minDistance = distanceToEnd;
-                        bestLineNullable = candidate;
-                        bestShouldReverse = true;
-                    }
-                }
-            }
-
-            // Явное приведение типа: если bestLineNullable не null, возвращаем его, иначе возвращаем (null, false)
-            return (bestLineNullable ?? default(VectorLine), bestShouldReverse);
+            list[idx] = list[^1];
+            list.RemoveAt(list.Count - 1);
         }
 
-        private static double GetDistance(RenderPoint p1, RenderPoint p2)
+        private static double DistSq(RenderPoint a, RenderPoint b)
         {
-            var dx = p2.X - p1.X;
-            var dy = p2.Y - p1.Y;
-            return Math.Sqrt(dx * dx + dy * dy);
+            double dx = b.X - a.X;
+            double dy = b.Y - a.Y;
+            return dx * dx + dy * dy;
         }
     }
 }

@@ -491,6 +491,20 @@
             </DockPanel>
         </StackPanel>
     </DataTemplate>
+    <DataTemplate DataType="{x:Type optimization:FindShortestPath}">
+        <StackPanel>
+            <DockPanel>
+                <Label Content="Порог соединения" DockPanel.Dock="Left" />
+                <mah:NumericUpDown
+                    MinWidth="200"
+                    Interval="0.000001"
+                    Maximum="0.1"
+                    Minimum="0"
+                    StringFormat="0.000000"
+                    Value="{Binding ConnectionTolerance, Mode=TwoWay, StringFormat={}{0:G8}}" />
+            </DockPanel>
+        </StackPanel>
+    </DataTemplate>
     <DataTemplate DataType="{x:Type services:LinesSkipper}">
         <StackPanel>
             <DockPanel>

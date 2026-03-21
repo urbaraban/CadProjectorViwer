@@ -170,28 +170,59 @@
                 <Label Content="Угол X" DockPanel.Dock="Left" />
                 <mah:NumericUpDown
                     MinWidth="250"
-                    Interval="0.01"
+                    Interval="0.001"
                     Maximum="2"
                     Minimum="0"
                     Value="{Binding AngleX, Mode=TwoWay, StringFormat={}{0.000}}" />
             </DockPanel>
             <DockPanel>
-                <Label Content="Угол YX" DockPanel.Dock="Left" />
-                <mah:NumericUpDown
-                    MinWidth="150"
-                    Interval="0.01"
-                    Maximum="2"
-                    Minimum="0"
-                    Value="{Binding AngleYX, Mode=TwoWay, StringFormat={}{0.000}}" />
-            </DockPanel>
-            <DockPanel>
                 <Label Content="Угол Y" DockPanel.Dock="Left" />
                 <mah:NumericUpDown
                     MinWidth="150"
-                    Interval="0.01"
+                    Interval="0.001"
                     Maximum="2"
                     Minimum="0"
                     Value="{Binding AngleY, Mode=TwoWay, StringFormat={}{0.000}}" />
+            </DockPanel>
+            <DockPanel>
+                <Label Content="Стяжка по Y" DockPanel.Dock="Left" />
+                <mah:NumericUpDown
+                    MinWidth="150"
+                    Interval="0.001"
+                    Maximum="5"
+                    Minimum="0.01"
+                    ToolTip="Только между центром (y=0) и краем (|y|=1): там ≠1; на центре и краю — физика. &gt;1 — сильнее в середине половины"
+                    Value="{Binding CouplingYScale, Mode=TwoWay, StringFormat={}{0.000}}" />
+            </DockPanel>
+            <DockPanel>
+                <Label Content="Профиль стяжки Y к углу" DockPanel.Dock="Left" />
+                <mah:NumericUpDown
+                    MinWidth="150"
+                    Interval="0.001"
+                    Maximum="2"
+                    Minimum="0"
+                    ToolTip="Как стяжка Y: 0 на y=0 и |y|=1; макс. при |y|≈0.5. &gt;1 — сильнее в «кольце»"
+                    Value="{Binding CouplingYProfileExponent, Mode=TwoWay, StringFormat={}{0.000}}" />
+            </DockPanel>
+            <DockPanel>
+                <Label Content="Стяжка углов X" DockPanel.Dock="Left" />
+                <mah:NumericUpDown
+                    MinWidth="150"
+                    Interval="0.001"
+                    Maximum="5"
+                    Minimum="0"
+                    ToolTip="К периметру: в центре кадра физика (1), на кромке/в углу — полный показатель"
+                    Value="{Binding CouplingScale, Mode=TwoWay, StringFormat={}{0.000}}" />
+            </DockPanel>
+            <DockPanel>
+                <Label Content="Профиль стяжки к углу" DockPanel.Dock="Left" />
+                <mah:NumericUpDown
+                    MinWidth="150"
+                    Interval="0.001"
+                    Maximum="3"
+                    Minimum="1"
+                    ToolTip="К периметру max(|x|,|y|): в центре p=1, на кромке — заданное; pinch по Y линейный"
+                    Value="{Binding CouplingProfileExponent, Mode=TwoWay, StringFormat={}{0.000}}" />
             </DockPanel>
         </StackPanel>
     </DataTemplate>

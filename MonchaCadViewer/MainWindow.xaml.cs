@@ -1,4 +1,4 @@
-﻿using CadProjectorSDK.Scenes.Commands;
+using CadProjectorSDK.Scenes.Commands;
 using CadProjectorSDK.Tools;
 using CadProjectorViewer.Opening;
 using CadProjectorViewer.Panels.RightPanel;
@@ -104,7 +104,7 @@ namespace CadProjectorViewer
 
         private void Window_Closed(object sender, System.EventArgs e)
         {
-            mainModel.ProjectorHub.Disconnect();
+            mainModel.ProjectorHub.ShutdownAllProjectors();
             GC.Collect();
             GC.WaitForPendingFinalizers();
         }
@@ -244,7 +244,7 @@ namespace CadProjectorViewer
         protected override void OnClosed(EventArgs e)
         {
             this.ShowInTaskbar = false;
-            mainModel.ProjectorHub.Disconnect();
+            mainModel.ProjectorHub.ShutdownAllProjectors();
             GC.Collect();
             GC.WaitForPendingFinalizers();
             base.OnClosed(e);
@@ -282,7 +282,7 @@ namespace CadProjectorViewer
         });
 
         public ICommand ClosedCommand => new ActionCommand(() => {
-            mainModel.ProjectorHub.Disconnect();
+            mainModel.ProjectorHub.ShutdownAllProjectors();
             this.Close();
         });
 

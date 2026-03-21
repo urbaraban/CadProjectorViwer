@@ -486,7 +486,8 @@
                     Interval="0.000001"
                     Maximum="0.01"
                     Minimum="0.0000000001"
-                    Value="{Binding Tolerance, Mode=TwoWay, StringFormat={}{0:G6}}" />
+                    StringFormat="0.000000"
+                    Value="{Binding Tolerance, Mode=TwoWay, StringFormat={}{0:G8}}" />
             </DockPanel>
         </StackPanel>
     </DataTemplate>

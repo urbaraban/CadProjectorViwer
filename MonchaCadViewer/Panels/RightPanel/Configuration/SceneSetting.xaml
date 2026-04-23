@@ -98,6 +98,16 @@
                         <ComboBoxItem Content="{DynamicResource clb_Mesh}" />
                     </ComboBox>
                 </DockPanel>
+                <DockPanel>
+                    <Label Content="{DynamicResource clb_MiniCrossSize}" />
+                    <Controls:NumericUpDown
+                        x:Name="MiniCrossSizeUpDn"
+                        Background="White"
+                        Interval="0.001"
+                        Maximum="10"
+                        Minimum="0"
+                        ValueChanged="MiniCrossSizeUpDn_ValueChanged" />
+                </DockPanel>
                 <Separator />
                 <StackPanel HorizontalAlignment="Center" Orientation="Horizontal">
                     <Label VerticalAlignment="Center" Content="{DynamicResource setting_attach}" />

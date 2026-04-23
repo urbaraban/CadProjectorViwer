@@ -36,9 +36,11 @@ namespace CadProjectorViewer.Panels.RightPanel.Configuration
             CalibrationFormCombo.Items.Add(CalibrationForm.cl_Rect);
             CalibrationFormCombo.Items.Add(CalibrationForm.cl_miniRect);
             CalibrationFormCombo.Items.Add(CalibrationForm.cl_Cross);
+            CalibrationFormCombo.Items.Add(CalibrationForm.cl_miniCross);
             CalibrationFormCombo.Items.Add(CalibrationForm.cl_HLine);
             CalibrationFormCombo.Items.Add(CalibrationForm.cl_WLine);
             CalibrationFormCombo.Items.Add(CalibrationForm.cl_Mesh);
+            MiniCrossSizeUpDn.Value = ProjectorMesh.MiniCrossSize;
         }
 
         private void MashMultiplierUpDn_ValueIncremented(object sender, NumericUpDownChangedRoutedEventArgs args)
@@ -92,6 +94,14 @@ namespace CadProjectorViewer.Panels.RightPanel.Configuration
             if (sender is NumericUpDown && e.Handled == true)
             {
                 Keyboard.ClearFocus();
+            }
+        }
+
+        private void MiniCrossSizeUpDn_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double?> e)
+        {
+            if (MiniCrossSizeUpDn.Value != null)
+            {
+                ProjectorMesh.MiniCrossSize = MiniCrossSizeUpDn.Value.Value;
             }
         }
     }

@@ -78,6 +78,7 @@
     <v:Int32 x:Key="clb_WLine">4</v:Int32>
     <v:String x:Key="clb_SetEdgePoint">Set edge point</v:String>
     <v:String x:Key="clb_Sizeanchor">Size anchor</v:String>
+    <v:String x:Key="clb_MiniCrossSize">Mini cross size</v:String>
     <v:String x:Key="clb_Multiplier">Multiplier</v:String>
 
     <v:String x:Key="edit_Clear">Clear</v:String>

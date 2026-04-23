@@ -73,6 +73,7 @@
     <v:Int32 x:Key="clb_WLine">4</v:Int32>
     <v:String x:Key="clb_SetEdgePoint">Установить крайние точки</v:String>
     <v:String x:Key="clb_Sizeanchor">Размер точки</v:String>
+    <v:String x:Key="clb_MiniCrossSize">Размер мини-креста</v:String>
     <v:String x:Key="clb_Multiplier">Множитель</v:String>
 
     <v:String x:Key="edit_Clear">Очистить</v:String>

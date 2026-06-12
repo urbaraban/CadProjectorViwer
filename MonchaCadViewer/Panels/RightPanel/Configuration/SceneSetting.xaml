@@ -235,16 +235,16 @@
                 </DockPanel>
                 <Separator />
                 <DockPanel>
-                    <CheckBox Content="Step By Step Add" IsChecked="{Binding StepByStep}" />
+                    <CheckBox Content="{DynamicResource setting_StepByStepAdd}" IsChecked="{Binding StepByStep}" />
                 </DockPanel>
                 <DockPanel>
-                    <CheckBox Content="IsNotUsedLayer" IsChecked="{Binding IsNotUsedLayers}" />
+                    <CheckBox Content="{DynamicResource setting_IsNotUsedLayer}" IsChecked="{Binding IsNotUsedLayers}" />
                 </DockPanel>
                 <DockPanel>
-                    <CheckBox Content="Cursor Mask Activated" IsChecked="{Binding CursorMaskActivated}" />
+                    <CheckBox Content="{DynamicResource edit_MaskActivated}" IsChecked="{Binding CursorMaskActivated}" />
                 </DockPanel>
                 <Separator />
-                <CheckBox Content="Подменять флаги" IsChecked="{Binding ChangeFlags}" />
+                <CheckBox Content="{DynamicResource setting_ChangeFlags}" IsChecked="{Binding ChangeFlags}" />
                 <TextBox Margin="3" Text="{Binding Flags}" />
             </StackPanel>
         </Grid>

@@ -15,7 +15,7 @@
             <Label
                 Margin="3"
                 HorizontalAlignment="Left"
-                Content="UDP Port:"
+                Content="{DynamicResource udp_Port}"
                 DockPanel.Dock="Left" />
 
             <Controls:NumericUpDown
@@ -36,12 +36,12 @@
             Height="50"
             Margin="15"
             Command="{Binding }"
-            Content="Listen" />
+            Content="{DynamicResource udp_Listen}" />
         <Controls:ToggleSwitch
             Margin="5"
-            Content="Save UDP packet"
+            Content="{DynamicResource udp_SavePacket}"
             IsOn="{Binding SaveUdpPacket}" />
         <TextBox x:Name="ByteBox" />
-        <Button Click="Button_Click" Content="Read" />
+        <Button Click="Button_Click" Content="{DynamicResource common_Read}" />
     </StackPanel>
 </UserControl>

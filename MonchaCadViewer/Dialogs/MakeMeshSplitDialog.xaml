@@ -7,7 +7,7 @@
         xmlns:scene="clr-namespace:CadProjectorSDK.Scenes;assembly=CadProjectorSDK"
         d:DataContext="{d:DesignInstance Type=scene:ProjectionScene}"
         mc:Ignorable="d"
-        Title="MakeMeshSplitDialog"
+        Title="{DynamicResource dlg_MakeMeshSplit}"
         SizeToContent="WidthAndHeight"
         ResizeMode="NoResize">
     <Window.Resources>
@@ -33,7 +33,7 @@
 
     <StackPanel Margin="10">
         <DockPanel>
-            <Label  Content="Stroke"/>
+            <Label Content="{DynamicResource mesh_Stroke}"/>
             <Controls:NumericUpDown 
                 Name="StrokeUpDn"
                 Value="2"
@@ -42,7 +42,7 @@
                 ValueChanged="NumericUpDown_ValueChanged"/>
         </DockPanel>
         <DockPanel>
-            <Label Content="Column"/>
+            <Label Content="{DynamicResource mesh_Column}"/>
             <Controls:NumericUpDown Name="ColumnUpDn"
                                     Value="2"
                                     Minimum="1"

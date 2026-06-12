@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:CadProjectorViewer.Dialogs" xmlns:rightpanel="clr-namespace:CadProjectorViewer.Panels.RightPanel"
         mc:Ignorable="d"
         x:Name="MTCPMain"
-        Title="ManipulatorTCPDialog" Height="450" Width="300">
+        Title="{DynamicResource dlg_ManipulatorTCP}" Height="450" Width="300">
     <Window.Content>
         <rightpanel:HubPage/>
     </Window.Content>

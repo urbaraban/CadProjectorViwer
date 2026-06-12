@@ -6,26 +6,24 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:panels="clr-namespace:CadProjectorViewer.Panels"
     xmlns:viewmodel="clr-namespace:CadProjectorViewer.ViewModel"
-    d:DataContext="{d:DesignInstance Type=viewmodel:AppMainModel}"
+    d:DataContext="{d:DesignInstance Type=viewmodel:ScrollPanelViewModel}"
     d:DesignHeight="120"
     d:DesignWidth="800"
     mc:Ignorable="d">
-    <Border
-        Margin="0,0,0,0"
-        BorderBrush="DarkGray"
-        BorderThickness="1">
-        <DockPanel>
-            <StackPanel
-                Background="LightGray"
-                DockPanel.Dock="Left"
-                Orientation="Vertical">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="30" />
+            <RowDefinition Height="auto" />
+        </Grid.RowDefinitions>
+        <DockPanel DockPanel.Dock="Top" LastChildFill="False">
+            <StackPanel DockPanel.Dock="Left" Orientation="Horizontal">
                 <Button
                     x:Name="ClearBtn"
                     Width="30"
                     Height="30"
                     Background="Transparent"
                     BorderThickness="0"
-                    Click="ClearBtn_Click"
+                    Command="{Binding ClearLoadedObjectsCommand}"
                     Content="&#xE74D;"
                     FontFamily="Segoe MDL2 Assets"
                     FontSize="18"
@@ -42,29 +40,50 @@
                     Foreground="Green" />
                 <CheckBox
                     Margin="5"
+                    Content="{DynamicResource scroll_StreamAdd}"
                     DockPanel.Dock="Top"
-                    IsChecked="{Binding ProjectorHub.ScenesCollection.StreamAdd}"
-                    ToolTip="Stream Add" />
+                    IsChecked="{Binding ScenesCollection.StreamAdd}"
+                    ToolTip="{DynamicResource scroll_StreamAdd}" />
             </StackPanel>
-            <ScrollViewer HorizontalScrollBarVisibility="Visible" VerticalScrollBarVisibility="Disabled">
-                <ItemsControl ItemsSource="{Binding ProjectorHub.ScenesCollection.LoadedObjects}">
-                    <ItemsControl.ItemsPanel>
-                        <ItemsPanelTemplate>
-                            <WrapPanel Orientation="Vertical" />
-                        </ItemsPanelTemplate>
-                    </ItemsControl.ItemsPanel>
-                    <ItemsControl.ItemTemplate>
-                        <DataTemplate>
-                            <UniformGrid Rows="1">
-                                <panels:ScrollPanelItem Width="100" Height="100" />
-                            </UniformGrid>
-                        </DataTemplate>
-                    </ItemsControl.ItemTemplate>
-                </ItemsControl>
-
-            </ScrollViewer>
+            <StackPanel DockPanel.Dock="Right" Orientation="Horizontal">
+                <Button Command="{Binding SelectPreviousCommand}" Content="{DynamicResource scroll_Previous}" />
+                <Button Command="{Binding SelectNextCommand}" Content="{DynamicResource scroll_Next}" />
+            </StackPanel>
         </DockPanel>
-
-    </Border>
+        <Border
+            Grid.Row="1"
+            Margin="0,0,0,0"
+            BorderBrush="DarkGray"
+            BorderThickness="1">
+            <Border.Style>
+                <Style TargetType="Border">
+                    <Setter Property="Visibility" Value="Visible" />
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding ScenesCollection.StreamAdd}" Value="True">
+                            <Setter Property="Visibility" Value="Collapsed" />
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </Border.Style>
+            <DockPanel MinHeight="100">
+                <ScrollViewer HorizontalScrollBarVisibility="Visible" VerticalScrollBarVisibility="Disabled">
+                    <ItemsControl ItemsSource="{Binding ScenesCollection.LoadedObjects}">
+                        <ItemsControl.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <WrapPanel Orientation="Vertical" />
+                            </ItemsPanelTemplate>
+                        </ItemsControl.ItemsPanel>
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <UniformGrid Rows="1">
+                                    <panels:ScrollPanelItem Width="100" Height="100" />
+                                </UniformGrid>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </ScrollViewer>
+            </DockPanel>
+        </Border>
+    </Grid>
 
 </UserControl>

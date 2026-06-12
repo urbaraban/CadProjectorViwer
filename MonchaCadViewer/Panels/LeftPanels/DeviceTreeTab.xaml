@@ -51,10 +51,10 @@
                     <Border.ContextMenu>
                         <ContextMenu>
                             <MenuItem Header="{DynamicResource mesh_Morph}">
-                                <MenuItem Command="{Binding SetFullMorph}" Header="Full" />
-                                <MenuItem Command="{Binding SetHorizontalMorph}" Header="Horizontal" />
-                                <MenuItem Command="{Binding SetVerticalMorph}" Header="Vertical" />
-                                <MenuItem Command="{Binding SetSingleMorph}" Header="None" />
+                                <MenuItem Command="{Binding SetFullMorph}" Header="{DynamicResource mesh_Full}" />
+                                <MenuItem Command="{Binding SetHorizontalMorph}" Header="{DynamicResource mesh_Horizontal}" />
+                                <MenuItem Command="{Binding SetVerticalMorph}" Header="{DynamicResource mesh_VerticalMenu}" />
+                                <MenuItem Command="{Binding SetSingleMorph}" Header="{DynamicResource mesh_None}" />
                             </MenuItem>
                             <MenuItem
                                 Click="MenuItem_Click"
@@ -66,15 +66,15 @@
                                 Tag="mesh_inverse" />
                             <MenuItem
                                 Click="MenuItem_Click"
-                                Header="YMirror"
+                                Header="{DynamicResource mesh_YMirror}"
                                 Tag="mesh_YMirror" />
                             <MenuItem
                                 Click="MenuItem_Click"
-                                Header="Rotate index 90°"
+                                Header="{DynamicResource mesh_RotateIndex90}"
                                 Tag="mesh_rotate90" />
                             <MenuItem
                                 Click="MenuItem_Click"
-                                Header="Rotate coords 90°"
+                                Header="{DynamicResource mesh_RotateCoords90}"
                                 Tag="mesh_rotate_coords90" />
                             <MenuItem
                                 Click="MenuItem_Click"
@@ -85,13 +85,13 @@
                                 Header="{DynamicResource dvc_showrect}"
                                 Tag="mesh_showrect" />
                             <MenuItem
-                                Header="Vertical"
+                                Header="{DynamicResource mesh_VerticalMenu}"
                                 IsCheckable="True"
                                 IsChecked="{Binding VerticalFlag}"
                                 Tag="mesh_Vertical" />
                             <MenuItem
                                 Click="MenuItem_Click"
-                                Header="Convert on ellipsoid"
+                                Header="{DynamicResource mesh_ConvertEllipsoid}"
                                 Tag="convert_on_ellipsoid" />
                         </ContextMenu>
                     </Border.ContextMenu>
@@ -110,7 +110,7 @@
                         <TextBlock
                             Margin="5,0,0,0"
                             VerticalAlignment="Center"
-                            Text="M:" />
+                            Text="{DynamicResource edit_MaskPrefix}" />
                         <Label
                             Margin="0,0,0,0"
                             Padding="0"

@@ -6,7 +6,7 @@
     xmlns:local="clr-namespace:CadProjectorViewer.Dialogs.DeviceManaged"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:vmd="clr-namespace:CadProjectorViewer.ViewModel.Devices"
-    Title="AddDeviceByIpDialog"
+    Title="{DynamicResource dlg_AddDeviceByIp}"
     MinWidth="300"
     MinHeight="150"
     d:DataContext="{d:DesignInstance Type=vmd:AddDeviceViewModel}"
@@ -39,7 +39,7 @@
         <Label
             HorizontalAlignment="Center"
             VerticalAlignment="Center"
-            Content="IpAddress" />
+            Content="{DynamicResource dvc_IpAddress}" />
         <TextBox
             Grid.Row="1"
             d:Text="127"
@@ -63,27 +63,27 @@
             Grid.Row="2"
             HorizontalAlignment="Center"
             VerticalAlignment="Center"
-            Content="Port" />
+            Content="{DynamicResource common_Port}" />
         <Label
             Grid.Row="2"
             Grid.Column="2"
             HorizontalAlignment="Center"
             VerticalAlignment="Center"
-            Content="Type" />
+            Content="{DynamicResource obj_Type}" />
         <Button
             Grid.Row="3"
             Grid.Column="2"
             HorizontalAlignment="Stretch"
             VerticalAlignment="Stretch"
             Command="{Binding AddDeviceCommand}"
-            Content="Add" />
+            Content="{DynamicResource common_ADD}" />
         <Button
             Grid.Row="3"
             Grid.Column="3"
             HorizontalAlignment="Stretch"
             VerticalAlignment="Stretch"
             Click="Button_Click"
-            Content="Cancel" />
+            Content="{DynamicResource common_Cancel}" />
         <ComboBox
             Grid.Row="2"
             Grid.Column="3"

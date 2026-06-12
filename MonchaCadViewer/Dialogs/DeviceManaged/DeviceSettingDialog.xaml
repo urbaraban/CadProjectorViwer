@@ -47,7 +47,7 @@
             <Label
                 Width="30"
                 HorizontalContentAlignment="Center"
-                Content="IP" />
+                Content="{DynamicResource dvc_IP}" />
             <CheckBox
                 x:Name="CheckLabel"
                 Margin="3"
@@ -56,7 +56,7 @@
                 HorizontalContentAlignment="Center"
                 DockPanel.Dock="Right"
                 IsEnabled="False" />
-            <Button Content="Chek" LostFocus="IP_LostFocus" />
+            <Button Content="{DynamicResource dvc_Check}" LostFocus="IP_LostFocus" />
         </DockPanel>
         <DockPanel>
             <TextBox FontSize="16" Text="{Binding NameID}" />
@@ -84,7 +84,7 @@
                 TextInput="IP_TextInput" />
         </DockPanel>
         <DockPanel>
-            <Label Content="Select" />
+            <Label Content="{DynamicResource common_Select}" />
             <Button
                 x:Name="MinusSelectBtn"
                 Width="{Binding ActualHeight, RelativeSource={RelativeSource Self}}"
@@ -105,7 +105,7 @@
         </DockPanel>
 
         <DockPanel>
-            <Label Content="Port" />
+            <Label Content="{DynamicResource common_Port}" />
             <Controls:NumericUpDown
                 Interval="1"
                 Minimum="0"
@@ -113,7 +113,7 @@
         </DockPanel>
         <Separator />
         <DockPanel>
-            <Label Content="Width" />
+            <Label Content="{DynamicResource obj_Width}" />
             <Controls:NumericUpDown
                 Grid.Column="1"
                 Interval="1"
@@ -122,7 +122,7 @@
         </DockPanel>
 
         <DockPanel>
-            <Label Content="Height" />
+            <Label Content="{DynamicResource obj_Height}" />
             <Controls:NumericUpDown
                 Interval="0.1"
                 Minimum="0"
@@ -135,7 +135,7 @@
             <Button
                 x:Name="SaveBtn"
                 Click="SaveBtn_Click"
-                Content="Save" />
+                Content="{DynamicResource m_Save}" />
         </DockPanel>
     </StackPanel>
 </Window>

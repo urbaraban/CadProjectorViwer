@@ -11,7 +11,7 @@
     xmlns:mesh="clr-namespace:CadProjectorSDK.Device.Mesh;assembly=CadProjectorSDK"
     xmlns:panels="clr-namespace:CadProjectorViewer.Panels"
     x:Name="ThisWindow"
-    Title="CreateGridWindow"
+    Title="{DynamicResource dlg_CreateGrid}"
     MaxWidth="800"
     MaxHeight="600"
     d:DataContext="{d:DesignInstance Type=mesh:ProjectorMesh}"
@@ -55,7 +55,7 @@
             Orientation="Vertical">
             <TextBox Text="{Binding Name}" />
             <DockPanel>
-                <Label Content="Ширина" />
+                <Label Content="{DynamicResource obj_Width}" />
                 <Label HorizontalContentAlignment="Right" Content="{Binding Size.Width}" />
             </DockPanel>
             <DockPanel>
@@ -73,7 +73,7 @@
             </DockPanel>
 
             <DockPanel>
-                <Label Content="Высота" />
+                <Label Content="{DynamicResource obj_Height}" />
                 <Label HorizontalContentAlignment="Right" Content="{Binding Size.Height}" />
             </DockPanel>
 
@@ -90,7 +90,7 @@
             </DockPanel>
 
             <DockPanel>
-                <Label Content="Каждые" />
+                <Label Content="{DynamicResource grid_Every}" />
                 <Controls:NumericUpDown
                     x:Name="StepUpDn"
                     Background="White"

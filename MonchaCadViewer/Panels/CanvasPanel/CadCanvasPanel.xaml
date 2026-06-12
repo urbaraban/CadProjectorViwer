@@ -102,27 +102,27 @@
                 Grid.Row="0"
                 Grid.Column="0"
                 Command="{Binding CentertAttachCommand}"
-                Content="Center" />
+                Content="{DynamicResource canvas_Center}" />
             <Button
                 Grid.Row="1"
                 Grid.Column="0"
                 Command="{Binding LeftAttachCommand}"
-                Content="left" />
+                Content="{DynamicResource canvas_Left}" />
             <Button
                 Grid.Row="1"
                 Grid.Column="2"
                 Command="{Binding RightAttachCommand}"
-                Content="right" />
+                Content="{DynamicResource canvas_Right}" />
             <Button
                 Grid.Row="0"
                 Grid.Column="1"
                 Command="{Binding TopAttachCommand}"
-                Content="top" />
+                Content="{DynamicResource canvas_Top}" />
             <Button
                 Grid.Row="2"
                 Grid.Column="1"
                 Command="{Binding DownAttachCommand}"
-                Content="bottom" />
+                Content="{DynamicResource canvas_Bottom}" />
             <Button
                 Grid.Row="0"
                 Grid.Column="2"

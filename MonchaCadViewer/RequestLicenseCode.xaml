@@ -7,7 +7,7 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:tools="clr-namespace:CadProjectorSDK.Tools;assembly=CadProjectorSDK"
     x:Name="LicenseWindow"
-    Title="RequestLicenseCode"
+    Title="{DynamicResource lic_Title}"
     Width="450"
     d:DataContext="{d:DesignInstance Type=tools:LockKeysManager}"
     Closing="LicenseWindow_Closing"
@@ -48,17 +48,17 @@
             </Border>
             <Label
                 x:Name="PortLabel"
-                Content="Port:"
+                Content="{DynamicResource lic_Port}"
                 DockPanel.Dock="Bottom" />
 
         </DockPanel>
         <StackPanel DockPanel.Dock="Left">
             <DockPanel DockPanel.Dock="Top">
-                <Label VerticalContentAlignment="Center" Content="Reqest" />
+                <Label VerticalContentAlignment="Center" Content="{DynamicResource lic_Request}" />
                 <Button
                     Width="90"
                     Click="Copy_Click"
-                    Content="Copy"
+                    Content="{DynamicResource common_Copy}"
                     DockPanel.Dock="Right" />
                 <TextBox
                     x:Name="RequestBox"
@@ -69,11 +69,11 @@
                     Text="{Binding RequestKey, Mode=OneWay}" />
             </DockPanel>
             <DockPanel DockPanel.Dock="Top">
-                <Label VerticalContentAlignment="Center" Content="Key" />
+                <Label VerticalContentAlignment="Center" Content="{DynamicResource lic_Key}" />
                 <Button
                     Width="90"
                     Click="Pate_Click"
-                    Content="Paste"
+                    Content="{DynamicResource common_Paste}"
                     DockPanel.Dock="Right" />
                 <TextBox
                     x:Name="KeyBox"
@@ -88,7 +88,7 @@
                 <Button
                     Width="90"
                     Click="Button_Click"
-                    Content="Ok"
+                    Content="{DynamicResource common_Ok}"
                     DockPanel.Dock="Right" />
                 <Label
                     x:Name="SuccefulLbl"
@@ -99,9 +99,9 @@
             <ListView d:ItemsSource="{d:SampleData ItemCount=4}" ItemsSource="{Binding LicenseKeys}">
                 <ListView.View>
                     <GridView>
-                        <GridViewColumn DisplayMemberBinding="{Binding DaysLeft}" Header="Days" />
-                        <GridViewColumn DisplayMemberBinding="{Binding DeadLineDate}" Header="Days" />
-                        <GridViewColumn DisplayMemberBinding="{Binding PublicKey}" Header="Key" />
+                        <GridViewColumn DisplayMemberBinding="{Binding DaysLeft}" Header="{DynamicResource lic_Days}" />
+                        <GridViewColumn DisplayMemberBinding="{Binding DeadLineDate}" Header="{DynamicResource lic_Deadline}" />
+                        <GridViewColumn DisplayMemberBinding="{Binding PublicKey}" Header="{DynamicResource lic_Key}" />
                     </GridView>
                 </ListView.View>
             </ListView>

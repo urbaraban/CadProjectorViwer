@@ -9,7 +9,7 @@
         mc:Ignorable="d"
         ResizeMode="CanResizeWithGrip"
         x:Name="SceneSetting"
-        Title="SceneSettingWindow"
+        Title="{DynamicResource dlg_SceneSetting}"
         SizeToContent="WidthAndHeight"
         d:Height="150"
         d:Width="250">
@@ -56,7 +56,7 @@
                 FontSize="18"
                 VerticalContentAlignment="Center"
                 DockPanel.Dock="Right"
-                Content="ID:"/>
+                Content="{DynamicResource common_ID}"/>
             <TextBox
                 DockPanel.Dock="Left"
                 DataContext="{Binding ElementName=SceneTabs, Path=SelectedItem}"

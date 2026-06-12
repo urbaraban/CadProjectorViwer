@@ -8,13 +8,13 @@
       d:DataContext="{d:DesignInstance Type=viewmodel:AppMainModel}"
       d:DesignHeight="450"
       d:DesignWidth="250"
-      Title="HubPage">
+      Title="{DynamicResource dlg_HubPage}">
     <Page.Resources>
         <converters:BoolRegGreenColor x:Key="BoolRegGreen"/>
         <rightpanel:GetQrConverter x:Key="GetQr" />
         <ContextMenu x:Key="itemMenu">
-            <MenuItem Header="Start" Command="{Binding StartCommand}"/>
-            <MenuItem Header="Stop" Command="{Binding StopCommand}"/>
+            <MenuItem Header="{DynamicResource common_Start}" Command="{Binding StartCommand}"/>
+            <MenuItem Header="{DynamicResource common_Stop}" Command="{Binding StopCommand}"/>
         </ContextMenu>
     </Page.Resources>
     <Grid>
@@ -27,17 +27,17 @@
                       d:ItemsSource="{d:SampleData ItemCount=5}">
                     <ListView.View>
                         <GridView>
-                            <GridViewColumn Header="ic" Width="30">
+                            <GridViewColumn Header="{DynamicResource common_Icon}" Width="30">
                                 <GridViewColumn.CellTemplate>
                                     <DataTemplate>
                                         <Ellipse Width="10" Height="10" Fill="{Binding IsListening, Converter={StaticResource BoolRegGreen}}"/>
                                     </DataTemplate>
                                 </GridViewColumn.CellTemplate>
                             </GridViewColumn>
-                            <GridViewColumn Header="Scene" DisplayMemberBinding="{Binding ObjectName}" Width="120"/>
-                            <GridViewColumn Header="Type" DisplayMemberBinding="{Binding ServerType}" Width="Auto"/>
-                            <GridViewColumn Header="Port" DisplayMemberBinding="{Binding Port}" Width="40"/>
-                            <GridViewColumn Header="Rm" Width="30">
+                            <GridViewColumn Header="{DynamicResource scene_Scene}" DisplayMemberBinding="{Binding ObjectName}" Width="120"/>
+                            <GridViewColumn Header="{DynamicResource obj_Type}" DisplayMemberBinding="{Binding ServerType}" Width="Auto"/>
+                            <GridViewColumn Header="{DynamicResource common_Port}" DisplayMemberBinding="{Binding Port}" Width="40"/>
+                            <GridViewColumn Header="{DynamicResource hub_RemoveShort}" Width="30">
                                 <GridViewColumn.CellTemplate>
                                     <DataTemplate>
                                         <Button Content="X" Command="{Binding RemoveCommand}"/>
@@ -52,18 +52,18 @@
                         </Style>
                     </ListView.ItemContainerStyle>
                 </ListView>
-                <Label Content="Scene"/>
+                <Label Content="{DynamicResource scene_Scene}"/>
                 <ComboBox ItemsSource="{Binding ProjectorHub.ScenesCollection}"
                       SelectedItem="{Binding EthernetHub.SelectedScene}"
                       SelectedIndex="0"
                       DisplayMemberPath="DisplayName"/>
-                <Label Content="Address"/>
+                <Label Content="{DynamicResource common_Address}"/>
                 <ComboBox ItemsSource="{Binding EthernetHub.NetworkInterfaces}"
                       SelectedItem="{Binding EthernetHub.SelectAddress}"
                       DisplayMemberPath="Address"
                       SelectedIndex="0"/>
                 <Label 
-                Content="Port"/>
+                Content="{DynamicResource common_Port}"/>
                 <DockPanel>
                     <TextBox DockPanel.Dock="Right"
                          Text="{Binding EthernetHub.SelectPort}"
@@ -74,7 +74,7 @@
                           SelectedIndex="0"/>
                 </DockPanel>
 
-                <Button Content="Add"
+                <Button Content="{DynamicResource common_ADD}"
                     Command="{Binding EthernetHub.AddServerCommand}"/>
                 <Label/>
             </StackPanel>

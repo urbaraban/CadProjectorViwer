@@ -5,7 +5,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         mc:Ignorable="d"
-        Title="LaserMeter" Height="282.643" Width="222.923" ResizeMode="NoResize">
+        Title="{DynamicResource dlg_LaserMeter}" Height="282.643" Width="222.923" ResizeMode="NoResize">
     <Window.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -39,14 +39,14 @@
     </Window.Resources>
     <Grid Margin="0,0,0,0">
         <Controls:NumericUpDown x:Name="TimerUpDn" Margin="81,56,21,0" Value="5000"  Minimum="2" Background="White" Height="26" VerticalAlignment="Top"/>
-        <Button x:Name="DimBtn" Content="Dim" Margin="81,138,21,0" VerticalAlignment="Top" IsEnabled="False" Click="DimBtn_Click"/>
+        <Button x:Name="DimBtn" Content="{DynamicResource dvc_Dim}" Margin="81,138,21,0" VerticalAlignment="Top" IsEnabled="False" Click="DimBtn_Click"/>
         <Label x:Name="DimLbl" Content="00000
                " HorizontalAlignment="Left" Margin="21,139,0,0" VerticalAlignment="Top" Width="53" VerticalContentAlignment="Center"/>
-        <Button x:Name="OkBtn" Content="Ok" Margin="10,217,117,10" Click="OkBtn_Click"/>
-        <Button x:Name="CancelBtn" Content="Cancel" Margin="112,217,0,10" Click="CancelBtn_Click" HorizontalAlignment="Left" Width="84"/>
-        <Label x:Name="label" Content="Adress" HorizontalAlignment="Left" Margin="21,10,0,0" VerticalAlignment="Top" Width="55"/>
-        <Label x:Name="label_Copy" Content="Timer" HorizontalAlignment="Left" Margin="21,56,0,0" VerticalAlignment="Top" Width="55"/>
-        <CheckBox x:Name="AutoPlayCheck" Content="AutoPlay" HorizontalAlignment="Left" Margin="81,178,0,0" VerticalAlignment="Top" Height="23" Width="115"/>
+        <Button x:Name="OkBtn" Content="{DynamicResource common_Ok}" Margin="10,217,117,10" Click="OkBtn_Click"/>
+        <Button x:Name="CancelBtn" Content="{DynamicResource common_Cancel}" Margin="112,217,0,10" Click="CancelBtn_Click" HorizontalAlignment="Left" Width="84"/>
+        <Label x:Name="label" Content="{DynamicResource common_Address}" HorizontalAlignment="Left" Margin="21,10,0,0" VerticalAlignment="Top" Width="55"/>
+        <Label x:Name="label_Copy" Content="{DynamicResource dvc_Timer}" HorizontalAlignment="Left" Margin="21,56,0,0" VerticalAlignment="Top" Width="55"/>
+        <CheckBox x:Name="AutoPlayCheck" Content="{DynamicResource dvc_AutoPlay}" HorizontalAlignment="Left" Margin="81,178,0,0" VerticalAlignment="Top" Height="23" Width="115"/>
 
     </Grid>
 </Window>

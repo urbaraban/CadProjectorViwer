@@ -122,5 +122,165 @@
     <v:String x:Key="canvas_freezall">Фиксировать все</v:String>
     <v:String x:Key="canvas_unselectall">Расселектировать все</v:String>
 
+    <v:String x:Key="m_Devices">Устройства</v:String>
+    <v:String x:Key="obj_Blank">Пустая</v:String>
+    <v:String x:Key="obj_ParallelCount">Кол-во штрихов</v:String>
+    <v:String x:Key="obj_ParallelMargin">Отступ штрихов</v:String>
+    <v:String x:Key="dvc_Mesh">Место</v:String>
+    <v:String x:Key="dvc_RadiusWait">Радиус ожидания</v:String>
+    <v:String x:Key="mesh_ShowVirtual">Виртуальная</v:String>
+
+    <v:String x:Key="app_Title">CUT - Viwer</v:String>
+    <v:String x:Key="app_Tooltip">2CUT</v:String>
+    <v:String x:Key="m_NewWorkplace">Новое рабочее место</v:String>
+    <v:String x:Key="m_BrowseMWS">Обзор MWS</v:String>
+    <v:String x:Key="m_SaveScene">Сохранить сцену</v:String>
+    <v:String x:Key="m_OpenScene">Открыть сцену</v:String>
+    <v:String x:Key="m_License">Лицензия</v:String>
+    <v:String x:Key="m_Services">Сервисы</v:String>
+    <v:String x:Key="m_RemoveOtherProcess">Удалить другой процесс</v:String>
+    <v:String x:Key="m_Language">Язык</v:String>
+    <v:String x:Key="conn_Ethernet">Ethernet</v:String>
+    <v:String x:Key="conn_Listing">Listing</v:String>
+    <v:String x:Key="src_DxCeil">DxCeil</v:String>
+    <v:String x:Key="src_ILDA">ILDA</v:String>
+    <v:String x:Key="src_OldUDP">oldUDP</v:String>
+    <v:String x:Key="dvc_UsedDeviceMesh">Использовать сетку устройства</v:String>
+    <v:String x:Key="log_Title">Журнал</v:String>
+    <v:String x:Key="tray_Toggle">Выключить/Включить</v:String>
+    <v:String x:Key="edit_MaskActivated">Маска активна</v:String>
+    <v:String x:Key="edit_MaskPrefix">M:</v:String>
+    <v:String x:Key="scroll_StreamAdd">Потоковое добавление</v:String>
+    <v:String x:Key="scroll_Previous">Назад</v:String>
+    <v:String x:Key="scroll_Next">Вперёд</v:String>
+
+    <v:String x:Key="lic_Title">Запрос лицензии</v:String>
+    <v:String x:Key="lic_Port">Порт:</v:String>
+    <v:String x:Key="lic_Request">Запрос</v:String>
+    <v:String x:Key="lic_Key">Ключ</v:String>
+    <v:String x:Key="lic_Days">Дней</v:String>
+    <v:String x:Key="lic_Deadline">Срок</v:String>
+    <v:String x:Key="common_Copy">Копировать</v:String>
+    <v:String x:Key="common_Paste">Вставить</v:String>
+    <v:String x:Key="common_Ok">Ok</v:String>
+    <v:String x:Key="common_Cancel">Отмена</v:String>
+    <v:String x:Key="common_Show">Показать</v:String>
+    <v:String x:Key="common_Read">Читать</v:String>
+    <v:String x:Key="common_Parse">Разбор</v:String>
+    <v:String x:Key="common_ID">ID:</v:String>
+    <v:String x:Key="common_Name">Имя</v:String>
+    <v:String x:Key="common_Format">Формат</v:String>
+    <v:String x:Key="common_Date">Дата</v:String>
+    <v:String x:Key="common_Icon">ic</v:String>
+    <v:String x:Key="common_Address">Адрес</v:String>
+    <v:String x:Key="common_Port">Порт</v:String>
+    <v:String x:Key="common_Message">Сообщение</v:String>
+    <v:String x:Key="common_Time">Время</v:String>
+    <v:String x:Key="common_Sender">Отправитель</v:String>
+    <v:String x:Key="common_Start">Старт</v:String>
+    <v:String x:Key="common_Stop">Стоп</v:String>
+
+    <v:String x:Key="dlg_SceneSetting">Настройка сцены</v:String>
+    <v:String x:Key="dlg_Meshes">Сетки</v:String>
+    <v:String x:Key="dlg_MakeMeshSplit">Разделение сетки</v:String>
+    <v:String x:Key="dlg_ManipulatorTCP">Манипулятор TCP</v:String>
+    <v:String x:Key="dlg_LaserMeter">Измеритель лазера</v:String>
+    <v:String x:Key="dlg_CreateGrid">Создание сетки</v:String>
+    <v:String x:Key="dlg_AddDeviceByIp">Добавить устройство по IP</v:String>
+    <v:String x:Key="dlg_ProjectorMaximized">Развернуть</v:String>
+    <v:String x:Key="dlg_LogWindow">Окно журнала</v:String>
+    <v:String x:Key="dlg_HubPage">Hub</v:String>
+
+    <v:String x:Key="mesh_ReadyMeshes">Готовые сетки</v:String>
+    <v:String x:Key="mesh_SelectMeshes">Выбранные сетки</v:String>
+    <v:String x:Key="mesh_CreateMorphModule">Создать морф-модуль</v:String>
+    <v:String x:Key="mesh_Stroke">Штрих</v:String>
+    <v:String x:Key="mesh_Column">Столбец</v:String>
+    <v:String x:Key="mod_Group">Группа:</v:String>
+    <v:String x:Key="grid_Every">Каждые</v:String>
+
+    <v:String x:Key="hub_RemoveShort">Уд</v:String>
+    <v:String x:Key="wf_ShowFolder">Показать папку...</v:String>
+    <v:String x:Key="wf_OpenEditor">Открыть редактор</v:String>
+    <v:String x:Key="udp_Port">UDP порт:</v:String>
+    <v:String x:Key="udp_Listen">Слушать</v:String>
+    <v:String x:Key="udp_SavePacket">Сохранять UDP пакет</v:String>
+
+    <v:String x:Key="dvc_Offset">Смещение</v:String>
+    <v:String x:Key="dvc_IpAddress">IP адрес</v:String>
+    <v:String x:Key="dvc_Check">Проверить</v:String>
+    <v:String x:Key="dvc_Dim">Dim</v:String>
+    <v:String x:Key="dvc_AutoPlay">Автовоспроизведение</v:String>
+    <v:String x:Key="dvc_Timer">Таймер</v:String>
+
+    <v:String x:Key="mod_OnOff">Вкл/выкл</v:String>
+    <v:String x:Key="mod_X">X</v:String>
+    <v:String x:Key="mod_Y">Y</v:String>
+    <v:String x:Key="mod_CenterX">Центр X</v:String>
+    <v:String x:Key="mod_CenterY">Центр Y</v:String>
+    <v:String x:Key="mod_CutLeft">Обрезка слева</v:String>
+    <v:String x:Key="mod_CutRight">Обрезка справа</v:String>
+    <v:String x:Key="mod_CutTop">Обрезка сверху</v:String>
+    <v:String x:Key="mod_CutBottom">Обрезка снизу</v:String>
+    <v:String x:Key="mod_Vertical">Вертикальная</v:String>
+    <v:String x:Key="mod_Points">Точки</v:String>
+    <v:String x:Key="mod_ScanRate">ScanRate</v:String>
+    <v:String x:Key="mod_ShiftX">Сдвиг X</v:String>
+    <v:String x:Key="mod_ShiftY">Сдвиг Y</v:String>
+    <v:String x:Key="mod_ScaleX">Масштаб X</v:String>
+    <v:String x:Key="mod_ScaleY">Масштаб Y</v:String>
+    <v:String x:Key="mod_LightMass">LightMass</v:String>
+    <v:String x:Key="mod_BlankMass">BlankMass</v:String>
+    <v:String x:Key="mod_MaxLinesCount">MaxLinesCount</v:String>
+    <v:String x:Key="mod_LinesPart">LinesPart</v:String>
+    <v:String x:Key="mod_Form">Форма</v:String>
+    <v:String x:Key="mod_Morph">Морф</v:String>
+    <v:String x:Key="mod_StrokeCount">StrokeCount</v:String>
+    <v:String x:Key="mod_ColumnCount">ColumnCount</v:String>
+    <v:String x:Key="mod_AngleX">Угол X</v:String>
+    <v:String x:Key="mod_AngleY">Угол Y</v:String>
+    <v:String x:Key="mod_CouplingY">Стяжка по Y</v:String>
+    <v:String x:Key="mod_CouplingYProfile">Профиль стяжки Y к углу</v:String>
+    <v:String x:Key="mod_CouplingX">Стяжка углов X</v:String>
+    <v:String x:Key="mod_CouplingProfile">Профиль стяжки к углу</v:String>
+    <v:String x:Key="mod_AddPointsRegular">Добавлять точки к обычным линиям</v:String>
+    <v:String x:Key="mod_AddPointsBlank">Добавлять точки к IsBlank</v:String>
+    <v:String x:Key="mod_Tolerance">Погрешность</v:String>
+    <v:String x:Key="mod_ConnectionTolerance">Порог соединения</v:String>
+    <v:String x:Key="mod_CouplingYTooltip">Только между центром (y=0) и краем (|y|=1): там ≠1; на центре и краю — физика. &gt;1 — сильнее в середине половины</v:String>
+    <v:String x:Key="mod_CouplingYProfileTooltip">Как стяжка Y: 0 на y=0 и |y|=1; макс. при |y|≈0.5. &gt;1 — сильнее в «кольце»</v:String>
+    <v:String x:Key="mod_CouplingXTooltip">К периметру: в центре кадра физика (1), на кромке/в углу — полный показатель</v:String>
+    <v:String x:Key="mod_CouplingProfileTooltip">К периметру max(|x|,|y|): в центре p=1, на кромке — заданное; pinch по Y линейный</v:String>
+
+    <v:String x:Key="obj_X">X:</v:String>
+    <v:String x:Key="obj_Y">Y:</v:String>
+    <v:String x:Key="obj_Z">Z:</v:String>
+    <v:String x:Key="setting_StepByStepAdd">Пошаговое добавление</v:String>
+    <v:String x:Key="setting_IsNotUsedLayer">Неиспользуемый слой</v:String>
+    <v:String x:Key="setting_ChangeFlags">Подменять флаги</v:String>
+    <v:String x:Key="setting_UdpAutoStart">Автозапуск UDP</v:String>
+    <v:String x:Key="setting_DxfUnitsOverride">Переопределение единиц DXF</v:String>
+    <v:String x:Key="setting_DxfUnitsAuto">Авто (из файла/заголовка)</v:String>
+    <v:String x:Key="setting_DxfUnitsMm">Миллиметры (mm)</v:String>
+    <v:String x:Key="setting_DxfUnitsCm">Сантиметры (cm)</v:String>
+    <v:String x:Key="setting_DxfUnitsM">Метры (m)</v:String>
+    <v:String x:Key="setting_DxfUnitsIn">Дюймы (in)</v:String>
+    <v:String x:Key="setting_DxfUnitsFt">Футы (ft)</v:String>
+    <v:String x:Key="dvc_GoWeb">Веб-интерфейс</v:String>
+    <v:String x:Key="dvc_IP">IP</v:String>
+    <v:String x:Key="mesh_Full">Полный</v:String>
+    <v:String x:Key="mesh_Horizontal">Горизонтальный</v:String>
+    <v:String x:Key="mesh_VerticalMenu">Вертикальный</v:String>
+    <v:String x:Key="mesh_None">Нет</v:String>
+    <v:String x:Key="mesh_YMirror">Отражение Y</v:String>
+    <v:String x:Key="mesh_RotateIndex90">Поворот индекса 90°</v:String>
+    <v:String x:Key="mesh_RotateCoords90">Поворот координат 90°</v:String>
+    <v:String x:Key="mesh_ConvertEllipsoid">Преобразовать на эллипсоид</v:String>
+
+    <v:String x:Key="canvas_Center">Центр</v:String>
+    <v:String x:Key="canvas_Left">Слева</v:String>
+    <v:String x:Key="canvas_Right">Справа</v:String>
+    <v:String x:Key="canvas_Top">Сверху</v:String>
+    <v:String x:Key="canvas_Bottom">Снизу</v:String>
 
 </ResourceDictionary>

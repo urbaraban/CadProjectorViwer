@@ -26,9 +26,9 @@
                 </ListView.Resources>
                 <ListView.View>
                     <GridView>
-                        <GridViewColumn Header="Message" DisplayMemberBinding="{Binding Path=Message}" Width="150"/>
-                        <GridViewColumn Header="Sender" DisplayMemberBinding="{Binding Path=Sender}" Width="Auto"/>
-                        <GridViewColumn Header="Time" DisplayMemberBinding="{Binding Path=Time}" Width="Auto"/>
+                        <GridViewColumn Header="{DynamicResource common_Message}" DisplayMemberBinding="{Binding Path=Message}" Width="150"/>
+                        <GridViewColumn Header="{DynamicResource common_Sender}" DisplayMemberBinding="{Binding Path=Sender}" Width="Auto"/>
+                        <GridViewColumn Header="{DynamicResource common_Time}" DisplayMemberBinding="{Binding Path=Time}" Width="Auto"/>
                     </GridView>
                 </ListView.View>
                 <ListView.ItemContainerStyle>

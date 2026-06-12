@@ -27,11 +27,11 @@
         </ResourceDictionary>
     </Window.Resources>
     <StackPanel Margin="20,5,20,10">
-        <Label Content="Width" />
+        <Label Content="{DynamicResource obj_Width}" />
         <Controls:NumericUpDown Value="{Binding LRect.MWidth, Converter={StaticResource RoundValue}}" />
-        <Label Content="Height" />
+        <Label Content="{DynamicResource obj_Height}" />
         <Controls:NumericUpDown Value="{Binding LRect.MHeight, Converter={StaticResource RoundValue}}" />
-        <Label Content="Depth" />
+        <Label Content="{DynamicResource obj_Depth}" />
         <Controls:NumericUpDown Value="{Binding LRect.MDepth, Converter={StaticResource RoundValue}}" />
     </StackPanel>
 </Window>

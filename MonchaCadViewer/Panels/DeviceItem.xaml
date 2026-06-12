@@ -25,7 +25,7 @@
                     Tag="1" />
                 <MenuItem Command="{Binding ShowModulesSettingCommand}" Header="{DynamicResource dvc_show_modules}" />
                 <MenuItem Command="{Binding ProjectorViewCommand}" Header="{DynamicResource dvc_ShowScreen}" />
-                <MenuItem Command="{Binding GoToWebInterface}" Header="Go web" />
+                <MenuItem Command="{Binding GoToWebInterface}" Header="{DynamicResource dvc_GoWeb}" />
             </ContextMenu>
         </Border.ContextMenu>
         <StackPanel VerticalAlignment="Center" Orientation="Horizontal">

@@ -34,7 +34,7 @@
     <DataTemplate x:Key="BaseModule" DataType="{x:Type modules:DeviceModule}">
         <StackPanel>
             <DockPanel>
-                <mah:ToggleSwitch Content="On/off" IsOn="{Binding IsOn}" />
+                <mah:ToggleSwitch Content="{DynamicResource mod_OnOff}" IsOn="{Binding IsOn}" />
             </DockPanel>
             <ContentPresenter Content="{Binding .}" />
         </StackPanel>
@@ -61,7 +61,7 @@
             <TextBlock
                 Grid.Row="0"
                 Grid.Column="0"
-                Text="X" />
+                Text="{DynamicResource mod_X}" />
             <mah:NumericUpDown
                 Grid.Row="0"
                 Grid.Column="1"
@@ -72,7 +72,7 @@
             <TextBlock
                 Grid.Row="1"
                 Grid.Column="0"
-                Text="Y" />
+                Text="{DynamicResource mod_Y}" />
             <mah:NumericUpDown
                 Grid.Row="1"
                 Grid.Column="1"
@@ -83,7 +83,7 @@
             <TextBlock
                 Grid.Row="2"
                 Grid.Column="0"
-                Text="Width" />
+                Text="{DynamicResource obj_Width}" />
             <mah:NumericUpDown
                 Grid.Row="2"
                 Grid.Column="1"
@@ -94,7 +94,7 @@
             <TextBlock
                 Grid.Row="3"
                 Grid.Column="0"
-                Text="Height" />
+                Text="{DynamicResource obj_Height}" />
             <mah:NumericUpDown
                 Grid.Row="3"
                 Grid.Column="1"
@@ -105,7 +105,7 @@
             <TextBlock
                 Grid.Row="4"
                 Grid.Column="0"
-                Text="Depth" />
+                Text="{DynamicResource obj_Depth}" />
             <mah:NumericUpDown
                 Grid.Row="4"
                 Grid.Column="1"
@@ -115,7 +115,7 @@
             <TextBlock
                 Grid.Row="5"
                 Grid.Column="0"
-                Text="CenterX" />
+                Text="{DynamicResource mod_CenterX}" />
             <mah:NumericUpDown
                 Grid.Row="5"
                 Grid.Column="1"
@@ -124,7 +124,7 @@
             <TextBlock
                 Grid.Row="6"
                 Grid.Column="0"
-                Text="CenterY" />
+                Text="{DynamicResource mod_CenterY}" />
             <mah:NumericUpDown
                 Grid.Row="6"
                 Grid.Column="1"
@@ -133,7 +133,7 @@
             <TextBlock
                 Grid.Row="7"
                 Grid.Column="0"
-                Text="Cut Left" />
+                Text="{DynamicResource mod_CutLeft}" />
             <mah:ToggleSwitch
                 Grid.Row="7"
                 Grid.Column="1"
@@ -141,7 +141,7 @@
             <TextBlock
                 Grid.Row="8"
                 Grid.Column="0"
-                Text="Cut Right" />
+                Text="{DynamicResource mod_CutRight}" />
             <mah:ToggleSwitch
                 Grid.Row="8"
                 Grid.Column="1"
@@ -149,7 +149,7 @@
             <TextBlock
                 Grid.Row="9"
                 Grid.Column="0"
-                Text="Cut Top" />
+                Text="{DynamicResource mod_CutTop}" />
             <mah:ToggleSwitch
                 Grid.Row="9"
                 Grid.Column="1"
@@ -157,7 +157,7 @@
             <TextBlock
                 Grid.Row="10"
                 Grid.Column="0"
-                Text="Cut Bottom" />
+                Text="{DynamicResource mod_CutBottom}" />
             <mah:ToggleSwitch
                 Grid.Row="10"
                 Grid.Column="1"
@@ -167,7 +167,7 @@
     <DataTemplate DataType="{x:Type correctors:ArctanCorrector}">
         <StackPanel Orientation="Vertical">
             <DockPanel>
-                <Label Content="Угол X" DockPanel.Dock="Left" />
+                <Label Content="{DynamicResource mod_AngleX}" DockPanel.Dock="Left" />
                 <mah:NumericUpDown
                     MinWidth="250"
                     Interval="0.001"
@@ -176,7 +176,7 @@
                     Value="{Binding AngleX, Mode=TwoWay, StringFormat={}{0.000}}" />
             </DockPanel>
             <DockPanel>
-                <Label Content="Угол Y" DockPanel.Dock="Left" />
+                <Label Content="{DynamicResource mod_AngleY}" DockPanel.Dock="Left" />
                 <mah:NumericUpDown
                     MinWidth="150"
                     Interval="0.001"
@@ -185,43 +185,43 @@
                     Value="{Binding AngleY, Mode=TwoWay, StringFormat={}{0.000}}" />
             </DockPanel>
             <DockPanel>
-                <Label Content="Стяжка по Y" DockPanel.Dock="Left" />
+                <Label Content="{DynamicResource mod_CouplingY}" DockPanel.Dock="Left" />
                 <mah:NumericUpDown
                     MinWidth="150"
                     Interval="0.001"
                     Maximum="5"
                     Minimum="0.01"
-                    ToolTip="Только между центром (y=0) и краем (|y|=1): там ≠1; на центре и краю — физика. &gt;1 — сильнее в середине половины"
+                    ToolTip="{DynamicResource mod_CouplingYTooltip}"
                     Value="{Binding CouplingYScale, Mode=TwoWay, StringFormat={}{0.000}}" />
             </DockPanel>
             <DockPanel>
-                <Label Content="Профиль стяжки Y к углу" DockPanel.Dock="Left" />
+                <Label Content="{DynamicResource mod_CouplingYProfile}" DockPanel.Dock="Left" />
                 <mah:NumericUpDown
                     MinWidth="150"
                     Interval="0.001"
                     Maximum="2"
                     Minimum="0"
-                    ToolTip="Как стяжка Y: 0 на y=0 и |y|=1; макс. при |y|≈0.5. &gt;1 — сильнее в «кольце»"
+                    ToolTip="{DynamicResource mod_CouplingYProfileTooltip}"
                     Value="{Binding CouplingYProfileExponent, Mode=TwoWay, StringFormat={}{0.000}}" />
             </DockPanel>
             <DockPanel>
-                <Label Content="Стяжка углов X" DockPanel.Dock="Left" />
+                <Label Content="{DynamicResource mod_CouplingX}" DockPanel.Dock="Left" />
                 <mah:NumericUpDown
                     MinWidth="150"
                     Interval="0.001"
                     Maximum="5"
                     Minimum="0"
-                    ToolTip="К периметру: в центре кадра физика (1), на кромке/в углу — полный показатель"
+                    ToolTip="{DynamicResource mod_CouplingXTooltip}"
                     Value="{Binding CouplingScale, Mode=TwoWay, StringFormat={}{0.000}}" />
             </DockPanel>
             <DockPanel>
-                <Label Content="Профиль стяжки к углу" DockPanel.Dock="Left" />
+                <Label Content="{DynamicResource mod_CouplingProfile}" DockPanel.Dock="Left" />
                 <mah:NumericUpDown
                     MinWidth="150"
                     Interval="0.001"
                     Maximum="3"
                     Minimum="1"
-                    ToolTip="К периметру max(|x|,|y|): в центре p=1, на кромке — заданное; pinch по Y линейный"
+                    ToolTip="{DynamicResource mod_CouplingProfileTooltip}"
                     Value="{Binding CouplingProfileExponent, Mode=TwoWay, StringFormat={}{0.000}}" />
             </DockPanel>
         </StackPanel>
@@ -229,7 +229,7 @@
     <DataTemplate DataType="{x:Type zcorrectors:ZCorrector}">
         <StackPanel Orientation="Vertical">
             <DockPanel>
-                <Label Content="Высота" DockPanel.Dock="Left" />
+                <Label Content="{DynamicResource obj_Height}" DockPanel.Dock="Left" />
                 <mah:NumericUpDown
                     MinWidth="250"
                     Interval="1"
@@ -237,7 +237,7 @@
                     Value="{Binding Depth, Mode=TwoWay, StringFormat={}{0.000}}" />
             </DockPanel>
             <DockPanel>
-                <Label Content="Центр X" DockPanel.Dock="Left" />
+                <Label Content="{DynamicResource mod_CenterX}" DockPanel.Dock="Left" />
                 <mah:NumericUpDown
                     MinWidth="250"
                     Interval="0.01"
@@ -246,7 +246,7 @@
                     Value="{Binding X, Mode=TwoWay, StringFormat={}{0.000}}" />
             </DockPanel>
             <DockPanel>
-                <Label Content="Центр Y" DockPanel.Dock="Left" />
+                <Label Content="{DynamicResource mod_CenterY}" DockPanel.Dock="Left" />
                 <mah:NumericUpDown
                     MinWidth="250"
                     Interval="0.01"
@@ -258,9 +258,9 @@
     </DataTemplate>
     <DataTemplate DataType="{x:Type correctors:AxisGradient}">
         <StackPanel>
-            <mah:ToggleSwitch Content="Vertical" IsOn="{Binding VerticalCorrect}" />
+            <mah:ToggleSwitch Content="{DynamicResource mod_Vertical}" IsOn="{Binding VerticalCorrect}" />
             <DockPanel>
-                <Label Content="Points" DockPanel.Dock="Left" />
+                <Label Content="{DynamicResource mod_Points}" DockPanel.Dock="Left" />
                 <mah:NumericUpDown
                     MinWidth="150"
                     Interval="1"
@@ -289,7 +289,7 @@
     <DataTemplate DataType="{x:Type services:ScanRateSplitDotInserter}">
         <StackPanel>
             <DockPanel>
-                <Label Content="FPS" DockPanel.Dock="Left" />
+                <Label Content="{DynamicResource dvc_FPS}" DockPanel.Dock="Left" />
                 <mah:NumericUpDown
                     MinWidth="150"
                     Interval="1"
@@ -299,7 +299,7 @@
                     Value="{Binding FPS, Mode=TwoWay}" />
             </DockPanel>
             <DockPanel>
-                <Label Content="ScanRate" DockPanel.Dock="Left" />
+                <Label Content="{DynamicResource mod_ScanRate}" DockPanel.Dock="Left" />
                 <mah:NumericUpDown
                     MinWidth="150"
                     Interval="1000"
@@ -309,11 +309,11 @@
                     Value="{Binding ScanRate, Mode=TwoWay}" />
             </DockPanel>
             <DockPanel>
-                <Label Content="Добавлять точки к обычным линиям" DockPanel.Dock="Left" />
+                <Label Content="{DynamicResource mod_AddPointsRegular}" DockPanel.Dock="Left" />
                 <mah:ToggleSwitch IsOn="{Binding AddPointsToRegularLines, Mode=TwoWay}" />
             </DockPanel>
             <DockPanel>
-                <Label Content="Добавлять точки к IsBlank" DockPanel.Dock="Left" />
+                <Label Content="{DynamicResource mod_AddPointsBlank}" DockPanel.Dock="Left" />
                 <mah:ToggleSwitch IsOn="{Binding AddPointsToIsBlank, Mode=TwoWay}" />
             </DockPanel>
         </StackPanel>
@@ -321,7 +321,7 @@
     <DataTemplate DataType="{x:Type services:ScanRateGradientDotInserter}">
         <StackPanel>
             <DockPanel>
-                <Label Content="FPS" DockPanel.Dock="Left" />
+                <Label Content="{DynamicResource dvc_FPS}" DockPanel.Dock="Left" />
                 <mah:NumericUpDown
                     MinWidth="150"
                     Interval="1"
@@ -331,7 +331,7 @@
                     Value="{Binding FPS, Mode=TwoWay}" />
             </DockPanel>
             <DockPanel>
-                <Label Content="ScanRate" DockPanel.Dock="Left" />
+                <Label Content="{DynamicResource mod_ScanRate}" DockPanel.Dock="Left" />
                 <mah:NumericUpDown
                     MinWidth="150"
                     Interval="100"
@@ -345,7 +345,7 @@
     <DataTemplate DataType="{x:Type transforming:RotateFrame2D}">
         <StackPanel>
             <DockPanel>
-                <Label Content="Центр X" DockPanel.Dock="Left" />
+                <Label Content="{DynamicResource mod_CenterX}" DockPanel.Dock="Left" />
                 <mah:NumericUpDown
                     MinWidth="250"
                     Interval="0.01"
@@ -354,7 +354,7 @@
                     Value="{Binding X, Mode=TwoWay, StringFormat={}{0.000}}" />
             </DockPanel>
             <DockPanel>
-                <Label Content="Центр Y" DockPanel.Dock="Left" />
+                <Label Content="{DynamicResource mod_CenterY}" DockPanel.Dock="Left" />
                 <mah:NumericUpDown
                     MinWidth="250"
                     Interval="0.01"
@@ -363,7 +363,7 @@
                     Value="{Binding Y, Mode=TwoWay, StringFormat={}{0.000}}" />
             </DockPanel>
             <DockPanel>
-                <Label Content="Angle" DockPanel.Dock="Left" />
+                <Label Content="{DynamicResource obj_Angle}" DockPanel.Dock="Left" />
                 <mah:NumericUpDown
                     MinWidth="150"
                     Interval="1"
@@ -377,7 +377,7 @@
     <DataTemplate DataType="{x:Type transforming:MoveScale2D}">
         <StackPanel>
             <DockPanel>
-                <Label Content="Shift X" DockPanel.Dock="Left" />
+                <Label Content="{DynamicResource mod_ShiftX}" DockPanel.Dock="Left" />
                 <mah:NumericUpDown
                     MinWidth="250"
                     Interval="0.01"
@@ -386,7 +386,7 @@
                     Value="{Binding ShiftX, Mode=TwoWay, StringFormat={}{0.000}}" />
             </DockPanel>
             <DockPanel>
-                <Label Content="Shift Y" DockPanel.Dock="Left" />
+                <Label Content="{DynamicResource mod_ShiftY}" DockPanel.Dock="Left" />
                 <mah:NumericUpDown
                     MinWidth="250"
                     Interval="0.01"
@@ -395,7 +395,7 @@
                     Value="{Binding ShiftY, Mode=TwoWay, StringFormat={}{0.000}}" />
             </DockPanel>
             <DockPanel>
-                <Label Content="Scale X" DockPanel.Dock="Left" />
+                <Label Content="{DynamicResource mod_ScaleX}" DockPanel.Dock="Left" />
                 <mah:NumericUpDown
                     MinWidth="250"
                     Interval="0.01"
@@ -404,7 +404,7 @@
                     Value="{Binding ScaleX, Mode=TwoWay, StringFormat={}{0.000}}" />
             </DockPanel>
             <DockPanel>
-                <Label Content="Scale Y" DockPanel.Dock="Left" />
+                <Label Content="{DynamicResource mod_ScaleY}" DockPanel.Dock="Left" />
                 <mah:NumericUpDown
                     MinWidth="250"
                     Interval="0.01"
@@ -413,7 +413,7 @@
                     Value="{Binding ScaleY, Mode=TwoWay, StringFormat={}{0.000}}" />
             </DockPanel>
             <DockPanel>
-                <Label Content="Center X" DockPanel.Dock="Left" />
+                <Label Content="{DynamicResource mod_CenterX}" DockPanel.Dock="Left" />
                 <mah:NumericUpDown
                     MinWidth="250"
                     Interval="0.01"
@@ -422,7 +422,7 @@
                     Value="{Binding CenterX, Mode=TwoWay, StringFormat={}{0.000}}" />
             </DockPanel>
             <DockPanel>
-                <Label Content="Center Y" DockPanel.Dock="Left" />
+                <Label Content="{DynamicResource mod_CenterY}" DockPanel.Dock="Left" />
                 <mah:NumericUpDown
                     MinWidth="250"
                     Interval="0.01"
@@ -435,7 +435,7 @@
     <DataTemplate DataType="{x:Type transforming:RectProportion}">
         <StackPanel>
             <DockPanel>
-                <Label Content="Центр X" DockPanel.Dock="Left" />
+                <Label Content="{DynamicResource mod_CenterX}" DockPanel.Dock="Left" />
                 <mah:NumericUpDown
                     MinWidth="250"
                     Interval="0.01"
@@ -444,7 +444,7 @@
                     Value="{Binding X, Mode=TwoWay, StringFormat={}{0.000}}" />
             </DockPanel>
             <DockPanel>
-                <Label Content="Центр Y" DockPanel.Dock="Left" />
+                <Label Content="{DynamicResource mod_CenterY}" DockPanel.Dock="Left" />
                 <mah:NumericUpDown
                     MinWidth="250"
                     Interval="0.01"
@@ -456,7 +456,7 @@
                 <TextBlock
                     Grid.Row="2"
                     Grid.Column="0"
-                    Text="Width" />
+                    Text="{DynamicResource obj_Width}" />
                 <mah:NumericUpDown
                     Grid.Row="2"
                     Grid.Column="1"
@@ -469,7 +469,7 @@
                 <TextBlock
                     Grid.Row="3"
                     Grid.Column="0"
-                    Text="Height" />
+                    Text="{DynamicResource obj_Height}" />
                 <mah:NumericUpDown
                     Grid.Row="3"
                     Grid.Column="1"
@@ -486,7 +486,7 @@
                 <TextBlock
                     Grid.Row="3"
                     Grid.Column="0"
-                    Text="LightMass" />
+                    Text="{DynamicResource mod_LightMass}" />
                 <mah:NumericUpDown
                     Grid.Row="3"
                     Grid.Column="1"
@@ -498,7 +498,7 @@
                 <TextBlock
                     Grid.Row="3"
                     Grid.Column="0"
-                    Text="BlankMass" />
+                    Text="{DynamicResource mod_BlankMass}" />
                 <mah:NumericUpDown
                     Grid.Row="3"
                     Grid.Column="1"
@@ -511,7 +511,7 @@
     <DataTemplate DataType="{x:Type optimization:Unduplicated}">
         <StackPanel>
             <DockPanel>
-                <Label Content="Погрешность" DockPanel.Dock="Left" />
+                <Label Content="{DynamicResource mod_Tolerance}" DockPanel.Dock="Left" />
                 <mah:NumericUpDown
                     MinWidth="200"
                     Interval="0.000001"
@@ -525,7 +525,7 @@
     <DataTemplate DataType="{x:Type optimization:FindShortestPath}">
         <StackPanel>
             <DockPanel>
-                <Label Content="Порог соединения" DockPanel.Dock="Left" />
+                <Label Content="{DynamicResource mod_ConnectionTolerance}" DockPanel.Dock="Left" />
                 <mah:NumericUpDown
                     MinWidth="200"
                     Interval="0.000001"
@@ -542,7 +542,7 @@
                 <TextBlock
                     Grid.Row="3"
                     Grid.Column="0"
-                    Text="MaxLinesCount" />
+                    Text="{DynamicResource mod_MaxLinesCount}" />
                 <mah:NumericUpDown
                     Grid.Row="3"
                     Grid.Column="1"
@@ -553,7 +553,7 @@
                 <TextBlock
                     Grid.Row="3"
                     Grid.Column="0"
-                    Text="LinesPart" />
+                    Text="{DynamicResource mod_LinesPart}" />
                 <mah:NumericUpDown
                     Grid.Row="3"
                     Grid.Column="1"
@@ -568,7 +568,7 @@
                 <TextBlock
                     Grid.Row="3"
                     Grid.Column="0"
-                    Text="MaxLinesCount" />
+                    Text="{DynamicResource mod_MaxLinesCount}" />
                 <mah:NumericUpDown
                     Grid.Row="3"
                     Grid.Column="1"
@@ -579,7 +579,7 @@
                 <TextBlock
                     Grid.Row="3"
                     Grid.Column="0"
-                    Text="LinesPart" />
+                    Text="{DynamicResource mod_LinesPart}" />
                 <mah:NumericUpDown
                     Grid.Row="3"
                     Grid.Column="1"
@@ -590,12 +590,12 @@
     </DataTemplate>
     <DataTemplate DataType="{x:Type mesh:LineGridSplitter}">
         <StackPanel>
-            <mah:ToggleSwitch Content="Vertical" IsOn="{Binding IsVertical}" />
+            <mah:ToggleSwitch Content="{DynamicResource mod_Vertical}" IsOn="{Binding IsVertical}" />
             <DockPanel>
                 <TextBlock
                     Grid.Row="3"
                     Grid.Column="0"
-                    Text="MaxLinesCount" />
+                    Text="{DynamicResource mod_MaxLinesCount}" />
                 <mah:NumericUpDown
                     Grid.Row="3"
                     Grid.Column="1"
@@ -607,21 +607,21 @@
     <DataTemplate DataType="{x:Type mesh:MorphMeshCorrector}">
         <StackPanel>
             <DockPanel>
-                <Label Content="Form" DockPanel.Dock="Left" />
+                <Label Content="{DynamicResource mod_Form}" DockPanel.Dock="Left" />
                 <ComboBox
                     MinWidth="150"
                     ItemsSource="{Binding Source={StaticResource CalibrationFormValues}}"
                     SelectedItem="{Binding Form, Mode=TwoWay}" />
             </DockPanel>
             <DockPanel>
-                <Label Content="Morph" DockPanel.Dock="Left" />
+                <Label Content="{DynamicResource mod_Morph}" DockPanel.Dock="Left" />
                 <ComboBox
                     MinWidth="150"
                     ItemsSource="{Binding Source={StaticResource MorphTypeValues}}"
                     SelectedItem="{Binding Morph, Mode=TwoWay}" />
             </DockPanel>
             <DockPanel>
-                <Label Content="StrokeCount" DockPanel.Dock="Left" />
+                <Label Content="{DynamicResource mod_StrokeCount}" DockPanel.Dock="Left" />
                 <mah:NumericUpDown
                     MinWidth="150"
                     Interval="1"
@@ -630,7 +630,7 @@
                     Value="{Binding StrokeCount, Mode=TwoWay}" />
             </DockPanel>
             <DockPanel>
-                <Label Content="ColumnCount" DockPanel.Dock="Left" />
+                <Label Content="{DynamicResource mod_ColumnCount}" DockPanel.Dock="Left" />
                 <mah:NumericUpDown
                     MinWidth="150"
                     Interval="1"

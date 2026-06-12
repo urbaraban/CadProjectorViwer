@@ -30,9 +30,9 @@
     </Window.Resources>
     <Window.ContextMenu>
         <ContextMenu>
-            <MenuItem Click="MaxItem_Click" Header="Maximezed" />
-            <MenuItem Click="FixMenuItem_Click" Header="Fix" />
-            <MenuItem Click="CloseMenuItem_Click" Header="Close" />
+            <MenuItem Click="MaxItem_Click" Header="{DynamicResource dlg_ProjectorMaximized}" />
+            <MenuItem Click="FixMenuItem_Click" Header="{DynamicResource obj_Fix}" />
+            <MenuItem Click="CloseMenuItem_Click" Header="{DynamicResource common_Close}" />
             <Slider
                 Maximum="255"
                 Minimum="0"

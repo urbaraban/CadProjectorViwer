@@ -7,7 +7,7 @@
         xmlns:rightpanel="clr-namespace:CadProjectorViewer.Panels.RightPanel" 
         d:DataContext="{d:DesignInstance Type=rightpanel:LogMessage}"
         mc:Ignorable="d"
-        Title="LogWindow"
+        Title="{DynamicResource dlg_LogWindow}"
         ResizeMode="NoResize"
         Width="250"
         SizeToContent="WidthAndHeight">
@@ -27,19 +27,19 @@
         LastChildFill="False">
         <DockPanel
             DockPanel.Dock="Top">
-            <TextBlock Text="Time:"/>
+            <TextBlock Text="{DynamicResource common_Time}"/>
             <TextBlock Text="{Binding Time, Mode=OneWay}"/>
         </DockPanel>
         <DockPanel
             DockPanel.Dock="Top">
-            <TextBlock Text="Sender:"/>
+            <TextBlock Text="{DynamicResource common_Sender}"/>
             <TextBlock
             Text="{Binding Sender, Mode=OneWay}"/>
         </DockPanel>
 
         <DockPanel
             DockPanel.Dock="Top">
-            <TextBlock Text="Message:"/>
+            <TextBlock Text="{DynamicResource common_Message}"/>
             <TextBox
             IsReadOnly="True"
             DockPanel.Dock="Top"

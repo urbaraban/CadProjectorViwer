@@ -39,7 +39,16 @@
             <Setter Property="TreeViewItem.IsExpanded" Value="True" />
         </Style>
 
-        <DataTemplate DataType="{x:Type cadobjUid:UidObject}">
+        <DataTemplate x:Key="RenderNameRow">
+            <DockPanel VerticalAlignment="Center">
+                <CheckBox IsChecked="{Binding IsRender}" />
+                <Label
+                    VerticalAlignment="Center"
+                    Content="{Binding NameID}"
+                    MouseDoubleClick="Label_MouseDoubleClick" />
+            </DockPanel>
+        </DataTemplate>
+        <DataTemplate x:Key="CanvasCadObjectShell">
             <Border d:DataContext="{d:DesignInstance Type=canvasobj:CanvasObject}" ContextMenu="{Binding ContextMenu}">
                 <Border.DataContext>
                     <MultiBinding Converter="{StaticResource CadObjectConverter}">
@@ -48,43 +57,17 @@
                         <Binding ElementName="CanvasPanel" Path="Scale" />
                     </MultiBinding>
                 </Border.DataContext>
-                <DockPanel VerticalAlignment="Center">
-                    <CheckBox IsChecked="{Binding IsRender}" />
-                    <Label
-                        VerticalAlignment="Center"
-                        Content="{Binding NameID}"
-                        MouseDoubleClick="Label_MouseDoubleClick" />
-                </DockPanel>
+                <ContentPresenter Content="{Binding}" ContentTemplate="{StaticResource RenderNameRow}" />
             </Border>
         </DataTemplate>
+        <DataTemplate DataType="{x:Type cadobjUid:UidObject}">
+            <ContentPresenter Content="{Binding}" ContentTemplate="{StaticResource CanvasCadObjectShell}" />
+        </DataTemplate>
         <HierarchicalDataTemplate DataType="{x:Type cadobj:CadGroup}" ItemsSource="{Binding Children}">
-            <Border d:DataContext="{d:DesignInstance Type=canvasobj:CanvasObject}" ContextMenu="{Binding ContextMenu}">
-                <Border.DataContext>
-                    <MultiBinding Converter="{StaticResource CadObjectConverter}">
-                        <Binding Path="" />
-                        <Binding ElementName="CanvasPanel" Path="DataContext" />
-                        <Binding ElementName="CanvasPanel" Path="Scale" />
-                    </MultiBinding>
-                </Border.DataContext>
-                <DockPanel VerticalAlignment="Center">
-                    <CheckBox IsChecked="{Binding IsRender}" />
-                    <Label
-                        VerticalAlignment="Center"
-                        Content="{Binding NameID}"
-                        MouseDoubleClick="Label_MouseDoubleClick" />
-                </DockPanel>
-            </Border>
+            <ContentPresenter Content="{Binding}" ContentTemplate="{StaticResource CanvasCadObjectShell}" />
         </HierarchicalDataTemplate>
         <HierarchicalDataTemplate x:Key="MasksTree" ItemsSource="{Binding Children}">
-            <Border>
-                <DockPanel VerticalAlignment="Center">
-                    <CheckBox IsChecked="{Binding IsRender}" />
-                    <Label
-                        VerticalAlignment="Center"
-                        Content="{Binding NameID}"
-                        MouseDoubleClick="Label_MouseDoubleClick" />
-                </DockPanel>
-            </Border>
+            <ContentPresenter Content="{Binding}" ContentTemplate="{StaticResource RenderNameRow}" />
         </HierarchicalDataTemplate>
         <HierarchicalDataTemplate x:Key="MeshTree">
             <Border d:DataContext="{d:DesignInstance Type=mesh:ProjectorMesh}">
@@ -104,7 +87,7 @@
                     <TextBlock
                         Margin="5,0,0,0"
                         VerticalAlignment="Center"
-                        Text="M:" />
+                        Text="{DynamicResource edit_MaskPrefix}" />
                     <Label
                         Margin="0,0,0,0"
                         Padding="0"
@@ -124,7 +107,7 @@
     <ScrollViewer VerticalScrollBarVisibility="Auto">
         <DockPanel LastChildFill="True">
             <DockPanel DockPanel.Dock="Top">
-                <Controls:ToggleSwitch Content="MaskActivated" IsOn="{Binding CursorMaskActivated}" />
+                <Controls:ToggleSwitch Content="{DynamicResource edit_MaskActivated}" IsOn="{Binding CursorMaskActivated}" />
             </DockPanel>
             <Expander
                 DockPanel.Dock="Top"
@@ -181,19 +164,11 @@
                     </DataTemplate>
                 </Expander.HeaderTemplate>
                 <TreeView ItemTemplate="{StaticResource ResourceKey=MasksTree}" ItemsSource="{Binding Masks}" />
-
             </Expander>
-
-            <Expander
-                DockPanel.Dock="Top"
-                Header="{DynamicResource obj_Objects}"
-                IsExpanded="True">
-                <TreeView
-                    d:ItemsSource="{d:SampleData ItemCount=2}"
-                    ItemsSource="{Binding .}"
-                    Style="{StaticResource ObjectTreeMainStyle}" />
-            </Expander>
-
+            <TreeView
+                d:ItemsSource="{d:SampleData ItemCount=2}"
+                ItemsSource="{Binding .}"
+                Style="{StaticResource ObjectTreeMainStyle}" />
         </DockPanel>
     </ScrollViewer>
 </UserControl>

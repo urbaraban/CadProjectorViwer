@@ -14,8 +14,8 @@
     mc:Ignorable="d">
     <UserControl.Resources>
         <ContextMenu x:Key="itemMenu">
-            <MenuItem Command="{Binding OpenFolderCommand}" Header="Show folder..." />
-            <MenuItem Command="{Binding OpenEditorCommand}" Header="Open editor" />
+            <MenuItem Command="{Binding OpenFolderCommand}" Header="{DynamicResource wf_ShowFolder}" />
+            <MenuItem Command="{Binding OpenEditorCommand}" Header="{DynamicResource wf_OpenEditor}" />
         </ContextMenu>
         <rightpanel:IconConverter x:Key="IconConverter" />
     </UserControl.Resources>
@@ -65,16 +65,16 @@
                                 <TextBlock FontFamily="Segoe MDL2 Assets" Text="{Binding Path=Extension, Converter={StaticResource IconConverter}}" />
                             </DataTemplate>
                         </GridViewColumn.CellTemplate>
-                        <GridViewColumnHeader Click="GridViewColumnHeader_Click" Content="ic" />
+                        <GridViewColumnHeader Click="GridViewColumnHeader_Click" Content="{DynamicResource common_Icon}" />
                     </GridViewColumn>
                     <GridViewColumn Width="120" DisplayMemberBinding="{Binding Path=Name}">
-                        <GridViewColumnHeader Click="GridViewColumnHeader_Click" Content="Name" />
+                        <GridViewColumnHeader Click="GridViewColumnHeader_Click" Content="{DynamicResource common_Name}" />
                     </GridViewColumn>
                     <GridViewColumn Width="40" DisplayMemberBinding="{Binding Path=Extension}">
-                        <GridViewColumnHeader Click="GridViewColumnHeader_Click" Content="Format" />
+                        <GridViewColumnHeader Click="GridViewColumnHeader_Click" Content="{DynamicResource common_Format}" />
                     </GridViewColumn>
                     <GridViewColumn Width="Auto" DisplayMemberBinding="{Binding Path=LastWriteTime, StringFormat=HH:MM d.m.yy}">
-                        <GridViewColumnHeader Click="GridViewColumnHeader_Click" Content="Date" />
+                        <GridViewColumnHeader Click="GridViewColumnHeader_Click" Content="{DynamicResource common_Date}" />
                     </GridViewColumn>
                 </GridView>
             </ListView.View>

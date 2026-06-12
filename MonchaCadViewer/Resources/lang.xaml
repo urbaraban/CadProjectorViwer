@@ -129,5 +129,157 @@
     <v:String x:Key="canvas_freezall">Freez all</v:String>
     <v:String x:Key="canvas_unselectall">Unselect all</v:String>
 
+    <v:String x:Key="app_Title">CUT - Viwer</v:String>
+    <v:String x:Key="app_Tooltip">2CUT</v:String>
+    <v:String x:Key="m_NewWorkplace">New Workplace</v:String>
+    <v:String x:Key="m_BrowseMWS">Browse MWS</v:String>
+    <v:String x:Key="m_SaveScene">Save Scene</v:String>
+    <v:String x:Key="m_OpenScene">Open Scene</v:String>
+    <v:String x:Key="m_License">License</v:String>
+    <v:String x:Key="m_Services">Services</v:String>
+    <v:String x:Key="m_RemoveOtherProcess">Remove other process</v:String>
+    <v:String x:Key="m_Language">Language</v:String>
+    <v:String x:Key="conn_Ethernet">Ethernet</v:String>
+    <v:String x:Key="conn_Listing">Listing</v:String>
+    <v:String x:Key="src_DxCeil">DxCeil</v:String>
+    <v:String x:Key="src_ILDA">ILDA</v:String>
+    <v:String x:Key="src_OldUDP">oldUDP</v:String>
+    <v:String x:Key="dvc_UsedDeviceMesh">Used device mesh</v:String>
+    <v:String x:Key="log_Title">Log</v:String>
+    <v:String x:Key="tray_Toggle">Show/Hide</v:String>
+    <v:String x:Key="edit_MaskActivated">Mask activated</v:String>
+    <v:String x:Key="edit_MaskPrefix">M:</v:String>
+    <v:String x:Key="scroll_StreamAdd">Stream Add</v:String>
+    <v:String x:Key="scroll_Previous">Prev</v:String>
+    <v:String x:Key="scroll_Next">Next</v:String>
+
+    <v:String x:Key="lic_Title">Request License Code</v:String>
+    <v:String x:Key="lic_Port">Port:</v:String>
+    <v:String x:Key="lic_Request">Request</v:String>
+    <v:String x:Key="lic_Key">Key</v:String>
+    <v:String x:Key="lic_Days">Days</v:String>
+    <v:String x:Key="lic_Deadline">Deadline</v:String>
+    <v:String x:Key="common_Copy">Copy</v:String>
+    <v:String x:Key="common_Paste">Paste</v:String>
+    <v:String x:Key="common_Ok">Ok</v:String>
+    <v:String x:Key="common_Cancel">Cancel</v:String>
+    <v:String x:Key="common_Show">Show</v:String>
+    <v:String x:Key="common_Read">Read</v:String>
+    <v:String x:Key="common_Parse">Parse</v:String>
+    <v:String x:Key="common_ID">ID:</v:String>
+    <v:String x:Key="common_Name">Name</v:String>
+    <v:String x:Key="common_Format">Format</v:String>
+    <v:String x:Key="common_Date">Date</v:String>
+    <v:String x:Key="common_Icon">ic</v:String>
+    <v:String x:Key="common_Address">Address</v:String>
+    <v:String x:Key="common_Port">Port</v:String>
+    <v:String x:Key="common_Message">Message</v:String>
+    <v:String x:Key="common_Time">Time</v:String>
+    <v:String x:Key="common_Sender">Sender</v:String>
+    <v:String x:Key="common_Start">Start</v:String>
+    <v:String x:Key="common_Stop">Stop</v:String>
+
+    <v:String x:Key="dlg_SceneSetting">Scene Setting</v:String>
+    <v:String x:Key="dlg_Meshes">Meshes</v:String>
+    <v:String x:Key="dlg_MakeMeshSplit">Make Mesh Split</v:String>
+    <v:String x:Key="dlg_ManipulatorTCP">Manipulator TCP</v:String>
+    <v:String x:Key="dlg_LaserMeter">Laser Meter</v:String>
+    <v:String x:Key="dlg_CreateGrid">Create Grid</v:String>
+    <v:String x:Key="dlg_AddDeviceByIp">Add Device By IP</v:String>
+    <v:String x:Key="dlg_ProjectorMaximized">Maximized</v:String>
+    <v:String x:Key="dlg_LogWindow">Log Window</v:String>
+    <v:String x:Key="dlg_HubPage">Hub</v:String>
+
+    <v:String x:Key="mesh_ReadyMeshes">Ready Meshes</v:String>
+    <v:String x:Key="mesh_SelectMeshes">Select Meshes</v:String>
+    <v:String x:Key="mesh_CreateMorphModule">Create Morph Module</v:String>
+    <v:String x:Key="mesh_Stroke">Stroke</v:String>
+    <v:String x:Key="mesh_Column">Column</v:String>
+    <v:String x:Key="mod_Group">Group:</v:String>
+    <v:String x:Key="grid_Every">Every</v:String>
+
+    <v:String x:Key="hub_RemoveShort">Rm</v:String>
+    <v:String x:Key="wf_ShowFolder">Show folder...</v:String>
+    <v:String x:Key="wf_OpenEditor">Open editor</v:String>
+    <v:String x:Key="udp_Port">UDP Port:</v:String>
+    <v:String x:Key="udp_Listen">Listen</v:String>
+    <v:String x:Key="udp_SavePacket">Save UDP packet</v:String>
+
+    <v:String x:Key="dvc_Offset">Offset</v:String>
+    <v:String x:Key="dvc_IpAddress">IP Address</v:String>
+    <v:String x:Key="dvc_Check">Check</v:String>
+    <v:String x:Key="dvc_Dim">Dim</v:String>
+    <v:String x:Key="dvc_AutoPlay">AutoPlay</v:String>
+    <v:String x:Key="dvc_Timer">Timer</v:String>
+
+    <v:String x:Key="mod_OnOff">On/off</v:String>
+    <v:String x:Key="mod_X">X</v:String>
+    <v:String x:Key="mod_Y">Y</v:String>
+    <v:String x:Key="mod_CenterX">Center X</v:String>
+    <v:String x:Key="mod_CenterY">Center Y</v:String>
+    <v:String x:Key="mod_CutLeft">Cut Left</v:String>
+    <v:String x:Key="mod_CutRight">Cut Right</v:String>
+    <v:String x:Key="mod_CutTop">Cut Top</v:String>
+    <v:String x:Key="mod_CutBottom">Cut Bottom</v:String>
+    <v:String x:Key="mod_Vertical">Vertical</v:String>
+    <v:String x:Key="mod_Points">Points</v:String>
+    <v:String x:Key="mod_ScanRate">ScanRate</v:String>
+    <v:String x:Key="mod_ShiftX">Shift X</v:String>
+    <v:String x:Key="mod_ShiftY">Shift Y</v:String>
+    <v:String x:Key="mod_ScaleX">Scale X</v:String>
+    <v:String x:Key="mod_ScaleY">Scale Y</v:String>
+    <v:String x:Key="mod_LightMass">LightMass</v:String>
+    <v:String x:Key="mod_BlankMass">BlankMass</v:String>
+    <v:String x:Key="mod_MaxLinesCount">MaxLinesCount</v:String>
+    <v:String x:Key="mod_LinesPart">LinesPart</v:String>
+    <v:String x:Key="mod_Form">Form</v:String>
+    <v:String x:Key="mod_Morph">Morph</v:String>
+    <v:String x:Key="mod_StrokeCount">StrokeCount</v:String>
+    <v:String x:Key="mod_ColumnCount">ColumnCount</v:String>
+    <v:String x:Key="mod_AngleX">Angle X</v:String>
+    <v:String x:Key="mod_AngleY">Angle Y</v:String>
+    <v:String x:Key="mod_CouplingY">Coupling Y</v:String>
+    <v:String x:Key="mod_CouplingYProfile">Coupling Y profile to angle</v:String>
+    <v:String x:Key="mod_CouplingX">Corner coupling X</v:String>
+    <v:String x:Key="mod_CouplingProfile">Coupling profile to angle</v:String>
+    <v:String x:Key="mod_AddPointsRegular">Add points to regular lines</v:String>
+    <v:String x:Key="mod_AddPointsBlank">Add points to IsBlank</v:String>
+    <v:String x:Key="mod_Tolerance">Tolerance</v:String>
+    <v:String x:Key="mod_ConnectionTolerance">Connection threshold</v:String>
+    <v:String x:Key="mod_CouplingYTooltip">Only between center (y=0) and edge (|y|=1): there ≠1; at center and edge — physics. &gt;1 — stronger in the middle of the half</v:String>
+    <v:String x:Key="mod_CouplingYProfileTooltip">Like coupling Y: 0 at y=0 and |y|=1; max at |y|≈0.5. &gt;1 — stronger in the ring</v:String>
+    <v:String x:Key="mod_CouplingXTooltip">Toward perimeter: physics (1) at frame center, full exponent at edge/corner</v:String>
+    <v:String x:Key="mod_CouplingProfileTooltip">Toward perimeter max(|x|,|y|): p=1 at center, set value at edge; Y pinch is linear</v:String>
+
+    <v:String x:Key="obj_X">X:</v:String>
+    <v:String x:Key="obj_Y">Y:</v:String>
+    <v:String x:Key="obj_Z">Z:</v:String>
+    <v:String x:Key="setting_StepByStepAdd">Step By Step Add</v:String>
+    <v:String x:Key="setting_IsNotUsedLayer">IsNotUsedLayer</v:String>
+    <v:String x:Key="setting_ChangeFlags">Replace flags</v:String>
+    <v:String x:Key="setting_UdpAutoStart">UDP auto start</v:String>
+    <v:String x:Key="setting_DxfUnitsOverride">DXF units override</v:String>
+    <v:String x:Key="setting_DxfUnitsAuto">Auto (from file/header)</v:String>
+    <v:String x:Key="setting_DxfUnitsMm">Millimeters (mm)</v:String>
+    <v:String x:Key="setting_DxfUnitsCm">Centimeters (cm)</v:String>
+    <v:String x:Key="setting_DxfUnitsM">Meters (m)</v:String>
+    <v:String x:Key="setting_DxfUnitsIn">Inches (in)</v:String>
+    <v:String x:Key="setting_DxfUnitsFt">Feet (ft)</v:String>
+    <v:String x:Key="dvc_GoWeb">Go web</v:String>
+    <v:String x:Key="dvc_IP">IP</v:String>
+    <v:String x:Key="mesh_Full">Full</v:String>
+    <v:String x:Key="mesh_Horizontal">Horizontal</v:String>
+    <v:String x:Key="mesh_VerticalMenu">Vertical</v:String>
+    <v:String x:Key="mesh_None">None</v:String>
+    <v:String x:Key="mesh_YMirror">YMirror</v:String>
+    <v:String x:Key="mesh_RotateIndex90">Rotate index 90°</v:String>
+    <v:String x:Key="mesh_RotateCoords90">Rotate coords 90°</v:String>
+    <v:String x:Key="mesh_ConvertEllipsoid">Convert on ellipsoid</v:String>
+
+    <v:String x:Key="canvas_Center">Center</v:String>
+    <v:String x:Key="canvas_Left">Left</v:String>
+    <v:String x:Key="canvas_Right">Right</v:String>
+    <v:String x:Key="canvas_Top">Top</v:String>
+    <v:String x:Key="canvas_Bottom">Bottom</v:String>
 
 </ResourceDictionary>

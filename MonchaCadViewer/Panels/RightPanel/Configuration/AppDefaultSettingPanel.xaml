@@ -29,7 +29,7 @@
                         <Setter Property="Width" Value="75"/>
                     </Style>
                 </StackPanel.Resources>
-                <Controls:ToggleSwitch Content="UDP auto start" IsOn="{Binding Udp_auto_start}"/>
+                <Controls:ToggleSwitch Content="{DynamicResource setting_UdpAutoStart}" IsOn="{Binding Udp_auto_start}"/>
                 <Separator/>
                 <CheckBox 
                     Content="{DynamicResource setting_percent}" 
@@ -49,14 +49,14 @@
                 <CheckBox
                     Content="{DynamicResource setting_showhideobject}"
                     IsChecked="{Binding Show_hide_object, Mode=TwoWay}"/>
-                <Label Width="auto" Content="DXF units override"/>
+                <Label Width="auto" Content="{DynamicResource setting_DxfUnitsOverride}"/>
                 <ComboBox SelectedValuePath="Tag" SelectedValue="{Binding DxfUnitsOverride, Mode=TwoWay}">
-                    <ComboBoxItem Content="Auto (from file/header)" Tag="auto"/>
-                    <ComboBoxItem Content="Millimeters (mm)" Tag="mm"/>
-                    <ComboBoxItem Content="Centimeters (cm)" Tag="cm"/>
-                    <ComboBoxItem Content="Meters (m)" Tag="m"/>
-                    <ComboBoxItem Content="Inches (in)" Tag="in"/>
-                    <ComboBoxItem Content="Feet (ft)" Tag="ft"/>
+                    <ComboBoxItem Content="{DynamicResource setting_DxfUnitsAuto}" Tag="auto"/>
+                    <ComboBoxItem Content="{DynamicResource setting_DxfUnitsMm}" Tag="mm"/>
+                    <ComboBoxItem Content="{DynamicResource setting_DxfUnitsCm}" Tag="cm"/>
+                    <ComboBoxItem Content="{DynamicResource setting_DxfUnitsM}" Tag="m"/>
+                    <ComboBoxItem Content="{DynamicResource setting_DxfUnitsIn}" Tag="in"/>
+                    <ComboBoxItem Content="{DynamicResource setting_DxfUnitsFt}" Tag="ft"/>
                 </ComboBox>
                 <Separator/>
                 <!-- Attach panel-->
@@ -75,7 +75,7 @@
                     Value="{Binding AnchorSize, Mode=TwoWay, UpdateSourceTrigger=Default}" 
                     IsTabStop="False" AllowDrop="False"/>
                 <CheckBox
-                    Content="Kill other process"
+                    Content="{DynamicResource m_RemoveOtherProcess}"
                     IsChecked="{Binding App_kill_other_process, Mode=TwoWay}"/>
 
             </StackPanel>

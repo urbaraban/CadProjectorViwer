@@ -42,7 +42,7 @@
             Grid.Row="0"
             LastChildFill="False"
             Margin="3">
-            <Label Content="Группа:" />
+            <Label Content="{DynamicResource mod_Group}" />
             <ComboBox
                 Width="180"
                 ItemsSource="{Binding Source={StaticResource DeviceModulesStageValues}}"
@@ -79,7 +79,7 @@
                                 <Button
                                     Margin="3,0,0,0"
                                     Command="{Binding ShowCommand}"
-                                    Content="Show"
+                                    Content="{DynamicResource common_Show}"
                                     Visibility="{Binding CanShow, Converter={StaticResource BoolToVisibility}}" />
                             </StackPanel>
                         </DataTemplate>
@@ -101,9 +101,9 @@
         </Grid>
 
         <DockPanel Grid.Row="2" LastChildFill="False">
-            <Button Command="{Binding RemoveModuleCommand}" Content="Remove" />
+            <Button Command="{Binding RemoveModuleCommand}" Content="{DynamicResource common_Remove}" />
             <mah:DropDownButton
-                Content="Add"
+                Content="{DynamicResource common_ADD}"
                 DockPanel.Dock="Right"
                 ItemsSource="{Binding AvailableType}" />
 

@@ -16,12 +16,12 @@
                 <Button
                     Margin="5"
                     Command="{Binding ClearCommand}"
-                    Content="Clear"
+                    Content="{DynamicResource edit_Clear}"
                     DockPanel.Dock="Right" />
                 <Button
                     Margin="5"
                     Command="{Binding ParseCommand}"
-                    Content="Parse"
+                    Content="{DynamicResource common_Parse}"
                     DockPanel.Dock="Left" />
             </DockPanel>
             <TextBox

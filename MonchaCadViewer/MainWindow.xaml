@@ -19,7 +19,7 @@
     xmlns:tb="http://www.hardcodet.net/taskbar"
     xmlns:viewmodel="clr-namespace:CadProjectorViewer.ViewModel"
     x:Name="MainWin"
-    Title="CUT - Viwer"
+    Title="{DynamicResource app_Title}"
     Width="999"
     Height="700"
     MinWidth="700"
@@ -80,6 +80,7 @@
             <CadProjectorViewer:LicenceColor x:Key="LicenceKey" />
             <CadProjectorViewer:GetHubPageConverter x:Key="GetHubPage" />
             <convert:DxCeilParserConverter x:Key="DxCeilParserConverter" />
+            <convert:ProjectorHubConverter x:Key="ProjectorHubConverter" />
         </ResourceDictionary>
     </Controls:MetroWindow.Resources>
     <Controls:MetroWindow.LeftWindowCommands>
@@ -87,23 +88,23 @@
             <Menu>
                 <MenuItem Focusable="True" Header="▼">
                     <MenuItem Header="{DynamicResource common_File}">
-                        <MenuItem Command="{Binding MakeNewWorkPlaceCommand}" Header="New Workplace" />
-                        <MenuItem Command="{Binding LoadMWSCommand}" Header="Browse MWS" />
+                        <MenuItem Command="{Binding MakeNewWorkPlaceCommand}" Header="{DynamicResource m_NewWorkplace}" />
+                        <MenuItem Command="{Binding LoadMWSCommand}" Header="{DynamicResource m_BrowseMWS}" />
                         <Separator />
                         <MenuItem Command="{Binding Path=SaveCommand}" Header="{DynamicResource m_Save}" />
                         <MenuItem Command="{Binding SaveAsCommand}" Header="{DynamicResource m_SaveConfigAs}" />
                         <Separator />
-                        <MenuItem Command="{Binding SaveSceneCommand}" Header="Save Scene" />
-                        <MenuItem Command="{Binding OpenSceneCommand}" Header="Open Scene" />
+                        <MenuItem Command="{Binding SaveSceneCommand}" Header="{DynamicResource m_SaveScene}" />
+                        <MenuItem Command="{Binding OpenSceneCommand}" Header="{DynamicResource m_OpenScene}" />
                         <Separator />
-                        <MenuItem Command="{Binding ShowLicenceCommand}" Header="License" />
+                        <MenuItem Command="{Binding ShowLicenceCommand}" Header="{DynamicResource m_License}" />
                         <Separator />
                         <MenuItem Command="{Binding ElementName=MainWin, Path=ClosedCommand}" Header="{DynamicResource common_Close}" />
                     </MenuItem>
-                    <MenuItem Header="Services">
-                        <MenuItem Command="{Binding RemoveOtherAppCommand}" Header="Remove other process" />
+                    <MenuItem Header="{DynamicResource m_Services}">
+                        <MenuItem Command="{Binding RemoveOtherAppCommand}" Header="{DynamicResource m_RemoveOtherProcess}" />
                     </MenuItem>
-                    <MenuItem x:Name="menuLanguage" Header="Language" />
+                    <MenuItem x:Name="menuLanguage" Header="{DynamicResource m_Language}" />
                 </MenuItem>
             </Menu>
             <Button
@@ -150,8 +151,8 @@
                 VerticalAlignment="Center"
                 Command="{Binding UDPToggleCommand}"
                 IsOn="{Binding ProjectorHub.UDPLaserListener.Status, Mode=OneWay}"
-                OffContent="Ethernet"
-                OnContent="Listing" />
+                OffContent="{DynamicResource conn_Ethernet}"
+                OnContent="{DynamicResource conn_Listing}" />
             <Button
                 Width="{Binding ActualHeight, RelativeSource={RelativeSource Self}}"
                 Command="{Binding ShowTCPDialogCommand}"
@@ -179,10 +180,7 @@
             <Grid.RowDefinitions>
                 <RowDefinition Height="100" />
                 <RowDefinition Height="450*" />
-                <RowDefinition
-                    Height="140*"
-                    MinHeight="140"
-                    MaxHeight="300" />
+                <RowDefinition Height="auto" />
                 <RowDefinition Height="30" />
             </Grid.RowDefinitions>
             <GridSplitter
@@ -293,7 +291,8 @@
                 x:Name="ContourScrollPanel"
                 Grid.Row="2"
                 Grid.Column="1"
-                Margin="0,5,0,0" />
+                Margin="0,5,0,0"
+                DataContext="{Binding ProjectorHub, Converter={StaticResource ProjectorHubConverter}}" />
 
             <TabControl
                 Grid.Row="1"
@@ -314,16 +313,16 @@
                 <TabItem FontSize="18" Header="{DynamicResource common_Source}">
                     <Grid Background="#FFE5E5E5">
                         <TabControl x:Name="TabItem">
-                            <TabItem Header="DxCeil">
+                            <TabItem Header="{DynamicResource src_DxCeil}">
                                 <sources:DxCeilParserPanel DataContext="{Binding ProjectorHub.ScenesCollection, Converter={StaticResource DxCeilParserConverter}}" />
                             </TabItem>
-                            <TabItem FontSize="14" Header="ILDA">
+                            <TabItem FontSize="14" Header="{DynamicResource src_ILDA}">
                                 <Grid Background="#FFE5E5E5">
                                     <Controls:ToggleSwitch
                                         x:Name="UsedMeshToggle"
                                         Margin="10,10,0,0"
                                         VerticalAlignment="Top"
-                                        Content="Used device mesh"
+                                        Content="{DynamicResource dvc_UsedDeviceMesh}"
                                         IsOn="True" />
                                     <Button
                                         x:Name="ILDASaveBtn"
@@ -336,10 +335,10 @@
                                         Content="{DynamicResource m_Save}" />
                                 </Grid>
                             </TabItem>
-                            <TabItem Header="Ethernet">
+                            <TabItem Header="{DynamicResource conn_Ethernet}">
                                 <Frame Content="{Binding ., Converter={StaticResource GetHubPage}}" />
                             </TabItem>
-                            <TabItem Header="oldUDP">
+                            <TabItem Header="{DynamicResource src_OldUDP}">
                                 <rightpanel:UdpSetting DataContext="{Binding ProjectorHub.UDPLaserListener}" />
                             </TabItem>
                         </TabControl>
@@ -347,7 +346,7 @@
                 </TabItem>
                 <TabItem Header="{DynamicResource common_Configuration}" Visibility="{Binding AdminMode, Converter={StaticResource BoolVisibleConverter}}">
                     <TabControl>
-                        <TabItem FontSize="14" Header="Setting">
+                        <TabItem FontSize="14" Header="{DynamicResource common_Setting}">
                             <configuration:AppDefaultSettingPanel />
                         </TabItem>
                     </TabControl>
@@ -355,7 +354,7 @@
                 <TabItem Header="{DynamicResource common_Workfolder}">
                     <rightpanel:WorkFolderPanel DataContext="{Binding WorkFolder}" />
                 </TabItem>
-                <TabItem FontSize="12" Header="Log">
+                <TabItem FontSize="12" Header="{DynamicResource log_Title}">
                     <rightpanel:LogPanel DataContext="{Binding Logs}" />
                 </TabItem>
             </TabControl>
@@ -399,7 +398,7 @@
                 DoubleClickCommand="{Binding ElementName=MainWin, Path=ShowFromTray}"
                 IconSource="logo.ico"
                 LeftClickCommand="{Binding ElementName=CanvasCollection, Path=RefreshFrameCommand}"
-                ToolTipText="2CUT">
+                ToolTipText="{DynamicResource app_Tooltip}">
                 <!--
                     We can use arbitrary UI elements as Popups.
                     Popups stay open if the user moves away from the tray area
@@ -428,8 +427,8 @@
                 </tb:TaskbarIcon.TrayPopup>
                 <tb:TaskbarIcon.ContextMenu>
                     <ContextMenu DataContext="{Binding Path=(tb:TaskbarIcon.ParentTaskbarIcon).Tag, RelativeSource={RelativeSource Self}}">
-                        <MenuItem Header="Выключить/Включить" />
-                        <MenuItem Command="{Binding ElementName=MainWin, Path=ClosedCommand}" Header="Закрыть" />
+                        <MenuItem Header="{DynamicResource tray_Toggle}" />
+                        <MenuItem Command="{Binding ElementName=MainWin, Path=ClosedCommand}" Header="{DynamicResource common_Close}" />
                     </ContextMenu>
                 </tb:TaskbarIcon.ContextMenu>
             </tb:TaskbarIcon>

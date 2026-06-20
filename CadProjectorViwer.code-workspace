@@ -1,0 +1,23 @@
+{
+	"folders": [
+		{
+			"path": "."
+		},
+		{
+			"path": "../ToGeometryConverter"
+		},
+		{
+			"path": "../ILDAViewer.net"
+		},
+		{
+			"path": "../ToCutRender"
+		},
+		{
+			"path": "../VLTLaserController.net"
+		},
+		{
+			"path": "../MonchaSDK/MonchaSDK"
+		}
+	],
+	"settings": {}
+}

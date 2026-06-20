@@ -41,10 +41,19 @@ namespace CadProjectorViewer.Panels.DevicePanel.LeftPanels
 
         private void Label_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
-            if (sender is Label label)
+            if (sender is not Label label)
             {
-                if (label.DataContext is CanvasObject cadObject) cadObject.CadObject.Select(true);
+                return;
             }
+
+            UidObject uidObject = label.DataContext switch
+            {
+                CanvasObject canvasObject => canvasObject.CadObject,
+                UidObject obj => obj,
+                _ => null
+            };
+
+            uidObject?.Select(true);
         }
 
         private void CheckAllBtn_Click(object sender, RoutedEventArgs e)

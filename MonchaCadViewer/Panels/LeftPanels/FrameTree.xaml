@@ -106,9 +106,6 @@
     </UserControl.Resources>
     <ScrollViewer VerticalScrollBarVisibility="Auto">
         <DockPanel LastChildFill="True">
-            <DockPanel DockPanel.Dock="Top">
-                <Controls:ToggleSwitch Content="{DynamicResource edit_MaskActivated}" IsOn="{Binding CursorMaskActivated}" />
-            </DockPanel>
             <Expander
                 DockPanel.Dock="Top"
                 Header="{DynamicResource dvc_Devices}"

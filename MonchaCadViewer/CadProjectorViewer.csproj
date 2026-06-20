@@ -8,10 +8,16 @@
     <UseWPF>true</UseWPF>
     <StartupObject>CadProjectorViewer.App</StartupObject>
     <ApplicationIcon>logo.ico</ApplicationIcon>
-	<ProduceReferenceAssembly>true</ProduceReferenceAssembly>
-	<Deterministic>false</Deterministic>
-    <AssemblyVersion>0.8.2.*</AssemblyVersion>
-	<PublishDir>D:\2Cut\</PublishDir>
+    <ApplicationManifest>Properties\app.manifest</ApplicationManifest>
+    <ProduceReferenceAssembly>true</ProduceReferenceAssembly>
+    <Deterministic>false</Deterministic>
+    <AssemblyVersion>8.0.2.*</AssemblyVersion>
+    <FileVersion>8.0.2.0</FileVersion>
+    <ApplicationVersion>8.0.2.*</ApplicationVersion>
+    <ApplicationRevision>16</ApplicationRevision>
+    <IsRevisionIncremented>true</IsRevisionIncremented>
+    <GenerateManifests>true</GenerateManifests>
+    <SignManifests>false</SignManifests>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="Caching.dll" Version="2.0.0.1" />

@@ -128,12 +128,13 @@ namespace CadProjector.FileFormats.Geometry.Shapes
         }
 
         /// <summary>
-        /// Тесселирует кривую с умной конвертацией в дуги и линии.
-        /// Возвращает PathShape с оптимизированными сегментами.
+        /// Тесселирует кривую в плотную полилинию.
+        /// Возвращает PathShape из линейных сегментов без аппроксимации дугами.
         /// </summary>
         public PathShape ToOptimizedPath(double tolerance = 1.0)
         {
-            var points = Tessellate(tolerance).ToList();
+            double step = Math.Max(0.5, tolerance);
+            var points = Tessellate(step).ToList();
 
             if (points.Count == 0)
                 return new PathShape(Point3D.Zero);
@@ -141,95 +142,13 @@ namespace CadProjector.FileFormats.Geometry.Shapes
             if (points.Count == 1)
                 return new PathShape(points[0]);
 
+            points = SimplifyPolyline(points, step * 0.25);
+
             var path = new PathShape(points[0]) { Id = Id };
 
-            if (points.Count == 2)
+            for (int i = 1; i < points.Count; i++)
             {
-                path.AddSegment(new LineSegment(points[1]));
-                return path;
-            }
-
-            // Вычисляем максимальную хорду для ограничения радиуса дуг
-            double maxChord = CalculateMaxChord(points);
-            double maxRadiusAllowed = Math.Max(1.0, maxChord * 50.0);
-
-            int idx = 1;
-            while (idx < points.Count)
-            {
-                if (idx + 1 >= points.Count)
-                {
-                    path.AddSegment(new LineSegment(points[idx]));
-                    break;
-                }
-
-                var p0 = points[idx - 1];
-                var p1 = points[idx];
-                var p2 = points[idx + 1];
-
-                // Пробуем построить окружность по трём точкам
-                if (!TryFitCircle(p0, p1, p2, out var center, out double radius) ||
-                    double.IsNaN(radius) || double.IsInfinity(radius) ||
-                    radius <= 1e-6 || radius > maxRadiusAllowed)
-                {
-                    // Не удалось построить дугу - добавляем линейный сегмент
-                    path.AddSegment(new LineSegment(p1));
-                    idx++;
-                    continue;
-                }
-
-                // Пробуем расширить дугу на последующие точки
-                int startIndex = idx - 1;
-                int lastIndex = idx + 1;
-                double arcTolerance = Math.Max(tolerance, radius * 0.02);
-                double initialAngle = GetAngleBetweenPoints(points[startIndex], center, points[startIndex + 1]);
-                int initialSign = Math.Sign(initialAngle);
-                if (initialSign == 0) initialSign = 1;
-
-                while (lastIndex + 1 < points.Count)
-                {
-                    var candidate = points[lastIndex + 1];
-                    double distToCenter = center.DistanceTo2D(candidate);
-
-                    if (Math.Abs(distToCenter - radius) > arcTolerance)
-                        break;
-
-                    double angleToCandidate = GetAngleBetweenPoints(points[startIndex], center, candidate);
-                    if (double.IsNaN(angleToCandidate) || double.IsInfinity(angleToCandidate))
-                        break;
-
-                    int signToCandidate = Math.Sign(angleToCandidate);
-                    if (signToCandidate == 0) signToCandidate = initialSign;
-                    if (signToCandidate != initialSign)
-                        break;
-
-                    if (Math.Abs(angleToCandidate) > 720)
-                        break;
-
-                    lastIndex++;
-                }
-
-                // Создаём дугу
-                var arcStart = points[startIndex];
-                var arcMid = points[(startIndex + lastIndex) / 2];
-                var arcEnd = points[lastIndex];
-
-                if (arcStart.DistanceTo(arcMid) < 1e-6 || arcMid.DistanceTo(arcEnd) < 1e-6)
-                {
-                    path.AddSegment(new LineSegment(p1));
-                    idx++;
-                    continue;
-                }
-
-                var arcSegment = CreateArcSegment(arcStart, arcMid, arcEnd);
-                if (arcSegment == null || arcSegment.RadiusX <= 1e-6)
-                {
-                    path.AddSegment(new LineSegment(p1));
-                    idx++;
-                    continue;
-                }
-
-                path.AddSegment(arcSegment);
-                idx = lastIndex + 1;
+                path.AddSegment(new LineSegment(points[i]));
             }
 
             if (IsClosed)
@@ -238,6 +157,72 @@ namespace CadProjector.FileFormats.Geometry.Shapes
             }
 
             return path;
+        }
+
+        private static List<Point3D> SimplifyPolyline(List<Point3D> points, double simplifyTolerance)
+        {
+            if (points.Count <= 2)
+                return points;
+
+            bool[] keep = new bool[points.Count];
+            keep[0] = true;
+            keep[points.Count - 1] = true;
+            SimplifySection(points, 0, points.Count - 1, simplifyTolerance, keep);
+
+            var result = new List<Point3D>();
+            for (int i = 0; i < points.Count; i++)
+            {
+                if (keep[i])
+                    result.Add(points[i]);
+            }
+
+            return result;
+        }
+
+        private static void SimplifySection(List<Point3D> points, int start, int end, double tolerance, bool[] keep)
+        {
+            if (end <= start + 1)
+                return;
+
+            double maxDistance = 0;
+            int index = start;
+            for (int i = start + 1; i < end; i++)
+            {
+                double distance = PerpendicularDistance(points[i], points[start], points[end]);
+                if (distance > maxDistance)
+                {
+                    maxDistance = distance;
+                    index = i;
+                }
+            }
+
+            if (maxDistance <= tolerance)
+                return;
+
+            keep[index] = true;
+            SimplifySection(points, start, index, tolerance, keep);
+            SimplifySection(points, index, end, tolerance, keep);
+        }
+
+        private static double PerpendicularDistance(Point3D point, Point3D lineStart, Point3D lineEnd)
+        {
+            double dx = lineEnd.X - lineStart.X;
+            double dy = lineEnd.Y - lineStart.Y;
+            double lengthSquared = dx * dx + dy * dy;
+            if (lengthSquared < 1e-18)
+            {
+                double px = point.X - lineStart.X;
+                double py = point.Y - lineStart.Y;
+                return Math.Sqrt(px * px + py * py);
+            }
+
+            double t = ((point.X - lineStart.X) * dx + (point.Y - lineStart.Y) * dy) / lengthSquared;
+            t = Math.Max(0, Math.Min(1, t));
+            double projX = lineStart.X + t * dx;
+            double projY = lineStart.Y + t * dy;
+            double distX = point.X - projX;
+            double distY = point.Y - projY;
+            return Math.Sqrt(distX * distX + distY * distY);
         }
 
         /// <summary>
@@ -387,7 +372,7 @@ namespace CadProjector.FileFormats.Geometry.Shapes
             }
 
             int count = (int)Math.Ceiling(estimatedLength / tolerance);
-            return Math.Clamp(count, 5, 1000);
+            return Math.Clamp(count, 32, 10000);
         }
 
         private static double CalculateMaxChord(List<Point3D> points)

@@ -227,9 +227,9 @@
                         Background="White"
                         DataContext="{Binding SelectedItem, ElementName=DeviceCombo}"
                         DockPanel.Dock="Right"
-                        Interval="0.1"
+                        Interval="1"
                         Maximum="999"
-                        Minimum="0.0001"
+                        Minimum="0"
                         Value="{Binding ProjectionSetting.PointStep.Value}" />
                 </DockPanel>
 

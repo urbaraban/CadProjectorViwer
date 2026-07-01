@@ -53,7 +53,79 @@ namespace CadProjectorViewer.Panels.DevicePanel.LeftPanels
                 _ => null
             };
 
-            uidObject?.Select(true);
+            if (uidObject == null)
+            {
+                return;
+            }
+
+            if (DataContext is ProjectionScene scene && scene.StepByStep)
+            {
+                ApplyStepByStepRender(scene, uidObject);
+                return;
+            }
+
+            uidObject.Select(true);
+        }
+
+        private static void ApplyStepByStepRender(ProjectionScene scene, UidObject target)
+        {
+            UidObject renderTarget = ResolveRenderTarget(target);
+
+            foreach (UidObject obj in scene)
+            {
+                if (obj is CadGroup)
+                {
+                    SetRenderRecursive(obj, false);
+                }
+                else if (obj.Uid != renderTarget.Uid)
+                {
+                    obj.SetRender(false, false);
+                }
+                else
+                {
+                    obj.SetRender(false, true);
+                }
+            }
+
+            renderTarget.SetRender(true, false);
+
+            SelectStepObject(scene, target);
+        }
+
+        private static UidObject ResolveRenderTarget(UidObject target)
+        {
+            if (target is CadGroup group && group.Count > 0)
+            {
+                return group[0];
+            }
+
+            return target;
+        }
+
+        private static void SetRenderRecursive(UidObject obj, bool render)
+        {
+            if (obj is CadGroup group)
+            {
+                foreach (UidObject child in group)
+                {
+                    SetRenderRecursive(child, render);
+                }
+            }
+            else
+            {
+                obj.SetRender(render, true);
+            }
+        }
+
+        private static void SelectStepObject(ProjectionScene scene, UidObject uidObject)
+        {
+            if (scene.SelectedObjects.Contains(uidObject))
+            {
+                return;
+            }
+
+            scene.SelectedObjects.Clear();
+            scene.SelectedObjects.Add(uidObject);
         }
 
         private void CheckAllBtn_Click(object sender, RoutedEventArgs e)

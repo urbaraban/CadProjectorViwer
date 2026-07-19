@@ -16,7 +16,8 @@
 
     <v:String x:Key="obj_Object">Object</v:String>
     <v:String x:Key="obj_Objects">Objects</v:String>
-    <v:String x:Key="obj_Mirror">Mirror</v:String>
+    <v:String x:Key="obj_Mirror">Mirror Y</v:String>
+    <v:String x:Key="obj_MirrorX">Mirror X</v:String>
     <v:String x:Key="obj_Render">Render</v:String>
     <v:String x:Key="obj_Fix">Fix</v:String>
     <v:String x:Key="obj_Blank">Blank</v:String>

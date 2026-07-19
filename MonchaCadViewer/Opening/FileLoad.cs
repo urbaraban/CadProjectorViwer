@@ -7,6 +7,7 @@ using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Globalization;
 using System.IO;
 using System.Runtime.InteropServices;
 using System.Security.Cryptography;
@@ -127,6 +128,12 @@ namespace CadProjectorViewer.Opening
             {
                 if (await ConvertObject(obj) is UidObject uidObject)
                 {
+                    string fullPath = Path.GetFullPath(FilePath);
+                    uidObject.SourcePath = fullPath;
+                    if (uidObject is CadGeometry cadGeometry)
+                    {
+                        cadGeometry.FileInfo = new FileInfo(fullPath);
+                    }
                     return uidObject;
                 }
             }
@@ -192,27 +199,49 @@ namespace CadProjectorViewer.Opening
             return await IldaReader.ReadFile(Filepath);
         }
 
+        /// <summary>Legacy .2scn with root &lt;Objects&gt; (Path/X/Y/Z entries).</summary>
+        public static async Task<UidObject?> LoadLegacy2CutAsync(string Filepath)
+        {
+            return await Get2CUT(Filepath) as UidObject;
+        }
+
         private async static Task<object> Get2CUT(string Filepath)
         {
             FileInfo fileInfo = new FileInfo(Filepath);
             XDocument xDocument = XDocument.Load(Filepath);
-            XElement XObjects = xDocument.Element("Objects");
+            XElement? XObjects = xDocument.Element("Objects");
+            if (XObjects == null)
+            {
+                return new CadGroup() { NameID = fileInfo.Name };
+            }
 
             CadGroup gCObjects = new CadGroup() { NameID = fileInfo.Name };
 
             foreach (XElement XObject in XObjects.Elements())
             {
-                string item_path = XObject.Element("Path").Value;
+                string? item_path = XObject.Element("Path")?.Value;
+                if (string.IsNullOrWhiteSpace(item_path))
+                {
+                    continue;
+                }
 
                 if (await FileLoad.GetObject(item_path) is GCCollection collection)
                 {
-                    if (await ConvertObject(collection) is CadGeometry uidObject)
+                    if (await ConvertObject(collection) is UidObject uidObject)
                     {
-                        uidObject.UpdateTransform(uidObject.Bounds, false, String.Empty);
-                        uidObject.FileInfo = new FileInfo(item_path);
-                        uidObject.MX = double.Parse(XObject.Element("X").Value);
-                        uidObject.MY = double.Parse(XObject.Element("Y").Value);
-                        uidObject.MZ = double.Parse(XObject.Element("Z").Value);
+                        string fullPath = Path.GetFullPath(item_path);
+                        uidObject.SourcePath = fullPath;
+                        if (uidObject is CadGeometry cadGeometry)
+                        {
+                            cadGeometry.FileInfo = new FileInfo(fullPath);
+                            cadGeometry.UpdateTransform(cadGeometry.Bounds, false, String.Empty);
+                        }
+                        if (double.TryParse(XObject.Element("X")?.Value?.Replace(',', '.'), NumberStyles.Float, CultureInfo.InvariantCulture, out double mx))
+                            uidObject.MX = mx;
+                        if (double.TryParse(XObject.Element("Y")?.Value?.Replace(',', '.'), NumberStyles.Float, CultureInfo.InvariantCulture, out double my))
+                            uidObject.MY = my;
+                        if (double.TryParse(XObject.Element("Z")?.Value?.Replace(',', '.'), NumberStyles.Float, CultureInfo.InvariantCulture, out double mz))
+                            uidObject.MZ = mz;
                         gCObjects.Add(uidObject);
                     }
                 }

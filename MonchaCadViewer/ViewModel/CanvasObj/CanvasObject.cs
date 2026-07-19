@@ -175,6 +175,7 @@ namespace CadProjectorViewer.CanvasObj
             this.ContextMenu = new ContextMenu();
 
             ContextMenuLib.AddItem("obj_Mirror", MirrorCommand, this.ContextMenu);
+            ContextMenuLib.AddItem("obj_MirrorX", MirrorXCommand, this.ContextMenu);
             ContextMenuLib.AddItem("common_Remove", RemoveCommand, this.ContextMenu);
             ContextMenuLib.AddItem("obj_Render", RenderCommand, this.ContextMenu);
             ContextMenuLib.AddItem("common_MasksGrid", MasksCommand, this.ContextMenu);
@@ -351,6 +352,11 @@ namespace CadProjectorViewer.CanvasObj
         public ICommand MirrorCommand => new ActionCommand(() =>
         {
             this.CadObject.Mirror = !this.CadObject.Mirror;
+        });
+
+        public ICommand MirrorXCommand => new ActionCommand(() =>
+        {
+            this.CadObject.MirrorX = !this.CadObject.MirrorX;
         });
 
         public ICommand RenderCommand => new ActionCommand(() =>
@@ -686,7 +692,14 @@ namespace CadProjectorViewer.CanvasObj
                     anchor.Arrange(new Rect(finalSize));
                 }
             }
-            return this.AnchoredObject.Bounds.Size;
+
+            // Rect.Empty / NaN / Infinity break WPF Measure at RoundLayoutSize.
+            Size size = this.AnchoredObject?.Bounds.Size ?? finalSize;
+            if (double.IsNaN(size.Width) || double.IsInfinity(size.Width) || size.Width < 0)
+                size.Width = 0;
+            if (double.IsNaN(size.Height) || double.IsInfinity(size.Height) || size.Height < 0)
+                size.Height = 0;
+            return size;
         }
 
         // A common way to implement an adorner's rendering behavior is to override the OnRender

@@ -15,7 +15,8 @@
 
     <v:String x:Key="obj_Object">Объект</v:String>
     <v:String x:Key="obj_Objects">Объекты</v:String>
-    <v:String x:Key="obj_Mirror">Отзеркалить</v:String>
+    <v:String x:Key="obj_Mirror">Отзеркалить по Y</v:String>
+    <v:String x:Key="obj_MirrorX">Отзеркалить по X</v:String>
     <v:String x:Key="obj_Render">Рендер</v:String>
     <v:String x:Key="obj_Fix">Фиксировать</v:String>
     <v:String x:Key="obj_Angle">Угол</v:String>

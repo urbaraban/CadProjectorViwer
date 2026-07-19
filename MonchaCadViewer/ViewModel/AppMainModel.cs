@@ -1,4 +1,5 @@
 using CadProjectorSDK;
+using CadProjectorSDK.CadObjects;
 using CadProjectorSDK.CadObjects.Abstract;
 using CadProjectorSDK.Config;
 using CadProjectorSDK.Scenes;
@@ -326,22 +327,108 @@ namespace CadProjectorViewer.ViewModel
         });
 
         public ICommand SaveSceneCommand => new ActionCommand(() => {
-            SaveFileDialog saveFileDialog = new SaveFileDialog();
-            saveFileDialog.Filter = "2CUT Scene (*.2scn)|*.2scn";
-            if (saveFileDialog.ShowDialog() == true)
+            if (projectorHub.ScenesCollection.SelectedScene == null)
             {
-                // FileSave.SaveScene(projectorHub.ScenesCollection.SelectedScene, saveFileDialog.FileName);
-                //SaveScene.WriteXML(projectorHub.ScenesCollection.SelectedScene, saveFileDialog.FileName);
+                MessageBox.Show(
+                    "Нет выбранной сцены для сохранения.",
+                    "Сохранить сцену",
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Warning);
+                return;
             }
 
+            SaveFileDialog saveFileDialog = new SaveFileDialog();
+            saveFileDialog.Filter = "2CUT Scene (*.2scn)|*.2scn";
+            if (saveFileDialog.ShowDialog() != true)
+            {
+                return;
+            }
+
+            try
+            {
+                IReadOnlyList<string> warnings = SaveScene.WriteXML(
+                    projectorHub.ScenesCollection.SelectedScene,
+                    saveFileDialog.FileName);
+
+                if (warnings.Count > 0)
+                {
+                    MessageBox.Show(
+                        "Сцена сохранена с предупреждениями:" + Environment.NewLine +
+                        string.Join(Environment.NewLine, warnings),
+                        "Сохранить сцену",
+                        MessageBoxButton.OK,
+                        MessageBoxImage.Warning);
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(
+                    ex.Message,
+                    "Ошибка сохранения сцены",
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Error);
+            }
         });
 
         public ICommand OpenSceneCommand => new ActionCommand(async () => {
             OpenFileDialog fileDialog = new OpenFileDialog();
-            fileDialog.Filter = "Moncha (.2scn)|*.2scn|All Files (*.*)|*.*";
+            fileDialog.Filter = "2CUT Scene (*.2scn)|*.2scn|All Files (*.*)|*.*";
             if (fileDialog.ShowDialog() == true)
             {
-                await projectorHub.ScenesCollection.AddTask(new SceneTask(SaveScene.ReadXML(fileDialog.FileName)));
+                try
+                {
+                    SceneLoadResult result = await SaveScene.LoadSceneAsync(
+                        fileDialog.FileName,
+                        devices: null,
+                        async path => await FileLoad.GetFilePath(path, 0));
+
+                    if (result.IsLegacyObjectsRoot)
+                    {
+                        UidObject? legacy = await FileLoad.LoadLegacy2CutAsync(fileDialog.FileName);
+                        if (legacy != null)
+                        {
+                            await projectorHub.ScenesCollection.AddTask(new SceneTask(legacy));
+                        }
+                        else
+                        {
+                            MessageBox.Show(
+                                "Не удалось загрузить устаревший формат Objects.",
+                                "Открыть сцену",
+                                MessageBoxButton.OK,
+                                MessageBoxImage.Warning);
+                        }
+                        return;
+                    }
+
+                    ProjectionScene target = projectorHub.ScenesCollection.SelectedScene
+                        ?? projectorHub.ScenesCollection.FirstOrDefault();
+                    if (target == null)
+                    {
+                        projectorHub.ScenesCollection.Add(result.Scene);
+                        result.Scene.IsSelected = true;
+                    }
+                    else
+                    {
+                        ApplyLoadedSceneToTarget(target, result.Scene);
+                    }
+
+                    if (result.Warnings.Count > 0)
+                    {
+                        MessageBox.Show(
+                            string.Join(Environment.NewLine, result.Warnings),
+                            "Открыть сцену — предупреждения",
+                            MessageBoxButton.OK,
+                            MessageBoxImage.Warning);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(
+                        ex.Message,
+                        "Ошибка открытия сцены",
+                        MessageBoxButton.OK,
+                        MessageBoxImage.Error);
+                }
             }
         });
 
@@ -404,6 +491,72 @@ namespace CadProjectorViewer.ViewModel
                 };
                 await this.ProjectorHub.ScenesCollection.AddTask(sceneTask);
             }
+        }
+
+        /// <summary>
+        /// Merges a loaded scene into the active workplace scene without rebinding projectors
+        /// (AddDevice on a temp scene would steal StartRenderDevice/RenderObjects and break render).
+        /// </summary>
+        private static void ApplyLoadedSceneToTarget(ProjectionScene target, ProjectionScene loaded)
+        {
+            target.NameID = loaded.NameID;
+            target.DefAttach = loaded.DefAttach;
+            target.AttachDistanceX = loaded.AttachDistanceX;
+            target.AttachDistanceY = loaded.AttachDistanceY;
+            target.CursorMaskActivated = loaded.CursorMaskActivated;
+            target.StepByStep = loaded.StepByStep;
+            target.IsNotUsedLayers = loaded.IsNotUsedLayers;
+            target.ChangeFlags = loaded.ChangeFlags;
+            target.Flags = loaded.Flags;
+            target.DefaultAngle = loaded.DefaultAngle;
+            target.DefaultMirror = loaded.DefaultMirror;
+            target.DefaultScaleX = loaded.DefaultScaleX;
+            target.DefaultScaleY = loaded.DefaultScaleY;
+
+            // Keep workplace Size/ProjectionSetting instances (Multiply/UI bind to them).
+            // Only adopt loaded Size when target has none.
+            if (target.Size == null && loaded.Size != null)
+            {
+                target.Size = loaded.Size;
+            }
+            if (target.ProjectionSetting == null && loaded.ProjectionSetting != null)
+            {
+                target.ProjectionSetting = loaded.ProjectionSetting;
+            }
+            else if (loaded.ProjectionSetting?.PointStep != null && target.ProjectionSetting != null)
+            {
+                target.ProjectionSetting.PointStep = loaded.ProjectionSetting.PointStep;
+                target.ProjectionSetting.Red = loaded.ProjectionSetting.Red;
+                target.ProjectionSetting.Green = loaded.ProjectionSetting.Green;
+                target.ProjectionSetting.Blue = loaded.ProjectionSetting.Blue;
+                target.ProjectionSetting.RedOn = loaded.ProjectionSetting.RedOn;
+                target.ProjectionSetting.GreenOn = loaded.ProjectionSetting.GreenOn;
+                target.ProjectionSetting.BlueOn = loaded.ProjectionSetting.BlueOn;
+            }
+
+            target.Masks.Clear();
+            foreach (CadRect3D mask in loaded.Masks.ToList())
+            {
+                loaded.Masks.Remove(mask);
+                target.AddMask(mask);
+            }
+
+            target.SuppressInsertRender = true;
+            try
+            {
+                target.Clear();
+                foreach (UidObject obj in loaded.ToList())
+                {
+                    loaded.Remove(obj);
+                    target.Add(obj);
+                }
+            }
+            finally
+            {
+                target.SuppressInsertRender = false;
+            }
+
+            target.RefreshScene();
         }
     }
 }

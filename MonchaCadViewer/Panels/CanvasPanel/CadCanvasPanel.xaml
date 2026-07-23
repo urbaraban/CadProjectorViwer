@@ -17,7 +17,6 @@
     <UserControl.Resources>
         <ResourceDictionary>
             <canvaspanel:CursorActionConverter x:Key="CursorAction" />
-            <canvaspanel:InfoConverter x:Key="InfoConverter" />
             <canvaspanel:ScaleConverter x:Key="ScaleConverter" />
             <converters:CadObjectConverter x:Key="CadObjectConverter" />
         </ResourceDictionary>
@@ -51,40 +50,24 @@
                 Content="X"
                 Foreground="Red" />
             <StackPanel FlowDirection="RightToLeft" Orientation="Horizontal">
-
-                <Button
-                    x:Name="AdornerShowBtn"
-                    Width="{Binding ActualHeight, RelativeSource={RelativeSource Self}}"
-                    Margin="3"
-                    Panel.ZIndex="999"
-                    Click="AdornerShowBtn_Click"
-                    Content="&#xE7F0;"
-                    FontFamily="Segoe MDL2 Assets"
-                    FontSize="18" />
-                <Button
-                    x:Name="ShowDeviceRect"
-                    Width="{Binding ActualHeight, RelativeSource={RelativeSource Self}}"
-                    Margin="3"
-                    Panel.ZIndex="999"
-                    Click="ShowDeviceRect_Click"
-                    Content="&#xe773;"
-                    FontFamily="Segoe MDL2 Assets"
-                    FontSize="20" />
                 <Button
                     Width="{Binding ActualHeight, RelativeSource={RelativeSource Self}}"
                     Margin="3"
                     Panel.ZIndex="999"
-                    Click="ShowDeviceRect_Click"
-                    Content="&#xe722;"
-                    FontFamily="Segoe MDL2 Assets"
-                    FontSize="20" />
-                <ToggleButton
-                    Width="{Binding ActualHeight, RelativeSource={RelativeSource Self}}"
-                    Margin="3"
-                    Content="&#xe8b0;"
+                    Command="{Binding RedoCommand}"
+                    Content="&#xE7A6;"
                     FontFamily="Segoe MDL2 Assets"
                     FontSize="18"
-                    IsChecked="{Binding ShowCursor}" />
+                    ToolTip="{DynamicResource common_Redo}" />
+                <Button
+                    Width="{Binding ActualHeight, RelativeSource={RelativeSource Self}}"
+                    Margin="3"
+                    Panel.ZIndex="999"
+                    Command="{Binding UndoCommand}"
+                    Content="&#xE7A7;"
+                    FontFamily="Segoe MDL2 Assets"
+                    FontSize="18"
+                    ToolTip="{DynamicResource common_Undo}" />
             </StackPanel>
         </DockPanel>
         <Grid Margin="0" Background="Gray">
@@ -214,23 +197,6 @@
                     </Grid>
                 </Viewbox>
             </Grid>
-            <Label
-                x:Name="CoordinateLabel"
-                Grid.RowSpan="3"
-                HorizontalAlignment="Right"
-                HorizontalContentAlignment="Right"
-                VerticalContentAlignment="Bottom"
-                IsEnabled="False"
-                IsHitTestVisible="False"
-                Visibility="Hidden">
-                <Label.Content>
-                    <MultiBinding Converter="{StaticResource InfoConverter}">
-                        <Binding Path="MousePosition.MX" />
-                        <Binding Path="MousePosition.MY" />
-                        <Binding Path="Projectors" />
-                    </MultiBinding>
-                </Label.Content>
-            </Label>
             <Button
                 Grid.Row="2"
                 MinWidth="{Binding ActualHeight, RelativeSource={RelativeSource Self}}"

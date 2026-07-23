@@ -67,11 +67,14 @@
     <v:String x:Key="dvc_ProjectMain">Главный</v:String>
     <v:String x:Key="dvc_ProjectOwn">Собственный</v:String>
 
-    <v:Int32 x:Key="clb_Dot">0</v:Int32>
-    <v:Int32 x:Key="clb_Rect">1</v:Int32>
-    <v:Int32 x:Key="clb_Cross">2</v:Int32>
-    <v:Int32 x:Key="clb_HLine">3</v:Int32>
-    <v:Int32 x:Key="clb_WLine">4</v:Int32>
+    <v:String x:Key="clb_Dot">Точка</v:String>
+    <v:String x:Key="clb_Rect">Квадрат</v:String>
+    <v:String x:Key="clb_miniRect">Мини-квадрат</v:String>
+    <v:String x:Key="clb_Cross">Крест</v:String>
+    <v:String x:Key="clb_miniCross">Мини-крест</v:String>
+    <v:String x:Key="clb_HLine">Вертикальная линия</v:String>
+    <v:String x:Key="clb_WLine">Горизонтальная линия</v:String>
+    <v:String x:Key="clb_Mesh">Сетка</v:String>
     <v:String x:Key="clb_SetEdgePoint">Установить крайние точки</v:String>
     <v:String x:Key="clb_Sizeanchor">Размер точки</v:String>
     <v:String x:Key="clb_MiniCrossSize">Размер мини-креста</v:String>
@@ -165,6 +168,8 @@
     <v:String x:Key="common_Paste">Вставить</v:String>
     <v:String x:Key="common_Ok">Ok</v:String>
     <v:String x:Key="common_Cancel">Отмена</v:String>
+    <v:String x:Key="common_Undo">Отменить</v:String>
+    <v:String x:Key="common_Redo">Вернуть</v:String>
     <v:String x:Key="common_Show">Показать</v:String>
     <v:String x:Key="common_Read">Читать</v:String>
     <v:String x:Key="common_Parse">Разбор</v:String>

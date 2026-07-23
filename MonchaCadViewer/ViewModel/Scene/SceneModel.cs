@@ -38,16 +38,6 @@ namespace CadProjectorViewer.ViewModel.Scene
         private Dispatcher dispatcher { get; }
         public CadAnchor MousePosition => Scene.MousePosition;
 
-        public bool ShowCursor
-        {
-            get => Scene.ShowCursor;
-            set
-            {
-                Scene.ShowCursor = value;
-                OnPropertyChanged("ShowCursor");
-            }
-        }
-
         public ObservableCollection<CadRect3D> Masks => Scene.Masks;
 
         public ObservableCollection<LProjector> Projectors => Scene.Projectors;
@@ -72,6 +62,12 @@ namespace CadProjectorViewer.ViewModel.Scene
         });
         public ICommand CancelActionCommand => new ActionCommand(() => {
             Scene.Break();
+        });
+        public ICommand UndoCommand => new ActionCommand(() => {
+            Scene.HistoryCommands.UndoLast();
+        });
+        public ICommand RedoCommand => new ActionCommand(() => {
+            Scene.HistoryCommands.RedoLast();
         });
 
         public ICommand CentertAttachCommand => new ActionCommand(() =>

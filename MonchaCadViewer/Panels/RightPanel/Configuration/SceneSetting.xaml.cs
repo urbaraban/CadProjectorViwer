@@ -1,22 +1,12 @@
-﻿using CadProjectorSDK.Device.Mesh;
-using CadProjectorSDK.Scenes;
+﻿using CadProjectorSDK.Scenes;
 using CadProjectorViewer.Services;
 using MahApps.Metro.Controls;
 using System;
-using System.Collections.Generic;
 using System.Globalization;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 namespace CadProjectorViewer.Panels.RightPanel.Configuration
 {
@@ -30,17 +20,6 @@ namespace CadProjectorViewer.Panels.RightPanel.Configuration
         public SceneSetting()
         {
             InitializeComponent();
-
-            CalibrationFormCombo.Items.Clear();
-            CalibrationFormCombo.Items.Add(CalibrationForm.cl_Dot);
-            CalibrationFormCombo.Items.Add(CalibrationForm.cl_Rect);
-            CalibrationFormCombo.Items.Add(CalibrationForm.cl_miniRect);
-            CalibrationFormCombo.Items.Add(CalibrationForm.cl_Cross);
-            CalibrationFormCombo.Items.Add(CalibrationForm.cl_miniCross);
-            CalibrationFormCombo.Items.Add(CalibrationForm.cl_HLine);
-            CalibrationFormCombo.Items.Add(CalibrationForm.cl_WLine);
-            CalibrationFormCombo.Items.Add(CalibrationForm.cl_Mesh);
-            MiniCrossSizeUpDn.Value = ProjectorMesh.MiniCrossSize;
         }
 
         private void MashMultiplierUpDn_ValueIncremented(object sender, NumericUpDownChangedRoutedEventArgs args)
@@ -63,45 +42,12 @@ namespace CadProjectorViewer.Panels.RightPanel.Configuration
             }
         }
 
-        private void PointStepUpDn_ValueDecremented(object sender, NumericUpDownChangedRoutedEventArgs args)
-        {
-            if ((Math.Round(PointStepUpDn.Value.Value, 4) - PointStepUpDn.Interval) == 0)
-            {
-                PointStepUpDn.Interval = PointStepUpDn.Interval / 10;
-                args.Interval = args.Interval / 10;
-            }
-        }
-
-        private void PointStepUpDn_ValueIncremented(object sender, NumericUpDownChangedRoutedEventArgs args)
-        {
-            if (Math.Round(PointStepUpDn.Value.Value + PointStepUpDn.Interval, 4) >= PointStepUpDn.Interval * 10)
-            {
-                PointStepUpDn.Interval = PointStepUpDn.Interval * 10;
-            }
-        }
-
-        private void CalibrationFormCombo_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            if (CalibrationFormCombo.SelectedValue != null)
-            {
-                ProjectorMesh.ClbrForm = (CalibrationForm)CalibrationFormCombo.SelectedValue;
-            }
-        }
-
         private void NumericUpDown_PreviewTextInput(object sender, System.Windows.Input.TextCompositionEventArgs e)
         {
             InputValidation.NumberPerDotValidationTextBox(sender, e);
             if (sender is NumericUpDown && e.Handled == true)
             {
                 Keyboard.ClearFocus();
-            }
-        }
-
-        private void MiniCrossSizeUpDn_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double?> e)
-        {
-            if (MiniCrossSizeUpDn.Value != null)
-            {
-                ProjectorMesh.MiniCrossSize = MiniCrossSizeUpDn.Value.Value;
             }
         }
     }

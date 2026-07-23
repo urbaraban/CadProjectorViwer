@@ -72,11 +72,14 @@
     <v:String x:Key="dvc_ProjectMain">Main</v:String>
     <v:String x:Key="dvc_ProjectOwn">Own</v:String>
 
-    <v:Int32 x:Key="clb_Dot">0</v:Int32>
-    <v:Int32 x:Key="clb_Rect">1</v:Int32>
-    <v:Int32 x:Key="clb_Cross">2</v:Int32>
-    <v:Int32 x:Key="clb_HLine">3</v:Int32>
-    <v:Int32 x:Key="clb_WLine">4</v:Int32>
+    <v:String x:Key="clb_Dot">Dot</v:String>
+    <v:String x:Key="clb_Rect">Rect</v:String>
+    <v:String x:Key="clb_miniRect">Mini rect</v:String>
+    <v:String x:Key="clb_Cross">Cross</v:String>
+    <v:String x:Key="clb_miniCross">Mini cross</v:String>
+    <v:String x:Key="clb_HLine">V-Line</v:String>
+    <v:String x:Key="clb_WLine">H-Line</v:String>
+    <v:String x:Key="clb_Mesh">Mesh</v:String>
     <v:String x:Key="clb_SetEdgePoint">Set edge point</v:String>
     <v:String x:Key="clb_Sizeanchor">Size anchor</v:String>
     <v:String x:Key="clb_MiniCrossSize">Mini cross size</v:String>
@@ -164,6 +167,8 @@
     <v:String x:Key="common_Paste">Paste</v:String>
     <v:String x:Key="common_Ok">Ok</v:String>
     <v:String x:Key="common_Cancel">Cancel</v:String>
+    <v:String x:Key="common_Undo">Undo</v:String>
+    <v:String x:Key="common_Redo">Redo</v:String>
     <v:String x:Key="common_Show">Show</v:String>
     <v:String x:Key="common_Read">Read</v:String>
     <v:String x:Key="common_Parse">Parse</v:String>

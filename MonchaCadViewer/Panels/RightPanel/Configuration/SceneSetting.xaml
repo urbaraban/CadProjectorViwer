@@ -71,43 +71,6 @@
                         </Controls:NumericUpDown.Value>
                     </Controls:NumericUpDown>
                 </DockPanel>
-                <DockPanel>
-                    <Label Content="{DynamicResource obj_Step}" />
-                    <Controls:NumericUpDown
-                        Name="PointStepUpDn"
-                        Interval="0.01"
-                        IsTabStop="False"
-                        Maximum="10"
-                        Minimum="0"
-                        Value="{Binding Movespeed}" />
-                </DockPanel>
-                <DockPanel>
-                    <Label x:Name="CalibrationFormLabel" Content="{DynamicResource obj_Type}" />
-                    <ComboBox
-                        x:Name="CalibrationFormCombo"
-                        Focusable="True"
-                        SelectionChanged="CalibrationFormCombo_SelectionChanged">
-                        <ComboBox.Resources>
-                            <ResourceDictionary />
-                        </ComboBox.Resources>
-                        <ComboBoxItem Content="{DynamicResource clb_Dot}" />
-                        <ComboBoxItem Content="{DynamicResource clb_Rect}" />
-                        <ComboBoxItem Content="{DynamicResource clb_Cross}" />
-                        <ComboBoxItem Content="{DynamicResource clb_HLine}" />
-                        <ComboBoxItem Content="{DynamicResource clb_WLine}" />
-                        <ComboBoxItem Content="{DynamicResource clb_Mesh}" />
-                    </ComboBox>
-                </DockPanel>
-                <DockPanel>
-                    <Label Content="{DynamicResource clb_MiniCrossSize}" />
-                    <Controls:NumericUpDown
-                        x:Name="MiniCrossSizeUpDn"
-                        Background="White"
-                        Interval="0.001"
-                        Maximum="10"
-                        Minimum="0"
-                        ValueChanged="MiniCrossSizeUpDn_ValueChanged" />
-                </DockPanel>
                 <Separator />
                 <StackPanel HorizontalAlignment="Center" Orientation="Horizontal">
                     <Label VerticalAlignment="Center" Content="{DynamicResource setting_attach}" />

@@ -280,6 +280,10 @@ namespace CadProjectorViewer.ViewModel
             ProjectorHub.ScenesCollection.SelectedScene.HistoryCommands.UndoLast();
         });
 
+        public ICommand RedoCommand => new ActionCommand(() => {
+            ProjectorHub.ScenesCollection.SelectedScene.HistoryCommands.RedoLast();
+        });
+
         public ICommand ShowLicenceCommand => new ActionCommand(() => {
             RequestLicenseCode requestLicenseCode = new RequestLicenseCode() { DataContext = ProjectorHub.LockKey };
             requestLicenseCode.ShowDialog();

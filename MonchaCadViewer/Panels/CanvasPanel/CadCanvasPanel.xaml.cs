@@ -1,11 +1,7 @@
-﻿using CadProjectorSDK.Device;
-using CadProjectorSDK.Device.Mesh;
-using CadProjectorSDK.Scenes;
-using CadProjectorSDK.Tools;
+﻿using CadProjectorSDK.Scenes;
 using CadProjectorViewer.ViewModel;
 using Microsoft.Xaml.Behaviors.Core;
 using System;
-using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Globalization;
 using System.Runtime.CompilerServices;
@@ -198,32 +194,6 @@ namespace CadProjectorViewer.Panels.CanvasPanel
             }
         }
 
-        private void AdornerShowBtn_Click(object sender, RoutedEventArgs e)
-        {
-            CoordinateLabel.Visibility = CoordinateLabel.Visibility == Visibility.Visible ? Visibility.Hidden : Visibility.Visible;
-        }
-
-        private void ShowDeviceRect_Click(object sender, RoutedEventArgs e)
-        {
-            if (ViewModel.RenderingDisplay is ProjectionScene scene)
-            {
-                Random rnd = new Random();
-                foreach (LProjector monchaDevice in scene.Projectors)
-                {
-                    SolidColorBrush ColorBrush = new SolidColorBrush();
-                    ColorBrush.Color = Colors.Azure;
-                    scene.Clear();
-                    scene.Add(monchaDevice.Size);
-
-                    foreach (ProjectorMesh mesh in monchaDevice.SelectedMeshes)
-                    {
-                        scene.Add(mesh.Size);
-                    }
-                }
-            }
-
-        }
-
         public ICommand RefreshFrameCommand => new ActionCommand(() => {
             if (ViewModel.RenderingDisplay is ProjectionScene scene)
             {
@@ -288,38 +258,6 @@ namespace CadProjectorViewer.Panels.CanvasPanel
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
-        {
-            throw new NotImplementedException();
-        }
-    }
-
-    public class InfoConverter : IMultiValueConverter
-    {
-        public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
-        {
-            try
-            {
-                string outstring = $"X: {Math.Round((double)values[0], 1)} Y:{Math.Round((double)values[1])}";
-                if (values[2] is ObservableCollection<LProjector> devices)
-                {
-                    foreach (LProjector lDevice in devices)
-                    {
-                        if (lDevice.RenderObjects.Count > 0)
-                        {
-                            outstring += $"\n {lDevice.NameID}: {LFrameConverter.GetAlreadyScan(lDevice.RenderObjects)} pts";
-                        }
-                    }
-                }
-
-                return outstring;
-            }
-            catch
-            {
-                return string.Empty;
-            }
-        }
-
-        public object[] ConvertBack(object value, Type[] targetTypes, object parameter, CultureInfo culture)
         {
             throw new NotImplementedException();
         }

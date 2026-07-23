@@ -1,3 +1,4 @@
+using CadProjectorSDK.Device.Mesh;
 using CadProjectorSDK.Scenes.Commands;
 using CadProjectorSDK.Tools;
 using CadProjectorViewer.Opening;
@@ -117,38 +118,47 @@ namespace CadProjectorViewer
 
             double _mult = Keyboard.Modifiers == ModifierKeys.Shift ? 10 : 1;
             _mult = (Keyboard.Modifiers == ModifierKeys.Control) ? 0.1 : _mult;
-            double step = mainModel.ProjectorHub.ScenesCollection.SelectedScene.Movespeed;
+            var scene = mainModel.ProjectorHub.ScenesCollection.SelectedScene;
+            double step = scene.SelectedObjects.OfType<ProjectorMesh>().FirstOrDefault()?.Movespeed
+                ?? mainModel.ProjectorHub.Projectors.Select(d => d.SelectedMesh).FirstOrDefault(m => m != null)?.Movespeed
+                ?? scene.Movespeed;
 
             switch (e.Key)
             {
                 case Key.NumPad8:
                 case Key.W:
                     await KeyUpLoopMoving(e.Key,
-                        new MovingCommand(mainModel.ProjectorHub.ScenesCollection.SelectedScene.SelectedObjects,
+                        new MovingCommand(scene.SelectedObjects,
                         0, -step * _mult));
                     break;
                 case Key.NumPad5:
                 case Key.S:
                     await KeyUpLoopMoving(e.Key,
-                        new MovingCommand(mainModel.ProjectorHub.ScenesCollection.SelectedScene.SelectedObjects,
+                        new MovingCommand(scene.SelectedObjects,
                         0, step * _mult));
                     break;
                 case Key.NumPad4:
                 case Key.A:
                     await KeyUpLoopMoving(e.Key,
-                        new MovingCommand(mainModel.ProjectorHub.ScenesCollection.SelectedScene.SelectedObjects,
+                        new MovingCommand(scene.SelectedObjects,
                         -step * _mult, 0));
                     break;
                 case Key.NumPad6:
                 case Key.D:
                     await KeyUpLoopMoving(e.Key,
-                        new MovingCommand(mainModel.ProjectorHub.ScenesCollection.SelectedScene.SelectedObjects,
+                        new MovingCommand(scene.SelectedObjects,
                         step * _mult, 0));
                     break;
                 case Key.Z:
                     if (Keyboard.Modifiers == ModifierKeys.Control)
                     {
                         mainModel.ProjectorHub.ScenesCollection.SelectedScene.HistoryCommands.UndoLast();
+                    }
+                    break;
+                case Key.Y:
+                    if (Keyboard.Modifiers == ModifierKeys.Control)
+                    {
+                        mainModel.ProjectorHub.ScenesCollection.SelectedScene.HistoryCommands.RedoLast();
                     }
                     break;
                 case Key.NumPad7:

@@ -9,6 +9,7 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:mesh="clr-namespace:CadProjectorSDK.Device.Mesh;assembly=CadProjectorSDK"
     xmlns:panels="clr-namespace:CadProjectorViewer.Panels"
+    xmlns:Controls="http://metro.mahapps.com/winfx/xaml/controls"
     d:DataContext="{d:DesignInstance Type=cadprojectorsdk:ProjectorHub}"
     d:DesignHeight="450"
     d:DesignWidth="200"
@@ -55,6 +56,42 @@
                                 <MenuItem Command="{Binding SetHorizontalMorph}" Header="{DynamicResource mesh_Horizontal}" />
                                 <MenuItem Command="{Binding SetVerticalMorph}" Header="{DynamicResource mesh_VerticalMenu}" />
                                 <MenuItem Command="{Binding SetSingleMorph}" Header="{DynamicResource mesh_None}" />
+                            </MenuItem>
+                            <MenuItem Header="{DynamicResource obj_Type}">
+                                <MenuItem Command="{Binding SetDotForm}" Header="{DynamicResource clb_Dot}" />
+                                <MenuItem Command="{Binding SetRectForm}" Header="{DynamicResource clb_Rect}" />
+                                <MenuItem Command="{Binding SetMiniRectForm}" Header="{DynamicResource clb_miniRect}" />
+                                <MenuItem Command="{Binding SetCrossForm}" Header="{DynamicResource clb_Cross}" />
+                                <MenuItem Command="{Binding SetMiniCrossForm}" Header="{DynamicResource clb_miniCross}" />
+                                <MenuItem Command="{Binding SetHLineForm}" Header="{DynamicResource clb_HLine}" />
+                                <MenuItem Command="{Binding SetWLineForm}" Header="{DynamicResource clb_WLine}" />
+                                <MenuItem Command="{Binding SetMeshForm}" Header="{DynamicResource clb_Mesh}" />
+                            </MenuItem>
+                            <MenuItem Header="{DynamicResource obj_Step}" StaysOpenOnClick="True">
+                                <MenuItem StaysOpenOnClick="True">
+                                    <MenuItem.Header>
+                                        <Controls:NumericUpDown
+                                            Width="120"
+                                            Interval="0.01"
+                                            Maximum="10"
+                                            Minimum="0"
+                                            NumericInputMode="All"
+                                            Value="{Binding Movespeed, UpdateSourceTrigger=PropertyChanged}" />
+                                    </MenuItem.Header>
+                                </MenuItem>
+                            </MenuItem>
+                            <MenuItem Header="{DynamicResource clb_MiniCrossSize}" StaysOpenOnClick="True">
+                                <MenuItem StaysOpenOnClick="True">
+                                    <MenuItem.Header>
+                                        <Controls:NumericUpDown
+                                            Width="120"
+                                            Interval="0.001"
+                                            Maximum="10"
+                                            Minimum="0"
+                                            NumericInputMode="All"
+                                            Value="{Binding MiniCrossSize, UpdateSourceTrigger=PropertyChanged}" />
+                                    </MenuItem.Header>
+                                </MenuItem>
                             </MenuItem>
                             <MenuItem
                                 Click="MenuItem_Click"

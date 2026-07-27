@@ -227,6 +227,7 @@
     <v:String x:Key="mod_CutRight">Cut Right</v:String>
     <v:String x:Key="mod_CutTop">Cut Top</v:String>
     <v:String x:Key="mod_CutBottom">Cut Bottom</v:String>
+    <v:String x:Key="mod_IgnoreHeight">Ignore Height</v:String>
     <v:String x:Key="mod_Vertical">Vertical</v:String>
     <v:String x:Key="mod_Points">Points</v:String>
     <v:String x:Key="mod_ScanRate">ScanRate</v:String>

@@ -228,6 +228,7 @@
     <v:String x:Key="mod_CutRight">Обрезка справа</v:String>
     <v:String x:Key="mod_CutTop">Обрезка сверху</v:String>
     <v:String x:Key="mod_CutBottom">Обрезка снизу</v:String>
+    <v:String x:Key="mod_IgnoreHeight">Игнорировать высоту</v:String>
     <v:String x:Key="mod_Vertical">Вертикальная</v:String>
     <v:String x:Key="mod_Points">Точки</v:String>
     <v:String x:Key="mod_ScanRate">ScanRate</v:String>

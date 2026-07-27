@@ -13,7 +13,7 @@
     xmlns:transforming="clr-namespace:CadProjectorSDK.Device.Modules.Transforming;assembly=CadProjectorSDK"
     xmlns:zcorrectors="clr-namespace:CadProjectorSDK.Device.Modules.ZCorrectors;assembly=CadProjectorSDK">
     <Style TargetType="{x:Type mah:NumericUpDown}">
-        <Setter Property="StringFormat" Value="0.000" />
+        <Setter Property="StringFormat" Value="0.00000" />
     </Style>
     <dat:ObjectDataProvider
         x:Key="MorphTypeValues"
@@ -46,6 +46,7 @@
                 <ColumnDefinition />
             </Grid.ColumnDefinitions>
             <Grid.RowDefinitions>
+                <RowDefinition />
                 <RowDefinition />
                 <RowDefinition />
                 <RowDefinition />
@@ -162,6 +163,14 @@
                 Grid.Row="10"
                 Grid.Column="1"
                 IsOn="{Binding CutBottom}" />
+            <TextBlock
+                Grid.Row="11"
+                Grid.Column="0"
+                Text="{DynamicResource mod_IgnoreHeight}" />
+            <mah:ToggleSwitch
+                Grid.Row="11"
+                Grid.Column="1"
+                IsOn="{Binding IgnoreHeight}" />
         </Grid>
     </DataTemplate>
     <DataTemplate DataType="{x:Type correctors:ArctanCorrector}">
@@ -380,55 +389,55 @@
                 <Label Content="{DynamicResource mod_ShiftX}" DockPanel.Dock="Left" />
                 <mah:NumericUpDown
                     MinWidth="250"
-                    Interval="0.01"
+                    Interval="0.0001"
                     Maximum="2"
                     Minimum="-2"
-                    Value="{Binding ShiftX, Mode=TwoWay, StringFormat={}{0.000}}" />
+                    Value="{Binding ShiftX, Mode=TwoWay, StringFormat={}{0.00000}}" />
             </DockPanel>
             <DockPanel>
                 <Label Content="{DynamicResource mod_ShiftY}" DockPanel.Dock="Left" />
                 <mah:NumericUpDown
                     MinWidth="250"
-                    Interval="0.01"
+                    Interval="0.0001"
                     Maximum="2"
                     Minimum="-2"
-                    Value="{Binding ShiftY, Mode=TwoWay, StringFormat={}{0.000}}" />
+                    Value="{Binding ShiftY, Mode=TwoWay, StringFormat={}{0.00000}}" />
             </DockPanel>
             <DockPanel>
                 <Label Content="{DynamicResource mod_ScaleX}" DockPanel.Dock="Left" />
                 <mah:NumericUpDown
                     MinWidth="250"
-                    Interval="0.01"
+                    Interval="0.0001"
                     Maximum="4"
                     Minimum="0"
-                    Value="{Binding ScaleX, Mode=TwoWay, StringFormat={}{0.000}}" />
+                    Value="{Binding ScaleX, Mode=TwoWay, StringFormat={}{0.00000}}" />
             </DockPanel>
             <DockPanel>
                 <Label Content="{DynamicResource mod_ScaleY}" DockPanel.Dock="Left" />
                 <mah:NumericUpDown
                     MinWidth="250"
-                    Interval="0.01"
+                    Interval="0.0001"
                     Maximum="4"
                     Minimum="0"
-                    Value="{Binding ScaleY, Mode=TwoWay, StringFormat={}{0.000}}" />
+                    Value="{Binding ScaleY, Mode=TwoWay, StringFormat={}{0.00000}}" />
             </DockPanel>
             <DockPanel>
                 <Label Content="{DynamicResource mod_CenterX}" DockPanel.Dock="Left" />
                 <mah:NumericUpDown
                     MinWidth="250"
-                    Interval="0.01"
+                    Interval="0.0001"
                     Maximum="2"
                     Minimum="-2"
-                    Value="{Binding CenterX, Mode=TwoWay, StringFormat={}{0.000}}" />
+                    Value="{Binding CenterX, Mode=TwoWay, StringFormat={}{0.00000}}" />
             </DockPanel>
             <DockPanel>
                 <Label Content="{DynamicResource mod_CenterY}" DockPanel.Dock="Left" />
                 <mah:NumericUpDown
                     MinWidth="250"
-                    Interval="0.01"
+                    Interval="0.0001"
                     Maximum="2"
                     Minimum="-2"
-                    Value="{Binding CenterY, Mode=TwoWay, StringFormat={}{0.000}}" />
+                    Value="{Binding CenterY, Mode=TwoWay, StringFormat={}{0.00000}}" />
             </DockPanel>
         </StackPanel>
     </DataTemplate>

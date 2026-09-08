@@ -1,0 +1,16 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <ItemGroup>
+    <ProjectReference Include="..\CadProjector.Core\CadProjector.Core.csproj" />
+    <ProjectReference Include="..\CadProjector.Rendering\CadProjector.Rendering.csproj" />
+    <ProjectReference Include="..\CadProjector.Ilda\CadProjector.Ilda.csproj" />
+    <ProjectReference Include="..\..\..\VLTLaserController.net\src\VLTLaserController.net.csproj" />
+  </ItemGroup>
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+</Project>

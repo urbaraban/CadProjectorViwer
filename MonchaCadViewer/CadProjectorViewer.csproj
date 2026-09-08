@@ -18,6 +18,7 @@
     <IsRevisionIncremented>true</IsRevisionIncremented>
     <GenerateManifests>true</GenerateManifests>
     <SignManifests>false</SignManifests>
+    <RuntimeIdentifiers>win-x86;win-x64</RuntimeIdentifiers>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="Caching.dll" Version="2.0.0.1" />

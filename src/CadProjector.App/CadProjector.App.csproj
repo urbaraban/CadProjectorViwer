@@ -1,0 +1,37 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net10.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <ApplicationManifest>app.manifest</ApplicationManifest>
+    <AssemblyName>2Cut</AssemblyName>
+    <RootNamespace>CadProjector.App</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Folder Include="Models\" />
+    <AvaloniaResource Include="Assets\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Avalonia" Version="12.1.2" />
+    <PackageReference Include="Avalonia.Desktop" Version="12.1.2" />
+    <PackageReference Include="Avalonia.Themes.Fluent" Version="12.1.2" />
+    <PackageReference Include="Avalonia.Fonts.Inter" Version="12.1.2" />
+    <PackageReference Include="AvaloniaUI.DiagnosticsSupport" Version="2.2.3">
+      <IncludeAssets Condition="'$(Configuration)' != 'Debug'">None</IncludeAssets>
+      <PrivateAssets Condition="'$(Configuration)' != 'Debug'">All</PrivateAssets>
+    </PackageReference>
+    <PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.2" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\CadProjector.Core\CadProjector.Core.csproj" />
+    <ProjectReference Include="..\CadProjector.FileFormats\CadProjector.FileFormats.csproj" />
+    <ProjectReference Include="..\CadProjector.Rendering\CadProjector.Rendering.csproj" />
+    <ProjectReference Include="..\CadProjector.Devices\CadProjector.Devices.csproj" />
+    <ProjectReference Include="..\CadProjector.Automation\CadProjector.Automation.csproj" />
+    <ProjectReference Include="..\CadProjector.Ilda\CadProjector.Ilda.csproj" />
+  </ItemGroup>
+</Project>

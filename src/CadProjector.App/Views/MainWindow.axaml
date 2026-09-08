@@ -1,0 +1,535 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="using:CadProjector.App.ViewModels"
+        xmlns:ctrl="using:CadProjector.App.Controls"
+        xmlns:dev="using:CadProjector.Core.Devices"
+        xmlns:mod="using:CadProjector.Rendering.Modules"
+        xmlns:auto="using:CadProjector.Automation"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d" d:DesignWidth="1280" d:DesignHeight="800"
+        x:Class="CadProjector.App.Views.MainWindow"
+        x:DataType="vm:MainViewModel"
+        xmlns:conv="using:CadProjector.App.Converters"
+        Title="2Cut"
+        WindowState="Maximized">
+
+  <Window.Resources>
+    <conv:StringEqualsConverter x:Key="StringEq" />
+  </Window.Resources>
+
+  <Design.DataContext>
+    <vm:MainViewModel />
+  </Design.DataContext>
+
+  <Window.KeyBindings>
+    <KeyBinding Gesture="Ctrl+Z" Command="{Binding UndoCommand}" />
+    <KeyBinding Gesture="Ctrl+Y" Command="{Binding RedoCommand}" />
+    <KeyBinding Gesture="Ctrl+Shift+Z" Command="{Binding RedoCommand}" />
+  </Window.KeyBindings>
+
+  <DockPanel LastChildFill="True">
+    <Border DockPanel.Dock="Top" Padding="8,6" Background="#1E1E1E">
+      <Grid ColumnDefinitions="Auto,*">
+        <StackPanel Orientation="Horizontal" Spacing="6">
+          <TextBlock Text="{DynamicResource Ui.Brand}" FontWeight="Bold" FontSize="16"
+                     VerticalAlignment="Center" Foreground="#F0F0F0" />
+          <Button Content="{DynamicResource Ui.Open}" Command="{Binding OpenFileCommand}" />
+          <Button Content="{DynamicResource Ui.Clear}" Command="{Binding ClearSceneCommand}" />
+          <Button Content="{DynamicResource Ui.Load}" Command="{Binding LoadProjectCommand}" />
+          <Button Content="{DynamicResource Ui.Save}" Command="{Binding SaveProjectCommand}" />
+          <Button Content="{DynamicResource Ui.ExportIld}" Command="{Binding ExportIldCommand}"
+                  IsVisible="{Binding !IsExportingIld}" />
+          <Button Content="{DynamicResource Ui.CancelExportIld}" Command="{Binding CancelExportIldCommand}"
+                  IsVisible="{Binding IsExportingIld}" FontWeight="Bold" />
+          <Button Content="{DynamicResource Ui.Play}" Command="{Binding PlayCommand}" />
+          <Button Content="{DynamicResource Ui.Stop}" Command="{Binding StopCommand}" FontWeight="Bold" />
+          <Border Width="8" />
+          <Button Content="↶" Command="{Binding UndoCommand}" Width="32"
+                  ToolTip.Tip="{Binding UndoHint}" />
+          <Button Content="↷" Command="{Binding RedoCommand}" Width="32"
+                  ToolTip.Tip="{Binding RedoHint}" />
+          <Border Width="8" />
+          <ToggleButton Content="{DynamicResource Ui.Mask}" IsChecked="{Binding MaskEnabled}" />
+          <ToggleButton Content="{DynamicResource Ui.Mesh}" IsChecked="{Binding MeshEnabled}" />
+          <Button Content="{DynamicResource Ui.Objects}" Command="{Binding OpenTreeCommand}" />
+          <Button Content="{DynamicResource Ui.Scene}" Command="{Binding OpenScenePanelCommand}" />
+          <Button Content="{DynamicResource Ui.Transform}" Command="{Binding OpenTransformCommand}" />
+          <Button Content="{DynamicResource Ui.Calibrate}" Command="{Binding OpenCalibrateCommand}" />
+          <Button Content="{DynamicResource Ui.Devices}" Command="{Binding OpenDevicesCommand}" />
+          <Button Content="{DynamicResource Ui.WorkFolder}" Command="{Binding OpenWorkFolderCommand}" />
+          <Button Content="{DynamicResource Ui.Automation}" Command="{Binding OpenAutomationCommand}" />
+          <Button Content="{DynamicResource Ui.Logs}" Command="{Binding OpenLogsCommand}" />
+          <Button Content="{Binding LanguageCode}" Command="{Binding ToggleLanguageCommand}" Width="44" />
+        </StackPanel>
+        <TextBlock Grid.Column="1" Text="{Binding StatusText}"
+                   VerticalAlignment="Center" HorizontalAlignment="Right"
+                   Margin="12,0" Foreground="#AAAAAA" />
+      </Grid>
+    </Border>
+
+    <DockPanel DockPanel.Dock="Top" LastChildFill="True">
+      <StackPanel DockPanel.Dock="Right" Orientation="Horizontal" Spacing="4" Margin="8,4">
+        <Button Content="+" Command="{Binding AddSceneCommand}" Width="32"
+                ToolTip.Tip="{DynamicResource Ui.AddScene}" />
+        <Button Content="−" Command="{Binding RemoveSceneCommand}" Width="32"
+                ToolTip.Tip="{DynamicResource Ui.RemoveScene}" />
+      </StackPanel>
+      <TabControl ItemsSource="{Binding Scenes}"
+                  SelectedItem="{Binding SelectedScene}"
+                  Background="Transparent">
+        <TabControl.ItemTemplate>
+          <DataTemplate>
+            <TextBlock Text="{Binding Name}" />
+          </DataTemplate>
+        </TabControl.ItemTemplate>
+      </TabControl>
+    </DockPanel>
+
+    <Grid>
+      <ctrl:SceneCanvas x:Name="SceneView"
+                        Scene="{Binding SelectedScene}"
+                        Project="{Binding Project}"
+                        Revision="{Binding CanvasRevision}"
+                        FovOverlays="{Binding FovOverlays}"
+                        ModuleOverlays="{Binding ModuleOverlays}"
+                        MaskEditable="{Binding MaskEnabled}"
+                        MeshOwnerLabel="{Binding MeshOwnerLabel}" />
+
+      <Border IsVisible="{Binding IsTreeOpen}" Width="300"
+              HorizontalAlignment="Left" Margin="12" Padding="12"
+              Background="#E61E1E1E" BorderBrush="#555" BorderThickness="1" CornerRadius="4"
+              ZIndex="10">
+        <DockPanel>
+          <StackPanel DockPanel.Dock="Top" Spacing="6" Margin="0,0,0,8">
+            <TextBlock Text="{DynamicResource Ui.ObjectsTitle}" FontWeight="SemiBold" Foreground="White" />
+            <Button Content="{DynamicResource Ui.ToggleLayer}" Command="{Binding ToggleSelectedLayerVisibilityCommand}" />
+          </StackPanel>
+          <ListBox ItemsSource="{Binding ObjectItems}"
+                   SelectedIndex="{Binding SelectedObjectIndex}"
+                   Background="Transparent">
+            <ListBox.ItemTemplate>
+              <DataTemplate x:DataType="vm:ObjectListItem">
+                <StackPanel Orientation="Horizontal" Spacing="8">
+                  <CheckBox IsChecked="{Binding IsVisible}" />
+                  <TextBlock Text="{Binding DisplayName}" Foreground="#CCC" VerticalAlignment="Center" />
+                </StackPanel>
+              </DataTemplate>
+            </ListBox.ItemTemplate>
+          </ListBox>
+        </DockPanel>
+      </Border>
+
+      <Border IsVisible="{Binding IsSceneOpen}" Width="300"
+              HorizontalAlignment="Left" VerticalAlignment="Top" Margin="12" Padding="12"
+              Background="#E61E1E1E" BorderBrush="#555" BorderThickness="1" CornerRadius="4"
+              ZIndex="10">
+        <StackPanel Spacing="8">
+          <TextBlock Text="{DynamicResource Ui.Scene}" FontWeight="SemiBold" Foreground="White" />
+          <TextBlock Text="{DynamicResource Ui.SceneName}" Foreground="#AAA" />
+          <TextBox Text="{Binding SceneName}" />
+          <TextBlock Text="{DynamicResource Ui.SceneWidth}" Foreground="#AAA" />
+          <NumericUpDown Value="{Binding SceneWidthMm}" Increment="10" Minimum="1" FormatString="0.#" />
+          <TextBlock Text="{DynamicResource Ui.SceneHeight}" Foreground="#AAA" />
+          <NumericUpDown Value="{Binding SceneHeightMm}" Increment="10" Minimum="1" FormatString="0.#" />
+          <CheckBox Content="{DynamicResource Ui.UseLayerColor}" IsChecked="{Binding UseLayerColor}"
+                    Foreground="#CCC" Margin="0,8,0,0" />
+          <TextBlock Text="{DynamicResource Ui.SceneProjectors}" Foreground="#AAA" Margin="0,8,0,0" />
+          <TextBlock Text="{DynamicResource Ui.SceneProjectorsHint}" Foreground="#888" TextWrapping="Wrap" FontSize="11" />
+          <ItemsControl ItemsSource="{Binding SceneProjectorItems}">
+            <ItemsControl.ItemTemplate>
+              <DataTemplate x:DataType="vm:SceneProjectorItem">
+                <StackPanel Orientation="Horizontal" Spacing="8" Margin="0,2">
+                  <CheckBox IsChecked="{Binding IsBound}" VerticalAlignment="Center" />
+                  <StackPanel>
+                    <TextBlock Text="{Binding DisplayName}" Foreground="#DDD" />
+                    <TextBlock Text="{Binding Detail}" Foreground="#888" FontSize="11" />
+                  </StackPanel>
+                </StackPanel>
+              </DataTemplate>
+            </ItemsControl.ItemTemplate>
+          </ItemsControl>
+        </StackPanel>
+      </Border>
+
+      <Border IsVisible="{Binding IsTransformOpen}" Width="300"
+              HorizontalAlignment="Right" VerticalAlignment="Top" Margin="12" Padding="12"
+              Background="#E61E1E1E" BorderBrush="#555" BorderThickness="1" CornerRadius="4"
+              ZIndex="10">
+        <StackPanel Spacing="8">
+          <TextBlock Text="{DynamicResource Ui.Transform}" FontWeight="SemiBold" Foreground="White" />
+          <TextBlock Text="X" Foreground="#AAA" />
+          <NumericUpDown Value="{Binding Tx}" Increment="1" FormatString="0.###" />
+          <TextBlock Text="Y" Foreground="#AAA" />
+          <NumericUpDown Value="{Binding Ty}" Increment="1" FormatString="0.###" />
+          <TextBlock Text="Z" Foreground="#AAA" />
+          <NumericUpDown Value="{Binding Tz}" Increment="0.1" FormatString="0.###" />
+          <TextBlock Text="Rotate °" Foreground="#AAA" />
+          <NumericUpDown Value="{Binding Rot}" Increment="1" FormatString="0.###" />
+          <TextBlock Text="Scale" Foreground="#AAA" />
+          <NumericUpDown Value="{Binding Scale}" Increment="0.01" Minimum="0.001" FormatString="0.####" />
+          <TextBlock Text="{DynamicResource Ui.AlignDock}" Foreground="#AAA" Margin="0,8,0,0" />
+          <UniformGrid Columns="3" Rows="3">
+            <RadioButton GroupName="Dock" Content="↖" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center"
+                         IsChecked="{Binding DockMode, Converter={StaticResource StringEq}, ConverterParameter=LT}"
+                         Command="{Binding AlignObjectCommand}" CommandParameter="LT" />
+            <RadioButton GroupName="Dock" Content="↑" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center"
+                         IsChecked="{Binding DockMode, Converter={StaticResource StringEq}, ConverterParameter=CT}"
+                         Command="{Binding AlignObjectCommand}" CommandParameter="CT" />
+            <RadioButton GroupName="Dock" Content="↗" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center"
+                         IsChecked="{Binding DockMode, Converter={StaticResource StringEq}, ConverterParameter=RT}"
+                         Command="{Binding AlignObjectCommand}" CommandParameter="RT" />
+            <RadioButton GroupName="Dock" Content="←" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center"
+                         IsChecked="{Binding DockMode, Converter={StaticResource StringEq}, ConverterParameter=LM}"
+                         Command="{Binding AlignObjectCommand}" CommandParameter="LM" />
+            <RadioButton GroupName="Dock" Content="●" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center"
+                         IsChecked="{Binding DockMode, Converter={StaticResource StringEq}, ConverterParameter=CM}"
+                         Command="{Binding AlignObjectCommand}" CommandParameter="CM" />
+            <RadioButton GroupName="Dock" Content="→" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center"
+                         IsChecked="{Binding DockMode, Converter={StaticResource StringEq}, ConverterParameter=RM}"
+                         Command="{Binding AlignObjectCommand}" CommandParameter="RM" />
+            <RadioButton GroupName="Dock" Content="↙" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center"
+                         IsChecked="{Binding DockMode, Converter={StaticResource StringEq}, ConverterParameter=LB}"
+                         Command="{Binding AlignObjectCommand}" CommandParameter="LB" />
+            <RadioButton GroupName="Dock" Content="↓" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center"
+                         IsChecked="{Binding DockMode, Converter={StaticResource StringEq}, ConverterParameter=CB}"
+                         Command="{Binding AlignObjectCommand}" CommandParameter="CB" />
+            <RadioButton GroupName="Dock" Content="↘" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center"
+                         IsChecked="{Binding DockMode, Converter={StaticResource StringEq}, ConverterParameter=RB}"
+                         Command="{Binding AlignObjectCommand}" CommandParameter="RB" />
+          </UniformGrid>
+        </StackPanel>
+      </Border>
+
+      <Border IsVisible="{Binding IsCalibrateOpen}" Width="320"
+              HorizontalAlignment="Left" VerticalAlignment="Top" Margin="12" Padding="12"
+              Background="#E61E1E1E" BorderBrush="#555" BorderThickness="1" CornerRadius="4"
+              ZIndex="10">
+        <StackPanel Spacing="6">
+          <TextBlock Text="{DynamicResource Ui.Calibrate}" FontWeight="SemiBold" Foreground="White" />
+          <TextBlock Text="{Binding MeshOwnerLabel}" Foreground="#FC8" FontWeight="SemiBold" />
+          <TextBlock Text="{DynamicResource Ui.CalibrateHint}"
+                     Foreground="#888" TextWrapping="Wrap" FontSize="11" />
+          <ComboBox ItemsSource="{Binding CalibPatternOptions}" SelectedItem="{Binding CalibPattern}" />
+          <Button Content="{DynamicResource Ui.PlayPattern}" Command="{Binding PlayCalibrationPatternCommand}" />
+          <Button Content="{DynamicResource Ui.Devices}" Command="{Binding OpenDevicesCommand}" />
+        </StackPanel>
+      </Border>
+
+      <!-- Devices hub -->
+      <Border IsVisible="{Binding IsDevicesOpen}" Width="420" MaxHeight="740"
+              HorizontalAlignment="Right" VerticalAlignment="Stretch" Margin="12" Padding="10"
+              Background="#E61E1E1E" BorderBrush="#555" BorderThickness="1" CornerRadius="4"
+              ZIndex="10">
+        <DockPanel>
+          <StackPanel DockPanel.Dock="Top" Spacing="6" Margin="0,0,0,8">
+            <TextBlock Text="{DynamicResource Ui.Devices}" FontWeight="SemiBold" Foreground="White" FontSize="15" />
+            <TextBlock Text="{Binding PipelineHelp}" Foreground="#888" TextWrapping="Wrap" FontSize="11" />
+            <Grid ColumnDefinitions="*,Auto,Auto">
+              <ListBox Grid.Column="0" ItemsSource="{Binding Projectors}"
+                       SelectedItem="{Binding SelectedProjector}"
+                       Height="88" Background="Transparent" Margin="0,0,6,0">
+                <ListBox.ItemTemplate>
+                  <DataTemplate x:DataType="dev:ProjectorProfile">
+                    <TextBlock Text="{Binding DisplayName}" Foreground="#EEE" />
+                  </DataTemplate>
+                </ListBox.ItemTemplate>
+              </ListBox>
+              <StackPanel Grid.Column="1" Spacing="4" Margin="0,0,4,0">
+                <Button Content="+" Command="{Binding AddProjectorCommand}" Width="36" ToolTip.Tip="Add projector" />
+                <Button Content="−" Command="{Binding RemoveProjectorCommand}" Width="36"
+                        IsEnabled="{Binding CanRemoveProjector}" ToolTip.Tip="Remove selected" />
+              </StackPanel>
+            </Grid>
+            <TextBlock Text="{Binding MeshOwnerLabel}" Foreground="#FC8" FontSize="12" />
+          </StackPanel>
+
+          <TabControl>
+            <TabItem Header="{DynamicResource Ui.DeviceCard}">
+              <ScrollViewer>
+                <StackPanel Spacing="6" Margin="0,8,0,0">
+                  <TextBlock Text="{DynamicResource Ui.DeviceName}" Foreground="#AAA" />
+                  <TextBox Text="{Binding DeviceName}" />
+                  <TextBlock Text="Host / port" Foreground="#AAA" />
+                  <TextBox Text="{Binding DeviceHost}" />
+                  <NumericUpDown Value="{Binding DevicePort}" Minimum="1" Maximum="65535" FormatString="0" />
+                  <TextBlock Text="RGB" Foreground="#AAA" />
+                  <StackPanel Spacing="4">
+                    <DockPanel>
+                      <TextBlock Text="R" Width="16" VerticalAlignment="Center" Foreground="#F88" DockPanel.Dock="Left" />
+                      <NumericUpDown Value="{Binding ColorR}" Minimum="0" Maximum="255" FormatString="0" />
+                    </DockPanel>
+                    <DockPanel>
+                      <TextBlock Text="G" Width="16" VerticalAlignment="Center" Foreground="#8F8" DockPanel.Dock="Left" />
+                      <NumericUpDown Value="{Binding ColorG}" Minimum="0" Maximum="255" FormatString="0" />
+                    </DockPanel>
+                    <DockPanel>
+                      <TextBlock Text="B" Width="16" VerticalAlignment="Center" Foreground="#88F" DockPanel.Dock="Left" />
+                      <NumericUpDown Value="{Binding ColorB}" Minimum="0" Maximum="255" FormatString="0" />
+                    </DockPanel>
+                  </StackPanel>
+                  <StackPanel Orientation="Horizontal" Spacing="8">
+                    <Button Content="{DynamicResource Ui.Connect}" Command="{Binding ConnectSelectedCommand}" />
+                    <Button Content="{DynamicResource Ui.VirtualOnly}" Command="{Binding UseVirtualCommand}" />
+                  </StackPanel>
+                  <StackPanel Orientation="Horizontal" Spacing="8">
+                    <Button Content="Save .cdev" Command="{Binding SaveProfileCommand}" />
+                    <Button Content="Load .cdev" Command="{Binding LoadProfileCommand}" />
+                  </StackPanel>
+                  <TextBlock Text="{Binding ActiveDeviceName}" Foreground="#CCC" TextWrapping="Wrap" FontSize="11" />
+                  <TextBlock Text="{Binding FrameInfo}" Foreground="#8CF" TextWrapping="Wrap" FontSize="11" />
+                  <TextBlock Text="{DynamicResource Ui.Automation}" FontWeight="SemiBold" Foreground="#8CF" Margin="0,8,0,0" />
+                  <TextBlock Text="{DynamicResource Ui.AutomationHint}" Foreground="#888" TextWrapping="Wrap" FontSize="11" />
+                  <Button Content="{DynamicResource Ui.OpenAutomation}" Command="{Binding OpenAutomationCommand}" />
+                </StackPanel>
+              </ScrollViewer>
+            </TabItem>
+
+            <TabItem Header="{DynamicResource Ui.FovPose}">
+              <StackPanel Spacing="6" Margin="0,8,0,0">
+                <TextBlock Text="FOV W / H mm" Foreground="#AAA" />
+                <StackPanel Orientation="Horizontal" Spacing="6">
+                  <NumericUpDown Width="160" Value="{Binding FovWidthMm}" Increment="10" FormatString="0.#" />
+                  <NumericUpDown Width="160" Value="{Binding FovHeightMm}" Increment="10" FormatString="0.#" />
+                </StackPanel>
+                <TextBlock Text="Pose X / Y mm (FOV center)" Foreground="#AAA" />
+                <StackPanel Orientation="Horizontal" Spacing="6">
+                  <NumericUpDown Width="160" Value="{Binding PoseX}" Increment="1" FormatString="0.#" />
+                  <NumericUpDown Width="160" Value="{Binding PoseY}" Increment="1" FormatString="0.#" />
+                </StackPanel>
+                <TextBlock Text="FOV auto-tilted when you Add projectors; edit freely afterward."
+                           Foreground="#888" TextWrapping="Wrap" FontSize="11" />
+              </StackPanel>
+            </TabItem>
+
+            <TabItem Header="{DynamicResource Ui.MeshSection}">
+              <ScrollViewer>
+                <StackPanel Spacing="6" Margin="0,8,0,0">
+                  <TextBlock Text="{DynamicResource Ui.MeshBelongsHint}" Foreground="#888" TextWrapping="Wrap" FontSize="11" />
+                  <CheckBox Content="{DynamicResource Ui.MeshEnable}" IsChecked="{Binding MeshEnabled}" Foreground="#CCC" />
+                  <CheckBox Content="{DynamicResource Ui.ShowMesh}" IsChecked="{Binding ShowMeshOverlay}" Foreground="#CCC" />
+                  <TextBlock Text="Cells X / Y" Foreground="#AAA" />
+                  <StackPanel Orientation="Horizontal" Spacing="6">
+                    <NumericUpDown Width="160" Value="{Binding MeshColumns}" Minimum="1" Maximum="16" FormatString="0" />
+                    <NumericUpDown Width="160" Value="{Binding MeshRows}" Minimum="1" Maximum="16" FormatString="0" />
+                  </StackPanel>
+                  <TextBlock Text="Point col / row · X / Y" Foreground="#AAA" />
+                  <StackPanel Orientation="Horizontal" Spacing="6">
+                    <NumericUpDown Width="80" Value="{Binding MeshPointCol}" Minimum="0" FormatString="0" />
+                    <NumericUpDown Width="80" Value="{Binding MeshPointRow}" Minimum="0" FormatString="0" />
+                    <NumericUpDown Width="90" Value="{Binding MeshPointX}" Increment="0.01" FormatString="0.####" />
+                    <NumericUpDown Width="90" Value="{Binding MeshPointY}" Increment="0.01" FormatString="0.####" />
+                  </StackPanel>
+                  <StackPanel Orientation="Horizontal" Spacing="8">
+                    <Button Content="Reset" Command="{Binding ResetMeshCommand}" />
+                    <Button Content="Distort" Command="{Binding DistortMeshDemoCommand}" />
+                    <Button Content="{DynamicResource Ui.Calibrate}" Command="{Binding OpenCalibrateCommand}" />
+                  </StackPanel>
+                </StackPanel>
+              </ScrollViewer>
+            </TabItem>
+
+            <TabItem Header="{DynamicResource Ui.ModulesSection}">
+              <DockPanel Margin="0,8,0,0">
+                <StackPanel DockPanel.Dock="Top" Spacing="6">
+                  <TextBlock Text="{DynamicResource Ui.ModulesBelongHint}" Foreground="#888" TextWrapping="Wrap" FontSize="11" />
+                  <StackPanel Orientation="Horizontal" Spacing="6">
+                    <ComboBox Width="180" ItemsSource="{Binding AvailableModuleTypes}"
+                              SelectedItem="{Binding ModuleTypeToAdd}">
+                      <ComboBox.ItemTemplate>
+                        <DataTemplate x:DataType="mod:ModuleDescriptor">
+                          <TextBlock Text="{Binding DisplayName}" ToolTip.Tip="{Binding Description}" />
+                        </DataTemplate>
+                      </ComboBox.ItemTemplate>
+                    </ComboBox>
+                    <Button Content="Add" Command="{Binding AddModuleCommand}" />
+                    <Button Content="↑" Command="{Binding MoveModuleUpCommand}" Width="32" />
+                    <Button Content="↓" Command="{Binding MoveModuleDownCommand}" Width="32" />
+                    <Button Content="Del" Command="{Binding RemoveModuleCommand}" />
+                  </StackPanel>
+                </StackPanel>
+                <ListBox ItemsSource="{Binding ModuleItems}"
+                         SelectedItem="{Binding SelectedModuleItem}"
+                         Background="Transparent">
+                  <ListBox.ItemTemplate>
+                    <DataTemplate x:DataType="vm:ModuleItemViewModel">
+                      <Border Padding="6" Margin="0,2" Background="#22FFFFFF" CornerRadius="3">
+                        <StackPanel Spacing="4">
+                          <StackPanel Orientation="Horizontal" Spacing="8">
+                            <CheckBox IsChecked="{Binding IsEnabled}" />
+                            <TextBlock Text="{Binding DisplayName}" Foreground="#EEE" FontWeight="SemiBold"
+                                       VerticalAlignment="Center" ToolTip.Tip="{Binding Description}" />
+                            <ToggleButton Content="…" IsChecked="{Binding IsExpanded}" Width="28" Margin="8,0,0,0" />
+                          </StackPanel>
+                          <StackPanel IsVisible="{Binding IsExpanded}" Spacing="6" Margin="24,0,0,0">
+                            <StackPanel IsVisible="{Binding HasGeometry}" Spacing="2">
+                              <CheckBox Content="{DynamicResource Ui.ShowOnTable}" IsChecked="{Binding ShowOnTable}" Foreground="#CCC" />
+                              <CheckBox Content="{DynamicResource Ui.ProjectGeometry}" IsChecked="{Binding ProjectGeometry}" Foreground="#CCC" />
+                            </StackPanel>
+                            <ItemsControl ItemsSource="{Binding Parameters}">
+                              <ItemsControl.ItemTemplate>
+                                <DataTemplate x:DataType="vm:ModuleParamViewModel">
+                                  <StackPanel Spacing="2" Margin="0,0,0,4">
+                                    <TextBlock Text="{Binding Label}" Foreground="#AAA" FontSize="11"
+                                               IsVisible="{Binding !IsBool}" />
+                                    <NumericUpDown IsVisible="{Binding IsNumber}"
+                                                   Value="{Binding NumberValue}"
+                                                   Minimum="{Binding Minimum}"
+                                                   Maximum="{Binding Maximum}"
+                                                   Increment="{Binding Increment}"
+                                                   FormatString="{Binding Format}" />
+                                    <ComboBox IsVisible="{Binding IsChoice}"
+                                              ItemsSource="{Binding Choices}"
+                                              SelectedItem="{Binding SelectedChoice}"
+                                              HorizontalAlignment="Stretch" />
+                                    <CheckBox IsVisible="{Binding IsBool}" Content="{Binding Label}"
+                                              IsChecked="{Binding BoolValue}" Foreground="#CCC" />
+                                    <TextBox IsVisible="{Binding IsText}" Text="{Binding TextValue}" />
+                                  </StackPanel>
+                                </DataTemplate>
+                              </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                          </StackPanel>
+                        </StackPanel>
+                      </Border>
+                    </DataTemplate>
+                  </ListBox.ItemTemplate>
+                </ListBox>
+              </DockPanel>
+            </TabItem>
+          </TabControl>
+        </DockPanel>
+      </Border>
+
+      <Border IsVisible="{Binding IsWorkFolderOpen}" Width="340" Height="520"
+              HorizontalAlignment="Right" VerticalAlignment="Top" Margin="12,12,12,12" Padding="12"
+              Background="#E61E1E1E" BorderBrush="#555" BorderThickness="1" CornerRadius="4"
+              ZIndex="10">
+        <DockPanel DataContext="{Binding WorkFolderBrowser}">
+          <StackPanel DockPanel.Dock="Top" Spacing="6" Margin="0,0,0,8">
+            <TextBlock Text="{DynamicResource Ui.WorkFolder}" FontWeight="SemiBold" Foreground="White" />
+            <DockPanel>
+              <Button Content="↻" Width="32" Command="{Binding RefreshCommand}"
+                      DockPanel.Dock="Left" ToolTip.Tip="{DynamicResource Ui.Refresh}" />
+              <Button Content="{DynamicResource Ui.Browse}" Command="{Binding BrowseCommand}"
+                      DockPanel.Dock="Right" Margin="6,0,0,0" />
+              <TextBox Text="{Binding CurrentPath}" FontSize="11"
+                       ToolTip.Tip="{Binding CurrentPath}" />
+            </DockPanel>
+            <DockPanel>
+              <Button Content="X" Width="28" Command="{Binding ClearFilterCommand}"
+                      DockPanel.Dock="Right" Margin="4,0,0,0" />
+              <ComboBox ItemsSource="{Binding ExtensionChoices}"
+                        SelectedItem="{Binding SelectedExtension}"
+                        Width="88" DockPanel.Dock="Right" Margin="4,0,0,0" />
+              <TextBox Text="{Binding StringFilter}" PlaceholderText="{DynamicResource Ui.Filter}" />
+            </DockPanel>
+          </StackPanel>
+          <ListBox ItemsSource="{Binding Items}"
+                   SelectedItem="{Binding SelectedItem}"
+                   Background="Transparent"
+                   DoubleTapped="WorkFolderList_DoubleTapped"
+                   KeyUp="WorkFolderList_KeyUp">
+            <ListBox.ContextMenu>
+              <ContextMenu>
+                <MenuItem Header="{DynamicResource Ui.ShowInFolder}"
+                          Command="{Binding RevealSelectedCommand}" />
+                <MenuItem Header="{DynamicResource Ui.OpenEditor}"
+                          Command="{Binding OpenSelectedInEditorCommand}" />
+              </ContextMenu>
+            </ListBox.ContextMenu>
+            <ListBox.ItemTemplate>
+              <DataTemplate x:DataType="vm:WorkFolderEntry">
+                <Grid ColumnDefinitions="22,*,48,88" Margin="0,2">
+                  <TextBlock Text="{Binding IconGlyph}" Foreground="#8CF" VerticalAlignment="Center" />
+                  <TextBlock Grid.Column="1" Text="{Binding Name}" Foreground="#EEE"
+                             TextTrimming="CharacterEllipsis" VerticalAlignment="Center"
+                             ToolTip.Tip="{Binding FullPath}" />
+                  <TextBlock Grid.Column="2" Text="{Binding DisplayExtension}" Foreground="#AAA"
+                             FontSize="11" VerticalAlignment="Center" />
+                  <TextBlock Grid.Column="3" Text="{Binding DateText}" Foreground="#888"
+                             FontSize="10" VerticalAlignment="Center" HorizontalAlignment="Right" />
+                </Grid>
+              </DataTemplate>
+            </ListBox.ItemTemplate>
+          </ListBox>
+        </DockPanel>
+      </Border>
+
+      <Border IsVisible="{Binding IsAutomationOpen}" Width="360" Height="480"
+              HorizontalAlignment="Right" VerticalAlignment="Center" Margin="12" Padding="12"
+              Background="#E61E1E1E" BorderBrush="#555" BorderThickness="1" CornerRadius="4"
+              ZIndex="10">
+        <DockPanel>
+          <StackPanel DockPanel.Dock="Top" Spacing="8" Margin="0,0,0,8">
+            <TextBlock Text="{DynamicResource Ui.Automation}" FontWeight="SemiBold" Foreground="White" />
+            <TextBlock Text="{DynamicResource Ui.WorkFolder}" Foreground="#AAA" />
+            <TextBlock Text="{Binding WorkFolder}" Foreground="#8CF" FontSize="11" TextWrapping="Wrap"
+                       ToolTip.Tip="{Binding WorkFolder}" />
+            <Button Content="{DynamicResource Ui.OpenWorkFolder}" Command="{Binding OpenWorkFolderCommand}" />
+            <TextBlock Text="{DynamicResource Ui.AddEndpoint}" Foreground="#AAA" />
+            <ComboBox ItemsSource="{Binding EndpointTypeChoices}" SelectedItem="{Binding NewEndpointType}" />
+            <TextBox Text="{Binding NewEndpointBindIp}" Watermark="0.0.0.0" />
+            <NumericUpDown Value="{Binding NewEndpointPort}" Minimum="1" Maximum="65535" FormatString="0" />
+            <Button Content="{DynamicResource Ui.AddEndpoint}" Command="{Binding AddAutomationEndpointCommand}" />
+            <Button Content="{Binding UdpEnabled, StringFormat='UDP Binary quick: {0}'}"
+                    Command="{Binding ToggleUdpCommand}" />
+            <NumericUpDown Value="{Binding UdpPort}" Minimum="1" Maximum="65535" FormatString="0"
+                           ToolTip.Tip="Default UDP Binary port" />
+          </StackPanel>
+          <TabControl>
+            <TabItem Header="{DynamicResource Ui.Endpoints}">
+              <ListBox ItemsSource="{Binding EndpointItems}" Background="Transparent">
+                <ListBox.ItemTemplate>
+                  <DataTemplate x:DataType="vm:EndpointItemViewModel">
+                    <Border Margin="0,0,0,8" Padding="8" Background="#2A2A2A" CornerRadius="4">
+                      <StackPanel Spacing="4">
+                        <TextBlock Text="{Binding DisplayName}" Foreground="#EEE" FontWeight="SemiBold" />
+                        <TextBlock Text="{Binding TypeLabel}" Foreground="#AAA" FontSize="11" />
+                        <TextBlock Text="{Binding BindSummary}" Foreground="#AAA" FontSize="11" />
+                        <TextBlock Text="{Binding IsListening, StringFormat='Listening: {0}'}" Foreground="#8CF" FontSize="11" />
+                        <StackPanel Orientation="Horizontal" Spacing="6">
+                          <Button Content="{DynamicResource Ui.Start}" Command="{Binding StartCommand}" />
+                          <Button Content="{DynamicResource Ui.Stop}" Command="{Binding StopCommand}" />
+                          <Button Content="{DynamicResource Ui.Remove}" Command="{Binding RemoveCommand}" />
+                        </StackPanel>
+                      </StackPanel>
+                    </Border>
+                  </DataTemplate>
+                </ListBox.ItemTemplate>
+              </ListBox>
+            </TabItem>
+            <TabItem Header="{DynamicResource Ui.Clients}">
+              <ListBox ItemsSource="{Binding AutomationClients}" Background="Transparent">
+                <ListBox.ItemTemplate>
+                  <DataTemplate x:DataType="auto:ConnectedClient">
+                    <TextBlock Text="{Binding Display}" Foreground="#CCC" FontSize="12" Margin="0,2" />
+                  </DataTemplate>
+                </ListBox.ItemTemplate>
+              </ListBox>
+            </TabItem>
+            <TabItem Header="{DynamicResource Ui.CommandLog}">
+              <ListBox ItemsSource="{Binding AutomationLog}" Background="Transparent" Foreground="#AAA"
+                       FontFamily="Consolas,Courier New,monospace" FontSize="11" />
+            </TabItem>
+          </TabControl>
+        </DockPanel>
+      </Border>
+
+      <Border IsVisible="{Binding IsLogsOpen}" Width="420" Height="260"
+              HorizontalAlignment="Left" VerticalAlignment="Center" Margin="12" Padding="12"
+              Background="#E61E1E1E" BorderBrush="#555" BorderThickness="1" CornerRadius="4"
+              ZIndex="10">
+        <DockPanel>
+          <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" Spacing="8" Margin="0,0,0,8">
+            <TextBlock Text="{DynamicResource Ui.Logs}" FontWeight="SemiBold" Foreground="White"
+                       VerticalAlignment="Center" />
+            <Button Content="{DynamicResource Ui.ClearLogs}" Command="{Binding ClearLogsCommand}" />
+          </StackPanel>
+          <ListBox ItemsSource="{Binding LogLines}" Background="Transparent" Foreground="#AAA"
+                   FontFamily="Consolas,Courier New,monospace" FontSize="11" />
+        </DockPanel>
+      </Border>
+    </Grid>
+  </DockPanel>
+</Window>

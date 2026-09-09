@@ -4,6 +4,7 @@ using Avalonia.Platform.Storage;
 using Avalonia.Threading;
 using CadProjector.App.Controls;
 using CadProjector.App.Services;
+using CadProjector.App.Views;
 using CadProjector.Automation;
 using CadProjector.Core.Devices;
 using CadProjector.Core.Editing;
@@ -11,9 +12,14 @@ using CadProjector.Core.Project;
 using CadProjector.Core.Scene;
 using CadProjector.Devices;
 using CadProjector.FileFormats;
+using CadProjector.FileFormats.Dxf;
+using CadProjector.FileFormats.Legacy;
 using CadProjector.FileFormats.ProjectJson;
+using CadProjector.FileFormats.Stl;
 using CadProjector.Geometry.Primitives;
 using CadProjector.Ilda;
+using CadProjector.Logging;
+using CadProjector.Logging.Services;
 using CadProjector.Rendering;
 using CadProjector.Rendering.Modules;
 using CommunityToolkit.Mvvm.ComponentModel;
@@ -25,16 +31,29 @@ public partial class MainViewModel : ViewModelBase
 {
     private readonly VirtualProjector _virtual = new();
     private readonly DrawingImportService _import = new();
+    private readonly LegacyImportService _legacy;
     private readonly AutomationHub _hub = new();
     private readonly DevicePipeline _pipeline = new();
     private readonly Dictionary<string, VltProjector> _vlts = new();
     private string? _projectPath;
     private bool _suppressMeshUi;
     private bool _suppressTransformUi;
+    private bool _suppressMeshAlign;
     private int _selectedAnchor = -1;
     private bool _suppressDeviceUi;
     private CancellationTokenSource? _ildExportCts;
+    private CancellationTokenSource? _importCts;
+    private Guid? _busyProgressId;
     private bool _suppressWorkFolderSync;
+    private bool _suppressObjectSelection;
+    private bool _suppressObjectUi;
+    private bool _suppressPrefs;
+    private bool _firstPlayConfirmed;
+    private IReadOnlyList<ObjectListItem> _treeSelection = [];
+    private DispatcherTimer? _linkWatch;
+    private readonly Dictionary<string, ProjectorPreviewWindow> _previewWindows = new();
+    private readonly Dictionary<string, LinesCollection> _lastDeviceFrames = new();
+    private DispatcherTimer? _previewRefreshTimer;
 
     /// <summary>Set while undo/redo replays a change, so the replay is not recorded again.</summary>
     private bool _restoring;
@@ -42,6 +61,7 @@ public partial class MainViewModel : ViewModelBase
 
     public MainViewModel()
     {
+        _legacy = new LegacyImportService(_import);
         WorkFolderBrowser = new WorkFolderViewModel(
             onPathChanged: path =>
             {
@@ -67,13 +87,16 @@ public partial class MainViewModel : ViewModelBase
         WorkFolder = WorkFolderBrowser.CurrentPath;
         _hub.WorkFolder = WorkFolder;
         _hub.CommandReceived += OnRemoteCommand;
-        _hub.Error += (_, msg) => Dispatcher.UIThread.Post(() => Log($"Automation error: {msg}"));
+        CadLogging.Instance.LogAdded += (_, msg) => StatusText = msg.Message;
         RefreshEndpointItems();
         NewEndpointType = RemoteEndpointType.UdpBinary;
         RefreshObjectNames();
         History.Changed += OnHistoryChanged;
         PullSceneUiFromSelection();
         UseLayerColor = Project.ColorMode == LaserColorMode.LayerColor;
+        ApplyPrefs();
+        InitHotkeys();
+        StartLinkWatch();
         Log("Ready — add projectors and modules in Devices");
     }
 
@@ -168,7 +191,9 @@ public partial class MainViewModel : ViewModelBase
                 _suppressTransformUi = true;
                 LoadTransformFromSelection();
                 _suppressTransformUi = false;
+                PullObjectUiFromSelection();
                 PullDeviceUiFromSelection();
+                RefreshObjectNames();
                 RefreshFovOverlays();
                 BumpCanvas();
             }
@@ -196,7 +221,7 @@ public partial class MainViewModel : ViewModelBase
     /// <summary>History entry captions, resolved when the entry is recorded.</summary>
     private static string Hist(string key, string fallback) => UiLanguage.Text($"Hist.{key}", fallback);
 
-    private void Record(IEditAction action, string mergeKey)
+    private void Record(IEditAction action, string? mergeKey = null)
     {
         if (_restoring) return;
         History.Push(action, mergeKey);
@@ -231,7 +256,8 @@ public partial class MainViewModel : ViewModelBase
     public ObservableCollection<ProjectionScene> Scenes { get; } = [];
     public ObservableCollection<ObjectListItem> ObjectItems { get; } = [];
     public ObservableCollection<FovOverlay> FovOverlays { get; } = [];
-    public ObservableCollection<string> LogLines { get; } = [];
+    public CadLogging Logs => CadLogging.Instance;
+    public CadProgress Progress => CadProgress.Inst;
     public ObservableCollection<ModuleItemViewModel> ModuleItems { get; } = [];
 
     public CalibrationPatternKind[] CalibPatternOptions { get; } =
@@ -244,6 +270,7 @@ public partial class MainViewModel : ViewModelBase
     [ObservableProperty] public partial ModuleItemViewModel? SelectedModuleItem { get; set; }
     [ObservableProperty] public partial ProjectionScene? SelectedScene { get; set; }
     [ObservableProperty] public partial int SelectedObjectIndex { get; set; } = -1;
+    [ObservableProperty] public partial ObjectListItem? SelectedObjectItem { get; set; }
     /// <summary>Sticky 3×3 docking used when opening/importing drawings (LT…RB, default center).</summary>
     [ObservableProperty] public partial string DockMode { get; set; } = "CM";
     [ObservableProperty] public partial string StatusText { get; set; } = "";
@@ -253,14 +280,25 @@ public partial class MainViewModel : ViewModelBase
     [ObservableProperty] public partial bool IsSceneOpen { get; set; }
     [ObservableProperty] public partial bool IsDevicesOpen { get; set; }
     [ObservableProperty] public partial bool IsTransformOpen { get; set; }
+    [ObservableProperty] public partial bool IsStlAlignOpen { get; set; }
     [ObservableProperty] public partial bool IsCalibrateOpen { get; set; }
     [ObservableProperty] public partial bool IsLogsOpen { get; set; }
     [ObservableProperty] public partial bool IsAutomationOpen { get; set; }
     [ObservableProperty] public partial bool IsWorkFolderOpen { get; set; }
     [ObservableProperty] public partial string LanguageCode { get; set; } = "EN";
+    [ObservableProperty] public partial string ObjectName { get; set; } = "";
+    [ObservableProperty] public partial bool ObjectLocked { get; set; }
+    [ObservableProperty] public partial string DxfUnitChoice { get; set; } = "Auto";
+    [ObservableProperty] public partial string DeviceLinkText { get; set; } = "";
+    [ObservableProperty] public partial bool LaserAlert { get; set; }
+
+    public IReadOnlyList<string> DxfUnitChoices { get; } = ["Auto", "mm", "cm", "m", "in", "ft"];
     [ObservableProperty] public partial CalibrationPatternKind CalibPattern { get; set; } = CalibrationPatternKind.Grid;
     [ObservableProperty] public partial bool IsPlaying { get; set; }
     [ObservableProperty] public partial bool IsExportingIld { get; set; }
+    [ObservableProperty] public partial bool IsImporting { get; set; }
+
+    public bool IsBusy => IsImporting || IsExportingIld;
     [ObservableProperty] public partial bool IsDirty { get; set; }
     [ObservableProperty] public partial bool UseLayerColor { get; set; }
     [ObservableProperty] public partial int CanvasRevision { get; set; }
@@ -303,6 +341,26 @@ public partial class MainViewModel : ViewModelBase
     [ObservableProperty] public partial string SceneName { get; set; } = "Scene";
     [ObservableProperty] public partial double SceneWidthMm { get; set; } = 1000;
     [ObservableProperty] public partial double SceneHeightMm { get; set; } = 1000;
+    [ObservableProperty] public partial bool HasMeshTarget { get; set; }
+    [ObservableProperty] public partial string MeshTargetInfo { get; set; } = "";
+    [ObservableProperty] public partial bool IsViewport3D { get; set; }
+    [ObservableProperty] public partial double MeshTx { get; set; }
+    [ObservableProperty] public partial double MeshTy { get; set; }
+    [ObservableProperty] public partial double MeshTz { get; set; }
+    [ObservableProperty] public partial double MeshRx { get; set; }
+    [ObservableProperty] public partial double MeshRy { get; set; }
+    [ObservableProperty] public partial double MeshRz { get; set; }
+    [ObservableProperty] public partial double MeshSx { get; set; } = 1;
+    [ObservableProperty] public partial double MeshSy { get; set; } = 1;
+    [ObservableProperty] public partial double MeshSz { get; set; } = 1;
+    [ObservableProperty] public partial MeshAlignPickKind MeshAlignPick { get; set; }
+    [ObservableProperty] public partial string MeshAlignPickHint { get; set; } = "";
+    [ObservableProperty] public partial bool MeshAlignAllowScale { get; set; } = true;
+    [ObservableProperty] public partial IReadOnlyList<MeshAlignMarker> MeshAlignMarkers { get; set; } = [];
+    [ObservableProperty] public partial IReadOnlyList<string> MeshAlignPairLines { get; set; } = [];
+
+    private readonly Point3?[] _alignMeshLocal = new Point3?[4];
+    private readonly Point3?[] _alignTable = new Point3?[4];
 
     public ObservableCollection<SceneProjectorItem> SceneProjectorItems { get; } = [];
 
@@ -423,10 +481,6 @@ public partial class MainViewModel : ViewModelBase
         SelectedScene.Target.HeightMm = h;
         if (SelectedScene.Mask.IsEnabled)
             SelectedScene.Mask.Bounds = new Rect2(0, 0, w, h);
-        if (Projectors.Count == 1)
-            Projectors[0].FitFovToScene(w, h);
-        else
-            LayoutFovs();
         RefreshFovOverlays();
         MarkDirty();
         BumpCanvas();
@@ -442,6 +496,7 @@ public partial class MainViewModel : ViewModelBase
         SceneHeightMm = SelectedScene.Target.HeightMm;
         _suppressSceneUi = false;
         RefreshSceneProjectorItems();
+        RefreshMeshTargetUi();
     }
 
     private void RefreshSceneProjectorItems()
@@ -545,7 +600,14 @@ public partial class MainViewModel : ViewModelBase
 
     partial void OnMeshPointColChanged(int value) => SyncMeshPointFromSelection();
     partial void OnMeshPointRowChanged(int value) => SyncMeshPointFromSelection();
-    partial void OnSelectedModuleItemChanged(ModuleItemViewModel? value) => RefreshModuleOverlays();
+    partial void OnSelectedModuleItemChanged(ModuleItemViewModel? value)
+    {
+        RefreshModuleOverlays();
+        if (value is not null
+            && ModuleRegistry.Materialize(value.Model) is IRenderableModule renderable
+            && renderable.GetAnchors().Count > 0)
+            FocusKeyboardOnModule();
+    }
     partial void OnMeshPointXChanged(double value) => PushSelectedMeshPoint();
     partial void OnMeshPointYChanged(double value) => PushSelectedMeshPoint();
 
@@ -581,7 +643,33 @@ public partial class MainViewModel : ViewModelBase
     partial void OnColorGChanged(int value) => PushColorToSelection();
     partial void OnColorBChanged(int value) => PushColorToSelection();
 
-    partial void OnSelectedObjectIndexChanged(int value) => LoadTransformFromSelection();
+    partial void OnSelectedObjectIndexChanged(int value)
+    {
+        if (!_suppressObjectSelection)
+            SyncSelectedItemFromIndex(value);
+        LoadTransformFromSelection();
+        PullObjectUiFromSelection();
+    }
+
+    partial void OnSelectedObjectItemChanged(ObjectListItem? value)
+    {
+        if (!_suppressObjectSelection && value is not null)
+        {
+            _suppressObjectSelection = true;
+            SelectedObjectIndex = value.RootIndex;
+            _suppressObjectSelection = false;
+        }
+        LoadTransformFromSelection();
+        PullObjectUiFromSelection();
+    }
+
+    private void SyncSelectedItemFromIndex(int index)
+    {
+        _suppressObjectSelection = true;
+        SelectedObjectItem = index >= 0 && index < ObjectItems.Count ? ObjectItems[index] : null;
+        _suppressObjectSelection = false;
+    }
+
     partial void OnTxChanged(double value) => ApplyTransformToSelection();
     partial void OnTyChanged(double value) => ApplyTransformToSelection();
     partial void OnTzChanged(double value) => ApplyTransformToSelection();
@@ -594,7 +682,40 @@ public partial class MainViewModel : ViewModelBase
     [RelayCommand] private void OpenAutomation() => IsAutomationOpen = !IsAutomationOpen;
     [RelayCommand] private void OpenWorkFolder() => IsWorkFolderOpen = !IsWorkFolderOpen;
     [RelayCommand] private void OpenLogs() => IsLogsOpen = !IsLogsOpen;
-    [RelayCommand] private void ClearLogs() => LogLines.Clear();
+
+    [RelayCommand]
+    private void CloseOverlay(string? name)
+    {
+        switch (name)
+        {
+            case "Tree": IsTreeOpen = false; break;
+            case "Scene": IsSceneOpen = false; break;
+            case "StlAlign":
+                IsStlAlignOpen = false;
+                MeshAlignPick = MeshAlignPickKind.Off;
+                MeshAlignPickHint = "";
+                break;
+            case "Devices": IsDevicesOpen = false; break;
+            case "Transform": IsTransformOpen = false; break;
+            case "Calibrate": IsCalibrateOpen = false; break;
+            case "Logs": IsLogsOpen = false; break;
+            case "Automation": IsAutomationOpen = false; break;
+            case "WorkFolder": IsWorkFolderOpen = false; break;
+            case "Hotkeys":
+                CancelHotkeyCapture();
+                IsHotkeysOpen = false;
+                break;
+        }
+    }
+
+    [RelayCommand]
+    private void OpenProjectorPreview(ProjectorProfile? device)
+    {
+        device ??= SelectedProjector;
+        if (device is null || HostWindow is null) return;
+        ShowProjectorPreview(device);
+    }
+    [RelayCommand] private void ClearLogs() => CadLogging.Instance.ClearAll();
 
     [RelayCommand]
     private void ToggleLanguage()
@@ -602,7 +723,18 @@ public partial class MainViewModel : ViewModelBase
         var code = UiLanguage.Toggle();
         LanguageCode = code.StartsWith("ru", StringComparison.OrdinalIgnoreCase) ? "RU" : "EN";
         OnHistoryChanged();
+        RefreshHotkeyRows();
+        PersistPrefs();
         Log($"Language: {LanguageCode}");
+    }
+
+    [RelayCommand]
+    private void OpenStlAlign()
+    {
+        if (!HasMeshTarget) return;
+        IsStlAlignOpen = !IsStlAlignOpen;
+        if (IsStlAlignOpen)
+            PullMeshAlignUi();
     }
 
     [RelayCommand]
@@ -615,6 +747,7 @@ public partial class MainViewModel : ViewModelBase
             MeshEnabled = true;
             if (ModuleItems.FirstOrDefault(i => i.TypeId == ModuleTypes.Mesh) is { } meshItem)
                 SelectedModuleItem = meshItem;
+            FocusKeyboardOnModule();
             IsDevicesOpen = true;
             Log($"Calibrate mesh of {SelectedProjector?.DisplayName ?? "?"}");
         }
@@ -625,6 +758,32 @@ public partial class MainViewModel : ViewModelBase
     {
         IsTransformOpen = !IsTransformOpen;
         if (IsTransformOpen) LoadTransformFromSelection();
+    }
+
+    [RelayCommand]
+    private void SelectMeshModule()
+    {
+        var item = ModuleItems.FirstOrDefault(i => i.TypeId == ModuleTypes.Mesh);
+        if (item is null)
+        {
+            Log("No Mesh module in this projector's chain — Add → Mesh");
+            return;
+        }
+
+        SelectedModuleItem = item;
+        item.IsExpanded = true;
+        ShowMeshOverlay = true;
+        MeshEnabled = true;
+        if (ActiveMeshModule is { } meshModule)
+        {
+            meshModule.ShowOnTable = true;
+            meshModule.IsEnabled = true;
+        }
+        RefreshModuleOverlays();
+        BumpCanvas();
+        FocusKeyboardOnModule();
+        IsDevicesOpen = true;
+        Log($"Selected Mesh module on {SelectedProjector?.DisplayName}");
     }
 
     [RelayCommand]
@@ -719,7 +878,7 @@ public partial class MainViewModel : ViewModelBase
         BumpCanvas();
     }
 
-    [RelayCommand]
+    [RelayCommand(CanExecute = nameof(CanOpenFile))]
     private async Task OpenFileAsync()
     {
         if (HostWindow is null) return;
@@ -729,9 +888,10 @@ public partial class MainViewModel : ViewModelBase
             AllowMultiple = false,
             FileTypeFilter =
             [
-                new FilePickerFileType("DXF / SVG") { Patterns = ["*.dxf", "*.svg"] },
+                new FilePickerFileType("Drawings / 2CUT") { Patterns = ["*.dxf", "*.svg", "*.2scn"] },
                 new FilePickerFileType("DXF") { Patterns = ["*.dxf"] },
-                new FilePickerFileType("SVG") { Patterns = ["*.svg"] }
+                new FilePickerFileType("SVG") { Patterns = ["*.svg"] },
+                new FilePickerFileType(UiLanguage.Text("Ui.LegacyScene", "2CUT scene (.2scn)")) { Patterns = ["*.2scn"] }
             ]
         });
         if (files.Count == 0) return;
@@ -739,6 +899,325 @@ public partial class MainViewModel : ViewModelBase
         if (path is null) return;
         await ImportPathAsync(path, clear: true, play: false);
     }
+
+    [RelayCommand]
+    private async Task LoadStlTargetAsync()
+    {
+        if (HostWindow is null) return;
+        var files = await HostWindow.StorageProvider.OpenFilePickerAsync(new FilePickerOpenOptions
+        {
+            Title = UiLanguage.Text("Ui.StlTarget", "STL target"),
+            AllowMultiple = false,
+            FileTypeFilter = [new FilePickerFileType("STL") { Patterns = ["*.stl"] }]
+        });
+        if (files.Count == 0) return;
+        var path = files[0].TryGetLocalPath();
+        if (path is null) return;
+        await ImportPathAsync(path, clear: false, play: false);
+    }
+
+    [RelayCommand]
+    private void FitStlTarget()
+    {
+        if (SelectedScene?.MeshTarget is not { } mesh) return;
+        var before = MeshAlignState.Read(mesh);
+        mesh.FitToPlane(SelectedScene.Target.WidthMm, SelectedScene.Target.HeightMm);
+        var after = MeshAlignState.Read(mesh);
+        Record(
+            new ValueEdit<MeshAlignState>(
+                Hist("StlFit", "Fit STL"),
+                ApplyMeshAlignState,
+                before,
+                after),
+            "mesh-align");
+        RefreshMeshTargetUi();
+        MarkDirty();
+        BumpCanvas();
+        Log(UiLanguage.Text("Ui.StlFitted", "STL fitted to the scene plane"));
+    }
+
+    [RelayCommand]
+    private void ClearStlTarget()
+    {
+        if (SelectedScene is null || SelectedScene.MeshTarget is null) return;
+        SelectedScene.MeshTarget = null;
+        RefreshMeshTargetUi();
+        MarkDirty();
+        BumpCanvas();
+        Log(UiLanguage.Text("Ui.StlCleared", "STL target cleared — plane only"));
+    }
+
+    private void RefreshMeshTargetUi()
+    {
+        var mesh = SelectedScene?.MeshTarget;
+        HasMeshTarget = mesh is not null;
+        if (!HasMeshTarget)
+            IsStlAlignOpen = false;
+        if (!HasMeshTarget)
+            ResetMeshPointAlign();
+        MeshTargetInfo = mesh is null
+            ? UiLanguage.Text("Ui.StlNone", "Plane (no STL)")
+            : string.Format(
+                UiLanguage.Text("Ui.StlInfo", "{0} — {1} triangles"),
+                Path.GetFileName(mesh.SourcePath),
+                mesh.TriangleCount);
+        PullMeshAlignUi();
+        RebuildMeshAlignMarkers();
+    }
+
+    private void PullMeshAlignUi()
+    {
+        _suppressMeshAlign = true;
+        var mesh = SelectedScene?.MeshTarget;
+        if (mesh is null)
+        {
+            MeshTx = MeshTy = MeshTz = 0;
+            MeshRx = MeshRy = MeshRz = 0;
+            MeshSx = MeshSy = MeshSz = 1;
+        }
+        else
+        {
+            MeshTx = mesh.Translation.X;
+            MeshTy = mesh.Translation.Y;
+            MeshTz = mesh.Translation.Z;
+            MeshRx = mesh.RotationDeg.X;
+            MeshRy = mesh.RotationDeg.Y;
+            MeshRz = mesh.RotationDeg.Z;
+            MeshSx = mesh.Scale.X;
+            MeshSy = mesh.Scale.Y;
+            MeshSz = mesh.Scale.Z;
+        }
+        _suppressMeshAlign = false;
+    }
+
+    private void ApplyMeshAlignState(MeshAlignState state)
+    {
+        if (SelectedScene?.MeshTarget is not { } mesh) return;
+        state.ApplyTo(mesh);
+        PullMeshAlignUi();
+        RebuildMeshAlignMarkers();
+        BumpCanvas();
+    }
+
+    private void ApplyMeshAlignFromUi()
+    {
+        if (_suppressMeshAlign) return;
+        if (SelectedScene?.MeshTarget is not { } mesh) return;
+        var before = MeshAlignState.Read(mesh);
+        var sx = MeshSx == 0 ? 1e-6 : MeshSx;
+        var sy = MeshSy == 0 ? 1e-6 : MeshSy;
+        var sz = MeshSz == 0 ? 1e-6 : MeshSz;
+        var after = new MeshAlignState(
+            new Point3(MeshTx, MeshTy, MeshTz),
+            new Point3(MeshRx, MeshRy, MeshRz),
+            new Point3(sx, sy, sz));
+        after.ApplyTo(mesh);
+        Record(
+            new ValueEdit<MeshAlignState>(
+                Hist("StlAlign", "STL align"),
+                ApplyMeshAlignState,
+                before,
+                after),
+            "mesh-align");
+        MarkDirty();
+        RebuildMeshAlignMarkers();
+        BumpCanvas();
+    }
+
+    partial void OnMeshTxChanged(double value) => ApplyMeshAlignFromUi();
+    partial void OnMeshTyChanged(double value) => ApplyMeshAlignFromUi();
+    partial void OnMeshTzChanged(double value) => ApplyMeshAlignFromUi();
+    partial void OnMeshRxChanged(double value) => ApplyMeshAlignFromUi();
+    partial void OnMeshRyChanged(double value) => ApplyMeshAlignFromUi();
+    partial void OnMeshRzChanged(double value) => ApplyMeshAlignFromUi();
+    partial void OnMeshSxChanged(double value) => ApplyMeshAlignFromUi();
+    partial void OnMeshSyChanged(double value) => ApplyMeshAlignFromUi();
+    partial void OnMeshSzChanged(double value) => ApplyMeshAlignFromUi();
+
+    [RelayCommand]
+    private void ArmMeshAlignPick()
+    {
+        if (!HasMeshTarget) return;
+        MeshAlignPick = MeshAlignPickKind.OnMesh;
+        MeshAlignPickHint = UiLanguage.Text("Ui.StlPickMeshHint", "LMB on the STL surface");
+        Log(MeshAlignPickHint);
+    }
+
+    [RelayCommand]
+    private void ArmTableAlignPick()
+    {
+        if (!HasMeshTarget) return;
+        MeshAlignPick = MeshAlignPickKind.OnTable;
+        MeshAlignPickHint = UiLanguage.Text("Ui.StlPickTableHint", "LMB on the table — where that point should sit");
+        Log(MeshAlignPickHint);
+    }
+
+    [RelayCommand]
+    private void ClearMeshPointAlign() => ResetMeshPointAlign();
+
+    [RelayCommand(CanExecute = nameof(CanApplyMeshPointAlign))]
+    private void ApplyMeshPointAlign()
+    {
+        if (SelectedScene?.MeshTarget is not { } mesh) return;
+        var local = new List<Point3>();
+        var scene = new List<Point3>();
+        for (var i = 0; i < 4; i++)
+        {
+            if (_alignMeshLocal[i] is not { } a || _alignTable[i] is not { } b)
+                continue;
+            local.Add(a);
+            scene.Add(b);
+        }
+
+        if (local.Count < 3)
+            return;
+
+        var before = MeshAlignState.Read(mesh);
+        if (!mesh.TryAlignFromPoints(local, scene, MeshAlignAllowScale, out var rms))
+        {
+            Log(UiLanguage.Text("Ui.StlAlignFail", "Could not align: points are nearly collinear"));
+            return;
+        }
+
+        var after = MeshAlignState.Read(mesh);
+        Record(
+            new ValueEdit<MeshAlignState>(
+                Hist("StlAlign", "STL align"),
+                ApplyMeshAlignState,
+                before,
+                after),
+            "mesh-align");
+        PullMeshAlignUi();
+        RebuildMeshAlignMarkers();
+        MarkDirty();
+        BumpCanvas();
+        MeshAlignPick = MeshAlignPickKind.Off;
+        MeshAlignPickHint = "";
+        Log(string.Format(
+            UiLanguage.Text("Ui.StlAlignedPoints", "STL aligned by {0} points (RMS {1:0.##} mm)"),
+            local.Count, rms));
+    }
+
+    public void OnMeshAlignPicked(Point3 world, bool meshHit)
+    {
+        if (SelectedScene?.MeshTarget is not { } mesh || MeshAlignPick == MeshAlignPickKind.Off)
+            return;
+
+        if (MeshAlignPick == MeshAlignPickKind.OnMesh)
+        {
+            if (!meshHit)
+            {
+                Log(UiLanguage.Text("Ui.StlNeedMeshHit", "Click the model, not empty space"));
+                return;
+            }
+
+            var slot = FirstAlignSlot(needMesh: true);
+            if (slot < 0)
+            {
+                Log(UiLanguage.Text("Ui.StlPointsFull", "Already have 4 pairs — Apply or reset"));
+                MeshAlignPick = MeshAlignPickKind.Off;
+                return;
+            }
+
+            _alignMeshLocal[slot] = mesh.InverseTransformPoint(world);
+            MeshAlignPick = MeshAlignPickKind.OnTable;
+            MeshAlignPickHint = UiLanguage.Text("Ui.StlPickTableHint", "LMB on the table — where that point should sit");
+        }
+        else
+        {
+            var slot = FirstAlignSlot(needMesh: false);
+            if (slot < 0)
+            {
+                MeshAlignPick = MeshAlignPickKind.Off;
+                return;
+            }
+
+            _alignTable[slot] = new Point3(world.X, world.Y, 0);
+            var next = FirstAlignSlot(needMesh: true);
+            if (next >= 0)
+            {
+                MeshAlignPick = MeshAlignPickKind.OnMesh;
+                MeshAlignPickHint = UiLanguage.Text("Ui.StlPickMeshHint", "LMB on the STL surface");
+            }
+            else
+            {
+                MeshAlignPick = MeshAlignPickKind.Off;
+                MeshAlignPickHint = "";
+            }
+        }
+
+        RebuildMeshAlignMarkers();
+        ApplyMeshPointAlignCommand.NotifyCanExecuteChanged();
+        BumpCanvas();
+    }
+
+    private bool CanApplyMeshPointAlign()
+    {
+        var n = 0;
+        for (var i = 0; i < 4; i++)
+            if (_alignMeshLocal[i] is not null && _alignTable[i] is not null)
+                n++;
+        return n >= 3;
+    }
+
+    private int FirstAlignSlot(bool needMesh)
+    {
+        if (needMesh)
+        {
+            for (var i = 0; i < 4; i++)
+                if (_alignMeshLocal[i] is null)
+                    return i;
+            return -1;
+        }
+
+        for (var i = 0; i < 4; i++)
+            if (_alignMeshLocal[i] is not null && _alignTable[i] is null)
+                return i;
+        return -1;
+    }
+
+    private void ResetMeshPointAlign()
+    {
+        Array.Clear(_alignMeshLocal);
+        Array.Clear(_alignTable);
+        MeshAlignPick = MeshAlignPickKind.Off;
+        MeshAlignPickHint = "";
+        RebuildMeshAlignMarkers();
+        ApplyMeshPointAlignCommand.NotifyCanExecuteChanged();
+        BumpCanvas();
+    }
+
+    private void RebuildMeshAlignMarkers()
+    {
+        var mesh = SelectedScene?.MeshTarget;
+        var marks = new List<MeshAlignMarker>();
+        var lines = new List<string>();
+        for (var i = 0; i < 4; i++)
+        {
+            var a = _alignMeshLocal[i];
+            var b = _alignTable[i];
+            if (a is null && b is null)
+                continue;
+            if (a is { } local && mesh is not null)
+                marks.Add(new MeshAlignMarker(mesh.TransformPoint(local), OnMesh: true, i + 1));
+            if (b is { } table)
+                marks.Add(new MeshAlignMarker(table, OnMesh: false, i + 1));
+            lines.Add(FormatAlignPair(i + 1, a, b));
+        }
+
+        MeshAlignMarkers = marks;
+        MeshAlignPairLines = lines;
+    }
+
+    private static string FormatAlignPair(int n, Point3? mesh, Point3? table)
+    {
+        static string Fmt(Point3 p) => $"{p.X:0.#}, {p.Y:0.#}, {p.Z:0.#}";
+        var left = mesh is { } m ? Fmt(m) : "—";
+        var right = table is { } t ? Fmt(t) : "—";
+        return $"{n}:  {left}  →  {right}";
+    }
+
+    private bool CanOpenFile() => !IsBusy;
 
     [RelayCommand]
     private async Task SaveProjectAsync()
@@ -765,11 +1244,10 @@ public partial class MainViewModel : ViewModelBase
             Project.CalibrationMesh = null;
             await ProjectJsonStore.SaveAsync(Project, _projectPath);
             ClearDirty();
-            Log($"Saved {_projectPath} ({Project.Devices.Count} devices)");
         }
         catch (Exception ex)
         {
-            Log($"Save failed: {ex.Message}");
+            Log($"Save failed: {ex.Message}", LogMessageStatus.Error);
         }
     }
 
@@ -807,7 +1285,9 @@ public partial class MainViewModel : ViewModelBase
         var ct = _ildExportCts.Token;
 
         IsExportingIld = true;
-        StatusText = UiLanguage.Text("Ui.ExportIldBusy", "Exporting .ild…");
+        BeginBusy(
+            UiLanguage.Text("Ui.ExportIldBusy", "Exporting .ild…"),
+            CancelBusy);
         Log($"ILDA export started → {path}");
         try
         {
@@ -821,42 +1301,108 @@ public partial class MainViewModel : ViewModelBase
                 return result;
             }, ct);
 
+            UpdateBusy(UiLanguage.Text("Ui.ExportIldWriting", "Writing file…"));
             await IldaFileWriter.WriteAsync(path, ilda, ct);
-            Log($"Exported ILDA via {deviceName} ({ilda.Points.Count} pts)");
+            Log($"Exported ILDA via {deviceName} ({ilda.Points.Count} pts)", LogMessageStatus.Good);
         }
         catch (OperationCanceledException)
         {
             TryDeletePartialExport(path);
-            Log("ILDA export cancelled");
+            Log("ILDA export cancelled", LogMessageStatus.Warning);
         }
         catch (Exception ex)
         {
             TryDeletePartialExport(path);
-            Log($"ILDA export failed: {ex.Message}");
+            Log($"ILDA export failed: {ex.Message}", LogMessageStatus.Error);
         }
         finally
         {
             IsExportingIld = false;
             _ildExportCts?.Dispose();
             _ildExportCts = null;
+            ClearBusyUi();
         }
     }
 
-    private bool CanExportIld() => !IsExportingIld;
+    private bool CanExportIld() => !IsBusy;
 
-    [RelayCommand(CanExecute = nameof(CanCancelExportIld))]
-    private void CancelExportIld()
+    [RelayCommand(CanExecute = nameof(CanCancelBusy))]
+    private void CancelBusy()
     {
-        _ildExportCts?.Cancel();
-        Log("ILDA export cancel requested…");
+        if (IsImporting)
+        {
+            _importCts?.Cancel();
+            Log("Import cancel requested…");
+        }
+        if (IsExportingIld)
+        {
+            _ildExportCts?.Cancel();
+            Log("ILDA export cancel requested…");
+        }
     }
 
-    private bool CanCancelExportIld() => IsExportingIld;
+    private bool CanCancelBusy() => IsBusy;
+
+    // Keep old command name for toolbar button that still binds CancelExportIld
+    [RelayCommand(CanExecute = nameof(CanCancelBusy))]
+    private void CancelExportIld() => CancelBusy();
+
+    private bool CanCancelExportIld() => IsBusy;
 
     partial void OnIsExportingIldChanged(bool value)
     {
+        OnPropertyChanged(nameof(IsBusy));
         ExportIldCommand.NotifyCanExecuteChanged();
         CancelExportIldCommand.NotifyCanExecuteChanged();
+        CancelBusyCommand.NotifyCanExecuteChanged();
+        OpenFileCommand.NotifyCanExecuteChanged();
+    }
+
+    partial void OnIsImportingChanged(bool value)
+    {
+        OnPropertyChanged(nameof(IsBusy));
+        ExportIldCommand.NotifyCanExecuteChanged();
+        CancelExportIldCommand.NotifyCanExecuteChanged();
+        CancelBusyCommand.NotifyCanExecuteChanged();
+        OpenFileCommand.NotifyCanExecuteChanged();
+    }
+
+    private void ClearBusyUi()
+    {
+        if (_busyProgressId is { } id)
+        {
+            CadProgress.End(id);
+            _busyProgressId = null;
+        }
+
+        if (IsBusy) return;
+        StatusText = UiLanguage.Text("Ui.Ready", "Ready");
+    }
+
+    private void BeginBusy(string name, Action? cancel = null, bool determinate = false)
+    {
+        if (_busyProgressId is { } old)
+            CadProgress.End(old);
+
+        _busyProgressId = determinate
+            ? CadProgress.Start(name, 100, cancel)
+            : CadProgress.Waiter(name, LogMessageStatus.Info, 0, cancel);
+        StatusText = name;
+    }
+
+    private void UpdateBusy(string message, double? fraction = null)
+    {
+        if (_busyProgressId is not { } id) return;
+        if (fraction is { } f)
+            CadProgress.Set(id, (int)Math.Clamp(f * 100, 0, 100), message);
+        else if (CadProgress.Inst.LastProgress is { } task && task.Uid == id)
+            CadProgress.Set(id, task.Value, message);
+        StatusText = message;
+    }
+
+    private void ReportBusy(ImportProgress p)
+    {
+        Dispatcher.UIThread.Post(() => UpdateBusy(p.Message, p.Fraction));
     }
 
     private static void TryDeletePartialExport(string path)
@@ -882,7 +1428,12 @@ public partial class MainViewModel : ViewModelBase
         {
             Title = "Open project",
             AllowMultiple = false,
-            FileTypeFilter = [new FilePickerFileType("2Cut project") { Patterns = ["*.cproj"] }]
+            FileTypeFilter =
+            [
+                new FilePickerFileType("2Cut project") { Patterns = ["*.cproj"] },
+                new FilePickerFileType(UiLanguage.Text("Ui.LegacyHub", "2CUT hub (.2cfg/.mws)")) { Patterns = ["*.2cfg", "*.mws"] },
+                new FilePickerFileType(UiLanguage.Text("Ui.LegacyScene", "2CUT scene (.2scn)")) { Patterns = ["*.2scn"] }
+            ]
         });
         if (files.Count == 0) return;
         var path = files[0].TryGetLocalPath();
@@ -890,25 +1441,19 @@ public partial class MainViewModel : ViewModelBase
 
         try
         {
+            if (LegacyImportService.CanImport(path))
+            {
+                await ImportLegacyAsProjectAsync(path);
+                return;
+            }
+
             Project = await ProjectJsonStore.LoadAsync(path);
             _projectPath = path;
-            Scenes.Clear();
-            foreach (var s in Project.Scenes)
-                Scenes.Add(s);
-            SelectedScene = Project.ActiveScene;
-            MaskEnabled = SelectedScene.Mask.IsEnabled;
-            UseLayerColor = Project.ColorMode == LaserColorMode.LayerColor;
-            await ApplyLoadedDevicesAsync(Project);
-            RefreshObjectNames();
-            RefreshFovOverlays();
-            History.Clear();
-            ClearDirty();
-            BumpCanvas();
-            Log($"Loaded {path}");
+            await ApplyProjectDocumentAsync(clearDirty: true);
         }
         catch (Exception ex)
         {
-            Log($"Load failed: {ex.Message}");
+            Log($"Load failed: {ex.Message}", LogMessageStatus.Error);
         }
     }
 
@@ -919,8 +1464,9 @@ public partial class MainViewModel : ViewModelBase
         if (!string.IsNullOrEmpty(mode))
             DockMode = mode;
 
-        var d = GetSelectedDrawable();
+        var d = GetFocusedDrawable();
         if (d is null || SelectedScene is null) return;
+        if (d.IsLocked) return;
 
         var before = DrawableTransform.Read(d);
         ApplyDock(d, SelectedScene.Target, DockMode);
@@ -1014,9 +1560,10 @@ public partial class MainViewModel : ViewModelBase
     private List<Drawable> GetSnapTargets()
     {
         if (SelectedScene is null) return [];
-        var selected = GetSelectedDrawable();
-        if (selected is not null) return [selected];
-        return SelectedScene.Drawables.Where(d => d.IsVisible).ToList();
+        var selected = GetSelectedDrawables();
+        if (selected.Count > 0)
+            return selected.Where(d => d.IsVisible && !d.IsLocked).ToList();
+        return SelectedScene.Drawables.Where(d => d.IsVisible && !d.IsLocked).ToList();
     }
 
     private void SyncTransformPanel()
@@ -1062,6 +1609,10 @@ public partial class MainViewModel : ViewModelBase
         }
 
         _selectedAnchor = anchorIndex;
+        var switched = _keyboardFocus != KeyboardFocusKind.Module;
+        _keyboardFocus = KeyboardFocusKind.Module;
+        if (switched)
+            IsTransformOpen = true;
         if (module.MoveAnchor(anchorIndex, unit))
         {
             ModuleRegistry.Capture(module, cfg);
@@ -1075,6 +1626,7 @@ public partial class MainViewModel : ViewModelBase
             SelectedModuleItem = item;
 
         RefreshModuleOverlays();
+        NotifyTransformTarget();
         BumpCanvas();
     }
 
@@ -1098,6 +1650,9 @@ public partial class MainViewModel : ViewModelBase
     {
         if (SelectedScene is null || index < 0 || index >= SelectedScene.Drawables.Count)
             return;
+        FocusKeyboardOnDrawables();
+        if (index >= 0 && index < ObjectItems.Count)
+            _treeSelection = [ObjectItems[index]];
         if (SelectedObjectIndex != index)
             SelectedObjectIndex = index;
 
@@ -1137,6 +1692,7 @@ public partial class MainViewModel : ViewModelBase
     private async Task PlayCalibrationPatternAsync()
     {
         if (SelectedScene is null) return;
+        if (!await ConfirmFirstPlayIfNeededAsync()) return;
         var device = SelectedProjector ?? Projectors.FirstOrDefault();
         if (device is null) return;
         try
@@ -1172,11 +1728,10 @@ public partial class MainViewModel : ViewModelBase
         {
             PushDeviceFieldsToSelection();
             await ProfileJsonStore.SaveAsync(SelectedProjector, path);
-            Log($"Device saved {SelectedProjector.DisplayName}");
         }
         catch (Exception ex)
         {
-            Log($"Profile save failed: {ex.Message}");
+            Log($"Profile save failed: {ex.Message}", LogMessageStatus.Error);
         }
     }
 
@@ -1199,30 +1754,157 @@ public partial class MainViewModel : ViewModelBase
             PullDeviceUiFromSelection();
             RefreshFovOverlays();
             BumpCanvas();
-            Log($"Device loaded into {SelectedProjector.DisplayName}");
             OnPropertyChanged(nameof(ActiveDeviceName));
         }
         catch (Exception ex)
         {
-            Log($"Profile load failed: {ex.Message}");
+            Log($"Profile load failed: {ex.Message}", LogMessageStatus.Error);
         }
     }
 
     [RelayCommand]
     private void ToggleSelectedLayerVisibility()
     {
-        var d = GetSelectedDrawable();
-        if (d is null) return;
-        var layer = d.LayerName;
-        var targets = SelectedScene!.Drawables
-            .Where(x => string.Equals(x.LayerName, layer, StringComparison.OrdinalIgnoreCase))
-            .ToList();
+        var focus = SelectedObjectItem;
+        if (focus is null) return;
+
+        var layer = focus.LayerName;
+        var pool = ObjectItems.SelectMany(r => r.EnumerateSelfAndDescendants());
+        List<ObjectListItem> targets = string.IsNullOrEmpty(layer)
+            ? [focus]
+            : pool.Where(x => string.Equals(x.LayerName, layer, StringComparison.OrdinalIgnoreCase)).ToList();
         if (targets.Count == 0) return;
+
         var turnOn = targets.Any(x => !x.IsVisible);
         foreach (var t in targets)
             t.IsVisible = turnOn;
-        RefreshObjectNames();
+        Log($"Layer visibility → {(turnOn ? "on" : "off")}");
         BumpCanvas();
+    }
+
+    public void SetTreeSelection(IReadOnlyList<ObjectListItem> items)
+    {
+        _treeSelection = items;
+        FocusKeyboardOnDrawables();
+        if (items.Count == 0) return;
+        SelectedObjectItem = items[^1];
+    }
+
+    [RelayCommand]
+    private void GroupObjects()
+    {
+        if (SelectedScene is null) return;
+        var items = _treeSelection.Count >= 2
+            ? _treeSelection.ToList()
+            : [];
+        if (items.Count < 2)
+        {
+            Log(UiLanguage.Text("Ui.GroupNeedSiblings", "Select two or more sibling objects (Ctrl+click) to group"),
+                LogMessageStatus.Warning);
+            return;
+        }
+
+        var parent = items[0].Parent;
+        if (items.Any(i => i.Parent != parent))
+        {
+            Log(UiLanguage.Text("Ui.GroupSiblingsOnly", "Group only works on siblings"),
+                LogMessageStatus.Warning);
+            return;
+        }
+
+        var before = SnapshotTree();
+        var host = parent is null ? SelectedScene.Drawables : parent.Drawable.Children;
+        var members = items.Select(i => i.Drawable).Where(host.Contains).ToList();
+        if (members.Count < 2) return;
+
+        var insertAt = members.Min(m => host.IndexOf(m));
+        foreach (var m in members)
+            host.Remove(m);
+        var group = Drawable.CreateGroup(members, UiLanguage.Text("Ui.GroupDefaultName", "Group"));
+        host.Insert(insertAt, group);
+        RecordTreeChange($"{Hist("Group", "Group")} {members.Count}", before);
+        RefreshObjectNames();
+        SelectedObjectItem = ObjectItems.SelectMany(r => r.EnumerateSelfAndDescendants())
+            .FirstOrDefault(x => x.Drawable.Id == group.Id);
+        MarkDirty();
+        BumpCanvas();
+        Log($"Grouped {members.Count} objects");
+    }
+
+    [RelayCommand]
+    private void UngroupObject()
+    {
+        var focus = SelectedObjectItem;
+        if (focus is null || SelectedScene is null) return;
+        var d = focus.Drawable;
+        if (!d.IsGroup) return;
+
+        var before = SnapshotTree();
+        var parent = focus.Parent;
+        var host = parent is null ? SelectedScene.Drawables : parent.Drawable.Children;
+        var index = host.IndexOf(d);
+        if (index < 0) return;
+
+        var name = d.Name;
+        var promoted = d.Ungroup();
+        if (promoted.Count == 0) return;
+
+        host.RemoveAt(index);
+        host.InsertRange(index, promoted);
+        RecordTreeChange($"{Hist("Ungroup", "Ungroup")} {name}", before);
+        RefreshObjectNames();
+        var first = promoted[0];
+        SelectedObjectItem = ObjectItems.SelectMany(r => r.EnumerateSelfAndDescendants())
+            .FirstOrDefault(x => x.Drawable.Id == first.Id);
+        MarkDirty();
+        BumpCanvas();
+        Log($"Ungrouped {name} → {promoted.Count} objects");
+    }
+
+    [RelayCommand]
+    private void DeleteSelectedObjects()
+    {
+        if (SelectedScene is null) return;
+
+        var items = _treeSelection.Count > 0
+            ? _treeSelection.ToList()
+            : SelectedObjectItem is { } one ? [one] : [];
+        if (items.Count == 0) return;
+
+        var selected = items.ToHashSet();
+        var doomed = items
+            .Where(i => !IsLockedInTree(i))
+            .Where(i =>
+            {
+                for (var p = i.Parent; p is not null; p = p.Parent)
+                    if (selected.Contains(p)) return false;
+                return true;
+            })
+            .ToList();
+        if (doomed.Count == 0) return;
+
+        var before = SnapshotTree();
+        foreach (var item in doomed)
+        {
+            var host = item.Parent is null ? SelectedScene.Drawables : item.Parent.Drawable.Children;
+            host.Remove(item.Drawable);
+        }
+
+        RecordTreeChange($"{Hist("Delete", "Delete")} {doomed.Count}", before);
+        _treeSelection = [];
+        SelectedObjectItem = null;
+        SelectedObjectIndex = -1;
+        RefreshObjectNames();
+        MarkDirty();
+        BumpCanvas();
+        Log($"Removed {doomed.Count} object(s)");
+    }
+
+    private static bool IsLockedInTree(ObjectListItem item)
+    {
+        for (var p = item; p is not null; p = p.Parent)
+            if (p.IsLocked) return true;
+        return false;
     }
 
     [RelayCommand]
@@ -1235,14 +1917,15 @@ public partial class MainViewModel : ViewModelBase
             UseVlt = true;
             await DisconnectProjectorAsync(SelectedProjector.Id);
             var vlt = new VltProjector(SelectedProjector);
+            vlt.ConnectionLost += OnVltConnectionLost;
             await vlt.ConnectAsync();
             _vlts[SelectedProjector.Id] = vlt;
-            Log($"Connected {SelectedProjector.DisplayName} {SelectedProjector.Host}:{SelectedProjector.Port}");
             OnPropertyChanged(nameof(ActiveDeviceName));
+            RefreshDeviceLink();
         }
-        catch (Exception ex)
+        catch
         {
-            Log($"Connect failed: {ex.Message}");
+            // Already logged in VltProjector.
         }
     }
 
@@ -1253,8 +1936,8 @@ public partial class MainViewModel : ViewModelBase
         foreach (var id in _vlts.Keys.ToList())
             await DisconnectProjectorAsync(id);
         await _virtual.ConnectAsync();
-        Log("Using Virtual Projector");
         OnPropertyChanged(nameof(ActiveDeviceName));
+        RefreshDeviceLink();
     }
 
     [RelayCommand]
@@ -1270,20 +1953,18 @@ public partial class MainViewModel : ViewModelBase
             {
                 await _hub.StopEndpointAsync(binary);
                 UdpEnabled = false;
-                Log("UDP Binary stopped");
             }
             else
             {
                 await _hub.StartEndpointAsync(binary);
                 UdpEnabled = true;
-                Log($"UDP Binary listening on {binary.Port}");
             }
             RefreshEndpointItems();
         }
         catch (Exception ex)
         {
             UdpEnabled = false;
-            Log($"UDP failed: {ex.Message}");
+            Log($"UDP failed: {ex.Message}", LogMessageStatus.Error);
         }
     }
 
@@ -1299,7 +1980,6 @@ public partial class MainViewModel : ViewModelBase
     {
         _hub.AddEndpoint(NewEndpointType, NewEndpointBindIp, NewEndpointPort);
         RefreshEndpointItems();
-        Log($"Added {NewEndpointType} :{NewEndpointPort}");
     }
 
     private void RefreshEndpointItems()
@@ -1336,10 +2016,8 @@ public partial class MainViewModel : ViewModelBase
                 if (e.Kind == RemoteCommandKind.Clear) cmds.Add("CLEAR");
                 if (e.Kind == RemoteCommandKind.Align) cmds.Add("ALIGN");
 
-                Log($"Auto {e.Transport} {e.Header} cmds=[{string.Join('&', e.Commands)}] path={e.Path ?? "-"}");
-
                 if (cmds.Contains("ALIGN"))
-                    Log("ALIGN received (not wired yet)");
+                    Log("ALIGN received (not wired yet)", LogMessageStatus.Warning);
 
                 var clear = cmds.Contains("CLEAR");
                 var play = cmds.Contains("PLAY") || cmds.Contains("SHOW");
@@ -1364,7 +2042,7 @@ public partial class MainViewModel : ViewModelBase
                         BumpCanvas();
                     }
                     if (play)
-                        await PlayAsync();
+                        await PlayCoreAsync();
                 }
 
                 if (stop)
@@ -1375,7 +2053,7 @@ public partial class MainViewModel : ViewModelBase
             }
             catch (Exception ex)
             {
-                Log($"Automation handle failed: {ex.Message}");
+                Log($"Automation handle failed: {ex.Message}", LogMessageStatus.Error);
                 if (e.ReplyRequested)
                     await _hub.SendReplyAsync(e, $"ERR:{ex.Message}");
             }
@@ -1403,7 +2081,7 @@ public partial class MainViewModel : ViewModelBase
         BumpCanvas();
         if (clear) ViewResetRequested?.Invoke();
         Log($"Loaded geometry '{geo.Name}' ({geo.Contours.Count} paths) via Points");
-        if (play) await PlayAsync();
+        if (play) await PlayCoreAsync();
     }
 
     [RelayCommand]
@@ -1437,6 +2115,12 @@ public partial class MainViewModel : ViewModelBase
     [RelayCommand]
     private async Task PlayAsync()
     {
+        if (!await ConfirmFirstPlayIfNeededAsync()) return;
+        await PlayCoreAsync();
+    }
+
+    private async Task PlayCoreAsync()
+    {
         if (SelectedScene is null || Projectors.Count == 0) return;
         try
         {
@@ -1448,21 +2132,12 @@ public partial class MainViewModel : ViewModelBase
                 return;
             }
 
-            if (SelectedScene.Target.WidthMm > 0)
-            {
-                if (sceneDevices.Count == 1)
-                    sceneDevices[0].FitFovToScene(SelectedScene.Target.WidthMm, SelectedScene.Target.HeightMm);
-                else
-                    LayoutFovs();
-            }
-            RefreshFovOverlays();
-            PullDeviceUiFromSelection();
             var bags = _pipeline.BuildPerDevice(SelectedScene, Project, sceneDevices);
             await SendBagsAsync(bags, "Play");
         }
         catch (Exception ex)
         {
-            Log($"Play failed: {ex.Message}");
+            Log($"Play failed: {ex.Message}", LogMessageStatus.Error);
         }
     }
 
@@ -1476,6 +2151,9 @@ public partial class MainViewModel : ViewModelBase
         {
             if (!bags.TryGetValue(p.Id, out var bag))
                 continue;
+
+            _lastDeviceFrames[p.Id] = bag;
+            PushFrameToPreview(p, bag);
 
             if (UseVlt && _vlts.TryGetValue(p.Id, out var vlt))
             {
@@ -1494,11 +2172,155 @@ public partial class MainViewModel : ViewModelBase
                 parts.Add($"{p.DisplayName} segs={bag.SegmentCount} (no link)");
         }
 
-        FrameInfo = parts.Count == 0 ? "No bags" : string.Join(" | ", parts);
+        FrameInfo = parts.Count == 0 ? "No frame" : string.Join(" | ", parts);
         SelectedScene.IsPlaying = true;
         IsPlaying = true;
+        RefreshDeviceLink();
         Log($"{label} — {FrameInfo}");
         BumpCanvas();
+    }
+
+    private void ShowProjectorPreview(ProjectorProfile device)
+    {
+        if (HostWindow is null) return;
+
+        if (_previewWindows.TryGetValue(device.Id, out var existing))
+        {
+            existing.Activate();
+            RefreshPreviewForDevice(device);
+            return;
+        }
+
+        var vm = new ProjectorPreviewViewModel(
+            device.Id,
+            device.DisplayName,
+            refresh: async () =>
+            {
+                RefreshPreviewForDevice(device);
+                await Task.CompletedTask;
+            },
+            openInViewer: async () => await OpenPreviewInIldaViewerAsync(device));
+
+        var win = new ProjectorPreviewWindow { DataContext = vm };
+        win.Closed += (_, _) => _previewWindows.Remove(device.Id);
+        _previewWindows[device.Id] = win;
+        win.Show(HostWindow);
+        RefreshPreviewForDevice(device);
+    }
+
+    private async Task OpenPreviewInIldaViewerAsync(ProjectorProfile device)
+    {
+        try
+        {
+            if (!_lastDeviceFrames.TryGetValue(device.Id, out var bag))
+            {
+                RefreshPreviewForDevice(device);
+                _lastDeviceFrames.TryGetValue(device.Id, out bag);
+            }
+
+            if (bag is null || bag.Points.Count == 0)
+            {
+                Log("Preview: empty frame — nothing to open in ILDAViewer");
+                return;
+            }
+
+            var ilda = DeviceIldaEncoder.FromDeviceBag(bag, device);
+            var dir = Path.Combine(Path.GetTempPath(), "2Cut");
+            Directory.CreateDirectory(dir);
+            var path = Path.Combine(dir, $"preview-{SanitizeFilePart(device.DisplayName)}.ild");
+            await IldaFileWriter.WriteAsync(path, ilda);
+
+            if (IldaViewerLauncher.TryOpen(path, out var error))
+                Log($"Opened ILDAViewer: {path}");
+            else
+                Log($"ILDAViewer: {error}");
+        }
+        catch (Exception ex)
+        {
+            Log($"ILDAViewer failed: {ex.Message}");
+        }
+    }
+
+    private static string SanitizeFilePart(string name)
+    {
+        foreach (var c in Path.GetInvalidFileNameChars())
+            name = name.Replace(c, '_');
+        return string.IsNullOrWhiteSpace(name) ? "device" : name;
+    }
+
+    private void RefreshPreviewForDevice(ProjectorProfile device)
+    {
+        if (SelectedScene is null) return;
+        try
+        {
+            PushDeviceFieldsToSelection();
+            var sceneDevices = GetSceneProjectors();
+            if (sceneDevices.Count == 0)
+                sceneDevices = Projectors.ToList();
+
+            Dictionary<string, LinesCollection> bags;
+            if (sceneDevices.Any(d => d.Id == device.Id) && sceneDevices.Count > 0)
+                bags = _pipeline.BuildPerDevice(SelectedScene, Project, sceneDevices);
+            else
+                bags = new Dictionary<string, LinesCollection>
+                {
+                    [device.Id] = _pipeline.BuildFrame(SelectedScene, Project, device)
+                };
+
+            if (!bags.TryGetValue(device.Id, out var bag))
+                bag = new LinesCollection();
+
+            _lastDeviceFrames[device.Id] = bag;
+            PushFrameToPreview(device, bag);
+        }
+        catch (Exception ex)
+        {
+            Log($"Preview failed: {ex.Message}");
+        }
+    }
+
+    private void PushFrameToPreview(ProjectorProfile device, LinesCollection bag)
+    {
+        if (!_previewWindows.TryGetValue(device.Id, out var win))
+            return;
+
+        var ilda = DeviceIldaEncoder.FromDeviceBag(bag, device);
+        win.ApplyIldaFrame(
+            ilda,
+            $"ILDA pts={ilda.Points.Count}  (same encode as VLT, res={device.WidthResolution}×{device.HeightResolution})");
+    }
+
+    private void SchedulePreviewRefresh()
+    {
+        if (_previewWindows.Count == 0) return;
+        _previewRefreshTimer ??= new DispatcherTimer { Interval = TimeSpan.FromMilliseconds(120) };
+        _previewRefreshTimer.Tick -= OnPreviewRefreshTick;
+        _previewRefreshTimer.Tick += OnPreviewRefreshTick;
+        _previewRefreshTimer.Stop();
+        _previewRefreshTimer.Start();
+    }
+
+    private void OnPreviewRefreshTick(object? sender, EventArgs e)
+    {
+        _previewRefreshTimer?.Stop();
+        if (_previewWindows.Count == 0 || SelectedScene is null) return;
+        try
+        {
+            PushDeviceFieldsToSelection();
+            var sceneDevices = GetSceneProjectors();
+            if (sceneDevices.Count == 0) return;
+            var bags = _pipeline.BuildPerDevice(SelectedScene, Project, sceneDevices);
+            foreach (var p in sceneDevices)
+            {
+                if (!bags.TryGetValue(p.Id, out var bag)) continue;
+                _lastDeviceFrames[p.Id] = bag;
+                PushFrameToPreview(p, bag);
+            }
+        }
+        catch (Exception ex)
+        {
+            Log($"Preview refresh: {ex.Message}");
+        }
     }
 
     [RelayCommand]
@@ -1509,33 +2331,226 @@ public partial class MainViewModel : ViewModelBase
         await _virtual.StopAsync();
         if (SelectedScene is not null) SelectedScene.IsPlaying = false;
         IsPlaying = false;
+        RefreshDeviceLink();
         Log("Stop");
     }
 
     private async Task ImportPathAsync(string path, bool clear, bool play)
     {
-        Log($"Importing {Path.GetFileName(path)}…");
-        var result = await _import.ImportAsync(path);
+        if (IsBusy)
+        {
+            Log("Busy — finish or cancel the current operation first");
+            return;
+        }
+
+        var name = Path.GetFileName(path);
+        _importCts?.Cancel();
+        _importCts?.Dispose();
+        _importCts = new CancellationTokenSource();
+        var ct = _importCts.Token;
+        var progress = new Progress<ImportProgress>(ReportBusy);
+
+        IsImporting = true;
+        var busyName = string.Format(
+            UiLanguage.Text("Ui.ImportBusy", "Importing {0}…"), name);
+        BeginBusy(busyName, CancelBusy, determinate: true);
+
+        try
+        {
+            if (path.EndsWith(".stl", StringComparison.OrdinalIgnoreCase))
+            {
+                await ApplyStlTargetAsync(path, ct, progress);
+                return;
+            }
+
+            if (path.EndsWith(".cproj", StringComparison.OrdinalIgnoreCase))
+            {
+                Project = await ProjectJsonStore.LoadAsync(path, ct);
+                _projectPath = path;
+                await ApplyProjectDocumentAsync(clearDirty: true);
+                Log($"Loaded {Path.GetFileName(path)}");
+                if (play) await PlayCoreAsync();
+                return;
+            }
+
+            if (LegacyImportService.CanImport(path))
+            {
+                await ImportLegacyPathAsync(path, clear, play, ct, progress);
+                return;
+            }
+
+            var result = await _import.ImportAsync(path, ct, progress);
+            ct.ThrowIfCancellationRequested();
+
+            ReportBusy(new ImportProgress(
+                UiLanguage.Text("Ui.ImportApplying", "Applying to scene…"), 0.98));
+
+            var scene = SelectedScene ?? Project.ActiveScene;
+            if (clear) scene.Drawables.Clear();
+
+            var startIndex = scene.Drawables.Count;
+            foreach (var d in result.Drawables)
+                ApplyDock(d, scene.Target, DockMode);
+
+            scene.Drawables.AddRange(result.Drawables);
+            if (clear)
+                scene.Mask.Bounds = new Rect2(0, 0, scene.Target.WidthMm, scene.Target.HeightMm);
+            RefreshObjectNames();
+            if (result.Drawables.Count > 0)
+                SelectedObjectIndex = startIndex;
+            if (clear) History.Clear();
+            MarkDirty();
+            BumpCanvas();
+            if (clear) ViewResetRequested?.Invoke();
+            Log($"Applied to scene → dock {DockMode}", LogMessageStatus.Info);
+            if (play) await PlayCoreAsync();
+        }
+        catch (OperationCanceledException)
+        {
+            // DrawingImportService already logs cancel.
+        }
+        catch (Exception ex)
+        {
+            // DrawingImportService CadLog.Error's before rethrow; legacy/cproj do not.
+            if (!path.EndsWith(".dxf", StringComparison.OrdinalIgnoreCase)
+                && !path.EndsWith(".svg", StringComparison.OrdinalIgnoreCase))
+                Log($"Import failed: {ex.Message}", LogMessageStatus.Error);
+        }
+        finally
+        {
+            IsImporting = false;
+            _importCts?.Dispose();
+            _importCts = null;
+            ClearBusyUi();
+        }
+    }
+
+    private async Task ApplyStlTargetAsync(
+        string path,
+        CancellationToken ct,
+        IProgress<ImportProgress>? progress)
+    {
         var scene = SelectedScene ?? Project.ActiveScene;
-        if (clear) scene.Drawables.Clear();
+        var mesh = await StlImporter.LoadAsync(path, ct, progress);
+        if (mesh.TriangleCount > MeshTarget.TriangleWarnLimit)
+        {
+            Log(string.Format(
+                    UiLanguage.Text("Ui.StlHeavy", "STL has {0} triangles (limit {1}) — viewport may slow down"),
+                    mesh.TriangleCount,
+                    MeshTarget.TriangleWarnLimit),
+                LogMessageStatus.Warning);
+        }
 
-        // Keep the plane size; park each imported object at the sticky dock corner/edge/center.
+        var target = new MeshTarget { Mesh = mesh, SourcePath = path };
+        target.FitToPlane(scene.Target.WidthMm, scene.Target.HeightMm);
+        scene.MeshTarget = target;
+        RefreshMeshTargetUi();
+        History.Clear();
+        MarkDirty();
+        BumpCanvas();
+        ViewResetRequested?.Invoke();
+        IsStlAlignOpen = true;
+        Log(string.Format(
+            UiLanguage.Text("Ui.StlLoaded", "STL target {0} ({1} triangles)"),
+            Path.GetFileName(path),
+            mesh.TriangleCount));
+    }
+
+    private async Task ImportLegacyAsProjectAsync(string path)
+    {
+        var imported = await _legacy.ImportAsync(path);
+        LogMigration(imported.Report);
+        Project = imported.Project;
+        _projectPath = null;
+        await ApplyProjectDocumentAsync(clearDirty: false);
+        Log(string.Format(
+            UiLanguage.Text("Ui.LegacyReadOnly", "Imported {0} — save as .cproj (legacy files are read-only)"),
+            Path.GetFileName(path)));
+    }
+
+    private async Task ImportLegacyPathAsync(
+        string path,
+        bool clear,
+        bool play,
+        CancellationToken ct,
+        IProgress<ImportProgress>? progress)
+    {
+        var imported = await _legacy.ImportAsync(path, ct, progress);
+        LogMigration(imported.Report);
+
+        if (imported.Report.Kind == LegacyKind.Hub || imported.HasDevices)
+        {
+            Project = imported.Project;
+            _projectPath = null;
+            await ApplyProjectDocumentAsync(clearDirty: false);
+            Log(string.Format(
+                UiLanguage.Text("Ui.LegacyReadOnly", "Imported {0} — save as .cproj (legacy files are read-only)"),
+                Path.GetFileName(path)));
+            if (play) await PlayCoreAsync();
+            return;
+        }
+
+        var incoming = imported.Project.Scenes[0];
+        var scene = SelectedScene ?? Project.ActiveScene;
         var startIndex = scene.Drawables.Count;
-        foreach (var d in result.Drawables)
-            ApplyDock(d, scene.Target, DockMode);
-
-        scene.Drawables.AddRange(result.Drawables);
         if (clear)
-            scene.Mask.Bounds = new Rect2(0, 0, scene.Target.WidthMm, scene.Target.HeightMm);
+        {
+            scene.Drawables.Clear();
+            startIndex = 0;
+            scene.Name = incoming.Name;
+            scene.Target.WidthMm = incoming.Target.WidthMm;
+            scene.Target.HeightMm = incoming.Target.HeightMm;
+            scene.Mask.IsEnabled = incoming.Mask.IsEnabled;
+            scene.Mask.Bounds = incoming.Mask.Bounds;
+            MaskEnabled = scene.Mask.IsEnabled;
+            PullSceneUiFromSelection();
+        }
+
+        scene.Drawables.AddRange(incoming.Drawables);
         RefreshObjectNames();
-        if (result.Drawables.Count > 0)
+        if (incoming.Drawables.Count > 0)
             SelectedObjectIndex = startIndex;
         if (clear) History.Clear();
         MarkDirty();
         BumpCanvas();
         if (clear) ViewResetRequested?.Invoke();
-        Log($"Imported {result.Drawables.Count} from {result.Format} → dock {DockMode}");
-        if (play) await PlayAsync();
+        Log(string.Format(
+            UiLanguage.Text("Ui.LegacySceneImported", "Imported scene {0} ({1} objects)"),
+            Path.GetFileName(path),
+            incoming.Drawables.Count));
+        if (play) await PlayCoreAsync();
+    }
+
+    private async Task ApplyProjectDocumentAsync(bool clearDirty)
+    {
+        Scenes.Clear();
+        foreach (var s in Project.Scenes)
+            Scenes.Add(s);
+        SelectedScene = Project.ActiveScene;
+        MaskEnabled = SelectedScene.Mask.IsEnabled;
+        UseLayerColor = Project.ColorMode == LaserColorMode.LayerColor;
+        await ApplyLoadedDevicesAsync(Project);
+        RefreshObjectNames();
+        RefreshFovOverlays();
+        History.Clear();
+        if (clearDirty)
+            ClearDirty();
+        else
+            MarkDirty();
+        BumpCanvas();
+        ViewResetRequested?.Invoke();
+        RefreshWindowTitle();
+    }
+
+    private void LogMigration(LegacyMigrationReport report)
+    {
+        foreach (var line in report.AllLines())
+        {
+            var status = line.StartsWith("ok", StringComparison.Ordinal)
+                ? LogMessageStatus.Info
+                : LogMessageStatus.Warning;
+            Log(line, status);
+        }
     }
 
     private async Task ApplyLoadedDevicesAsync(ProjectDocument project)
@@ -1791,14 +2806,25 @@ public partial class MainViewModel : ViewModelBase
     private async Task DisconnectProjectorAsync(string id)
     {
         if (!_vlts.TryGetValue(id, out var vlt)) return;
+        vlt.ConnectionLost -= OnVltConnectionLost;
         try { await vlt.DisconnectAsync(); } catch { /* ignore */ }
         vlt.Dispose();
         _vlts.Remove(id);
+        RefreshDeviceLink();
     }
 
     private void LoadTransformFromSelection()
     {
-        var d = GetSelectedDrawable();
+        if (ShouldEditModule() && TryGetSelectedAnchor(out _, out _, out var anchor, out var bounds))
+        {
+            var world = AnchorToWorld(anchor, bounds);
+            Tx = world.X;
+            Ty = world.Y;
+            Tz = 0;
+            return;
+        }
+
+        var d = GetFocusedDrawable();
         if (d is null) return;
         Tx = d.Translation.X;
         Ty = d.Translation.Y;
@@ -1810,8 +2836,21 @@ public partial class MainViewModel : ViewModelBase
     private void ApplyTransformToSelection()
     {
         if (_suppressTransformUi) return;
-        var d = GetSelectedDrawable();
+
+        // Legacy ProjectorMesh.MX/MY: the transform panel writes the selected mesh (or module) point.
+        if (ShouldEditModule() && TryGetSelectedAnchor(out var cfg, out _, out var anchor, out var bounds))
+        {
+            ApplyModuleAnchor(cfg.Id, anchor.Index, WorldToAnchorUnit(Tx, Ty, bounds));
+            return;
+        }
+
+        var d = GetFocusedDrawable();
         if (d is null) return;
+        if (d.IsLocked)
+        {
+            SyncTransformPanel();
+            return;
+        }
         var before = DrawableTransform.Read(d);
         d.Translation = new Point3(Tx, Ty, Tz);
         d.RotationDeg = Rot;
@@ -1826,6 +2865,9 @@ public partial class MainViewModel : ViewModelBase
         BumpCanvas();
     }
 
+    private Drawable? GetFocusedDrawable() =>
+        SelectedObjectItem?.Drawable ?? GetSelectedDrawable();
+
     private Drawable? GetSelectedDrawable()
     {
         if (SelectedScene is null) return null;
@@ -1834,29 +2876,310 @@ public partial class MainViewModel : ViewModelBase
         return SelectedScene.Drawables[SelectedObjectIndex];
     }
 
-    private void BumpCanvas() => CanvasRevision++;
-
-    private void Log(string message)
+    private void BumpCanvas()
     {
-        StatusText = message;
-        LogLines.Insert(0, $"{DateTime.Now:HH:mm:ss} {message}");
-        while (LogLines.Count > 300)
-            LogLines.RemoveAt(LogLines.Count - 1);
+        CanvasRevision++;
+        SchedulePreviewRefresh();
     }
+
+    private void Log(string message, LogMessageStatus status = LogMessageStatus.Regular)
+        => CadLogging.Post?.Invoke(message, status);
 
     private void RefreshObjectNames()
     {
+        var keepId = SelectedObjectItem?.Drawable.Id;
         foreach (var old in ObjectItems)
-            old.VisibilityChanged -= OnObjectVisibilityChanged;
+            old.UnwireTreeEvents(OnObjectVisibilityChanged, OnObjectLockChanged, OnObjectNameEdited);
         ObjectItems.Clear();
-        if (SelectedScene is null) return;
+        if (SelectedScene is null)
+        {
+            SelectedObjectItem = null;
+            PullObjectUiFromSelection();
+            return;
+        }
+
         for (var i = 0; i < SelectedScene.Drawables.Count; i++)
         {
             var item = new ObjectListItem(SelectedScene.Drawables[i], i);
-            item.VisibilityChanged += OnObjectVisibilityChanged;
+            item.WireTreeEvents(OnObjectVisibilityChanged, OnObjectLockChanged, OnObjectNameEdited);
             ObjectItems.Add(item);
         }
+
+        ObjectListItem? match = null;
+        if (keepId is Guid id)
+            match = ObjectItems.SelectMany(r => r.EnumerateSelfAndDescendants())
+                .FirstOrDefault(x => x.Drawable.Id == id);
+        if (match is null && SelectedObjectIndex >= 0 && SelectedObjectIndex < ObjectItems.Count)
+            match = ObjectItems[SelectedObjectIndex];
+
+        _suppressObjectSelection = true;
+        SelectedObjectItem = match;
+        _suppressObjectSelection = false;
+        PullObjectUiFromSelection();
     }
 
     private void OnObjectVisibilityChanged(object? sender, EventArgs e) => BumpCanvas();
+
+    private void OnObjectLockChanged(object? sender, EventArgs e)
+    {
+        if (_restoring || _suppressObjectUi) return;
+        if (sender is not ObjectListItem item) return;
+        Record(
+            new ValueEdit<bool>(
+                $"{Hist("Lock", "Lock")} {item.Drawable.Name}",
+                v =>
+                {
+                    item.Drawable.IsLocked = v;
+                    item.IsLocked = v;
+                    PullObjectUiFromSelection();
+                },
+                !item.IsLocked,
+                item.IsLocked),
+            $"drawable:{item.Drawable.Id}:lock");
+        PullObjectUiFromSelection();
+        BumpCanvas();
+    }
+
+    private void OnObjectNameEdited(object? sender, EventArgs e)
+    {
+        if (sender is not ObjectListItem item) return;
+        PullObjectUiFromSelection();
+        MarkDirty();
+    }
+
+    private void PullObjectUiFromSelection()
+    {
+        _suppressObjectUi = true;
+        var d = GetFocusedDrawable();
+        ObjectName = d?.Name ?? "";
+        ObjectLocked = d?.IsLocked ?? false;
+        _suppressObjectUi = false;
+    }
+
+    partial void OnObjectNameChanged(string value)
+    {
+        if (_suppressObjectUi) return;
+        var d = GetFocusedDrawable();
+        if (d is null) return;
+        var before = d.Name;
+        if (string.Equals(before, value, StringComparison.Ordinal)) return;
+        d.Name = value;
+        if (SelectedObjectItem is { } item)
+            item.Name = value;
+        Record(
+            new ValueEdit<string>(
+                $"{Hist("Rename", "Rename")} {value}",
+                v =>
+                {
+                    d.Name = v;
+                    if (SelectedObjectItem is { } row)
+                        row.Name = v;
+                    PullObjectUiFromSelection();
+                },
+                before,
+                value),
+            $"drawable:{d.Id}:name");
+        MarkDirty();
+    }
+
+    partial void OnObjectLockedChanged(bool value)
+    {
+        if (_suppressObjectUi) return;
+        var d = GetFocusedDrawable();
+        if (d is null) return;
+        if (d.IsLocked == value) return;
+        var before = d.IsLocked;
+        _suppressObjectUi = true;
+        d.IsLocked = value;
+        if (SelectedObjectItem is { } item)
+            item.IsLocked = value;
+        _suppressObjectUi = false;
+        Record(
+            new ValueEdit<bool>(
+                $"{Hist("Lock", "Lock")} {d.Name}",
+                v =>
+                {
+                    d.IsLocked = v;
+                    if (SelectedObjectItem is { } row)
+                        row.IsLocked = v;
+                    PullObjectUiFromSelection();
+                },
+                before,
+                value),
+            $"drawable:{d.Id}:lock");
+        BumpCanvas();
+    }
+
+    partial void OnDxfUnitChoiceChanged(string value)
+    {
+        _import.DxfUnits = ParseDxfUnits(value);
+        if (!_suppressPrefs)
+            PersistPrefs();
+    }
+
+    partial void OnUdpPortChanged(int value)
+    {
+        if (value is < 1 or > 65535) return;
+        var binary = _hub.Endpoints.FirstOrDefault(e => e.Type == RemoteEndpointType.UdpBinary);
+        if (binary is not null && !_hub.IsListening(binary))
+            binary.Port = value;
+        if (!_suppressPrefs)
+            PersistPrefs();
+    }
+
+    private void ApplyPrefs()
+    {
+        _suppressPrefs = true;
+        try
+        {
+            var prefs = AppPrefs.Load();
+            LanguageCode = UiLanguage.Current.StartsWith("ru", StringComparison.OrdinalIgnoreCase) ? "RU" : "EN";
+            if (prefs.UdpPort is > 0 and <= 65535)
+                UdpPort = prefs.UdpPort;
+            if (!string.IsNullOrWhiteSpace(prefs.UdpBindIp))
+                NewEndpointBindIp = prefs.UdpBindIp!;
+            DxfUnitChoice = FormatDxfUnits(prefs.DxfUnitPreference);
+            _import.DxfUnits = prefs.DxfUnitPreference;
+            LoadHotkeysFromPrefs(prefs);
+
+            var binary = _hub.Endpoints.FirstOrDefault(e => e.Type == RemoteEndpointType.UdpBinary);
+            if (binary is not null)
+            {
+                binary.Port = UdpPort;
+                if (!string.IsNullOrWhiteSpace(NewEndpointBindIp))
+                    binary.BindIp = NewEndpointBindIp;
+            }
+        }
+        finally
+        {
+            _suppressPrefs = false;
+        }
+        RefreshDeviceLink();
+    }
+
+    private void PersistPrefs()
+    {
+        AppPrefs.Update(s =>
+        {
+            s.Language = UiLanguage.Current;
+            s.UdpPort = UdpPort;
+            s.UdpBindIp = NewEndpointBindIp;
+            s.DxfUnits = ParseDxfUnits(DxfUnitChoice).ToString();
+            s.NudgeStepMm = NudgeStepMm;
+            s.Hotkeys = Hotkeys.ToPrefs();
+        });
+    }
+
+    private static DxfUnitPreference ParseDxfUnits(string? choice) => choice switch
+    {
+        "mm" => DxfUnitPreference.Millimeters,
+        "cm" => DxfUnitPreference.Centimeters,
+        "m" => DxfUnitPreference.Meters,
+        "in" => DxfUnitPreference.Inches,
+        "ft" => DxfUnitPreference.Feet,
+        _ => DxfUnitPreference.Auto
+    };
+
+    private static string FormatDxfUnits(DxfUnitPreference pref) => pref switch
+    {
+        DxfUnitPreference.Millimeters => "mm",
+        DxfUnitPreference.Centimeters => "cm",
+        DxfUnitPreference.Meters => "m",
+        DxfUnitPreference.Inches => "in",
+        DxfUnitPreference.Feet => "ft",
+        _ => "Auto"
+    };
+
+    private List<Drawable> SnapshotTree() =>
+        SelectedScene is null ? [] : SelectedScene.Drawables.Select(d => d.CloneTree()).ToList();
+
+    private void RecordTreeChange(string label, List<Drawable> before)
+    {
+        if (SelectedScene is null) return;
+        var after = SnapshotTree();
+        var scene = SelectedScene;
+        Record(
+            new ValueEdit<List<Drawable>>(
+                label,
+                list =>
+                {
+                    scene.Drawables.Clear();
+                    foreach (var d in list)
+                        scene.Drawables.Add(d.CloneTree());
+                    RefreshObjectNames();
+                    BumpCanvas();
+                },
+                before,
+                after));
+        History.Break();
+    }
+
+    private async Task<bool> ConfirmFirstPlayIfNeededAsync()
+    {
+        if (_firstPlayConfirmed) return true;
+        var laserLive = UseVlt && _vlts.Values.Any(v => v.IsConnected);
+        if (!laserLive)
+        {
+            _firstPlayConfirmed = true;
+            return true;
+        }
+
+        if (HostWindow is null) return true;
+        var ok = await ConfirmDialog.OkCancelAsync(
+            HostWindow,
+            UiLanguage.Text("Ui.FirstPlayTitle", "Laser output"),
+            UiLanguage.Text("Ui.FirstPlayMessage", "The projector will start. Confirm the work area is clear."));
+        if (!ok) return false;
+        _firstPlayConfirmed = true;
+        return true;
+    }
+
+    private void StartLinkWatch()
+    {
+        _linkWatch = new DispatcherTimer { Interval = TimeSpan.FromSeconds(2.5) };
+        _linkWatch.Tick += (_, _) =>
+        {
+            if (_vlts.Count == 0) return;
+            foreach (var vlt in _vlts.Values.ToList())
+                vlt.ProbeAlive();
+        };
+        _linkWatch.Start();
+    }
+
+    private void OnVltConnectionLost(object? sender, EventArgs e)
+    {
+        Dispatcher.UIThread.Post(async () =>
+        {
+            if (sender is VltProjector vlt)
+            {
+                vlt.ConnectionLost -= OnVltConnectionLost;
+                _vlts.Remove(vlt.Id);
+                try { vlt.Dispose(); } catch { /* ignore */ }
+            }
+
+            await StopAsync();
+            LaserAlert = true;
+            RefreshDeviceLink();
+            OnPropertyChanged(nameof(ActiveDeviceName));
+            Log(UiLanguage.Text("Ui.LinkLost", "Projector link lost — laser stopped"), LogMessageStatus.Error);
+        });
+    }
+
+    private void RefreshDeviceLink()
+    {
+        if (_vlts.Count == 0)
+        {
+            LaserAlert = false;
+            DeviceLinkText = UseVlt
+                ? UiLanguage.Text("Ui.LinkNone", "VLT: not connected")
+                : UiLanguage.Text("Ui.LinkVirtual", "Virtual");
+            return;
+        }
+
+        var live = _vlts.Values.Where(v => v.IsConnected).Select(v => v.DisplayName).ToList();
+        LaserAlert = live.Count == 0;
+        DeviceLinkText = live.Count == 0
+            ? UiLanguage.Text("Ui.LinkLostShort", "VLT: LOST")
+            : string.Join(", ", live.Select(n => $"{n}*"));
+    }
 }

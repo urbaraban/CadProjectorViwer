@@ -7,6 +7,7 @@
     <ApplicationManifest>app.manifest</ApplicationManifest>
     <AssemblyName>2Cut</AssemblyName>
     <RootNamespace>CadProjector.App</RootNamespace>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
 
   <ItemGroup>
@@ -33,5 +34,6 @@
     <ProjectReference Include="..\CadProjector.Devices\CadProjector.Devices.csproj" />
     <ProjectReference Include="..\CadProjector.Automation\CadProjector.Automation.csproj" />
     <ProjectReference Include="..\CadProjector.Ilda\CadProjector.Ilda.csproj" />
+    <ProjectReference Include="..\CadProjector.Logging\CadProjector.Logging.csproj" />
   </ItemGroup>
 </Project>

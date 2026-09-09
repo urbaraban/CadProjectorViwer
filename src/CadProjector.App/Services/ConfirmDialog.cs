@@ -85,4 +85,62 @@ public static class ConfirmDialog
         await dialog.ShowDialog(owner);
         return result;
     }
+
+    public static async Task<bool> OkCancelAsync(Window owner, string title, string message)
+    {
+        var ok = false;
+        var dialog = new Window
+        {
+            Title = title,
+            Width = 440,
+            Height = 200,
+            WindowStartupLocation = WindowStartupLocation.CenterOwner,
+            CanResize = false,
+            Background = new SolidColorBrush(Color.Parse("#1E1E1E"))
+        };
+
+        var yes = new Button
+        {
+            Content = UiLanguage.Text("Ui.ConfirmPlay", "Start laser"),
+            MinWidth = 110,
+            Margin = new Avalonia.Thickness(0, 0, 8, 0),
+            FontWeight = FontWeight.Bold
+        };
+        var cancel = new Button
+        {
+            Content = UiLanguage.Text("Ui.Cancel", "Cancel"),
+            MinWidth = 88
+        };
+
+        yes.Click += (_, _) =>
+        {
+            ok = true;
+            dialog.Close();
+        };
+        cancel.Click += (_, _) => dialog.Close();
+
+        dialog.Content = new StackPanel
+        {
+            Margin = new Avalonia.Thickness(16),
+            Spacing = 16,
+            Children =
+            {
+                new TextBlock
+                {
+                    Text = message,
+                    TextWrapping = TextWrapping.Wrap,
+                    Foreground = Brushes.WhiteSmoke
+                },
+                new StackPanel
+                {
+                    Orientation = Orientation.Horizontal,
+                    HorizontalAlignment = HorizontalAlignment.Right,
+                    Children = { yes, cancel }
+                }
+            }
+        };
+
+        await dialog.ShowDialog(owner);
+        return ok;
+    }
 }

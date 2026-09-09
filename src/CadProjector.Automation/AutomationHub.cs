@@ -1,5 +1,5 @@
 using System.Collections.ObjectModel;
-using System.Collections.Specialized;
+using CadProjector.Logging;
 
 namespace CadProjector.Automation;
 
@@ -49,6 +49,7 @@ public sealed class AutomationHub : IAsyncDisposable
             Port = port
         };
         Endpoints.Add(info);
+        CadLog.Info($"Endpoint added: {info.DisplayName} {info.BindIp}:{info.Port}");
         return info;
     }
 
@@ -56,6 +57,7 @@ public sealed class AutomationHub : IAsyncDisposable
     {
         await StopEndpointAsync(info);
         Endpoints.Remove(info);
+        CadLog.Info($"Endpoint removed: {info.DisplayName}");
     }
 
     public bool IsListening(RemoteEndpointInfo info) =>
@@ -78,15 +80,28 @@ public sealed class AutomationHub : IAsyncDisposable
         endpoint.ClientSeen += OnClientSeen;
         endpoint.Error += (_, msg) =>
         {
-            PushLog($"ERR [{info.DisplayName}] {msg}");
+            PushLog($"ERR [{info.DisplayName}] {msg}", LogMessageStatus.Error);
             Error?.Invoke(this, msg);
         };
 
         _live[info.Id] = endpoint;
         if (endpoint is UdpBinaryEndpoint bin)
             bin.WorkFolder = WorkFolder;
-        await endpoint.StartAsync();
-        PushLog($"START {info.DisplayName} {info.BindIp}:{info.Port} ({info.Type})");
+
+        try
+        {
+            await endpoint.StartAsync();
+            PushLog($"START {info.DisplayName} {info.BindIp}:{info.Port} ({info.Type})", LogMessageStatus.Good);
+        }
+        catch (Exception ex)
+        {
+            _live.Remove(info.Id);
+            endpoint.CommandReceived -= OnEndpointCommand;
+            endpoint.ClientSeen -= OnClientSeen;
+            await endpoint.DisposeAsync();
+            PushLog($"START failed [{info.DisplayName}]: {ex.Message}", LogMessageStatus.Error);
+            throw;
+        }
     }
 
     public async Task StopEndpointAsync(RemoteEndpointInfo info)
@@ -96,7 +111,7 @@ public sealed class AutomationHub : IAsyncDisposable
         endpoint.CommandReceived -= OnEndpointCommand;
         endpoint.ClientSeen -= OnClientSeen;
         await endpoint.DisposeAsync();
-        PushLog($"STOP {info.DisplayName}");
+        PushLog($"STOP {info.DisplayName}", LogMessageStatus.Info);
     }
 
     public async Task StopAllAsync()
@@ -112,7 +127,9 @@ public sealed class AutomationHub : IAsyncDisposable
 
     private void OnEndpointCommand(object? sender, RemoteCommand e)
     {
-        PushLog($"{e.Transport} {e.Header} cmds=[{string.Join('&', e.Commands)}] path={e.Path ?? "-"} geo={e.Geometry?.Name ?? "-"}");
+        PushLog(
+            $"{e.Transport} {e.Header} cmds=[{string.Join('&', e.Commands)}] path={e.Path ?? "-"} geo={e.Geometry?.Name ?? "-"}",
+            LogMessageStatus.Info);
         CommandReceived?.Invoke(this, e);
     }
 
@@ -132,11 +149,12 @@ public sealed class AutomationHub : IAsyncDisposable
         }
     }
 
-    private void PushLog(string line)
+    private void PushLog(string line, LogMessageStatus status = LogMessageStatus.Info)
     {
         RecentLog.Insert(0, $"{DateTime.Now:HH:mm:ss} {line}");
         while (RecentLog.Count > 40)
             RecentLog.RemoveAt(RecentLog.Count - 1);
+        CadLog.Write(line, status);
     }
 
     public async ValueTask DisposeAsync() => await StopAllAsync();

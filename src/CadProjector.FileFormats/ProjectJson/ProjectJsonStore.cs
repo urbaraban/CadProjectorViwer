@@ -4,6 +4,8 @@ using CadProjector.Core.Devices;
 using CadProjector.Core.Project;
 using CadProjector.Core.Scene;
 using CadProjector.Geometry.Primitives;
+using CadProjector.FileFormats.Stl;
+using CadProjector.Logging;
 
 namespace CadProjector.FileFormats.ProjectJson;
 
@@ -22,6 +24,7 @@ public static class ProjectJsonStore
         var dto = ProjectDto.From(project);
         await using var fs = File.Create(path);
         await JsonSerializer.SerializeAsync(fs, dto, Options, ct);
+        CadLog.Good($"Project saved: {Path.GetFileName(path)} ({project.Devices.Count} devices)");
     }
 
     public static async Task<ProjectDocument> LoadAsync(string path, CancellationToken ct = default)
@@ -29,7 +32,10 @@ public static class ProjectJsonStore
         await using var fs = File.OpenRead(path);
         var dto = await JsonSerializer.DeserializeAsync<ProjectDto>(fs, Options, ct)
             ?? throw new InvalidDataException("Empty project file.");
-        return dto.ToModel();
+        var model = dto.ToModel();
+        await AttachMeshTargetsAsync(dto, model, ct);
+        CadLog.Good($"Project loaded: {Path.GetFileName(path)}");
+        return model;
     }
 
     private sealed class ProjectDto
@@ -66,6 +72,42 @@ public static class ProjectJsonStore
             CalibrationMesh = CalibrationMesh?.ToModel(),
             Devices = Devices.Select(d => d.ToModel()).ToList()
         };
+    }
+
+    private static async Task AttachMeshTargetsAsync(ProjectDto dto, ProjectDocument model, CancellationToken ct)
+    {
+        for (var i = 0; i < dto.Scenes.Count && i < model.Scenes.Count; i++)
+        {
+            var src = dto.Scenes[i];
+            if (string.IsNullOrWhiteSpace(src.MeshPath))
+                continue;
+            if (!File.Exists(src.MeshPath))
+            {
+                CadLog.Warn($"STL missing: {src.MeshPath}");
+                continue;
+            }
+
+            try
+            {
+                var mesh = await StlImporter.LoadAsync(src.MeshPath, ct);
+                model.Scenes[i].MeshTarget = new MeshTarget
+                {
+                    Mesh = mesh,
+                    SourcePath = src.MeshPath,
+                    Translation = new Point3(src.MeshTx, src.MeshTy, src.MeshTz),
+                    RotationDeg = new Point3(src.MeshRx, src.MeshRy, src.MeshRz),
+                    Scale = new Point3(
+                        src.MeshSx == 0 ? 1 : src.MeshSx,
+                        src.MeshSy == 0 ? 1 : src.MeshSy,
+                        src.MeshSz == 0 ? 1 : src.MeshSz),
+                    BreakOnMiss = src.MeshBreakOnMiss
+                };
+            }
+            catch (Exception ex)
+            {
+                CadLog.Warn($"STL load failed ({src.MeshPath}): {ex.Message}");
+            }
+        }
     }
 
     private sealed class DeviceSnapshotDto
@@ -318,20 +360,49 @@ public static class ProjectJsonStore
         public double MaskH { get; set; } = 1000;
         public List<DrawableDto> Drawables { get; set; } = [];
         public List<string> BoundProjectorIds { get; set; } = [];
+        public string? MeshPath { get; set; }
+        public double MeshTx { get; set; }
+        public double MeshTy { get; set; }
+        public double MeshTz { get; set; }
+        public double MeshRx { get; set; }
+        public double MeshRy { get; set; }
+        public double MeshRz { get; set; }
+        public double MeshSx { get; set; } = 1;
+        public double MeshSy { get; set; } = 1;
+        public double MeshSz { get; set; } = 1;
+        public bool MeshBreakOnMiss { get; set; } = true;
 
-        public static SceneDto From(ProjectionScene s) => new()
+        public static SceneDto From(ProjectionScene s)
         {
-            Name = s.Name,
-            WidthMm = s.Target.WidthMm,
-            HeightMm = s.Target.HeightMm,
-            MaskEnabled = s.Mask.IsEnabled,
-            MaskX = s.Mask.Bounds.X,
-            MaskY = s.Mask.Bounds.Y,
-            MaskW = s.Mask.Bounds.Width,
-            MaskH = s.Mask.Bounds.Height,
-            Drawables = s.Drawables.Select(DrawableDto.From).ToList(),
-            BoundProjectorIds = [.. s.BoundProjectorIds]
-        };
+            var dto = new SceneDto
+            {
+                Name = s.Name,
+                WidthMm = s.Target.WidthMm,
+                HeightMm = s.Target.HeightMm,
+                MaskEnabled = s.Mask.IsEnabled,
+                MaskX = s.Mask.Bounds.X,
+                MaskY = s.Mask.Bounds.Y,
+                MaskW = s.Mask.Bounds.Width,
+                MaskH = s.Mask.Bounds.Height,
+                Drawables = s.Drawables.Select(DrawableDto.From).ToList(),
+                BoundProjectorIds = [.. s.BoundProjectorIds]
+            };
+            if (s.MeshTarget is { } mesh)
+            {
+                dto.MeshPath = mesh.SourcePath;
+                dto.MeshTx = mesh.Translation.X;
+                dto.MeshTy = mesh.Translation.Y;
+                dto.MeshTz = mesh.Translation.Z;
+                dto.MeshRx = mesh.RotationDeg.X;
+                dto.MeshRy = mesh.RotationDeg.Y;
+                dto.MeshRz = mesh.RotationDeg.Z;
+                dto.MeshSx = mesh.Scale.X;
+                dto.MeshSy = mesh.Scale.Y;
+                dto.MeshSz = mesh.Scale.Z;
+                dto.MeshBreakOnMiss = mesh.BreakOnMiss;
+            }
+            return dto;
+        }
 
         public ProjectionScene ToModel()
         {
@@ -360,6 +431,7 @@ public static class ProjectJsonStore
         public double RotationDeg { get; set; }
         public double Scale { get; set; } = 1;
         public List<List<double[]>> Contours { get; set; } = [];
+        public List<DrawableDto> Children { get; set; } = [];
 
         public static DrawableDto From(Drawable d) => new()
         {
@@ -374,7 +446,8 @@ public static class ProjectJsonStore
             Tz = d.Translation.Z,
             RotationDeg = d.RotationDeg,
             Scale = d.Scale,
-            Contours = d.Contours.Select(c => c.Select(p => new[] { p.X, p.Y }).ToList()).ToList()
+            Contours = d.Contours.Select(c => c.Select(p => new[] { p.X, p.Y }).ToList()).ToList(),
+            Children = d.Children.Select(From).ToList()
         };
 
         public Drawable ToModel() => new()
@@ -388,7 +461,8 @@ public static class ProjectJsonStore
             Translation = new Point3(Tx, Ty, Tz),
             RotationDeg = RotationDeg,
             Scale = Scale,
-            Contours = Contours.Select(c => c.Select(xy => new Point2(xy[0], xy[1])).ToList()).ToList()
+            Contours = Contours.Select(c => c.Select(xy => new Point2(xy[0], xy[1])).ToList()).ToList(),
+            Children = Children?.Select(c => c.ToModel()).ToList() ?? []
         };
     }
 }

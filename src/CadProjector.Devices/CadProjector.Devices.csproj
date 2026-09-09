@@ -5,6 +5,7 @@
     <ProjectReference Include="..\CadProjector.Rendering\CadProjector.Rendering.csproj" />
     <ProjectReference Include="..\CadProjector.Ilda\CadProjector.Ilda.csproj" />
     <ProjectReference Include="..\..\..\VLTLaserController.net\src\VLTLaserController.net.csproj" />
+    <ProjectReference Include="..\CadProjector.Logging\CadProjector.Logging.csproj" />
   </ItemGroup>
 
   <PropertyGroup>

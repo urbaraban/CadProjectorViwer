@@ -1,3 +1,5 @@
+using CadProjector.Geometry.Primitives;
+
 namespace CadProjector.Rendering;
 
 /// <summary>Stroke segment between two points (legacy VectorLine analogue).</summary>
@@ -81,6 +83,54 @@ public static class StrokeSegmentOps
             lines.Points.Add(p);
         }
         return lines;
+    }
+
+    /// <summary>Liang–Barsky clip of a segment to an axis-aligned rectangle.</summary>
+    public static bool TryClipToRect(StrokeSegment seg, Rect2 rect, out StrokeSegment clipped)
+    {
+        clipped = seg;
+        var minX = Math.Min(rect.X, rect.X + rect.Width);
+        var maxX = Math.Max(rect.X, rect.X + rect.Width);
+        var minY = Math.Min(rect.Y, rect.Y + rect.Height);
+        var maxY = Math.Max(rect.Y, rect.Y + rect.Height);
+
+        double t0 = 0, t1 = 1;
+        var dx = seg.P2.X - seg.P1.X;
+        var dy = seg.P2.Y - seg.P1.Y;
+
+        bool Clip(double p, double q)
+        {
+            if (Math.Abs(p) < 1e-12)
+                return q >= 0;
+            var r = q / p;
+            if (p < 0)
+            {
+                if (r > t1) return false;
+                if (r > t0) t0 = r;
+            }
+            else
+            {
+                if (r < t0) return false;
+                if (r < t1) t1 = r;
+            }
+            return true;
+        }
+
+        if (!Clip(-dx, seg.P1.X - minX) || !Clip(dx, maxX - seg.P1.X) ||
+            !Clip(-dy, seg.P1.Y - minY) || !Clip(dy, maxY - seg.P1.Y))
+            return false;
+
+        clipped = new StrokeSegment
+        {
+            P1 = seg.PointAt(t0),
+            P2 = seg.PointAt(t1),
+            IsBlank = seg.IsBlank,
+            T1 = seg.T1,
+            T2 = seg.T2
+        };
+        clipped.P1.Color = seg.P1.Color;
+        clipped.P2.Color = seg.P2.Color;
+        return true;
     }
 
     public static double DistSq(RenderPoint a, RenderPoint b)

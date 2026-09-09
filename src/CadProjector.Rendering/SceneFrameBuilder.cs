@@ -17,30 +17,45 @@ public static class SceneFrameBuilder
         var solid = RgbColor.FromArgb(project.SolidColorArgb);
         var w = Math.Max(1e-6, scene.Target.WidthMm);
         var h = Math.Max(1e-6, scene.Target.HeightMm);
+        var surface = scene.MeshTarget;
 
         foreach (var drawable in scene.Drawables)
         {
-            if (!drawable.IsVisible)
-                continue;
-
-            var color = project.ColorMode == LaserColorMode.LayerColor && drawable.ColorArgb is uint argb
-                ? RgbColor.FromArgb(argb)
-                : solid;
-
-            foreach (var contour in drawable.Contours)
+            DrawableSpace.VisitContours(drawable, (leaf, contour, worldZ) =>
             {
                 if (contour.Count < 2)
-                    continue;
+                    return;
 
-                var transformed = contour.Select(p => Transform(p, drawable)).ToList();
+                var color = project.ColorMode == LaserColorMode.LayerColor && leaf.ColorArgb is uint argb
+                    ? RgbColor.FromArgb(argb)
+                    : solid;
+
+                var transformed = contour.ToList();
                 if (mask.IsEnabled)
                     transformed = ClipPolylineToRect(transformed, mask.Bounds);
 
+                var miss = false;
                 for (var i = 0; i < transformed.Count; i++)
                 {
                     var p = transformed[i];
+                    var z = worldZ;
                     var nx = p.X / w;
                     var ny = p.Y / h;
+
+                    if (surface is not null)
+                    {
+                        if (!surface.TryProject(p.X, p.Y, worldZ, out var hit))
+                        {
+                            if (surface.BreakOnMiss)
+                                miss = true;
+                            continue;
+                        }
+
+                        nx = hit.X / w;
+                        ny = hit.Y / h;
+                        z = hit.Z;
+                    }
+
                     var unit = new Point2(nx, ny);
                     if (mesh is not null)
                         unit = mesh.Apply(unit);
@@ -49,34 +64,16 @@ public static class SceneFrameBuilder
                     {
                         X = unit.X,
                         Y = unit.Y,
-                        Z = drawable.Translation.Z,
-                        Blanked = i == 0,
+                        Z = z,
+                        Blanked = i == 0 || miss,
                         Color = color
                     });
+                    miss = false;
                 }
-            }
+            });
         }
 
         return lines;
-    }
-
-    private static Point2 Transform(Point2 local, Drawable d)
-    {
-        var s = d.Scale;
-        var x = local.X * s;
-        var y = local.Y * s;
-        if (Math.Abs(d.RotationDeg) > 1e-9)
-        {
-            var rad = d.RotationDeg * Math.PI / 180.0;
-            var c = Math.Cos(rad);
-            var sn = Math.Sin(rad);
-            var rx = x * c - y * sn;
-            var ry = x * sn + y * c;
-            x = rx;
-            y = ry;
-        }
-
-        return new Point2(x + d.Translation.X, y + d.Translation.Y);
     }
 
     private static List<Point2> ClipPolylineToRect(List<Point2> points, Rect2 rect)

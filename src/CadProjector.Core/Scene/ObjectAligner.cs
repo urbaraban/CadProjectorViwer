@@ -111,39 +111,26 @@ public static class ObjectAligner
         Drawable drawable,
         out double minX, out double minY, out double maxX, out double maxY)
     {
-        minX = double.PositiveInfinity;
-        minY = double.PositiveInfinity;
-        maxX = double.NegativeInfinity;
-        maxY = double.NegativeInfinity;
+        var x0 = double.PositiveInfinity;
+        var y0 = double.PositiveInfinity;
+        var x1 = double.NegativeInfinity;
+        var y1 = double.NegativeInfinity;
         var any = false;
-        foreach (var c in drawable.Contours)
-        foreach (var p in c)
+        DrawableSpace.VisitContours(drawable, (_, contour, _) =>
         {
-            var t = Transform(p, drawable);
-            any = true;
-            minX = Math.Min(minX, t.X);
-            minY = Math.Min(minY, t.Y);
-            maxX = Math.Max(maxX, t.X);
-            maxY = Math.Max(maxY, t.Y);
-        }
+            foreach (var t in contour)
+            {
+                any = true;
+                x0 = Math.Min(x0, t.X);
+                y0 = Math.Min(y0, t.Y);
+                x1 = Math.Max(x1, t.X);
+                y1 = Math.Max(y1, t.Y);
+            }
+        });
+        minX = x0;
+        minY = y0;
+        maxX = x1;
+        maxY = y1;
         return any;
-    }
-
-    private static Point2 Transform(Point2 local, Drawable d)
-    {
-        var s = d.Scale;
-        var x = local.X * s;
-        var y = local.Y * s;
-        if (Math.Abs(d.RotationDeg) > 1e-9)
-        {
-            var rad = d.RotationDeg * Math.PI / 180.0;
-            var c = Math.Cos(rad);
-            var sn = Math.Sin(rad);
-            var rx = x * c - y * sn;
-            var ry = x * sn + y * c;
-            x = rx;
-            y = ry;
-        }
-        return new Point2(x + d.Translation.X, y + d.Translation.Y);
     }
 }

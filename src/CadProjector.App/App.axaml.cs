@@ -12,7 +12,8 @@ public partial class App : Application
     public override void Initialize()
     {
         AvaloniaXamlLoader.Load(this);
-        UiLanguage.Apply("en-US");
+        var prefs = AppPrefs.Load();
+        UiLanguage.Apply(string.IsNullOrWhiteSpace(prefs.Language) ? "en-US" : prefs.Language!);
     }
 
     public override void OnFrameworkInitializationCompleted()

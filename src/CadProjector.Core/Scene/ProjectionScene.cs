@@ -4,6 +4,8 @@ public sealed class ProjectionScene
 {
     public string Name { get; set; } = "Scene";
     public PlaneTarget Target { get; } = new();
+    /// <summary>When set, drawings are projected onto this STL instead of the flat plane.</summary>
+    public MeshTarget? MeshTarget { get; set; }
     public RectMask Mask { get; } = new();
     public List<Drawable> Drawables { get; } = [];
     public bool IsPlaying { get; set; }

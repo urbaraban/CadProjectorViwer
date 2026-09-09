@@ -134,9 +134,10 @@ public sealed class RectProportionModule : IRenderableModule
         var h = Math.Abs(Height) < 1e-12 ? 1 : Height;
         var result = new List<StrokeSegment>();
 
+        var rect = new Rect2(X, Y, Width, Height);
         foreach (var seg in StrokeSegmentOps.ToSegments(input))
         {
-            if (!TryClip(seg, out var clipped))
+            if (!StrokeSegmentOps.TryClipToRect(seg, rect, out var clipped))
                 continue;
             clipped.P1.X = (clipped.P1.X - X) / w;
             clipped.P1.Y = (clipped.P1.Y - Y) / h;
@@ -146,52 +147,5 @@ public sealed class RectProportionModule : IRenderableModule
         }
 
         return StrokeSegmentOps.FromSegments(result);
-    }
-
-    private bool TryClip(StrokeSegment seg, out StrokeSegment clipped)
-    {
-        clipped = seg;
-        var minX = Math.Min(X, X + Width);
-        var maxX = Math.Max(X, X + Width);
-        var minY = Math.Min(Y, Y + Height);
-        var maxY = Math.Max(Y, Y + Height);
-
-        double t0 = 0, t1 = 1;
-        var dx = seg.P2.X - seg.P1.X;
-        var dy = seg.P2.Y - seg.P1.Y;
-
-        bool Clip(double p, double q)
-        {
-            if (Math.Abs(p) < 1e-12)
-                return q >= 0;
-            var r = q / p;
-            if (p < 0)
-            {
-                if (r > t1) return false;
-                if (r > t0) t0 = r;
-            }
-            else
-            {
-                if (r < t0) return false;
-                if (r < t1) t1 = r;
-            }
-            return true;
-        }
-
-        if (!Clip(-dx, seg.P1.X - minX) || !Clip(dx, maxX - seg.P1.X) ||
-            !Clip(-dy, seg.P1.Y - minY) || !Clip(dy, maxY - seg.P1.Y))
-            return false;
-
-        clipped = new StrokeSegment
-        {
-            P1 = seg.PointAt(t0),
-            P2 = seg.PointAt(t1),
-            IsBlank = seg.IsBlank,
-            T1 = seg.T1,
-            T2 = seg.T2
-        };
-        clipped.P1.Color = seg.P1.Color;
-        clipped.P2.Color = seg.P2.Color;
-        return true;
     }
 }

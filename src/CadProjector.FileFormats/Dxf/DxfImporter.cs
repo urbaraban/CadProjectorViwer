@@ -1,5 +1,6 @@
 using CadProjector.Core.Scene;
 using CadProjector.Geometry.Primitives;
+using CadProjector.Logging;
 using IxMilia.Dxf;
 using IxMilia.Dxf.Entities;
 
@@ -10,18 +11,26 @@ public sealed class DxfImporter : IDrawingImporter
     public IReadOnlyList<string> Extensions { get; } = [".dxf"];
     public bool FlipY { get; set; } = true;
     public bool GroupByLayer { get; set; } = true;
+    public DxfUnitPreference UnitPreference { get; set; } = DxfUnitPreference.Auto;
 
     public bool CanImport(string path) =>
         Extensions.Contains(Path.GetExtension(path), StringComparer.OrdinalIgnoreCase);
 
-    public Task<ImportResult> ImportAsync(string path, CancellationToken cancellationToken = default)
+    public Task<ImportResult> ImportAsync(
+        string path,
+        CancellationToken cancellationToken = default,
+        IProgress<ImportProgress>? progress = null)
     {
         return Task.Run(() =>
         {
             cancellationToken.ThrowIfCancellationRequested();
+            progress?.Report(new ImportProgress("Loading DXF…", 0.05));
             using var fs = File.OpenRead(path);
             var dxf = DxfFile.Load(fs);
-            var scale = UnitsToMm(dxf.Header.DefaultDrawingUnits);
+            cancellationToken.ThrowIfCancellationRequested();
+            CadLog.Info($"DXF loaded: {dxf.Entities.Count()} entities");
+            progress?.Report(new ImportProgress("Parsing entities…", 0.2));
+            var scale = DxfUnitScale.ToMm(UnitPreference, dxf.Header.DefaultDrawingUnits);
             var layerOn = dxf.Layers
                 .GroupBy(l => l.Name, StringComparer.OrdinalIgnoreCase)
                 .ToDictionary(g => g.Key, g => g.First().IsLayerOn, StringComparer.OrdinalIgnoreCase);
@@ -33,6 +42,9 @@ public sealed class DxfImporter : IDrawingImporter
             }
 
             var raw = new List<(string Layer, uint? Color, List<List<Point2>> Contours, string Name, bool Visible)>();
+            var entities = dxf.Entities.ToList();
+            var total = Math.Max(1, entities.Count);
+            var done = 0;
 
             void AddEntity(DxfEntity entity, double ox, double oy, double rotDeg, double sx, double sy)
             {
@@ -44,14 +56,17 @@ public sealed class DxfImporter : IDrawingImporter
                 raw.Add((entity.Layer, ToArgb(entity.Color), contours, $"{entity.EntityType}:{entity.Layer}", IsLayerVisible(entity.Layer)));
             }
 
-            foreach (var entity in dxf.Entities)
+            foreach (var entity in entities)
             {
                 if (entity is DxfInsert insert)
                 {
                     var block = dxf.Blocks.FirstOrDefault(b =>
                         string.Equals(b.Name, insert.Name, StringComparison.OrdinalIgnoreCase));
                     if (block is null)
+                    {
+                        done++;
                         continue;
+                    }
 
                     var ix = insert.Location.X * scale;
                     var iy = insert.Location.Y * scale;
@@ -60,14 +75,23 @@ public sealed class DxfImporter : IDrawingImporter
                     var ys = insert.YScaleFactor == 0 ? 1 : insert.YScaleFactor;
                     foreach (var be in block.Entities)
                         AddEntity(be, ix, iy, rot, xs, ys);
-                    continue;
+                }
+                else
+                {
+                    AddEntity(entity, 0, 0, 0, 1, 1);
                 }
 
-                AddEntity(entity, 0, 0, 0, 1, 1);
+                done++;
+                if ((done & 0x3F) == 0 || done == total)
+                {
+                    var frac = 0.2 + 0.6 * done / total;
+                    progress?.Report(new ImportProgress($"Entities {done}/{total}", frac));
+                }
             }
 
             if (FlipY && raw.Count > 0)
             {
+                progress?.Report(new ImportProgress("Flip Y…", 0.85));
                 var maxY = raw.SelectMany(r => r.Contours).SelectMany(c => c).DefaultIfEmpty(Point2.Zero).Max(p => p.Y);
                 raw = raw.Select(r => (
                     r.Layer,
@@ -77,6 +101,8 @@ public sealed class DxfImporter : IDrawingImporter
                     r.Visible
                 )).ToList();
             }
+
+            progress?.Report(new ImportProgress("Building drawables…", 0.9));
 
             List<Drawable> drawables;
             if (GroupByLayer)
@@ -134,16 +160,6 @@ public sealed class DxfImporter : IDrawingImporter
             return new Point2(rx + ox, ry + oy);
         }).ToList()).ToList();
     }
-
-    private static double UnitsToMm(DxfUnits units) => units switch
-    {
-        DxfUnits.Inches => 25.4,
-        DxfUnits.Feet => 304.8,
-        DxfUnits.Millimeters => 1.0,
-        DxfUnits.Centimeters => 10.0,
-        DxfUnits.Meters => 1000.0,
-        _ => 1.0
-    };
 
     private static uint? ToArgb(DxfColor color)
     {

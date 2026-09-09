@@ -1,6 +1,7 @@
 using System.Drawing;
 using CadProjector.Core.Scene;
 using CadProjector.Geometry.Primitives;
+using CadProjector.Logging;
 using Svg;
 using Svg.Pathing;
 
@@ -13,15 +14,22 @@ public sealed class SvgImporter : IDrawingImporter
     public bool CanImport(string path) =>
         Extensions.Contains(Path.GetExtension(path), StringComparer.OrdinalIgnoreCase);
 
-    public Task<ImportResult> ImportAsync(string path, CancellationToken cancellationToken = default)
+    public Task<ImportResult> ImportAsync(
+        string path,
+        CancellationToken cancellationToken = default,
+        IProgress<ImportProgress>? progress = null)
     {
         return Task.Run(() =>
         {
             cancellationToken.ThrowIfCancellationRequested();
+            progress?.Report(new ImportProgress("Loading SVG…", 0.1));
             var doc = SvgDocument.Open(path);
             var drawables = new List<Drawable>();
+            progress?.Report(new ImportProgress("Parsing SVG…", 0.3));
             Walk(doc.Children, drawables, cancellationToken);
 
+            progress?.Report(new ImportProgress("Done", 0.9));
+            CadLog.Info($"SVG parsed: {drawables.Count} drawable(s)");
             return new ImportResult
             {
                 SourcePath = path,

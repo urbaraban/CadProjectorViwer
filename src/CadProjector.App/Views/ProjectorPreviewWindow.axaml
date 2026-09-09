@@ -1,0 +1,44 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:ctrl="using:CadProjector.App.Controls"
+        xmlns:vm="using:CadProjector.App.ViewModels"
+        x:Class="CadProjector.App.Views.ProjectorPreviewWindow"
+        x:DataType="vm:ProjectorPreviewViewModel"
+        Title="{Binding Title}"
+        Width="480"
+        Height="560"
+        MinWidth="300"
+        MinHeight="360"
+        Background="#111"
+        WindowStartupLocation="CenterOwner">
+
+  <DockPanel Margin="8">
+    <StackPanel DockPanel.Dock="Top" Spacing="6" Margin="0,0,0,8">
+      <TextBlock Text="{Binding Stats}" Foreground="#AAA" FontSize="11" TextWrapping="Wrap" />
+      <DockPanel>
+        <TextBlock Text="{DynamicResource Ui.StrokeThickness}" Foreground="#888"
+                   VerticalAlignment="Center" Margin="0,0,8,0" />
+        <Slider Minimum="0.5" Maximum="6" Value="{Binding StrokeThickness}" />
+      </DockPanel>
+      <StackPanel Orientation="Horizontal" Spacing="12">
+        <CheckBox Content="{DynamicResource Ui.ShowBlanked}" IsChecked="{Binding ShowBlanked}"
+                  Foreground="#CCC" />
+        <CheckBox Content="{DynamicResource Ui.ShowPoints}" IsChecked="{Binding ShowPoints}"
+                  Foreground="#CCC" />
+      </StackPanel>
+      <StackPanel Orientation="Horizontal" Spacing="8">
+        <Button Content="{DynamicResource Ui.RefreshPreview}" Command="{Binding RefreshCommand}" />
+        <Button Content="{DynamicResource Ui.OpenInIldaViewer}" Command="{Binding OpenInIldaViewerCommand}" />
+      </StackPanel>
+    </StackPanel>
+    <Border Background="Black" BorderBrush="#333" BorderThickness="1" CornerRadius="2">
+      <Viewbox Stretch="Uniform">
+        <ctrl:IldaFrameCanvas Width="400" Height="400"
+                              Frame="{Binding Frame}"
+                              StrokeThickness="{Binding StrokeThickness}"
+                              ShowBlanked="{Binding ShowBlanked}"
+                              ShowPoints="{Binding ShowPoints}" />
+      </Viewbox>
+    </Border>
+  </DockPanel>
+</Window>

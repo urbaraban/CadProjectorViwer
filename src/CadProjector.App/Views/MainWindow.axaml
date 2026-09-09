@@ -16,17 +16,22 @@
 
   <Window.Resources>
     <conv:StringEqualsConverter x:Key="StringEq" />
+    <conv:LogStatusBrushConverter x:Key="LogStatusBrush" />
   </Window.Resources>
+
+  <Window.Styles>
+    <Style Selector="Button.overlayClose">
+      <Setter Property="Content" Value="✕" />
+      <Setter Property="Width" Value="28" />
+      <Setter Property="MinWidth" Value="28" />
+      <Setter Property="Padding" Value="0" />
+      <Setter Property="VerticalAlignment" Value="Top" />
+    </Style>
+  </Window.Styles>
 
   <Design.DataContext>
     <vm:MainViewModel />
   </Design.DataContext>
-
-  <Window.KeyBindings>
-    <KeyBinding Gesture="Ctrl+Z" Command="{Binding UndoCommand}" />
-    <KeyBinding Gesture="Ctrl+Y" Command="{Binding RedoCommand}" />
-    <KeyBinding Gesture="Ctrl+Shift+Z" Command="{Binding RedoCommand}" />
-  </Window.KeyBindings>
 
   <DockPanel LastChildFill="True">
     <Border DockPanel.Dock="Top" Padding="8,6" Background="#1E1E1E">
@@ -39,11 +44,18 @@
           <Button Content="{DynamicResource Ui.Load}" Command="{Binding LoadProjectCommand}" />
           <Button Content="{DynamicResource Ui.Save}" Command="{Binding SaveProjectCommand}" />
           <Button Content="{DynamicResource Ui.ExportIld}" Command="{Binding ExportIldCommand}"
-                  IsVisible="{Binding !IsExportingIld}" />
-          <Button Content="{DynamicResource Ui.CancelExportIld}" Command="{Binding CancelExportIldCommand}"
-                  IsVisible="{Binding IsExportingIld}" FontWeight="Bold" />
+                  IsVisible="{Binding !IsBusy}" />
+          <Button Content="{DynamicResource Ui.CancelBusy}" Command="{Binding CancelBusyCommand}"
+                  IsVisible="{Binding IsBusy}" FontWeight="Bold" />
           <Button Content="{DynamicResource Ui.Play}" Command="{Binding PlayCommand}" />
-          <Button Content="{DynamicResource Ui.Stop}" Command="{Binding StopCommand}" FontWeight="Bold" />
+          <Button Content="{DynamicResource Ui.Stop}" Command="{Binding StopCommand}" FontWeight="Bold"
+                  Background="#5A1C1C" />
+          <TextBlock Text="{Binding DeviceLinkText}" VerticalAlignment="Center" Margin="8,0,0,0"
+                     FontSize="12" Foreground="#8CF"
+                     IsVisible="{Binding !LaserAlert}" />
+          <TextBlock Text="{Binding DeviceLinkText}" VerticalAlignment="Center" Margin="8,0,0,0"
+                     FontSize="12" FontWeight="Bold" Foreground="#F66"
+                     IsVisible="{Binding LaserAlert}" />
           <Border Width="8" />
           <Button Content="↶" Command="{Binding UndoCommand}" Width="32"
                   ToolTip.Tip="{Binding UndoHint}" />
@@ -54,12 +66,18 @@
           <ToggleButton Content="{DynamicResource Ui.Mesh}" IsChecked="{Binding MeshEnabled}" />
           <Button Content="{DynamicResource Ui.Objects}" Command="{Binding OpenTreeCommand}" />
           <Button Content="{DynamicResource Ui.Scene}" Command="{Binding OpenScenePanelCommand}" />
+          <ToggleButton Content="3D" IsChecked="{Binding IsViewport3D}"
+                        ToolTip.Tip="{DynamicResource Ui.Viewport3D}" />
+          <Button Content="{DynamicResource Ui.StlAlign}" Command="{Binding OpenStlAlignCommand}"
+                  IsEnabled="{Binding HasMeshTarget}"
+                  ToolTip.Tip="{DynamicResource Ui.StlAlignHint}" />
           <Button Content="{DynamicResource Ui.Transform}" Command="{Binding OpenTransformCommand}" />
           <Button Content="{DynamicResource Ui.Calibrate}" Command="{Binding OpenCalibrateCommand}" />
           <Button Content="{DynamicResource Ui.Devices}" Command="{Binding OpenDevicesCommand}" />
           <Button Content="{DynamicResource Ui.WorkFolder}" Command="{Binding OpenWorkFolderCommand}" />
           <Button Content="{DynamicResource Ui.Automation}" Command="{Binding OpenAutomationCommand}" />
           <Button Content="{DynamicResource Ui.Logs}" Command="{Binding OpenLogsCommand}" />
+          <Button Content="{DynamicResource Ui.Hotkeys}" Command="{Binding OpenHotkeysCommand}" />
           <Button Content="{Binding LanguageCode}" Command="{Binding ToggleLanguageCommand}" Width="44" />
         </StackPanel>
         <TextBlock Grid.Column="1" Text="{Binding StatusText}"
@@ -88,13 +106,28 @@
 
     <Grid>
       <ctrl:SceneCanvas x:Name="SceneView"
+                        IsVisible="{Binding !IsViewport3D}"
                         Scene="{Binding SelectedScene}"
                         Project="{Binding Project}"
                         Revision="{Binding CanvasRevision}"
                         FovOverlays="{Binding FovOverlays}"
                         ModuleOverlays="{Binding ModuleOverlays}"
                         MaskEditable="{Binding MaskEnabled}"
-                        MeshOwnerLabel="{Binding MeshOwnerLabel}" />
+                        MeshOwnerLabel="{Binding MeshOwnerLabel}"
+                        AlignPick="{Binding MeshAlignPick}"
+                        AlignMarkers="{Binding MeshAlignMarkers}" />
+      <Grid IsVisible="{Binding IsViewport3D}">
+        <ctrl:SceneViewport3D x:Name="View3D"
+                              Scene="{Binding SelectedScene}"
+                              Project="{Binding Project}"
+                              Revision="{Binding CanvasRevision}"
+                              AlignPick="{Binding MeshAlignPick}"
+                              AlignMarkers="{Binding MeshAlignMarkers}" />
+        <TextBlock Text="{DynamicResource Ui.Viewport3DHint}"
+                   Foreground="#888" FontSize="11" Margin="12,0,12,12"
+                   HorizontalAlignment="Left" VerticalAlignment="Bottom"
+                   IsHitTestVisible="False" />
+      </Grid>
 
       <Border IsVisible="{Binding IsTreeOpen}" Width="300"
               HorizontalAlignment="Left" Margin="12" Padding="12"
@@ -102,36 +135,81 @@
               ZIndex="10">
         <DockPanel>
           <StackPanel DockPanel.Dock="Top" Spacing="6" Margin="0,0,0,8">
-            <TextBlock Text="{DynamicResource Ui.ObjectsTitle}" FontWeight="SemiBold" Foreground="White" />
+            <DockPanel>
+              <Button Classes="overlayClose" DockPanel.Dock="Right"
+                      Command="{Binding CloseOverlayCommand}" CommandParameter="Tree"
+                      ToolTip.Tip="{DynamicResource Ui.Close}" />
+              <TextBlock Text="{DynamicResource Ui.ObjectsTitle}" FontWeight="SemiBold" Foreground="White"
+                         VerticalAlignment="Center" />
+            </DockPanel>
             <Button Content="{DynamicResource Ui.ToggleLayer}" Command="{Binding ToggleSelectedLayerVisibilityCommand}" />
+            <StackPanel Orientation="Horizontal" Spacing="6">
+              <Button Content="{DynamicResource Ui.Group}" Command="{Binding GroupObjectsCommand}" />
+              <Button Content="{DynamicResource Ui.Ungroup}" Command="{Binding UngroupObjectCommand}" />
+            </StackPanel>
+            <StackPanel Orientation="Horizontal" Spacing="6">
+              <Button Content="{DynamicResource Ui.HotkeySelectBack}" Command="{Binding SelectBackCommand}" />
+              <Button Content="{DynamicResource Ui.HotkeySelectNext}" Command="{Binding SelectNextCommand}" />
+            </StackPanel>
+            <TextBlock Text="{DynamicResource Ui.ObjectName}" Foreground="#AAA" />
+            <TextBox Text="{Binding ObjectName}" />
+            <CheckBox Content="{DynamicResource Ui.Lock}" IsChecked="{Binding ObjectLocked}" Foreground="#CCC" />
           </StackPanel>
-          <ListBox ItemsSource="{Binding ObjectItems}"
-                   SelectedIndex="{Binding SelectedObjectIndex}"
-                   Background="Transparent">
-            <ListBox.ItemTemplate>
-              <DataTemplate x:DataType="vm:ObjectListItem">
+          <TreeView x:Name="ObjectTree"
+                    ItemsSource="{Binding ObjectItems}"
+                    SelectionMode="Multiple"
+                    SelectionChanged="ObjectTree_SelectionChanged"
+                    Background="Transparent">
+            <TreeView.ItemTemplate>
+              <TreeDataTemplate ItemsSource="{Binding Children}" x:DataType="vm:ObjectListItem">
                 <StackPanel Orientation="Horizontal" Spacing="8">
-                  <CheckBox IsChecked="{Binding IsVisible}" />
+                  <CheckBox IsChecked="{Binding IsVisible}" ToolTip.Tip="{DynamicResource Ui.Visible}" />
+                  <CheckBox IsChecked="{Binding IsLocked}" ToolTip.Tip="{DynamicResource Ui.Lock}" />
                   <TextBlock Text="{Binding DisplayName}" Foreground="#CCC" VerticalAlignment="Center" />
                 </StackPanel>
-              </DataTemplate>
-            </ListBox.ItemTemplate>
-          </ListBox>
+              </TreeDataTemplate>
+            </TreeView.ItemTemplate>
+            <TreeView.Styles>
+              <Style Selector="TreeViewItem">
+                <Setter Property="IsExpanded" Value="{Binding IsExpanded, DataType={x:Type vm:ObjectListItem}}" />
+              </Style>
+            </TreeView.Styles>
+          </TreeView>
         </DockPanel>
       </Border>
 
       <Border IsVisible="{Binding IsSceneOpen}" Width="300"
               HorizontalAlignment="Left" VerticalAlignment="Top" Margin="12" Padding="12"
               Background="#E61E1E1E" BorderBrush="#555" BorderThickness="1" CornerRadius="4"
-              ZIndex="10">
+              ZIndex="10" MaxHeight="780">
+        <ScrollViewer>
         <StackPanel Spacing="8">
-          <TextBlock Text="{DynamicResource Ui.Scene}" FontWeight="SemiBold" Foreground="White" />
+          <DockPanel>
+            <Button Classes="overlayClose" DockPanel.Dock="Right"
+                    Command="{Binding CloseOverlayCommand}" CommandParameter="Scene"
+                    ToolTip.Tip="{DynamicResource Ui.Close}" />
+            <TextBlock Text="{DynamicResource Ui.Scene}" FontWeight="SemiBold" Foreground="White"
+                       VerticalAlignment="Center" />
+          </DockPanel>
           <TextBlock Text="{DynamicResource Ui.SceneName}" Foreground="#AAA" />
           <TextBox Text="{Binding SceneName}" />
           <TextBlock Text="{DynamicResource Ui.SceneWidth}" Foreground="#AAA" />
           <NumericUpDown Value="{Binding SceneWidthMm}" Increment="10" Minimum="1" FormatString="0.#" />
           <TextBlock Text="{DynamicResource Ui.SceneHeight}" Foreground="#AAA" />
           <NumericUpDown Value="{Binding SceneHeightMm}" Increment="10" Minimum="1" FormatString="0.#" />
+          <TextBlock Text="{DynamicResource Ui.StlTarget}" Foreground="#AAA" Margin="0,8,0,0" />
+          <TextBlock Text="{Binding MeshTargetInfo}" Foreground="#8CF" FontSize="11" TextWrapping="Wrap" />
+          <StackPanel Orientation="Horizontal" Spacing="6">
+            <Button Content="{DynamicResource Ui.StlLoad}" Command="{Binding LoadStlTargetCommand}" />
+            <Button Content="{DynamicResource Ui.StlFit}" Command="{Binding FitStlTargetCommand}"
+                    IsEnabled="{Binding HasMeshTarget}" />
+            <Button Content="{DynamicResource Ui.StlClear}" Command="{Binding ClearStlTargetCommand}"
+                    IsEnabled="{Binding HasMeshTarget}" />
+            <Button Content="{DynamicResource Ui.StlAlignOpen}" Command="{Binding OpenStlAlignCommand}"
+                    IsEnabled="{Binding HasMeshTarget}" />
+          </StackPanel>
+          <TextBlock Text="{DynamicResource Ui.DxfUnits}" Foreground="#AAA" Margin="0,8,0,0" />
+          <ComboBox ItemsSource="{Binding DxfUnitChoices}" SelectedItem="{Binding DxfUnitChoice}" />
           <CheckBox Content="{DynamicResource Ui.UseLayerColor}" IsChecked="{Binding UseLayerColor}"
                     Foreground="#CCC" Margin="0,8,0,0" />
           <TextBlock Text="{DynamicResource Ui.SceneProjectors}" Foreground="#AAA" Margin="0,8,0,0" />
@@ -150,6 +228,105 @@
             </ItemsControl.ItemTemplate>
           </ItemsControl>
         </StackPanel>
+        </ScrollViewer>
+      </Border>
+
+      <Border IsVisible="{Binding IsStlAlignOpen}" Width="420" MaxHeight="720"
+              HorizontalAlignment="Right" VerticalAlignment="Top" Margin="12" Padding="14"
+              Background="#E61E1E1E" BorderBrush="#555" BorderThickness="1" CornerRadius="4"
+              ZIndex="11">
+        <Border.Styles>
+          <Style Selector="NumericUpDown.axis">
+            <Setter Property="MinWidth" Value="0" />
+            <Setter Property="HorizontalAlignment" Value="Stretch" />
+          </Style>
+        </Border.Styles>
+        <ScrollViewer>
+        <StackPanel Spacing="8">
+          <DockPanel>
+            <Button Classes="overlayClose" DockPanel.Dock="Right"
+                    Command="{Binding CloseOverlayCommand}" CommandParameter="StlAlign"
+                    ToolTip.Tip="{DynamicResource Ui.Close}" />
+            <TextBlock Text="{DynamicResource Ui.StlAlign}" FontWeight="SemiBold" Foreground="White"
+                       VerticalAlignment="Center" />
+          </DockPanel>
+          <TextBlock Text="{Binding MeshTargetInfo}" Foreground="#8CF" FontSize="11" TextWrapping="Wrap" />
+          <StackPanel Orientation="Horizontal" Spacing="6">
+            <Button Content="{DynamicResource Ui.StlFit}" Command="{Binding FitStlTargetCommand}" />
+            <Button Content="{DynamicResource Ui.StlClear}" Command="{Binding ClearStlTargetCommand}" />
+          </StackPanel>
+
+          <TextBlock Text="{DynamicResource Ui.StlTranslate}" Foreground="#AAA" Margin="0,4,0,0" />
+          <Grid ColumnDefinitions="*,*,*" ColumnSpacing="8">
+            <StackPanel Grid.Column="0" Spacing="2">
+              <TextBlock Text="X" Foreground="#888" FontSize="11" />
+              <NumericUpDown Classes="axis" Value="{Binding MeshTx}" Increment="1" FormatString="0.##" />
+            </StackPanel>
+            <StackPanel Grid.Column="1" Spacing="2">
+              <TextBlock Text="Y" Foreground="#888" FontSize="11" />
+              <NumericUpDown Classes="axis" Value="{Binding MeshTy}" Increment="1" FormatString="0.##" />
+            </StackPanel>
+            <StackPanel Grid.Column="2" Spacing="2">
+              <TextBlock Text="Z" Foreground="#888" FontSize="11" />
+              <NumericUpDown Classes="axis" Value="{Binding MeshTz}" Increment="1" FormatString="0.##" />
+            </StackPanel>
+          </Grid>
+
+          <TextBlock Text="{DynamicResource Ui.StlRotate}" Foreground="#AAA" />
+          <Grid ColumnDefinitions="*,*,*" ColumnSpacing="8">
+            <StackPanel Grid.Column="0" Spacing="2">
+              <TextBlock Text="X °" Foreground="#888" FontSize="11" />
+              <NumericUpDown Classes="axis" Value="{Binding MeshRx}" Increment="1" FormatString="0.##" />
+            </StackPanel>
+            <StackPanel Grid.Column="1" Spacing="2">
+              <TextBlock Text="Y °" Foreground="#888" FontSize="11" />
+              <NumericUpDown Classes="axis" Value="{Binding MeshRy}" Increment="1" FormatString="0.##" />
+            </StackPanel>
+            <StackPanel Grid.Column="2" Spacing="2">
+              <TextBlock Text="Z °" Foreground="#888" FontSize="11" />
+              <NumericUpDown Classes="axis" Value="{Binding MeshRz}" Increment="1" FormatString="0.##" />
+            </StackPanel>
+          </Grid>
+
+          <TextBlock Text="{DynamicResource Ui.StlScale}" Foreground="#AAA" />
+          <Grid ColumnDefinitions="*,*,*" ColumnSpacing="8">
+            <StackPanel Grid.Column="0" Spacing="2">
+              <TextBlock Text="X" Foreground="#888" FontSize="11" />
+              <NumericUpDown Classes="axis" Value="{Binding MeshSx}" Increment="0.01" Minimum="0.001" FormatString="0.###" />
+            </StackPanel>
+            <StackPanel Grid.Column="1" Spacing="2">
+              <TextBlock Text="Y" Foreground="#888" FontSize="11" />
+              <NumericUpDown Classes="axis" Value="{Binding MeshSy}" Increment="0.01" Minimum="0.001" FormatString="0.###" />
+            </StackPanel>
+            <StackPanel Grid.Column="2" Spacing="2">
+              <TextBlock Text="Z" Foreground="#888" FontSize="11" />
+              <NumericUpDown Classes="axis" Value="{Binding MeshSz}" Increment="0.01" Minimum="0.001" FormatString="0.###" />
+            </StackPanel>
+          </Grid>
+
+          <TextBlock Text="{DynamicResource Ui.StlPoints}" Foreground="#AAA" Margin="0,8,0,0" />
+          <TextBlock Text="{DynamicResource Ui.StlPointsHint}" Foreground="#888" TextWrapping="Wrap" FontSize="11" />
+          <StackPanel Orientation="Horizontal" Spacing="6">
+            <Button Content="{DynamicResource Ui.StlPickMesh}" Command="{Binding ArmMeshAlignPickCommand}" />
+            <Button Content="{DynamicResource Ui.StlPickTable}" Command="{Binding ArmTableAlignPickCommand}" />
+          </StackPanel>
+          <CheckBox Content="{DynamicResource Ui.StlAllowScale}" IsChecked="{Binding MeshAlignAllowScale}"
+                    Foreground="#CCC" />
+          <ItemsControl ItemsSource="{Binding MeshAlignPairLines}">
+            <ItemsControl.ItemTemplate>
+              <DataTemplate>
+                <TextBlock Text="{Binding}" Foreground="#CCC" FontSize="11" FontFamily="Consolas" />
+              </DataTemplate>
+            </ItemsControl.ItemTemplate>
+          </ItemsControl>
+          <TextBlock Text="{Binding MeshAlignPickHint}" Foreground="#FC8" FontSize="11" TextWrapping="Wrap" />
+          <StackPanel Orientation="Horizontal" Spacing="6">
+            <Button Content="{DynamicResource Ui.StlApplyPoints}" Command="{Binding ApplyMeshPointAlignCommand}" />
+            <Button Content="{DynamicResource Ui.StlClearPoints}" Command="{Binding ClearMeshPointAlignCommand}" />
+          </StackPanel>
+          <TextBlock Text="{DynamicResource Ui.StlAlignHint}" Foreground="#888" TextWrapping="Wrap" FontSize="11" />
+        </StackPanel>
+        </ScrollViewer>
       </Border>
 
       <Border IsVisible="{Binding IsTransformOpen}" Width="300"
@@ -157,19 +334,31 @@
               Background="#E61E1E1E" BorderBrush="#555" BorderThickness="1" CornerRadius="4"
               ZIndex="10">
         <StackPanel Spacing="8">
-          <TextBlock Text="{DynamicResource Ui.Transform}" FontWeight="SemiBold" Foreground="White" />
+          <DockPanel>
+            <Button Classes="overlayClose" DockPanel.Dock="Right"
+                    Command="{Binding CloseOverlayCommand}" CommandParameter="Transform"
+                    ToolTip.Tip="{DynamicResource Ui.Close}" />
+            <TextBlock Text="{DynamicResource Ui.Transform}" FontWeight="SemiBold" Foreground="White"
+                       VerticalAlignment="Center" />
+          </DockPanel>
+          <TextBlock Text="{Binding TransformTargetLabel}" Foreground="#FC8" FontWeight="SemiBold"
+                     TextWrapping="Wrap" />
           <TextBlock Text="X" Foreground="#AAA" />
           <NumericUpDown Value="{Binding Tx}" Increment="1" FormatString="0.###" />
           <TextBlock Text="Y" Foreground="#AAA" />
           <NumericUpDown Value="{Binding Ty}" Increment="1" FormatString="0.###" />
-          <TextBlock Text="Z" Foreground="#AAA" />
-          <NumericUpDown Value="{Binding Tz}" Increment="0.1" FormatString="0.###" />
-          <TextBlock Text="Rotate °" Foreground="#AAA" />
-          <NumericUpDown Value="{Binding Rot}" Increment="1" FormatString="0.###" />
-          <TextBlock Text="Scale" Foreground="#AAA" />
-          <NumericUpDown Value="{Binding Scale}" Increment="0.01" Minimum="0.001" FormatString="0.####" />
-          <TextBlock Text="{DynamicResource Ui.AlignDock}" Foreground="#AAA" Margin="0,8,0,0" />
-          <UniformGrid Columns="3" Rows="3">
+          <StackPanel IsVisible="{Binding !IsEditingModuleAnchor}" Spacing="8">
+            <TextBlock Text="Z" Foreground="#AAA" />
+            <NumericUpDown Value="{Binding Tz}" Increment="0.1" FormatString="0.###" />
+            <TextBlock Text="Rotate °" Foreground="#AAA" />
+            <NumericUpDown Value="{Binding Rot}" Increment="1" FormatString="0.###" />
+            <TextBlock Text="Scale" Foreground="#AAA" />
+            <NumericUpDown Value="{Binding Scale}" Increment="0.01" Minimum="0.001" FormatString="0.####" />
+            <TextBlock Text="{DynamicResource Ui.AlignDock}" Foreground="#AAA" Margin="0,8,0,0" />
+          </StackPanel>
+          <TextBlock Text="{DynamicResource Ui.TransformPointHint}" Foreground="#888" TextWrapping="Wrap" FontSize="11"
+                     IsVisible="{Binding IsEditingModuleAnchor}" />
+          <UniformGrid Columns="3" Rows="3" IsVisible="{Binding !IsEditingModuleAnchor}">
             <RadioButton GroupName="Dock" Content="↖" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center"
                          IsChecked="{Binding DockMode, Converter={StaticResource StringEq}, ConverterParameter=LT}"
                          Command="{Binding AlignObjectCommand}" CommandParameter="LT" />
@@ -206,7 +395,13 @@
               Background="#E61E1E1E" BorderBrush="#555" BorderThickness="1" CornerRadius="4"
               ZIndex="10">
         <StackPanel Spacing="6">
-          <TextBlock Text="{DynamicResource Ui.Calibrate}" FontWeight="SemiBold" Foreground="White" />
+          <DockPanel>
+            <Button Classes="overlayClose" DockPanel.Dock="Right"
+                    Command="{Binding CloseOverlayCommand}" CommandParameter="Calibrate"
+                    ToolTip.Tip="{DynamicResource Ui.Close}" />
+            <TextBlock Text="{DynamicResource Ui.Calibrate}" FontWeight="SemiBold" Foreground="White"
+                       VerticalAlignment="Center" />
+          </DockPanel>
           <TextBlock Text="{Binding MeshOwnerLabel}" Foreground="#FC8" FontWeight="SemiBold" />
           <TextBlock Text="{DynamicResource Ui.CalibrateHint}"
                      Foreground="#888" TextWrapping="Wrap" FontSize="11" />
@@ -223,7 +418,13 @@
               ZIndex="10">
         <DockPanel>
           <StackPanel DockPanel.Dock="Top" Spacing="6" Margin="0,0,0,8">
-            <TextBlock Text="{DynamicResource Ui.Devices}" FontWeight="SemiBold" Foreground="White" FontSize="15" />
+            <DockPanel>
+              <Button Classes="overlayClose" DockPanel.Dock="Right"
+                      Command="{Binding CloseOverlayCommand}" CommandParameter="Devices"
+                      ToolTip.Tip="{DynamicResource Ui.Close}" />
+              <TextBlock Text="{DynamicResource Ui.Devices}" FontWeight="SemiBold" Foreground="White" FontSize="15"
+                         VerticalAlignment="Center" />
+            </DockPanel>
             <TextBlock Text="{Binding PipelineHelp}" Foreground="#888" TextWrapping="Wrap" FontSize="11" />
             <Grid ColumnDefinitions="*,Auto,Auto">
               <ListBox Grid.Column="0" ItemsSource="{Binding Projectors}"
@@ -231,7 +432,14 @@
                        Height="88" Background="Transparent" Margin="0,0,6,0">
                 <ListBox.ItemTemplate>
                   <DataTemplate x:DataType="dev:ProjectorProfile">
-                    <TextBlock Text="{Binding DisplayName}" Foreground="#EEE" />
+                    <DockPanel LastChildFill="True">
+                      <Button DockPanel.Dock="Right" Padding="8,2" Margin="6,0,0,0"
+                              Content="{DynamicResource Ui.ProjectorPreview}"
+                              Command="{Binding $parent[Window].((vm:MainViewModel)DataContext).OpenProjectorPreviewCommand}"
+                              CommandParameter="{Binding}" />
+                      <TextBlock Text="{Binding DisplayName}" Foreground="#EEE"
+                                 VerticalAlignment="Center" TextTrimming="CharacterEllipsis" />
+                    </DockPanel>
                   </DataTemplate>
                 </ListBox.ItemTemplate>
               </ListBox>
@@ -241,7 +449,6 @@
                         IsEnabled="{Binding CanRemoveProjector}" ToolTip.Tip="Remove selected" />
               </StackPanel>
             </Grid>
-            <TextBlock Text="{Binding MeshOwnerLabel}" Foreground="#FC8" FontSize="12" />
           </StackPanel>
 
           <TabControl>
@@ -278,6 +485,9 @@
                   </StackPanel>
                   <TextBlock Text="{Binding ActiveDeviceName}" Foreground="#CCC" TextWrapping="Wrap" FontSize="11" />
                   <TextBlock Text="{Binding FrameInfo}" Foreground="#8CF" TextWrapping="Wrap" FontSize="11" />
+                  <Button Content="{DynamicResource Ui.ProjectorPreview}"
+                          Command="{Binding OpenProjectorPreviewCommand}"
+                          CommandParameter="{Binding SelectedProjector}" />
                   <TextBlock Text="{DynamicResource Ui.Automation}" FontWeight="SemiBold" Foreground="#8CF" Margin="0,8,0,0" />
                   <TextBlock Text="{DynamicResource Ui.AutomationHint}" Foreground="#888" TextWrapping="Wrap" FontSize="11" />
                   <Button Content="{DynamicResource Ui.OpenAutomation}" Command="{Binding OpenAutomationCommand}" />
@@ -297,42 +507,22 @@
                   <NumericUpDown Width="160" Value="{Binding PoseX}" Increment="1" FormatString="0.#" />
                   <NumericUpDown Width="160" Value="{Binding PoseY}" Increment="1" FormatString="0.#" />
                 </StackPanel>
-                <TextBlock Text="FOV auto-tilted when you Add projectors; edit freely afterward."
+                <TextBlock Text="{DynamicResource Ui.FovHint}"
                            Foreground="#888" TextWrapping="Wrap" FontSize="11" />
               </StackPanel>
-            </TabItem>
-
-            <TabItem Header="{DynamicResource Ui.MeshSection}">
-              <ScrollViewer>
-                <StackPanel Spacing="6" Margin="0,8,0,0">
-                  <TextBlock Text="{DynamicResource Ui.MeshBelongsHint}" Foreground="#888" TextWrapping="Wrap" FontSize="11" />
-                  <CheckBox Content="{DynamicResource Ui.MeshEnable}" IsChecked="{Binding MeshEnabled}" Foreground="#CCC" />
-                  <CheckBox Content="{DynamicResource Ui.ShowMesh}" IsChecked="{Binding ShowMeshOverlay}" Foreground="#CCC" />
-                  <TextBlock Text="Cells X / Y" Foreground="#AAA" />
-                  <StackPanel Orientation="Horizontal" Spacing="6">
-                    <NumericUpDown Width="160" Value="{Binding MeshColumns}" Minimum="1" Maximum="16" FormatString="0" />
-                    <NumericUpDown Width="160" Value="{Binding MeshRows}" Minimum="1" Maximum="16" FormatString="0" />
-                  </StackPanel>
-                  <TextBlock Text="Point col / row · X / Y" Foreground="#AAA" />
-                  <StackPanel Orientation="Horizontal" Spacing="6">
-                    <NumericUpDown Width="80" Value="{Binding MeshPointCol}" Minimum="0" FormatString="0" />
-                    <NumericUpDown Width="80" Value="{Binding MeshPointRow}" Minimum="0" FormatString="0" />
-                    <NumericUpDown Width="90" Value="{Binding MeshPointX}" Increment="0.01" FormatString="0.####" />
-                    <NumericUpDown Width="90" Value="{Binding MeshPointY}" Increment="0.01" FormatString="0.####" />
-                  </StackPanel>
-                  <StackPanel Orientation="Horizontal" Spacing="8">
-                    <Button Content="Reset" Command="{Binding ResetMeshCommand}" />
-                    <Button Content="Distort" Command="{Binding DistortMeshDemoCommand}" />
-                    <Button Content="{DynamicResource Ui.Calibrate}" Command="{Binding OpenCalibrateCommand}" />
-                  </StackPanel>
-                </StackPanel>
-              </ScrollViewer>
             </TabItem>
 
             <TabItem Header="{DynamicResource Ui.ModulesSection}">
               <DockPanel Margin="0,8,0,0">
                 <StackPanel DockPanel.Dock="Top" Spacing="6">
                   <TextBlock Text="{DynamicResource Ui.ModulesBelongHint}" Foreground="#888" TextWrapping="Wrap" FontSize="11" />
+                  <TextBlock Text="{DynamicResource Ui.MeshInModulesHint}" Foreground="#FC8" TextWrapping="Wrap" FontSize="11" />
+                  <StackPanel Orientation="Horizontal" Spacing="6">
+                    <Button Content="{DynamicResource Ui.SelectMeshModule}" Command="{Binding SelectMeshModuleCommand}" />
+                    <Button Content="{DynamicResource Ui.ResetMesh}" Command="{Binding ResetMeshCommand}" />
+                    <Button Content="{DynamicResource Ui.DistortMesh}" Command="{Binding DistortMeshDemoCommand}" />
+                    <Button Content="{DynamicResource Ui.Calibrate}" Command="{Binding OpenCalibrateCommand}" />
+                  </StackPanel>
                   <StackPanel Orientation="Horizontal" Spacing="6">
                     <ComboBox Width="180" ItemsSource="{Binding AvailableModuleTypes}"
                               SelectedItem="{Binding ModuleTypeToAdd}">
@@ -405,9 +595,16 @@
               HorizontalAlignment="Right" VerticalAlignment="Top" Margin="12,12,12,12" Padding="12"
               Background="#E61E1E1E" BorderBrush="#555" BorderThickness="1" CornerRadius="4"
               ZIndex="10">
-        <DockPanel DataContext="{Binding WorkFolderBrowser}">
+        <DockPanel>
+          <DockPanel DockPanel.Dock="Top" Margin="0,0,0,8">
+            <Button Classes="overlayClose" DockPanel.Dock="Right"
+                    Command="{Binding CloseOverlayCommand}" CommandParameter="WorkFolder"
+                    ToolTip.Tip="{DynamicResource Ui.Close}" />
+            <TextBlock Text="{DynamicResource Ui.WorkFolder}" FontWeight="SemiBold" Foreground="White"
+                       VerticalAlignment="Center" />
+          </DockPanel>
+          <DockPanel DataContext="{Binding WorkFolderBrowser}">
           <StackPanel DockPanel.Dock="Top" Spacing="6" Margin="0,0,0,8">
-            <TextBlock Text="{DynamicResource Ui.WorkFolder}" FontWeight="SemiBold" Foreground="White" />
             <DockPanel>
               <Button Content="↻" Width="32" Command="{Binding RefreshCommand}"
                       DockPanel.Dock="Left" ToolTip.Tip="{DynamicResource Ui.Refresh}" />
@@ -453,6 +650,7 @@
               </DataTemplate>
             </ListBox.ItemTemplate>
           </ListBox>
+          </DockPanel>
         </DockPanel>
       </Border>
 
@@ -462,7 +660,13 @@
               ZIndex="10">
         <DockPanel>
           <StackPanel DockPanel.Dock="Top" Spacing="8" Margin="0,0,0,8">
-            <TextBlock Text="{DynamicResource Ui.Automation}" FontWeight="SemiBold" Foreground="White" />
+            <DockPanel>
+              <Button Classes="overlayClose" DockPanel.Dock="Right"
+                      Command="{Binding CloseOverlayCommand}" CommandParameter="Automation"
+                      ToolTip.Tip="{DynamicResource Ui.Close}" />
+              <TextBlock Text="{DynamicResource Ui.Automation}" FontWeight="SemiBold" Foreground="White"
+                         VerticalAlignment="Center" />
+            </DockPanel>
             <TextBlock Text="{DynamicResource Ui.WorkFolder}" Foreground="#AAA" />
             <TextBlock Text="{Binding WorkFolder}" Foreground="#8CF" FontSize="11" TextWrapping="Wrap"
                        ToolTip.Tip="{Binding WorkFolder}" />
@@ -516,18 +720,120 @@
         </DockPanel>
       </Border>
 
-      <Border IsVisible="{Binding IsLogsOpen}" Width="420" Height="260"
+      <Border IsVisible="{Binding Progress.HasActive}"
+              HorizontalAlignment="Stretch" VerticalAlignment="Bottom"
+              Margin="12" Padding="12,10"
+              Background="#F01A1A1A" BorderBrush="#666" BorderThickness="1" CornerRadius="4"
+              ZIndex="20">
+        <DockPanel>
+          <Button DockPanel.Dock="Right" Content="{DynamicResource Ui.CancelBusy}"
+                  Command="{Binding Progress.LastProgress.CancelationCommand}" Margin="12,0,0,0" FontWeight="Bold"
+                  VerticalAlignment="Center" MinWidth="88" />
+          <StackPanel Spacing="6">
+            <TextBlock Text="{Binding Progress.LastProgress.Name}" Foreground="#EEE" FontSize="12"
+                       TextTrimming="CharacterEllipsis" />
+            <ProgressBar Height="8" Minimum="0" Maximum="1"
+                         Value="{Binding Progress.LastProgress.Fraction}"
+                         IsIndeterminate="{Binding Progress.LastProgress.IsIndeterminate}" />
+          </StackPanel>
+        </DockPanel>
+      </Border>
+
+      <Border IsVisible="{Binding IsLogsOpen}" Width="480" Height="280"
               HorizontalAlignment="Left" VerticalAlignment="Center" Margin="12" Padding="12"
               Background="#E61E1E1E" BorderBrush="#555" BorderThickness="1" CornerRadius="4"
               ZIndex="10">
         <DockPanel>
-          <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" Spacing="8" Margin="0,0,0,8">
-            <TextBlock Text="{DynamicResource Ui.Logs}" FontWeight="SemiBold" Foreground="White"
-                       VerticalAlignment="Center" />
-            <Button Content="{DynamicResource Ui.ClearLogs}" Command="{Binding ClearLogsCommand}" />
+          <DockPanel DockPanel.Dock="Top" Margin="0,0,0,8">
+            <Button Classes="overlayClose" DockPanel.Dock="Right"
+                    Command="{Binding CloseOverlayCommand}" CommandParameter="Logs"
+                    ToolTip.Tip="{DynamicResource Ui.Close}" />
+            <StackPanel Orientation="Horizontal" Spacing="8">
+              <TextBlock Text="{DynamicResource Ui.Logs}" FontWeight="SemiBold" Foreground="White"
+                         VerticalAlignment="Center" />
+              <Button Content="{DynamicResource Ui.ClearLogs}" Command="{Binding ClearLogsCommand}" />
+            </StackPanel>
+          </DockPanel>
+          <ListBox ItemsSource="{Binding Logs}" Background="Transparent"
+                   FontFamily="Consolas,Courier New,monospace" FontSize="11"
+                   SelectedItem="{Binding Logs.SelectedMessage}">
+            <ListBox.ItemTemplate>
+              <DataTemplate>
+                <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="8">
+                  <TextBlock Grid.Column="0" Text="{Binding TimeText}" Foreground="#888" />
+                  <TextBlock Grid.Column="1" Text="{Binding Message}" TextTrimming="CharacterEllipsis"
+                             Foreground="{Binding Alerts, Converter={StaticResource LogStatusBrush}}" />
+                  <TextBlock Grid.Column="2" Text="{Binding Sender}" Foreground="#666" FontSize="10" />
+                </Grid>
+              </DataTemplate>
+            </ListBox.ItemTemplate>
+          </ListBox>
+        </DockPanel>
+      </Border>
+
+      <Border IsVisible="{Binding IsHotkeysOpen}" Width="420" Height="560"
+              HorizontalAlignment="Right" VerticalAlignment="Center" Margin="12" Padding="12"
+              Background="#E61E1E1E" BorderBrush="#555" BorderThickness="1" CornerRadius="4"
+              ZIndex="10">
+        <DockPanel>
+          <StackPanel DockPanel.Dock="Top" Spacing="8" Margin="0,0,0,8">
+            <DockPanel>
+              <Button Classes="overlayClose" DockPanel.Dock="Right"
+                      Command="{Binding CloseOverlayCommand}" CommandParameter="Hotkeys"
+                      ToolTip.Tip="{DynamicResource Ui.Close}" />
+              <TextBlock Text="{DynamicResource Ui.Hotkeys}" FontWeight="SemiBold" Foreground="White"
+                         VerticalAlignment="Center" />
+            </DockPanel>
+            <TextBlock Text="{DynamicResource Ui.HotkeysHint}" Foreground="#888" TextWrapping="Wrap" FontSize="11" />
+            <TextBlock Text="{Binding HotkeyCaptureHint}" Foreground="#FC8" FontWeight="SemiBold"
+                       TextWrapping="Wrap" IsVisible="{Binding IsCapturingHotkey}" />
+            <DockPanel>
+              <TextBlock Text="{DynamicResource Ui.HotkeyStep}" Foreground="#AAA" VerticalAlignment="Center"
+                         DockPanel.Dock="Left" Margin="0,0,8,0" />
+              <NumericUpDown Value="{Binding NudgeStepMm}" Increment="0.1" Minimum="0.01"
+                             FormatString="0.##" Width="120" HorizontalAlignment="Left" />
+            </DockPanel>
+            <Button Content="{DynamicResource Ui.HotkeyReset}" Command="{Binding ResetHotkeysCommand}" />
           </StackPanel>
-          <ListBox ItemsSource="{Binding LogLines}" Background="Transparent" Foreground="#AAA"
-                   FontFamily="Consolas,Courier New,monospace" FontSize="11" />
+          <ScrollViewer>
+            <ItemsControl ItemsSource="{Binding HotkeyRows}">
+              <ItemsControl.ItemTemplate>
+                <DataTemplate x:DataType="vm:HotkeyRowViewModel">
+                  <Border Margin="0,0,0,8" Padding="8" Background="#2A2A2A" CornerRadius="4">
+                    <StackPanel Spacing="6">
+                      <DockPanel>
+                        <Button Content="{DynamicResource Ui.HotkeyAdd}" DockPanel.Dock="Right" Margin="4,0,0,0"
+                                Command="{Binding $parent[Window].((vm:MainViewModel)DataContext).BeginCaptureHotkeyCommand}"
+                                CommandParameter="{Binding ActionId}" />
+                        <Button Content="{DynamicResource Ui.HotkeyRowReset}" DockPanel.Dock="Right"
+                                Command="{Binding ResetCommand}" />
+                        <TextBlock Text="{Binding Title}" Foreground="#EEE" FontWeight="SemiBold"
+                                   VerticalAlignment="Center" TextWrapping="Wrap" />
+                      </DockPanel>
+                      <TextBlock Text="{Binding KindHint}" Foreground="#888" FontSize="11"
+                                 IsVisible="{Binding HasKindHint}" />
+                      <ItemsControl ItemsSource="{Binding ChordItems}">
+                        <ItemsControl.ItemsPanel>
+                          <ItemsPanelTemplate>
+                            <WrapPanel Orientation="Horizontal" />
+                          </ItemsPanelTemplate>
+                        </ItemsControl.ItemsPanel>
+                        <ItemsControl.ItemTemplate>
+                          <DataTemplate x:DataType="vm:HotkeyChordItem">
+                            <Button Margin="0,0,6,4" Padding="8,2"
+                                    Content="{Binding Display}"
+                                    ToolTip.Tip="{DynamicResource Ui.HotkeyRemove}"
+                                    Command="{Binding RemoveCommand}"
+                                    CommandParameter="{Binding Chord}" />
+                          </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                      </ItemsControl>
+                    </StackPanel>
+                  </Border>
+                </DataTemplate>
+              </ItemsControl.ItemTemplate>
+            </ItemsControl>
+          </ScrollViewer>
         </DockPanel>
       </Border>
     </Grid>

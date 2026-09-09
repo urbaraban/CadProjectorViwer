@@ -25,7 +25,8 @@ public sealed class WorkFolderEntry
 
 public partial class WorkFolderViewModel : ObservableObject
 {
-    private static readonly string[] SupportedFileExtensions = [".dxf", ".svg"];
+    private static readonly string[] SupportedFileExtensions =
+        [".dxf", ".svg", ".2scn", ".2cfg", ".mws", ".cproj", ".stl"];
     private readonly List<WorkFolderEntry> _all = [];
     private readonly Action<string> _onPathChanged;
     private readonly Func<string, Task> _onFileSelected;
@@ -41,7 +42,12 @@ public partial class WorkFolderViewModel : ObservableObject
         [
             new ExtensionFilterItem("*", "All"),
             new ExtensionFilterItem(".dxf", "DXF"),
-            new ExtensionFilterItem(".svg", "SVG")
+            new ExtensionFilterItem(".svg", "SVG"),
+            new ExtensionFilterItem(".2scn", "2SCN"),
+            new ExtensionFilterItem(".2cfg", "2CFG"),
+            new ExtensionFilterItem(".mws", "MWS"),
+            new ExtensionFilterItem(".cproj", "CPROJ"),
+            new ExtensionFilterItem(".stl", "STL")
         ];
         SelectedExtension = ExtensionChoices[0];
 

@@ -78,7 +78,18 @@ public sealed class CompositeEdit : IEditAction
             _steps[i].Revert();
     }
 
-    public bool TryAbsorb(IEditAction earlier) => false;
+    public bool TryAbsorb(IEditAction earlier)
+    {
+        if (earlier is not CompositeEdit prior || prior._steps.Count != _steps.Count)
+            return false;
+        for (var i = 0; i < _steps.Count; i++)
+        {
+            if (!_steps[i].TryAbsorb(prior._steps[i]))
+                return false;
+        }
+
+        return true;
+    }
 }
 
 /// <summary>

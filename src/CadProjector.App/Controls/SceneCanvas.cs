@@ -5,9 +5,11 @@ using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Layout;
 using Avalonia.Media;
+using Avalonia.Media.Imaging;
 using CadProjector.Core.Devices;
 using CadProjector.Core.Project;
 using CadProjector.Core.Scene;
+using CadProjector.Geometry.Mesh;
 using CadProjector.Geometry.Primitives;
 
 namespace CadProjector.App.Controls;
@@ -38,6 +40,12 @@ public sealed class SceneCanvas : Panel
     public static readonly StyledProperty<string?> MeshOwnerLabelProperty =
         AvaloniaProperty.Register<SceneCanvas, string?>(nameof(MeshOwnerLabel));
 
+    public static readonly StyledProperty<MeshAlignPickKind> AlignPickProperty =
+        AvaloniaProperty.Register<SceneCanvas, MeshAlignPickKind>(nameof(AlignPick));
+
+    public static readonly StyledProperty<IReadOnlyList<MeshAlignMarker>?> AlignMarkersProperty =
+        AvaloniaProperty.Register<SceneCanvas, IReadOnlyList<MeshAlignMarker>?>(nameof(AlignMarkers));
+
     /// <summary>Module id, anchor index and the new position in the module's 0..1 space.</summary>
     public event Action<string, int, Point2>? ModuleAnchorChanged;
 
@@ -49,6 +57,9 @@ public sealed class SceneCanvas : Panel
 
     /// <summary>Pointer released — the edit history can seal the entry for this gesture.</summary>
     public event Action? GestureEnded;
+
+    /// <summary>World pick for STL 3–4 point align. meshHit is true when the ray struck the STL.</summary>
+    public event Action<Point3, bool>? AlignPicked;
 
     private const double ChromeGap = 6;
     private const double ChromeStrip = 30;
@@ -121,6 +132,18 @@ public sealed class SceneCanvas : Panel
         set => SetValue(MeshOwnerLabelProperty, value);
     }
 
+    public MeshAlignPickKind AlignPick
+    {
+        get => GetValue(AlignPickProperty);
+        set => SetValue(AlignPickProperty, value);
+    }
+
+    public IReadOnlyList<MeshAlignMarker>? AlignMarkers
+    {
+        get => GetValue(AlignMarkersProperty);
+        set => SetValue(AlignMarkersProperty, value);
+    }
+
     static SceneCanvas()
     {
         AffectsArrange<SceneCanvas>(SceneProperty, RevisionProperty, FovOverlaysProperty);
@@ -136,6 +159,7 @@ public sealed class SceneCanvas : Panel
         _surface.MaskBoundsChanged += (from, to) => MaskBoundsChanged?.Invoke(from, to);
         _surface.DrawableMoved += (i, from, to) => DrawableMoved?.Invoke(i, from, to);
         _surface.GestureEnded += () => GestureEnded?.Invoke();
+        _surface.AlignPicked += (p, hit) => AlignPicked?.Invoke(p, hit);
         _surface.ViewChanged += ScheduleChrome;
 
         _btnRefresh = MakeChrome("↻", "PlayCommand", tipKey: "Ui.Resend");
@@ -217,6 +241,8 @@ public sealed class SceneCanvas : Panel
         _surface.ModuleOverlays = ModuleOverlays;
         _surface.MaskEditable = MaskEditable;
         _surface.MeshOwnerLabel = MeshOwnerLabel;
+        _surface.AlignPick = AlignPick;
+        _surface.AlignMarkers = AlignMarkers;
     }
 
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
@@ -240,6 +266,10 @@ public sealed class SceneCanvas : Panel
             _surface.MaskEditable = MaskEditable;
         else if (change.Property == MeshOwnerLabelProperty)
             _surface.MeshOwnerLabel = MeshOwnerLabel;
+        else if (change.Property == AlignPickProperty)
+            _surface.AlignPick = AlignPick;
+        else if (change.Property == AlignMarkersProperty)
+            _surface.AlignMarkers = AlignMarkers;
     }
 
     private void ScheduleChrome()
@@ -365,11 +395,18 @@ public sealed class SceneCanvas : Panel
         public static readonly StyledProperty<string?> MeshOwnerLabelProperty =
             AvaloniaProperty.Register<Surface, string?>(nameof(MeshOwnerLabel));
 
+        public static readonly StyledProperty<MeshAlignPickKind> AlignPickProperty =
+            AvaloniaProperty.Register<Surface, MeshAlignPickKind>(nameof(AlignPick));
+
+        public static readonly StyledProperty<IReadOnlyList<MeshAlignMarker>?> AlignMarkersProperty =
+            AvaloniaProperty.Register<Surface, IReadOnlyList<MeshAlignMarker>?>(nameof(AlignMarkers));
+
         public event Action<string, int, Point2>? ModuleAnchorChanged;
         public event Action<Rect2, Rect2>? MaskBoundsChanged;
         public event Action<int, Point3, Point3>? DrawableMoved;
         public event Action? GestureEnded;
         public event Action? ViewChanged;
+        public event Action<Point3, bool>? AlignPicked;
 
         private const double MinZoom = 0.1;
         private const double MaxZoom = 40;
@@ -380,6 +417,8 @@ public sealed class SceneCanvas : Panel
         private Point2 _maskGrabWorld;
         private Rect2 _maskStart;
         private ViewMap? _lastMap;
+        private WriteableBitmap? _shadeBmp;
+        private float[]? _zbuf;
 
         private int _dragDrawable = -1;
         private int _hoverDrawable = -1;
@@ -440,6 +479,18 @@ public sealed class SceneCanvas : Panel
         {
             get => GetValue(MeshOwnerLabelProperty);
             set => SetValue(MeshOwnerLabelProperty, value);
+        }
+
+        public MeshAlignPickKind AlignPick
+        {
+            get => GetValue(AlignPickProperty);
+            set => SetValue(AlignPickProperty, value);
+        }
+
+        public IReadOnlyList<MeshAlignMarker>? AlignMarkers
+        {
+            get => GetValue(AlignMarkersProperty);
+            set => SetValue(AlignMarkersProperty, value);
         }
 
         static Surface() { }
@@ -510,7 +561,9 @@ public sealed class SceneCanvas : Panel
                 || change.Property == FovOverlaysProperty
                 || change.Property == ModuleOverlaysProperty
                 || change.Property == MaskEditableProperty
-                || change.Property == MeshOwnerLabelProperty)
+                || change.Property == MeshOwnerLabelProperty
+                || change.Property == AlignPickProperty
+                || change.Property == AlignMarkersProperty)
                 RequestPaint();
         }
 
@@ -563,6 +616,13 @@ public sealed class SceneCanvas : Panel
             if (_lastMap is null || Scene is null) return;
             var pt = e.GetPosition(this);
             var props = e.GetCurrentPoint(this).Properties;
+
+            if (AlignPick != MeshAlignPickKind.Off && props.IsLeftButtonPressed)
+            {
+                FireAlignPick(pt);
+                e.Handled = true;
+                return;
+            }
 
             if (props.IsMiddleButtonPressed || props.IsRightButtonPressed)
             {
@@ -784,33 +844,37 @@ public sealed class SceneCanvas : Panel
 
             const double hitPx = 6;
             var best = hitPx * hitPx;
+            var hit = -1;
+            var map = _lastMap;
             // Topmost first, and ties keep it, matching what the user sees on top.
             for (var i = Scene.Drawables.Count - 1; i >= 0; i--)
             {
                 var d = Scene.Drawables[i];
                 if (!d.IsVisible || d.IsLocked) continue;
 
-                foreach (var contour in d.Contours)
+                var candidate = i;
+                DrawableSpace.VisitContours(d, (_, contour, _) =>
                 {
-                    if (contour.Count == 0) continue;
+                    if (contour.Count == 0) return;
                     if (contour.Count == 1)
                     {
-                        var only = _lastMap.WorldToScreen(Transform(contour[0], d));
+                        var only = map.WorldToScreen(contour[0]);
                         var dd = Squared(screen, only.X, only.Y);
-                        if (dd < best) { best = dd; index = i; }
-                        continue;
+                        if (dd < best) { best = dd; hit = candidate; }
+                        return;
                     }
 
-                    var prev = _lastMap.WorldToScreen(Transform(contour[0], d));
+                    var prev = map.WorldToScreen(contour[0]);
                     for (var k = 1; k < contour.Count; k++)
                     {
-                        var next = _lastMap.WorldToScreen(Transform(contour[k], d));
+                        var next = map.WorldToScreen(contour[k]);
                         var dd = SquaredToSegment(screen, prev, next);
-                        if (dd < best) { best = dd; index = i; }
+                        if (dd < best) { best = dd; hit = candidate; }
                         prev = next;
                     }
-                }
+                });
             }
+            index = hit;
             return index >= 0;
         }
 
@@ -881,6 +945,30 @@ public sealed class SceneCanvas : Panel
             var planePen = new Pen(new SolidColorBrush(Color.FromRgb(60, 65, 75)), 1);
             DrawRect(context, _lastMap, new Rect2(0, 0, scene.Target.WidthMm, scene.Target.HeightMm), planePen);
 
+            if (scene.MeshTarget is { } stl)
+            {
+                var boundsPen = new Pen(new SolidColorBrush(Color.FromArgb(70, 120, 200, 255)), 1);
+                var bb = stl.WorldBounds;
+                DrawRect(context, _lastMap,
+                    new Rect2(bb.Min.X, bb.Min.Y, Math.Max(0, bb.Size.X), Math.Max(0, bb.Size.Y)),
+                    boundsPen);
+                if (stl.WorldMesh is { TriangleCount: > 0 } world)
+                {
+                    var map = _lastMap;
+                    MeshShadeBlit.Draw(
+                        context, ref _shadeBmp, ref _zbuf, bounds.Size, world,
+                        new Point3(0, 0, 1e9),
+                        (Point3 p, out float x, out float y, out float d) =>
+                        {
+                            var s = map.WorldToScreen(p.ToPoint2());
+                            x = (float)s.X;
+                            y = (float)s.Y;
+                            d = (float)(-p.Z);
+                            return true;
+                        });
+                }
+            }
+
             if (scene.Mask.IsEnabled)
             {
                 var maskPen = new Pen(new SolidColorBrush(Color.FromArgb(180, 80, 180, 255)), 1.5);
@@ -950,31 +1038,31 @@ public sealed class SceneCanvas : Panel
             {
                 var d = scene.Drawables[i];
                 if (!d.IsVisible) continue;
-                var color = project?.ColorMode == LaserColorMode.LayerColor && d.ColorArgb is uint argb
-                    ? Color.FromUInt32(argb)
-                    : solid;
                 var active = i == _dragDrawable || (_dragDrawable < 0 && i == _hoverDrawable);
-                var pen = active
-                    ? new Pen(new SolidColorBrush(Color.FromRgb(79, 168, 255)), 2.5)
-                    : new Pen(new SolidColorBrush(color), 1.25);
 
-                foreach (var contour in d.Contours)
+                DrawableSpace.VisitContours(d, (leaf, contour, _) =>
                 {
-                    if (contour.Count < 2) continue;
+                    if (contour.Count < 2) return;
+                    var color = project?.ColorMode == LaserColorMode.LayerColor && leaf.ColorArgb is uint argb
+                        ? Color.FromUInt32(argb)
+                        : solid;
+                    var pen = active
+                        ? new Pen(new SolidColorBrush(Color.FromRgb(79, 168, 255)), 2.5)
+                        : new Pen(new SolidColorBrush(color), 1.25);
+
                     var geo = new StreamGeometry();
                     using (var ctx = geo.Open())
                     {
-                        var first = Transform(contour[0], d);
-                        var m0 = _lastMap.WorldToScreen(first);
+                        var m0 = _lastMap.WorldToScreen(contour[0]);
                         ctx.BeginFigure(new Avalonia.Point(m0.X, m0.Y), false);
                         for (var k = 1; k < contour.Count; k++)
                         {
-                            var p = _lastMap.WorldToScreen(Transform(contour[k], d));
+                            var p = _lastMap.WorldToScreen(contour[k]);
                             ctx.LineTo(new Avalonia.Point(p.X, p.Y));
                         }
                     }
                     context.DrawGeometry(null, pen, geo);
-                }
+                });
             }
 
             if (!string.IsNullOrWhiteSpace(MeshOwnerLabel))
@@ -989,6 +1077,43 @@ public sealed class SceneCanvas : Panel
                         new SolidColorBrush(Color.FromRgb(255, 200, 60))),
                     new Avalonia.Point(12, bounds.Height - 28));
             }
+
+            if (AlignMarkers is { Count: > 0 } marks)
+            {
+                foreach (var m in marks)
+                    DrawAlignMarker(context, _lastMap, m);
+            }
+        }
+
+        private void FireAlignPick(Avalonia.Point pt)
+        {
+            if (_lastMap is null || Scene is null)
+                return;
+            var w = _lastMap.ScreenToWorld(pt);
+            if (Scene.MeshTarget is { } mesh && mesh.TryProject(w.X, w.Y, 0, out var hit))
+                AlignPicked?.Invoke(hit, true);
+            else
+                AlignPicked?.Invoke(new Point3(w.X, w.Y, 0), false);
+        }
+
+        private static void DrawAlignMarker(DrawingContext context, ViewMap map, MeshAlignMarker m)
+        {
+            var s = map.WorldToScreen(m.World.ToPoint2());
+            var p = new Avalonia.Point(s.X, s.Y);
+            var color = m.OnMesh ? Color.FromRgb(255, 170, 60) : Color.FromRgb(80, 200, 255);
+            var pen = new Pen(new SolidColorBrush(color), 1.6);
+            context.DrawLine(pen, new Avalonia.Point(p.X - 8, p.Y), new Avalonia.Point(p.X + 8, p.Y));
+            context.DrawLine(pen, new Avalonia.Point(p.X, p.Y - 8), new Avalonia.Point(p.X, p.Y + 8));
+            context.DrawEllipse(null, pen, p, 5, 5);
+            context.DrawText(
+                new FormattedText(
+                    m.Index.ToString(),
+                    System.Globalization.CultureInfo.CurrentCulture,
+                    FlowDirection.LeftToRight,
+                    Typeface.Default,
+                    12,
+                    new SolidColorBrush(color)),
+                new Avalonia.Point(p.X + 7, p.Y - 16));
         }
 
         private static void DrawModuleOverlay(DrawingContext context, ViewMap map, ModuleOverlay overlay)
@@ -1032,36 +1157,21 @@ public sealed class SceneCanvas : Panel
             context.DrawLine(pen, new Avalonia.Point(p3.X, p3.Y), new Avalonia.Point(p0.X, p0.Y));
         }
 
-        private static Point2 Transform(Point2 local, Drawable d)
-        {
-            var s = d.Scale;
-            var x = local.X * s;
-            var y = local.Y * s;
-            if (Math.Abs(d.RotationDeg) > 1e-9)
-            {
-                var rad = d.RotationDeg * Math.PI / 180.0;
-                var c = Math.Cos(rad);
-                var sn = Math.Sin(rad);
-                var rx = x * c - y * sn;
-                var ry = x * sn + y * c;
-                x = rx;
-                y = ry;
-            }
-            return new Point2(x + d.Translation.X, y + d.Translation.Y);
-        }
-
         private static Rect2 GetWorldBounds(ProjectionScene scene, IEnumerable<FovOverlay>? fovs)
         {
             double minX = 0, minY = 0, maxX = scene.Target.WidthMm, maxY = scene.Target.HeightMm;
             foreach (var d in scene.Drawables)
-            foreach (var c in d.Contours)
-            foreach (var p in c)
             {
-                var t = Transform(p, d);
-                minX = Math.Min(minX, t.X);
-                minY = Math.Min(minY, t.Y);
-                maxX = Math.Max(maxX, t.X);
-                maxY = Math.Max(maxY, t.Y);
+                DrawableSpace.VisitContours(d, (_, contour, _) =>
+                {
+                    foreach (var t in contour)
+                    {
+                        minX = Math.Min(minX, t.X);
+                        minY = Math.Min(minY, t.Y);
+                        maxX = Math.Max(maxX, t.X);
+                        maxY = Math.Max(maxY, t.Y);
+                    }
+                });
             }
             if (scene.Mask.IsEnabled)
             {

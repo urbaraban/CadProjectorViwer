@@ -149,6 +149,22 @@ public sealed class CalibrationMesh
         SelectedRow = Math.Clamp(row, 0, Rows);
     }
 
+    /// <summary>
+    /// Walk control points in row-major order (legacy mesh SelectNext).
+    /// Shift jumps a whole row; otherwise one point.
+    /// </summary>
+    public void SelectNext(bool forward, bool shift)
+    {
+        var cols = Columns + 1;
+        var rows = Rows + 1;
+        var count = cols * rows;
+        if (count <= 1) return;
+        var i = SelectedRow * cols + SelectedCol;
+        var step = shift ? cols : 1;
+        var next = ((i + (forward ? step : -step)) % count + count) % count;
+        SelectPoint(next % cols, next / cols);
+    }
+
     /// <summary>Recompute interior points from Morph mode (no-op for Single).</summary>
     public void CalculateMorph()
     {

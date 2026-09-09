@@ -3,7 +3,11 @@ using CadProjector.Geometry.Primitives;
 
 namespace CadProjector.Rendering;
 
-/// <summary>Assigns geometry to projectors by FOV rectangle on the scene plane (pose XY + FoV size).</summary>
+/// <summary>
+/// Clips scene-normalized geometry to each projector's FOV rectangle and remaps
+/// that rectangle to 0..1 device space (pose XY + FoV size on the scene plane).
+/// Overlapping FOVs both receive the overlap, each in their own local field.
+/// </summary>
 public static class GeometrySplitter
 {
     public static Dictionary<string, LinesCollection> SplitByFov(
@@ -13,37 +17,31 @@ public static class GeometrySplitter
         double sceneHeightMm)
     {
         var result = projectors.ToDictionary(p => p.Id, _ => new LinesCollection());
-        if (projectors.Count == 0)
+        if (projectors.Count == 0 || frame.Points.Count < 2)
             return result;
-
-        if (projectors.Count == 1)
-        {
-            result[projectors[0].Id] = frame;
-            return result;
-        }
 
         var w = Math.Max(1e-6, sceneWidthMm);
         var h = Math.Max(1e-6, sceneHeightMm);
+        var segs = StrokeSegmentOps.ToSegments(frame);
 
-        for (var i = 0; i < frame.Points.Count - 1; i++)
+        foreach (var p in projectors)
         {
-            var a = frame.Points[i];
-            var b = frame.Points[i + 1];
-            if (b.Blanked)
-                continue;
+            var fov = GetFovNormalized(p, w, h);
+            var bag = result[p.Id];
+            var fw = Math.Max(1e-6, fov.Width);
+            var fh = Math.Max(1e-6, fov.Height);
 
-            var midX = (a.X + b.X) * 0.5;
-            var midY = (a.Y + b.Y) * 0.5;
-            var owner = FindOwner(projectors, midX, midY, w, h) ?? projectors[0];
-            var bag = result[owner.Id];
-            bag.Points.Add(new RenderPoint
+            foreach (var seg in segs)
             {
-                X = a.X, Y = a.Y, Z = a.Z, Blanked = true, Mass = a.Mass, Color = a.Color
-            });
-            bag.Points.Add(new RenderPoint
-            {
-                X = b.X, Y = b.Y, Z = b.Z, Blanked = false, Mass = b.Mass, Color = b.Color
-            });
+                if (seg.IsBlank)
+                    continue;
+                if (!StrokeSegmentOps.TryClipToRect(seg, fov, out var clipped))
+                    continue;
+
+                MapToFov(clipped.P1, fov.X, fov.Y, fw, fh);
+                MapToFov(clipped.P2, fov.X, fov.Y, fw, fh);
+                AppendIndependent(bag, clipped);
+            }
         }
 
         return result;
@@ -60,46 +58,20 @@ public static class GeometrySplitter
         return new Rect2(cx - fw * 0.5, cy - fh * 0.5, fw, fh);
     }
 
-    private static ProjectorProfile? FindOwner(
-        IReadOnlyList<ProjectorProfile> projectors,
-        double nx,
-        double ny,
-        double sceneW,
-        double sceneH)
+    private static void MapToFov(RenderPoint pt, double originX, double originY, double fw, double fh)
     {
-        ProjectorProfile? best = null;
-        var bestDist = double.MaxValue;
-        foreach (var p in projectors)
-        {
-            var fov = GetFovNormalized(p, sceneW, sceneH);
-            if (!fov.Contains(new Point2(nx, ny)))
-                continue;
+        pt.X = (pt.X - originX) / fw;
+        pt.Y = (pt.Y - originY) / fh;
+    }
 
-            var cx = p.Pose.PositionMm.X / sceneW;
-            var cy = p.Pose.PositionMm.Y / sceneH;
-            var d = (nx - cx) * (nx - cx) + (ny - cy) * (ny - cy);
-            if (d < bestDist)
-            {
-                bestDist = d;
-                best = p;
-            }
-        }
-
-        // Fallback: nearest projector center if outside all FOVs
-        if (best is not null)
-            return best;
-
-        foreach (var p in projectors)
-        {
-            var cx = p.Pose.PositionMm.X / sceneW;
-            var cy = p.Pose.PositionMm.Y / sceneH;
-            var d = (nx - cx) * (nx - cx) + (ny - cy) * (ny - cy);
-            if (d < bestDist)
-            {
-                bestDist = d;
-                best = p;
-            }
-        }
-        return best;
+    /// <summary>Each clipped stroke is its own hop so disconnected pieces stay blank-separated.</summary>
+    private static void AppendIndependent(LinesCollection bag, StrokeSegment seg)
+    {
+        var a = seg.P1.Clone();
+        a.Blanked = true;
+        var b = seg.P2.Clone();
+        b.Blanked = false;
+        bag.Points.Add(a);
+        bag.Points.Add(b);
     }
 }

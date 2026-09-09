@@ -17,6 +17,9 @@
 		},
 		{
 			"path": "../MonchaSDK/MonchaSDK"
+		},
+		{
+			"path": "../../../Downloads/Telegram Desktop/FT.Main.NET-master-FT.LoggingServices/FT.Main.NET-master-FT.LoggingServices"
 		}
 	],
 	"settings": {}

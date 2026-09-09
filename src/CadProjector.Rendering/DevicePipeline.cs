@@ -35,8 +35,8 @@ public sealed class DevicePipeline
 
     public LinesCollection BuildFrame(ProjectionScene scene, ProjectDocument project, ProjectorProfile device)
     {
-        var lines = BuildSceneFrame(scene, project);
-        return ApplyDeviceStage(lines, device);
+        var bags = BuildPerDevice(scene, project, [device]);
+        return bags.TryGetValue(device.Id, out var bag) ? bag : new LinesCollection();
     }
 
     /// <summary>

@@ -1,4 +1,5 @@
 using System.Text.Json;
+using CadProjector.FileFormats.Dxf;
 
 namespace CadProjector.App.Services;
 
@@ -13,45 +14,28 @@ public static class AppPrefs
             "2Cut",
             "prefs.json");
 
-    public static string? LoadWorkFolder()
+    public static AppPrefsState Load()
     {
         try
         {
-            if (!File.Exists(PrefsPath)) return null;
+            if (!File.Exists(PrefsPath)) return new AppPrefsState();
             using var stream = File.OpenRead(PrefsPath);
-            var doc = JsonSerializer.Deserialize<PrefsDto>(stream);
-            return string.IsNullOrWhiteSpace(doc?.WorkFolder) ? null : doc!.WorkFolder;
+            return JsonSerializer.Deserialize<AppPrefsState>(stream) ?? new AppPrefsState();
         }
         catch
         {
-            return null;
+            return new AppPrefsState();
         }
     }
 
-    public static void SaveWorkFolder(string path)
+    public static void Save(AppPrefsState state)
     {
         try
         {
             var dir = Path.GetDirectoryName(PrefsPath);
             if (!string.IsNullOrEmpty(dir))
                 Directory.CreateDirectory(dir);
-
-            PrefsDto existing = new();
-            if (File.Exists(PrefsPath))
-            {
-                try
-                {
-                    var text = File.ReadAllText(PrefsPath);
-                    existing = JsonSerializer.Deserialize<PrefsDto>(text) ?? new PrefsDto();
-                }
-                catch
-                {
-                    existing = new PrefsDto();
-                }
-            }
-
-            existing.WorkFolder = path;
-            File.WriteAllText(PrefsPath, JsonSerializer.Serialize(existing, JsonOptions));
+            File.WriteAllText(PrefsPath, JsonSerializer.Serialize(state, JsonOptions));
         }
         catch
         {
@@ -59,8 +43,39 @@ public static class AppPrefs
         }
     }
 
-    private sealed class PrefsDto
+    public static void Update(Action<AppPrefsState> mutate)
     {
-        public string? WorkFolder { get; set; }
+        var state = Load();
+        mutate(state);
+        Save(state);
     }
+
+    public static string? LoadWorkFolder() => Load().WorkFolder;
+
+    public static void SaveWorkFolder(string path) =>
+        Update(s => s.WorkFolder = path);
+}
+
+public sealed class AppPrefsState
+{
+    public string? WorkFolder { get; set; }
+    public string? Language { get; set; }
+    public int UdpPort { get; set; } = 11000;
+    public string? UdpBindIp { get; set; }
+    public string? DxfUnits { get; set; }
+
+    public DxfUnitPreference DxfUnitPreference =>
+        Enum.TryParse<DxfUnitPreference>(DxfUnits, ignoreCase: true, out var value)
+            ? value
+            : DxfUnitPreference.Auto;
+
+    public double NudgeStepMm { get; set; } = 1;
+    public List<HotkeyPref> Hotkeys { get; set; } = [];
+}
+
+public sealed class HotkeyPref
+{
+    public string Action { get; set; } = "";
+    public string Key { get; set; } = "";
+    public string Modifiers { get; set; } = "None";
 }

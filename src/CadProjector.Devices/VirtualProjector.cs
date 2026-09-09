@@ -1,4 +1,5 @@
 using CadProjector.Core.Devices;
+using CadProjector.Logging;
 using CadProjector.Rendering;
 
 namespace CadProjector.Devices;
@@ -16,14 +17,18 @@ public sealed class VirtualProjector : ILaserProjector
     public Task ConnectAsync(CancellationToken cancellationToken = default)
     {
         IsConnected = true;
+        CadLog.Info($"Connected {DisplayName}");
         return Task.CompletedTask;
     }
 
     public Task DisconnectAsync(CancellationToken cancellationToken = default)
     {
+        var was = IsConnected;
         IsPlaying = false;
         IsConnected = false;
         LastFrame = null;
+        if (was)
+            CadLog.Info($"Disconnected {DisplayName}");
         return Task.CompletedTask;
     }
 

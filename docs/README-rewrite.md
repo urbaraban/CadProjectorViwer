@@ -23,6 +23,10 @@ dotnet run --project src/CadProjector.App
 | 10 | Реестр модулей: все 19 модулей из legacy MonchaSDK, произвольный порядок и параметры на устройство |
 | 11 | Сетка — такой же модуль; модули с геометрией рисуются и правятся на столе, опционально уходят на проектор |
 | 12 | Unit-тесты + CI; unsaved warn; ColorMode UI; multi-scene +/− |
+| 13 | Дерево: rename / group / lock; prefs (язык, UDP, DXF units); обрыв VLT → Stop; первый Play |
+| 14 | Импорт legacy `.2cfg`/`.mws`/`.2scn` → `.cproj` (только чтение); отчёт skip/warn; WorkFolder + UDP |
+| 15 | STL как MeshTarget: ASCII/binary, BVH, орто −Z на поверхность, XY-wireframe на столе; 3D orbit — дальше |
+| 16 | 3D viewport: orbit/pan/zoom; T/R/S alignment STL; hit/miss (зелёный/красный) |
 
 **Devices:** list + Add/Remove (не только A/B); вкладки Device / FOV / Mesh / Modules  
 

@@ -3,6 +3,7 @@
   <ItemGroup>
     <ProjectReference Include="..\CadProjector.Geometry\CadProjector.Geometry.csproj" />
     <ProjectReference Include="..\CadProjector.Core\CadProjector.Core.csproj" />
+    <ProjectReference Include="..\CadProjector.Logging\CadProjector.Logging.csproj" />
   </ItemGroup>
 
   <ItemGroup>

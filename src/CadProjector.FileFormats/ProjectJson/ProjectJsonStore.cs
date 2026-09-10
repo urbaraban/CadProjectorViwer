@@ -424,7 +424,6 @@ public static class ProjectJsonStore
         public string? LayerName { get; set; }
         public uint? ColorArgb { get; set; }
         public bool IsVisible { get; set; } = true;
-        public bool IsLocked { get; set; }
         public double Tx { get; set; }
         public double Ty { get; set; }
         public double Tz { get; set; }
@@ -440,7 +439,6 @@ public static class ProjectJsonStore
             LayerName = d.LayerName,
             ColorArgb = d.ColorArgb,
             IsVisible = d.IsVisible,
-            IsLocked = d.IsLocked,
             Tx = d.Translation.X,
             Ty = d.Translation.Y,
             Tz = d.Translation.Z,
@@ -457,7 +455,6 @@ public static class ProjectJsonStore
             LayerName = LayerName,
             ColorArgb = ColorArgb,
             IsVisible = IsVisible,
-            IsLocked = IsLocked,
             Translation = new Point3(Tx, Ty, Tz),
             RotationDeg = RotationDeg,
             Scale = Scale,

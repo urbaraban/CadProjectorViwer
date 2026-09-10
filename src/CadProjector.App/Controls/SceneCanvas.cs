@@ -850,7 +850,7 @@ public sealed class SceneCanvas : Panel
             for (var i = Scene.Drawables.Count - 1; i >= 0; i--)
             {
                 var d = Scene.Drawables[i];
-                if (!d.IsVisible || d.IsLocked) continue;
+                if (!d.IsVisible) continue;
 
                 var candidate = i;
                 DrawableSpace.VisitContours(d, (_, contour, _) =>

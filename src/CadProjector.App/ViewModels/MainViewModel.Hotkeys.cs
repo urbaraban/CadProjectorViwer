@@ -322,7 +322,7 @@ public partial class MainViewModel
             return;
         }
 
-        var targets = GetSelectedDrawables().Where(d => !d.IsLocked).ToList();
+        var targets = GetSelectedDrawables();
         if (targets.Count == 0) return;
 
         var steps = new List<IEditAction>();

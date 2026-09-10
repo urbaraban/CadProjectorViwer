@@ -406,7 +406,6 @@ public partial class MainViewModel : ViewModelBase
 
     [ObservableProperty] public partial string LanguageCode { get; set; } = "EN";
     [ObservableProperty] public partial string ObjectName { get; set; } = "";
-    [ObservableProperty] public partial bool ObjectLocked { get; set; }
     [ObservableProperty] public partial string DxfUnitChoice { get; set; } = "Auto";
     [ObservableProperty] public partial string DeviceLinkText { get; set; } = "";
     [ObservableProperty] public partial bool LaserAlert { get; set; }
@@ -1830,7 +1829,6 @@ public partial class MainViewModel : ViewModelBase
 
         var d = GetFocusedDrawable();
         if (d is null || SelectedScene is null) return;
-        if (d.IsLocked) return;
 
         var before = DrawableTransform.Read(d);
         ApplyDock(d, SelectedScene.Target, DockMode);
@@ -1942,8 +1940,8 @@ public partial class MainViewModel : ViewModelBase
         if (SelectedScene is null) return [];
         var selected = GetSelectedDrawables();
         if (selected.Count > 0)
-            return selected.Where(d => d.IsVisible && !d.IsLocked).ToList();
-        return SelectedScene.Drawables.Where(d => d.IsVisible && !d.IsLocked).ToList();
+            return selected.Where(d => d.IsVisible).ToList();
+        return SelectedScene.Drawables.Where(d => d.IsVisible).ToList();
     }
 
     private void SyncTransformPanel()
@@ -2252,7 +2250,6 @@ public partial class MainViewModel : ViewModelBase
 
         var selected = items.ToHashSet();
         var doomed = items
-            .Where(i => !IsLockedInTree(i))
             .Where(i =>
             {
                 for (var p = i.Parent; p is not null; p = p.Parent)
@@ -2277,13 +2274,6 @@ public partial class MainViewModel : ViewModelBase
         MarkDirty();
         BumpCanvas();
         Log($"Removed {doomed.Count} object(s)");
-    }
-
-    private static bool IsLockedInTree(ObjectListItem item)
-    {
-        for (var p = item; p is not null; p = p.Parent)
-            if (p.IsLocked) return true;
-        return false;
     }
 
     [RelayCommand]
@@ -3244,11 +3234,6 @@ public partial class MainViewModel : ViewModelBase
 
         var d = GetFocusedDrawable();
         if (d is null) return;
-        if (d.IsLocked)
-        {
-            SyncTransformPanel();
-            return;
-        }
         var before = DrawableTransform.Read(d);
         d.Translation = new Point3(Tx, Ty, Tz);
         d.RotationDeg = Rot;
@@ -3287,7 +3272,7 @@ public partial class MainViewModel : ViewModelBase
     {
         var keepId = SelectedObjectItem?.Drawable.Id;
         foreach (var old in ObjectItems)
-            old.UnwireTreeEvents(OnObjectVisibilityChanged, OnObjectLockChanged, OnObjectNameEdited);
+            old.UnwireTreeEvents(OnObjectVisibilityChanged, OnObjectNameEdited);
         ObjectItems.Clear();
         if (SelectedScene is null)
         {
@@ -3299,7 +3284,7 @@ public partial class MainViewModel : ViewModelBase
         for (var i = 0; i < SelectedScene.Drawables.Count; i++)
         {
             var item = new ObjectListItem(SelectedScene.Drawables[i], i);
-            item.WireTreeEvents(OnObjectVisibilityChanged, OnObjectLockChanged, OnObjectNameEdited);
+            item.WireTreeEvents(OnObjectVisibilityChanged, OnObjectNameEdited);
             ObjectItems.Add(item);
         }
 
@@ -3318,26 +3303,6 @@ public partial class MainViewModel : ViewModelBase
 
     private void OnObjectVisibilityChanged(object? sender, EventArgs e) => BumpCanvas();
 
-    private void OnObjectLockChanged(object? sender, EventArgs e)
-    {
-        if (_restoring || _suppressObjectUi) return;
-        if (sender is not ObjectListItem item) return;
-        Record(
-            new ValueEdit<bool>(
-                $"{Hist("Lock", "Lock")} {item.Drawable.Name}",
-                v =>
-                {
-                    item.Drawable.IsLocked = v;
-                    item.IsLocked = v;
-                    PullObjectUiFromSelection();
-                },
-                !item.IsLocked,
-                item.IsLocked),
-            $"drawable:{item.Drawable.Id}:lock");
-        PullObjectUiFromSelection();
-        BumpCanvas();
-    }
-
     private void OnObjectNameEdited(object? sender, EventArgs e)
     {
         if (sender is not ObjectListItem item) return;
@@ -3350,7 +3315,6 @@ public partial class MainViewModel : ViewModelBase
         _suppressObjectUi = true;
         var d = GetFocusedDrawable();
         ObjectName = d?.Name ?? "";
-        ObjectLocked = d?.IsLocked ?? false;
         _suppressObjectUi = false;
     }
 
@@ -3378,34 +3342,6 @@ public partial class MainViewModel : ViewModelBase
                 value),
             $"drawable:{d.Id}:name");
         MarkDirty();
-    }
-
-    partial void OnObjectLockedChanged(bool value)
-    {
-        if (_suppressObjectUi) return;
-        var d = GetFocusedDrawable();
-        if (d is null) return;
-        if (d.IsLocked == value) return;
-        var before = d.IsLocked;
-        _suppressObjectUi = true;
-        d.IsLocked = value;
-        if (SelectedObjectItem is { } item)
-            item.IsLocked = value;
-        _suppressObjectUi = false;
-        Record(
-            new ValueEdit<bool>(
-                $"{Hist("Lock", "Lock")} {d.Name}",
-                v =>
-                {
-                    d.IsLocked = v;
-                    if (SelectedObjectItem is { } row)
-                        row.IsLocked = v;
-                    PullObjectUiFromSelection();
-                },
-                before,
-                value),
-            $"drawable:{d.Id}:lock");
-        BumpCanvas();
     }
 
     partial void OnDxfUnitChoiceChanged(string value)

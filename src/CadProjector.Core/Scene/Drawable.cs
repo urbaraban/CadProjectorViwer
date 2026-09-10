@@ -9,7 +9,6 @@ public sealed class Drawable
     public string? LayerName { get; set; }
     public uint? ColorArgb { get; set; }
     public bool IsVisible { get; set; } = true;
-    public bool IsLocked { get; set; }
     public Point3 Translation { get; set; } = Point3.Zero;
     public double RotationDeg { get; set; }
     public double Scale { get; set; } = 1;
@@ -74,7 +73,6 @@ public sealed class Drawable
         LayerName = LayerName,
         ColorArgb = ColorArgb,
         IsVisible = IsVisible,
-        IsLocked = IsLocked,
         Translation = Translation,
         RotationDeg = RotationDeg,
         Scale = Scale,

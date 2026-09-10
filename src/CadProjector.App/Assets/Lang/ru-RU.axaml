@@ -139,7 +139,6 @@
   <x:String x:Key="Ui.GroupNeedSiblings">Выделите два или более соседних объекта (Ctrl+клик)</x:String>
   <x:String x:Key="Ui.GroupSiblingsOnly">Группировать можно только соседей</x:String>
   <x:String x:Key="Ui.ObjectName">Имя</x:String>
-  <x:String x:Key="Ui.Lock">Блок</x:String>
   <x:String x:Key="Ui.Visible">Видимость</x:String>
   <x:String x:Key="Ui.DxfUnits">Единицы DXF</x:String>
   <x:String x:Key="Ui.FirstPlayTitle">Вывод на лазер</x:String>
@@ -156,7 +155,6 @@
   <x:String x:Key="Hist.Group">Группа</x:String>
   <x:String x:Key="Hist.Ungroup">Разгруппировка</x:String>
   <x:String x:Key="Hist.Rename">Имя</x:String>
-  <x:String x:Key="Hist.Lock">Блок</x:String>
   <x:String x:Key="Ui.Ready">Готово</x:String>
   <x:String x:Key="Ui.ClearLogs">Очистить</x:String>
   <x:String x:Key="Ui.DeviceList">Проекторы</x:String>

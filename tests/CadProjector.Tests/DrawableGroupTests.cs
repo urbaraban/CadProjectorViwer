@@ -38,15 +38,6 @@ public class DrawableGroupTests
         Assert.Equal(1, promoted[0].Translation.Z, 6);
     }
 
-    [Fact]
-    public void LockedFlag_RoundTripsOnClone()
-    {
-        var d = new Drawable { Name = "LockMe", IsLocked = true };
-        var clone = d.CloneTree();
-        Assert.True(clone.IsLocked);
-        Assert.Equal("LockMe", clone.Name);
-    }
-
     private static Point2 WorldFirst(Drawable d)
     {
         Point2? hit = null;

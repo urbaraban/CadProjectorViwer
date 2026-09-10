@@ -12,7 +12,6 @@ public partial class ObjectListItem : ObservableObject
         RootIndex = rootIndex;
         Parent = parent;
         IsVisible = drawable.IsVisible;
-        IsLocked = drawable.IsLocked;
         Name = drawable.Name;
         IsExpanded = drawable.IsGroup;
         foreach (var child in drawable.Children)
@@ -41,7 +40,6 @@ public partial class ObjectListItem : ObservableObject
 
     [ObservableProperty] public partial string Name { get; set; }
     [ObservableProperty] public partial bool IsVisible { get; set; }
-    [ObservableProperty] public partial bool IsLocked { get; set; }
     [ObservableProperty] public partial bool IsExpanded { get; set; }
 
     partial void OnNameChanged(string value)
@@ -59,32 +57,23 @@ public partial class ObjectListItem : ObservableObject
         VisibilityChanged?.Invoke(this, EventArgs.Empty);
     }
 
-    partial void OnIsLockedChanged(bool value)
-    {
-        Drawable.IsLocked = value;
-        LockChanged?.Invoke(this, EventArgs.Empty);
-    }
-
     public event EventHandler? VisibilityChanged;
-    public event EventHandler? LockChanged;
     public event EventHandler? NameChanged;
 
-    public void WireTreeEvents(EventHandler visibility, EventHandler lockChanged, EventHandler nameChanged)
+    public void WireTreeEvents(EventHandler visibility, EventHandler nameChanged)
     {
         VisibilityChanged += visibility;
-        LockChanged += lockChanged;
         NameChanged += nameChanged;
         foreach (var child in Children)
-            child.WireTreeEvents(visibility, lockChanged, nameChanged);
+            child.WireTreeEvents(visibility, nameChanged);
     }
 
-    public void UnwireTreeEvents(EventHandler visibility, EventHandler lockChanged, EventHandler nameChanged)
+    public void UnwireTreeEvents(EventHandler visibility, EventHandler nameChanged)
     {
         VisibilityChanged -= visibility;
-        LockChanged -= lockChanged;
         NameChanged -= nameChanged;
         foreach (var child in Children)
-            child.UnwireTreeEvents(visibility, lockChanged, nameChanged);
+            child.UnwireTreeEvents(visibility, nameChanged);
     }
 
     public IEnumerable<ObjectListItem> EnumerateSelfAndDescendants()

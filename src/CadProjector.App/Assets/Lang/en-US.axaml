@@ -139,7 +139,6 @@
   <x:String x:Key="Ui.GroupNeedSiblings">Select two or more sibling objects (Ctrl+click) to group</x:String>
   <x:String x:Key="Ui.GroupSiblingsOnly">Group only works on siblings</x:String>
   <x:String x:Key="Ui.ObjectName">Name</x:String>
-  <x:String x:Key="Ui.Lock">Lock</x:String>
   <x:String x:Key="Ui.Visible">Visible</x:String>
   <x:String x:Key="Ui.DxfUnits">DXF units</x:String>
   <x:String x:Key="Ui.FirstPlayTitle">Laser output</x:String>
@@ -156,7 +155,6 @@
   <x:String x:Key="Hist.Group">Group</x:String>
   <x:String x:Key="Hist.Ungroup">Ungroup</x:String>
   <x:String x:Key="Hist.Rename">Rename</x:String>
-  <x:String x:Key="Hist.Lock">Lock</x:String>
   <x:String x:Key="Ui.Ready">Ready</x:String>
   <x:String x:Key="Ui.ClearLogs">Clear</x:String>
   <x:String x:Key="Ui.DeviceList">Projectors</x:String>

@@ -1,0 +1,75 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="using:CadProjector.App.ViewModels"
+        x:Class="CadProjector.App.Views.HotkeysWindow"
+        x:DataType="vm:MainViewModel"
+        Title="{DynamicResource Ui.Hotkeys}"
+        Width="420"
+        Height="560"
+        Background="{StaticResource Surface.Shell}"
+        WindowStartupLocation="CenterOwner">
+
+  <Border Classes="panel" Padding="12" CornerRadius="4" Margin="12">
+    <DockPanel>
+      <StackPanel DockPanel.Dock="Top" Spacing="8" Margin="0,0,0,8">
+        <DockPanel>
+          <Button Classes="overlayClose" DockPanel.Dock="Right"
+                  Click="Close_Click"
+                  ToolTip.Tip="{DynamicResource Ui.Close}" />
+          <TextBlock Text="{DynamicResource Ui.Hotkeys}" Classes="sectionHeader"
+                     VerticalAlignment="Center" />
+        </DockPanel>
+        <TextBlock Text="{DynamicResource Ui.HotkeysHint}" Classes="hint" />
+        <TextBlock Text="{Binding HotkeyCaptureHint}" Foreground="{StaticResource Warning}"
+                   FontWeight="SemiBold" TextWrapping="Wrap"
+                   IsVisible="{Binding IsCapturingHotkey}" />
+        <DockPanel>
+          <TextBlock Text="{DynamicResource Ui.HotkeyStep}" Classes="fieldLabel"
+                     VerticalAlignment="Center" DockPanel.Dock="Left" Margin="0,0,8,0" />
+          <NumericUpDown Value="{Binding NudgeStepMm}" Increment="0.1" Minimum="0.01"
+                         FormatString="0.##" Width="120" HorizontalAlignment="Left" />
+        </DockPanel>
+        <Button Content="{DynamicResource Ui.HotkeyReset}" Command="{Binding ResetHotkeysCommand}" />
+      </StackPanel>
+      <ScrollViewer>
+        <ItemsControl ItemsSource="{Binding HotkeyRows}">
+          <ItemsControl.ItemTemplate>
+            <DataTemplate x:DataType="vm:HotkeyRowViewModel">
+              <Border Classes="card">
+                <StackPanel Spacing="6">
+                  <DockPanel>
+                    <Button Content="{DynamicResource Ui.HotkeyAdd}" DockPanel.Dock="Right" Margin="4,0,0,0"
+                            Command="{Binding $parent[Window].((vm:MainViewModel)DataContext).BeginCaptureHotkeyCommand}"
+                            CommandParameter="{Binding ActionId}" />
+                    <Button Content="{DynamicResource Ui.HotkeyRowReset}" DockPanel.Dock="Right"
+                            Command="{Binding ResetCommand}" />
+                    <TextBlock Text="{Binding Title}" Foreground="{StaticResource Text.Primary}"
+                               FontWeight="SemiBold" VerticalAlignment="Center" TextWrapping="Wrap" />
+                  </DockPanel>
+                  <TextBlock Text="{Binding KindHint}" Classes="hint"
+                             IsVisible="{Binding HasKindHint}" />
+                  <ItemsControl ItemsSource="{Binding ChordItems}">
+                    <ItemsControl.ItemsPanel>
+                      <ItemsPanelTemplate>
+                        <WrapPanel Orientation="Horizontal" />
+                      </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                    <ItemsControl.ItemTemplate>
+                      <DataTemplate x:DataType="vm:HotkeyChordItem">
+                        <Button Margin="0,0,6,4" Padding="8,2"
+                                Content="{Binding Display}"
+                                ToolTip.Tip="{DynamicResource Ui.HotkeyRemove}"
+                                Command="{Binding RemoveCommand}"
+                                CommandParameter="{Binding Chord}" />
+                      </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                  </ItemsControl>
+                </StackPanel>
+              </Border>
+            </DataTemplate>
+          </ItemsControl.ItemTemplate>
+        </ItemsControl>
+      </ScrollViewer>
+    </DockPanel>
+  </Border>
+</Window>

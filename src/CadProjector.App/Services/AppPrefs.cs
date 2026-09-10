@@ -54,11 +54,17 @@ public static class AppPrefs
 
     public static void SaveWorkFolder(string path) =>
         Update(s => s.WorkFolder = path);
+
+    public static string? LoadLastProject() => Load().LastProjectPath;
+
+    public static void SaveLastProject(string? path) =>
+        Update(s => s.LastProjectPath = string.IsNullOrWhiteSpace(path) ? null : path);
 }
 
 public sealed class AppPrefsState
 {
     public string? WorkFolder { get; set; }
+    public string? LastProjectPath { get; set; }
     public string? Language { get; set; }
     public int UdpPort { get; set; } = 11000;
     public string? UdpBindIp { get; set; }
@@ -71,6 +77,21 @@ public sealed class AppPrefsState
 
     public double NudgeStepMm { get; set; } = 1;
     public List<HotkeyPref> Hotkeys { get; set; } = [];
+    public WorkspaceLayoutPrefs Workspace { get; set; } = new();
+}
+
+public sealed class WorkspaceLayoutPrefs
+{
+    public string? ActiveLeft { get; set; }
+    public string? ActiveRight { get; set; }
+    public string? ActiveBottom { get; set; }
+    public double LeftWidth { get; set; } = 300;
+    public double RightWidth { get; set; } = 340;
+    public double BottomHeight { get; set; } = 200;
+    public bool IsBottomOpen { get; set; }
+    public double WindowWidth { get; set; }
+    public double WindowHeight { get; set; }
+    public bool IsMaximized { get; set; } = true;
 }
 
 public sealed class HotkeyPref

@@ -1,0 +1,41 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:CadProjector.App.ViewModels"
+             xmlns:conv="using:CadProjector.App.Converters"
+             x:Class="CadProjector.App.Views.Panels.LogsPanel"
+             x:DataType="vm:MainViewModel">
+
+  <UserControl.Resources>
+    <conv:LogStatusBrushConverter x:Key="LogStatusBrush" />
+  </UserControl.Resources>
+
+  <Border Classes="panel" Padding="12" CornerRadius="4">
+    <DockPanel>
+      <DockPanel DockPanel.Dock="Top" Margin="0,0,0,8">
+        <Button Classes="overlayClose" DockPanel.Dock="Right"
+                Command="{Binding CloseOverlayCommand}" CommandParameter="Logs"
+                ToolTip.Tip="{DynamicResource Ui.Close}" />
+        <StackPanel Orientation="Horizontal" Spacing="8">
+          <TextBlock Text="{DynamicResource Ui.Logs}" Classes="sectionHeader"
+                     VerticalAlignment="Center" />
+          <Button Content="{DynamicResource Ui.ClearLogs}" Command="{Binding ClearLogsCommand}" />
+        </StackPanel>
+      </DockPanel>
+      <ListBox ItemsSource="{Binding Logs}" Background="Transparent"
+               FontFamily="Consolas,Courier New,monospace" FontSize="11"
+               SelectedItem="{Binding Logs.SelectedMessage}">
+        <ListBox.ItemTemplate>
+          <DataTemplate>
+            <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="8">
+              <TextBlock Grid.Column="0" Text="{Binding TimeText}" Classes="hint" />
+              <TextBlock Grid.Column="1" Text="{Binding Message}" TextTrimming="CharacterEllipsis"
+                         Foreground="{Binding Alerts, Converter={StaticResource LogStatusBrush}}" />
+              <TextBlock Grid.Column="2" Text="{Binding Sender}" Foreground="{StaticResource Text.Muted}"
+                         FontSize="10" />
+            </Grid>
+          </DataTemplate>
+        </ListBox.ItemTemplate>
+      </ListBox>
+    </DockPanel>
+  </Border>
+</UserControl>

@@ -2,6 +2,7 @@ using System.Collections.ObjectModel;
 using Avalonia.Input;
 using CadProjector.App.Services;
 using CadProjector.App.Services.Hotkeys;
+using CadProjector.App.Views;
 using CadProjector.Core.Devices;
 using CadProjector.Core.Editing;
 using CadProjector.Core.Scene;
@@ -18,7 +19,6 @@ public partial class MainViewModel
     public HotkeyMap Hotkeys { get; } = new();
     public ObservableCollection<HotkeyRowViewModel> HotkeyRows { get; } = [];
 
-    [ObservableProperty] public partial bool IsHotkeysOpen { get; set; }
     [ObservableProperty] public partial double NudgeStepMm { get; set; } = 1;
     [ObservableProperty] public partial string HotkeyCaptureHint { get; set; } = "";
 
@@ -58,12 +58,14 @@ public partial class MainViewModel
     }
 
     [RelayCommand]
-    private void OpenHotkeys()
+    private async Task OpenHotkeys()
     {
         CancelHotkeyCapture();
-        IsHotkeysOpen = !IsHotkeysOpen;
-        if (IsHotkeysOpen)
-            RefreshHotkeyRows();
+        RefreshHotkeyRows();
+        if (HostWindow is null) return;
+        var win = new HotkeysWindow { DataContext = this };
+        await win.ShowDialog(HostWindow);
+        CancelHotkeyCapture();
     }
 
     [RelayCommand]
@@ -165,6 +167,7 @@ public partial class MainViewModel
             case HotkeyActionId.Delete:
                 DeleteSelectedObjects();
                 break;
+        }
     }
 
     public void EndNudgeGesture() => History.Break();
@@ -184,7 +187,7 @@ public partial class MainViewModel
         var switched = _keyboardFocus != KeyboardFocusKind.Module;
         _keyboardFocus = KeyboardFocusKind.Module;
         if (switched)
-            IsTransformOpen = true;
+            Workspace.Reveal(PanelId.Transform);
         NotifyTransformTarget();
     }
 

@@ -15,7 +15,10 @@ public sealed class UnduplicateModule : IFrameModule
             return input;
 
         var tol = Math.Max(Tolerance, 1e-10);
-        var current = StrokeSegmentOps.ToSegments(input);
+        // Legacy Unduplicated sees only VectorLine geometry. Our point stream also
+        // has blank hops between independent strokes; those hops often retrace a
+        // real edge (square + X, hatch ends) and would delete the lit line.
+        var current = StrokeSegmentOps.ToSegments(input).Where(s => !s.IsBlank).ToList();
         if (current.Count <= 1)
             return input;
 

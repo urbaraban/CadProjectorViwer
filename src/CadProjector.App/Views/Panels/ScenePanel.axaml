@@ -1,0 +1,71 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:CadProjector.App.ViewModels"
+             x:Class="CadProjector.App.Views.Panels.ScenePanel"
+             x:DataType="vm:MainViewModel">
+
+  <Border Classes="panel" Padding="12" CornerRadius="4"
+          HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+    <ScrollViewer>
+      <StackPanel Spacing="8">
+        <DockPanel>
+          <Button Classes="overlayClose" DockPanel.Dock="Right"
+                  Command="{Binding CloseOverlayCommand}" CommandParameter="Scene"
+                  ToolTip.Tip="{DynamicResource Ui.Close}" />
+          <TextBlock Text="{DynamicResource Ui.Scene}" Classes="sectionHeader"
+                     VerticalAlignment="Center" />
+        </DockPanel>
+        <TextBlock Text="{DynamicResource Ui.SceneName}" Classes="fieldLabel" />
+        <TextBox Text="{Binding SceneName}" />
+        <TextBlock Text="{DynamicResource Ui.SceneWidth}" Classes="fieldLabel" />
+        <NumericUpDown Value="{Binding SceneWidthMm}" Increment="10" Minimum="1" FormatString="0.#" />
+        <TextBlock Text="{DynamicResource Ui.SceneHeight}" Classes="fieldLabel" />
+        <NumericUpDown Value="{Binding SceneHeightMm}" Increment="10" Minimum="1" FormatString="0.#" />
+        <CheckBox Content="{DynamicResource Ui.MaskClip}" IsChecked="{Binding MaskEnabled}"
+                  Foreground="{StaticResource Text.Secondary}" Margin="0,8,0,0"
+                  ToolTip.Tip="{DynamicResource Ui.MaskClipHint}" />
+        <TextBlock Text="{DynamicResource Ui.StlTarget}" Classes="fieldLabel" Margin="0,8,0,0" />
+        <TextBlock Text="{Binding MeshTargetInfo}" Foreground="{StaticResource Accent}"
+                   FontSize="11" TextWrapping="Wrap" />
+        <StackPanel Orientation="Horizontal" Spacing="6">
+          <Button Content="{DynamicResource Ui.StlLoad}" Command="{Binding LoadStlTargetCommand}" />
+          <Button Content="{DynamicResource Ui.StlFit}" Command="{Binding FitStlTargetCommand}"
+                  IsEnabled="{Binding HasMeshTarget}" />
+          <Button Content="{DynamicResource Ui.StlClear}" Command="{Binding ClearStlTargetCommand}"
+                  IsEnabled="{Binding HasMeshTarget}" />
+          <Button Content="{DynamicResource Ui.StlAlignOpen}" Command="{Binding OpenStlAlignCommand}"
+                  IsEnabled="{Binding HasMeshTarget}" />
+        </StackPanel>
+        <TextBlock Text="{DynamicResource Ui.DxfUnits}" Classes="fieldLabel" Margin="0,8,0,0" />
+        <ComboBox ItemsSource="{Binding DxfUnitChoices}" SelectedItem="{Binding DxfUnitChoice}" />
+        <CheckBox Content="{DynamicResource Ui.UseLayerColor}" IsChecked="{Binding UseLayerColor}"
+                  Foreground="{StaticResource Text.Secondary}" Margin="0,8,0,0" />
+        <TextBlock Text="{DynamicResource Ui.SceneProjectors}" Classes="fieldLabel" Margin="0,8,0,0" />
+        <TextBlock Text="{DynamicResource Ui.SceneProjectorsHint}" Classes="hint" />
+        <ItemsControl ItemsSource="{Binding SceneProjectorItems}">
+          <ItemsControl.ItemTemplate>
+            <DataTemplate x:DataType="vm:SceneProjectorItem">
+              <Border Margin="0,2" Padding="6,4" Background="{StaticResource Surface.Card}" CornerRadius="3">
+                <DockPanel LastChildFill="True">
+                  <CheckBox DockPanel.Dock="Left" IsChecked="{Binding IsBound}"
+                            VerticalAlignment="Center" Margin="0,0,8,0"
+                            ToolTip.Tip="{DynamicResource Ui.SceneProjectorsHint}" />
+                  <Button DockPanel.Dock="Right" Padding="8,2" Margin="8,0,0,0"
+                          Content="{DynamicResource Ui.OpenDeviceSettings}"
+                          Command="{Binding $parent[UserControl].((vm:MainViewModel)DataContext).OpenDeviceSettingsCommand}"
+                          CommandParameter="{Binding ProjectorId}"
+                          ToolTip.Tip="{DynamicResource Ui.OpenDeviceSettingsHint}" />
+                  <StackPanel VerticalAlignment="Center">
+                    <TextBlock Text="{Binding DisplayName}" Foreground="{StaticResource Text.Primary}"
+                               TextTrimming="CharacterEllipsis" />
+                    <TextBlock Text="{Binding Detail}" Classes="hint" />
+                  </StackPanel>
+                </DockPanel>
+              </Border>
+            </DataTemplate>
+          </ItemsControl.ItemTemplate>
+        </ItemsControl>
+      </StackPanel>
+    </ScrollViewer>
+  </Border>
+</UserControl>

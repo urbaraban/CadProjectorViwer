@@ -16,6 +16,13 @@ public sealed class DeviceSnapshot
     public double PoseX { get; set; }
     public double PoseY { get; set; }
     public double PoseZ { get; set; }
+
+    /// <summary>Beam axis. Files written before pose was real carry 0 — read as "straight down".</summary>
+    public double? PosePitchDeg { get; set; }
+    public double? PoseYawDeg { get; set; }
+    public double? PoseRollDeg { get; set; }
+    public double? FovHDeg { get; set; }
+    public double? FovVDeg { get; set; }
     public byte Red { get; set; } = 255;
     public byte Green { get; set; }
     public byte Blue { get; set; }
@@ -44,6 +51,11 @@ public sealed class DeviceSnapshot
         PoseX = p.Pose.PositionMm.X,
         PoseY = p.Pose.PositionMm.Y,
         PoseZ = p.Pose.PositionMm.Z,
+        PosePitchDeg = p.Pose.PitchDeg,
+        PoseYawDeg = p.Pose.YawDeg,
+        PoseRollDeg = p.Pose.RollDeg,
+        FovHDeg = p.Pose.FovHDeg,
+        FovVDeg = p.Pose.FovVDeg,
         Red = p.Red,
         Green = p.Green,
         Blue = p.Blue,
@@ -63,6 +75,11 @@ public sealed class DeviceSnapshot
         p.FovWidthMm = FovWidthMm;
         p.FovHeightMm = FovHeightMm;
         p.Pose.PositionMm = new Point3(PoseX, PoseY, PoseZ);
+        p.Pose.PitchDeg = PosePitchDeg ?? 90;
+        p.Pose.YawDeg = PoseYawDeg ?? 0;
+        p.Pose.RollDeg = PoseRollDeg ?? 0;
+        p.Pose.FovHDeg = FovHDeg ?? 40;
+        p.Pose.FovVDeg = FovVDeg ?? 40;
         p.Red = Red;
         p.Green = Green;
         p.Blue = Blue;

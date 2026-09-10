@@ -11,6 +11,8 @@ public static class MeshShadeRaster
 {
     public delegate bool ProjectVertex(Point3 world, out float x, out float y, out float depth);
 
+    /// <param name="facetClass">Optional per-triangle index into <paramref name="classRgb"/>; empty paints flat gray.</param>
+    /// <param name="classRgb">Palette as 0xRRGGBB.</param>
     public static void Fill(
         Span<byte> bgra,
         int width,
@@ -20,7 +22,9 @@ public static class MeshShadeRaster
         TriangleMesh mesh,
         Point3 eye,
         ProjectVertex project,
-        byte gray = 176)
+        byte gray = 176,
+        ReadOnlySpan<byte> facetClass = default,
+        ReadOnlySpan<uint> classRgb = default)
     {
         ArgumentNullException.ThrowIfNull(mesh);
         ArgumentNullException.ThrowIfNull(project);
@@ -38,6 +42,7 @@ public static class MeshShadeRaster
 
         var ambient = 0.22;
         var diffuse = 0.78;
+        var tinted = !facetClass.IsEmpty && !classRgb.IsEmpty;
         var nTris = mesh.TriangleCount;
         for (var t = 0; t < nTris; t++)
         {
@@ -51,18 +56,31 @@ public static class MeshShadeRaster
             var view = (eye - centroid).Normalized();
             var ndot = Math.Abs(Point3.Dot(n, view));
             var shade = ambient + diffuse * ndot;
-            var g = (byte)Math.Clamp(28 + shade * gray, 0, 255);
 
-            if (!project(a, out var ax, out var ay, out var az))
+            byte baseR = gray, baseG = gray, baseB = gray;
+            if (tinted && t < facetClass.Length)
+            {
+                var slot = facetClass[t];
+                var rgb = classRgb[slot < classRgb.Length ? slot : 0];
+                baseR = (byte)((rgb >> 16) & 0xFF);
+                baseG = (byte)((rgb >> 8) & 0xFF);
+                baseB = (byte)(rgb & 0xFF);
+            }
+
+            var sr = (byte)Math.Clamp(16 + shade * baseR, 0, 255);
+            var sg = (byte)Math.Clamp(16 + shade * baseG, 0, 255);
+            var sb = (byte)Math.Clamp(16 + shade * baseB, 0, 255);
+
+            if (!project(a, out var ax, out var ay, out var az) || !IsFinite(ax, ay, az))
                 continue;
-            if (!project(b, out var bx, out var by, out var bz))
+            if (!project(b, out var bx, out var by, out var bz) || !IsFinite(bx, by, bz))
                 continue;
-            if (!project(c, out var cx, out var cy, out var cz))
+            if (!project(c, out var cx, out var cy, out var cz) || !IsFinite(cx, cy, cz))
                 continue;
 
             RasterTriangle(
                 bgra, width, height, stride, zbuffer,
-                ax, ay, az, bx, by, bz, cx, cy, cz, g);
+                ax, ay, az, bx, by, bz, cx, cy, cz, sr, sg, sb);
         }
     }
 
@@ -75,20 +93,27 @@ public static class MeshShadeRaster
         float ax, float ay, float az,
         float bx, float by, float bz,
         float cx, float cy, float cz,
-        byte gray)
+        byte red,
+        byte green,
+        byte blue)
     {
         var area = (bx - ax) * (cy - ay) - (by - ay) * (cx - ax);
-        if (MathF.Abs(area) < 1e-6f)
+        if (!float.IsFinite(area) || MathF.Abs(area) < 1e-6f)
             return;
 
-        var minX = (int)MathF.Floor(MathF.Min(ax, MathF.Min(bx, cx)));
-        var maxX = (int)MathF.Ceiling(MathF.Max(ax, MathF.Max(bx, cx)));
-        var minY = (int)MathF.Floor(MathF.Min(ay, MathF.Min(by, cy)));
-        var maxY = (int)MathF.Ceiling(MathF.Max(ay, MathF.Max(by, cy)));
-        if (minX < 0) minX = 0;
-        if (minY < 0) minY = 0;
-        if (maxX >= width) maxX = width - 1;
-        if (maxY >= height) maxY = height - 1;
+        // Clamp the bbox to the framebuffer *before* the int cast: a projector
+        // sitting on the table sends vertices to ±1e20, and (int)1e20 throws.
+        var minXf = MathF.Min(ax, MathF.Min(bx, cx));
+        var maxXf = MathF.Max(ax, MathF.Max(bx, cx));
+        var minYf = MathF.Min(ay, MathF.Min(by, cy));
+        var maxYf = MathF.Max(ay, MathF.Max(by, cy));
+        if (minXf > width - 1 || maxXf < 0 || minYf > height - 1 || maxYf < 0)
+            return;
+
+        var minX = (int)MathF.Floor(Math.Clamp(minXf, 0, width - 1));
+        var maxX = (int)MathF.Ceiling(Math.Clamp(maxXf, 0, width - 1));
+        var minY = (int)MathF.Floor(Math.Clamp(minYf, 0, height - 1));
+        var maxY = (int)MathF.Ceiling(Math.Clamp(maxYf, 0, height - 1));
         if (minX > maxX || minY > maxY)
             return;
 
@@ -116,11 +141,14 @@ public static class MeshShadeRaster
                     continue;
                 zbuffer[zi] = depth;
                 var p = row + (x << 2);
-                bgra[p] = gray;
-                bgra[p + 1] = gray;
-                bgra[p + 2] = gray;
+                bgra[p] = blue;
+                bgra[p + 1] = green;
+                bgra[p + 2] = red;
                 bgra[p + 3] = 255;
             }
         }
     }
+
+    private static bool IsFinite(float x, float y, float z)
+        => float.IsFinite(x) && float.IsFinite(y) && float.IsFinite(z);
 }

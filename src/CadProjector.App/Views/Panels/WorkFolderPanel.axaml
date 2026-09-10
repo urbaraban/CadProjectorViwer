@@ -1,0 +1,68 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:CadProjector.App.ViewModels"
+             x:Class="CadProjector.App.Views.Panels.WorkFolderPanel"
+             x:DataType="vm:MainViewModel">
+
+  <Border Classes="panel" Padding="12" CornerRadius="4"
+          HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+    <DockPanel>
+      <DockPanel DockPanel.Dock="Top" Margin="0,0,0,8">
+        <Button Classes="overlayClose" DockPanel.Dock="Right"
+                Command="{Binding CloseOverlayCommand}" CommandParameter="WorkFolder"
+                ToolTip.Tip="{DynamicResource Ui.Close}" />
+        <TextBlock Text="{DynamicResource Ui.WorkFolder}" Classes="sectionHeader"
+                   VerticalAlignment="Center" />
+      </DockPanel>
+      <DockPanel DataContext="{Binding WorkFolderBrowser}">
+        <StackPanel DockPanel.Dock="Top" Spacing="6" Margin="0,0,0,8">
+          <DockPanel>
+            <Button Content="↻" Width="32" Command="{Binding RefreshCommand}"
+                    DockPanel.Dock="Left" ToolTip.Tip="{DynamicResource Ui.Refresh}" />
+            <Button Content="{DynamicResource Ui.Browse}" Command="{Binding BrowseCommand}"
+                    DockPanel.Dock="Right" Margin="6,0,0,0" />
+            <TextBox Text="{Binding CurrentPath}" FontSize="11"
+                     ToolTip.Tip="{Binding CurrentPath}" />
+          </DockPanel>
+          <DockPanel>
+            <Button Content="X" Width="28" Command="{Binding ClearFilterCommand}"
+                    DockPanel.Dock="Right" Margin="4,0,0,0" />
+            <ComboBox ItemsSource="{Binding ExtensionChoices}"
+                      SelectedItem="{Binding SelectedExtension}"
+                      Width="88" DockPanel.Dock="Right" Margin="4,0,0,0" />
+            <TextBox Text="{Binding StringFilter}" PlaceholderText="{DynamicResource Ui.Filter}" />
+          </DockPanel>
+        </StackPanel>
+        <ListBox x:Name="WorkFolderList"
+                 ItemsSource="{Binding Items}"
+                 SelectedItem="{Binding SelectedItem}"
+                 Background="Transparent">
+          <ListBox.ContextMenu>
+            <ContextMenu>
+              <MenuItem Header="{DynamicResource Ui.ShowInFolder}"
+                        Command="{Binding RevealSelectedCommand}" />
+              <MenuItem Header="{DynamicResource Ui.OpenEditor}"
+                        Command="{Binding OpenSelectedInEditorCommand}" />
+            </ContextMenu>
+          </ListBox.ContextMenu>
+          <ListBox.ItemTemplate>
+            <DataTemplate x:DataType="vm:WorkFolderEntry">
+              <Grid ColumnDefinitions="22,*,48,88" Margin="0,2">
+                <TextBlock Text="{Binding IconGlyph}" Foreground="{StaticResource Accent}"
+                           VerticalAlignment="Center" />
+                <TextBlock Grid.Column="1" Text="{Binding Name}" Foreground="{StaticResource Text.Primary}"
+                           TextTrimming="CharacterEllipsis" VerticalAlignment="Center"
+                           ToolTip.Tip="{Binding FullPath}" />
+                <TextBlock Grid.Column="2" Text="{Binding DisplayExtension}"
+                           Foreground="{StaticResource Text.Secondary}"
+                           FontSize="11" VerticalAlignment="Center" />
+                <TextBlock Grid.Column="3" Text="{Binding DateText}" Classes="hint"
+                           FontSize="10" VerticalAlignment="Center" HorizontalAlignment="Right" />
+              </Grid>
+            </DataTemplate>
+          </ListBox.ItemTemplate>
+        </ListBox>
+      </DockPanel>
+    </DockPanel>
+  </Border>
+</UserControl>

@@ -151,5 +151,63 @@ public class MeshShadeRasterTests
         Assert.True(maxY - minY > h * 0.4, $"spanY {maxY - minY}");
     }
 
+    [Fact]
+    public void Fill_HugeProjectedCoords_DoNotThrow()
+    {
+        var mesh = new TriangleMesh(
+            [new(0, 0, 0), new(1, 0, 0), new(0, 1, 0)],
+            [0, 1, 2]);
+        const int w = 32;
+        const int h = 32;
+        var pixels = new byte[w * h * 4];
+        var z = new float[w * h];
+
+        MeshShadeRaster.Fill(
+            pixels, w, h, w * 4, z, mesh, new Point3(0, 0, 1),
+            (Point3 p, out float x, out float y, out float d) =>
+            {
+                x = p.X == 0 ? 8 : 1e20f;
+                y = 8;
+                d = 1;
+                return true;
+            });
+    }
+
+    [Fact]
+    public void Fill_FromProjectorOnTheTable_DoesNotThrow()
+    {
+        var mesh = new TriangleMesh(
+            [
+                new(-20_000, -8_000, 0), new(20_000, -8_000, 0), new(20_000, 8_000, 50),
+                new(-20_000, -8_000, 0), new(20_000, 8_000, 50), new(-20_000, 8_000, 50)
+            ],
+            [0, 1, 2, 3, 4, 5]);
+        var cam = new ProjectorCamera
+        {
+            Position = new Point3(500, 500, 0),
+            PitchDeg = 90,
+            FovHDeg = 40,
+            FovVDeg = 40
+        };
+        const int w = 64;
+        const int h = 64;
+        var pixels = new byte[w * h * 4];
+        var z = new float[w * h];
+        MeshShadeRaster.Fill(
+            pixels, w, h, w * 4, z, mesh, cam.Eye,
+            (Point3 p, out float x, out float y, out float d) =>
+            {
+                if (!cam.TryProject(p, w, h, out var s, out var depth))
+                {
+                    x = y = d = 0;
+                    return false;
+                }
+                x = (float)s.X;
+                y = (float)s.Y;
+                d = (float)depth;
+                return true;
+            });
+    }
+
     private static int PixelOffset(int width, int x, int y) => (y * width + x) * 4;
 }

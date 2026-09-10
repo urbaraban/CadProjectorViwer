@@ -21,9 +21,9 @@ public sealed class BlankBridgeModule : IFrameModule
         for (var i = 0; i < segs.Count; i++)
         {
             result.Add(segs[i]);
+            // Legacy BlankBridgeInserter wraps last→first so the repeating ILDA frame
+            // has a controlled blank return (the long diagonal on a serpentine hatch).
             var next = segs[(i + 1) % segs.Count];
-            // only bridge sequential open path (not wrap last→first unless closed contour)
-            if (i == segs.Count - 1) break;
             var dist = Math.Sqrt(StrokeSegmentOps.DistSq(segs[i].P2, next.P1));
             if (dist > Threshold)
             {

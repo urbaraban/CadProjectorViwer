@@ -9,29 +9,29 @@
         Height="560"
         MinWidth="300"
         MinHeight="360"
-        Background="#111"
+        Background="{StaticResource Surface.Canvas}"
         WindowStartupLocation="CenterOwner">
 
   <DockPanel Margin="8">
     <StackPanel DockPanel.Dock="Top" Spacing="6" Margin="0,0,0,8">
-      <TextBlock Text="{Binding Stats}" Foreground="#AAA" FontSize="11" TextWrapping="Wrap" />
+      <TextBlock Text="{Binding Stats}" Classes="hint" />
       <DockPanel>
-        <TextBlock Text="{DynamicResource Ui.StrokeThickness}" Foreground="#888"
+        <TextBlock Text="{DynamicResource Ui.StrokeThickness}" Classes="fieldLabel"
                    VerticalAlignment="Center" Margin="0,0,8,0" />
         <Slider Minimum="0.5" Maximum="6" Value="{Binding StrokeThickness}" />
       </DockPanel>
       <StackPanel Orientation="Horizontal" Spacing="12">
         <CheckBox Content="{DynamicResource Ui.ShowBlanked}" IsChecked="{Binding ShowBlanked}"
-                  Foreground="#CCC" />
+                  Foreground="{StaticResource Text.Secondary}" />
         <CheckBox Content="{DynamicResource Ui.ShowPoints}" IsChecked="{Binding ShowPoints}"
-                  Foreground="#CCC" />
+                  Foreground="{StaticResource Text.Secondary}" />
       </StackPanel>
       <StackPanel Orientation="Horizontal" Spacing="8">
         <Button Content="{DynamicResource Ui.RefreshPreview}" Command="{Binding RefreshCommand}" />
         <Button Content="{DynamicResource Ui.OpenInIldaViewer}" Command="{Binding OpenInIldaViewerCommand}" />
       </StackPanel>
     </StackPanel>
-    <Border Background="Black" BorderBrush="#333" BorderThickness="1" CornerRadius="2">
+    <Border Background="Black" BorderBrush="{StaticResource Stroke.Subtle}" BorderThickness="1" CornerRadius="2">
       <Viewbox Stretch="Uniform">
         <ctrl:IldaFrameCanvas Width="400" Height="400"
                               Frame="{Binding Frame}"

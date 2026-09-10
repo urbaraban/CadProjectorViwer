@@ -652,7 +652,7 @@ public sealed class SceneCanvas : Panel
             }
 
             var maskMode = MaskDragMode.None;
-            if (MaskEditable && Scene.Mask.IsEnabled)
+            if (MaskEditable)
                 TryHitMask(pt, out maskMode);
 
             // Corner handles win over objects; "move the whole mask" loses to them, otherwise the mask
@@ -969,7 +969,7 @@ public sealed class SceneCanvas : Panel
                 }
             }
 
-            if (scene.Mask.IsEnabled)
+            if (MaskEditable)
             {
                 var maskPen = new Pen(new SolidColorBrush(Color.FromArgb(180, 80, 180, 255)), 1.5);
                 var fill = new SolidColorBrush(Color.FromArgb(35, 80, 180, 255));
@@ -1173,7 +1173,7 @@ public sealed class SceneCanvas : Panel
                     }
                 });
             }
-            if (scene.Mask.IsEnabled)
+            if (MaskEditable || scene.Mask.IsEnabled)
             {
                 var m = scene.Mask.Bounds;
                 minX = Math.Min(minX, m.X);

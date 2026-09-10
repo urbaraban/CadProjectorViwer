@@ -4,7 +4,7 @@ using CadProjector.Geometry.Primitives;
 namespace CadProjector.Geometry.Camera;
 
 /// <summary>Z-up orbit camera. Yaw around Z, pitch from the XY plane toward +Z.</summary>
-public sealed class OrbitCamera
+public sealed class OrbitCamera : ISceneCamera
 {
     public Point3 Target { get; set; } = new(500, 500, 0);
     public double YawDeg { get; set; } = 40;

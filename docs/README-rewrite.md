@@ -27,6 +27,7 @@ dotnet run --project src/CadProjector.App
 | 14 | Импорт legacy `.2cfg`/`.mws`/`.2scn` → `.cproj` (только чтение); отчёт skip/warn; WorkFolder + UDP |
 | 15 | STL как MeshTarget: ASCII/binary, BVH, орто −Z на поверхность, XY-wireframe на столе; 3D orbit — дальше |
 | 16 | 3D viewport: orbit/pan/zoom; T/R/S alignment STL; hit/miss (зелёный/красный) |
+| 17 | **UI shell redesign:** design tokens, dock slots (left/right/bottom), WorkspaceViewModel, menu AppBar, inspector tabs, status bar, panel UserControls |
 
 **Devices:** list + Add/Remove (не только A/B); вкладки Device / FOV / Mesh / Modules  
 

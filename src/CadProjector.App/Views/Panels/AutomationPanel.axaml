@@ -1,0 +1,63 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:CadProjector.App.ViewModels"
+             xmlns:auto="using:CadProjector.Automation"
+             x:Class="CadProjector.App.Views.Panels.AutomationPanel"
+             x:DataType="vm:MainViewModel">
+
+  <TabControl>
+    <TabItem Header="{DynamicResource Ui.Endpoints}">
+      <DockPanel>
+        <Expander DockPanel.Dock="Top" Header="{DynamicResource Ui.AddEndpoint}" IsExpanded="False"
+                  Margin="0,0,0,8">
+          <StackPanel Spacing="6" Margin="0,6,0,0">
+            <ComboBox ItemsSource="{Binding EndpointTypeChoices}" SelectedItem="{Binding NewEndpointType}" />
+            <TextBox Text="{Binding NewEndpointBindIp}" Watermark="0.0.0.0" />
+            <NumericUpDown Value="{Binding NewEndpointPort}" Minimum="1" Maximum="65535" FormatString="0" />
+            <Button Content="{DynamicResource Ui.AddEndpoint}" Command="{Binding AddAutomationEndpointCommand}" />
+            <Button Content="{Binding UdpEnabled, StringFormat='UDP Binary quick: {0}'}"
+                    Command="{Binding ToggleUdpCommand}" />
+            <NumericUpDown Value="{Binding UdpPort}" Minimum="1" Maximum="65535" FormatString="0"
+                           ToolTip.Tip="Default UDP Binary port" />
+          </StackPanel>
+        </Expander>
+        <ListBox ItemsSource="{Binding EndpointItems}" Background="Transparent">
+          <ListBox.ItemTemplate>
+            <DataTemplate x:DataType="vm:EndpointItemViewModel">
+              <Border Classes="card">
+                <StackPanel Spacing="4">
+                  <TextBlock Text="{Binding DisplayName}" Foreground="{StaticResource Text.Primary}"
+                             FontWeight="SemiBold" />
+                  <TextBlock Text="{Binding TypeLabel}" Classes="fieldLabel" />
+                  <TextBlock Text="{Binding BindSummary}" Classes="fieldLabel" />
+                  <TextBlock Text="{Binding IsListening, StringFormat='Listening: {0}'}"
+                             Foreground="{StaticResource Accent}" FontSize="11" />
+                  <StackPanel Orientation="Horizontal" Spacing="6">
+                    <Button Content="{DynamicResource Ui.Start}" Command="{Binding StartCommand}" />
+                    <Button Content="{DynamicResource Ui.Stop}" Command="{Binding StopCommand}" />
+                    <Button Content="{DynamicResource Ui.Remove}" Command="{Binding RemoveCommand}" />
+                  </StackPanel>
+                </StackPanel>
+              </Border>
+            </DataTemplate>
+          </ListBox.ItemTemplate>
+        </ListBox>
+      </DockPanel>
+    </TabItem>
+    <TabItem Header="{DynamicResource Ui.Clients}">
+      <ListBox ItemsSource="{Binding AutomationClients}" Background="Transparent">
+        <ListBox.ItemTemplate>
+          <DataTemplate x:DataType="auto:ConnectedClient">
+            <TextBlock Text="{Binding Display}" Foreground="{StaticResource Text.Secondary}"
+                       FontSize="12" Margin="0,2" />
+          </DataTemplate>
+        </ListBox.ItemTemplate>
+      </ListBox>
+    </TabItem>
+    <TabItem Header="{DynamicResource Ui.CommandLog}">
+      <ListBox ItemsSource="{Binding AutomationLog}" Background="Transparent"
+               Foreground="{StaticResource Text.Secondary}"
+               FontFamily="Consolas,Courier New,monospace" FontSize="11" />
+    </TabItem>
+  </TabControl>
+</UserControl>

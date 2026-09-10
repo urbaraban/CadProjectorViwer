@@ -36,6 +36,29 @@ public partial class MainViewModel : ViewModelBase
     private readonly DevicePipeline _pipeline = new();
     private readonly Dictionary<string, VltProjector> _vlts = new();
     private string? _projectPath;
+
+    public string? ProjectPath => _projectPath;
+    public bool HasProjectPath => !string.IsNullOrWhiteSpace(_projectPath);
+
+    public string ProjectPathToolTip
+    {
+        get
+        {
+            if (string.IsNullOrWhiteSpace(_projectPath))
+                return "";
+            var hint = UiLanguage.Text("Ui.ProjectPathHint", "Double-click to show in file manager");
+            return $"{_projectPath}\n{hint}";
+        }
+    }
+
+    private void SetProjectPath(string? path)
+    {
+        _projectPath = path;
+        OnPropertyChanged(nameof(ProjectPath));
+        OnPropertyChanged(nameof(HasProjectPath));
+        OnPropertyChanged(nameof(ProjectPathToolTip));
+        RefreshWindowTitle();
+    }
     private bool _suppressMeshUi;
     private bool _suppressTransformUi;
     private bool _suppressMeshAlign;
@@ -97,7 +120,26 @@ public partial class MainViewModel : ViewModelBase
         ApplyPrefs();
         InitHotkeys();
         StartLinkWatch();
+        Workspace.PropertyChanged += OnWorkspacePropertyChanged;
         Log("Ready — add projectors and modules in Devices");
+    }
+
+    public WorkspaceViewModel Workspace { get; } = new();
+
+    private void OnWorkspacePropertyChanged(object? sender, System.ComponentModel.PropertyChangedEventArgs e)
+    {
+        OnPropertyChanged(nameof(IsTreeOpen));
+        OnPropertyChanged(nameof(IsSceneOpen));
+        OnPropertyChanged(nameof(IsWorkFolderOpen));
+        OnPropertyChanged(nameof(IsDevicesOpen));
+        OnPropertyChanged(nameof(IsTransformOpen));
+        OnPropertyChanged(nameof(IsStlAlignOpen));
+        OnPropertyChanged(nameof(IsCalibrateOpen));
+        OnPropertyChanged(nameof(IsLogsOpen));
+        OnPropertyChanged(nameof(IsAutomationOpen));
+        OnPropertyChanged(nameof(IsLeftDockOpen));
+        OnPropertyChanged(nameof(IsRightDockOpen));
+        OnPropertyChanged(nameof(HasTransformEmpty));
     }
 
     public AutomationHub Hub => _hub;
@@ -276,15 +318,92 @@ public partial class MainViewModel : ViewModelBase
     [ObservableProperty] public partial string StatusText { get; set; } = "";
     /// <summary>Raised when the canvas should re-fit zoom/pan (Clear, etc.).</summary>
     public event Action? ViewResetRequested;
-    [ObservableProperty] public partial bool IsTreeOpen { get; set; }
-    [ObservableProperty] public partial bool IsSceneOpen { get; set; }
-    [ObservableProperty] public partial bool IsDevicesOpen { get; set; }
-    [ObservableProperty] public partial bool IsTransformOpen { get; set; }
-    [ObservableProperty] public partial bool IsStlAlignOpen { get; set; }
-    [ObservableProperty] public partial bool IsCalibrateOpen { get; set; }
-    [ObservableProperty] public partial bool IsLogsOpen { get; set; }
-    [ObservableProperty] public partial bool IsAutomationOpen { get; set; }
-    [ObservableProperty] public partial bool IsWorkFolderOpen { get; set; }
+    public bool IsTreeOpen
+    {
+        get => Workspace.ActiveLeft == PanelId.Objects;
+        set
+        {
+            if (value) Workspace.Reveal(PanelId.Objects);
+            else Workspace.Close(PanelId.Objects);
+        }
+    }
+
+    public bool IsSceneOpen
+    {
+        get => Workspace.ActiveLeft == PanelId.Scene;
+        set
+        {
+            if (value) Workspace.Reveal(PanelId.Scene);
+            else Workspace.Close(PanelId.Scene);
+        }
+    }
+
+    public bool IsWorkFolderOpen
+    {
+        get => Workspace.ActiveLeft == PanelId.WorkFolder;
+        set
+        {
+            if (value) Workspace.Reveal(PanelId.WorkFolder);
+            else Workspace.Close(PanelId.WorkFolder);
+        }
+    }
+
+    public bool IsDevicesOpen
+    {
+        get => Workspace.ActiveRight is PanelId.Device or PanelId.Calibrate;
+        set
+        {
+            if (value) Workspace.Reveal(PanelId.Device);
+            else Workspace.Close(PanelId.Device);
+        }
+    }
+
+    public bool IsTransformOpen
+    {
+        get => Workspace.ActiveRight == PanelId.Transform;
+        set
+        {
+            if (value) Workspace.Reveal(PanelId.Transform);
+            else Workspace.Close(PanelId.Transform);
+        }
+    }
+
+    public bool IsStlAlignOpen
+    {
+        get => Workspace.ActiveRight == PanelId.StlAlign;
+        set
+        {
+            if (value) Workspace.Reveal(PanelId.StlAlign);
+            else Workspace.Close(PanelId.StlAlign);
+        }
+    }
+
+    public bool IsCalibrateOpen => false;
+
+    public bool IsLogsOpen
+    {
+        get => Workspace.IsOpen(PanelId.Logs);
+        set
+        {
+            if (value) Workspace.Reveal(PanelId.Logs);
+            else Workspace.Close(PanelId.Logs);
+        }
+    }
+
+    public bool IsAutomationOpen
+    {
+        get => Workspace.IsOpen(PanelId.Endpoints) || Workspace.IsOpen(PanelId.Clients) || Workspace.IsOpen(PanelId.Commands);
+        set
+        {
+            if (value) Workspace.Reveal(PanelId.Endpoints);
+            else Workspace.CloseSlot(DockSlot.Bottom);
+        }
+    }
+
+    public bool IsLeftDockOpen => Workspace.ActiveLeft is not null;
+    public bool IsRightDockOpen => Workspace.ActiveRight is not null;
+    public bool HasTransformEmpty => SelectedObjectIndex < 0 && !IsEditingModuleAnchor;
+
     [ObservableProperty] public partial string LanguageCode { get; set; } = "EN";
     [ObservableProperty] public partial string ObjectName { get; set; } = "";
     [ObservableProperty] public partial bool ObjectLocked { get; set; }
@@ -303,6 +422,7 @@ public partial class MainViewModel : ViewModelBase
     [ObservableProperty] public partial bool UseLayerColor { get; set; }
     [ObservableProperty] public partial int CanvasRevision { get; set; }
     [ObservableProperty] public partial bool MaskEnabled { get; set; }
+    [ObservableProperty] public partial bool ShowMaskOverlay { get; set; }
     [ObservableProperty] public partial string FrameInfo { get; set; } = "No frame";
     [ObservableProperty] public partial bool UseVlt { get; set; }
     [ObservableProperty] public partial bool MeshEnabled { get; set; }
@@ -321,6 +441,24 @@ public partial class MainViewModel : ViewModelBase
     [ObservableProperty] public partial double FovHeightMm { get; set; } = 1000;
     [ObservableProperty] public partial double PoseX { get; set; }
     [ObservableProperty] public partial double PoseY { get; set; }
+    [ObservableProperty] public partial double PoseZ { get; set; }
+    [ObservableProperty] public partial double PosePitch { get; set; } = 90;
+    [ObservableProperty] public partial double PoseYaw { get; set; }
+    [ObservableProperty] public partial double PoseRoll { get; set; }
+    [ObservableProperty] public partial double FovHDeg { get; set; } = 40;
+    [ObservableProperty] public partial double FovVDeg { get; set; } = 40;
+
+    /// <summary>Pin the 3D view to the selected projector — see exactly what it reaches.</summary>
+    [ObservableProperty] public partial bool ViewFromProjector { get; set; }
+
+    /// <summary>Tint the STL by reachability from the selected projector.</summary>
+    [ObservableProperty] public partial bool ShowCoverage { get; set; }
+
+    [ObservableProperty] public partial string CoverageInfo { get; set; } = "";
+
+    public ProjectorProfile? ViewProjector => ViewFromProjector ? SelectedProjector : null;
+
+    public ProjectorProfile? CoverageProjector => ShowCoverage ? SelectedProjector : null;
     [ObservableProperty] public partial int ColorR { get; set; } = 255;
     [ObservableProperty] public partial int ColorG { get; set; }
     [ObservableProperty] public partial int ColorB { get; set; }
@@ -391,17 +529,36 @@ public partial class MainViewModel : ViewModelBase
         PullDeviceUiFromSelection();
         OnPropertyChanged(nameof(ActiveMesh));
         OnPropertyChanged(nameof(MeshOwnerLabel));
+        OnPropertyChanged(nameof(ViewProjector));
+        OnPropertyChanged(nameof(CoverageProjector));
         Log($"Selected {value.DisplayName}");
         BumpCanvas();
     }
 
     partial void OnMaskEnabledChanged(bool value)
     {
-        if (SelectedScene is null) return;
+        if (_suppressSceneUi || SelectedScene is null) return;
         SelectedScene.Mask.IsEnabled = value;
-        if (value && SelectedScene.Mask.Bounds.Width <= 0)
-            SelectedScene.Mask.Bounds = new Rect2(0, 0, SelectedScene.Target.WidthMm, SelectedScene.Target.HeightMm);
+        EnsureMaskBounds();
+        if (value)
+            ShowMaskOverlay = true;
+        MarkDirty();
         BumpCanvas();
+    }
+
+    partial void OnShowMaskOverlayChanged(bool value)
+    {
+        if (value)
+            EnsureMaskBounds();
+        BumpCanvas();
+    }
+
+    private void EnsureMaskBounds()
+    {
+        if (SelectedScene is null) return;
+        if (SelectedScene.Mask.Bounds.Width > 0 && SelectedScene.Mask.Bounds.Height > 0)
+            return;
+        SelectedScene.Mask.Bounds = new Rect2(0, 0, SelectedScene.Target.WidthMm, SelectedScene.Target.HeightMm);
     }
 
     partial void OnSelectedSceneChanged(ProjectionScene? value)
@@ -414,7 +571,10 @@ public partial class MainViewModel : ViewModelBase
         }
         PullSceneUiFromSelection();
         if (value is not null)
+        {
             MaskEnabled = value.Mask.IsEnabled;
+            ShowMaskOverlay = value.Mask.IsEnabled;
+        }
         RefreshObjectNames();
         RefreshModuleOverlays();
         RefreshFovOverlays();
@@ -639,6 +799,110 @@ public partial class MainViewModel : ViewModelBase
     partial void OnFovHeightMmChanged(double value) => PushPoseFovToSelection();
     partial void OnPoseXChanged(double value) => PushPoseFovToSelection();
     partial void OnPoseYChanged(double value) => PushPoseFovToSelection();
+    partial void OnPoseZChanged(double value) => PushPoseFovToSelection();
+    partial void OnPosePitchChanged(double value) => PushPoseFovToSelection();
+    partial void OnPoseYawChanged(double value) => PushPoseFovToSelection();
+    partial void OnPoseRollChanged(double value) => PushPoseFovToSelection();
+    partial void OnFovHDegChanged(double value) => PushPoseFovToSelection();
+    partial void OnFovVDegChanged(double value) => PushPoseFovToSelection();
+
+    partial void OnViewFromProjectorChanged(bool value)
+    {
+        if (value)
+        {
+            IsViewport3D = true;
+            EnsureProjectorHasAView();
+        }
+
+        OnPropertyChanged(nameof(ViewProjector));
+        OnPropertyChanged(nameof(CoverageProjector));
+        if (!value && !ShowCoverage)
+            CoverageInfo = "";
+        BumpCanvas();
+    }
+
+    partial void OnShowCoverageChanged(bool value)
+    {
+        OnPropertyChanged(nameof(CoverageProjector));
+        if (!value && !ViewFromProjector)
+            CoverageInfo = "";
+        BumpCanvas();
+    }
+
+    /// <summary>Called back by the viewport once it has classified the mesh facets.</summary>
+    public void ReportCoverage(MeshCoverageStats stats, bool shadowsTested)
+    {
+        if (stats.Total == 0)
+        {
+            CoverageInfo = "";
+            return;
+        }
+
+        CoverageInfo = string.Format(
+            UiLanguage.Text("Ui.CoverageInfo", "Reached {0:0}% · grazing {1:0}% · shadowed {2:0}% · out of field {3:0}%"),
+            stats.GoodFraction * 100,
+            stats.Grazing * 100.0 / stats.Total,
+            stats.Shadowed * 100.0 / stats.Total,
+            (stats.OutOfView + stats.BackFacing) * 100.0 / stats.Total)
+            + (shadowsTested ? "" : " " + UiLanguage.Text("Ui.CoverageNoShadows", "(shadows skipped — mesh too heavy)"));
+    }
+
+    [RelayCommand]
+    private void AimProjectorAtTarget()
+    {
+        if (SelectedProjector is not { } p || SelectedScene is null)
+            return;
+
+        GetProjectorAim(out var target, out var span, out var roof);
+        if (p.Pose.PositionMm.Z <= roof + 1)
+            p.Pose.ParkAbove(target, span, roof);
+        else
+            p.Pose.AimAt(target);
+
+        PullDeviceUiFromSelection();
+        BumpCanvas();
+        Log(string.Format(
+            UiLanguage.Text("Ui.PoseAimed", "{0} aimed at the target"),
+            p.DisplayName));
+    }
+
+    /// <summary>
+    /// A projector parked on the table (Z≈0) is a pinhole in the drawing plane:
+    /// some STL vertices land at ±1e20 px and used to overflow the rasterizer.
+    /// Lift it above the part before looking through it.
+    /// </summary>
+    private void EnsureProjectorHasAView()
+    {
+        if (SelectedProjector is not { } p || SelectedScene is null)
+            return;
+
+        GetProjectorAim(out var target, out var span, out var roof);
+        if (p.Pose.PositionMm.Z > roof + 1)
+            return;
+
+        p.Pose.ParkAbove(target, span, roof);
+        PullDeviceUiFromSelection();
+        Log(string.Format(
+            UiLanguage.Text("Ui.PoseAimed", "{0} aimed at the target"),
+            p.DisplayName));
+    }
+
+    private void GetProjectorAim(out Point3 target, out double span, out double roofZ)
+    {
+        var scene = SelectedScene!;
+        span = Math.Max(scene.Target.WidthMm, scene.Target.HeightMm);
+        if (scene.MeshTarget is { } mesh && double.IsFinite(mesh.WorldBounds.Diagonal))
+        {
+            var b = mesh.WorldBounds;
+            target = b.Center;
+            roofZ = b.Max.Z;
+            span = Math.Max(span, b.Diagonal);
+            return;
+        }
+
+        target = new Point3(scene.Target.WidthMm * 0.5, scene.Target.HeightMm * 0.5, 0);
+        roofZ = 0;
+    }
     partial void OnColorRChanged(int value) => PushColorToSelection();
     partial void OnColorGChanged(int value) => PushColorToSelection();
     partial void OnColorBChanged(int value) => PushColorToSelection();
@@ -661,6 +925,9 @@ public partial class MainViewModel : ViewModelBase
         }
         LoadTransformFromSelection();
         PullObjectUiFromSelection();
+        OnPropertyChanged(nameof(HasTransformEmpty));
+        if (value is not null)
+            Workspace.Reveal(PanelId.Transform);
     }
 
     private void SyncSelectedItemFromIndex(int index)
@@ -676,35 +943,52 @@ public partial class MainViewModel : ViewModelBase
     partial void OnRotChanged(double value) => ApplyTransformToSelection();
     partial void OnScaleChanged(double value) => ApplyTransformToSelection();
 
-    [RelayCommand] private void OpenTree() => IsTreeOpen = !IsTreeOpen;
-    [RelayCommand] private void OpenScenePanel() => IsSceneOpen = !IsSceneOpen;
-    [RelayCommand] private void OpenDevices() => IsDevicesOpen = !IsDevicesOpen;
-    [RelayCommand] private void OpenAutomation() => IsAutomationOpen = !IsAutomationOpen;
-    [RelayCommand] private void OpenWorkFolder() => IsWorkFolderOpen = !IsWorkFolderOpen;
-    [RelayCommand] private void OpenLogs() => IsLogsOpen = !IsLogsOpen;
+    [RelayCommand] private void OpenTree() => Workspace.Toggle(PanelId.Objects);
+    [RelayCommand] private void OpenScenePanel() => Workspace.Toggle(PanelId.Scene);
+    [RelayCommand] private void OpenDevices() => Workspace.Toggle(PanelId.Device);
+    [RelayCommand] private void OpenAutomation() => Workspace.Toggle(PanelId.Endpoints);
+    [RelayCommand] private void OpenWorkFolder() => Workspace.Toggle(PanelId.WorkFolder);
+    [RelayCommand] private void OpenLogs() => Workspace.Toggle(PanelId.Logs);
+
+    /// <summary>Select a projector and open the Devices inspector tab.</summary>
+    [RelayCommand]
+    private void OpenDeviceSettings(string? projectorId)
+    {
+        var device = string.IsNullOrWhiteSpace(projectorId)
+            ? SelectedProjector ?? Projectors.FirstOrDefault()
+            : Projectors.FirstOrDefault(p => p.Id == projectorId);
+        if (device is null) return;
+
+        SelectedProjector = device;
+        Workspace.Reveal(PanelId.Device);
+        Workspace.DeviceTabIndex = 0;
+    }
 
     [RelayCommand]
     private void CloseOverlay(string? name)
     {
         switch (name)
         {
-            case "Tree": IsTreeOpen = false; break;
-            case "Scene": IsSceneOpen = false; break;
+            case "Tree": Workspace.Close(PanelId.Objects); break;
+            case "Scene": Workspace.Close(PanelId.Scene); break;
             case "StlAlign":
-                IsStlAlignOpen = false;
+                Workspace.Close(PanelId.StlAlign);
                 MeshAlignPick = MeshAlignPickKind.Off;
                 MeshAlignPickHint = "";
                 break;
-            case "Devices": IsDevicesOpen = false; break;
-            case "Transform": IsTransformOpen = false; break;
-            case "Calibrate": IsCalibrateOpen = false; break;
-            case "Logs": IsLogsOpen = false; break;
-            case "Automation": IsAutomationOpen = false; break;
-            case "WorkFolder": IsWorkFolderOpen = false; break;
+            case "Devices": Workspace.Close(PanelId.Device); break;
+            case "Transform": Workspace.Close(PanelId.Transform); break;
+            case "Calibrate":
+                break;
+            case "Logs": Workspace.Close(PanelId.Logs); break;
+            case "Automation": Workspace.CloseSlot(DockSlot.Bottom); break;
+            case "WorkFolder": Workspace.Close(PanelId.WorkFolder); break;
             case "Hotkeys":
                 CancelHotkeyCapture();
-                IsHotkeysOpen = false;
                 break;
+            case "Left": Workspace.CloseSlot(DockSlot.Left); break;
+            case "Right": Workspace.CloseSlot(DockSlot.Right); break;
+            case "Bottom": Workspace.CloseSlot(DockSlot.Bottom); break;
         }
     }
 
@@ -732,7 +1016,7 @@ public partial class MainViewModel : ViewModelBase
     private void OpenStlAlign()
     {
         if (!HasMeshTarget) return;
-        IsStlAlignOpen = !IsStlAlignOpen;
+        Workspace.Toggle(PanelId.StlAlign);
         if (IsStlAlignOpen)
             PullMeshAlignUi();
     }
@@ -740,24 +1024,52 @@ public partial class MainViewModel : ViewModelBase
     [RelayCommand]
     private void OpenCalibrate()
     {
-        IsCalibrateOpen = !IsCalibrateOpen;
-        if (IsCalibrateOpen)
-        {
-            ShowMeshOverlay = true;
-            MeshEnabled = true;
-            if (ModuleItems.FirstOrDefault(i => i.TypeId == ModuleTypes.Mesh) is { } meshItem)
-                SelectedModuleItem = meshItem;
-            FocusKeyboardOnModule();
-            IsDevicesOpen = true;
-            Log($"Calibrate mesh of {SelectedProjector?.DisplayName ?? "?"}");
-        }
+        ShowMeshOverlay = true;
+        MeshEnabled = true;
+        if (ModuleItems.FirstOrDefault(i => i.TypeId == ModuleTypes.Mesh) is { } meshItem)
+            SelectedModuleItem = meshItem;
+        FocusKeyboardOnModule();
+        Workspace.RevealDeviceModules();
+        Log($"Calibrate mesh of {SelectedProjector?.DisplayName ?? "?"}");
     }
 
     [RelayCommand]
     private void OpenTransform()
     {
-        IsTransformOpen = !IsTransformOpen;
+        Workspace.Toggle(PanelId.Transform);
         if (IsTransformOpen) LoadTransformFromSelection();
+    }
+
+    [RelayCommand]
+    private void SetViewport2D() => IsViewport3D = false;
+
+    [RelayCommand]
+    private void SetViewport3D() => IsViewport3D = true;
+
+    [RelayCommand]
+    private void ResetView() => ViewResetRequested?.Invoke();
+
+    [RelayCommand]
+    private void ToggleBottomConsole()
+    {
+        if (Workspace.IsBottomOpen)
+            Workspace.CloseSlot(DockSlot.Bottom);
+        else
+            Workspace.Reveal(PanelId.Logs);
+    }
+
+    [RelayCommand]
+    private void ResetWorkspaceLayout()
+    {
+        Workspace.LeftWidth = 300;
+        Workspace.RightWidth = 340;
+        Workspace.BottomHeight = 200;
+        Workspace.ActiveLeft = null;
+        Workspace.ActiveRight = null;
+        Workspace.IsBottomOpen = false;
+        // Notify so MainWindow re-applies column sizes even if docks stay closed.
+        OnPropertyChanged(nameof(IsLeftDockOpen));
+        OnPropertyChanged(nameof(IsRightDockOpen));
     }
 
     [RelayCommand]
@@ -782,7 +1094,7 @@ public partial class MainViewModel : ViewModelBase
         RefreshModuleOverlays();
         BumpCanvas();
         FocusKeyboardOnModule();
-        IsDevicesOpen = true;
+        Workspace.RevealDeviceModules();
         Log($"Selected Mesh module on {SelectedProjector?.DisplayName}");
     }
 
@@ -1232,8 +1544,9 @@ public partial class MainViewModel : ViewModelBase
                 FileTypeChoices = [new FilePickerFileType("2Cut project") { Patterns = ["*.cproj"] }]
             });
             if (file is null) return;
-            _projectPath = file.TryGetLocalPath();
-            if (_projectPath is null) return;
+            var chosen = file.TryGetLocalPath();
+            if (chosen is null) return;
+            SetProjectPath(chosen);
         }
 
         try
@@ -1244,6 +1557,8 @@ public partial class MainViewModel : ViewModelBase
             Project.CalibrationMesh = null;
             await ProjectJsonStore.SaveAsync(Project, _projectPath);
             ClearDirty();
+            RememberLastProject(_projectPath);
+            Log($"Saved {Path.GetFileName(_projectPath)}");
         }
         catch (Exception ex)
         {
@@ -1448,13 +1763,62 @@ public partial class MainViewModel : ViewModelBase
             }
 
             Project = await ProjectJsonStore.LoadAsync(path);
-            _projectPath = path;
+            SetProjectPath(path);
             await ApplyProjectDocumentAsync(clearDirty: true);
+            RememberLastProject(path);
         }
         catch (Exception ex)
         {
             Log($"Load failed: {ex.Message}", LogMessageStatus.Error);
         }
+    }
+
+    /// <summary>Opens the last saved/loaded .cproj if the file still exists.</summary>
+    public async Task TryOpenLastProjectAsync()
+    {
+        var path = AppPrefs.LoadLastProject();
+        if (string.IsNullOrWhiteSpace(path))
+            return;
+        if (!File.Exists(path))
+        {
+            AppPrefs.SaveLastProject(null);
+            Log(string.Format(
+                UiLanguage.Text("Ui.LastProjectMissing", "Last project not found: {0}"),
+                Path.GetFileName(path)));
+            return;
+        }
+
+        try
+        {
+            Project = await ProjectJsonStore.LoadAsync(path);
+            SetProjectPath(path);
+            await ApplyProjectDocumentAsync(clearDirty: true);
+            RememberLastProject(path);
+            Log(string.Format(
+                UiLanguage.Text("Ui.LastProjectOpened", "Opened last project: {0}"),
+                Path.GetFileName(path)));
+        }
+        catch (Exception ex)
+        {
+            Log($"Last project load failed: {ex.Message}", LogMessageStatus.Error);
+        }
+    }
+
+    private static void RememberLastProject(string? path)
+    {
+        if (string.IsNullOrWhiteSpace(path))
+            return;
+        if (!path.EndsWith(".cproj", StringComparison.OrdinalIgnoreCase))
+            return;
+        AppPrefs.SaveLastProject(Path.GetFullPath(path));
+    }
+
+    [RelayCommand]
+    private void RevealProjectFolder()
+    {
+        if (string.IsNullOrWhiteSpace(_projectPath))
+            return;
+        ShellReveal.RevealInFileManager(_projectPath);
     }
 
     [RelayCommand]
@@ -1540,6 +1904,22 @@ public partial class MainViewModel : ViewModelBase
         SyncTransformPanel();
         BumpCanvas();
         Log($"Rotated 90° → dock {DockMode}");
+    }
+
+    [RelayCommand]
+    private async Task NewProjectAsync()
+    {
+        if (!await ConfirmDiscardOrSaveAsync())
+            return;
+
+        if (IsPlaying)
+            await StopAsync();
+
+        Project = new ProjectDocument { Name = "2Cut" };
+        SetProjectPath(null);
+        IsViewport3D = false;
+        await ApplyProjectDocumentAsync(clearDirty: true);
+        Log(UiLanguage.Text("Ui.NewProjectReady", "New configuration created"));
     }
 
     [RelayCommand]
@@ -1681,7 +2061,6 @@ public partial class MainViewModel : ViewModelBase
         if (SelectedScene is null) return;
         var mask = SelectedScene.Mask;
         mask.Bounds = to;
-        MaskEnabled = true;
         Record(
             new ValueEdit<Rect2>(Hist("Mask", "Mask bounds"), v => mask.Bounds = v, from, to),
             "mask:bounds");
@@ -2366,8 +2745,9 @@ public partial class MainViewModel : ViewModelBase
             if (path.EndsWith(".cproj", StringComparison.OrdinalIgnoreCase))
             {
                 Project = await ProjectJsonStore.LoadAsync(path, ct);
-                _projectPath = path;
+                SetProjectPath(path);
                 await ApplyProjectDocumentAsync(clearDirty: true);
+                RememberLastProject(path);
                 Log($"Loaded {Path.GetFileName(path)}");
                 if (play) await PlayCoreAsync();
                 return;
@@ -2461,7 +2841,7 @@ public partial class MainViewModel : ViewModelBase
         var imported = await _legacy.ImportAsync(path);
         LogMigration(imported.Report);
         Project = imported.Project;
-        _projectPath = null;
+        SetProjectPath(null);
         await ApplyProjectDocumentAsync(clearDirty: false);
         Log(string.Format(
             UiLanguage.Text("Ui.LegacyReadOnly", "Imported {0} — save as .cproj (legacy files are read-only)"),
@@ -2481,7 +2861,7 @@ public partial class MainViewModel : ViewModelBase
         if (imported.Report.Kind == LegacyKind.Hub || imported.HasDevices)
         {
             Project = imported.Project;
-            _projectPath = null;
+            SetProjectPath(null);
             await ApplyProjectDocumentAsync(clearDirty: false);
             Log(string.Format(
                 UiLanguage.Text("Ui.LegacyReadOnly", "Imported {0} — save as .cproj (legacy files are read-only)"),
@@ -2503,6 +2883,7 @@ public partial class MainViewModel : ViewModelBase
             scene.Mask.IsEnabled = incoming.Mask.IsEnabled;
             scene.Mask.Bounds = incoming.Mask.Bounds;
             MaskEnabled = scene.Mask.IsEnabled;
+            ShowMaskOverlay = scene.Mask.IsEnabled;
             PullSceneUiFromSelection();
         }
 
@@ -2528,6 +2909,7 @@ public partial class MainViewModel : ViewModelBase
             Scenes.Add(s);
         SelectedScene = Project.ActiveScene;
         MaskEnabled = SelectedScene.Mask.IsEnabled;
+        ShowMaskOverlay = SelectedScene.Mask.IsEnabled;
         UseLayerColor = Project.ColorMode == LaserColorMode.LayerColor;
         await ApplyLoadedDevicesAsync(Project);
         RefreshObjectNames();
@@ -2703,6 +3085,12 @@ public partial class MainViewModel : ViewModelBase
         FovHeightMm = p.FovHeightMm;
         PoseX = p.Pose.PositionMm.X;
         PoseY = p.Pose.PositionMm.Y;
+        PoseZ = p.Pose.PositionMm.Z;
+        PosePitch = p.Pose.PitchDeg;
+        PoseYaw = p.Pose.YawDeg;
+        PoseRoll = p.Pose.RollDeg;
+        FovHDeg = p.Pose.FovHDeg;
+        FovVDeg = p.Pose.FovVDeg;
         ColorR = p.Red;
         ColorG = p.Green;
         ColorB = p.Blue;
@@ -2739,7 +3127,7 @@ public partial class MainViewModel : ViewModelBase
         SelectedProjector.Port = DevicePort;
         SelectedProjector.FovWidthMm = FovWidthMm;
         SelectedProjector.FovHeightMm = FovHeightMm;
-        SelectedProjector.Pose.PositionMm = new Point3(PoseX, PoseY, SelectedProjector.Pose.PositionMm.Z);
+        ApplyPoseFields(SelectedProjector);
         SelectedProjector.Red = (byte)Math.Clamp(ColorR, 0, 255);
         SelectedProjector.Green = (byte)Math.Clamp(ColorG, 0, 255);
         SelectedProjector.Blue = (byte)Math.Clamp(ColorB, 0, 255);
@@ -2757,9 +3145,19 @@ public partial class MainViewModel : ViewModelBase
         if (_suppressDeviceUi || SelectedProjector is null) return;
         SelectedProjector.FovWidthMm = FovWidthMm;
         SelectedProjector.FovHeightMm = FovHeightMm;
-        SelectedProjector.Pose.PositionMm = new Point3(PoseX, PoseY, SelectedProjector.Pose.PositionMm.Z);
+        ApplyPoseFields(SelectedProjector);
         RefreshFovOverlays();
         BumpCanvas();
+    }
+
+    private void ApplyPoseFields(ProjectorProfile p)
+    {
+        p.Pose.PositionMm = new Point3(PoseX, PoseY, PoseZ);
+        p.Pose.PitchDeg = PosePitch;
+        p.Pose.YawDeg = PoseYaw;
+        p.Pose.RollDeg = PoseRoll;
+        p.Pose.FovHDeg = Math.Clamp(FovHDeg, 1, 170);
+        p.Pose.FovVDeg = Math.Clamp(FovVDeg, 1, 170);
     }
 
     private void PushColorToSelection()
@@ -3067,8 +3465,57 @@ public partial class MainViewModel : ViewModelBase
             s.DxfUnits = ParseDxfUnits(DxfUnitChoice).ToString();
             s.NudgeStepMm = NudgeStepMm;
             s.Hotkeys = Hotkeys.ToPrefs();
+            s.Workspace = CaptureWorkspaceLayout();
         });
     }
+
+    public void LoadWorkspaceLayout()
+    {
+        var layout = AppPrefs.Load().Workspace ?? new WorkspaceLayoutPrefs();
+        Workspace.LeftWidth = Clamp(layout.LeftWidth, 220, 480, 300);
+        Workspace.RightWidth = Clamp(layout.RightWidth, 280, 560, 340);
+        Workspace.BottomHeight = Clamp(layout.BottomHeight, 120, 480, 200);
+        Workspace.IsBottomOpen = layout.IsBottomOpen;
+        if (Enum.TryParse<PanelId>(layout.ActiveLeft, out var left))
+            Workspace.ActiveLeft = left;
+        if (Enum.TryParse<PanelId>(layout.ActiveRight, out var right))
+            Workspace.Reveal(right);
+        if (Enum.TryParse<PanelId>(layout.ActiveBottom, out var bottom) && layout.IsBottomOpen)
+            Workspace.Reveal(bottom);
+    }
+
+    public void SaveWorkspaceLayout(double windowWidth, double windowHeight, bool maximized)
+    {
+        AppPrefs.Update(s =>
+        {
+            s.Workspace = CaptureWorkspaceLayout();
+            s.Workspace.WindowWidth = windowWidth;
+            s.Workspace.WindowHeight = windowHeight;
+            s.Workspace.IsMaximized = maximized;
+        });
+    }
+
+    private WorkspaceLayoutPrefs CaptureWorkspaceLayout() => new()
+    {
+        ActiveLeft = Workspace.ActiveLeft?.ToString(),
+        ActiveRight = Workspace.ActiveRight?.ToString(),
+        ActiveBottom = Workspace.IsBottomOpen
+            ? Workspace.BottomTabIndex switch
+            {
+                1 => PanelId.Endpoints.ToString(),
+                2 => PanelId.Clients.ToString(),
+                3 => PanelId.Commands.ToString(),
+                _ => PanelId.Logs.ToString()
+            }
+            : null,
+        LeftWidth = Workspace.LeftWidth,
+        RightWidth = Workspace.RightWidth,
+        BottomHeight = Workspace.BottomHeight,
+        IsBottomOpen = Workspace.IsBottomOpen
+    };
+
+    private static double Clamp(double value, double min, double max, double fallback)
+        => value >= min && value <= max ? value : fallback;
 
     private static DxfUnitPreference ParseDxfUnits(string? choice) => choice switch
     {

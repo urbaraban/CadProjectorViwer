@@ -6,6 +6,7 @@ using Avalonia.Interactivity;
 using Avalonia.Threading;
 using CadProjector.App.Services.Hotkeys;
 using CadProjector.App.ViewModels;
+using CadProjector.Core.Scene;
 using CadProjector.Geometry.Primitives;
 using CadProjector.Logging.Services;
 
@@ -13,13 +14,25 @@ namespace CadProjector.App.Views;
 
 public partial class MainWindow : Window
 {
+    private const double LeftDockMin = 220;
+    private const double LeftDockMax = 480;
+    private const double RightDockMin = 280;
+    private const double RightDockMax = 560;
+    private const double BottomDockMin = 120;
+    private const double BottomDockMax = 480;
+
     private bool _forceClose;
-    private bool _suppressTreeSync;
+    private bool _syncingDockLayout;
+    private MainViewModel? _vm;
     private readonly HashSet<HotkeyActionId> _heldNudges = [];
-    private readonly HashSet<Key> _keysDown = [];
     private readonly HashSet<HotkeyActionId> _heldCommands = [];
     private KeyModifiers _nudgeModifiers;
     private DispatcherTimer? _nudgeTimer;
+
+    private ColumnDefinition LeftDockColumn => WorkAreaGrid.ColumnDefinitions[1];
+    private ColumnDefinition RightDockColumn => WorkAreaGrid.ColumnDefinitions[5];
+    private RowDefinition BottomSplitterRow => RootShell.RowDefinitions[2];
+    private RowDefinition BottomDockRow => RootShell.RowDefinitions[3];
 
     public MainWindow()
     {
@@ -27,25 +40,7 @@ public partial class MainWindow : Window
         AddHandler(KeyDownEvent, OnHotkeyDown, RoutingStrategies.Tunnel);
         AddHandler(KeyUpEvent, OnHotkeyUp, RoutingStrategies.Tunnel);
         Deactivated += (_, _) => StopNudge();
-        Opened += (_, _) =>
-        {
-            var sync = SynchronizationContext.Current;
-            CadLogging.Instance.SetSynchronizationContext(sync);
-            CadProgress.Inst.SetSynchronizationContext(sync);
-
-            if (DataContext is MainViewModel vm)
-            {
-                vm.HostWindow = this;
-                vm.WorkFolderBrowser.AttachHost(this);
-                vm.ViewResetRequested += () =>
-                {
-                    SceneView.ResetView();
-                    View3D.ResetView();
-                };
-                vm.PropertyChanged += OnViewModelPropertyChanged;
-                Title = "2Cut";
-            }
-        };
+        Opened += OnOpened;
         Closing += OnClosing;
         SceneView.ModuleAnchorChanged += OnModuleAnchorChanged;
         SceneView.MaskBoundsChanged += OnMaskBoundsChanged;
@@ -53,6 +48,178 @@ public partial class MainWindow : Window
         SceneView.GestureEnded += OnGestureEnded;
         SceneView.AlignPicked += OnAlignPicked;
         View3D.AlignPicked += OnAlignPicked;
+        View3D.CoverageComputed += OnCoverageComputed;
+
+        LeftDockColumn.MinWidth = 0;
+        LeftDockColumn.MaxWidth = LeftDockMax;
+        RightDockColumn.MinWidth = 0;
+        RightDockColumn.MaxWidth = RightDockMax;
+        BottomDockRow.MinHeight = 0;
+        BottomDockRow.MaxHeight = BottomDockMax;
+
+        LeftSplitter.PointerReleased += OnDockSplitterReleased;
+        RightSplitter.PointerReleased += OnDockSplitterReleased;
+        BottomSplitter.PointerReleased += OnDockSplitterReleased;
+    }
+
+    private void OnDockSplitterReleased(object? sender, PointerReleasedEventArgs e)
+        => CaptureDockLayoutToWorkspace();
+
+    private void OnOpened(object? sender, EventArgs e)
+    {
+        var sync = SynchronizationContext.Current;
+        CadLogging.Instance.SetSynchronizationContext(sync);
+        CadProgress.Inst.SetSynchronizationContext(sync);
+
+        if (DataContext is not MainViewModel vm)
+            return;
+
+        _vm = vm;
+        vm.HostWindow = this;
+        vm.WorkFolderBrowser.AttachHost(this);
+        vm.ViewResetRequested += () =>
+        {
+            SceneView.ResetView();
+            View3D.ResetView();
+        };
+        Title = "2Cut";
+        vm.LoadWorkspaceLayout();
+        ApplyDockLayoutFromWorkspace(forceWidths: true);
+        vm.PropertyChanged += OnViewModelPropertyChanged;
+        vm.Workspace.PropertyChanged += OnWorkspacePropertyChanged;
+        _ = vm.TryOpenLastProjectAsync();
+    }
+
+    private void OnViewModelPropertyChanged(object? sender, PropertyChangedEventArgs e)
+    {
+        if (e.PropertyName is nameof(MainViewModel.IsLeftDockOpen)
+            or nameof(MainViewModel.IsRightDockOpen))
+            ApplyDockLayoutFromWorkspace(forceWidths: false);
+    }
+
+    private void OnWorkspacePropertyChanged(object? sender, PropertyChangedEventArgs e)
+    {
+        if (e.PropertyName is nameof(WorkspaceViewModel.LeftWidth)
+            or nameof(WorkspaceViewModel.RightWidth)
+            or nameof(WorkspaceViewModel.BottomHeight))
+            ApplyDockLayoutFromWorkspace(forceWidths: true);
+        else if (e.PropertyName is nameof(WorkspaceViewModel.IsBottomOpen)
+            or nameof(WorkspaceViewModel.ActiveLeft)
+            or nameof(WorkspaceViewModel.ActiveRight))
+            ApplyDockLayoutFromWorkspace(forceWidths: false);
+    }
+
+    private void ApplyDockLayoutFromWorkspace(bool forceWidths)
+    {
+        if (_vm is null || _syncingDockLayout)
+            return;
+
+        _syncingDockLayout = true;
+        try
+        {
+            var ws = _vm.Workspace;
+            ApplySideDock(
+                _vm.IsLeftDockOpen, LeftDockColumn, LeftDockHost, LeftSplitter,
+                ws.LeftWidth, LeftDockMin, LeftDockMax, forceWidths,
+                w => ws.LeftWidth = w);
+            ApplySideDock(
+                _vm.IsRightDockOpen, RightDockColumn, RightDockHost, RightSplitter,
+                ws.RightWidth, RightDockMin, RightDockMax, forceWidths,
+                w => ws.RightWidth = w);
+
+            var bottomOpen = ws.IsBottomOpen;
+            if (bottomOpen)
+            {
+                var current = BottomDockRow.Height.IsAbsolute ? BottomDockRow.Height.Value : 0;
+                if (forceWidths || current < BottomDockMin)
+                    BottomDockRow.Height = new GridLength(Clamp(ws.BottomHeight, BottomDockMin, BottomDockMax));
+                BottomDockRow.MinHeight = BottomDockMin;
+                BottomSplitterRow.Height = new GridLength(4);
+            }
+            else
+            {
+                CaptureRow(BottomDockRow, BottomDockMin, BottomDockMax, h => ws.BottomHeight = h);
+                BottomDockRow.Height = new GridLength(0);
+                BottomDockRow.MinHeight = 0;
+                BottomSplitterRow.Height = new GridLength(0);
+            }
+
+            BottomSplitter.IsVisible = bottomOpen;
+            BottomSplitter.IsEnabled = bottomOpen;
+            BottomDockHost.IsVisible = bottomOpen;
+        }
+        finally
+        {
+            _syncingDockLayout = false;
+        }
+    }
+
+    private static void ApplySideDock(
+        bool open,
+        ColumnDefinition column,
+        Control host,
+        Control splitter,
+        double storedWidth,
+        double min,
+        double max,
+        bool forceWidth,
+        Action<double> saveWidth)
+    {
+        if (open)
+        {
+            var current = column.Width.IsAbsolute ? column.Width.Value : 0;
+            if (forceWidth || current < min)
+                column.Width = new GridLength(Clamp(storedWidth, min, max));
+            column.MinWidth = min;
+        }
+        else
+        {
+            CaptureColumn(column, min, max, saveWidth);
+            column.Width = new GridLength(0);
+            column.MinWidth = 0;
+        }
+
+        host.IsVisible = open;
+        splitter.IsVisible = open;
+        splitter.IsEnabled = open;
+    }
+
+    private void CaptureDockLayoutToWorkspace()
+    {
+        if (_vm is null || _syncingDockLayout)
+            return;
+
+        var ws = _vm.Workspace;
+        CaptureColumn(LeftDockColumn, LeftDockMin, LeftDockMax, w => ws.LeftWidth = w);
+        CaptureColumn(RightDockColumn, RightDockMin, RightDockMax, w => ws.RightWidth = w);
+        CaptureRow(BottomDockRow, BottomDockMin, BottomDockMax, h => ws.BottomHeight = h);
+    }
+
+    private static void CaptureColumn(ColumnDefinition column, double min, double max, Action<double> save)
+    {
+        if (column.Width.IsAbsolute && column.Width.Value >= min)
+            save(Clamp(column.Width.Value, min, max));
+    }
+
+    private static void CaptureRow(RowDefinition row, double min, double max, Action<double> save)
+    {
+        if (row.Height.IsAbsolute && row.Height.Value >= min)
+            save(Clamp(row.Height.Value, min, max));
+    }
+
+    private static double Clamp(double value, double min, double max)
+        => Math.Clamp(value, min, max);
+
+    private void ProjectPath_DoubleTapped(object? sender, TappedEventArgs e)
+    {
+        if (DataContext is MainViewModel vm)
+            vm.RevealProjectFolderCommand.Execute(null);
+    }
+
+    private void OnCoverageComputed(MeshCoverageStats stats, bool shadowsTested)
+    {
+        if (DataContext is MainViewModel vm)
+            vm.ReportCoverage(stats, shadowsTested);
     }
 
     private void OnAlignPicked(Point3 world, bool meshHit)
@@ -61,44 +228,14 @@ public partial class MainWindow : Window
             vm.OnMeshAlignPicked(world, meshHit);
     }
 
-    private void OnViewModelPropertyChanged(object? sender, PropertyChangedEventArgs e)
-    {
-        if (e.PropertyName != nameof(MainViewModel.SelectedObjectItem) || _suppressTreeSync)
-            return;
-        if (sender is not MainViewModel vm)
-            return;
-
-        _suppressTreeSync = true;
-        try
-        {
-            ObjectTree.SelectedItem = vm.SelectedObjectItem;
-        }
-        finally
-        {
-            _suppressTreeSync = false;
-        }
-    }
-
-    private void ObjectTree_SelectionChanged(object? sender, SelectionChangedEventArgs e)
-    {
-        if (_suppressTreeSync || DataContext is not MainViewModel vm || sender is not TreeView tree)
-            return;
-        var items = tree.SelectedItems.OfType<ObjectListItem>().ToList();
-        _suppressTreeSync = true;
-        try
-        {
-            vm.SetTreeSelection(items);
-        }
-        finally
-        {
-            _suppressTreeSync = false;
-        }
-    }
-
     private async void OnClosing(object? sender, WindowClosingEventArgs e)
     {
         if (_forceClose || DataContext is not MainViewModel vm)
             return;
+
+        CaptureDockLayoutToWorkspace();
+        vm.SaveWorkspaceLayout(Bounds.Width, Bounds.Height, WindowState == WindowState.Maximized);
+
         if (!vm.IsDirty)
             return;
 
@@ -134,32 +271,6 @@ public partial class MainWindow : Window
             vm.ApplyMaskBounds(from, to);
     }
 
-    private async void WorkFolderList_DoubleTapped(object? sender, TappedEventArgs e)
-    {
-        if (DataContext is not MainViewModel vm) return;
-        if (sender is ListBox { SelectedItem: WorkFolderEntry entry })
-            await vm.WorkFolderBrowser.ActivateCommand.ExecuteAsync(entry);
-    }
-
-    private async void WorkFolderList_KeyUp(object? sender, KeyEventArgs e)
-    {
-        if (DataContext is not MainViewModel vm) return;
-        if (sender is not ListBox list) return;
-
-        if (e.Key == Key.Escape)
-        {
-            vm.WorkFolderBrowser.ClearFilterCommand.Execute(null);
-            e.Handled = true;
-            return;
-        }
-
-        if (e.Key == Key.Enter && list.SelectedItem is WorkFolderEntry entry)
-        {
-            await vm.WorkFolderBrowser.ActivateCommand.ExecuteAsync(entry);
-            e.Handled = true;
-        }
-    }
-
     private void OnHotkeyDown(object? sender, KeyEventArgs e)
     {
         if (DataContext is not MainViewModel vm)
@@ -174,6 +285,14 @@ public partial class MainWindow : Window
             return;
         }
 
+        if (e.Key is Key.Escape && !IsTextInputTarget(e.Source))
+        {
+            CaptureDockLayoutToWorkspace();
+            vm.Workspace.CloseFocusedOrBottom();
+            e.Handled = true;
+            return;
+        }
+
         if (vm.IsCapturingHotkey)
         {
             if (vm.TryCaptureHotkey(e.Key, e.KeyModifiers))
@@ -183,6 +302,36 @@ public partial class MainWindow : Window
 
         if (IsTextInputTarget(e.Source))
             return;
+
+        if (e.KeyModifiers == KeyModifiers.None)
+        {
+            switch (e.Key)
+            {
+                case Key.F1:
+                    vm.OpenHotkeysCommand.Execute(null);
+                    e.Handled = true;
+                    return;
+                case Key.F2:
+                    CaptureDockLayoutToWorkspace();
+                    vm.OpenTreeCommand.Execute(null);
+                    e.Handled = true;
+                    return;
+                case Key.F3:
+                    vm.IsViewport3D = !vm.IsViewport3D;
+                    e.Handled = true;
+                    return;
+                case Key.F4:
+                    CaptureDockLayoutToWorkspace();
+                    vm.OpenTransformCommand.Execute(null);
+                    e.Handled = true;
+                    return;
+                case Key.F12:
+                    CaptureDockLayoutToWorkspace();
+                    vm.ToggleBottomConsoleCommand.Execute(null);
+                    e.Handled = true;
+                    return;
+            }
+        }
 
         var action = vm.MatchHotkey(e.Key, e.KeyModifiers);
         if (action is null)

@@ -1,0 +1,106 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:CadProjector.App.ViewModels"
+             x:Class="CadProjector.App.Views.Panels.StlAlignPanel"
+             x:DataType="vm:MainViewModel">
+
+  <UserControl.Styles>
+    <Style Selector="NumericUpDown.axis">
+      <Setter Property="MinWidth" Value="0" />
+      <Setter Property="HorizontalAlignment" Value="Stretch" />
+    </Style>
+  </UserControl.Styles>
+
+  <Border Classes="panel" Padding="14" CornerRadius="4"
+          HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+    <ScrollViewer HorizontalScrollBarVisibility="Disabled">
+      <StackPanel Spacing="8">
+        <DockPanel>
+          <Button Classes="overlayClose" DockPanel.Dock="Right"
+                  Command="{Binding CloseOverlayCommand}" CommandParameter="StlAlign"
+                  ToolTip.Tip="{DynamicResource Ui.Close}" />
+          <TextBlock Text="{DynamicResource Ui.StlAlign}" Classes="sectionHeader"
+                     VerticalAlignment="Center" />
+        </DockPanel>
+        <TextBlock Text="{Binding MeshTargetInfo}" Foreground="{StaticResource Accent}"
+                   FontSize="11" TextWrapping="Wrap" />
+        <StackPanel Orientation="Horizontal" Spacing="6">
+          <Button Content="{DynamicResource Ui.StlFit}" Command="{Binding FitStlTargetCommand}" />
+          <Button Content="{DynamicResource Ui.StlClear}" Command="{Binding ClearStlTargetCommand}" />
+        </StackPanel>
+
+        <TextBlock Text="{DynamicResource Ui.StlTranslate}" Classes="fieldLabel" Margin="0,4,0,0" />
+        <Grid ColumnDefinitions="*,*,*" ColumnSpacing="8">
+          <StackPanel Grid.Column="0" Spacing="2">
+            <TextBlock Text="X" Classes="hint" />
+            <NumericUpDown Classes="axis" Value="{Binding MeshTx}" Increment="1" FormatString="0.##" />
+          </StackPanel>
+          <StackPanel Grid.Column="1" Spacing="2">
+            <TextBlock Text="Y" Classes="hint" />
+            <NumericUpDown Classes="axis" Value="{Binding MeshTy}" Increment="1" FormatString="0.##" />
+          </StackPanel>
+          <StackPanel Grid.Column="2" Spacing="2">
+            <TextBlock Text="Z" Classes="hint" />
+            <NumericUpDown Classes="axis" Value="{Binding MeshTz}" Increment="1" FormatString="0.##" />
+          </StackPanel>
+        </Grid>
+
+        <TextBlock Text="{DynamicResource Ui.StlRotate}" Classes="fieldLabel" />
+        <Grid ColumnDefinitions="*,*,*" ColumnSpacing="8">
+          <StackPanel Grid.Column="0" Spacing="2">
+            <TextBlock Text="X °" Classes="hint" />
+            <NumericUpDown Classes="axis" Value="{Binding MeshRx}" Increment="1" FormatString="0.##" />
+          </StackPanel>
+          <StackPanel Grid.Column="1" Spacing="2">
+            <TextBlock Text="Y °" Classes="hint" />
+            <NumericUpDown Classes="axis" Value="{Binding MeshRy}" Increment="1" FormatString="0.##" />
+          </StackPanel>
+          <StackPanel Grid.Column="2" Spacing="2">
+            <TextBlock Text="Z °" Classes="hint" />
+            <NumericUpDown Classes="axis" Value="{Binding MeshRz}" Increment="1" FormatString="0.##" />
+          </StackPanel>
+        </Grid>
+
+        <TextBlock Text="{DynamicResource Ui.StlScale}" Classes="fieldLabel" />
+        <Grid ColumnDefinitions="*,*,*" ColumnSpacing="8">
+          <StackPanel Grid.Column="0" Spacing="2">
+            <TextBlock Text="X" Classes="hint" />
+            <NumericUpDown Classes="axis" Value="{Binding MeshSx}" Increment="0.01" Minimum="0.001" FormatString="0.###" />
+          </StackPanel>
+          <StackPanel Grid.Column="1" Spacing="2">
+            <TextBlock Text="Y" Classes="hint" />
+            <NumericUpDown Classes="axis" Value="{Binding MeshSy}" Increment="0.01" Minimum="0.001" FormatString="0.###" />
+          </StackPanel>
+          <StackPanel Grid.Column="2" Spacing="2">
+            <TextBlock Text="Z" Classes="hint" />
+            <NumericUpDown Classes="axis" Value="{Binding MeshSz}" Increment="0.01" Minimum="0.001" FormatString="0.###" />
+          </StackPanel>
+        </Grid>
+
+        <TextBlock Text="{DynamicResource Ui.StlPoints}" Classes="fieldLabel" Margin="0,8,0,0" />
+        <TextBlock Text="{DynamicResource Ui.StlPointsHint}" Classes="hint" />
+        <StackPanel Orientation="Horizontal" Spacing="6">
+          <Button Content="{DynamicResource Ui.StlPickMesh}" Command="{Binding ArmMeshAlignPickCommand}" />
+          <Button Content="{DynamicResource Ui.StlPickTable}" Command="{Binding ArmTableAlignPickCommand}" />
+        </StackPanel>
+        <CheckBox Content="{DynamicResource Ui.StlAllowScale}" IsChecked="{Binding MeshAlignAllowScale}"
+                  Foreground="{StaticResource Text.Secondary}" />
+        <ItemsControl ItemsSource="{Binding MeshAlignPairLines}">
+          <ItemsControl.ItemTemplate>
+            <DataTemplate>
+              <TextBlock Text="{Binding}" Foreground="{StaticResource Text.Secondary}"
+                         FontSize="11" FontFamily="Consolas" />
+            </DataTemplate>
+          </ItemsControl.ItemTemplate>
+        </ItemsControl>
+        <TextBlock Text="{Binding MeshAlignPickHint}" Foreground="{StaticResource Warning}"
+                   FontSize="11" TextWrapping="Wrap" />
+        <StackPanel Orientation="Horizontal" Spacing="6">
+          <Button Content="{DynamicResource Ui.StlApplyPoints}" Command="{Binding ApplyMeshPointAlignCommand}" />
+          <Button Content="{DynamicResource Ui.StlClearPoints}" Command="{Binding ClearMeshPointAlignCommand}" />
+        </StackPanel>
+        <TextBlock Text="{DynamicResource Ui.StlAlignHint}" Classes="hint" />
+      </StackPanel>
+    </ScrollViewer>
+  </Border>
+</UserControl>

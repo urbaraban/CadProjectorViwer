@@ -5,6 +5,7 @@
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <ApplicationManifest>app.manifest</ApplicationManifest>
+    <ApplicationIcon>Assets\logo.ico</ApplicationIcon>
     <AssemblyName>2Cut</AssemblyName>
     <RootNamespace>CadProjector.App</RootNamespace>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>

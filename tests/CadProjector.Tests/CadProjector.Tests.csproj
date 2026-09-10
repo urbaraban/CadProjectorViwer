@@ -25,6 +25,7 @@
     <ProjectReference Include="..\..\src\CadProjector.FileFormats\CadProjector.FileFormats.csproj" />
     <ProjectReference Include="..\..\src\CadProjector.Ilda\CadProjector.Ilda.csproj" />
     <ProjectReference Include="..\..\src\CadProjector.Automation\CadProjector.Automation.csproj" />
+    <ProjectReference Include="..\..\src\CadProjector.App\CadProjector.App.csproj" />
   </ItemGroup>
 
 </Project>

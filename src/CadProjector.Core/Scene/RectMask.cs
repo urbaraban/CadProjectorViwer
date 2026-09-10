@@ -2,7 +2,10 @@ using CadProjector.Geometry.Primitives;
 
 namespace CadProjector.Core.Scene;
 
-/// <summary>MVP: single rectangular mask on the scene.</summary>
+/// <summary>
+/// Scene crop rectangle in millimetres. Clips objects before the FOV split —
+/// not a per-projector field mask.
+/// </summary>
 public sealed class RectMask
 {
     public bool IsEnabled { get; set; }

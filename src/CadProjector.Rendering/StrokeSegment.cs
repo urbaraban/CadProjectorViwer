@@ -47,6 +47,9 @@ public sealed class StrokeSegment
 
 public static class StrokeSegmentOps
 {
+    /// <summary>Same point in 0..1 device space (cloned endpoints, not snapped chain joins).</summary>
+    private const double ContinuityDistSq = 1e-24;
+
     public static List<StrokeSegment> ToSegments(LinesCollection lines)
     {
         var segs = new List<StrokeSegment>();
@@ -65,22 +68,34 @@ public static class StrokeSegmentOps
         return segs;
     }
 
+    /// <summary>
+    /// Rebuild a point stream from independent segments.
+    /// Legacy <c>LinesCollection</c> is a list of <c>VectorLine</c> — each keeps its own P1/P2.
+    /// A polyline that only appends P2 welds disconnected strokes into visible diagonals
+    /// (hatch ends become a zigzag, and ScanRate then densifies the wrong path).
+    /// When the next P1 does not continue the previous P2, emit a blanked hop to P1 first.
+    /// </summary>
     public static LinesCollection FromSegments(IReadOnlyList<StrokeSegment> segs)
     {
         var lines = new LinesCollection();
         if (segs.Count == 0) return lines;
 
-        var first = segs[0].P1.Clone();
-        first.Blanked = true;
-        first.Mass = segs[0].T1;
-        lines.Points.Add(first);
-
+        RenderPoint? last = null;
         foreach (var s in segs)
         {
-            var p = s.P2.Clone();
-            p.Blanked = s.IsBlank;
-            p.Mass = s.T2;
-            lines.Points.Add(p);
+            if (last is null || DistSq(last, s.P1) > ContinuityDistSq)
+            {
+                var p1 = s.P1.Clone();
+                p1.Blanked = true;
+                p1.Mass = s.T1;
+                lines.Points.Add(p1);
+            }
+
+            var p2 = s.P2.Clone();
+            p2.Blanked = s.IsBlank;
+            p2.Mass = s.T2;
+            lines.Points.Add(p2);
+            last = p2;
         }
         return lines;
     }

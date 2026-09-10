@@ -1,0 +1,218 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:CadProjector.App.ViewModels"
+             xmlns:dev="using:CadProjector.Core.Devices"
+             xmlns:mod="using:CadProjector.Rendering.Modules"
+             x:Class="CadProjector.App.Views.Panels.DevicePanel"
+             x:DataType="vm:MainViewModel">
+
+  <Border Classes="panel" Padding="10" CornerRadius="4"
+          HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+    <DockPanel>
+      <StackPanel DockPanel.Dock="Top" Spacing="6" Margin="0,0,0,8">
+        <DockPanel>
+          <Button Classes="overlayClose" DockPanel.Dock="Right"
+                  Command="{Binding CloseOverlayCommand}" CommandParameter="Devices"
+                  ToolTip.Tip="{DynamicResource Ui.Close}" />
+          <TextBlock Text="{DynamicResource Ui.Devices}" Classes="sectionHeader"
+                     VerticalAlignment="Center" />
+        </DockPanel>
+        <TextBlock Text="{Binding PipelineHelp}" Classes="hint" />
+        <Grid ColumnDefinitions="*,Auto,Auto">
+          <ListBox Grid.Column="0" ItemsSource="{Binding Projectors}"
+                   SelectedItem="{Binding SelectedProjector}"
+                   Height="88" Background="Transparent" Margin="0,0,6,0">
+            <ListBox.ItemTemplate>
+              <DataTemplate x:DataType="dev:ProjectorProfile">
+                <DockPanel LastChildFill="True">
+                  <Button DockPanel.Dock="Right" Padding="8,2" Margin="6,0,0,0"
+                          Content="{DynamicResource Ui.ProjectorPreview}"
+                          Command="{Binding $parent[Window].((vm:MainViewModel)DataContext).OpenProjectorPreviewCommand}"
+                          CommandParameter="{Binding}" />
+                  <TextBlock Text="{Binding DisplayName}" Foreground="{StaticResource Text.Primary}"
+                             VerticalAlignment="Center" TextTrimming="CharacterEllipsis" />
+                </DockPanel>
+              </DataTemplate>
+            </ListBox.ItemTemplate>
+          </ListBox>
+          <StackPanel Grid.Column="1" Spacing="4" Margin="0,0,4,0">
+            <Button Content="+" Command="{Binding AddProjectorCommand}" Width="36" ToolTip.Tip="Add projector" />
+            <Button Content="−" Command="{Binding RemoveProjectorCommand}" Width="36"
+                    IsEnabled="{Binding CanRemoveProjector}" ToolTip.Tip="Remove selected" />
+          </StackPanel>
+        </Grid>
+      </StackPanel>
+
+      <TabControl SelectedIndex="{Binding Workspace.DeviceTabIndex}">
+        <TabItem Header="{DynamicResource Ui.DeviceCard}">
+          <ScrollViewer>
+            <StackPanel Spacing="6" Margin="0,8,0,0">
+              <TextBlock Text="{DynamicResource Ui.DeviceName}" Classes="fieldLabel" />
+              <TextBox Text="{Binding DeviceName}" />
+              <TextBlock Text="Host / port" Classes="fieldLabel" />
+              <TextBox Text="{Binding DeviceHost}" />
+              <NumericUpDown Value="{Binding DevicePort}" Minimum="1" Maximum="65535" FormatString="0" />
+              <TextBlock Text="RGB" Classes="fieldLabel" />
+              <StackPanel Spacing="4">
+                <DockPanel>
+                  <TextBlock Text="R" Width="16" VerticalAlignment="Center" Foreground="{StaticResource Danger}" DockPanel.Dock="Left" />
+                  <NumericUpDown Value="{Binding ColorR}" Minimum="0" Maximum="255" FormatString="0" />
+                </DockPanel>
+                <DockPanel>
+                  <TextBlock Text="G" Width="16" VerticalAlignment="Center" Foreground="{StaticResource Success}" DockPanel.Dock="Left" />
+                  <NumericUpDown Value="{Binding ColorG}" Minimum="0" Maximum="255" FormatString="0" />
+                </DockPanel>
+                <DockPanel>
+                  <TextBlock Text="B" Width="16" VerticalAlignment="Center" Foreground="{StaticResource Accent}" DockPanel.Dock="Left" />
+                  <NumericUpDown Value="{Binding ColorB}" Minimum="0" Maximum="255" FormatString="0" />
+                </DockPanel>
+              </StackPanel>
+              <StackPanel Orientation="Horizontal" Spacing="8">
+                <Button Content="{DynamicResource Ui.Connect}" Command="{Binding ConnectSelectedCommand}" />
+                <Button Content="{DynamicResource Ui.VirtualOnly}" Command="{Binding UseVirtualCommand}" />
+              </StackPanel>
+              <StackPanel Orientation="Horizontal" Spacing="8">
+                <Button Content="Save .cdev" Command="{Binding SaveProfileCommand}" />
+                <Button Content="Load .cdev" Command="{Binding LoadProfileCommand}" />
+              </StackPanel>
+              <TextBlock Text="{Binding ActiveDeviceName}" Foreground="{StaticResource Text.Secondary}"
+                         TextWrapping="Wrap" FontSize="11" />
+              <TextBlock Text="{Binding FrameInfo}" Foreground="{StaticResource Accent}"
+                         TextWrapping="Wrap" FontSize="11" />
+            </StackPanel>
+          </ScrollViewer>
+        </TabItem>
+
+        <TabItem Header="{DynamicResource Ui.FovPose}">
+          <StackPanel Spacing="6" Margin="0,8,0,0">
+            <TextBlock Text="FOV W / H mm" Classes="fieldLabel" />
+            <StackPanel Orientation="Horizontal" Spacing="6">
+              <NumericUpDown Width="160" Value="{Binding FovWidthMm}" Increment="10" FormatString="0.#" />
+              <NumericUpDown Width="160" Value="{Binding FovHeightMm}" Increment="10" FormatString="0.#" />
+            </StackPanel>
+            <TextBlock Text="Pose X / Y mm (FOV center)" Classes="fieldLabel" />
+            <StackPanel Orientation="Horizontal" Spacing="6">
+              <NumericUpDown Width="160" Value="{Binding PoseX}" Increment="1" FormatString="0.#" />
+              <NumericUpDown Width="160" Value="{Binding PoseY}" Increment="1" FormatString="0.#" />
+            </StackPanel>
+            <TextBlock Text="{DynamicResource Ui.FovHint}" Classes="hint" />
+
+            <TextBlock Text="{DynamicResource Ui.Pose3D}" FontWeight="SemiBold" Foreground="{StaticResource Accent}" Margin="0,10,0,0" />
+            <TextBlock Text="{DynamicResource Ui.Pose3DHint}" Classes="hint" />
+            <TextBlock Text="{DynamicResource Ui.PoseHeight}" Classes="fieldLabel" />
+            <NumericUpDown Width="160" HorizontalAlignment="Left" Value="{Binding PoseZ}"
+                           Increment="50" FormatString="0.#" />
+            <TextBlock Text="{DynamicResource Ui.PoseAim}" Classes="fieldLabel" />
+            <StackPanel Orientation="Horizontal" Spacing="6">
+              <NumericUpDown Width="104" Value="{Binding PosePitch}" Increment="1" Minimum="-90" Maximum="90" FormatString="0.#" />
+              <NumericUpDown Width="104" Value="{Binding PoseYaw}" Increment="1" FormatString="0.#" />
+              <NumericUpDown Width="104" Value="{Binding PoseRoll}" Increment="1" FormatString="0.#" />
+            </StackPanel>
+            <TextBlock Text="{DynamicResource Ui.FovAngles}" Classes="fieldLabel" />
+            <StackPanel Orientation="Horizontal" Spacing="6">
+              <NumericUpDown Width="160" Value="{Binding FovHDeg}" Increment="1" Minimum="1" Maximum="170" FormatString="0.#" />
+              <NumericUpDown Width="160" Value="{Binding FovVDeg}" Increment="1" Minimum="1" Maximum="170" FormatString="0.#" />
+            </StackPanel>
+            <StackPanel Orientation="Horizontal" Spacing="6">
+              <Button Content="{DynamicResource Ui.AimProjector}" Command="{Binding AimProjectorAtTargetCommand}"
+                      ToolTip.Tip="{DynamicResource Ui.AimProjectorHint}" />
+              <ToggleButton Content="{DynamicResource Ui.ViewFromProjector}" IsChecked="{Binding ViewFromProjector}"
+                            ToolTip.Tip="{DynamicResource Ui.ViewFromProjectorHint}" />
+              <ToggleButton Content="{DynamicResource Ui.ShowCoverage}" IsChecked="{Binding ShowCoverage}"
+                            ToolTip.Tip="{DynamicResource Ui.ShowCoverageHint}" />
+            </StackPanel>
+            <TextBlock Text="{Binding CoverageInfo}" Foreground="{StaticResource Accent}" FontSize="11" TextWrapping="Wrap" />
+            <TextBlock Text="{DynamicResource Ui.CoverageLegend}" Classes="hint"
+                       IsVisible="{Binding ShowCoverage}" />
+          </StackPanel>
+        </TabItem>
+
+        <TabItem Header="{DynamicResource Ui.ModulesSection}">
+          <DockPanel Margin="0,8,0,0">
+            <StackPanel DockPanel.Dock="Top" Spacing="6">
+              <TextBlock Text="{DynamicResource Ui.Calibrate}" Classes="fieldLabel" FontWeight="SemiBold" />
+              <TextBlock Text="{Binding MeshOwnerLabel}" Foreground="{StaticResource Warning}" FontWeight="SemiBold" />
+              <TextBlock Text="{DynamicResource Ui.CalibrateHint}" Classes="hint" />
+              <ComboBox ItemsSource="{Binding CalibPatternOptions}" SelectedItem="{Binding CalibPattern}" />
+              <Button Content="{DynamicResource Ui.PlayPattern}" Command="{Binding PlayCalibrationPatternCommand}" />
+
+              <TextBlock Text="{DynamicResource Ui.ModulesBelongHint}" Classes="hint" Margin="0,8,0,0" />
+              <TextBlock Text="{DynamicResource Ui.MeshInModulesHint}" Foreground="{StaticResource Warning}"
+                         FontSize="11" TextWrapping="Wrap" />
+              <StackPanel Orientation="Horizontal" Spacing="6">
+                <Button Content="{DynamicResource Ui.SelectMeshModule}" Command="{Binding SelectMeshModuleCommand}" />
+                <Button Content="{DynamicResource Ui.ResetMesh}" Command="{Binding ResetMeshCommand}" />
+                <Button Content="{DynamicResource Ui.DistortMesh}" Command="{Binding DistortMeshDemoCommand}" />
+              </StackPanel>
+              <StackPanel Orientation="Horizontal" Spacing="6">
+                <ComboBox Width="180" ItemsSource="{Binding AvailableModuleTypes}"
+                          SelectedItem="{Binding ModuleTypeToAdd}">
+                  <ComboBox.ItemTemplate>
+                    <DataTemplate x:DataType="mod:ModuleDescriptor">
+                      <TextBlock Text="{Binding DisplayName}" ToolTip.Tip="{Binding Description}" />
+                    </DataTemplate>
+                  </ComboBox.ItemTemplate>
+                </ComboBox>
+                <Button Content="Add" Command="{Binding AddModuleCommand}" />
+                <Button Content="↑" Command="{Binding MoveModuleUpCommand}" Width="32" />
+                <Button Content="↓" Command="{Binding MoveModuleDownCommand}" Width="32" />
+                <Button Content="Del" Command="{Binding RemoveModuleCommand}" />
+              </StackPanel>
+            </StackPanel>
+            <ListBox ItemsSource="{Binding ModuleItems}"
+                     SelectedItem="{Binding SelectedModuleItem}"
+                     Background="Transparent">
+              <ListBox.ItemTemplate>
+                <DataTemplate x:DataType="vm:ModuleItemViewModel">
+                  <Border Padding="6" Margin="0,2" Classes="card">
+                    <StackPanel Spacing="4">
+                      <StackPanel Orientation="Horizontal" Spacing="8">
+                        <CheckBox IsChecked="{Binding IsEnabled}" />
+                        <TextBlock Text="{Binding DisplayName}" Foreground="{StaticResource Text.Primary}"
+                                   FontWeight="SemiBold" VerticalAlignment="Center"
+                                   ToolTip.Tip="{Binding Description}" />
+                        <ToggleButton Content="…" IsChecked="{Binding IsExpanded}" Width="28" Margin="8,0,0,0" />
+                      </StackPanel>
+                      <StackPanel IsVisible="{Binding IsExpanded}" Spacing="6" Margin="24,0,0,0">
+                        <StackPanel IsVisible="{Binding HasGeometry}" Spacing="2">
+                          <CheckBox Content="{DynamicResource Ui.ShowOnTable}" IsChecked="{Binding ShowOnTable}"
+                                    Foreground="{StaticResource Text.Secondary}" />
+                          <CheckBox Content="{DynamicResource Ui.ProjectGeometry}" IsChecked="{Binding ProjectGeometry}"
+                                    Foreground="{StaticResource Text.Secondary}" />
+                        </StackPanel>
+                        <ItemsControl ItemsSource="{Binding Parameters}">
+                          <ItemsControl.ItemTemplate>
+                            <DataTemplate x:DataType="vm:ModuleParamViewModel">
+                              <StackPanel Spacing="2" Margin="0,0,0,4">
+                                <TextBlock Text="{Binding Label}" Classes="fieldLabel"
+                                           IsVisible="{Binding !IsBool}" />
+                                <NumericUpDown IsVisible="{Binding IsNumber}"
+                                               Value="{Binding NumberValue}"
+                                               Minimum="{Binding Minimum}"
+                                               Maximum="{Binding Maximum}"
+                                               Increment="{Binding Increment}"
+                                               FormatString="{Binding Format}" />
+                                <ComboBox IsVisible="{Binding IsChoice}"
+                                          ItemsSource="{Binding Choices}"
+                                          SelectedItem="{Binding SelectedChoice}"
+                                          HorizontalAlignment="Stretch" />
+                                <CheckBox IsVisible="{Binding IsBool}" Content="{Binding Label}"
+                                          IsChecked="{Binding BoolValue}"
+                                          Foreground="{StaticResource Text.Secondary}" />
+                                <TextBox IsVisible="{Binding IsText}" Text="{Binding TextValue}" />
+                              </StackPanel>
+                            </DataTemplate>
+                          </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                      </StackPanel>
+                    </StackPanel>
+                  </Border>
+                </DataTemplate>
+              </ListBox.ItemTemplate>
+            </ListBox>
+          </DockPanel>
+        </TabItem>
+      </TabControl>
+    </DockPanel>
+  </Border>
+</UserControl>

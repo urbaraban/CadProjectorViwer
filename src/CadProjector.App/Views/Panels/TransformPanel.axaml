@@ -1,0 +1,70 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:CadProjector.App.ViewModels"
+             xmlns:conv="using:CadProjector.App.Converters"
+             x:Class="CadProjector.App.Views.Panels.TransformPanel"
+             x:DataType="vm:MainViewModel">
+
+  <UserControl.Resources>
+    <conv:StringEqualsConverter x:Key="StringEq" />
+  </UserControl.Resources>
+
+  <Border Classes="panel" Padding="12" CornerRadius="4"
+          HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+    <StackPanel Spacing="8">
+      <DockPanel>
+        <Button Classes="overlayClose" DockPanel.Dock="Right"
+                Command="{Binding CloseOverlayCommand}" CommandParameter="Transform"
+                ToolTip.Tip="{DynamicResource Ui.Close}" />
+        <TextBlock Text="{DynamicResource Ui.Transform}" Classes="sectionHeader"
+                   VerticalAlignment="Center" />
+      </DockPanel>
+      <TextBlock Text="{Binding TransformTargetLabel}" Foreground="{StaticResource Warning}"
+                 FontWeight="SemiBold" TextWrapping="Wrap" />
+      <TextBlock Text="X" Classes="fieldLabel" />
+      <NumericUpDown Value="{Binding Tx}" Increment="1" FormatString="0.###" />
+      <TextBlock Text="Y" Classes="fieldLabel" />
+      <NumericUpDown Value="{Binding Ty}" Increment="1" FormatString="0.###" />
+      <StackPanel IsVisible="{Binding !IsEditingModuleAnchor}" Spacing="8">
+        <TextBlock Text="Z" Classes="fieldLabel" />
+        <NumericUpDown Value="{Binding Tz}" Increment="0.1" FormatString="0.###" />
+        <TextBlock Text="Rotate °" Classes="fieldLabel" />
+        <NumericUpDown Value="{Binding Rot}" Increment="1" FormatString="0.###" />
+        <TextBlock Text="Scale" Classes="fieldLabel" />
+        <NumericUpDown Value="{Binding Scale}" Increment="0.01" Minimum="0.001" FormatString="0.####" />
+        <TextBlock Text="{DynamicResource Ui.AlignDock}" Classes="fieldLabel" Margin="0,8,0,0" />
+      </StackPanel>
+      <TextBlock Text="{DynamicResource Ui.TransformPointHint}" Classes="hint"
+                 IsVisible="{Binding IsEditingModuleAnchor}" />
+      <UniformGrid Columns="3" Rows="3" IsVisible="{Binding !IsEditingModuleAnchor}">
+        <RadioButton GroupName="Dock" Content="↖" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center"
+                     IsChecked="{Binding DockMode, Converter={StaticResource StringEq}, ConverterParameter=LT}"
+                     Command="{Binding AlignObjectCommand}" CommandParameter="LT" />
+        <RadioButton GroupName="Dock" Content="↑" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center"
+                     IsChecked="{Binding DockMode, Converter={StaticResource StringEq}, ConverterParameter=CT}"
+                     Command="{Binding AlignObjectCommand}" CommandParameter="CT" />
+        <RadioButton GroupName="Dock" Content="↗" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center"
+                     IsChecked="{Binding DockMode, Converter={StaticResource StringEq}, ConverterParameter=RT}"
+                     Command="{Binding AlignObjectCommand}" CommandParameter="RT" />
+        <RadioButton GroupName="Dock" Content="←" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center"
+                     IsChecked="{Binding DockMode, Converter={StaticResource StringEq}, ConverterParameter=LM}"
+                     Command="{Binding AlignObjectCommand}" CommandParameter="LM" />
+        <RadioButton GroupName="Dock" Content="●" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center"
+                     IsChecked="{Binding DockMode, Converter={StaticResource StringEq}, ConverterParameter=CM}"
+                     Command="{Binding AlignObjectCommand}" CommandParameter="CM" />
+        <RadioButton GroupName="Dock" Content="→" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center"
+                     IsChecked="{Binding DockMode, Converter={StaticResource StringEq}, ConverterParameter=RM}"
+                     Command="{Binding AlignObjectCommand}" CommandParameter="RM" />
+        <RadioButton GroupName="Dock" Content="↙" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center"
+                     IsChecked="{Binding DockMode, Converter={StaticResource StringEq}, ConverterParameter=LB}"
+                     Command="{Binding AlignObjectCommand}" CommandParameter="LB" />
+        <RadioButton GroupName="Dock" Content="↓" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center"
+                     IsChecked="{Binding DockMode, Converter={StaticResource StringEq}, ConverterParameter=CB}"
+                     Command="{Binding AlignObjectCommand}" CommandParameter="CB" />
+        <RadioButton GroupName="Dock" Content="↘" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center"
+                     IsChecked="{Binding DockMode, Converter={StaticResource StringEq}, ConverterParameter=RB}"
+                     Command="{Binding AlignObjectCommand}" CommandParameter="RB" />
+      </UniformGrid>
+    </StackPanel>
+  </Border>
+</UserControl>
